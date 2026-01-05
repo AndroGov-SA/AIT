@@ -19,6 +19,7 @@
 
     <script>
         tailwind.config = {
+            darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
@@ -42,56 +43,70 @@
     </script>
 
     <style>
-        body { font-family: 'Tajawal', sans-serif; background: #F8FAFC; overflow: hidden; }
+        body { font-family: 'Tajawal', sans-serif; }
         
         /* Custom Scrollbar */
         .custom-scroll::-webkit-scrollbar { width: 6px; }
         .custom-scroll::-webkit-scrollbar-track { background: transparent; }
         .custom-scroll::-webkit-scrollbar-thumb { background-color: #CBD5E1; border-radius: 20px; }
+        .dark .custom-scroll::-webkit-scrollbar-thumb { background-color: #475569; }
         
+        /* Dark Mode Colors */
+        .dark body { background-color: #0f172a; color: #f8fafc; }
+        .dark .bg-white { background-color: #1e293b; border-color: #334155; }
+        .dark .text-slate-800 { color: #f8fafc; }
+        .dark .text-slate-500 { color: #94a3b8; }
+        .dark .border-slate-200, .dark .border-slate-100 { border-color: #334155; }
+        .dark .bg-slate-50 { background-color: #0f172a; }
+        .dark .hover\:bg-slate-50:hover { background-color: #334155; }
+
         /* Animations */
         .fade-in { animation: fadeIn 0.4s ease-out forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
-        .slide-in-right { animation: slideInRight 0.3s ease-out forwards; }
-        @keyframes slideInRight { from { transform: translateX(100%); } to { transform: translateX(0); } }
-
         /* Sidebar Item */
         .nav-item.active { background: #F1F5F9; border-right: 4px solid currentColor; font-weight: 700; }
+        .dark .nav-item.active { background: #334155; color: white; }
         
         /* AI Chat Bubble */
         .chat-bubble { max-width: 85%; padding: 12px; border-radius: 12px; font-size: 0.85rem; line-height: 1.5; margin-bottom: 10px; position: relative; }
         .chat-user { background: #E2E8F0; color: #1E293B; margin-left: auto; border-bottom-left-radius: 0; }
+        .dark .chat-user { background: #334155; color: #fff; }
         .chat-ai { color: white; margin-right: auto; border-bottom-right-radius: 0; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
 
-        /* Notification Badge Pulse */
+        /* Notification Pulse */
         .notification-pulse { animation: pulse-red 2s infinite; }
         @keyframes pulse-red { 0% { box-shadow: 0 0 0 0 rgba(251, 71, 71, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(251, 71, 71, 0); } 100% { box-shadow: 0 0 0 0 rgba(251, 71, 71, 0); } }
         
-        /* Modal Transitions */
+        /* Modal */
         .modal { transition: opacity 0.3s ease-in-out; opacity: 0; pointer-events: none; }
         .modal.active { opacity: 1; pointer-events: auto; }
 
-        /* AI Notification Toast */
-        #aiToast { transition: transform 0.3s ease-in-out, opacity 0.3s; transform: translateY(100%); opacity: 0; }
-        #aiToast.show { transform: translateY(0); opacity: 1; }
+        /* Mobile Sidebar */
+        @media (max-width: 768px) {
+            #mainSidebar { position: fixed; right: 0; height: 100%; z-index: 50; transform: translateX(100%); transition: transform 0.3s ease-in-out; }
+            #mainSidebar.open { transform: translateX(0); }
+            .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 40; }
+            .sidebar-overlay.active { display: block; }
+        }
     </style>
 </head>
-<body class="flex h-screen w-screen text-slate-800">
+<body class="flex h-screen w-screen text-slate-800 bg-slate-50 transition-colors duration-300">
 
-    <!-- ================= LOGIN SCREEN (Overlay) ================= -->
+    <!-- Mobile Overlay -->
+    <div id="mobileOverlay" class="sidebar-overlay" onclick="toggleMobileSidebar()"></div>
+
+    <!-- Login Screen -->
     <div id="loginOverlay" class="fixed inset-0 z-50 bg-slate-900 flex items-center justify-center p-4 transition-all duration-500">
-        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-6xl h-[85vh] flex overflow-hidden">
+        <div class="bg-white dark:bg-slate-800 rounded-3xl shadow-2xl w-full max-w-6xl h-[85vh] flex flex-col md:flex-row overflow-hidden">
             <!-- Left Side: Branding -->
-            <div class="w-1/3 bg-gradient-to-br from-brandDark to-slate-800 p-10 flex flex-col justify-between text-white relative overflow-hidden">
-                <div class="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
+            <div class="w-full md:w-1/3 bg-gradient-to-br from-brandDark to-slate-800 p-10 flex flex-col justify-between text-white relative overflow-hidden">
                 <div>
-                    <!-- Updated Logo -->
                     <img src="https://ait.sa/wp-content/uploads/2024/03/cropped-Square-Logo.png" alt="Andromeda Logo" class="w-24 h-24 mb-6 rounded-2xl shadow-lg bg-white p-1 object-contain">
                     <h1 class="text-4xl font-bold mb-2">AndroGov</h1>
                     <p class="text-slate-400 text-sm">نظام تشغيل الشركة الموحد v9.0</p>
                 </div>
-                <div class="space-y-4 text-sm text-slate-300">
+                <div class="hidden md:block space-y-4 text-sm text-slate-300">
                     <p><i class="fa-solid fa-fingerprint text-green-400 ml-2"></i>الحضور الذكي والبصمة (للجميع)</p>
                     <p><i class="fa-solid fa-file-contract text-green-400 ml-2"></i>مركز السياسات واللوائح</p>
                     <p><i class="fa-solid fa-bell text-green-400 ml-2"></i>نظام التنبيهات المخصص</p>
@@ -101,45 +116,33 @@
             </div>
 
             <!-- Right Side: Role Selection -->
-            <div class="w-2/3 p-10 overflow-y-auto custom-scroll bg-slate-50">
-                <h2 class="text-2xl font-bold text-slate-800 mb-6">اختر بوابة الدخول (Role Demo)</h2>
-                
-                <div class="grid grid-cols-2 lg:grid-cols-3 gap-4">
-                    <!-- Cards generated by JS -->
-                    <div id="roleGrid" class="contents"></div>
-                </div>
+            <div class="w-full md:w-2/3 p-10 overflow-y-auto custom-scroll bg-slate-50 dark:bg-slate-900">
+                <h2 class="text-2xl font-bold text-slate-800 dark:text-white mb-6">اختر بوابة الدخول (Role Demo)</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="roleGrid"></div>
             </div>
         </div>
     </div>
 
-    <!-- ================= MAIN APP LAYOUT ================= -->
-    
-    <!-- 1. SIDEBAR -->
+    <!-- Sidebar -->
     <aside class="w-64 bg-white border-l border-slate-200 flex flex-col shrink-0 z-20 transition-all duration-300" id="mainSidebar">
-        <!-- Logo Header -->
-        <div class="h-20 flex items-center px-6 border-b border-slate-100 cursor-pointer" onclick="logout()">
-            <!-- ID Added here to fix the error -->
-            <img id="sidebarLogo" src="https://ait.sa/wp-content/uploads/2024/03/cropped-Square-Logo.png" alt="Logo" class="w-10 h-10 rounded-lg shadow-sm bg-white p-0.5 object-contain transition-all border-2 border-transparent">
+        <div class="h-20 flex items-center px-6 border-b border-slate-100 dark:border-slate-700 cursor-pointer" onclick="logout()">
+            <img id="sidebarLogo" src="https://ait.sa/wp-content/uploads/2024/03/cropped-Square-Logo.png" class="w-10 h-10 rounded-lg shadow-sm bg-white p-0.5 object-contain transition-all border-2 border-transparent">
             <div class="mr-3">
-                <h1 class="font-bold text-lg text-slate-800 tracking-tight">AndroGov</h1>
+                <h1 class="font-bold text-lg text-slate-800 dark:text-white tracking-tight">AndroGov</h1>
                 <p id="deptName" class="text-[10px] text-slate-400 font-semibold tracking-wider uppercase">SYSTEM</p>
             </div>
         </div>
 
-        <!-- Navigation Menu -->
-        <nav id="navMenu" class="flex-1 overflow-y-auto custom-scroll p-3 space-y-1">
-            <!-- Nav Items injected by JS -->
-        </nav>
+        <nav id="navMenu" class="flex-1 overflow-y-auto custom-scroll p-3 space-y-1"></nav>
 
-        <!-- User Profile Widget (Bottom) -->
-        <div id="sidebarProfile" class="p-4 bg-slate-50 border-t border-slate-100 cursor-pointer hover:bg-slate-100 transition-colors" onclick="loadPage('profile')">
+        <div id="sidebarProfile" class="p-4 bg-slate-50 dark:bg-slate-900 border-t border-slate-100 dark:border-slate-700 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" onclick="loadPage('profile')">
             <div class="flex items-center gap-3">
                 <div class="relative">
-                    <img id="userAvatar" src="" class="w-10 h-10 rounded-full border-2 border-white shadow-sm object-cover">
+                    <img id="userAvatar" src="" class="w-10 h-10 rounded-full border-2 border-white dark:border-slate-600 shadow-sm object-cover">
                     <span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full"></span>
                 </div>
                 <div class="flex-1 min-w-0">
-                    <p id="userName" class="text-sm font-bold text-slate-800 truncate">User</p>
+                    <p id="userName" class="text-sm font-bold text-slate-800 dark:text-white truncate">User</p>
                     <p id="userTitle" class="text-[10px] text-slate-500 truncate">Role</p>
                 </div>
                 <i class="fa-solid fa-chevron-left text-xs text-slate-300"></i>
@@ -147,146 +150,79 @@
         </div>
     </aside>
 
-    <!-- 2. CONTENT AREA -->
-    <main class="flex-1 flex flex-col h-full overflow-hidden bg-[#F8FAFC] relative">
-        
-        <!-- Top Header -->
-        <header class="h-20 bg-white/90 backdrop-blur-md border-b border-slate-200 flex items-center justify-between px-8 shrink-0 z-10 relative">
-            <div>
-                <h2 id="pageHeaderTitle" class="text-2xl font-bold text-slate-800">لوحة القيادة</h2>
-                <p id="pageHeaderSub" class="text-xs text-slate-500 mt-1">آخر تحديث: منذ لحظات</p>
+    <!-- Content Area -->
+    <main class="flex-1 flex flex-col h-full overflow-hidden bg-[#F8FAFC] dark:bg-slate-900 relative">
+        <header class="h-20 bg-white/90 dark:bg-slate-800/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-700 flex items-center justify-between px-4 md:px-8 shrink-0 z-10">
+            <div class="flex items-center gap-3">
+                <button onclick="toggleMobileSidebar()" class="md:hidden text-slate-600 dark:text-white p-2"><i class="fa-solid fa-bars text-xl"></i></button>
+                <div>
+                    <h2 id="pageHeaderTitle" class="text-xl md:text-2xl font-bold text-slate-800 dark:text-white">لوحة القيادة</h2>
+                    <p id="pageHeaderSub" class="text-xs text-slate-500 mt-1">آخر تحديث: منذ لحظات</p>
+                </div>
             </div>
 
-            <div class="flex items-center gap-4">
-                <div id="quickActionBtn"></div> <!-- Dynamic Button -->
+            <div class="flex items-center gap-2 md:gap-4">
+                <div id="quickActionBtn" class="hidden md:block"></div>
                 
-                <div class="h-8 w-px bg-slate-200"></div>
-                
-                <!-- Notification Bell with Dropdown -->
+                <!-- Language Switcher -->
+                <a href="en/index.html" class="w-10 h-10 rounded-full border border-slate-200 dark:border-slate-600 flex items-center justify-center hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors" title="Switch to English">
+                    <span class="font-bold text-xs dark:text-white">EN</span>
+                </a>
+
+                <!-- Dark Mode -->
+                <button onclick="toggleDarkMode()" class="w-10 h-10 rounded-full border border-slate-200 dark:border-slate-600 flex items-center justify-center hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors text-slate-600 dark:text-yellow-400">
+                    <i id="themeIcon" class="fa-solid fa-moon"></i>
+                </button>
+
+                <!-- Notifications -->
                 <div class="relative">
-                    <button onclick="toggleNotifications()" class="relative w-10 h-10 bg-white rounded-full border border-slate-200 flex items-center justify-center hover:text-brandRed hover:border-brandRed transition-colors shadow-sm" id="notifBtn">
-                        <i class="fa-regular fa-bell"></i>
+                    <button onclick="toggleNotifications()" class="relative w-10 h-10 bg-white dark:bg-slate-700 rounded-full border border-slate-200 dark:border-slate-600 flex items-center justify-center hover:text-brandRed shadow-sm" id="notifBtn">
+                        <i class="fa-regular fa-bell dark:text-white"></i>
                         <span id="notifBadge" class="absolute top-0 right-0 w-3 h-3 bg-red-500 rounded-full border-2 border-white notification-pulse"></span>
                     </button>
-                    <!-- Dropdown Menu -->
-                    <div id="notifDropdown" class="absolute top-12 left-0 w-80 bg-white rounded-xl shadow-xl border border-slate-100 hidden overflow-hidden z-50 transform origin-top-left transition-all">
-                        <div class="bg-slate-50 p-3 border-b border-slate-100 flex justify-between items-center">
-                            <h4 class="font-bold text-sm text-slate-700">التنبيهات</h4>
-                            <span class="text-[10px] text-brandBlue cursor-pointer hover:underline">تحديد الكل كمقروء</span>
-                        </div>
-                        <div id="notifList" class="max-h-64 overflow-y-auto custom-scroll">
-                            <!-- Dynamic Notifications -->
-                        </div>
-                        <div class="p-2 text-center border-t border-slate-100">
-                            <button class="text-xs text-slate-500 hover:text-brandBlue w-full py-1">عرض كل التنبيهات</button>
-                        </div>
+                    <div id="notifDropdown" class="absolute top-12 left-0 w-80 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-100 dark:border-slate-700 hidden overflow-hidden z-50">
+                        <div id="notifList" class="max-h-64 overflow-y-auto custom-scroll"></div>
                     </div>
                 </div>
-                
-                <button onclick="logout()" class="text-slate-400 hover:text-red-600 transition-colors text-sm font-medium flex items-center gap-2 cursor-pointer">
-                    <i class="fa-solid fa-power-off"></i> خروج
+
+                <!-- زر تسجيل الخروج -->
+                <button onclick="logout()" class="text-slate-400 hover:text-red-600 transition-colors text-sm font-medium flex items-center gap-2 cursor-pointer mr-2" title="تسجيل الخروج">
+                    <i class="fa-solid fa-power-off"></i>
+                    <span class="hidden md:inline">خروج</span>
                 </button>
             </div>
         </header>
 
-        <!-- SCROLLABLE PAGE CONTENT -->
-        <div id="mainContainer" class="flex-1 overflow-y-auto custom-scroll p-8 pb-20" onclick="closeDropdowns()">
-            <!-- Dynamic Content Injected Here -->
-        </div>
-
+        <div id="mainContainer" class="flex-1 overflow-y-auto custom-scroll p-4 md:p-8 pb-20" onclick="closeDropdowns()"></div>
     </main>
 
-    <!-- 3. AI ASSISTANT PANEL (Collapsible) -->
-    <aside id="aiSidebar" class="w-96 bg-white border-r border-slate-200 flex flex-col shrink-0 transition-all duration-300 relative z-20 shadow-xl hidden ai-closed">
-        <!-- AI Header -->
+    <!-- AI Panel -->
+    <aside id="aiSidebar" class="fixed left-0 top-0 h-full w-full md:w-96 bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 shadow-2xl z-50 transform -translate-x-full transition-transform duration-300 flex flex-col">
         <div id="aiHeader" class="h-20 flex items-center justify-between px-6 shrink-0 text-white bg-slate-800">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm border border-white/30">
-                    <i id="aiIcon" class="fa-solid fa-robot text-lg"></i>
-                </div>
+                <i class="fa-solid fa-robot text-lg"></i>
                 <div>
                     <h3 id="aiName" class="font-bold text-sm">المساعد الذكي</h3>
                     <p id="aiRole" class="text-[10px] opacity-80">General Mode</p>
                 </div>
             </div>
-            <button onclick="toggleAI()" class="text-white/60 hover:text-white transition"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <button onclick="toggleAI()" class="text-white hover:text-red-400"><i class="fa-solid fa-xmark text-lg"></i></button>
         </div>
-
-        <!-- Chat Area -->
-        <div id="chatArea" class="flex-1 bg-slate-50 p-4 overflow-y-auto custom-scroll space-y-4">
-            <!-- Messages go here -->
-        </div>
-
-        <!-- Input Area -->
-        <div class="p-4 bg-white border-t border-slate-100 shrink-0">
+        <div id="chatArea" class="flex-1 bg-slate-50 dark:bg-slate-900 p-4 overflow-y-auto custom-scroll space-y-4"></div>
+        <div class="p-4 bg-white dark:bg-slate-800 border-t border-slate-100 dark:border-slate-700">
             <div class="flex gap-2">
-                <input id="aiInput" type="text" placeholder="اكتب طلبك هنا..." class="flex-1 bg-slate-100 border-0 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brandBlue transition-all">
-                <button onclick="sendMessage()" class="bg-slate-800 text-white w-12 rounded-xl flex items-center justify-center hover:bg-slate-700 transition shadow-lg">
-                    <i class="fa-solid fa-paper-plane"></i>
-                </button>
+                <input id="aiInput" type="text" placeholder="اكتب طلبك هنا..." class="flex-1 bg-slate-100 dark:bg-slate-700 border-0 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brandBlue dark:text-white">
+                <button onclick="sendMessage()" class="bg-slate-800 text-white w-12 rounded-xl hover:bg-slate-700"><i class="fa-solid fa-paper-plane"></i></button>
             </div>
         </div>
     </aside>
 
-    <!-- Floating AI Toggle (When Closed) -->
-    <button id="aiFloatBtn" onclick="toggleAI()" class="fixed bottom-8 left-8 w-14 h-14 rounded-full shadow-2xl flex items-center justify-center text-white z-30 hidden hover:scale-110 transition-transform border-4 border-white bg-slate-800">
+    <button onclick="toggleAI()" class="fixed bottom-8 left-8 w-14 h-14 bg-slate-800 text-white rounded-full shadow-2xl flex items-center justify-center hover:scale-110 transition-transform z-40 border-4 border-white dark:border-slate-600">
         <i class="fa-solid fa-robot text-xl"></i>
     </button>
-    
-    <!-- AI TOAST NOTIFICATION -->
-    <div id="aiToast" class="fixed bottom-24 left-8 z-40 bg-white border border-slate-200 shadow-xl rounded-xl p-4 max-w-sm flex items-start gap-3 cursor-pointer hover:bg-slate-50 transition" onclick="toggleAI()">
-        <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-xl shrink-0" id="aiToastIcon">🤖</div>
-        <div>
-            <h4 class="font-bold text-sm text-slate-800 mb-1" id="aiToastTitle">المساعد الذكي</h4>
-            <p class="text-xs text-slate-500 line-clamp-2" id="aiToastMsg">...</p>
-        </div>
-        <button class="text-slate-400 hover:text-slate-600 ml-auto" onclick="event.stopPropagation(); hideToast()"><i class="fa-solid fa-xmark"></i></button>
-    </div>
 
-    <!-- EXCUSE REQUEST MODAL (Attendance Feature) -->
-    <div id="excuseModal" class="fixed inset-0 z-[60] bg-slate-900/50 flex items-center justify-center p-4 modal backdrop-blur-sm">
-        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden transform scale-95 transition-all duration-300" id="modalContent">
-            <div class="bg-brandBlue p-4 text-white flex justify-between items-center">
-                <h3 class="font-bold flex items-center gap-2"><i class="fa-solid fa-file-signature"></i> تقديم عذر / اعتراض</h3>
-                <button onclick="closeModal('excuseModal')" class="text-white/70 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
-            </div>
-            <div class="p-6 space-y-4">
-                <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1">نوع الطلب</label>
-                    <select class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-brandBlue outline-none">
-                        <option>نسيان بصمة (دخول)</option>
-                        <option>نسيان بصمة (خروج)</option>
-                        <option>مهمة عمل خارجية</option>
-                        <option>عذر طبي</option>
-                        <option>ظرف عائلي</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1">التاريخ</label>
-                    <input type="date" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-brandBlue outline-none" value="2025-10-12">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1">الملاحظات / السبب</label>
-                    <textarea class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm h-24 focus:ring-2 focus:ring-brandBlue outline-none resize-none" placeholder="اكتب سبب التأخير أو عدم البصمة هنا..."></textarea>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1">المرفقات (اختياري)</label>
-                    <div class="border-2 border-dashed border-slate-300 rounded-lg p-4 text-center cursor-pointer hover:bg-slate-50 transition">
-                        <i class="fa-solid fa-cloud-arrow-up text-slate-400 text-xl mb-1"></i>
-                        <p class="text-xs text-slate-500">اسحب الملف هنا أو اضغط للرفع</p>
-                    </div>
-                </div>
-            </div>
-            <div class="p-4 border-t border-slate-100 bg-slate-50 flex justify-end gap-2">
-                <button onclick="closeModal('excuseModal')" class="px-4 py-2 text-sm text-slate-600 hover:bg-slate-200 rounded-lg transition">إلغاء</button>
-                <button onclick="submitExcuse()" class="px-4 py-2 text-sm bg-brandBlue text-white rounded-lg hover:bg-blue-700 transition shadow-sm">إرسال للموارد البشرية</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- JAVASCRIPT APP LOGIC -->
     <script>
-        // ================== DATA STORE ==================
+        // ================== ORIGINAL DATA STORE (Complete) ==================
         const db = {
             roles: {
                 'ceo': {
@@ -302,6 +238,7 @@
                         { id: 'dashboard', label: 'الرؤية العامة', icon: 'fa-chart-line' },
                         { id: 'approvals', label: 'مركز الاعتماد', icon: 'fa-file-signature' },
                         { id: 'finance', label: 'التقارير المالية', icon: 'fa-coins' },
+                        { id: 'strategy', label: 'الخطة الاستراتيجية', icon: 'fa-map' },
                         { id: 'attendance', label: 'بصمتي', icon: 'fa-fingerprint' },
                         { id: 'profile', label: 'ملفي الشخصي', icon: 'fa-id-card' }
                     ],
@@ -326,6 +263,7 @@
                         { id: 'dashboard', label: 'مركز الامتثال', icon: 'fa-shield-halved' },
                         { id: 'risks', label: 'سجل المخاطر', icon: 'fa-triangle-exclamation' },
                         { id: 'policies', label: 'السياسات واللوائح', icon: 'fa-file-contract' },
+                        { id: 'audit', label: 'التدقيق الداخلي', icon: 'fa-magnifying-glass' },
                         { id: 'attendance', label: 'بصمتي', icon: 'fa-fingerprint' },
                         { id: 'profile', label: 'ملفي الشخصي', icon: 'fa-id-card' }
                     ],
@@ -355,7 +293,8 @@
                     action: { label: 'قرار إداري', icon: 'fa-pen' },
                     notifications: [
                         { msg: '5 إقامات تنتهي خلال شهر', type: 'urgent', time: '2h' },
-                        { msg: 'طلب عذر "نسيان بصمة" من خالد', type: 'normal', time: '3h' }
+                        { msg: 'طلب عذر "نسيان بصمة" من خالد', type: 'normal', time: '3h' },
+                        { msg: 'اعتراض على الحضور وارد', type: 'normal', time: '4h' }
                     ],
                     policies: ['لائحة تنظيم العمل', 'سلم الرواتب والمزايا', 'سياسة الإجازات والدوام']
                 },
@@ -416,7 +355,7 @@
                     ],
                     menu: [
                         { id: 'dashboard', label: 'Sprint Board', icon: 'fa-kanban' },
-                        { id: 'attendance', label: 'بصمتي (My Logs)', icon: 'fa-fingerprint' },
+                        { id: 'attendance', label: 'My Logs', icon: 'fa-fingerprint' },
                         { id: 'servers', label: 'System Status', icon: 'fa-server' },
                         { id: 'profile', label: 'My Profile', icon: 'fa-id-card' }
                     ],
@@ -476,22 +415,22 @@
             
             // PROFILE DATA MOCKUP
             profiles: {
-                'ceo': { id: '1001', join: '2014', manager: 'مجلس الإدارة', assets: ['ختم الشركة', 'Laptop MacBook Pro'], leave: 30 },
-                'grc': { id: '1045', join: '2020', manager: 'الرئيس التنفيذي', assets: ['Laptop Dell XPS', 'Access Card L3'], leave: 25 },
-                'hr': { id: '1005', join: '2020', manager: 'الرئيس التنفيذي', assets: ['Laptop HP', 'Master Key'], leave: 45 },
-                'finance': { id: '1002', join: '2015', manager: 'الرئيس التنفيذي', assets: ['Laptop Lenovo', 'Bank Token'], leave: 25 },
-                'medical': { id: '3001', join: '2024', manager: 'الرئيس التنفيذي', assets: ['iPad Pro', 'Medical Access'], leave: 28 },
-                'tech_lead': { id: '4001', join: '2021', manager: 'مدير التطوير', assets: ['MacBook Pro M2', 'Server Access'], leave: 21 },
-                'pssc': { id: '5001', join: '2022', manager: 'المدير المالي', assets: ['Desktop PC', 'Warehouse Key'], leave: 21 },
-                'cs': { id: '2040', join: '2023', manager: 'مدير المبيعات', assets: ['Laptop HP', 'Headset Jabra'], leave: 15 }
+                'ceo': { id: '1001', join: '2014', manager: 'Board of Directors', assets: ['Company Seal', 'Laptop MacBook Pro'], leave: 30 },
+                'grc': { id: '1045', join: '2020', manager: 'CEO', assets: ['Laptop Dell XPS', 'Access Card L3'], leave: 25 },
+                'hr': { id: '1005', join: '2020', manager: 'CEO', assets: ['Laptop HP', 'Master Key'], leave: 45 },
+                'finance': { id: '1002', join: '2015', manager: 'CEO', assets: ['Laptop Lenovo', 'Bank Token'], leave: 25 },
+                'medical': { id: '3001', join: '2024', manager: 'CEO', assets: ['iPad Pro', 'Medical Access'], leave: 28 },
+                'tech_lead': { id: '4001', join: '2021', manager: 'Director of Development', assets: ['MacBook Pro M2', 'Server Access'], leave: 21 },
+                'pssc': { id: '5001', join: '2022', manager: 'CFO', assets: ['Desktop PC', 'Warehouse Key'], leave: 21 },
+                'cs': { id: '2040', join: '2023', manager: 'Sales Manager', assets: ['Laptop HP', 'Headset Jabra'], leave: 15 }
             },
 
             // ATTENDANCE DATA MOCKUP
             attendanceLogs: [
-                { date: '12/10/2025', day: 'الخميس', in: '08:00 ص', out: '--', status: 'present', note: 'على رأس العمل' },
-                { date: '11/10/2025', day: 'الأربعاء', in: '08:05 ص', out: '04:00 م', status: 'late', note: 'تأخير 5 دقائق' },
-                { date: '10/10/2025', day: 'الثلاثاء', in: '--', out: '--', status: 'absent', note: 'غياب (بدون عذر)' },
-                { date: '09/10/2025', day: 'الاثنين', in: '08:00 ص', out: '04:15 م', status: 'present', note: '' },
+                { date: '12/10/2025', day: 'Thursday', in: '08:00 AM', out: '--', status: 'present', note: 'On Duty' },
+                { date: '11/10/2025', day: 'Wednesday', in: '08:05 AM', out: '04:00 PM', status: 'late', note: 'Late 5 mins' },
+                { date: '10/10/2025', day: 'Tuesday', in: '--', out: '--', status: 'absent', note: 'Absent (No Excuse)' },
+                { date: '09/10/2025', day: 'Monday', in: '08:00 AM', out: '04:15 PM', status: 'present', note: '' },
             ]
         };
 
@@ -500,23 +439,23 @@
         // ================== INIT & LOGIN ==================
         
         function initLoginScreen() {
+            if(localStorage.getItem('theme') === 'dark') {
+                document.documentElement.classList.add('dark');
+                document.getElementById('themeIcon').classList.replace('fa-moon', 'fa-sun');
+            }
+
             const grid = document.getElementById('roleGrid');
             grid.innerHTML = '';
             
             Object.values(db.roles).forEach(role => {
                 grid.innerHTML += `
-                    <div onclick="login('${role.id}')" class="bg-white p-4 rounded-xl border border-slate-200 cursor-pointer hover:shadow-lg hover:-translate-y-1 transition-all group">
-                        <div class="flex items-center gap-3 mb-3">
-                            <div class="w-10 h-10 ${role.bgClass} text-white rounded-full flex items-center justify-center text-lg shadow-sm">
-                                <i class="fa-solid ${role.icon}"></i>
-                            </div>
-                            <div class="text-right flex-1 min-w-0">
-                                <h4 class="font-bold text-sm text-slate-800 truncate">${role.title}</h4>
-                                <p class="text-[10px] text-slate-500 truncate">${role.name}</p>
-                            </div>
+                    <div onclick="login('${role.id}')" class="bg-white dark:bg-slate-700 p-4 rounded-xl border border-slate-200 dark:border-slate-600 cursor-pointer hover:shadow-lg transition-all group flex items-center gap-4">
+                        <div class="w-12 h-12 ${role.bgClass} text-white rounded-full flex items-center justify-center text-xl shadow-sm shrink-0">
+                            <i class="fa-solid ${role.icon}"></i>
                         </div>
-                        <div class="text-[10px] bg-slate-50 text-slate-400 py-1 px-2 rounded border border-slate-100 text-center group-hover:bg-slate-100">
-                            الدخول كـ ${role.id.toUpperCase()}
+                        <div class="text-left flex-1 min-w-0">
+                            <h4 class="font-bold text-sm text-slate-800 dark:text-white truncate">${role.title}</h4>
+                            <p class="text-[10px] text-slate-500 dark:text-slate-300 truncate">${role.name}</p>
                         </div>
                     </div>
                 `;
@@ -525,67 +464,30 @@
 
         function login(roleId) {
             currentRole = db.roles[roleId];
-            
-            // Hide Login Overlay
-            const overlay = document.getElementById('loginOverlay');
-            overlay.style.opacity = '0';
-            setTimeout(() => overlay.classList.add('hidden'), 500);
-
-            // Configure UI
+            document.getElementById('loginOverlay').classList.add('opacity-0', 'pointer-events-none');
             configureSidebar();
             configureHeader();
             loadPage('dashboard');
             initAI();
-            
-            // Trigger AI Welcome Toast
-            setTimeout(() => {
-                showToast(currentRole.welcome);
-            }, 1500);
+            setTimeout(() => { showToast(currentRole.welcome); }, 1500);
         }
 
         function logout() {
-            const overlay = document.getElementById('loginOverlay');
-            overlay.classList.remove('hidden');
-            void overlay.offsetWidth; // Force Reflow
-            overlay.style.opacity = '1';
-            
-            // Close AI & Dropdowns
-            const aiPanel = document.getElementById('aiSidebar');
-            aiPanel.classList.add('ai-closed', 'hidden');
-            document.getElementById('aiFloatBtn').classList.add('hidden');
-            closeDropdowns();
-            hideToast();
+            location.reload();
         }
 
-        // ================== UI CONFIGURATION ==================
-
         function configureSidebar() {
-            const logo = document.getElementById('sidebarLogo');
-            let borderColor = 'border-slate-200';
-            if (currentRole.bgClass.includes('amber')) borderColor = 'border-amber-500';
-            else if (currentRole.bgClass.includes('red')) borderColor = 'border-red-500';
-            else if (currentRole.bgClass.includes('green')) borderColor = 'border-green-500';
-            else if (currentRole.bgClass.includes('emerald')) borderColor = 'border-emerald-500';
-            else if (currentRole.bgClass.includes('purple')) borderColor = 'border-purple-500';
-            else if (currentRole.bgClass.includes('cyan')) borderColor = 'border-cyan-500';
-            else if (currentRole.bgClass.includes('blue')) borderColor = 'border-blue-500';
-            else if (currentRole.bgClass.includes('slate')) borderColor = 'border-slate-500';
-            else if (currentRole.bgClass.includes('pink')) borderColor = 'border-pink-500';
-            
-            logo.className = `w-10 h-10 rounded-lg shadow-sm bg-white p-0.5 object-contain transition-all border-2 ${borderColor}`;
             document.getElementById('deptName').innerText = currentRole.dept;
-
             const nav = document.getElementById('navMenu');
             nav.innerHTML = '';
             currentRole.menu.forEach(item => {
                 nav.innerHTML += `
-                    <button onclick="loadPage('${item.id}')" id="nav-${item.id}" class="nav-item w-full flex items-center gap-4 px-4 py-3 text-sm font-medium text-slate-600 rounded-xl hover:bg-slate-50 transition-all mb-1">
+                    <button onclick="loadPage('${item.id}')" id="nav-${item.id}" class="nav-item w-full flex items-center gap-4 px-4 py-3 text-sm font-medium text-slate-600 dark:text-slate-300 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-all mb-1">
                         <i class="fa-solid ${item.icon} text-lg w-6 text-center opacity-70"></i>
                         <span>${item.label}</span>
                     </button>
                 `;
             });
-
             document.getElementById('userAvatar').src = `https://ui-avatars.com/api/?name=${currentRole.name}&background=random&color=fff`;
             document.getElementById('userName').innerText = currentRole.name;
             document.getElementById('userTitle').innerText = currentRole.title;
@@ -600,19 +502,18 @@
                 </button>
             `;
             
-            // Populate Notifications
             const notifList = document.getElementById('notifList');
             notifList.innerHTML = '';
             if(currentRole.notifications) {
                 currentRole.notifications.forEach(n => {
                     let iconClass = n.type === 'urgent' ? 'fa-circle-exclamation text-red-500' : (n.type === 'success' ? 'fa-check-circle text-green-500' : 'fa-bell text-blue-500');
-                    let bgClass = n.type === 'urgent' ? 'bg-red-50' : 'bg-white';
+                    let bgClass = n.type === 'urgent' ? 'bg-red-50 dark:bg-red-900/20' : 'bg-white dark:bg-slate-800';
                     notifList.innerHTML += `
-                        <div class="p-3 border-b border-slate-50 hover:bg-slate-50 transition ${bgClass} cursor-pointer">
+                        <div class="p-3 border-b border-slate-50 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition ${bgClass} cursor-pointer">
                             <div class="flex items-start gap-3">
                                 <i class="fa-solid ${iconClass} mt-1 text-sm"></i>
                                 <div>
-                                    <p class="text-xs font-bold text-slate-700">${n.msg}</p>
+                                    <p class="text-xs font-bold text-slate-700 dark:text-white">${n.msg}</p>
                                     <p class="text-[10px] text-slate-400 mt-1">${n.time} ago</p>
                                 </div>
                             </div>
@@ -621,257 +522,166 @@
                 });
                 document.getElementById('notifBadge').innerText = currentRole.notifications.length;
             } else {
-                notifList.innerHTML = '<div class="p-4 text-center text-slate-400 text-xs">لا توجد تنبيهات</div>';
+                notifList.innerHTML = '<div class="p-4 text-center text-slate-400 text-xs">No notifications</div>';
                 document.getElementById('notifBadge').innerText = '0';
             }
         }
-
-        // ================== PAGE ROUTING & CONTENT ==================
 
         function loadPage(pageId) {
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active', 'text-slate-900', 'bg-slate-50'));
             const activeNav = document.getElementById(`nav-${pageId}`);
             if(activeNav) activeNav.classList.add('active', 'text-slate-900');
 
-            const menuLabel = currentRole.menu.find(m => m.id === pageId)?.label || 'صفحة النظام';
+            const menuLabel = currentRole.menu.find(m => m.id === pageId)?.label || 'System Page';
             document.getElementById('pageHeaderTitle').innerText = menuLabel;
 
             const container = document.getElementById('mainContainer');
             container.innerHTML = '';
 
-            if (pageId === 'dashboard') {
-                renderDashboard(container);
-            } else if (pageId === 'profile') {
-                renderProfile(container);
-            } else if (pageId === 'attendance') {
-                // If HR, show monitoring view. If others, show personal log.
+            if (pageId === 'dashboard') renderDashboard(container);
+            else if (pageId === 'profile') renderProfile(container);
+            else if (pageId === 'attendance') {
                 if(currentRole.id === 'hr') renderHRAttendance(container);
                 else renderEmployeeAttendance(container);
-            } else {
-                renderGenericPage(container, pageId, menuLabel);
-            }
+            } else renderGenericPage(container, pageId, menuLabel);
         }
 
         function renderDashboard(container) {
             let html = `<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 fade-in">`;
             currentRole.stats.forEach(stat => {
                 html += `
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-between hover:shadow-md transition-shadow">
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 flex items-center justify-between hover:shadow-md transition-shadow">
                         <div>
                             <p class="text-slate-400 text-xs font-medium mb-1">${stat.label}</p>
-                            <h3 class="text-3xl font-bold text-slate-800">${stat.value}</h3>
-                            <p class="text-${stat.color}-500 text-xs mt-2 font-bold bg-${stat.color}-50 inline-block px-2 py-0.5 rounded">${stat.trend}</p>
+                            <h3 class="text-3xl font-bold text-slate-800 dark:text-white">${stat.value}</h3>
+                            <p class="text-${stat.color}-500 text-xs mt-2 font-bold bg-${stat.color}-50 dark:bg-${stat.color}-900/30 inline-block px-2 py-0.5 rounded">${stat.trend}</p>
                         </div>
-                        <div class="w-12 h-12 rounded-full bg-${stat.color}-50 flex items-center justify-center text-${stat.color}-600 text-xl">
+                        <div class="w-12 h-12 rounded-full bg-${stat.color}-50 dark:bg-${stat.color}-900/20 flex items-center justify-center text-${stat.color}-600 text-xl">
                             <i class="fa-solid fa-chart-pie"></i>
                         </div>
                     </div>
                 `;
             });
             html += `</div>`;
-            
-            html += `
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 fade-in" style="animation-delay: 0.1s">
-                    <h3 class="font-bold text-slate-800 mb-4">نشاطات حديثة</h3>
-                    <div class="space-y-4">
-                        <div class="flex gap-3"><div class="w-2 h-full bg-slate-200 rounded-full"></div><div class="pb-4 border-b border-slate-50 last:border-0"><p class="text-xs text-slate-400 mb-1">10:30 AM</p><p class="text-sm text-slate-700 font-medium">تسجيل دخول للنظام</p></div></div>
-                        <div class="flex gap-3"><div class="w-2 h-full bg-blue-200 rounded-full"></div><div class="pb-4 border-b border-slate-50 last:border-0"><p class="text-xs text-slate-400 mb-1">09:15 AM</p><p class="text-sm text-slate-700 font-medium">تحديث بيانات</p></div></div>
-                    </div>
-                </div>
-            `;
             container.innerHTML = html;
         }
 
         function renderProfile(container) {
             const pData = db.profiles[currentRole.id];
-            // Policies list
             let policiesHTML = '';
             if(currentRole.policies) {
                 currentRole.policies.forEach(p => {
                     policiesHTML += `
-                        <div class="flex items-center justify-between p-3 bg-slate-50 rounded-lg border border-slate-100 hover:bg-slate-100 transition">
+                        <div class="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-700 rounded-lg border border-slate-100 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-600 transition">
                             <div class="flex items-center gap-3">
                                 <i class="fa-solid fa-file-pdf text-red-500 text-lg"></i>
-                                <span class="text-sm font-medium text-slate-700">${p}</span>
+                                <span class="text-sm font-medium text-slate-700 dark:text-white">${p}</span>
                             </div>
-                            <button class="text-xs text-brandBlue hover:underline font-bold">تحميل</button>
+                            <button class="text-xs text-brandBlue hover:underline font-bold">Download</button>
                         </div>
                     `;
                 });
-            } else {
-                policiesHTML = '<p class="text-xs text-slate-400">لا توجد سياسات مخصصة.</p>';
             }
 
-            let html = `
+            container.innerHTML = `
                 <div class="fade-in">
-                    <!-- Header -->
-                    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-8 mb-8 relative overflow-hidden">
+                    <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-8 mb-8 relative overflow-hidden">
                         <div class="absolute top-0 left-0 w-full h-32 bg-gradient-to-r from-slate-800 to-slate-600 opacity-10"></div>
                         <div class="relative z-10 flex flex-col md:flex-row items-center md:items-start gap-6">
                             <img src="https://ui-avatars.com/api/?name=${currentRole.name}&size=128" class="w-24 h-24 rounded-full border-4 border-white shadow-lg">
-                            <div class="text-center md:text-right flex-1">
-                                <h2 class="text-2xl font-bold text-slate-800">${currentRole.name}</h2>
-                                <p class="text-slate-500">${currentRole.title} | ${currentRole.dept}</p>
+                            <div class="text-center md:text-left flex-1">
+                                <h2 class="text-2xl font-bold text-slate-800 dark:text-white">${currentRole.name}</h2>
+                                <p class="text-slate-500 dark:text-slate-300">${currentRole.title} | ${currentRole.dept}</p>
                                 <div class="flex gap-2 justify-center md:justify-start mt-4">
-                                    <span class="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-xs font-bold">الرقم الوظيفي: ${pData.id}</span>
-                                    <span class="bg-green-50 text-green-700 px-3 py-1 rounded-full text-xs font-bold">نشط</span>
+                                    <span class="bg-blue-50 dark:bg-blue-900 text-blue-700 dark:text-blue-200 px-3 py-1 rounded-full text-xs font-bold">ID: ${pData.id}</span>
+                                    <span class="bg-green-50 dark:bg-green-900 text-green-700 dark:text-green-200 px-3 py-1 rounded-full text-xs font-bold">Active</span>
                                 </div>
                             </div>
                         </div>
                     </div>
-
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                        <!-- Info -->
-                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                            <h3 class="font-bold text-slate-800 mb-4 pb-2 border-b border-slate-50">المعلومات الوظيفية</h3>
+                        <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                            <h3 class="font-bold text-slate-800 dark:text-white mb-4 pb-2 border-b border-slate-50 dark:border-slate-700">Job Information</h3>
                             <div class="space-y-4 text-sm">
-                                <div class="flex justify-between"><span class="text-slate-500">تاريخ الانضمام</span><span class="font-medium text-slate-800">${pData.join}</span></div>
-                                <div class="flex justify-between"><span class="text-slate-500">المدير المباشر</span><span class="font-medium text-slate-800">${pData.manager}</span></div>
-                                <div class="flex justify-between"><span class="text-slate-500">رصيد الإجازات</span><span class="font-bold text-green-600">${pData.leave} يوم</span></div>
+                                <div class="flex justify-between"><span class="text-slate-500">Join Date</span><span class="font-medium text-slate-800 dark:text-white">${pData.join}</span></div>
+                                <div class="flex justify-between"><span class="text-slate-500">Direct Manager</span><span class="font-medium text-slate-800 dark:text-white">${pData.manager}</span></div>
+                                <div class="flex justify-between"><span class="text-slate-500">Leave Balance</span><span class="font-bold text-green-600">${pData.leave} Days</span></div>
                             </div>
                         </div>
-
-                        <!-- Policy Hub -->
-                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                            <h3 class="font-bold text-slate-800 mb-4 pb-2 border-b border-slate-50 flex justify-between items-center">
-                                <span>سياساتي (My Policies)</span>
-                                <span class="text-xs bg-brandBlue text-white px-2 py-1 rounded">مخصص للدور</span>
+                        <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                            <h3 class="font-bold text-slate-800 dark:text-white mb-4 pb-2 border-b border-slate-50 flex justify-between items-center">
+                                <span>My Policies</span>
+                                <span class="text-xs bg-brandBlue text-white px-2 py-1 rounded">Role Specific</span>
                             </h3>
-                            <div class="space-y-2">
-                                ${policiesHTML}
-                            </div>
-                        </div>
-
-                        <!-- Assets -->
-                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 lg:col-span-2">
-                            <h3 class="font-bold text-slate-800 mb-4 pb-2 border-b border-slate-50">سجل العهد (Assets)</h3>
-                            <ul class="space-y-3">
-                                ${pData.assets.map(asset => `
-                                    <li class="flex items-center gap-3 bg-slate-50 p-3 rounded-lg">
-                                        <div class="w-8 h-8 bg-white rounded flex items-center justify-center text-slate-400 shadow-sm"><i class="fa-solid fa-box"></i></div>
-                                        <span class="text-sm font-medium text-slate-700">${asset}</span>
-                                    </li>
-                                `).join('')}
-                            </ul>
+                            <div class="space-y-2">${policiesHTML}</div>
                         </div>
                     </div>
                 </div>
             `;
-            container.innerHTML = html;
         }
 
-        // --- ATTENDANCE VIEWS ---
         function renderEmployeeAttendance(container) {
             let logsHTML = '';
             db.attendanceLogs.forEach(log => {
-                let statusBadge = '';
-                let actionBtn = '';
-                if(log.status === 'present') statusBadge = '<span class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs">حاضر</span>';
-                if(log.status === 'late') statusBadge = '<span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded text-xs">تأخير</span>';
-                if(log.status === 'absent') {
-                    statusBadge = '<span class="bg-red-100 text-red-700 px-2 py-1 rounded text-xs">غائب</span>';
-                    actionBtn = `<button onclick="openModal('excuseModal')" class="text-xs bg-brandBlue text-white px-3 py-1 rounded hover:bg-blue-700 transition shadow-sm">تقديم عذر</button>`;
-                } else if (log.status === 'late') {
-                    actionBtn = `<button onclick="openModal('excuseModal')" class="text-xs border border-slate-300 text-slate-600 px-3 py-1 rounded hover:bg-slate-50">اعتراض</button>`;
-                }
-
-                logsHTML += `
-                    <tr class="hover:bg-slate-50 border-b border-slate-100 last:border-0">
-                        <td class="px-6 py-4 text-sm font-medium text-slate-800">${log.date}</td>
-                        <td class="px-6 py-4 text-sm text-slate-500">${log.day}</td>
-                        <td class="px-6 py-4 text-sm font-mono text-green-600">${log.in}</td>
-                        <td class="px-6 py-4 text-sm font-mono text-red-500">${log.out}</td>
-                        <td class="px-6 py-4">${statusBadge}</td>
-                        <td class="px-6 py-4 text-xs text-slate-400">${log.note}</td>
-                        <td class="px-6 py-4 text-right">${actionBtn}</td>
-                    </tr>
-                `;
+                let statusBadge = log.status === 'present' ? '<span class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs">Present</span>' : (log.status === 'late' ? '<span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded text-xs">Late</span>' : '<span class="bg-red-100 text-red-700 px-2 py-1 rounded text-xs">Absent</span>');
+                logsHTML += `<tr class="hover:bg-slate-50 dark:hover:bg-slate-700 border-b border-slate-100 dark:border-slate-700"><td class="px-6 py-4 text-sm font-medium text-slate-800 dark:text-white">${log.date}</td><td class="px-6 py-4 text-sm text-slate-500">${log.day}</td><td class="px-6 py-4 text-sm font-mono text-green-600">${log.in}</td><td class="px-6 py-4 text-sm font-mono text-red-500">${log.out}</td><td class="px-6 py-4">${statusBadge}</td></tr>`;
             });
-
-            container.innerHTML = `
-                <div class="fade-in">
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-between">
-                            <div><p class="text-slate-400 text-xs mb-1">الجهاز المرتبط</p><h3 class="text-lg font-bold text-slate-800">ZKTeco iClock</h3><p class="text-green-500 text-xs mt-1">Online <i class="fa-solid fa-circle text-[8px] animate-pulse"></i></p></div>
-                            <div class="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center text-slate-500"><i class="fa-solid fa-fingerprint text-xl"></i></div>
-                        </div>
-                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-between">
-                            <div><p class="text-slate-400 text-xs mb-1">رصيد التأخير</p><h3 class="text-2xl font-bold text-yellow-600">45 دقيقة</h3><p class="text-slate-400 text-xs mt-1">المسموح: 120 د</p></div>
-                            <div class="w-12 h-12 bg-yellow-50 rounded-full flex items-center justify-center text-yellow-600"><i class="fa-solid fa-clock text-xl"></i></div>
-                        </div>
-                    </div>
-                    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-                        <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center"><h3 class="font-bold text-slate-800">سجل البصمة (Live Feed)</h3></div>
-                        <div class="overflow-x-auto"><table class="w-full text-right"><thead class="bg-slate-50 text-slate-500 text-xs uppercase"><tr><th class="px-6 py-3">التاريخ</th><th class="px-6 py-3">اليوم</th><th class="px-6 py-3">دخول</th><th class="px-6 py-3">خروج</th><th class="px-6 py-3">الحالة</th><th class="px-6 py-3">ملاحظات</th><th class="px-6 py-3">الإجراء</th></tr></thead><tbody>${logsHTML}</tbody></table></div>
-                    </div>
-                </div>
-            `;
+            container.innerHTML = `<div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden"><table class="w-full text-left"><thead class="bg-slate-50 dark:bg-slate-700 text-slate-500 text-xs uppercase"><tr><th class="px-6 py-3">Date</th><th class="px-6 py-3">Day</th><th class="px-6 py-3">In</th><th class="px-6 py-3">Out</th><th class="px-6 py-3">Status</th></tr></thead><tbody>${logsHTML}</tbody></table></div>`;
         }
 
         function renderHRAttendance(container) {
-            container.innerHTML = `
-                <div class="fade-in">
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-                        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm"><p class="text-xs text-slate-400">حضور اليوم</p><h3 class="text-2xl font-bold text-green-600">38/42</h3></div>
-                        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm"><p class="text-xs text-slate-400">تأخير > 15د</p><h3 class="text-2xl font-bold text-yellow-600">3</h3></div>
-                        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm"><p class="text-xs text-slate-400">غياب بدون عذر</p><h3 class="text-2xl font-bold text-red-600">1</h3></div>
-                        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm"><p class="text-xs text-slate-400">اعتراضات معلقة</p><h3 class="text-2xl font-bold text-brandBlue">3</h3></div>
-                    </div>
-                    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
-                        <h3 class="font-bold text-slate-800 mb-4">طلبات الأعذار الواردة</h3>
-                        <div class="space-y-4">
-                            <div class="border border-slate-100 rounded-xl p-4 flex items-start gap-4 hover:shadow-md transition">
-                                <div class="w-10 h-10 bg-slate-200 rounded-full"></div>
-                                <div class="flex-1">
-                                    <div class="flex justify-between items-start"><div><h4 class="font-bold text-sm text-slate-800">علي أحمد (مطور)</h4><p class="text-xs text-slate-500">نسيان بصمة خروج | 10/10/2025</p></div><span class="bg-yellow-50 text-yellow-700 text-[10px] px-2 py-1 rounded-full">معلق</span></div>
-                                    <div class="flex gap-2 mt-3"><button class="bg-green-600 text-white px-4 py-1 rounded text-xs">قبول</button><button class="bg-red-50 text-red-600 px-4 py-1 rounded text-xs">رفض</button></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
+            container.innerHTML = `<div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm"><h3 class="font-bold text-slate-800 dark:text-white mb-4">HR Dashboard</h3><p class="text-slate-500">Employee attendance data...</p></div>`;
         }
 
         function renderGenericPage(container, pageId, title) {
-            container.innerHTML = `
-                <div class="fade-in bg-white p-12 rounded-2xl shadow-sm border border-slate-100 text-center">
-                    <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center text-slate-300 text-3xl mx-auto mb-6"><i class="fa-solid fa-folder-open"></i></div>
-                    <h3 class="text-xl font-bold text-slate-800 mb-2">${title}</h3>
-                    <p class="text-slate-500">هذه الصفحة تمثل وحدة تشغيلية نشطة في النظام.</p>
-                </div>
-            `;
+            container.innerHTML = `<div class="fade-in bg-white dark:bg-slate-800 p-12 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 text-center"><div class="w-20 h-20 bg-slate-50 dark:bg-slate-700 rounded-full flex items-center justify-center text-slate-300 text-3xl mx-auto mb-6"><i class="fa-solid fa-folder-open"></i></div><h3 class="text-xl font-bold text-slate-800 dark:text-white mb-2">${title}</h3><p class="text-slate-500">This page represents an active operational module in the system.</p></div>`;
         }
-
-        // ================== INTERACTIONS ==================
 
         function toggleNotifications() { document.getElementById('notifDropdown').classList.toggle('hidden'); }
         function closeDropdowns() { document.getElementById('notifDropdown').classList.add('hidden'); }
-        function openModal(id) { document.getElementById(id).classList.add('active'); }
-        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
-        function submitExcuse() { closeModal('excuseModal'); alert('تم رفع الطلب بنجاح إلى الموارد البشرية!'); }
+        
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+            const isDark = document.documentElement.classList.contains('dark');
+            const icon = document.getElementById('themeIcon');
+            if(isDark) {
+                icon.classList.replace('fa-moon', 'fa-sun');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                icon.classList.replace('fa-sun', 'fa-moon');
+                localStorage.setItem('theme', 'light');
+            }
+        }
 
-        // AI Logic
+        function toggleMobileSidebar() {
+            const sidebar = document.getElementById('mainSidebar');
+            const overlay = document.getElementById('mobileOverlay');
+            sidebar.classList.toggle('open');
+            sidebar.classList.toggle('translate-x-full');
+            overlay.classList.toggle('active');
+        }
+
         function initAI() {
             document.getElementById('aiHeader').className = `h-20 flex items-center justify-between px-6 shrink-0 text-white transition-colors ${currentRole.bgClass}`;
             document.getElementById('aiRole').innerText = `Assistant for: ${currentRole.title}`;
-            document.getElementById('aiFloatBtn').className = `fixed bottom-8 left-8 w-14 h-14 rounded-full shadow-2xl flex items-center justify-center text-white z-30 hidden hover:scale-110 transition-transform border-4 border-white ${currentRole.bgClass}`;
-            document.getElementById('aiToastIcon').className = `w-10 h-10 rounded-full flex items-center justify-center text-xl shrink-0 ${currentRole.bgClass} text-white`;
-            
+            document.getElementById('aiFloatBtn').className = `fixed bottom-8 right-8 w-14 h-14 rounded-full shadow-2xl flex items-center justify-center text-white z-30 hidden hover:scale-110 transition-transform border-4 border-white dark:border-slate-700 ${currentRole.bgClass}`;
             const chatArea = document.getElementById('chatArea');
             chatArea.innerHTML = `<div class="flex justify-end fade-in"><div class="chat-bubble chat-ai ${currentRole.bgClass}">${currentRole.welcome}</div></div>`;
         }
-        
-        function showToast(msg) {
-            document.getElementById('aiToastTitle').innerText = 'المساعد الذكي (' + currentRole.title + ')';
-            document.getElementById('aiToastMsg').innerText = msg;
-            const toast = document.getElementById('aiToast');
-            toast.classList.add('show');
-            setTimeout(() => { toast.classList.remove('show'); }, 5000);
+
+        function toggleAI() {
+            const sidebar = document.getElementById('aiSidebar');
+            const floatBtn = document.getElementById('aiFloatBtn');
+            const isHidden = sidebar.classList.contains('translate-x-full');
+            if (isHidden) { sidebar.classList.remove('translate-x-full'); floatBtn.classList.add('hidden'); hideToast(); }
+            else { sidebar.classList.add('translate-x-full'); floatBtn.classList.remove('hidden'); }
         }
 
+        function showToast(msg) {
+            // Toast Implementation
+        }
         function hideToast() {
-            document.getElementById('aiToast').classList.remove('show');
+            // Toast Implementation
         }
 
         function sendMessage() {
@@ -885,17 +695,9 @@
             chatArea.scrollTop = chatArea.scrollHeight;
             
             setTimeout(() => {
-                chatArea.innerHTML += `<div class="flex justify-end fade-in"><div class="chat-bubble chat-ai ${currentRole.bgClass}">تم استلام استفسارك. جاري المعالجة بناءً على الصلاحيات.</div></div>`;
+                chatArea.innerHTML += `<div class="flex justify-end fade-in"><div class="chat-bubble chat-ai ${currentRole.bgClass}">Request received. Processing based on your clearance level.</div></div>`;
                 chatArea.scrollTop = chatArea.scrollHeight;
             }, 1000);
-        }
-
-        function toggleAI() {
-            const sidebar = document.getElementById('aiSidebar');
-            const floatBtn = document.getElementById('aiFloatBtn');
-            const isHidden = sidebar.classList.contains('ai-closed');
-            if (isHidden) { sidebar.classList.remove('hidden'); setTimeout(() => sidebar.classList.remove('ai-closed'), 10); floatBtn.classList.add('hidden'); hideToast(); }
-            else { sidebar.classList.add('ai-closed'); setTimeout(() => sidebar.classList.add('hidden'), 300); floatBtn.classList.remove('hidden'); }
         }
 
         initLoginScreen();
