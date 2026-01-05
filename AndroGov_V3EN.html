@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AndroGov | Unified Operations System</title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brandRed: '#FB4747',
+                        brandBlue: '#4267B2',
+                        brandDark: '#1E293B',
+                        brandGray: '#F1F5F9',
+                        // Department Accents
+                        ceoGold: '#D97706',
+                        grcRed: '#DC2626',
+                        finGreen: '#059669',
+                        hrPurple: '#7C3AED',
+                        medCyan: '#0891B2',
+                        techBlue: '#2563EB',
+                        opsSlate: '#475569'
+                    },
+                    fontFamily: { sans: ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { font-family: 'Inter', sans-serif; background: #F8FAFC; overflow: hidden; }
+        
+        /* Custom Scrollbar */
+        .custom-scroll::-webkit-scrollbar { width: 6px; }
+        .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+        .custom-scroll::-webkit-scrollbar-thumb { background-color: #CBD5E1; border-radius: 20px; }
+        
+        /* Animations */
+        .fade-in { animation: fadeIn 0.4s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Sidebar Item */
+        .nav-item.active { background: #F1F5F9; border-left: 4px solid currentColor; font-weight: 700; }
+        
+        /* AI Chat Bubble */
+        .chat-bubble { max-width: 85%; padding: 12px; border-radius: 12px; font-size: 0.85rem; line-height: 1.5; margin-bottom: 10px; position: relative; }
+        .chat-user { background: #E2E8F0; color: #1E293B; margin-left: auto; border-bottom-right-radius: 0; }
+        .chat-ai { color: white; margin-right: auto; border-bottom-left-radius: 0; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+
+        /* Notification Badge Pulse */
+        .notification-pulse { animation: pulse-red 2s infinite; }
+        @keyframes pulse-red { 0% { box-shadow: 0 0 0 0 rgba(251, 71, 71, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(251, 71, 71, 0); } 100% { box-shadow: 0 0 0 0 rgba(251, 71, 71, 0); } }
+        
+        /* Modal Transitions */
+        .modal { transition: opacity 0.3s ease-in-out; opacity: 0; pointer-events: none; }
+        .modal.active { opacity: 1; pointer-events: auto; }
+
+        /* AI Notification Toast */
+        #aiToast { transition: transform 0.3s ease-in-out, opacity 0.3s; transform: translateY(100%); opacity: 0; }
+        #aiToast.show { transform: translateY(0); opacity: 1; }
+    </style>
+</head>
+<body class="flex h-screen w-screen text-slate-800">
+
+    <!-- ================= LOGIN SCREEN (Overlay) ================= -->
+    <div id="loginOverlay" class="fixed inset-0 z-50 bg-slate-900 flex items-center justify-center p-4 transition-all duration-500">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-6xl h-[85vh] flex overflow-hidden">
+            <!-- Left Side: Branding -->
+            <div class="w-1/3 bg-gradient-to-br from-brandDark to-slate-800 p-10 flex flex-col justify-between text-white relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
+                <div>
+                    <!-- Updated Logo -->
+                    <img src="https://ait.sa/wp-content/uploads/2024/03/cropped-Square-Logo.png" alt="Andromeda Logo" class="w-24 h-24 mb-6 rounded-2xl shadow-lg bg-white p-1 object-contain">
+                    <h1 class="text-4xl font-bold mb-2">AndroGov</h1>
+                    <p class="text-slate-400 text-sm">Unified Operating System v9.0</p>
+                </div>
+                <div class="space-y-4 text-sm text-slate-300">
+                    <p><i class="fa-solid fa-fingerprint text-green-400 mr-2"></i>Smart Biometric Attendance</p>
+                    <p><i class="fa-solid fa-file-contract text-green-400 mr-2"></i>Policy & Regulation Hub</p>
+                    <p><i class="fa-solid fa-bell text-green-400 mr-2"></i>Custom Notification System</p>
+                    <p><i class="fa-solid fa-robot text-green-400 mr-2"></i>Interactive AI Assistant</p>
+                </div>
+                <div class="text-xs text-slate-500">© 2026 Andromeda IT. All rights reserved.</div>
+            </div>
+
+            <!-- Right Side: Role Selection -->
+            <div class="w-2/3 p-10 overflow-y-auto custom-scroll bg-slate-50">
+                <h2 class="text-2xl font-bold text-slate-800 mb-6">Select Entry Portal (Role Demo)</h2>
+                
+                <div class="grid grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- Cards generated by JS -->
+                    <div id="roleGrid" class="contents"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= MAIN APP LAYOUT ================= -->
+    
+    <!-- 1. SIDEBAR -->
+    <aside class="w-64 bg-white border-r border-slate-200 flex flex-col shrink-0 z-20 transition-all duration-300" id="mainSidebar">
+        <!-- Logo Header -->
+        <div class="h-20 flex items-center px-6 border-b border-slate-100 cursor-pointer" onclick="logout()">
+            <!-- ID Added here to fix the error -->
+            <img id="sidebarLogo" src="https://ait.sa/wp-content/uploads/2024/03/cropped-Square-Logo.png" alt="Logo" class="w-10 h-10 rounded-lg shadow-sm bg-white p-0.5 object-contain transition-all border-2 border-transparent">
+            <div class="ml-3">
+                <h1 class="font-bold text-lg text-slate-800 tracking-tight">AndroGov</h1>
+                <p id="deptName" class="text-[10px] text-slate-400 font-semibold tracking-wider uppercase">SYSTEM</p>
+            </div>
+        </div>
+
+        <!-- Navigation Menu -->
+        <nav id="navMenu" class="flex-1 overflow-y-auto custom-scroll p-3 space-y-1">
+            <!-- Nav Items injected by JS -->
+        </nav>
+
+        <!-- User Profile Widget (Bottom) -->
+        <div id="sidebarProfile" class="p-4 bg-slate-50 border-t border-slate-100 cursor-pointer hover:bg-slate-100 transition-colors" onclick="loadPage('profile')">
+            <div class="flex items-center gap-3">
+                <div class="relative">
+                    <img id="userAvatar" src="" class="w-10 h-10 rounded-full border-2 border-white shadow-sm object-cover">
+                    <span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full"></span>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p id="userName" class="text-sm font-bold text-slate-800 truncate">User</p>
+                    <p id="userTitle" class="text-[10px] text-slate-500 truncate">Role</p>
+                </div>
+                <i class="fa-solid fa-chevron-right text-xs text-slate-300"></i>
+            </div>
+        </div>
+    </aside>
+
+    <!-- 2. CONTENT AREA -->
+    <main class="flex-1 flex flex-col h-full overflow-hidden bg-[#F8FAFC] relative">
+        
+        <!-- Top Header -->
+        <header class="h-20 bg-white/90 backdrop-blur-md border-b border-slate-200 flex items-center justify-between px-8 shrink-0 z-10 relative">
+            <div>
+                <h2 id="pageHeaderTitle" class="text-2xl font-bold text-slate-800">Dashboard</h2>
+                <p id="pageHeaderSub" class="text-xs text-slate-500 mt-1">Last Updated: Just now</p>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <div id="quickActionBtn"></div> <!-- Dynamic Button -->
+                
+                <div class="h-8 w-px bg-slate-200"></div>
+                
+                <!-- Notification Bell with Dropdown -->
+                <div class="relative">
+                    <button onclick="toggleNotifications()" class="relative w-10 h-10 bg-white rounded-full border border-slate-200 flex items-center justify-center hover:text-brandRed hover:border-brandRed transition-colors shadow-sm" id="notifBtn">
+                        <i class="fa-regular fa-bell"></i>
+                        <span id="notifBadge" class="absolute top-0 right-0 w-3 h-3 bg-red-500 rounded-full border-2 border-white notification-pulse"></span>
+                    </button>
+                    <!-- Dropdown Menu -->
+                    <div id="notifDropdown" class="absolute top-12 right-0 w-80 bg-white rounded-xl shadow-xl border border-slate-100 hidden overflow-hidden z-50 transform origin-top-right transition-all">
+                        <div class="bg-slate-50 p-3 border-b border-slate-100 flex justify-between items-center">
+                            <h4 class="font-bold text-sm text-slate-700">Notifications</h4>
+                            <span class="text-[10px] text-brandBlue cursor-pointer hover:underline">Mark all read</span>
+                        </div>
+                        <div id="notifList" class="max-h-64 overflow-y-auto custom-scroll">
+                            <!-- Dynamic Notifications -->
+                        </div>
+                        <div class="p-2 text-center border-t border-slate-100">
+                            <button class="text-xs text-slate-500 hover:text-brandBlue w-full py-1">View All</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <button onclick="logout()" class="text-slate-400 hover:text-red-600 transition-colors text-sm font-medium flex items-center gap-2 cursor-pointer">
+                    <i class="fa-solid fa-power-off"></i> Logout
+                </button>
+            </div>
+        </header>
+
+        <!-- SCROLLABLE PAGE CONTENT -->
+        <div id="mainContainer" class="flex-1 overflow-y-auto custom-scroll p-8 pb-20" onclick="closeDropdowns()">
+            <!-- Dynamic Content Injected Here -->
+        </div>
+
+    </main>
+
+    <!-- 3. AI ASSISTANT PANEL (Collapsible) -->
+    <aside id="aiSidebar" class="w-96 bg-white border-l border-slate-200 flex flex-col shrink-0 transition-all duration-300 relative z-20 shadow-xl hidden ai-closed">
+        <!-- AI Header -->
+        <div id="aiHeader" class="h-20 flex items-center justify-between px-6 shrink-0 text-white bg-slate-800">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm border border-white/30">
+                    <i id="aiIcon" class="fa-solid fa-robot text-lg"></i>
+                </div>
+                <div>
+                    <h3 id="aiName" class="font-bold text-sm">Smart Assistant</h3>
+                    <p id="aiRole" class="text-[10px] opacity-80">General Mode</p>
+                </div>
+            </div>
+            <button onclick="toggleAI()" class="text-white/60 hover:text-white transition"><i class="fa-solid fa-xmark text-lg"></i></button>
+        </div>
+
+        <!-- Chat Area -->
+        <div id="chatArea" class="flex-1 bg-slate-50 p-4 overflow-y-auto custom-scroll space-y-4">
+            <!-- Messages go here -->
+        </div>
+
+        <!-- Input Area -->
+        <div class="p-4 bg-white border-t border-slate-100 shrink-0">
+            <div class="flex gap-2">
+                <input id="aiInput" type="text" placeholder="Type your request here..." class="flex-1 bg-slate-100 border-0 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brandBlue transition-all">
+                <button onclick="sendMessage()" class="bg-slate-800 text-white w-12 rounded-xl flex items-center justify-center hover:bg-slate-700 transition shadow-lg">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Floating AI Toggle (When Closed) -->
+    <button id="aiFloatBtn" onclick="toggleAI()" class="fixed bottom-8 right-8 w-14 h-14 rounded-full shadow-2xl flex items-center justify-center text-white z-30 hidden hover:scale-110 transition-transform border-4 border-white bg-slate-800">
+        <i class="fa-solid fa-robot text-xl"></i>
+    </button>
+    
+    <!-- AI TOAST NOTIFICATION -->
+    <div id="aiToast" class="fixed bottom-24 right-8 z-40 bg-white border border-slate-200 shadow-xl rounded-xl p-4 max-w-sm flex items-start gap-3 cursor-pointer hover:bg-slate-50 transition" onclick="toggleAI()">
+        <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-xl shrink-0" id="aiToastIcon">🤖</div>
+        <div>
+            <h4 class="font-bold text-sm text-slate-800 mb-1" id="aiToastTitle">Smart Assistant</h4>
+            <p class="text-xs text-slate-500 line-clamp-2" id="aiToastMsg">...</p>
+        </div>
+        <button class="text-slate-400 hover:text-slate-600 ml-auto" onclick="event.stopPropagation(); hideToast()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+
+    <!-- EXCUSE REQUEST MODAL (Attendance Feature) -->
+    <div id="excuseModal" class="fixed inset-0 z-[60] bg-slate-900/50 flex items-center justify-center p-4 modal backdrop-blur-sm">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden transform scale-95 transition-all duration-300" id="modalContent">
+            <div class="bg-brandBlue p-4 text-white flex justify-between items-center">
+                <h3 class="font-bold flex items-center gap-2"><i class="fa-solid fa-file-signature"></i> Submit Request / Objection</h3>
+                <button onclick="closeModal('excuseModal')" class="text-white/70 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div class="p-6 space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Request Type</label>
+                    <select class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-brandBlue outline-none">
+                        <option>Missed Punch (In)</option>
+                        <option>Missed Punch (Out)</option>
+                        <option>External Mission</option>
+                        <option>Medical Excuse</option>
+                        <option>Family Emergency</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Date</label>
+                    <input type="date" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-brandBlue outline-none" value="2025-10-12">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Reason / Notes</label>
+                    <textarea class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm h-24 focus:ring-2 focus:ring-brandBlue outline-none resize-none" placeholder="Explain the reason for delay or missing punch..."></textarea>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Attachments (Optional)</label>
+                    <div class="border-2 border-dashed border-slate-300 rounded-lg p-4 text-center cursor-pointer hover:bg-slate-50 transition">
+                        <i class="fa-solid fa-cloud-arrow-up text-slate-400 text-xl mb-1"></i>
+                        <p class="text-xs text-slate-500">Drag file here or click to upload</p>
+                    </div>
+                </div>
+            </div>
+            <div class="p-4 border-t border-slate-100 bg-slate-50 flex justify-end gap-2">
+                <button onclick="closeModal('excuseModal')" class="px-4 py-2 text-sm text-slate-600 hover:bg-slate-200 rounded-lg transition">Cancel</button>
+                <button onclick="submitExcuse()" class="px-4 py-2 text-sm bg-brandBlue text-white rounded-lg hover:bg-blue-700 transition shadow-sm">Submit to HR</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT APP LOGIC -->
+    <script>
+        // ================== DATA STORE ==================
+        const db = {
+            roles: {
+                'ceo': {
+                    id: 'ceo', name: 'Hesham Alsuhaibani', title: 'Chief Executive Officer', color: 'ceoGold', 
+                    bgClass: 'bg-amber-600', icon: 'fa-chess-king', dept: 'EXECUTIVE SUITE',
+                    welcome: 'Welcome Mr. Hesham. Q3 preliminary financial statements are ready for your review. Would you like to see them?',
+                    stats: [
+                        { label: 'Revenue (YTD)', value: '12.4M', trend: '+15%', color: 'green' },
+                        { label: 'Cash Flow', value: '4.2M', trend: 'Healthy', color: 'blue' },
+                        { label: 'Pending Approvals', value: '3', trend: 'Urgent', color: 'red' }
+                    ],
+                    menu: [
+                        { id: 'dashboard', label: 'Overview', icon: 'fa-chart-line' },
+                        { id: 'approvals', label: 'Approvals Center', icon: 'fa-file-signature' },
+                        { id: 'finance', label: 'Financial Reports', icon: 'fa-coins' },
+                        { id: 'strategy', label: 'Strategic Plan', icon: 'fa-map' },
+                        { id: 'attendance', label: 'My Attendance', icon: 'fa-fingerprint' },
+                        { id: 'profile', label: 'My Profile', icon: 'fa-id-card' }
+                    ],
+                    action: { label: 'Sign Contracts', icon: 'fa-pen-nib' },
+                    notifications: [
+                        { msg: 'Asset purchase request (50k) pending approval', type: 'urgent', time: '10m' },
+                        { msg: 'Monthly performance report ready', type: 'info', time: '1h' },
+                        { msg: 'Board meeting invitation', type: 'normal', time: '2h' }
+                    ],
+                    policies: ['Financial Authority Matrix', 'Strategic Governance Policy', 'Board Charter']
+                },
+                'grc': {
+                    id: 'grc', name: 'Ayman Almaghrabi', title: 'Governance Officer (GRCO)', color: 'grcRed', 
+                    bgClass: 'bg-red-600', icon: 'fa-scale-balanced', dept: 'GOVERNANCE',
+                    welcome: 'Welcome Mr. Ayman. There are 3 policies that need updating to comply with the new Corporate Law.',
+                    stats: [
+                        { label: 'Compliance Rate', value: '94%', trend: '+2%', color: 'green' },
+                        { label: 'Active Risks', value: '2', trend: 'High', color: 'red' },
+                        { label: 'Policies', value: '15', trend: 'Updated', color: 'blue' }
+                    ],
+                    menu: [
+                        { id: 'dashboard', label: 'Compliance Hub', icon: 'fa-shield-halved' },
+                        { id: 'risks', label: 'Risk Register', icon: 'fa-triangle-exclamation' },
+                        { id: 'policies', label: 'Policies & Regulations', icon: 'fa-file-contract' },
+                        { id: 'audit', label: 'Internal Audit', icon: 'fa-magnifying-glass' },
+                        { id: 'attendance', label: 'My Attendance', icon: 'fa-fingerprint' },
+                        { id: 'profile', label: 'My Profile', icon: 'fa-id-card' }
+                    ],
+                    action: { label: 'Add Policy', icon: 'fa-plus' },
+                    notifications: [
+                        { msg: 'Unauthorized access attempt (Blocked)', type: 'urgent', time: '5m' },
+                        { msg: 'Reminder: Quarterly risk register update', type: 'normal', time: '1d' }
+                    ],
+                    policies: ['Comprehensive Governance Guide', 'Risk Management Policy', 'Whistleblowing Policy']
+                },
+                'hr': {
+                    id: 'hr', name: 'Mansour Alyami', title: 'CAO (Admin Affairs)', color: 'hrPurple', 
+                    bgClass: 'bg-purple-600', icon: 'fa-users-gear', dept: 'HR & ADMIN',
+                    welcome: 'Welcome Mr. Mansour. Today\'s attendance is 96%. There are 4 contracts expiring this month. Should I send reminders?',
+                    stats: [
+                        { label: 'Headcount', value: '42', trend: '+3', color: 'blue' },
+                        { label: 'Attendance', value: '38', trend: '96%', color: 'green' },
+                        { label: 'Doc Expiry', value: '5', trend: 'Warning', color: 'yellow' }
+                    ],
+                    menu: [
+                        { id: 'dashboard', label: 'Personnel', icon: 'fa-users' },
+                        { id: 'recruitment', label: 'Recruitment', icon: 'fa-user-plus' },
+                        { id: 'payroll', label: 'Payroll', icon: 'fa-money-bill' },
+                        { id: 'attendance', label: 'Attendance Monitoring', icon: 'fa-fingerprint' }, 
+                        { id: 'profile', label: 'My Profile', icon: 'fa-id-card' }
+                    ],
+                    action: { label: 'Admin Decision', icon: 'fa-pen' },
+                    notifications: [
+                        { msg: '5 Iqamas expiring within a month', type: 'urgent', time: '2h' },
+                        { msg: 'New leave request from "Khalid"', type: 'normal', time: '3h' },
+                        { msg: 'Attendance objection received', type: 'normal', time: '4h' }
+                    ],
+                    policies: ['Work Regulation Policy', 'Salary & Benefits Scale', 'Leave & Attendance Policy']
+                },
+                'finance': {
+                    id: 'finance', name: 'Mohammed Albukhaiti', title: 'CFO', color: 'finGreen', 
+                    bgClass: 'bg-emerald-600', icon: 'fa-money-bill-trend-up', dept: 'FINANCE',
+                    welcome: 'Welcome Mr. Mohammed. Invoice received from "Amazon" for 50,000 SAR pending approval.',
+                    stats: [
+                        { label: 'Cash Flow', value: '4.2M', trend: 'Stable', color: 'green' },
+                        { label: 'Expenses (MTD)', value: '850k', trend: 'On Budget', color: 'blue' },
+                        { label: 'Due Invoices', value: '4', trend: 'Due Soon', color: 'yellow' }
+                    ],
+                    menu: [
+                        { id: 'dashboard', label: 'Financial Hub', icon: 'fa-chart-pie' },
+                        { id: 'invoices', label: 'Financial Approvals', icon: 'fa-file-invoice-dollar' },
+                        { id: 'budget', label: 'Budgets', icon: 'fa-scale-balanced' },
+                        { id: 'attendance', label: 'My Attendance', icon: 'fa-fingerprint' },
+                        { id: 'profile', label: 'My Profile', icon: 'fa-id-card' }
+                    ],
+                    action: { label: 'Print Report', icon: 'fa-print' },
+                    notifications: [
+                        { msg: 'Client payment deposited (120,000 SAR)', type: 'success', time: '30m' },
+                        { msg: 'Request to approve Oct payroll', type: 'urgent', time: '4h' }
+                    ],
+                    policies: ['Financial & Accounting Policy', 'Procurement Policy', 'Petty Cash Guide']
+                },
+                'medical': {
+                    id: 'medical', name: 'Dr. Waad Hussein', title: 'Medical Supervisor', color: 'medCyan', 
+                    bgClass: 'bg-cyan-600', icon: 'fa-heart-pulse', dept: 'MEDICAL PRODUCT',
+                    welcome: 'Welcome Dr. Waad. The Ministry of Health protocol for narcotic prescriptions has been updated. Shall I show you?',
+                    stats: [
+                        { label: 'Compliance', value: '100%', trend: 'MOH', color: 'green' },
+                        { label: 'Medical Tickets', value: '5', trend: 'Clients', color: 'red' },
+                        { label: 'Features in Dev', value: '8', trend: 'Dev', color: 'blue' }
+                    ],
+                    menu: [
+                        { id: 'dashboard', label: 'Medical Supervision', icon: 'fa-stethoscope' },
+                        { id: 'compliance', label: 'Compliance', icon: 'fa-clipboard-check' },
+                        { id: 'requirements', label: 'Medical Requirements', icon: 'fa-list-check' },
+                        { id: 'attendance', label: 'My Attendance', icon: 'fa-fingerprint' },
+                        { id: 'profile', label: 'My Profile', icon: 'fa-id-card' }
+                    ],
+                    action: { label: 'Review Feature', icon: 'fa-magnifying-glass-chart' },
+                    notifications: [
+                        { msg: 'New NPHIES standard update', type: 'urgent', time: '1d' },
+                        { msg: 'Medical complaint from VIP client', type: 'normal', time: '2d' }
+                    ],
+                    policies: ['Medical Records Policy', 'ICD-10 Coding Standards', 'Telemedicine Protocol']
+                },
+                'tech_lead': {
+                    id: 'tech_lead', name: 'Rand Al-Hourani', title: 'Tech Team Lead', color: 'techBlue', 
+                    bgClass: 'bg-blue-600', icon: 'fa-code', dept: 'TECH TEAM (JOR)',
+                    welcome: 'Hi Rand. Server load is stable. 2 Pull Requests waiting for review.',
+                    stats: [
+                        { label: 'Active Sprints', value: '2', trend: 'On Track', color: 'green' },
+                        { label: 'Pending PRs', value: '5', trend: 'Review', color: 'blue' },
+                        { label: 'Bugs', value: '0', trend: 'Critical', color: 'gray' }
+                    ],
+                    menu: [
+                        { id: 'dashboard', label: 'Sprint Board', icon: 'fa-kanban' },
+                        { id: 'attendance', label: 'My Logs', icon: 'fa-fingerprint' },
+                        { id: 'servers', label: 'System Status', icon: 'fa-server' },
+                        { id: 'profile', label: 'My Profile', icon: 'fa-id-card' }
+                    ],
+                    action: { label: 'Deploy', icon: 'fa-cloud-arrow-up' },
+                    notifications: [
+                        { msg: 'Pipeline Build Failed (AndroHealth)', type: 'urgent', time: '10m' },
+                        { msg: 'New Merge Request from Ali', type: 'normal', time: '1h' },
+                        { msg: 'Absence recorded (Yesterday)', type: 'urgent', time: '1d' }
+                    ],
+                    policies: ['Coding Standards Guidelines', 'Deployment Policy', 'Security Best Practices']
+                },
+                'pssc': {
+                    id: 'pssc', name: 'Hadi', title: 'PSSC (Procurement)', color: 'opsSlate', 
+                    bgClass: 'bg-slate-600', icon: 'fa-box-open', dept: 'PROCUREMENT',
+                    welcome: 'Welcome Hadi. There is a request for new furniture requiring 3 quotes.',
+                    stats: [
+                        { label: 'New Requests', value: '4', trend: 'New', color: 'blue' },
+                        { label: 'Pending Delivery', value: '12', trend: 'Pending', color: 'yellow' },
+                        { label: 'Visitors Today', value: '15', trend: 'Reception', color: 'gray' }
+                    ],
+                    menu: [
+                        { id: 'dashboard', label: 'Procurement', icon: 'fa-cart-shopping' },
+                        { id: 'attendance', label: 'My Attendance', icon: 'fa-fingerprint' },
+                        { id: 'assets', label: 'Assets & Custody', icon: 'fa-barcode' },
+                        { id: 'profile', label: 'My Profile', icon: 'fa-id-card' }
+                    ],
+                    action: { label: 'Purchase Order', icon: 'fa-file-contract' },
+                    notifications: [
+                        { msg: 'Server purchase request approved', type: 'success', time: '1h' },
+                        { msg: 'New maintenance request (AC)', type: 'normal', time: '3h' }
+                    ],
+                    policies: ['Approved Vendor Guide', 'Procurement & Contract Policy', 'Asset Receiving Procedures']
+                },
+                'cs': {
+                    id: 'cs', name: 'Khalid', title: 'Customer Success Specialist', color: 'hrPurple', 
+                    bgClass: 'bg-pink-600', icon: 'fa-headset', dept: 'CUSTOMER SUCCESS',
+                    welcome: 'Good Morning Khalid. Client "Al-Hayat Hospital" is requesting urgent support.',
+                    stats: [
+                        { label: 'Open Tickets', value: '5', trend: '2 High', color: 'red' },
+                        { label: 'CSAT', value: '4.8', trend: 'Excellent', color: 'green' },
+                        { label: 'Today\'s Meetings', value: '3', trend: 'Meetings', color: 'blue' }
+                    ],
+                    menu: [
+                        { id: 'dashboard', label: 'Support Panel', icon: 'fa-headset' },
+                        { id: 'tickets', label: 'Tickets', icon: 'fa-ticket' },
+                        { id: 'attendance', label: 'My Attendance', icon: 'fa-fingerprint' },
+                        { id: 'profile', label: 'My Profile', icon: 'fa-id-card' }
+                    ],
+                    action: { label: 'New Ticket', icon: 'fa-plus' },
+                    notifications: [
+                        { msg: 'New Ticket #992 (High Priority)', type: 'urgent', time: '5m' },
+                        { msg: 'Attendance excuse approved', type: 'success', time: '1h' }
+                    ],
+                    policies: ['Customer Handling Guide', 'SLA Agreement', 'Response Scripts']
+                }
+            },
+            
+            // PROFILE DATA MOCKUP
+            profiles: {
+                'ceo': { id: '1001', join: '2014', manager: 'Board of Directors', assets: ['Company Seal', 'Laptop MacBook Pro'], leave: 30 },
+                'grc': { id: '1045', join: '2020', manager: 'CEO', assets: ['Laptop Dell XPS', 'Access Card L3'], leave: 25 },
+                'hr': { id: '1005', join: '2020', manager: 'CEO', assets: ['Laptop HP', 'Master Key'], leave: 45 },
+                'finance': { id: '1002', join: '2015', manager: 'CEO', assets: ['Laptop Lenovo', 'Bank Token'], leave: 25 },
+                'medical': { id: '3001', join: '2024', manager: 'CEO', assets: ['iPad Pro', 'Medical Access'], leave: 28 },
+                'tech_lead': { id: '4001', join: '2021', manager: 'Director of Development', assets: ['MacBook Pro M2', 'Server Access'], leave: 21 },
+                'pssc': { id: '5001', join: '2022', manager: 'CFO', assets: ['Desktop PC', 'Warehouse Key'], leave: 21 },
+                'cs': { id: '2040', join: '2023', manager: 'Sales Manager', assets: ['Laptop HP', 'Headset Jabra'], leave: 15 }
+            },
+
+            // ATTENDANCE DATA MOCKUP
+            attendanceLogs: [
+                { date: '12/10/2025', day: 'Thursday', in: '08:00 AM', out: '--', status: 'present', note: 'On Duty' },
+                { date: '11/10/2025', day: 'Wednesday', in: '08:05 AM', out: '04:00 PM', status: 'late', note: 'Late 5 mins' },
+                { date: '10/10/2025', day: 'Tuesday', in: '--', out: '--', status: 'absent', note: 'Absent (No Excuse)' },
+                { date: '09/10/2025', day: 'Monday', in: '08:00 AM', out: '04:15 PM', status: 'present', note: '' },
+            ]
+        };
+
+        let currentRole = null;
+
+        // ================== INIT & LOGIN ==================
+        
+        function initLoginScreen() {
+            const grid = document.getElementById('roleGrid');
+            grid.innerHTML = '';
+            
+            Object.values(db.roles).forEach(role => {
+                grid.innerHTML += `
+                    <div onclick="login('${role.id}')" class="bg-white p-4 rounded-xl border border-slate-200 cursor-pointer hover:shadow-lg hover:-translate-y-1 transition-all group">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-10 h-10 ${role.bgClass} text-white rounded-full flex items-center justify-center text-lg shadow-sm">
+                                <i class="fa-solid ${role.icon}"></i>
+                            </div>
+                            <div class="text-left flex-1 min-w-0">
+                                <h4 class="font-bold text-sm text-slate-800 truncate">${role.title}</h4>
+                                <p class="text-[10px] text-slate-500 truncate">${role.name}</p>
+                            </div>
+                        </div>
+                        <div class="text-[10px] bg-slate-50 text-slate-400 py-1 px-2 rounded border border-slate-100 text-center group-hover:bg-slate-100">
+                            Login as ${role.id.toUpperCase()}
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function login(roleId) {
+            currentRole = db.roles[roleId];
+            
+            // Hide Login Overlay
+            const overlay = document.getElementById('loginOverlay');
+            overlay.style.opacity = '0';
+            setTimeout(() => overlay.classList.add('hidden'), 500);
+
+            // Configure UI
+            configureSidebar();
+            configureHeader();
+            loadPage('dashboard');
+            initAI();
+            
+            // Trigger AI Welcome Toast
+            setTimeout(() => {
+                showToast(currentRole.welcome);
+            }, 1500);
+        }
+
+        function logout() {
+            const overlay = document.getElementById('loginOverlay');
+            overlay.classList.remove('hidden');
+            void overlay.offsetWidth; // Force Reflow
+            overlay.style.opacity = '1';
+            
+            // Close AI & Dropdowns
+            const aiPanel = document.getElementById('aiSidebar');
+            aiPanel.classList.add('ai-closed', 'hidden');
+            document.getElementById('aiFloatBtn').classList.add('hidden');
+            closeDropdowns();
+            hideToast();
+        }
+
+        // ================== UI CONFIGURATION ==================
+
+        function configureSidebar() {
+            const logo = document.getElementById('sidebarLogo');
+            let borderColor = 'border-slate-200';
+            if (currentRole.bgClass.includes('amber')) borderColor = 'border-amber-500';
+            else if (currentRole.bgClass.includes('red')) borderColor = 'border-red-500';
+            else if (currentRole.bgClass.includes('green')) borderColor = 'border-green-500';
+            else if (currentRole.bgClass.includes('emerald')) borderColor = 'border-emerald-500';
+            else if (currentRole.bgClass.includes('purple')) borderColor = 'border-purple-500';
+            else if (currentRole.bgClass.includes('cyan')) borderColor = 'border-cyan-500';
+            else if (currentRole.bgClass.includes('blue')) borderColor = 'border-blue-500';
+            else if (currentRole.bgClass.includes('slate')) borderColor = 'border-slate-500';
+            else if (currentRole.bgClass.includes('pink')) borderColor = 'border-pink-500';
+            
+            // Safety check in case logo element is not found
+            if (logo) {
+                logo.className = `w-10 h-10 rounded-lg shadow-sm bg-white p-0.5 object-contain transition-all border-2 ${borderColor}`;
+            }
+            document.getElementById('deptName').innerText = currentRole.dept;
+
+            const nav = document.getElementById('navMenu');
+            nav.innerHTML = '';
+            currentRole.menu.forEach(item => {
+                nav.innerHTML += `
+                    <button onclick="loadPage('${item.id}')" id="nav-${item.id}" class="nav-item w-full flex items-center gap-4 px-4 py-3 text-sm font-medium text-slate-600 rounded-xl hover:bg-slate-50 transition-all mb-1">
+                        <i class="fa-solid ${item.icon} text-lg w-6 text-center opacity-70"></i>
+                        <span class="ml-2">${item.label}</span>
+                    </button>
+                `;
+            });
+
+            document.getElementById('userAvatar').src = `https://ui-avatars.com/api/?name=${currentRole.name}&background=random&color=fff`;
+            document.getElementById('userName').innerText = currentRole.name;
+            document.getElementById('userTitle').innerText = currentRole.title;
+        }
+
+        function configureHeader() {
+            const btnContainer = document.getElementById('quickActionBtn');
+            btnContainer.innerHTML = `
+                <button class="${currentRole.bgClass} text-white px-5 py-2 rounded-full text-sm hover:opacity-90 transition shadow-md flex items-center gap-2">
+                    <i class="fa-solid ${currentRole.action.icon}"></i>
+                    <span>${currentRole.action.label}</span>
+                </button>
+            `;
+            
+            // Populate Notifications
+            const notifList = document.getElementById('notifList');
+            notifList.innerHTML = '';
+            if(currentRole.notifications) {
+                currentRole.notifications.forEach(n => {
+                    let iconClass = n.type === 'urgent' ? 'fa-circle-exclamation text-red-500' : (n.type === 'success' ? 'fa-check-circle text-green-500' : 'fa-bell text-blue-500');
+                    let bgClass = n.type === 'urgent' ? 'bg-red-50' : 'bg-white';
+                    notifList.innerHTML += `
+                        <div class="p-3 border-b border-slate-50 hover:bg-slate-50 transition ${bgClass} cursor-pointer">
+                            <div class="flex items-start gap-3">
+                                <i class="fa-solid ${iconClass} mt-1 text-sm"></i>
+                                <div>
+                                    <p class="text-xs font-bold text-slate-700">${n.msg}</p>
+                                    <p class="text-[10px] text-slate-400 mt-1">${n.time} ago</p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                document.getElementById('notifBadge').innerText = currentRole.notifications.length;
+            } else {
+                notifList.innerHTML = '<div class="p-4 text-center text-slate-400 text-xs">No notifications</div>';
+                document.getElementById('notifBadge').innerText = '0';
+            }
+        }
+
+        // ================== PAGE ROUTING & CONTENT ==================
+
+        function loadPage(pageId) {
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active', 'text-slate-900', 'bg-slate-50'));
+            const activeNav = document.getElementById(`nav-${pageId}`);
+            if(activeNav) activeNav.classList.add('active', 'text-slate-900');
+
+            const menuLabel = currentRole.menu.find(m => m.id === pageId)?.label || 'System Page';
+            document.getElementById('pageHeaderTitle').innerText = menuLabel;
+
+            const container = document.getElementById('mainContainer');
+            container.innerHTML = '';
+
+            if (pageId === 'dashboard') {
+                renderDashboard(container);
+            } else if (pageId === 'profile') {
+                renderProfile(container);
+            } else if (pageId === 'attendance') {
+                if(currentRole.id === 'hr') renderHRAttendance(container);
+                else renderEmployeeAttendance(container);
+            } else {
+                renderGenericPage(container, pageId, menuLabel);
+            }
+        }
+
+        function renderDashboard(container) {
+            let html = `<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 fade-in">`;
+            currentRole.stats.forEach(stat => {
+                html += `
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-between hover:shadow-md transition-shadow">
+                        <div>
+                            <p class="text-slate-400 text-xs font-medium mb-1">${stat.label}</p>
+                            <h3 class="text-3xl font-bold text-slate-800">${stat.value}</h3>
+                            <p class="text-${stat.color}-500 text-xs mt-2 font-bold bg-${stat.color}-50 inline-block px-2 py-0.5 rounded">${stat.trend}</p>
+                        </div>
+                        <div class="w-12 h-12 rounded-full bg-${stat.color}-50 flex items-center justify-center text-${stat.color}-600 text-xl">
+                            <i class="fa-solid fa-chart-pie"></i>
+                        </div>
+                    </div>
+                `;
+            });
+            html += `</div>`;
+            
+            html += `
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 fade-in" style="animation-delay: 0.1s">
+                    <h3 class="font-bold text-slate-800 mb-4">Recent Activity</h3>
+                    <div class="space-y-4">
+                        <div class="flex gap-3"><div class="w-2 h-full bg-slate-200 rounded-full"></div><div class="pb-4 border-b border-slate-50 last:border-0"><p class="text-xs text-slate-400 mb-1">10:30 AM</p><p class="text-sm text-slate-700 font-medium">System Login</p></div></div>
+                        <div class="flex gap-3"><div class="w-2 h-full bg-blue-200 rounded-full"></div><div class="pb-4 border-b border-slate-50 last:border-0"><p class="text-xs text-slate-400 mb-1">09:15 AM</p><p class="text-sm text-slate-700 font-medium">Data Sync</p></div></div>
+                    </div>
+                </div>
+            `;
+            container.innerHTML = html;
+        }
+
+        function renderProfile(container) {
+            const pData = db.profiles[currentRole.id];
+            let policiesHTML = '';
+            if(currentRole.policies) {
+                currentRole.policies.forEach(p => {
+                    policiesHTML += `
+                        <div class="flex items-center justify-between p-3 bg-slate-50 rounded-lg border border-slate-100 hover:bg-slate-100 transition">
+                            <div class="flex items-center gap-3">
+                                <i class="fa-solid fa-file-pdf text-red-500 text-lg"></i>
+                                <span class="text-sm font-medium text-slate-700">${p}</span>
+                            </div>
+                            <button class="text-xs text-brandBlue hover:underline font-bold">Download</button>
+                        </div>
+                    `;
+                });
+            } else {
+                policiesHTML = '<p class="text-xs text-slate-400">No specific policies assigned.</p>';
+            }
+
+            let html = `
+                <div class="fade-in">
+                    <!-- Header -->
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-8 mb-8 relative overflow-hidden">
+                        <div class="absolute top-0 left-0 w-full h-32 bg-gradient-to-r from-slate-800 to-slate-600 opacity-10"></div>
+                        <div class="relative z-10 flex flex-col md:flex-row items-center md:items-start gap-6">
+                            <img src="https://ui-avatars.com/api/?name=${currentRole.name}&size=128" class="w-24 h-24 rounded-full border-4 border-white shadow-lg">
+                            <div class="text-center md:text-left flex-1">
+                                <h2 class="text-2xl font-bold text-slate-800">${currentRole.name}</h2>
+                                <p class="text-slate-500">${currentRole.title} | ${currentRole.dept}</p>
+                                <div class="flex gap-2 justify-center md:justify-start mt-4">
+                                    <span class="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-xs font-bold">ID: ${pData.id}</span>
+                                    <span class="bg-green-50 text-green-700 px-3 py-1 rounded-full text-xs font-bold">Active</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <!-- Info -->
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                            <h3 class="font-bold text-slate-800 mb-4 pb-2 border-b border-slate-50">Job Information</h3>
+                            <div class="space-y-4 text-sm">
+                                <div class="flex justify-between"><span class="text-slate-500">Join Date</span><span class="font-medium text-slate-800">${pData.join}</span></div>
+                                <div class="flex justify-between"><span class="text-slate-500">Direct Manager</span><span class="font-medium text-slate-800">${pData.manager}</span></div>
+                                <div class="flex justify-between"><span class="text-slate-500">Leave Balance</span><span class="font-bold text-green-600">${pData.leave} Days</span></div>
+                            </div>
+                        </div>
+
+                        <!-- Policy Hub -->
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                            <h3 class="font-bold text-slate-800 mb-4 pb-2 border-b border-slate-50 flex justify-between items-center">
+                                <span>My Policies</span>
+                                <span class="text-xs bg-brandBlue text-white px-2 py-1 rounded">Role Specific</span>
+                            </h3>
+                            <div class="space-y-2">
+                                ${policiesHTML}
+                            </div>
+                        </div>
+
+                        <!-- Assets -->
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 lg:col-span-2">
+                            <h3 class="font-bold text-slate-800 mb-4 pb-2 border-b border-slate-50">Assets & Custody</h3>
+                            <ul class="space-y-3">
+                                ${pData.assets.map(asset => `
+                                    <li class="flex items-center gap-3 bg-slate-50 p-3 rounded-lg">
+                                        <div class="w-8 h-8 bg-white rounded flex items-center justify-center text-slate-400 shadow-sm"><i class="fa-solid fa-box"></i></div>
+                                        <span class="text-sm font-medium text-slate-700">${asset}</span>
+                                    </li>
+                                `).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.innerHTML = html;
+        }
+
+        // --- ATTENDANCE VIEWS ---
+        function renderEmployeeAttendance(container) {
+            let logsHTML = '';
+            db.attendanceLogs.forEach(log => {
+                let statusBadge = '';
+                let actionBtn = '';
+                if(log.status === 'present') statusBadge = '<span class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs">Present</span>';
+                if(log.status === 'late') statusBadge = '<span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded text-xs">Late</span>';
+                if(log.status === 'absent') {
+                    statusBadge = '<span class="bg-red-100 text-red-700 px-2 py-1 rounded text-xs">Absent</span>';
+                    actionBtn = `<button onclick="openModal('excuseModal')" class="text-xs bg-brandBlue text-white px-3 py-1 rounded hover:bg-blue-700 transition shadow-sm">Submit Excuse</button>`;
+                } else if (log.status === 'late') {
+                    actionBtn = `<button onclick="openModal('excuseModal')" class="text-xs border border-slate-300 text-slate-600 px-3 py-1 rounded hover:bg-slate-50">Dispute</button>`;
+                }
+
+                logsHTML += `
+                    <tr class="hover:bg-slate-50 border-b border-slate-100 last:border-0">
+                        <td class="px-6 py-4 text-sm font-medium text-slate-800 text-left">${log.date}</td>
+                        <td class="px-6 py-4 text-sm text-slate-500 text-left">${log.day}</td>
+                        <td class="px-6 py-4 text-sm font-mono text-green-600 text-left">${log.in}</td>
+                        <td class="px-6 py-4 text-sm font-mono text-red-500 text-left">${log.out}</td>
+                        <td class="px-6 py-4 text-left">${statusBadge}</td>
+                        <td class="px-6 py-4 text-xs text-slate-400 text-left">${log.note}</td>
+                        <td class="px-6 py-4 text-right">${actionBtn}</td>
+                    </tr>
+                `;
+            });
+
+            container.innerHTML = `
+                <div class="fade-in">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-between">
+                            <div><p class="text-slate-400 text-xs mb-1">Linked Device</p><h3 class="text-lg font-bold text-slate-800">ZKTeco iClock</h3><p class="text-green-500 text-xs mt-1">Online <i class="fa-solid fa-circle text-[8px] animate-pulse"></i></p></div>
+                            <div class="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center text-slate-500"><i class="fa-solid fa-fingerprint text-xl"></i></div>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-between">
+                            <div><p class="text-slate-400 text-xs mb-1">Delay Balance</p><h3 class="text-2xl font-bold text-yellow-600">45 min</h3><p class="text-slate-400 text-xs mt-1">Allowed: 120 min</p></div>
+                            <div class="w-12 h-12 bg-yellow-50 rounded-full flex items-center justify-center text-yellow-600"><i class="fa-solid fa-clock text-xl"></i></div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+                        <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center"><h3 class="font-bold text-slate-800">Attendance Log (Live Feed)</h3></div>
+                        <div class="overflow-x-auto"><table class="w-full text-left"><thead class="bg-slate-50 text-slate-500 text-xs uppercase"><tr><th class="px-6 py-3">Date</th><th class="px-6 py-3">Day</th><th class="px-6 py-3">In</th><th class="px-6 py-3">Out</th><th class="px-6 py-3">Status</th><th class="px-6 py-3">Notes</th><th class="px-6 py-3 text-right">Action</th></tr></thead><tbody>${logsHTML}</tbody></table></div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderHRAttendance(container) {
+            container.innerHTML = `
+                <div class="fade-in">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm"><p class="text-xs text-slate-400">Present Today</p><h3 class="text-2xl font-bold text-green-600">38/42</h3></div>
+                        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm"><p class="text-xs text-slate-400">Late > 15m</p><h3 class="text-2xl font-bold text-yellow-600">3</h3></div>
+                        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm"><p class="text-xs text-slate-400">Absent</p><h3 class="text-2xl font-bold text-red-600">1</h3></div>
+                        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm"><p class="text-xs text-slate-400">Pending Disputes</p><h3 class="text-2xl font-bold text-brandBlue">3</h3></div>
+                    </div>
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
+                        <h3 class="font-bold text-slate-800 mb-4">Incoming Requests</h3>
+                        <div class="space-y-4">
+                            <div class="border border-slate-100 rounded-xl p-4 flex items-start gap-4 hover:shadow-md transition">
+                                <div class="w-10 h-10 bg-slate-200 rounded-full"></div>
+                                <div class="flex-1">
+                                    <div class="flex justify-between items-start"><div><h4 class="font-bold text-sm text-slate-800">Ali Ahmed (Dev)</h4><p class="text-xs text-slate-500">Missed Punch (Out) | 10/10/2025</p></div><span class="bg-yellow-50 text-yellow-700 text-[10px] px-2 py-1 rounded-full">Pending</span></div>
+                                    <div class="flex gap-2 mt-3"><button class="bg-green-600 text-white px-4 py-1 rounded text-xs">Approve</button><button class="bg-red-50 text-red-600 px-4 py-1 rounded text-xs">Reject</button></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderGenericPage(container, pageId, title) {
+            container.innerHTML = `
+                <div class="fade-in bg-white p-12 rounded-2xl shadow-sm border border-slate-100 text-center">
+                    <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center text-slate-300 text-3xl mx-auto mb-6"><i class="fa-solid fa-folder-open"></i></div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-2">${title}</h3>
+                    <p class="text-slate-500">This page represents an active operational module in the system.</p>
+                </div>
+            `;
+        }
+
+        // ================== INTERACTIONS ==================
+
+        function toggleNotifications() { document.getElementById('notifDropdown').classList.toggle('hidden'); }
+        function closeDropdowns() { document.getElementById('notifDropdown').classList.add('hidden'); }
+        function openModal(id) { document.getElementById(id).classList.add('active'); }
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+        function submitExcuse() { closeModal('excuseModal'); alert('Request submitted to HR successfully!'); }
+
+        // AI Logic
+        function initAI() {
+            document.getElementById('aiHeader').className = `h-20 flex items-center justify-between px-6 shrink-0 text-white transition-colors ${currentRole.bgClass}`;
+            document.getElementById('aiRole').innerText = `Assistant for: ${currentRole.title}`;
+            document.getElementById('aiFloatBtn').className = `fixed bottom-8 right-8 w-14 h-14 rounded-full shadow-2xl flex items-center justify-center text-white z-30 hidden hover:scale-110 transition-transform border-4 border-white ${currentRole.bgClass}`;
+            document.getElementById('aiToastIcon').className = `w-10 h-10 rounded-full flex items-center justify-center text-xl shrink-0 ${currentRole.bgClass} text-white`;
+            
+            const chatArea = document.getElementById('chatArea');
+            chatArea.innerHTML = `<div class="flex justify-end fade-in"><div class="chat-bubble chat-ai ${currentRole.bgClass}">${currentRole.welcome}</div></div>`;
+        }
+        
+        function showToast(msg) {
+            document.getElementById('aiToastTitle').innerText = 'Smart Assistant (' + currentRole.title + ')';
+            document.getElementById('aiToastMsg').innerText = msg;
+            const toast = document.getElementById('aiToast');
+            toast.classList.add('show');
+            setTimeout(() => { toast.classList.remove('show'); }, 5000);
+        }
+
+        function hideToast() {
+            document.getElementById('aiToast').classList.remove('show');
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('aiInput');
+            const msg = input.value.trim();
+            if(!msg) return;
+            
+            const chatArea = document.getElementById('chatArea');
+            chatArea.innerHTML += `<div class="flex justify-start fade-in"><div class="chat-bubble chat-user">${msg}</div></div>`;
+            input.value = '';
+            chatArea.scrollTop = chatArea.scrollHeight;
+            
+            setTimeout(() => {
+                chatArea.innerHTML += `<div class="flex justify-end fade-in"><div class="chat-bubble chat-ai ${currentRole.bgClass}">Request received. Processing based on your clearance level.</div></div>`;
+                chatArea.scrollTop = chatArea.scrollHeight;
+            }, 1000);
+        }
+
+        function toggleAI() {
+            const sidebar = document.getElementById('aiSidebar');
+            const floatBtn = document.getElementById('aiFloatBtn');
+            const isHidden = sidebar.classList.contains('ai-closed');
+            if (isHidden) { sidebar.classList.remove('hidden'); setTimeout(() => sidebar.classList.remove('ai-closed'), 10); floatBtn.classList.add('hidden'); hideToast(); }
+            else { sidebar.classList.add('ai-closed'); setTimeout(() => sidebar.classList.add('hidden'), 300); floatBtn.classList.remove('hidden'); }
+        }
+
+        initLoginScreen();
+    </script>
+</body>
+</html>
