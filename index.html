@@ -3,16 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AndroGov | نظام إدارة العمليات الموحد</title>
+    <title>Andromeda | بوابتك للمستقبل الرقمي</title>
     
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@200;300;400;500;700;800&display=swap" rel="stylesheet">
+    <!-- الخطوط -->
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -23,684 +20,488 @@
             theme: {
                 extend: {
                     colors: {
-                        brandRed: '#FB4747',
-                        brandBlue: '#4267B2',
+                        brandRed: '#FB4747', /* هوية أندروميدا الحمراء */
                         brandDark: '#1E293B',
                         brandGray: '#F1F5F9',
-                        // Department Accents
-                        ceoGold: '#D97706',
-                        grcRed: '#DC2626',
-                        finGreen: '#059669',
-                        hrPurple: '#7C3AED',
-                        medCyan: '#0891B2',
-                        techBlue: '#2563EB',
-                        opsSlate: '#475569'
+                        brandPurple: '#7C3AED',
+                        brandGreen: '#059669',
+                        brandCyan: '#0891B2',
                     },
-                    fontFamily: { sans: ['Tajawal', 'sans-serif'] }
+                    fontFamily: {
+                        sans: ['Tajawal', 'Inter', 'sans-serif'],
+                    }
                 }
             }
         }
     </script>
 
     <style>
-        body { font-family: 'Tajawal', sans-serif; }
+        body { scroll-behavior: smooth; }
+        /* شريط التمرير */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 20px; }
+        .dark ::-webkit-scrollbar-thumb { background-color: #475569; }
         
-        /* Custom Scrollbar */
-        .custom-scroll::-webkit-scrollbar { width: 6px; }
-        .custom-scroll::-webkit-scrollbar-track { background: transparent; }
-        .custom-scroll::-webkit-scrollbar-thumb { background-color: #CBD5E1; border-radius: 20px; }
-        .dark .custom-scroll::-webkit-scrollbar-thumb { background-color: #475569; }
+        /* تأثيرات الزجاج */
+        .glass-effect { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
+        .dark .glass-effect { background: rgba(30, 41, 59, 0.95); }
         
-        /* Dark Mode Colors */
-        .dark body { background-color: #0f172a; color: #f8fafc; }
-        .dark .bg-white { background-color: #1e293b; border-color: #334155; }
-        .dark .text-slate-800 { color: #f8fafc; }
-        .dark .text-slate-500 { color: #94a3b8; }
-        .dark .border-slate-200, .dark .border-slate-100 { border-color: #334155; }
-        .dark .bg-slate-50 { background-color: #0f172a; }
-        .dark .hover\:bg-slate-50:hover { background-color: #334155; }
-
-        /* Animations */
-        .fade-in { animation: fadeIn 0.4s ease-out forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        /* نمط الخلفية باللون الأحمر */
+        .hero-pattern { background-image: radial-gradient(#FB4747 1px, transparent 1px); background-size: 24px 24px; opacity: 0.1; }
         
-        /* Sidebar Item */
-        .nav-item.active { background: #F1F5F9; border-right: 4px solid currentColor; font-weight: 700; }
-        .dark .nav-item.active { background: #334155; color: white; }
+        .product-card:hover { transform: translateY(-5px); }
         
-        /* AI Chat Bubble */
-        .chat-bubble { max-width: 85%; padding: 12px; border-radius: 12px; font-size: 0.85rem; line-height: 1.5; margin-bottom: 10px; position: relative; }
-        .chat-user { background: #E2E8F0; color: #1E293B; margin-left: auto; border-bottom-left-radius: 0; }
-        .dark .chat-user { background: #334155; color: #fff; }
-        .chat-ai { color: white; margin-right: auto; border-bottom-right-radius: 0; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
-
-        /* Notification Pulse */
-        .notification-pulse { animation: pulse-red 2s infinite; }
-        @keyframes pulse-red { 0% { box-shadow: 0 0 0 0 rgba(251, 71, 71, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(251, 71, 71, 0); } 100% { box-shadow: 0 0 0 0 rgba(251, 71, 71, 0); } }
-        
-        /* Modal */
-        .modal { transition: opacity 0.3s ease-in-out; opacity: 0; pointer-events: none; }
-        .modal.active { opacity: 1; pointer-events: auto; }
-
-        /* Mobile Sidebar */
-        @media (max-width: 768px) {
-            #mainSidebar { position: fixed; right: 0; height: 100%; z-index: 50; transform: translateX(100%); transition: transform 0.3s ease-in-out; }
-            #mainSidebar.open { transform: translateX(0); }
-            .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 40; }
-            .sidebar-overlay.active { display: block; }
-        }
+        /* تحسينات الخطوط للغة الإنجليزية */
+        html[lang="en"] body { font-family: 'Inter', sans-serif; }
     </style>
 </head>
-<body class="flex h-screen w-screen text-slate-800 bg-slate-50 transition-colors duration-300">
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-white font-sans transition-colors duration-300">
 
-    <!-- Mobile Overlay -->
-    <div id="mobileOverlay" class="sidebar-overlay" onclick="toggleMobileSidebar()"></div>
-
-    <!-- Login Screen -->
-    <div id="loginOverlay" class="fixed inset-0 z-50 bg-slate-900 flex items-center justify-center p-4 transition-all duration-500">
-        <div class="bg-white dark:bg-slate-800 rounded-3xl shadow-2xl w-full max-w-6xl h-[85vh] flex flex-col md:flex-row overflow-hidden">
-            <!-- Left Side: Branding -->
-            <div class="w-full md:w-1/3 bg-gradient-to-br from-brandDark to-slate-800 p-10 flex flex-col justify-between text-white relative overflow-hidden">
-                <div>
-                    <img src="https://ait.sa/wp-content/uploads/2024/03/cropped-Square-Logo.png" alt="Andromeda Logo" class="w-24 h-24 mb-6 rounded-2xl shadow-lg bg-white p-1 object-contain">
-                    <h1 class="text-4xl font-bold mb-2">AndroGov</h1>
-                    <p class="text-slate-400 text-sm">نظام تشغيل الشركة الموحد v9.0</p>
-                </div>
-                <div class="hidden md:block space-y-4 text-sm text-slate-300">
-                    <p><i class="fa-solid fa-fingerprint text-green-400 ml-2"></i>الحضور الذكي والبصمة (للجميع)</p>
-                    <p><i class="fa-solid fa-file-contract text-green-400 ml-2"></i>مركز السياسات واللوائح</p>
-                    <p><i class="fa-solid fa-bell text-green-400 ml-2"></i>نظام التنبيهات المخصص</p>
-                    <p><i class="fa-solid fa-robot text-green-400 ml-2"></i>المساعد الذكي التفاعلي</p>
-                </div>
-                <div class="text-xs text-slate-500">© 2026 Andromeda IT. All rights reserved.</div>
-            </div>
-
-            <!-- Right Side: Role Selection -->
-            <div class="w-full md:w-2/3 p-10 overflow-y-auto custom-scroll bg-slate-50 dark:bg-slate-900">
-                <h2 class="text-2xl font-bold text-slate-800 dark:text-white mb-6">اختر بوابة الدخول (Role Demo)</h2>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="roleGrid"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Sidebar -->
-    <aside class="w-64 bg-white border-l border-slate-200 flex flex-col shrink-0 z-20 transition-all duration-300" id="mainSidebar">
-        <div class="h-20 flex items-center px-6 border-b border-slate-100 dark:border-slate-700 cursor-pointer" onclick="logout()">
-            <img id="sidebarLogo" src="https://ait.sa/wp-content/uploads/2024/03/cropped-Square-Logo.png" class="w-10 h-10 rounded-lg shadow-sm bg-white p-0.5 object-contain transition-all border-2 border-transparent">
-            <div class="mr-3">
-                <h1 class="font-bold text-lg text-slate-800 dark:text-white tracking-tight">AndroGov</h1>
-                <p id="deptName" class="text-[10px] text-slate-400 font-semibold tracking-wider uppercase">SYSTEM</p>
-            </div>
-        </div>
-
-        <nav id="navMenu" class="flex-1 overflow-y-auto custom-scroll p-3 space-y-1"></nav>
-
-        <div id="sidebarProfile" class="p-4 bg-slate-50 dark:bg-slate-900 border-t border-slate-100 dark:border-slate-700 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" onclick="loadPage('profile')">
-            <div class="flex items-center gap-3">
-                <div class="relative">
-                    <img id="userAvatar" src="" class="w-10 h-10 rounded-full border-2 border-white dark:border-slate-600 shadow-sm object-cover">
-                    <span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full"></span>
-                </div>
-                <div class="flex-1 min-w-0">
-                    <p id="userName" class="text-sm font-bold text-slate-800 dark:text-white truncate">User</p>
-                    <p id="userTitle" class="text-[10px] text-slate-500 truncate">Role</p>
-                </div>
-                <i class="fa-solid fa-chevron-left text-xs text-slate-300"></i>
-            </div>
-        </div>
-    </aside>
-
-    <!-- Content Area -->
-    <main class="flex-1 flex flex-col h-full overflow-hidden bg-[#F8FAFC] dark:bg-slate-900 relative">
-        <header class="h-20 bg-white/90 dark:bg-slate-800/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-700 flex items-center justify-between px-4 md:px-8 shrink-0 z-10">
-            <div class="flex items-center gap-3">
-                <button onclick="toggleMobileSidebar()" class="md:hidden text-slate-600 dark:text-white p-2"><i class="fa-solid fa-bars text-xl"></i></button>
-                <div>
-                    <h2 id="pageHeaderTitle" class="text-xl md:text-2xl font-bold text-slate-800 dark:text-white">لوحة القيادة</h2>
-                    <p id="pageHeaderSub" class="text-xs text-slate-500 mt-1">آخر تحديث: منذ لحظات</p>
-                </div>
-            </div>
-
-            <div class="flex items-center gap-2 md:gap-4">
-                <div id="quickActionBtn" class="hidden md:block"></div>
-                
-                <!-- Language Switcher -->
-                <a href="en/index.html" class="w-10 h-10 rounded-full border border-slate-200 dark:border-slate-600 flex items-center justify-center hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors" title="Switch to English">
-                    <span class="font-bold text-xs dark:text-white">EN</span>
-                </a>
-
-                <!-- Dark Mode -->
-                <button onclick="toggleDarkMode()" class="w-10 h-10 rounded-full border border-slate-200 dark:border-slate-600 flex items-center justify-center hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors text-slate-600 dark:text-yellow-400">
-                    <i id="themeIcon" class="fa-solid fa-moon"></i>
-                </button>
-
-                <!-- Notifications -->
-                <div class="relative">
-                    <button onclick="toggleNotifications()" class="relative w-10 h-10 bg-white dark:bg-slate-700 rounded-full border border-slate-200 dark:border-slate-600 flex items-center justify-center hover:text-brandRed shadow-sm" id="notifBtn">
-                        <i class="fa-regular fa-bell dark:text-white"></i>
-                        <span id="notifBadge" class="absolute top-0 right-0 w-3 h-3 bg-red-500 rounded-full border-2 border-white notification-pulse"></span>
-                    </button>
-                    <div id="notifDropdown" class="absolute top-12 left-0 w-80 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-100 dark:border-slate-700 hidden overflow-hidden z-50">
-                        <div id="notifList" class="max-h-64 overflow-y-auto custom-scroll"></div>
+    <!-- شريط التنقل العلوي -->
+    <nav class="fixed top-0 w-full z-50 glass-effect border-b border-slate-200 dark:border-slate-700 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- الشعار -->
+                <div class="flex items-center gap-3">
+                    <img src="https://ait.sa/wp-content/uploads/2024/03/cropped-Square-Logo.png" class="w-10 h-10 rounded-lg bg-white p-0.5 shadow-sm" alt="Andromeda Logo">
+                    <div>
+                        <h1 class="font-bold text-xl tracking-tight text-slate-900 dark:text-white" data-i18n="company_name">أندروميدا</h1>
+                        <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wider" data-i18n="it_solutions">لحلول تقنية المعلومات</p>
                     </div>
                 </div>
 
-                <!-- زر تسجيل الخروج -->
-                <button onclick="logout()" class="text-slate-400 hover:text-red-600 transition-colors text-sm font-medium flex items-center gap-2 cursor-pointer mr-2" title="تسجيل الخروج">
-                    <i class="fa-solid fa-power-off"></i>
-                    <span class="hidden md:inline">خروج</span>
-                </button>
-            </div>
-        </header>
+                <!-- روابط التنقل (سطح المكتب) -->
+                <div class="hidden md:flex items-center gap-8">
+                    <a href="#about" class="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-brandRed transition" data-i18n="nav_about">عن الشركة</a>
+                    <a href="#products" class="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-brandRed transition" data-i18n="nav_products">منتجاتنا</a>
+                    <a href="#features" class="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-brandRed transition" data-i18n="nav_features">المزايا</a>
+                </div>
 
-        <div id="mainContainer" class="flex-1 overflow-y-auto custom-scroll p-4 md:p-8 pb-20" onclick="closeDropdowns()"></div>
-    </main>
-
-    <!-- AI Panel -->
-    <aside id="aiSidebar" class="fixed left-0 top-0 h-full w-full md:w-96 bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 shadow-2xl z-50 transform -translate-x-full transition-transform duration-300 flex flex-col">
-        <div id="aiHeader" class="h-20 flex items-center justify-between px-6 shrink-0 text-white bg-slate-800">
-            <div class="flex items-center gap-3">
-                <i class="fa-solid fa-robot text-lg"></i>
-                <div>
-                    <h3 id="aiName" class="font-bold text-sm">المساعد الذكي</h3>
-                    <p id="aiRole" class="text-[10px] opacity-80">General Mode</p>
+                <!-- أزرار التحكم -->
+                <div class="flex items-center gap-3">
+                    <!-- زر اللغة -->
+                    <button onclick="toggleLanguage()" class="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center hover:bg-slate-200 dark:hover:bg-slate-700 transition font-bold text-xs" id="langLabel">
+                        EN
+                    </button>
+                    <!-- زر المظهر -->
+                    <button onclick="toggleDarkMode()" class="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center hover:bg-slate-200 dark:hover:bg-slate-700 transition text-slate-600 dark:text-yellow-400">
+                        <i id="themeIcon" class="fa-solid fa-moon"></i>
+                    </button>
+                    <!-- زر تسجيل الدخول للموظفين -->
+                    <a href="login.html" class="px-5 py-2 bg-brandRed text-white text-sm font-bold rounded-full hover:bg-red-700 transition shadow-lg shadow-red-500/30 flex items-center gap-2">
+                        <i class="fa-solid fa-lock text-xs"></i>
+                        <span data-i18n="nav_login">دخول الموظفين</span>
+                    </a>
                 </div>
             </div>
-            <button onclick="toggleAI()" class="text-white hover:text-red-400"><i class="fa-solid fa-xmark text-lg"></i></button>
         </div>
-        <div id="chatArea" class="flex-1 bg-slate-50 dark:bg-slate-900 p-4 overflow-y-auto custom-scroll space-y-4"></div>
-        <div class="p-4 bg-white dark:bg-slate-800 border-t border-slate-100 dark:border-slate-700">
-            <div class="flex gap-2">
-                <input id="aiInput" type="text" placeholder="اكتب طلبك هنا..." class="flex-1 bg-slate-100 dark:bg-slate-700 border-0 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brandBlue dark:text-white">
-                <button onclick="sendMessage()" class="bg-slate-800 text-white w-12 rounded-xl hover:bg-slate-700"><i class="fa-solid fa-paper-plane"></i></button>
+    </nav>
+
+    <!-- قسم البطل (Hero Section) -->
+    <section class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden bg-white dark:bg-slate-900">
+        <div class="hero-pattern absolute inset-0 z-0"></div>
+        <!-- دائرة جمالية خلفية (حمراء) -->
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-brandRed/5 rounded-full blur-3xl -z-10"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+            <span class="inline-block py-1.5 px-4 rounded-full bg-red-50 dark:bg-slate-800 text-brandRed text-xs font-bold mb-6 border border-red-100 dark:border-slate-700 shadow-sm animate-pulse" data-i18n="hero_tag">
+                شركة مساهمة سعودية مقفلة 🇸🇦
+            </span>
+            <h1 class="text-5xl md:text-7xl font-extrabold text-slate-900 dark:text-white mb-6 leading-tight tracking-tight">
+                <span data-i18n="hero_title_1">نبتكر الحلول الرقمية</span> <br> 
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-brandRed to-orange-500" data-i18n="hero_title_2">لمستقبل أكثر ذكاءً</span>
+            </h1>
+            <p class="text-lg md:text-xl text-slate-600 dark:text-slate-400 mb-10 max-w-3xl mx-auto leading-relaxed" data-i18n="hero_desc">
+                منذ 2014، تقود أندروميدا التحول الرقمي في المملكة عبر حلول مبتكرة في الرعاية الصحية، المزادات العقارية، والاتصالات الموحدة، مع التزام تام بالأمان والامتثال المحلي.
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="#products" class="px-8 py-4 bg-brandRed text-white rounded-xl font-bold hover:bg-red-700 transition shadow-xl hover:shadow-brandRed/30 hover:-translate-y-1 transform duration-200" data-i18n="hero_cta_1">
+                    اكتشف حلولنا
+                </a>
+                <a href="#about" class="px-8 py-4 bg-white dark:bg-slate-800 text-slate-700 dark:text-white border border-slate-200 dark:border-slate-700 rounded-xl font-bold hover:bg-slate-50 dark:hover:bg-slate-700 transition hover:-translate-y-1 transform duration-200" data-i18n="hero_cta_2">
+                    تعرف علينا أكثر
+                </a>
+            </div>
+            
+            <!-- شريط الشركاء -->
+            <div class="mt-16 pt-8 border-t border-slate-100 dark:border-slate-800">
+                <p class="text-xs text-slate-400 mb-6 font-bold uppercase tracking-widest" data-i18n="partners_title">شركاء النجاح</p>
+                <div class="flex justify-center gap-8 opacity-50 grayscale hover:grayscale-0 transition-all duration-500 text-slate-400 dark:text-slate-500">
+                    <i class="fa-solid fa-hospital text-3xl"></i>
+                    <i class="fa-solid fa-building-columns text-3xl"></i>
+                    <i class="fa-solid fa-gavel text-3xl"></i>
+                    <i class="fa-solid fa-globe text-3xl"></i>
+                </div>
             </div>
         </div>
-    </aside>
+    </section>
 
-    <button onclick="toggleAI()" class="fixed bottom-8 left-8 w-14 h-14 bg-slate-800 text-white rounded-full shadow-2xl flex items-center justify-center hover:scale-110 transition-transform z-40 border-4 border-white dark:border-slate-600">
-        <i class="fa-solid fa-robot text-xl"></i>
-    </button>
+    <!-- قسم المنتجات (Products) -->
+    <section id="products" class="py-24 bg-slate-50 dark:bg-slate-800/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-20">
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-4" data-i18n="products_title">منظومة حلولنا المتكاملة</h2>
+                <p class="text-slate-500 dark:text-slate-400 max-w-2xl mx-auto" data-i18n="products_desc">نقدم مجموعة من الأنظمة الرقمية المترابطة التي تغطي احتياجات القطاعات الحيوية بأعلى معايير الجودة.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- AndroHealth -->
+                <div class="product-card bg-white dark:bg-slate-800 p-8 rounded-3xl shadow-lg border border-slate-100 dark:border-slate-700 transition-all duration-300 relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 rtl:right-0 rtl:left-auto ltr:right-0 ltr:left-auto w-24 h-24 bg-brandRed/10 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-150"></div>
+                    <div class="w-16 h-16 bg-red-50 dark:bg-red-900/20 rounded-2xl flex items-center justify-center text-brandRed text-3xl mb-6 relative z-10">
+                        <i class="fa-solid fa-heart-pulse"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-slate-900 dark:text-white mb-3">AndroHealth</h3>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 mb-6 leading-relaxed min-h-[80px]" data-i18n="prod_androhealth_desc">
+                        نظام إدارة المستشفيات (HIS) الشامل. يدعم الربط مع "نفيس"، الفوترة، السجلات الطبية، وبوابة المريض الموحدة.
+                    </p>
+                    <a href="#" class="inline-flex items-center text-brandRed font-bold text-sm hover:gap-2 transition-all">
+                        <span data-i18n="read_more">المزيد</span> <i class="fa-solid fa-arrow-left mr-2 rtl:mr-2 ltr:ml-2 rtl:rotate-0 ltr:rotate-180 transform transition-transform"></i>
+                    </a>
+                </div>
+
+                <!-- BQ Auctions -->
+                <div class="product-card bg-white dark:bg-slate-800 p-8 rounded-3xl shadow-lg border border-slate-100 dark:border-slate-700 transition-all duration-300 relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 rtl:right-0 rtl:left-auto ltr:right-0 ltr:left-auto w-24 h-24 bg-brandPurple/10 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-150"></div>
+                    <div class="w-16 h-16 bg-purple-50 dark:bg-purple-900/20 rounded-2xl flex items-center justify-center text-brandPurple text-3xl mb-6 relative z-10">
+                        <i class="fa-solid fa-gavel"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-slate-900 dark:text-white mb-3">BQ Auctions</h3>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 mb-6 leading-relaxed min-h-[80px]" data-i18n="prod_bq_desc">
+                        منصة المزادات العقارية الذكية (العرض الأفضل). توثيق وإدارة الأصول العقارية بشفافية تامة وموثوقية عالية.
+                    </p>
+                    <a href="#" class="inline-flex items-center text-brandPurple font-bold text-sm hover:gap-2 transition-all">
+                        <span data-i18n="read_more">المزيد</span> <i class="fa-solid fa-arrow-left mr-2 rtl:mr-2 ltr:ml-2 rtl:rotate-0 ltr:rotate-180 transform transition-transform"></i>
+                    </a>
+                </div>
+
+                <!-- CyanCare -->
+                <div class="product-card bg-white dark:bg-slate-800 p-8 rounded-3xl shadow-lg border border-slate-100 dark:border-slate-700 transition-all duration-300 relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 rtl:right-0 rtl:left-auto ltr:right-0 ltr:left-auto w-24 h-24 bg-brandCyan/10 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-150"></div>
+                    <div class="w-16 h-16 bg-cyan-50 dark:bg-cyan-900/20 rounded-2xl flex items-center justify-center text-brandCyan text-3xl mb-6 relative z-10">
+                        <i class="fa-solid fa-user-doctor"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-slate-900 dark:text-white mb-3">CyanCare</h3>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 mb-6 leading-relaxed min-h-[80px]" data-i18n="prod_cyan_desc">
+                        خدمات الطب الاتصالي المتطورة. استشارات عن بعد، وصفات إلكترونية، وربط مباشر وآمن مع الأطباء.
+                    </p>
+                    <a href="#" class="inline-flex items-center text-brandCyan font-bold text-sm hover:gap-2 transition-all">
+                        <span data-i18n="read_more">المزيد</span> <i class="fa-solid fa-arrow-left mr-2 rtl:mr-2 ltr:ml-2 rtl:rotate-0 ltr:rotate-180 transform transition-transform"></i>
+                    </a>
+                </div>
+
+                <!-- DutiesBook -->
+                <div class="product-card bg-white dark:bg-slate-800 p-8 rounded-3xl shadow-lg border border-slate-100 dark:border-slate-700 transition-all duration-300 relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 rtl:right-0 rtl:left-auto ltr:right-0 ltr:left-auto w-24 h-24 bg-brandGreen/10 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-150"></div>
+                    <div class="w-16 h-16 bg-green-50 dark:bg-green-900/20 rounded-2xl flex items-center justify-center text-brandGreen text-3xl mb-6 relative z-10">
+                        <i class="fa-brands fa-whatsapp"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-slate-900 dark:text-white mb-3">DutiesBook</h3>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 mb-6 leading-relaxed min-h-[80px]" data-i18n="prod_duties_desc">
+                        منصة الاتصالات الموحدة للأعمال. إدارة محادثات WhatsApp و Instagram للشركات في واجهة واحدة.
+                    </p>
+                    <a href="#" class="inline-flex items-center text-brandGreen font-bold text-sm hover:gap-2 transition-all">
+                        <span data-i18n="read_more">المزيد</span> <i class="fa-solid fa-arrow-left mr-2 rtl:mr-2 ltr:ml-2 rtl:rotate-0 ltr:rotate-180 transform transition-transform"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- قسم عن الشركة والمزايا (About & Features) -->
+    <section id="features" class="py-24 relative overflow-hidden bg-white dark:bg-slate-900">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col lg:flex-row items-center gap-16">
+                <!-- النص -->
+                <div class="lg:w-1/2">
+                    <div class="inline-block px-4 py-1 mb-4 rounded-full bg-red-50 dark:bg-slate-800 text-brandRed text-xs font-bold uppercase tracking-wider" data-i18n="why_us_tag">
+                        لماذا أندروميدا؟
+                    </div>
+                    <h2 class="text-4xl font-bold text-slate-900 dark:text-white mb-6 leading-tight">
+                        <span data-i18n="why_us_title">شريكك التقني الموثوق</span> <br> <span class="text-slate-400" data-i18n="why_us_subtitle">لنمو مستدام وآمن</span>
+                    </h2>
+                    <p class="text-slate-600 dark:text-slate-300 mb-8 leading-relaxed text-lg" data-i18n="about_desc">
+                        نحن شركة أندروميدا لتقنية المعلومات، شركة مساهمة سعودية مقفلة مقرها الرياض. منذ 2014، نلتزم بتقديم حلول برمجية مبتكرة تدعم رؤية المملكة 2030، مع التركيز على توطين التقنية وأمن البيانات.
+                    </p>
+                    
+                    <div class="space-y-6">
+                        <div class="flex gap-4">
+                            <div class="w-12 h-12 rounded-full bg-red-50 dark:bg-slate-800 flex items-center justify-center text-brandRed shrink-0">
+                                <i class="fa-solid fa-shield-halved text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-slate-900 dark:text-white text-lg" data-i18n="feat_security">أمان وامتثال تام</h4>
+                                <p class="text-sm text-slate-500 dark:text-slate-400" data-i18n="feat_security_desc">استضافة محلية للبيانات وامتثال كامل لمتطلبات الأمن السيبراني والصحة.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="w-12 h-12 rounded-full bg-red-50 dark:bg-slate-800 flex items-center justify-center text-brandRed shrink-0">
+                                <i class="fa-solid fa-plug text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-slate-900 dark:text-white text-lg" data-i18n="feat_integration">تكامل حكومي شامل</h4>
+                                <p class="text-sm text-slate-500 dark:text-slate-400" data-i18n="feat_integration_desc">ربط مباشر مع منصات "نفيس"، "سداد"، و"أبشر" لضمان سلاسة العمليات.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="w-12 h-12 rounded-full bg-red-50 dark:bg-slate-800 flex items-center justify-center text-brandRed shrink-0">
+                                <i class="fa-solid fa-headset text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-slate-900 dark:text-white text-lg" data-i18n="feat_support">دعم فني متخصص</h4>
+                                <p class="text-sm text-slate-500 dark:text-slate-400" data-i18n="feat_support_desc">فريق دعم فني محلي جاهز لخدمتكم على مدار الساعة لضمان استمرارية الأعمال.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- الإحصائيات -->
+                <div class="lg:w-1/2 grid grid-cols-2 gap-6">
+                    <div class="bg-slate-50 dark:bg-slate-800 p-8 rounded-3xl text-center border border-slate-100 dark:border-slate-700 hover:shadow-lg transition-shadow">
+                        <h3 class="text-5xl font-extrabold text-brandRed mb-2">+10</h3>
+                        <p class="text-sm font-medium text-slate-500 dark:text-slate-400" data-i18n="stat_years">سنوات من الخبرة</p>
+                    </div>
+                    <div class="bg-slate-50 dark:bg-slate-800 p-8 rounded-3xl text-center border border-slate-100 dark:border-slate-700 hover:shadow-lg transition-shadow mt-8">
+                        <h3 class="text-5xl font-extrabold text-brandPurple mb-2">+50</h3>
+                        <p class="text-sm font-medium text-slate-500 dark:text-slate-400" data-i18n="stat_projects">مشروع ناجح</p>
+                    </div>
+                    <div class="bg-slate-50 dark:bg-slate-800 p-8 rounded-3xl text-center border border-slate-100 dark:border-slate-700 hover:shadow-lg transition-shadow">
+                        <h3 class="text-5xl font-extrabold text-brandGreen mb-2">100%</h3>
+                        <p class="text-sm font-medium text-slate-500 dark:text-slate-400" data-i18n="stat_compliance">امتثال للأنظمة</p>
+                    </div>
+                    <div class="bg-slate-50 dark:bg-slate-800 p-8 rounded-3xl text-center border border-slate-100 dark:border-slate-700 hover:shadow-lg transition-shadow mt-8">
+                        <h3 class="text-5xl font-extrabold text-brandCyan mb-2">24/7</h3>
+                        <p class="text-sm font-medium text-slate-500 dark:text-slate-400" data-i18n="stat_support">دعم متواصل</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- AndroGov Section -->
+    <section class="py-24 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-12 bg-slate-50 dark:bg-slate-800 rounded-3xl p-10 border border-slate-100 dark:border-slate-700 shadow-sm">
+                <div class="md:w-2/3">
+                    <span class="inline-block py-1 px-3 mb-4 rounded-full bg-brandRed/10 text-brandRed text-xs font-bold uppercase tracking-wider">نظام التشغيل الداخلي</span>
+                    <h2 class="text-3xl font-bold text-slate-900 dark:text-white mb-4">AndroGov</h2>
+                    <p class="text-slate-600 dark:text-slate-300 leading-relaxed text-lg mb-6" data-i18n="androgov_desc">
+                        نظام إدارة العمليات الموحد لشركة أندروميدا. يربط جميع الإدارات والموظفين في منصة واحدة آمنة، مدعومة بالذكاء الاصطناعي (Gemini) لتحليل البيانات وتسهيل اتخاذ القرارات.
+                    </p>
+                    <ul class="flex flex-wrap gap-6 text-sm text-slate-500 dark:text-slate-400 font-medium">
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-brandRed"></i> <span data-i18n="feat_sso">دخول موحد (SSO)</span></li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-brandRed"></i> <span data-i18n="feat_ai">مساعد ذكي</span></li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-brandRed"></i> <span data-i18n="feat_analytics">تحليلات فورية</span></li>
+                    </ul>
+                </div>
+                <div class="md:w-1/3 text-center">
+                    <div class="w-24 h-24 bg-white dark:bg-slate-700 rounded-full flex items-center justify-center shadow-lg mx-auto mb-6">
+                        <img src="https://ait.sa/wp-content/uploads/2024/03/cropped-Square-Logo.png" class="w-12 h-12" alt="Logo">
+                    </div>
+                    <a href="login.html" class="inline-block px-8 py-3 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-xl font-bold hover:opacity-90 transition shadow-lg" data-i18n="androgov_btn">
+                        الدخول للنظام
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- دعوة لاتخاذ إجراء (CTA) -->
+    <section class="py-20 bg-brandDark relative overflow-hidden text-center">
+        <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
+        <div class="max-w-4xl mx-auto px-4 relative z-10">
+            <h2 class="text-3xl md:text-4xl font-bold text-white mb-6" data-i18n="cta_title">جاهز لنقل أعمالك للمستوى التالي؟</h2>
+            <p class="text-slate-300 mb-8 text-lg" data-i18n="cta_desc">انضم إلى قائمة عملائنا المميزين واستفد من حلولنا التقنية المتكاملة.</p>
+            <div class="flex justify-center gap-4">
+                <a href="#footer" class="px-8 py-4 bg-brandRed text-white rounded-xl font-bold hover:bg-red-600 transition shadow-lg hover:shadow-red-500/50" data-i18n="cta_button">تواصل معنا</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- التذييل (Footer) -->
+    <footer id="footer" class="bg-slate-900 text-slate-400 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <div class="col-span-1 md:col-span-2">
+                    <img src="https://ait.sa/wp-content/uploads/2024/03/cropped-Square-Logo.png" class="w-12 h-12 rounded-lg bg-white p-0.5 mb-4" alt="Logo">
+                    <p class="text-sm leading-relaxed max-w-md" data-i18n="footer_desc">
+                        شركة اندروميدا لتقنية المعلومات. شركة مساهمة سعودية مقفلة متخصصة في تطوير الحلول الرقمية، البنية التحتية، والأنظمة الأمنية.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="text-white font-bold mb-4" data-i18n="quick_links">روابط سريعة</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#about" class="hover:text-brandRed transition" data-i18n="nav_about">عن الشركة</a></li>
+                        <li><a href="#products" class="hover:text-brandRed transition" data-i18n="nav_products">المنتجات</a></li>
+                        <li><a href="login.html" class="hover:text-brandRed transition" data-i18n="nav_login">بوابة الموظفين</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-white font-bold mb-4" data-i18n="contact_us">تواصل معنا</h4>
+                    <ul class="space-y-2 text-sm">
+                        <!-- تم تحديث العنوان -->
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-location-dot text-brandRed"></i> <span data-i18n="address">الرياض، حي الازدهار</span></li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-envelope text-brandRed"></i> info@androomeda.com</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-phone text-brandRed"></i> 920000000</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-slate-800 pt-8 text-center text-xs">
+                <p data-i18n="copyright">&copy; 2026 شركة اندروميدا لتقنية المعلومات. جميع الحقوق محفوظة.</p>
+            </div>
+        </div>
+    </footer>
 
     <script>
-        // ================== ORIGINAL DATA STORE (Complete) ==================
-        const db = {
-            roles: {
-                'ceo': {
-                    id: 'ceo', name: 'هشام السحيباني', title: 'الرئيس التنفيذي', color: 'ceoGold', 
-                    bgClass: 'bg-amber-600', icon: 'fa-chess-king', dept: 'EXECUTIVE SUITE',
-                    welcome: 'أهلاً أستاذ هشام. القوائم المالية الأولية لـ Q3 جاهزة للمراجعة. هل تود الاطلاع عليها؟',
-                    stats: [
-                        { label: 'الإيرادات (YTD)', value: '12.4M', trend: '+15%', color: 'green' },
-                        { label: 'التدفق النقدي', value: '4.2M', trend: 'Healthy', color: 'blue' },
-                        { label: 'موافقات معلقة', value: '3', trend: 'Urgent', color: 'red' }
-                    ],
-                    menu: [
-                        { id: 'dashboard', label: 'الرؤية العامة', icon: 'fa-chart-line' },
-                        { id: 'approvals', label: 'مركز الاعتماد', icon: 'fa-file-signature' },
-                        { id: 'finance', label: 'التقارير المالية', icon: 'fa-coins' },
-                        { id: 'strategy', label: 'الخطة الاستراتيجية', icon: 'fa-map' },
-                        { id: 'attendance', label: 'بصمتي', icon: 'fa-fingerprint' },
-                        { id: 'profile', label: 'ملفي الشخصي', icon: 'fa-id-card' }
-                    ],
-                    action: { label: 'توقيع عقود', icon: 'fa-pen-nib' },
-                    notifications: [
-                        { msg: 'طلب شراء أصول بقيمة 50k بانتظار الاعتماد', type: 'urgent', time: '10m' },
-                        { msg: 'تقرير الأداء الشهري جاهز', type: 'info', time: '1h' },
-                        { msg: 'دعوة لاجتماع مجلس الإدارة', type: 'normal', time: '2h' }
-                    ],
-                    policies: ['لائحة الصلاحيات المالية', 'سياسة الحوكمة الاستراتيجية', 'ميثاق مجلس الإدارة']
-                },
-                'grc': {
-                    id: 'grc', name: 'أيمن المغربي', title: 'مسؤول الحوكمة (GRCO)', color: 'grcRed', 
-                    bgClass: 'bg-red-600', icon: 'fa-scale-balanced', dept: 'GOVERNANCE',
-                    welcome: 'مرحباً أستاذ أيمن. هناك 3 سياسات تحتاج للتحديث لتوافق مع نظام الشركات الجديد.',
-                    stats: [
-                        { label: 'نسبة الامتثال', value: '94%', trend: '+2%', color: 'green' },
-                        { label: 'المخاطر النشطة', value: '2', trend: 'High', color: 'red' },
-                        { label: 'السياسات', value: '15', trend: 'Updated', color: 'blue' }
-                    ],
-                    menu: [
-                        { id: 'dashboard', label: 'مركز الامتثال', icon: 'fa-shield-halved' },
-                        { id: 'risks', label: 'سجل المخاطر', icon: 'fa-triangle-exclamation' },
-                        { id: 'policies', label: 'السياسات واللوائح', icon: 'fa-file-contract' },
-                        { id: 'audit', label: 'التدقيق الداخلي', icon: 'fa-magnifying-glass' },
-                        { id: 'attendance', label: 'بصمتي', icon: 'fa-fingerprint' },
-                        { id: 'profile', label: 'ملفي الشخصي', icon: 'fa-id-card' }
-                    ],
-                    action: { label: 'إضافة سياسة', icon: 'fa-plus' },
-                    notifications: [
-                        { msg: 'محاولة دخول غير مصرح (تم الحظر)', type: 'urgent', time: '5m' },
-                        { msg: 'تذكير: تحديث سجل المخاطر الربع سنوي', type: 'normal', time: '1d' }
-                    ],
-                    policies: ['دليل الحوكمة الشامل', 'سياسة إدارة المخاطر', 'سياسة الإبلاغ عن المخالفات']
-                },
-                'hr': {
-                    id: 'hr', name: 'منصور اليامي', title: 'مدير الشؤون الإدارية', color: 'hrPurple', 
-                    bgClass: 'bg-purple-600', icon: 'fa-users-gear', dept: 'HR & ADMIN',
-                    welcome: 'أهلاً أستاذ منصور. نسبة الحضور اليوم 96%. هناك 4 عقود تنتهي هذا الشهر. هل أرسل تذكيراً؟',
-                    stats: [
-                        { label: 'عدد الموظفين', value: '42', trend: '+3', color: 'blue' },
-                        { label: 'الحضور اليوم', value: '38', trend: '96%', color: 'green' },
-                        { label: 'انتهاء وثائق', value: '5', trend: 'Warning', color: 'yellow' }
-                    ],
-                    menu: [
-                        { id: 'dashboard', label: 'شؤون الموظفين', icon: 'fa-users' },
-                        { id: 'recruitment', label: 'التوظيف', icon: 'fa-user-plus' },
-                        { id: 'payroll', label: 'الرواتب', icon: 'fa-money-bill' },
-                        { id: 'attendance', label: 'مراقبة الحضور', icon: 'fa-fingerprint' }, 
-                        { id: 'profile', label: 'ملفي الشخصي', icon: 'fa-id-card' }
-                    ],
-                    action: { label: 'قرار إداري', icon: 'fa-pen' },
-                    notifications: [
-                        { msg: '5 إقامات تنتهي خلال شهر', type: 'urgent', time: '2h' },
-                        { msg: 'طلب عذر "نسيان بصمة" من خالد', type: 'normal', time: '3h' },
-                        { msg: 'اعتراض على الحضور وارد', type: 'normal', time: '4h' }
-                    ],
-                    policies: ['لائحة تنظيم العمل', 'سلم الرواتب والمزايا', 'سياسة الإجازات والدوام']
-                },
-                'finance': {
-                    id: 'finance', name: 'محمد البخيتي', title: 'المدير المالي (CFO)', color: 'finGreen', 
-                    bgClass: 'bg-emerald-600', icon: 'fa-money-bill-trend-up', dept: 'FINANCE',
-                    welcome: 'أهلاً أستاذ محمد. تم استلام فاتورة من مورد "أمازون" بقيمة 50,000 ريال للموافقة.',
-                    stats: [
-                        { label: 'السيولة النقدية', value: '4.2M', trend: 'Stable', color: 'green' },
-                        { label: 'مصاريف (MTD)', value: '850k', trend: 'On Budget', color: 'blue' },
-                        { label: 'فواتير مستحقة', value: '4', trend: 'Due Soon', color: 'yellow' }
-                    ],
-                    menu: [
-                        { id: 'dashboard', label: 'المركز المالي', icon: 'fa-chart-pie' },
-                        { id: 'invoices', label: 'الموافقات المالية', icon: 'fa-file-invoice-dollar' },
-                        { id: 'budget', label: 'الموازنات', icon: 'fa-scale-balanced' },
-                        { id: 'attendance', label: 'بصمتي', icon: 'fa-fingerprint' },
-                        { id: 'profile', label: 'ملفي الشخصي', icon: 'fa-id-card' }
-                    ],
-                    action: { label: 'تقرير مالي', icon: 'fa-print' },
-                    notifications: [
-                        { msg: 'تم إيداع دفعة عميل (120,000 ر.س)', type: 'success', time: '30m' },
-                        { msg: 'طلب اعتماد صرف رواتب أكتوبر', type: 'urgent', time: '4h' }
-                    ],
-                    policies: ['السياسة المالية والمحاسبية', 'سياسة المشتريات والتعاقد', 'دليل المصروفات النثرية']
-                },
-                'medical': {
-                    id: 'medical', name: 'د. وعد حسين', title: 'المشرف الطبي العام', color: 'medCyan', 
-                    bgClass: 'bg-cyan-600', icon: 'fa-heart-pulse', dept: 'MEDICAL PRODUCT',
-                    welcome: 'مرحباً دكتورة وعد. تم تحديث بروتوكول وزارة الصحة للوصفات المخدرة. هل أطلعك عليه؟',
-                    stats: [
-                        { label: 'امتثال الأنظمة', value: '100%', trend: 'MOH', color: 'green' },
-                        { label: 'تذاكر طبية', value: '5', trend: 'Clients', color: 'red' },
-                        { label: 'ميزات قيد التطوير', value: '8', trend: 'Dev', color: 'blue' }
-                    ],
-                    menu: [
-                        { id: 'dashboard', label: 'الإشراف الطبي', icon: 'fa-stethoscope' },
-                        { id: 'compliance', label: 'الامتثال (Compliance)', icon: 'fa-clipboard-check' },
-                        { id: 'requirements', label: 'المتطلبات الطبية', icon: 'fa-list-check' },
-                        { id: 'attendance', label: 'بصمتي', icon: 'fa-fingerprint' },
-                        { id: 'profile', label: 'ملفي الشخصي', icon: 'fa-id-card' }
-                    ],
-                    action: { label: 'مراجعة ميزة', icon: 'fa-magnifying-glass-chart' },
-                    notifications: [
-                        { msg: 'تحديث جديد لمعايير "نفيس"', type: 'urgent', time: '1d' },
-                        { msg: 'شكوى طبية من عميل VIP', type: 'normal', time: '2d' }
-                    ],
-                    policies: ['سياسة السجلات الطبية', 'معايير الترميز الطبي (ICD-10)', 'بروتوكول الطب الاتصالي']
-                },
-                'tech_lead': {
-                    id: 'tech_lead', name: 'رند الحوراني', title: 'مدير الفريق التقني', color: 'techBlue', 
-                    bgClass: 'bg-blue-600', icon: 'fa-code', dept: 'TECH TEAM (JOR)',
-                    welcome: 'Hi Rand. Server load is stable. 2 Pull Requests waiting for review.',
-                    stats: [
-                        { label: 'Active Sprints', value: '2', trend: 'On Track', color: 'green' },
-                        { label: 'Pending PRs', value: '5', trend: 'Review', color: 'blue' },
-                        { label: 'Bugs', value: '0', trend: 'Critical', color: 'gray' }
-                    ],
-                    menu: [
-                        { id: 'dashboard', label: 'Sprint Board', icon: 'fa-kanban' },
-                        { id: 'attendance', label: 'My Logs', icon: 'fa-fingerprint' },
-                        { id: 'servers', label: 'System Status', icon: 'fa-server' },
-                        { id: 'profile', label: 'My Profile', icon: 'fa-id-card' }
-                    ],
-                    action: { label: 'Deploy', icon: 'fa-cloud-arrow-up' },
-                    notifications: [
-                        { msg: 'Pipeline Build Failed (AndroHealth)', type: 'urgent', time: '10m' },
-                        { msg: 'New Merge Request from Ali', type: 'normal', time: '1h' },
-                        { msg: 'تم تسجيل غياب (أمس)', type: 'urgent', time: '1d' }
-                    ],
-                    policies: ['Coding Standards Guidelines', 'Deployment Policy', 'Security Best Practices']
-                },
-                'pssc': {
-                    id: 'pssc', name: 'هادي', title: 'منسق المشتريات (PSSC)', color: 'opsSlate', 
-                    bgClass: 'bg-slate-600', icon: 'fa-box-open', dept: 'PROCUREMENT',
-                    welcome: 'أهلاً هادي. هناك طلب شراء أثاث جديد يحتاج إلى 3 عروض أسعار.',
-                    stats: [
-                        { label: 'طلبات جديدة', value: '4', trend: 'New', color: 'blue' },
-                        { label: 'تحت التوصيل', value: '12', trend: 'Pending', color: 'yellow' },
-                        { label: 'الزوار اليوم', value: '15', trend: 'Reception', color: 'gray' }
-                    ],
-                    menu: [
-                        { id: 'dashboard', label: 'المشتريات', icon: 'fa-cart-shopping' },
-                        { id: 'attendance', label: 'بصمتي', icon: 'fa-fingerprint' },
-                        { id: 'assets', label: 'العهد والأصول', icon: 'fa-barcode' },
-                        { id: 'profile', label: 'ملفي الشخصي', icon: 'fa-id-card' }
-                    ],
-                    action: { label: 'أمر شراء', icon: 'fa-file-contract' },
-                    notifications: [
-                        { msg: 'تم اعتماد طلب شراء السيرفرات', type: 'success', time: '1h' },
-                        { msg: 'طلب صيانة جديد (مكيفات)', type: 'normal', time: '3h' }
-                    ],
-                    policies: ['دليل الموردين المعتمدين', 'سياسة المشتريات والعقود', 'إجراءات استلام الأصول']
-                },
-                'cs': {
-                    id: 'cs', name: 'خالد', title: 'أخصائي خدمة عملاء', color: 'hrPurple', 
-                    bgClass: 'bg-pink-600', icon: 'fa-headset', dept: 'CUSTOMER SUCCESS',
-                    welcome: 'صباح الخير خالد. عميل "مستشفى الحياة" يطلب دعم عاجل.',
-                    stats: [
-                        { label: 'تذاكر مفتوحة', value: '5', trend: '2 High', color: 'red' },
-                        { label: 'رضا العملاء', value: '4.8', trend: 'Excellent', color: 'green' },
-                        { label: 'مواعيد اليوم', value: '3', trend: 'Meetings', color: 'blue' }
-                    ],
-                    menu: [
-                        { id: 'dashboard', label: 'لوحة الدعم', icon: 'fa-headset' },
-                        { id: 'tickets', label: 'التذاكر', icon: 'fa-ticket' },
-                        { id: 'attendance', label: 'بصمتي', icon: 'fa-fingerprint' },
-                        { id: 'profile', label: 'ملفي الشخصي', icon: 'fa-id-card' }
-                    ],
-                    action: { label: 'تذكرة جديدة', icon: 'fa-plus' },
-                    notifications: [
-                        { msg: 'تذكرة جديدة #992 (عالية الأهمية)', type: 'urgent', time: '5m' },
-                        { msg: 'تم قبول عذر التأخير', type: 'success', time: '1h' }
-                    ],
-                    policies: ['دليل التعامل مع العملاء', 'اتفاقية مستوى الخدمة (SLA)', 'سيناريوهات الرد (Scripts)']
-                }
+        const translations = {
+            ar: {
+                company_name: "اندروميدا",
+                it_solutions: "لحلول تقنية المعلومات",
+                nav_about: "عن الشركة",
+                nav_products: "منتجاتنا",
+                nav_features: "المزايا",
+                nav_login: "دخول الموظفين",
+                hero_tag: "شركة مساهمة سعودية مقفلة 🇸🇦",
+                hero_title_1: "نبتكر الحلول الرقمية",
+                hero_title_2: "لمستقبل أكثر ذكاءً",
+                hero_desc: "منذ 2014، تقود أندروميدا التحول الرقمي في المملكة عبر حلول مبتكرة في الرعاية الصحية، المزادات العقارية، والاتصالات الموحدة، مع التزام تام بالأمان والامتثال المحلي.",
+                hero_cta_1: "اكتشف حلولنا",
+                hero_cta_2: "تعرف علينا أكثر",
+                partners_title: "شركاء النجاح",
+                products_title: "منظومة حلولنا المتكاملة",
+                products_desc: "نقدم مجموعة من الأنظمة الرقمية المترابطة التي تغطي احتياجات القطاعات الحيوية بأعلى معايير الجودة.",
+                prod_androhealth_desc: "نظام إدارة المستشفيات (HIS) الشامل. يدعم الربط مع 'نفيس'، الفوترة، السجلات الطبية، وبوابة المريض الموحدة.",
+                prod_bq_desc: "منصة المزادات العقارية الذكية (العرض الأفضل). توثيق وإدارة الأصول العقارية بشفافية تامة وموثوقية عالية.",
+                prod_cyan_desc: "خدمات الطب الاتصالي المتطورة. استشارات عن بعد، وصفات إلكترونية، وربط مباشر وآمن مع الأطباء.",
+                prod_duties_desc: "منصة الاتصالات الموحدة للأعمال. إدارة محادثات WhatsApp و Instagram للشركات في واجهة واحدة.",
+                read_more: "المزيد",
+                why_us_tag: "لماذا أندروميدا؟",
+                why_us_title: "شريكك التقني الموثوق",
+                why_us_subtitle: "لنمو مستدام وآمن",
+                about_desc: "نحن شركة أندروميدا لتقنية المعلومات، شركة مساهمة سعودية مقفلة مقرها الرياض. منذ 2014، نلتزم بتقديم حلول برمجية مبتكرة تدعم رؤية المملكة 2030، مع التركيز على توطين التقنية وأمن البيانات.",
+                feat_security: "أمان وامتثال تام",
+                feat_security_desc: "استضافة محلية للبيانات وامتثال كامل لمتطلبات الأمن السيبراني والصحة.",
+                feat_integration: "تكامل حكومي شامل",
+                feat_integration_desc: "ربط مباشر مع منصات 'نفيس'، 'سداد'، و'أبشر' لضمان سلاسة العمليات.",
+                feat_support: "دعم فني متخصص",
+                feat_support_desc: "فريق دعم فني محلي جاهز لخدمتكم على مدار الساعة لضمان استمرارية الأعمال.",
+                stat_years: "سنوات من الخبرة",
+                stat_projects: "مشروع ناجح",
+                stat_compliance: "امتثال للأنظمة",
+                stat_support: "دعم متواصل",
+                androgov_desc: "نظام إدارة العمليات الموحد لشركة أندروميدا. يربط جميع الإدارات والموظفين في منصة واحدة آمنة، مدعومة بالذكاء الاصطناعي (Gemini) لتحليل البيانات وتسهيل اتخاذ القرارات.",
+                feat_sso: "دخول موحد (SSO)",
+                feat_ai: "مساعد ذكي",
+                feat_analytics: "تحليلات فورية",
+                androgov_btn: "الدخول للنظام",
+                cta_title: "جاهز لنقل أعمالك للمستوى التالي؟",
+                cta_desc: "انضم إلى قائمة عملائنا المميزين واستفد من حلولنا التقنية المتكاملة.",
+                cta_button: "تواصل معنا",
+                footer_desc: "شركة اندروميدا لتقنية المعلومات. شركة مساهمة سعودية مقفلة متخصصة في تطوير الحلول الرقمية، البنية التحتية، والأنظمة الأمنية.",
+                quick_links: "روابط سريعة",
+                contact_us: "تواصل معنا",
+                address: "الرياض، حي الازدهار",
+                copyright: "&copy; 2026 شركة اندروميدا لتقنية المعلومات. جميع الحقوق محفوظة."
             },
-            
-            // PROFILE DATA MOCKUP
-            profiles: {
-                'ceo': { id: '1001', join: '2014', manager: 'Board of Directors', assets: ['Company Seal', 'Laptop MacBook Pro'], leave: 30 },
-                'grc': { id: '1045', join: '2020', manager: 'CEO', assets: ['Laptop Dell XPS', 'Access Card L3'], leave: 25 },
-                'hr': { id: '1005', join: '2020', manager: 'CEO', assets: ['Laptop HP', 'Master Key'], leave: 45 },
-                'finance': { id: '1002', join: '2015', manager: 'CEO', assets: ['Laptop Lenovo', 'Bank Token'], leave: 25 },
-                'medical': { id: '3001', join: '2024', manager: 'CEO', assets: ['iPad Pro', 'Medical Access'], leave: 28 },
-                'tech_lead': { id: '4001', join: '2021', manager: 'Director of Development', assets: ['MacBook Pro M2', 'Server Access'], leave: 21 },
-                'pssc': { id: '5001', join: '2022', manager: 'CFO', assets: ['Desktop PC', 'Warehouse Key'], leave: 21 },
-                'cs': { id: '2040', join: '2023', manager: 'Sales Manager', assets: ['Laptop HP', 'Headset Jabra'], leave: 15 }
-            },
-
-            // ATTENDANCE DATA MOCKUP
-            attendanceLogs: [
-                { date: '12/10/2025', day: 'Thursday', in: '08:00 AM', out: '--', status: 'present', note: 'On Duty' },
-                { date: '11/10/2025', day: 'Wednesday', in: '08:05 AM', out: '04:00 PM', status: 'late', note: 'Late 5 mins' },
-                { date: '10/10/2025', day: 'Tuesday', in: '--', out: '--', status: 'absent', note: 'Absent (No Excuse)' },
-                { date: '09/10/2025', day: 'Monday', in: '08:00 AM', out: '04:15 PM', status: 'present', note: '' },
-            ]
+            en: {
+                company_name: "Andromeda",
+                it_solutions: "IT Solutions",
+                nav_about: "About Us",
+                nav_products: "Our Products",
+                nav_features: "Why Us",
+                nav_login: "Employee Portal",
+                hero_tag: "Saudi Closed Joint Stock Company 🇸🇦",
+                hero_title_1: "Innovating Digital Solutions",
+                hero_title_2: "For a Smarter Future",
+                hero_desc: "Since 2014, Andromeda leads digital transformation in the Kingdom through innovative solutions in Healthcare, Real Estate Auctions, and Unified Communications, with full commitment to security and local compliance.",
+                hero_cta_1: "Discover Solutions",
+                hero_cta_2: "Learn More",
+                partners_title: "Success Partners",
+                products_title: "Our Integrated Ecosystem",
+                products_desc: "We provide a suite of interconnected digital systems covering vital sectors with the highest quality standards.",
+                prod_androhealth_desc: "Comprehensive Hospital Information System (HIS). Supports 'Naphies', billing, medical records, and unified patient portal.",
+                prod_bq_desc: "Smart Real Estate Auction Platform (Best Quote). Documenting and managing real estate assets with full transparency and reliability.",
+                prod_cyan_desc: "Advanced Telemedicine Services. Remote consultations, e-prescriptions, and direct secure connection with doctors.",
+                prod_duties_desc: "Unified Business Communication Platform. Manage WhatsApp and Instagram business chats in one interface.",
+                read_more: "Read More",
+                why_us_tag: "Why Andromeda?",
+                why_us_title: "Your Trusted Tech Partner",
+                why_us_subtitle: "For Secure Growth",
+                about_desc: "Andromeda Information Technology is a Saudi Closed Joint Stock Company based in Riyadh. Since 2014, we are committed to providing innovative software solutions supporting Vision 2030, focusing on tech localization and data security.",
+                feat_security: "Full Security & Compliance",
+                feat_security_desc: "Local data hosting and full compliance with Cybersecurity and Health regulations.",
+                feat_integration: "Comprehensive Govt Integration",
+                feat_integration_desc: "Direct integration with 'Naphies', 'Sadad', and 'Absher' platforms to ensure smooth operations.",
+                feat_support: "Specialized Tech Support",
+                feat_support_desc: "Local technical support team ready to serve you 24/7 to ensure business continuity.",
+                stat_years: "Years Experience",
+                stat_projects: "Successful Projects",
+                stat_compliance: "Compliance",
+                stat_support: "Support",
+                androgov_desc: "Andromeda's Unified Operations System. Connecting all departments and employees in a single secure platform, powered by AI (Gemini) for data analysis and decision support.",
+                feat_sso: "Single Sign-On (SSO)",
+                feat_ai: "Smart Assistant",
+                feat_analytics: "Real-time Analytics",
+                androgov_btn: "System Login",
+                cta_title: "Ready to Take Your Business to the Next Level?",
+                cta_desc: "Join our distinguished client list and benefit from our integrated technical solutions.",
+                cta_button: "Contact Us",
+                footer_desc: "Andromeda Information Technology. A Saudi Closed Joint Stock Company specializing in developing digital solutions, infrastructure, and security systems.",
+                quick_links: "Quick Links",
+                contact_us: "Contact Us",
+                address: "Riyadh, Al-Izdihar Dist.",
+                copyright: "&copy; 2026 Andromeda Information Technology. All rights reserved."
+            }
         };
 
-        let currentRole = null;
+        let currentLang = localStorage.getItem('lang') || 'ar';
 
-        // ================== INIT & LOGIN ==================
-        
-        function initLoginScreen() {
-            if(localStorage.getItem('theme') === 'dark') {
-                document.documentElement.classList.add('dark');
-                document.getElementById('themeIcon').classList.replace('fa-moon', 'fa-sun');
-            }
+        function toggleLanguage() {
+            currentLang = currentLang === 'ar' ? 'en' : 'ar';
+            localStorage.setItem('lang', currentLang);
+            applyLanguage();
+        }
 
-            const grid = document.getElementById('roleGrid');
-            grid.innerHTML = '';
+        function applyLanguage() {
+            const html = document.documentElement;
+            const t = translations[currentLang];
             
-            Object.values(db.roles).forEach(role => {
-                grid.innerHTML += `
-                    <div onclick="login('${role.id}')" class="bg-white dark:bg-slate-700 p-4 rounded-xl border border-slate-200 dark:border-slate-600 cursor-pointer hover:shadow-lg transition-all group flex items-center gap-4">
-                        <div class="w-12 h-12 ${role.bgClass} text-white rounded-full flex items-center justify-center text-xl shadow-sm shrink-0">
-                            <i class="fa-solid ${role.icon}"></i>
-                        </div>
-                        <div class="text-left flex-1 min-w-0">
-                            <h4 class="font-bold text-sm text-slate-800 dark:text-white truncate">${role.title}</h4>
-                            <p class="text-[10px] text-slate-500 dark:text-slate-300 truncate">${role.name}</p>
-                        </div>
-                    </div>
-                `;
+            html.setAttribute('lang', currentLang);
+            html.setAttribute('dir', currentLang === 'ar' ? 'rtl' : 'ltr');
+            document.getElementById('langLabel').innerText = currentLang === 'ar' ? 'EN' : 'عربي';
+
+            // Swap Font
+            if(currentLang === 'ar') document.body.style.fontFamily = "'Tajawal', sans-serif";
+            else document.body.style.fontFamily = "'Inter', sans-serif";
+
+            // Update Text
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (t[key]) el.innerText = t[key];
+            });
+
+            // Rotate Arrows for LTR
+            document.querySelectorAll('.fa-arrow-left').forEach(icon => {
+                icon.style.transform = currentLang === 'ar' ? 'rotate(0deg)' : 'rotate(180deg)';
             });
         }
 
-        function login(roleId) {
-            currentRole = db.roles[roleId];
-            document.getElementById('loginOverlay').classList.add('opacity-0', 'pointer-events-none');
-            configureSidebar();
-            configureHeader();
-            loadPage('dashboard');
-            initAI();
-            setTimeout(() => { showToast(currentRole.welcome); }, 1500);
-        }
-
-        function logout() {
-            location.reload();
-        }
-
-        function configureSidebar() {
-            document.getElementById('deptName').innerText = currentRole.dept;
-            const nav = document.getElementById('navMenu');
-            nav.innerHTML = '';
-            currentRole.menu.forEach(item => {
-                nav.innerHTML += `
-                    <button onclick="loadPage('${item.id}')" id="nav-${item.id}" class="nav-item w-full flex items-center gap-4 px-4 py-3 text-sm font-medium text-slate-600 dark:text-slate-300 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-all mb-1">
-                        <i class="fa-solid ${item.icon} text-lg w-6 text-center opacity-70"></i>
-                        <span>${item.label}</span>
-                    </button>
-                `;
-            });
-            document.getElementById('userAvatar').src = `https://ui-avatars.com/api/?name=${currentRole.name}&background=random&color=fff`;
-            document.getElementById('userName').innerText = currentRole.name;
-            document.getElementById('userTitle').innerText = currentRole.title;
-        }
-
-        function configureHeader() {
-            const btnContainer = document.getElementById('quickActionBtn');
-            btnContainer.innerHTML = `
-                <button class="${currentRole.bgClass} text-white px-5 py-2 rounded-full text-sm hover:opacity-90 transition shadow-md flex items-center gap-2">
-                    <i class="fa-solid ${currentRole.action.icon}"></i>
-                    <span>${currentRole.action.label}</span>
-                </button>
-            `;
-            
-            const notifList = document.getElementById('notifList');
-            notifList.innerHTML = '';
-            if(currentRole.notifications) {
-                currentRole.notifications.forEach(n => {
-                    let iconClass = n.type === 'urgent' ? 'fa-circle-exclamation text-red-500' : (n.type === 'success' ? 'fa-check-circle text-green-500' : 'fa-bell text-blue-500');
-                    let bgClass = n.type === 'urgent' ? 'bg-red-50 dark:bg-red-900/20' : 'bg-white dark:bg-slate-800';
-                    notifList.innerHTML += `
-                        <div class="p-3 border-b border-slate-50 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition ${bgClass} cursor-pointer">
-                            <div class="flex items-start gap-3">
-                                <i class="fa-solid ${iconClass} mt-1 text-sm"></i>
-                                <div>
-                                    <p class="text-xs font-bold text-slate-700 dark:text-white">${n.msg}</p>
-                                    <p class="text-[10px] text-slate-400 mt-1">${n.time} ago</p>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                });
-                document.getElementById('notifBadge').innerText = currentRole.notifications.length;
-            } else {
-                notifList.innerHTML = '<div class="p-4 text-center text-slate-400 text-xs">No notifications</div>';
-                document.getElementById('notifBadge').innerText = '0';
-            }
-        }
-
-        function loadPage(pageId) {
-            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active', 'text-slate-900', 'bg-slate-50'));
-            const activeNav = document.getElementById(`nav-${pageId}`);
-            if(activeNav) activeNav.classList.add('active', 'text-slate-900');
-
-            const menuLabel = currentRole.menu.find(m => m.id === pageId)?.label || 'System Page';
-            document.getElementById('pageHeaderTitle').innerText = menuLabel;
-
-            const container = document.getElementById('mainContainer');
-            container.innerHTML = '';
-
-            if (pageId === 'dashboard') renderDashboard(container);
-            else if (pageId === 'profile') renderProfile(container);
-            else if (pageId === 'attendance') {
-                if(currentRole.id === 'hr') renderHRAttendance(container);
-                else renderEmployeeAttendance(container);
-            } else renderGenericPage(container, pageId, menuLabel);
-        }
-
-        function renderDashboard(container) {
-            let html = `<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 fade-in">`;
-            currentRole.stats.forEach(stat => {
-                html += `
-                    <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 flex items-center justify-between hover:shadow-md transition-shadow">
-                        <div>
-                            <p class="text-slate-400 text-xs font-medium mb-1">${stat.label}</p>
-                            <h3 class="text-3xl font-bold text-slate-800 dark:text-white">${stat.value}</h3>
-                            <p class="text-${stat.color}-500 text-xs mt-2 font-bold bg-${stat.color}-50 dark:bg-${stat.color}-900/30 inline-block px-2 py-0.5 rounded">${stat.trend}</p>
-                        </div>
-                        <div class="w-12 h-12 rounded-full bg-${stat.color}-50 dark:bg-${stat.color}-900/20 flex items-center justify-center text-${stat.color}-600 text-xl">
-                            <i class="fa-solid fa-chart-pie"></i>
-                        </div>
-                    </div>
-                `;
-            });
-            html += `</div>`;
-            container.innerHTML = html;
-        }
-
-        function renderProfile(container) {
-            const pData = db.profiles[currentRole.id];
-            let policiesHTML = '';
-            if(currentRole.policies) {
-                currentRole.policies.forEach(p => {
-                    policiesHTML += `
-                        <div class="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-700 rounded-lg border border-slate-100 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-600 transition">
-                            <div class="flex items-center gap-3">
-                                <i class="fa-solid fa-file-pdf text-red-500 text-lg"></i>
-                                <span class="text-sm font-medium text-slate-700 dark:text-white">${p}</span>
-                            </div>
-                            <button class="text-xs text-brandBlue hover:underline font-bold">Download</button>
-                        </div>
-                    `;
-                });
-            }
-
-            container.innerHTML = `
-                <div class="fade-in">
-                    <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-8 mb-8 relative overflow-hidden">
-                        <div class="absolute top-0 left-0 w-full h-32 bg-gradient-to-r from-slate-800 to-slate-600 opacity-10"></div>
-                        <div class="relative z-10 flex flex-col md:flex-row items-center md:items-start gap-6">
-                            <img src="https://ui-avatars.com/api/?name=${currentRole.name}&size=128" class="w-24 h-24 rounded-full border-4 border-white shadow-lg">
-                            <div class="text-center md:text-left flex-1">
-                                <h2 class="text-2xl font-bold text-slate-800 dark:text-white">${currentRole.name}</h2>
-                                <p class="text-slate-500 dark:text-slate-300">${currentRole.title} | ${currentRole.dept}</p>
-                                <div class="flex gap-2 justify-center md:justify-start mt-4">
-                                    <span class="bg-blue-50 dark:bg-blue-900 text-blue-700 dark:text-blue-200 px-3 py-1 rounded-full text-xs font-bold">ID: ${pData.id}</span>
-                                    <span class="bg-green-50 dark:bg-green-900 text-green-700 dark:text-green-200 px-3 py-1 rounded-full text-xs font-bold">Active</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                        <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-                            <h3 class="font-bold text-slate-800 dark:text-white mb-4 pb-2 border-b border-slate-50 dark:border-slate-700">Job Information</h3>
-                            <div class="space-y-4 text-sm">
-                                <div class="flex justify-between"><span class="text-slate-500">Join Date</span><span class="font-medium text-slate-800 dark:text-white">${pData.join}</span></div>
-                                <div class="flex justify-between"><span class="text-slate-500">Direct Manager</span><span class="font-medium text-slate-800 dark:text-white">${pData.manager}</span></div>
-                                <div class="flex justify-between"><span class="text-slate-500">Leave Balance</span><span class="font-bold text-green-600">${pData.leave} Days</span></div>
-                            </div>
-                        </div>
-                        <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-                            <h3 class="font-bold text-slate-800 dark:text-white mb-4 pb-2 border-b border-slate-50 flex justify-between items-center">
-                                <span>My Policies</span>
-                                <span class="text-xs bg-brandBlue text-white px-2 py-1 rounded">Role Specific</span>
-                            </h3>
-                            <div class="space-y-2">${policiesHTML}</div>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        function renderEmployeeAttendance(container) {
-            let logsHTML = '';
-            db.attendanceLogs.forEach(log => {
-                let statusBadge = log.status === 'present' ? '<span class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs">Present</span>' : (log.status === 'late' ? '<span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded text-xs">Late</span>' : '<span class="bg-red-100 text-red-700 px-2 py-1 rounded text-xs">Absent</span>');
-                logsHTML += `<tr class="hover:bg-slate-50 dark:hover:bg-slate-700 border-b border-slate-100 dark:border-slate-700"><td class="px-6 py-4 text-sm font-medium text-slate-800 dark:text-white">${log.date}</td><td class="px-6 py-4 text-sm text-slate-500">${log.day}</td><td class="px-6 py-4 text-sm font-mono text-green-600">${log.in}</td><td class="px-6 py-4 text-sm font-mono text-red-500">${log.out}</td><td class="px-6 py-4">${statusBadge}</td></tr>`;
-            });
-            container.innerHTML = `<div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden"><table class="w-full text-left"><thead class="bg-slate-50 dark:bg-slate-700 text-slate-500 text-xs uppercase"><tr><th class="px-6 py-3">Date</th><th class="px-6 py-3">Day</th><th class="px-6 py-3">In</th><th class="px-6 py-3">Out</th><th class="px-6 py-3">Status</th></tr></thead><tbody>${logsHTML}</tbody></table></div>`;
-        }
-
-        function renderHRAttendance(container) {
-            container.innerHTML = `<div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm"><h3 class="font-bold text-slate-800 dark:text-white mb-4">HR Dashboard</h3><p class="text-slate-500">Employee attendance data...</p></div>`;
-        }
-
-        function renderGenericPage(container, pageId, title) {
-            container.innerHTML = `<div class="fade-in bg-white dark:bg-slate-800 p-12 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 text-center"><div class="w-20 h-20 bg-slate-50 dark:bg-slate-700 rounded-full flex items-center justify-center text-slate-300 text-3xl mx-auto mb-6"><i class="fa-solid fa-folder-open"></i></div><h3 class="text-xl font-bold text-slate-800 dark:text-white mb-2">${title}</h3><p class="text-slate-500">This page represents an active operational module in the system.</p></div>`;
-        }
-
-        function toggleNotifications() { document.getElementById('notifDropdown').classList.toggle('hidden'); }
-        function closeDropdowns() { document.getElementById('notifDropdown').classList.add('hidden'); }
-        
         function toggleDarkMode() {
             document.documentElement.classList.toggle('dark');
             const isDark = document.documentElement.classList.contains('dark');
             const icon = document.getElementById('themeIcon');
-            if(isDark) {
-                icon.classList.replace('fa-moon', 'fa-sun');
-                localStorage.setItem('theme', 'dark');
-            } else {
-                icon.classList.replace('fa-sun', 'fa-moon');
-                localStorage.setItem('theme', 'light');
-            }
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            if(isDark) icon.classList.replace('fa-moon', 'fa-sun');
+            else icon.classList.replace('fa-sun', 'fa-moon');
         }
 
-        function toggleMobileSidebar() {
-            const sidebar = document.getElementById('mainSidebar');
-            const overlay = document.getElementById('mobileOverlay');
-            sidebar.classList.toggle('open');
-            sidebar.classList.toggle('translate-x-full');
-            overlay.classList.toggle('active');
+        // Init
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.classList.add('dark');
+            document.getElementById('themeIcon').classList.replace('fa-moon', 'fa-sun');
         }
-
-        function initAI() {
-            document.getElementById('aiHeader').className = `h-20 flex items-center justify-between px-6 shrink-0 text-white transition-colors ${currentRole.bgClass}`;
-            document.getElementById('aiRole').innerText = `Assistant for: ${currentRole.title}`;
-            document.getElementById('aiFloatBtn').className = `fixed bottom-8 right-8 w-14 h-14 rounded-full shadow-2xl flex items-center justify-center text-white z-30 hidden hover:scale-110 transition-transform border-4 border-white dark:border-slate-700 ${currentRole.bgClass}`;
-            const chatArea = document.getElementById('chatArea');
-            chatArea.innerHTML = `<div class="flex justify-end fade-in"><div class="chat-bubble chat-ai ${currentRole.bgClass}">${currentRole.welcome}</div></div>`;
-        }
-
-        function toggleAI() {
-            const sidebar = document.getElementById('aiSidebar');
-            const floatBtn = document.getElementById('aiFloatBtn');
-            const isHidden = sidebar.classList.contains('translate-x-full');
-            if (isHidden) { sidebar.classList.remove('translate-x-full'); floatBtn.classList.add('hidden'); hideToast(); }
-            else { sidebar.classList.add('translate-x-full'); floatBtn.classList.remove('hidden'); }
-        }
-
-        function showToast(msg) {
-            // Toast Implementation
-        }
-        function hideToast() {
-            // Toast Implementation
-        }
-
-        function sendMessage() {
-            const input = document.getElementById('aiInput');
-            const msg = input.value.trim();
-            if(!msg) return;
-            
-            const chatArea = document.getElementById('chatArea');
-            chatArea.innerHTML += `<div class="flex justify-start fade-in"><div class="chat-bubble chat-user">${msg}</div></div>`;
-            input.value = '';
-            chatArea.scrollTop = chatArea.scrollHeight;
-            
-            setTimeout(() => {
-                chatArea.innerHTML += `<div class="flex justify-end fade-in"><div class="chat-bubble chat-ai ${currentRole.bgClass}">Request received. Processing based on your clearance level.</div></div>`;
-                chatArea.scrollTop = chatArea.scrollHeight;
-            }, 1000);
-        }
-
-        initLoginScreen();
+        applyLanguage();
     </script>
 </body>
 </html>
