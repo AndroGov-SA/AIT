@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Admin | إدارة النظام</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = { darkMode: 'class', theme: { extend: { colors: { brandDark: '#1E293B', brandBlue: '#4267B2' }, fontFamily: { sans: ['Tajawal', 'sans-serif'] } } } }
+    </script>
+</head>
+<body class="bg-slate-900 text-white h-screen flex font-sans">
+
+    <!-- الشريط الجانبي للأدمن -->
+    <aside class="w-64 bg-slate-800 border-l border-slate-700 flex flex-col">
+        <div class="h-20 flex items-center px-6 border-b border-slate-700">
+            <i class="fa-solid fa-user-shield text-2xl text-red-500 ml-3"></i>
+            <div>
+                <h1 class="font-bold text-lg">لوحة التحكم</h1>
+                <p class="text-[10px] text-slate-400">System Administration</p>
+            </div>
+        </div>
+        <nav class="flex-1 p-4 space-y-2">
+            <a href="#" class="flex items-center gap-4 px-4 py-3 bg-red-600 rounded-xl text-white font-bold"><i class="fa-solid fa-gauge w-6 text-center"></i> نظرة عامة</a>
+            <a href="#" class="flex items-center gap-4 px-4 py-3 text-slate-400 hover:bg-slate-700 rounded-xl transition"><i class="fa-solid fa-users-gear w-6 text-center"></i> إدارة المستخدمين</a>
+            <a href="#" class="flex items-center gap-4 px-4 py-3 text-slate-400 hover:bg-slate-700 rounded-xl transition"><i class="fa-solid fa-lock w-6 text-center"></i> الصلاحيات والأدوار</a>
+            <a href="#" class="flex items-center gap-4 px-4 py-3 text-slate-400 hover:bg-slate-700 rounded-xl transition"><i class="fa-solid fa-server w-6 text-center"></i> مراقبة النظام</a>
+        </nav>
+        <div class="p-4 border-t border-slate-700">
+            <button onclick="logout()" class="w-full flex items-center gap-3 text-red-400 hover:text-red-300"><i class="fa-solid fa-power-off"></i> تسجيل خروج</button>
+        </div>
+    </aside>
+
+    <!-- المحتوى -->
+    <main class="flex-1 overflow-y-auto p-8 bg-slate-900">
+        <header class="flex justify-between items-center mb-8">
+            <h2 class="text-3xl font-bold">إدارة النظام المركزية</h2>
+            <div class="flex gap-4">
+                <span class="px-3 py-1 bg-green-900/50 text-green-400 rounded-full text-xs border border-green-800">النظام يعمل: Stable v9.0</span>
+            </div>
+        </header>
+
+        <!-- إحصائيات النظام -->
+        <div class="grid grid-cols-4 gap-6 mb-8">
+            <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700">
+                <p class="text-slate-400 text-xs mb-1">إجمالي المستخدمين</p>
+                <h3 class="text-3xl font-bold">48</h3>
+            </div>
+            <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700">
+                <p class="text-slate-400 text-xs mb-1">المتصلين الآن</p>
+                <h3 class="text-3xl font-bold text-green-400">12</h3>
+            </div>
+            <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700">
+                <p class="text-slate-400 text-xs mb-1">تحذيرات الأمان</p>
+                <h3 class="text-3xl font-bold text-red-400">0</h3>
+            </div>
+            <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700">
+                <p class="text-slate-400 text-xs mb-1">استهلاك السيرفر</p>
+                <h3 class="text-3xl font-bold text-blue-400">34%</h3>
+            </div>
+        </div>
+
+        <!-- جدول المستخدمين (مثال) -->
+        <div class="bg-slate-800 rounded-2xl border border-slate-700 overflow-hidden">
+            <div class="p-6 border-b border-slate-700 flex justify-between items-center">
+                <h3 class="font-bold">حسابات الموظفين النشطة</h3>
+                <button class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg text-sm">إضافة مستخدم</button>
+            </div>
+            <table class="w-full text-right text-sm text-slate-300">
+                <thead class="bg-slate-700/50 text-slate-400">
+                    <tr>
+                        <th class="p-4">الموظف</th>
+                        <th class="p-4">الدور</th>
+                        <th class="p-4">آخر دخول</th>
+                        <th class="p-4">الحالة</th>
+                        <th class="p-4">الإجراء</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-700">
+                    <tr>
+                        <td class="p-4 font-bold text-white">هشام السحيباني</td>
+                        <td class="p-4"><span class="bg-amber-900/50 text-amber-400 px-2 py-1 rounded text-xs">CEO</span></td>
+                        <td class="p-4">منذ 5 دقائق</td>
+                        <td class="p-4 text-green-400">نشط</td>
+                        <td class="p-4"><button class="text-blue-400 hover:underline">تعديل</button></td>
+                    </tr>
+                    <tr>
+                        <td class="p-4 font-bold text-white">منصور اليامي</td>
+                        <td class="p-4"><span class="bg-purple-900/50 text-purple-400 px-2 py-1 rounded text-xs">HR</span></td>
+                        <td class="p-4">منذ ساعة</td>
+                        <td class="p-4 text-green-400">نشط</td>
+                        <td class="p-4"><button class="text-blue-400 hover:underline">تعديل</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script>
+        // التحقق من أن المستخدم هو Admin
+        try {
+            const user = JSON.parse(localStorage.getItem('currentUser'));
+            
+            if (!user || user.id !== 'admin') {
+                alert('غير مصرح لك بالدخول لهذه الصفحة!');
+                // استخدام replace لمنع العودة لهذه الصفحة عبر زر "الخلف"
+                window.location.replace('./login.html');
+            }
+        } catch (e) {
+            console.error("Error reading user data:", e);
+            window.location.replace('./login.html');
+        }
+
+        function logout() {
+            localStorage.removeItem('currentUser');
+            // استخدام المسار النسبي الصريح
+            window.location.href = './login.html';
+        }
+    </script>
+</body>
+</html>
