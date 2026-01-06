@@ -11,10 +11,7 @@
         tailwind.config = {
             darkMode: 'class',
             theme: {
-                extend: {
-                    colors: { brandDark: '#1E293B', brandBlue: '#4267B2', brandRed: '#FB4747' },
-                    fontFamily: { sans: ['Tajawal', 'Inter', 'sans-serif'] }
-                }
+                extend: { colors: { brandDark: '#1E293B', brandBlue: '#4267B2', brandRed: '#FB4747' }, fontFamily: { sans: ['Tajawal', 'Inter', 'sans-serif'] } }
             }
         }
     </script>
@@ -53,7 +50,6 @@
     <div class="w-full lg:w-1/2 flex flex-col p-6 relative bg-slate-50 dark:bg-slate-900 transition-colors duration-300 min-h-screen">
         
         <div class="w-full flex justify-between items-center gap-3 mb-8 lg:absolute lg:top-6 lg:left-6 lg:rtl:left-6 lg:ltr:right-6 lg:mb-0 z-20 px-4 pt-4 lg:p-0">
-             <!-- زر العودة للموقع الرئيسي (جديد) -->
              <a href="index.html" class="text-slate-500 dark:text-slate-400 hover:text-brandRed transition-colors flex items-center gap-2 text-sm font-bold">
                 <i class="fa-solid fa-arrow-right rtl:rotate-0 ltr:rotate-180"></i>
                 <span data-i18n="backToHome">العودة للرئيسية</span>
@@ -132,12 +128,14 @@
     </div>
 
     <script>
+        // Updated Roles with Real Images and Audit page
         const roles = [
-            { id: 'admin', username: 'admin', title_ar: 'مدير النظام', title_en: 'System Admin', icon: 'fa-user-shield', color: 'bg-slate-700', type: 'system', page: 'admin.html' },
-            { id: 'grc', username: 'grc', title_ar: 'الحوكمة', title_en: 'GRC', icon: 'fa-scale-balanced', color: 'bg-red-600', type: 'employee', page: 'grc.html' },
-            { id: 'hr', username: 'hr', title_ar: 'الموارد البشرية', title_en: 'HR', icon: 'fa-users-gear', color: 'bg-purple-600', type: 'employee', page: 'hr.html' },
-            { id: 'ceo', username: 'ceo', title_ar: 'الرئيس التنفيذي', title_en: 'CEO', icon: 'fa-chess-king', color: 'bg-amber-600', type: 'employee', page: 'ceo.html' },
-            { id: 'finance', username: 'cfo', title_ar: 'المدير المالي', title_en: 'CFO', icon: 'fa-coins', color: 'bg-emerald-600', type: 'employee', page: 'cfo.html' },
+            { id: 'admin', username: 'admin', name: 'مدير النظام', title: 'System Admin', page: 'admin.html', img: 'admin.jpg' },
+            { id: 'ceo', username: 'ceo', name: 'هشام السحيباني', title: 'CEO', page: 'ceo.html', img: 'ceo.jpeg' },
+            { id: 'grc', username: 'grc', name: 'أيمن المغربي', title: 'GRC', page: 'grc.html', img: 'grc.png' },
+            { id: 'hr', username: 'hr', name: 'منصور اليامي', title: 'HR', page: 'hr.html', img: 'hr.JPG' },
+            { id: 'finance', username: 'cfo', name: 'محمد البخيتي', title: 'CFO', page: 'cfo.html', img: 'cfo.jpg' },
+            { id: 'audit', username: 'audit', name: 'موظف التدقيق', title: 'Internal Auditor', page: 'audit.html', img: 'admin.jpg' }, // Assuming admin image or placeholder for auditor if no specific image provided
         ];
 
         const translations = {
@@ -166,19 +164,20 @@
         let currentLang = localStorage.getItem('lang') || 'ar';
         let isDarkMode = localStorage.getItem('theme') === 'dark';
 
-        function init() {
+        // Make functions global
+        window.init = function() {
             applyTheme();
             applyLanguage();
             renderDemoRoles();
         }
 
-        function toggleDarkMode() {
+        window.toggleDarkMode = function() {
             isDarkMode = !isDarkMode;
             localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
             applyTheme();
         }
 
-        function applyTheme() {
+        window.applyTheme = function() {
             const html = document.documentElement;
             const icon = document.getElementById('themeIcon');
             if (isDarkMode) {
@@ -190,14 +189,14 @@
             }
         }
 
-        function toggleLanguage() {
+        window.toggleLanguage = function() {
             currentLang = currentLang === 'ar' ? 'en' : 'ar';
             localStorage.setItem('lang', currentLang);
             applyLanguage();
             renderDemoRoles();
         }
 
-        function applyLanguage() {
+        window.applyLanguage = function() {
             const html = document.documentElement;
             const t = translations[currentLang];
             
@@ -214,44 +213,39 @@
                 if (t[key]) el.innerText = t[key];
             });
 
-            // Rotate Arrows
-            document.querySelectorAll('.fa-arrow-left, .fa-arrow-right').forEach(icon => {
-                 // Check if it's the specific icon we want to rotate based on direction
-                 if (icon.classList.contains('fa-arrow-left')) {
-                     icon.style.transform = currentLang === 'ar' ? 'rotate(0deg)' : 'rotate(180deg)';
-                 } else if (icon.classList.contains('fa-arrow-right')) {
-                      // For back arrow, usually points left in LTR (back), right in RTL (forward/next) logic might differ based on icon usage.
-                      // Here, arrow-right usually means 'next' or 'go to'. If used for 'Back', we might want arrow-left.
-                      // The link added is "Back to Home", so arrow-right might be confusing if it means 'go back'.
-                      // Let's assume standard behavior: arrow mirrors text direction.
-                      icon.style.transform = currentLang === 'ar' ? 'rotate(180deg)' : 'rotate(0deg)';
-                 }
-            });
+            const arrowIcon = document.querySelector('.fa-arrow-left');
+            if(arrowIcon) arrowIcon.className = `fa-solid fa-arrow-left ${currentLang === 'ar' ? '' : 'rotate-180'} transform transition-transform`;
+            
+            const backArrow = document.querySelector('.fa-arrow-right');
+            if(backArrow) backArrow.className = `fa-solid fa-arrow-right ${currentLang === 'ar' ? '' : 'rotate-180'} transform transition-transform`;
         }
 
-        function renderDemoRoles() {
+        window.renderDemoRoles = function() {
             const container = document.getElementById('demoRoles');
             container.innerHTML = '';
             roles.forEach(role => {
-                const title = currentLang === 'ar' ? role.title_ar : role.title_en;
+                const title = currentLang === 'ar' ? (role.title_ar || role.title) : (role.title_en || role.title); // Fallback to title if localized one missing
+                // Generate Avatar URL based on Name if img is missing, otherwise use img
+                const avatarSrc = role.img ? role.img : `https://ui-avatars.com/api/?name=${encodeURIComponent(role.name)}&background=random&color=fff&size=64`;
+                
                 container.innerHTML += `
-                    <button onclick="fillDemo('${role.id}')" class="group flex flex-col items-center gap-1 min-w-[60px]" type="button" title="${title}">
-                        <div class="w-10 h-10 rounded-full ${role.color} text-white flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
-                            <i class="fa-solid ${role.icon} text-xs"></i>
+                    <button onclick="fillDemo('${role.id}')" class="group flex flex-col items-center gap-2 min-w-[60px]" type="button" title="${role.name}">
+                        <div class="w-12 h-12 rounded-full overflow-hidden border-2 border-slate-200 dark:border-slate-700 shadow-sm group-hover:scale-110 group-hover:border-brandBlue transition-all">
+                            <img src="${avatarSrc}" alt="${role.name}" class="w-full h-full object-cover" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(role.name)}&background=random&color=fff'">
                         </div>
-                        <span class="text-[9px] text-slate-500 dark:text-slate-400 font-bold truncate w-full text-center mt-1">${role.username.toUpperCase()}</span>
+                        <span class="text-[9px] text-slate-500 dark:text-slate-400 font-bold truncate w-full text-center">${role.username.toUpperCase()}</span>
                     </button>
                 `;
             });
         }
 
-        function fillDemo(roleId) {
+        window.fillDemo = function(roleId) {
             const role = roles.find(r => r.id === roleId);
             document.getElementById('userInput').value = role.username;
             document.getElementById('password').value = '12341234';
         }
 
-        function handleLogin(e) {
+        window.handleLogin = function(e) {
             e.preventDefault();
             const inputVal = document.getElementById('userInput').value.trim().toLowerCase();
             const password = document.getElementById('password').value;
@@ -271,7 +265,16 @@
             }
 
             errorMsg.classList.add('hidden');
-            const userContext = { ...selectedRole, lang: currentLang };
+            
+            // Save user context with avatar
+            const avatarUrl = selectedRole.img ? selectedRole.img : `https://ui-avatars.com/api/?name=${encodeURIComponent(selectedRole.name)}&background=random&color=fff`;
+
+            const userContext = { 
+                ...selectedRole, 
+                lang: currentLang,
+                // نحفظ مسار الصورة ليتم استخدامه في الصفحات الداخلية
+                avatar: avatarUrl 
+            };
             localStorage.setItem('currentUser', JSON.stringify(userContext));
 
             const btn = document.querySelector('button[type="submit"]');
@@ -283,6 +286,7 @@
             }, 800);
         }
 
+        // Call init immediately
         init();
     </script>
 </body>
