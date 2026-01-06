@@ -22,7 +22,6 @@
 <body class="bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-white min-h-screen flex flex-col lg:flex-row font-sans transition-colors duration-300">
 
     <!-- القسم الجانبي (يظهر فقط في الشاشات الكبيرة) -->
-    <!-- تم تثبيت هذا القسم ليملأ الشاشة في وضع الديسكتوب -->
     <div class="hidden lg:flex w-1/2 bg-slate-900 relative flex-col justify-between p-12 text-white overflow-hidden h-screen sticky top-0">
         <div class="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
         <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-brandBlue/40 to-slate-900/90 z-0"></div>
@@ -50,11 +49,10 @@
         </div>
     </div>
 
-    <!-- قسم تسجيل الدخول (يمين الشاشة / كامل الشاشة في الجوال) -->
-    <!-- تم استخدام min-h-screen للسماح بالسكرول -->
+    <!-- قسم تسجيل الدخول -->
     <div class="w-full lg:w-1/2 flex flex-col p-6 relative bg-slate-50 dark:bg-slate-900 transition-colors duration-300 min-h-screen">
         
-        <!-- أدوات التحكم العلوية (تم فصلها لتجنب التداخل) -->
+        <!-- أدوات التحكم العلوية -->
         <div class="w-full flex justify-end gap-3 mb-8 lg:absolute lg:top-6 lg:left-6 lg:rtl:left-6 lg:ltr:right-6 lg:mb-0 z-20">
             <button onclick="toggleLanguage()" class="w-10 h-10 rounded-full border border-slate-200 dark:border-slate-700 flex items-center justify-center hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors bg-white dark:bg-slate-800 shadow-sm">
                 <span class="font-bold text-xs" id="langLabel">EN</span>
@@ -90,7 +88,7 @@
                                 <div class="absolute inset-y-0 right-0 pr-3 rtl:right-0 rtl:pr-3 ltr:left-0 ltr:pl-3 flex items-center pointer-events-none">
                                     <i class="fa-regular fa-user text-slate-400 transition-colors"></i>
                                 </div>
-                                <input type="text" id="userInput" class="w-full pl-10 pr-10 rtl:pr-10 rtl:pl-4 ltr:pl-10 ltr:pr-4 py-3 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-brandBlue/50 text-slate-800 dark:text-white transition-all text-sm" placeholder="admin, ceo, hr..." required>
+                                <input type="text" id="userInput" class="w-full pl-10 pr-10 rtl:pr-10 rtl:pl-4 ltr:pl-10 ltr:pr-4 py-3 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-brandBlue/50 text-slate-800 dark:text-white transition-all text-sm" placeholder="admin, hr, grc..." required>
                             </div>
                         </div>
 
@@ -133,11 +131,13 @@
 
     <!-- Logic Script -->
     <script>
+        // تم تحديث القائمة لتشمل الصفحات المنجزة (page property)
         const roles = [
-            { id: 'admin', username: 'admin', title_ar: 'مدير النظام', title_en: 'System Admin', icon: 'fa-user-shield', color: 'bg-slate-700', type: 'system' },
-            { id: 'ceo', username: 'ceo', title_ar: 'الرئيس التنفيذي', title_en: 'CEO', icon: 'fa-chess-king', color: 'bg-amber-600', type: 'employee' },
-            { id: 'grc', username: 'grc', title_ar: 'الحوكمة', title_en: 'GRC', icon: 'fa-scale-balanced', color: 'bg-red-600', type: 'employee' },
-            { id: 'hr', username: 'hr', title_ar: 'الموارد البشرية', title_en: 'HR', icon: 'fa-users-gear', color: 'bg-purple-600', type: 'employee' },
+            { id: 'admin', username: 'admin', title_ar: 'مدير النظام', title_en: 'System Admin', icon: 'fa-user-shield', color: 'bg-slate-700', type: 'system', page: 'admin.html' },
+            { id: 'grc', username: 'grc', title_ar: 'الحوكمة', title_en: 'GRC', icon: 'fa-scale-balanced', color: 'bg-red-600', type: 'employee', page: 'grc.html' },
+            { id: 'hr', username: 'hr', title_ar: 'الموارد البشرية', title_en: 'HR', icon: 'fa-users-gear', color: 'bg-purple-600', type: 'employee', page: 'hr.html' },
+            { id: 'ceo', username: 'ceo', title_ar: 'الرئيس التنفيذي', title_en: 'CEO', icon: 'fa-chess-king', color: 'bg-amber-600', type: 'employee', page: 'dashboard.html' },
+            { id: 'finance', username: 'cfo', title_ar: 'المدير المالي', title_en: 'CFO', icon: 'fa-coins', color: 'bg-emerald-600', type: 'employee', page: 'dashboard.html' },
         ];
 
         const translations = {
@@ -266,9 +266,9 @@
             btn.classList.add('opacity-75', 'cursor-not-allowed');
             
             setTimeout(() => {
-                // استخدام المسار النسبي الصحيح
-                if (selectedRole.type === 'system') window.location.href = './admin.html';
-                else window.location.href = './dashboard.html';
+                // التوجيه للصفحة المحددة في بيانات الدور، أو صفحة افتراضية
+                const targetPage = selectedRole.page || 'dashboard.html';
+                window.location.href = targetPage;
             }, 800);
         }
 
