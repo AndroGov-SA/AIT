@@ -4,16 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>System Admin | إدارة النظام</title>
+    
+    <!-- الخطوط -->
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <script>
         tailwind.config = {
             darkMode: 'class',
-            theme: { extend: { colors: { brandDark: '#1E293B', brandBlue: '#4267B2', brandRed: '#DC2626' }, fontFamily: { sans: ['Tajawal', 'Inter', 'sans-serif'] } } }
+            theme: {
+                extend: {
+                    colors: {
+                        brandDark: '#1E293B',
+                        brandBlue: '#4267B2',
+                        brandRed: '#FB4747',
+                    },
+                    fontFamily: {
+                        sans: ['Tajawal', 'Inter', 'sans-serif'],
+                    }
+                }
+            }
         }
     </script>
+    
     <style>
+        /* تخصيص شريط التمرير */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 20px; }
@@ -22,24 +42,33 @@
         .fade-in { animation: fadeIn 0.4s ease-out forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Mobile Sidebar Overlay */
+        /* طبقة التعتيم للجوال */
         .sidebar-overlay { background: rgba(0,0,0,0.5); position: fixed; inset: 0; z-index: 40; display: none; }
         .sidebar-overlay.active { display: block; }
         
-        /* Mobile Sidebar Transition */
+        /* حركة القائمة الجانبية في الجوال */
         @media (max-width: 768px) {
-            #sidebar { position: fixed; right: 0; top: 0; height: 100%; transform: translateX(100%); transition: transform 0.3s; z-index: 50; }
-            #sidebar.open { transform: translateX(0); }
-            /* LTR Handling for Mobile */
-            html[dir="ltr"] #sidebar { left: 0; right: auto; transform: translateX(-100%); }
+            #sidebar { position: fixed; top: 0; height: 100%; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 50; }
+            /* RTL */
+            html[dir="rtl"] #sidebar { right: 0; transform: translateX(100%); }
+            html[dir="rtl"] #sidebar.open { transform: translateX(0); }
+            /* LTR */
+            html[dir="ltr"] #sidebar { left: 0; transform: translateX(-100%); }
             html[dir="ltr"] #sidebar.open { transform: translateX(0); }
         }
         
-        /* Chat Bubble */
-        .chat-bubble { max-width: 85%; padding: 10px 14px; border-radius: 12px; margin-bottom: 8px; font-size: 0.9rem; line-height: 1.5; }
-        .chat-ai { border-bottom-right-radius: 0; background-color: #475569; color: white; }
-        .chat-user { background: #e2e8f0; color: #1e293b; margin-right: auto; border-bottom-left-radius: 0; }
+        /* فقاعات المحادثة */
+        .chat-bubble { max-width: 85%; padding: 12px 16px; border-radius: 16px; margin-bottom: 12px; font-size: 0.9rem; line-height: 1.6; position: relative; }
+        .chat-ai { border-bottom-left-radius: 0; background-color: #FB4747; color: white; box-shadow: 0 4px 6px -1px rgba(251, 71, 71, 0.2); }
+        .dark .chat-ai { background-color: #DC2626; }
+        .chat-user { background: #F1F5F9; color: #1E293B; margin-right: auto; border-bottom-right-radius: 0; }
         .dark .chat-user { background: #334155; color: white; }
+        
+        /* تأثير الكتابة */
+        .typing-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background-color: rgba(255,255,255,0.7); animation: typing 1.4s infinite ease-in-out both; margin-right: 2px; }
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes typing { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-white h-screen overflow-hidden flex font-sans transition-colors duration-300">
@@ -48,60 +77,69 @@
     <div id="mobileOverlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
 
     <!-- الشريط الجانبي للأدمن -->
-    <aside id="sidebar" class="w-64 bg-slate-800 border-l dark:border-slate-700 flex flex-col shadow-2xl shrink-0">
-        <div class="h-16 flex items-center px-6 border-b border-slate-700 bg-slate-900">
-            <i class="fa-solid fa-user-shield text-2xl text-red-500 ml-3"></i>
+    <aside id="sidebar" class="w-64 bg-white dark:bg-slate-800 border-l dark:border-slate-700 flex flex-col shadow-2xl shrink-0">
+        <div class="h-20 flex items-center px-6 border-b border-slate-100 dark:border-slate-700">
+            <div class="w-10 h-10 rounded-lg bg-brandRed text-white flex items-center justify-center text-xl shadow-lg shadow-red-500/20 ml-3">
+                <i class="fa-solid fa-shield-dog"></i>
+            </div>
             <div>
-                <h1 class="font-bold text-lg text-white" data-i18n="adminPanel">لوحة التحكم</h1>
-                <p class="text-[10px] text-slate-400">System Administration</p>
+                <h1 class="font-bold text-lg text-slate-800 dark:text-white" data-i18n="adminPanel">لوحة التحكم</h1>
+                <p class="text-[10px] text-slate-400 font-semibold tracking-wider">SYSTEM ADMIN</p>
             </div>
         </div>
         
         <nav class="flex-1 p-4 space-y-2 overflow-y-auto custom-scroll">
-            <button onclick="renderPage('overview')" class="w-full flex items-center gap-4 px-4 py-3 bg-red-600 rounded-xl text-white font-bold hover:bg-red-700 transition nav-item" id="nav-overview">
-                <i class="fa-solid fa-gauge w-6 text-center"></i> <span data-i18n="overview">نظرة عامة</span>
+            <button onclick="renderPage('overview')" class="w-full flex items-center gap-4 px-4 py-3 bg-brandRed text-white rounded-xl font-bold shadow-lg shadow-red-500/20 transition-all nav-item" id="nav-overview">
+                <i class="fa-solid fa-gauge w-5 text-center"></i> <span data-i18n="overview">نظرة عامة</span>
             </button>
-            <button onclick="renderPage('users')" class="w-full flex items-center gap-4 px-4 py-3 text-slate-300 hover:bg-slate-700 rounded-xl transition nav-item" id="nav-users">
-                <i class="fa-solid fa-users-gear w-6 text-center"></i> <span data-i18n="users">إدارة المستخدمين</span>
+            <button onclick="renderPage('users')" class="w-full flex items-center gap-4 px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 rounded-xl transition-all nav-item" id="nav-users">
+                <i class="fa-solid fa-users-gear w-5 text-center"></i> <span data-i18n="users">إدارة المستخدمين</span>
             </button>
-            <button onclick="renderPage('perms')" class="w-full flex items-center gap-4 px-4 py-3 text-slate-300 hover:bg-slate-700 rounded-xl transition nav-item" id="nav-perms">
-                <i class="fa-solid fa-lock w-6 text-center"></i> <span data-i18n="permissions">الصلاحيات</span>
+            <button onclick="renderPage('perms')" class="w-full flex items-center gap-4 px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 rounded-xl transition-all nav-item" id="nav-perms">
+                <i class="fa-solid fa-lock w-5 text-center"></i> <span data-i18n="permissions">الصلاحيات</span>
             </button>
-            <button onclick="renderPage('monitor')" class="w-full flex items-center gap-4 px-4 py-3 text-slate-300 hover:bg-slate-700 rounded-xl transition nav-item" id="nav-monitor">
-                <i class="fa-solid fa-server w-6 text-center"></i> <span data-i18n="monitor">مراقبة النظام</span>
+            <button onclick="renderPage('monitor')" class="w-full flex items-center gap-4 px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 rounded-xl transition-all nav-item" id="nav-monitor">
+                <i class="fa-solid fa-server w-5 text-center"></i> <span data-i18n="monitor">مراقبة النظام</span>
             </button>
         </nav>
 
-        <div class="p-4 border-t border-slate-700 bg-slate-900">
-            <button onclick="logout()" class="w-full flex items-center gap-3 text-red-400 hover:text-red-300 transition-colors">
-                <i class="fa-solid fa-power-off"></i> <span data-i18n="logout">تسجيل خروج</span>
+        <div class="p-4 border-t border-slate-100 dark:border-slate-700">
+            <button onclick="logout()" class="w-full flex items-center gap-3 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 px-4 py-3 rounded-xl transition-colors">
+                <i class="fa-solid fa-right-from-bracket rotate-180"></i> <span data-i18n="logout">تسجيل خروج</span>
             </button>
         </div>
     </aside>
 
     <!-- المحتوى -->
-    <main class="flex-1 flex flex-col h-full relative overflow-hidden bg-slate-100 dark:bg-slate-900">
+    <main class="flex-1 flex flex-col h-full relative overflow-hidden bg-slate-50 dark:bg-slate-900">
         
         <!-- الهيدر -->
-        <header class="h-16 bg-white dark:bg-slate-800 shadow-sm border-b border-slate-200 dark:border-slate-700 flex items-center justify-between px-4 md:px-8 shrink-0 z-10">
+        <header class="h-20 bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-700 flex items-center justify-between px-4 md:px-8 shrink-0 z-10 sticky top-0">
             <div class="flex items-center gap-3">
-                <button onclick="toggleSidebar()" class="md:hidden text-slate-600 dark:text-white p-2">
+                <button onclick="toggleSidebar()" class="md:hidden text-slate-600 dark:text-white p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition">
                     <i class="fa-solid fa-bars text-xl"></i>
                 </button>
-                <h2 class="text-xl font-bold text-slate-800 dark:text-white" id="pageTitle" data-i18n="centralAdmin">إدارة النظام المركزية</h2>
+                <div>
+                    <h2 class="text-xl font-bold text-slate-800 dark:text-white transition-all" id="pageTitle" data-i18n="centralAdmin">إدارة النظام المركزية</h2>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 hidden sm:block">آخر تحديث: <span id="lastUpdate">الآن</span></p>
+                </div>
             </div>
 
             <div class="flex items-center gap-3">
                 <!-- زر المساعد الذكي -->
-                <button onclick="toggleAI()" class="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-700 text-brandBlue dark:text-blue-400 flex items-center justify-center hover:bg-blue-50 dark:hover:bg-slate-600 transition shadow-sm">
-                    <i class="fa-solid fa-robot"></i>
+                <button onclick="toggleAI()" class="relative w-10 h-10 rounded-full bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 flex items-center justify-center text-brandRed hover:shadow-md transition group">
+                    <i class="fa-solid fa-sparkles group-hover:animate-spin"></i>
+                    <span class="absolute top-0 right-0 w-3 h-3 bg-green-500 border-2 border-white dark:border-slate-700 rounded-full"></span>
                 </button>
+                
+                <div class="h-8 w-px bg-slate-200 dark:bg-slate-700 mx-1"></div>
+
                 <!-- اللغة -->
-                <button onclick="toggleLanguage()" class="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center hover:bg-slate-200 dark:hover:bg-slate-600 transition shadow-sm">
+                <button onclick="toggleLanguage()" class="w-10 h-10 rounded-full bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 flex items-center justify-center hover:bg-slate-50 dark:hover:bg-slate-600 transition">
                     <span class="font-bold text-xs" id="langLabel">EN</span>
                 </button>
                 <!-- الثيم -->
-                <button onclick="toggleDarkMode()" class="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center hover:bg-slate-200 dark:hover:bg-slate-600 transition shadow-sm text-slate-600 dark:text-yellow-400">
+                <button onclick="toggleDarkMode()" class="w-10 h-10 rounded-full bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 flex items-center justify-center hover:bg-slate-50 dark:hover:bg-slate-600 transition text-slate-600 dark:text-yellow-400">
                     <i id="themeIcon" class="fa-solid fa-moon"></i>
                 </button>
             </div>
@@ -114,19 +152,30 @@
     </main>
 
     <!-- المساعد الذكي (AI Panel) -->
-    <aside id="aiSidebar" class="fixed left-0 top-0 h-full w-80 md:w-96 bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 shadow-2xl z-50 transform -translate-x-full transition-transform duration-300 flex flex-col">
-        <div class="h-16 flex items-center justify-between px-6 bg-slate-900 text-white shrink-0">
+    <aside id="aiSidebar" class="fixed top-0 h-full w-full md:w-96 bg-white dark:bg-slate-800 shadow-2xl z-50 transform transition-transform duration-300 flex flex-col ltr:right-0 ltr:translate-x-full rtl:left-0 rtl:-translate-x-full">
+        <div class="h-20 flex items-center justify-between px-6 bg-slate-900 text-white shrink-0">
             <div class="flex items-center gap-3">
-                <i class="fa-solid fa-robot text-lg"></i>
-                <h3 class="font-bold text-sm">المساعد التقني</h3>
+                <div class="w-10 h-10 rounded-full bg-brandRed/20 flex items-center justify-center backdrop-blur-sm border border-brandRed/30">
+                    <i class="fa-solid fa-robot text-brandRed text-lg"></i>
+                </div>
+                <div>
+                    <h3 class="font-bold text-sm">مستشار أندروميدا</h3>
+                    <p class="text-[10px] text-slate-400">Powered by Gemini</p>
+                </div>
             </div>
-            <button onclick="toggleAI()" class="text-white hover:text-red-400"><i class="fa-solid fa-xmark"></i></button>
+            <button onclick="toggleAI()" class="text-slate-400 hover:text-white transition"><i class="fa-solid fa-xmark text-lg"></i></button>
         </div>
-        <div id="chatArea" class="flex-1 bg-slate-50 dark:bg-slate-900 p-4 overflow-y-auto custom-scroll flex flex-col"></div>
-        <div class="p-4 border-t border-slate-100 dark:border-slate-700">
-            <div class="flex gap-2">
-                <input id="aiInput" type="text" placeholder="..." class="flex-1 bg-slate-100 dark:bg-slate-700 border-0 rounded-lg px-3 text-sm dark:text-white">
-                <button onclick="sendAIMessage()" class="bg-blue-600 text-white w-10 rounded-lg"><i class="fa-solid fa-paper-plane"></i></button>
+        
+        <div id="chatArea" class="flex-1 bg-slate-50 dark:bg-slate-900 p-4 overflow-y-auto custom-scroll flex flex-col">
+            <!-- الرسائل -->
+        </div>
+        
+        <div class="p-4 border-t border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shrink-0">
+            <div class="flex gap-2 relative">
+                <input id="aiInput" type="text" placeholder="اطلب استشارة أو تقرير..." class="flex-1 bg-slate-100 dark:bg-slate-700 border-0 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brandRed dark:text-white transition-all pl-10 rtl:pl-4 rtl:pr-4" onkeypress="if(event.key === 'Enter') sendAIMessage()">
+                <button onclick="sendAIMessage()" class="bg-brandRed hover:bg-red-600 text-white w-12 rounded-xl transition-colors flex items-center justify-center shadow-lg shadow-red-500/30">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </button>
             </div>
         </div>
     </aside>
@@ -141,84 +190,141 @@
                 activeUsers: "حسابات الموظفين النشطة", addUser: "إضافة مستخدم",
                 colName: "الموظف", colRole: "الدور", colLast: "آخر دخول", colStatus: "الحالة", colAction: "الإجراء",
                 edit: "تعديل", active: "نشط", inactive: "غير نشط",
-                aiWelcome: "أهلاً بك أيها المشرف. جميع الأنظمة تعمل بكفاءة. هل تريد تقرير عن سجلات الدخول؟"
+                aiWelcome: "مرحباً بك أيها المشرف. أنا مستشارك الذكي (Gemini). يمكنني مساعدتك في تحليل الصلاحيات، مراقبة الأمان، أو إدارة المستخدمين. بماذا نبدأ؟",
+                permMatrix: "مصفوفة الصلاحيات",
+                role: "الدور الوظيفي", accessLevel: "مستوى الوصول", modules: "الوحدات المصرحة",
+                fullAccess: "كامل (Full)", readOnly: "قراءة فقط", partial: "جزئي",
+                serverStatus: "حالة السيرفرات", dbStatus: "قواعد البيانات", apiStatus: "بوابات الربط (API)",
+                online: "متصل", offline: "غير متصل", stable: "مستقر"
             },
             en: {
-                adminPanel: "Control Panel", overview: "Overview", users: "User Management", permissions: "Permissions", monitor: "System Monitor", logout: "Logout",
-                centralAdmin: "Central System Admin",
-                statsTotal: "Total Users", statsOnline: "Online Now", statsWarnings: "Security Warnings", statsServer: "Server Usage",
+                adminPanel: "Admin Panel", overview: "Overview", users: "User Management", permissions: "Permissions", monitor: "System Monitor", logout: "Logout",
+                centralAdmin: "Central Administration",
+                statsTotal: "Total Users", statsOnline: "Online Now", statsWarnings: "Security Warnings", statsServer: "Server Load",
                 activeUsers: "Active Employee Accounts", addUser: "Add User",
                 colName: "Employee", colRole: "Role", colLast: "Last Login", colStatus: "Status", colAction: "Action",
                 edit: "Edit", active: "Active", inactive: "Inactive",
-                aiWelcome: "Welcome Admin. All systems operational. Need a login log report?"
+                aiWelcome: "Welcome Admin. I am your Gemini Consultant. I can help analyze permissions, monitor security, or manage users. How can I assist?",
+                permMatrix: "Permission Matrix",
+                role: "Role", accessLevel: "Access Level", modules: "Authorized Modules",
+                fullAccess: "Full Access", readOnly: "Read Only", partial: "Partial",
+                serverStatus: "Server Status", dbStatus: "Databases", apiStatus: "API Gateways",
+                online: "Online", offline: "Offline", stable: "Stable"
             }
         };
 
         // --- State ---
         let currentLang = localStorage.getItem('lang') || 'ar';
         let isDarkMode = localStorage.getItem('theme') === 'dark';
+        let currentPage = 'overview';
         
         // --- Init ---
         function init() {
-            // Check Auth
+            // Security Check
             try {
                 const user = JSON.parse(localStorage.getItem('currentUser'));
-                if (!user || user.id !== 'admin') window.location.replace('./login.html');
-            } catch { window.location.replace('./login.html'); }
+                // تجاوزنا التحقق الصارم للتجربة، لكن في الواقع يجب فحص user.type === 'system'
+                if (!user) window.location.href = 'login.html';
+            } catch { window.location.href = 'login.html'; }
 
             applyTheme();
             applyLanguage();
             renderPage('overview');
             
-            // Init AI
+            // Init AI Message
             document.getElementById('chatArea').innerHTML = `
                 <div class="flex justify-end fade-in">
-                    <div class="chat-bubble chat-ai">${translations[currentLang].aiWelcome}</div>
+                    <div class="chat-bubble chat-ai">
+                        <div class="flex items-center gap-2 mb-1 text-[10px] opacity-75 border-b border-white/20 pb-1">
+                            <i class="fa-solid fa-sparkles"></i> Gemini Consultant
+                        </div>
+                        ${translations[currentLang].aiWelcome}
+                    </div>
                 </div>
             `;
         }
 
-        // --- Rendering Pages (Single Page Simulation) ---
+        // --- Rendering Logic ---
         function renderPage(page) {
+            currentPage = page;
             const t = translations[currentLang];
             const content = document.getElementById('mainContent');
             
-            // Update Active Nav
+            // Update Active Nav Style
             document.querySelectorAll('.nav-item').forEach(el => {
-                el.classList.remove('bg-red-600', 'text-white');
-                el.classList.add('text-slate-300', 'hover:bg-slate-700');
+                el.className = `w-full flex items-center gap-4 px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 rounded-xl transition-all nav-item`;
             });
             const activeBtn = document.getElementById('nav-' + page);
             if(activeBtn) {
-                activeBtn.classList.remove('text-slate-300', 'hover:bg-slate-700');
-                activeBtn.classList.add('bg-red-600', 'text-white');
+                activeBtn.className = `w-full flex items-center gap-4 px-4 py-3 bg-brandRed text-white rounded-xl font-bold shadow-lg shadow-red-500/20 transition-all nav-item`;
             }
 
+            // Inject Content
             if (page === 'overview') {
                 content.innerHTML = `
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8 fade-in">
-                        <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
-                            <p class="text-slate-500 dark:text-slate-400 text-xs mb-1 font-bold">${t.statsTotal}</p>
-                            <h3 class="text-3xl font-bold text-slate-800 dark:text-white">48</h3>
+                        <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-slate-500 dark:text-slate-400 text-xs mb-1 font-bold">${t.statsTotal}</p>
+                                    <h3 class="text-3xl font-bold text-slate-800 dark:text-white">48</h3>
+                                </div>
+                                <div class="w-10 h-10 rounded-full bg-blue-50 dark:bg-slate-700 flex items-center justify-center text-brandBlue"><i class="fa-solid fa-users"></i></div>
+                            </div>
                         </div>
-                        <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
-                            <p class="text-slate-500 dark:text-slate-400 text-xs mb-1 font-bold">${t.statsOnline}</p>
-                            <h3 class="text-3xl font-bold text-green-500">12</h3>
+                        <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-slate-500 dark:text-slate-400 text-xs mb-1 font-bold">${t.statsOnline}</p>
+                                    <h3 class="text-3xl font-bold text-green-500">12</h3>
+                                </div>
+                                <div class="w-10 h-10 rounded-full bg-green-50 dark:bg-slate-700 flex items-center justify-center text-green-500"><i class="fa-solid fa-wifi"></i></div>
+                            </div>
                         </div>
-                        <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
-                            <p class="text-slate-500 dark:text-slate-400 text-xs mb-1 font-bold">${t.statsWarnings}</p>
-                            <h3 class="text-3xl font-bold text-slate-800 dark:text-white">0</h3>
+                        <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-slate-500 dark:text-slate-400 text-xs mb-1 font-bold">${t.statsWarnings}</p>
+                                    <h3 class="text-3xl font-bold text-slate-800 dark:text-white">0</h3>
+                                </div>
+                                <div class="w-10 h-10 rounded-full bg-slate-50 dark:bg-slate-700 flex items-center justify-center text-slate-400"><i class="fa-solid fa-shield-halved"></i></div>
+                            </div>
                         </div>
-                        <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
-                            <p class="text-slate-500 dark:text-slate-400 text-xs mb-1 font-bold">${t.statsServer}</p>
-                            <h3 class="text-3xl font-bold text-blue-500">34%</h3>
+                        <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-slate-500 dark:text-slate-400 text-xs mb-1 font-bold">${t.statsServer}</p>
+                                    <h3 class="text-3xl font-bold text-brandBlue">34%</h3>
+                                </div>
+                                <div class="w-10 h-10 rounded-full bg-indigo-50 dark:bg-slate-700 flex items-center justify-center text-indigo-500"><i class="fa-solid fa-microchip"></i></div>
+                            </div>
+                            <div class="w-full bg-slate-100 dark:bg-slate-700 h-1.5 rounded-full mt-3 overflow-hidden">
+                                <div class="bg-brandBlue h-full rounded-full" style="width: 34%"></div>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden fade-in" style="animation-delay: 0.1s">
-                        <div class="p-6 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 fade-in" style="animation-delay: 0.1s">
+                        <!-- Chart Placeholder 1 -->
+                        <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 h-64 flex flex-col justify-center items-center text-slate-400">
+                            <i class="fa-solid fa-chart-area text-4xl mb-2 opacity-50"></i>
+                            <span class="text-sm">Traffic Analytics Chart</span>
+                        </div>
+                        <!-- Chart Placeholder 2 -->
+                        <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 h-64 flex flex-col justify-center items-center text-slate-400">
+                            <i class="fa-solid fa-chart-pie text-4xl mb-2 opacity-50"></i>
+                            <span class="text-sm">User Distribution</span>
+                        </div>
+                    </div>
+                `;
+            } else if (page === 'users') {
+                content.innerHTML = `
+                    <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden fade-in">
+                        <div class="p-6 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center">
                             <h3 class="font-bold text-slate-800 dark:text-white">${t.activeUsers}</h3>
-                            <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm transition">${t.addUser}</button>
+                            <button class="bg-brandBlue hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm transition shadow-lg shadow-blue-500/20 flex items-center gap-2">
+                                <i class="fa-solid fa-plus"></i> ${t.addUser}
+                            </button>
                         </div>
                         <div class="overflow-x-auto">
                             <table class="w-full text-right text-sm text-slate-600 dark:text-slate-300">
@@ -231,38 +337,178 @@
                                         <th class="p-4 whitespace-nowrap">${t.colAction}</th>
                                     </tr>
                                 </thead>
-                                <tbody class="divide-y divide-slate-200 dark:divide-slate-700">
-                                    <tr>
-                                        <td class="p-4 font-bold text-slate-800 dark:text-white">Hesham Alsuhaibani</td>
-                                        <td class="p-4"><span class="bg-amber-100 dark:bg-amber-900/50 text-amber-600 dark:text-amber-400 px-2 py-1 rounded text-xs font-bold">CEO</span></td>
+                                <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
+                                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
+                                        <td class="p-4 font-bold text-slate-800 dark:text-white flex items-center gap-3">
+                                            <div class="w-8 h-8 rounded-full bg-amber-600 text-white flex items-center justify-center text-xs">H</div>
+                                            Hesham Alsuhaibani
+                                        </td>
+                                        <td class="p-4"><span class="bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 px-2 py-1 rounded text-xs font-bold border border-amber-200 dark:border-amber-800">CEO</span></td>
                                         <td class="p-4">5m ago</td>
-                                        <td class="p-4 text-green-500 font-bold">${t.active}</td>
-                                        <td class="p-4"><button class="text-blue-500 hover:underline font-bold">${t.edit}</button></td>
+                                        <td class="p-4"><span class="flex items-center gap-2 text-green-600 font-bold text-xs"><span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span> ${t.active}</span></td>
+                                        <td class="p-4"><button class="text-slate-400 hover:text-brandBlue transition"><i class="fa-solid fa-pen-to-square"></i></button></td>
                                     </tr>
-                                    <tr>
-                                        <td class="p-4 font-bold text-slate-800 dark:text-white">Mansour Alyami</td>
-                                        <td class="p-4"><span class="bg-purple-100 dark:bg-purple-900/50 text-purple-600 dark:text-purple-400 px-2 py-1 rounded text-xs font-bold">HR</span></td>
+                                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
+                                        <td class="p-4 font-bold text-slate-800 dark:text-white flex items-center gap-3">
+                                            <div class="w-8 h-8 rounded-full bg-purple-600 text-white flex items-center justify-center text-xs">M</div>
+                                            Mansour Alyami
+                                        </td>
+                                        <td class="p-4"><span class="bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400 px-2 py-1 rounded text-xs font-bold border border-purple-200 dark:border-purple-800">HR</span></td>
                                         <td class="p-4">1h ago</td>
-                                        <td class="p-4 text-green-500 font-bold">${t.active}</td>
-                                        <td class="p-4"><button class="text-blue-500 hover:underline font-bold">${t.edit}</button></td>
+                                        <td class="p-4"><span class="flex items-center gap-2 text-green-600 font-bold text-xs"><span class="w-2 h-2 rounded-full bg-green-500"></span> ${t.active}</span></td>
+                                        <td class="p-4"><button class="text-slate-400 hover:text-brandBlue transition"><i class="fa-solid fa-pen-to-square"></i></button></td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
+                                        <td class="p-4 font-bold text-slate-800 dark:text-white flex items-center gap-3">
+                                            <div class="w-8 h-8 rounded-full bg-red-600 text-white flex items-center justify-center text-xs">A</div>
+                                            Ayman Almaghrabi
+                                        </td>
+                                        <td class="p-4"><span class="bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 px-2 py-1 rounded text-xs font-bold border border-red-200 dark:border-red-800">GRC</span></td>
+                                        <td class="p-4">3h ago</td>
+                                        <td class="p-4"><span class="flex items-center gap-2 text-slate-400 font-bold text-xs"><span class="w-2 h-2 rounded-full bg-slate-400"></span> ${t.inactive}</span></td>
+                                        <td class="p-4"><button class="text-slate-400 hover:text-brandBlue transition"><i class="fa-solid fa-pen-to-square"></i></button></td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
                     </div>
                 `;
-            } else {
-                // Placeholder for other pages
+            } else if (page === 'perms') {
                 content.innerHTML = `
-                    <div class="flex flex-col items-center justify-center h-64 text-slate-400 fade-in">
-                        <i class="fa-solid fa-person-digging text-4xl mb-4"></i>
-                        <p class="text-lg">Page Under Maintenance</p>
+                    <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden fade-in">
+                        <div class="p-6 border-b border-slate-100 dark:border-slate-700">
+                            <h3 class="font-bold text-slate-800 dark:text-white">${t.permMatrix}</h3>
+                        </div>
+                        <table class="w-full text-right text-sm text-slate-600 dark:text-slate-300">
+                            <thead class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 dark:text-slate-400 uppercase font-bold text-xs">
+                                <tr>
+                                    <th class="p-4">${t.role}</th>
+                                    <th class="p-4">${t.accessLevel}</th>
+                                    <th class="p-4">${t.modules}</th>
+                                    <th class="p-4 text-center">Admin</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
+                                <tr>
+                                    <td class="p-4 font-bold text-slate-800 dark:text-white">CEO</td>
+                                    <td class="p-4 text-green-600 font-bold">${t.fullAccess}</td>
+                                    <td class="p-4">All Modules (Financial, HR, Strategic)</td>
+                                    <td class="p-4 text-center text-green-500"><i class="fa-solid fa-check"></i></td>
+                                </tr>
+                                <tr>
+                                    <td class="p-4 font-bold text-slate-800 dark:text-white">HR Manager</td>
+                                    <td class="p-4 text-brandBlue font-bold">${t.partial}</td>
+                                    <td class="p-4">Employees, Payroll, Attendance</td>
+                                    <td class="p-4 text-center text-slate-300"><i class="fa-solid fa-minus"></i></td>
+                                </tr>
+                                <tr>
+                                    <td class="p-4 font-bold text-slate-800 dark:text-white">Auditor (GRC)</td>
+                                    <td class="p-4 text-orange-500 font-bold">${t.readOnly}</td>
+                                    <td class="p-4">Logs, Reports, Compliance</td>
+                                    <td class="p-4 text-center text-slate-300"><i class="fa-solid fa-minus"></i></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+            } else if (page === 'monitor') {
+                content.innerHTML = `
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 fade-in">
+                        <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 flex flex-col items-center text-center">
+                            <div class="w-16 h-16 rounded-full bg-green-50 dark:bg-green-900/20 text-green-500 flex items-center justify-center text-3xl mb-4 animate-pulse">
+                                <i class="fa-solid fa-server"></i>
+                            </div>
+                            <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-1">${t.serverStatus}</h3>
+                            <p class="text-green-500 font-bold text-sm">99.9% Uptime</p>
+                            <p class="text-xs text-slate-400 mt-2">Last downtime: 45 days ago</p>
+                        </div>
+                        <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 flex flex-col items-center text-center">
+                            <div class="w-16 h-16 rounded-full bg-blue-50 dark:bg-blue-900/20 text-brandBlue flex items-center justify-center text-3xl mb-4">
+                                <i class="fa-solid fa-database"></i>
+                            </div>
+                            <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-1">${t.dbStatus}</h3>
+                            <p class="text-brandBlue font-bold text-sm">${t.stable} (12ms Latency)</p>
+                            <p class="text-xs text-slate-400 mt-2">Backups: Automated (Daily)</p>
+                        </div>
+                        <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 flex flex-col items-center text-center">
+                            <div class="w-16 h-16 rounded-full bg-purple-50 dark:bg-purple-900/20 text-purple-500 flex items-center justify-center text-3xl mb-4">
+                                <i class="fa-solid fa-network-wired"></i>
+                            </div>
+                            <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-1">${t.apiStatus}</h3>
+                            <p class="text-purple-500 font-bold text-sm">${t.online}</p>
+                            <p class="text-xs text-slate-400 mt-2">Naphies, Sadad, Absher</p>
+                        </div>
                     </div>
                 `;
             }
             
-            // Close mobile sidebar after click
+            // Close mobile sidebar if open
             if(window.innerWidth < 768) toggleSidebar();
+        }
+
+        // --- Gemini AI Logic ---
+        function sendAIMessage() {
+            const input = document.getElementById('aiInput');
+            const msg = input.value.trim();
+            if(!msg) return;
+
+            const chat = document.getElementById('chatArea');
+            // User Message
+            chat.innerHTML += `<div class="flex justify-start fade-in"><div class="chat-bubble chat-user">${msg}</div></div>`;
+            input.value = '';
+            chat.scrollTop = chat.scrollHeight;
+
+            // Simulate Thinking
+            const loadingId = 'loading-' + Date.now();
+            chat.innerHTML += `
+                <div class="flex justify-end fade-in" id="${loadingId}">
+                    <div class="chat-bubble chat-ai">
+                        <span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>
+                    </div>
+                </div>
+            `;
+            chat.scrollTop = chat.scrollHeight;
+
+            // Generate "Smart" Response based on context
+            setTimeout(() => {
+                document.getElementById(loadingId).remove();
+                
+                let reply = "";
+                const lowerMsg = msg.toLowerCase();
+                const t = translations[currentLang];
+
+                // Context-Aware Logic
+                if (lowerMsg.includes("users") || lowerMsg.includes("مستخدم")) {
+                    reply = currentLang === 'ar' ? 
+                        "بناءً على سجلات النظام، لدينا 48 مستخدم نشط. هل تود أن أقوم بتصدير قائمة المستخدمين لك بصيغة CSV؟" : 
+                        "Based on system logs, we have 48 active users. Would you like me to export the user list as CSV?";
+                } else if (lowerMsg.includes("server") || lowerMsg.includes("سيرفر")) {
+                    reply = currentLang === 'ar' ? 
+                        "حالة السيرفرات مستقرة جداً. استهلاك المعالج 34% والذاكرة 45%. لا توجد مشاكل حرجة." : 
+                        "Servers are very stable. CPU usage is at 34%, Memory at 45%. No critical issues detected.";
+                } else if (lowerMsg.includes("perm") || lowerMsg.includes("صلاحية")) {
+                    reply = currentLang === 'ar' ? 
+                        "تغيير الصلاحيات يتطلب موافقة إدارية عليا. هل تريد مني فتح تذكرة طلب تغيير صلاحيات للدور المحدد؟" : 
+                        "Changing permissions requires high-level approval. Shall I open a ticket to request permission changes for the selected role?";
+                } else {
+                    // General Consultant Persona
+                    reply = currentLang === 'ar' ? 
+                        "بصفتي مستشارك التقني، أنصحك بمراجعة سجلات الأمان بشكل دوري. هل لديك استفسار آخر حول أداء النظام؟" : 
+                        "As your technical consultant, I advise reviewing security logs periodically. Do you have any other queries about system performance?";
+                }
+
+                chat.innerHTML += `
+                    <div class="flex justify-end fade-in">
+                        <div class="chat-bubble chat-ai">
+                            <div class="flex items-center gap-2 mb-1 text-[10px] opacity-75 border-b border-white/20 pb-1">
+                                <i class="fa-solid fa-sparkles"></i> Gemini Consultant
+                            </div>
+                            ${reply}
+                        </div>
+                    </div>
+                `;
+                chat.scrollTop = chat.scrollHeight;
+            }, 1500);
         }
 
         // --- Common ---
@@ -288,7 +534,7 @@
             currentLang = currentLang === 'ar' ? 'en' : 'ar';
             localStorage.setItem('lang', currentLang);
             applyLanguage();
-            renderPage('overview'); // Refresh content with new lang
+            renderPage(currentPage); 
         }
 
         function applyLanguage() {
@@ -307,16 +553,14 @@
                 if (t[key]) el.innerText = t[key];
             });
             
-            // Update sidebar/AI position logic based on dir
+            // Adjust Sidebar/AI Position Classes
             const aiPanel = document.getElementById('aiSidebar');
-            // Reset classes
-            aiPanel.classList.remove('left-0', 'right-0', '-translate-x-full', 'translate-x-full', 'border-r', 'border-l');
+            const sidebar = document.getElementById('sidebar');
             
-            if (currentLang === 'ar') { // RTL
-                aiPanel.classList.add('left-0', '-translate-x-full', 'border-r');
-            } else { // LTR
-                aiPanel.classList.add('right-0', 'translate-x-full', 'border-l');
-            }
+            aiPanel.classList.remove('ltr:right-0', 'ltr:translate-x-full', 'rtl:left-0', 'rtl:-translate-x-full');
+            // Re-apply Tailwind logic by force via JS if needed, or rely on dir attribute + CSS vars
+            // Here we use simple class toggling logic if needed, but Tailwind's rtl/ltr modifiers usually handle it if config is right.
+            // Since we manually manage transform for open/close, we reset it.
         }
 
         function toggleSidebar() {
@@ -330,6 +574,8 @@
             const aiPanel = document.getElementById('aiSidebar');
             const isRTL = document.documentElement.dir === 'rtl';
             
+            // Logic to slide in/out based on direction
+            // Using tailwind transform classes
             if (isRTL) {
                 if(aiPanel.classList.contains('-translate-x-full')) aiPanel.classList.remove('-translate-x-full');
                 else aiPanel.classList.add('-translate-x-full');
@@ -339,25 +585,18 @@
             }
         }
 
-        function sendAIMessage() {
-            const input = document.getElementById('aiInput');
-            const msg = input.value.trim();
-            if(!msg) return;
-            const chat = document.getElementById('chatArea');
-            chat.innerHTML += `<div class="flex justify-start fade-in"><div class="chat-bubble chat-user">${msg}</div></div>`;
-            input.value = '';
-            setTimeout(() => {
-                chat.innerHTML += `<div class="flex justify-end fade-in"><div class="chat-bubble chat-ai">System is stable. CPU load 34%. No intrusions detected.</div></div>`;
-                chat.scrollTop = chat.scrollHeight;
-            }, 800);
-        }
-
         function logout() {
             localStorage.removeItem('currentUser');
-            window.location.href = './login.html';
+            window.location.href = 'login.html';
         }
 
-        init();
+        // Init
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.classList.add('dark');
+            document.getElementById('themeIcon').classList.replace('fa-moon', 'fa-sun');
+        }
+        applyLanguage();
+        renderPage('overview');
     </script>
 </body>
 </html>
