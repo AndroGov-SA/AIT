@@ -4,120 +4,360 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>System Admin | إدارة النظام</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
-        tailwind.config = { darkMode: 'class', theme: { extend: { colors: { brandDark: '#1E293B', brandBlue: '#4267B2' }, fontFamily: { sans: ['Tajawal', 'sans-serif'] } } } }
+        tailwind.config = {
+            darkMode: 'class',
+            theme: { extend: { colors: { brandDark: '#1E293B', brandBlue: '#4267B2', brandRed: '#DC2626' }, fontFamily: { sans: ['Tajawal', 'Inter', 'sans-serif'] } } }
+        }
     </script>
+    <style>
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 20px; }
+        .dark ::-webkit-scrollbar-thumb { background-color: #475569; }
+        
+        .fade-in { animation: fadeIn 0.4s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Mobile Sidebar Overlay */
+        .sidebar-overlay { background: rgba(0,0,0,0.5); position: fixed; inset: 0; z-index: 40; display: none; }
+        .sidebar-overlay.active { display: block; }
+        
+        /* Mobile Sidebar Transition */
+        @media (max-width: 768px) {
+            #sidebar { position: fixed; right: 0; top: 0; height: 100%; transform: translateX(100%); transition: transform 0.3s; z-index: 50; }
+            #sidebar.open { transform: translateX(0); }
+            /* LTR Handling for Mobile */
+            html[dir="ltr"] #sidebar { left: 0; right: auto; transform: translateX(-100%); }
+            html[dir="ltr"] #sidebar.open { transform: translateX(0); }
+        }
+        
+        /* Chat Bubble */
+        .chat-bubble { max-width: 85%; padding: 10px 14px; border-radius: 12px; margin-bottom: 8px; font-size: 0.9rem; line-height: 1.5; }
+        .chat-ai { border-bottom-right-radius: 0; background-color: #475569; color: white; }
+        .chat-user { background: #e2e8f0; color: #1e293b; margin-right: auto; border-bottom-left-radius: 0; }
+        .dark .chat-user { background: #334155; color: white; }
+    </style>
 </head>
-<body class="bg-slate-900 text-white h-screen flex font-sans">
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-white h-screen overflow-hidden flex font-sans transition-colors duration-300">
+
+    <!-- Mobile Overlay -->
+    <div id="mobileOverlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
 
     <!-- الشريط الجانبي للأدمن -->
-    <aside class="w-64 bg-slate-800 border-l border-slate-700 flex flex-col">
-        <div class="h-20 flex items-center px-6 border-b border-slate-700">
+    <aside id="sidebar" class="w-64 bg-slate-800 border-l dark:border-slate-700 flex flex-col shadow-2xl shrink-0">
+        <div class="h-16 flex items-center px-6 border-b border-slate-700 bg-slate-900">
             <i class="fa-solid fa-user-shield text-2xl text-red-500 ml-3"></i>
             <div>
-                <h1 class="font-bold text-lg">لوحة التحكم</h1>
+                <h1 class="font-bold text-lg text-white" data-i18n="adminPanel">لوحة التحكم</h1>
                 <p class="text-[10px] text-slate-400">System Administration</p>
             </div>
         </div>
-        <nav class="flex-1 p-4 space-y-2">
-            <a href="#" class="flex items-center gap-4 px-4 py-3 bg-red-600 rounded-xl text-white font-bold"><i class="fa-solid fa-gauge w-6 text-center"></i> نظرة عامة</a>
-            <a href="#" class="flex items-center gap-4 px-4 py-3 text-slate-400 hover:bg-slate-700 rounded-xl transition"><i class="fa-solid fa-users-gear w-6 text-center"></i> إدارة المستخدمين</a>
-            <a href="#" class="flex items-center gap-4 px-4 py-3 text-slate-400 hover:bg-slate-700 rounded-xl transition"><i class="fa-solid fa-lock w-6 text-center"></i> الصلاحيات والأدوار</a>
-            <a href="#" class="flex items-center gap-4 px-4 py-3 text-slate-400 hover:bg-slate-700 rounded-xl transition"><i class="fa-solid fa-server w-6 text-center"></i> مراقبة النظام</a>
+        
+        <nav class="flex-1 p-4 space-y-2 overflow-y-auto custom-scroll">
+            <button onclick="renderPage('overview')" class="w-full flex items-center gap-4 px-4 py-3 bg-red-600 rounded-xl text-white font-bold hover:bg-red-700 transition nav-item" id="nav-overview">
+                <i class="fa-solid fa-gauge w-6 text-center"></i> <span data-i18n="overview">نظرة عامة</span>
+            </button>
+            <button onclick="renderPage('users')" class="w-full flex items-center gap-4 px-4 py-3 text-slate-300 hover:bg-slate-700 rounded-xl transition nav-item" id="nav-users">
+                <i class="fa-solid fa-users-gear w-6 text-center"></i> <span data-i18n="users">إدارة المستخدمين</span>
+            </button>
+            <button onclick="renderPage('perms')" class="w-full flex items-center gap-4 px-4 py-3 text-slate-300 hover:bg-slate-700 rounded-xl transition nav-item" id="nav-perms">
+                <i class="fa-solid fa-lock w-6 text-center"></i> <span data-i18n="permissions">الصلاحيات</span>
+            </button>
+            <button onclick="renderPage('monitor')" class="w-full flex items-center gap-4 px-4 py-3 text-slate-300 hover:bg-slate-700 rounded-xl transition nav-item" id="nav-monitor">
+                <i class="fa-solid fa-server w-6 text-center"></i> <span data-i18n="monitor">مراقبة النظام</span>
+            </button>
         </nav>
-        <div class="p-4 border-t border-slate-700">
-            <button onclick="logout()" class="w-full flex items-center gap-3 text-red-400 hover:text-red-300"><i class="fa-solid fa-power-off"></i> تسجيل خروج</button>
+
+        <div class="p-4 border-t border-slate-700 bg-slate-900">
+            <button onclick="logout()" class="w-full flex items-center gap-3 text-red-400 hover:text-red-300 transition-colors">
+                <i class="fa-solid fa-power-off"></i> <span data-i18n="logout">تسجيل خروج</span>
+            </button>
         </div>
     </aside>
 
     <!-- المحتوى -->
-    <main class="flex-1 overflow-y-auto p-8 bg-slate-900">
-        <header class="flex justify-between items-center mb-8">
-            <h2 class="text-3xl font-bold">إدارة النظام المركزية</h2>
-            <div class="flex gap-4">
-                <span class="px-3 py-1 bg-green-900/50 text-green-400 rounded-full text-xs border border-green-800">النظام يعمل: Stable v9.0</span>
+    <main class="flex-1 flex flex-col h-full relative overflow-hidden bg-slate-100 dark:bg-slate-900">
+        
+        <!-- الهيدر -->
+        <header class="h-16 bg-white dark:bg-slate-800 shadow-sm border-b border-slate-200 dark:border-slate-700 flex items-center justify-between px-4 md:px-8 shrink-0 z-10">
+            <div class="flex items-center gap-3">
+                <button onclick="toggleSidebar()" class="md:hidden text-slate-600 dark:text-white p-2">
+                    <i class="fa-solid fa-bars text-xl"></i>
+                </button>
+                <h2 class="text-xl font-bold text-slate-800 dark:text-white" id="pageTitle" data-i18n="centralAdmin">إدارة النظام المركزية</h2>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <!-- زر المساعد الذكي -->
+                <button onclick="toggleAI()" class="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-700 text-brandBlue dark:text-blue-400 flex items-center justify-center hover:bg-blue-50 dark:hover:bg-slate-600 transition shadow-sm">
+                    <i class="fa-solid fa-robot"></i>
+                </button>
+                <!-- اللغة -->
+                <button onclick="toggleLanguage()" class="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center hover:bg-slate-200 dark:hover:bg-slate-600 transition shadow-sm">
+                    <span class="font-bold text-xs" id="langLabel">EN</span>
+                </button>
+                <!-- الثيم -->
+                <button onclick="toggleDarkMode()" class="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center hover:bg-slate-200 dark:hover:bg-slate-600 transition shadow-sm text-slate-600 dark:text-yellow-400">
+                    <i id="themeIcon" class="fa-solid fa-moon"></i>
+                </button>
             </div>
         </header>
 
-        <!-- إحصائيات النظام -->
-        <div class="grid grid-cols-4 gap-6 mb-8">
-            <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700">
-                <p class="text-slate-400 text-xs mb-1">إجمالي المستخدمين</p>
-                <h3 class="text-3xl font-bold">48</h3>
-            </div>
-            <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700">
-                <p class="text-slate-400 text-xs mb-1">المتصلين الآن</p>
-                <h3 class="text-3xl font-bold text-green-400">12</h3>
-            </div>
-            <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700">
-                <p class="text-slate-400 text-xs mb-1">تحذيرات الأمان</p>
-                <h3 class="text-3xl font-bold text-red-400">0</h3>
-            </div>
-            <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700">
-                <p class="text-slate-400 text-xs mb-1">استهلاك السيرفر</p>
-                <h3 class="text-3xl font-bold text-blue-400">34%</h3>
-            </div>
-        </div>
-
-        <!-- جدول المستخدمين (مثال) -->
-        <div class="bg-slate-800 rounded-2xl border border-slate-700 overflow-hidden">
-            <div class="p-6 border-b border-slate-700 flex justify-between items-center">
-                <h3 class="font-bold">حسابات الموظفين النشطة</h3>
-                <button class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg text-sm">إضافة مستخدم</button>
-            </div>
-            <table class="w-full text-right text-sm text-slate-300">
-                <thead class="bg-slate-700/50 text-slate-400">
-                    <tr>
-                        <th class="p-4">الموظف</th>
-                        <th class="p-4">الدور</th>
-                        <th class="p-4">آخر دخول</th>
-                        <th class="p-4">الحالة</th>
-                        <th class="p-4">الإجراء</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-slate-700">
-                    <tr>
-                        <td class="p-4 font-bold text-white">هشام السحيباني</td>
-                        <td class="p-4"><span class="bg-amber-900/50 text-amber-400 px-2 py-1 rounded text-xs">CEO</span></td>
-                        <td class="p-4">منذ 5 دقائق</td>
-                        <td class="p-4 text-green-400">نشط</td>
-                        <td class="p-4"><button class="text-blue-400 hover:underline">تعديل</button></td>
-                    </tr>
-                    <tr>
-                        <td class="p-4 font-bold text-white">منصور اليامي</td>
-                        <td class="p-4"><span class="bg-purple-900/50 text-purple-400 px-2 py-1 rounded text-xs">HR</span></td>
-                        <td class="p-4">منذ ساعة</td>
-                        <td class="p-4 text-green-400">نشط</td>
-                        <td class="p-4"><button class="text-blue-400 hover:underline">تعديل</button></td>
-                    </tr>
-                </tbody>
-            </table>
+        <!-- منطقة المحتوى الديناميكية -->
+        <div id="mainContent" class="flex-1 overflow-y-auto p-4 md:p-8 custom-scroll">
+            <!-- سيتم حقن المحتوى هنا -->
         </div>
     </main>
 
+    <!-- المساعد الذكي (AI Panel) -->
+    <aside id="aiSidebar" class="fixed left-0 top-0 h-full w-80 md:w-96 bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 shadow-2xl z-50 transform -translate-x-full transition-transform duration-300 flex flex-col">
+        <div class="h-16 flex items-center justify-between px-6 bg-slate-900 text-white shrink-0">
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-robot text-lg"></i>
+                <h3 class="font-bold text-sm">المساعد التقني</h3>
+            </div>
+            <button onclick="toggleAI()" class="text-white hover:text-red-400"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div id="chatArea" class="flex-1 bg-slate-50 dark:bg-slate-900 p-4 overflow-y-auto custom-scroll flex flex-col"></div>
+        <div class="p-4 border-t border-slate-100 dark:border-slate-700">
+            <div class="flex gap-2">
+                <input id="aiInput" type="text" placeholder="..." class="flex-1 bg-slate-100 dark:bg-slate-700 border-0 rounded-lg px-3 text-sm dark:text-white">
+                <button onclick="sendAIMessage()" class="bg-blue-600 text-white w-10 rounded-lg"><i class="fa-solid fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </aside>
+
     <script>
-        // التحقق من أن المستخدم هو Admin
-        try {
-            const user = JSON.parse(localStorage.getItem('currentUser'));
-            
-            if (!user || user.id !== 'admin') {
-                alert('غير مصرح لك بالدخول لهذه الصفحة!');
-                // استخدام replace لمنع العودة لهذه الصفحة عبر زر "الخلف"
-                window.location.replace('./login.html');
+        // --- Translations ---
+        const translations = {
+            ar: {
+                adminPanel: "لوحة التحكم", overview: "نظرة عامة", users: "إدارة المستخدمين", permissions: "الصلاحيات", monitor: "مراقبة النظام", logout: "تسجيل خروج",
+                centralAdmin: "إدارة النظام المركزية",
+                statsTotal: "إجمالي المستخدمين", statsOnline: "المتصلين الآن", statsWarnings: "تحذيرات الأمان", statsServer: "استهلاك السيرفر",
+                activeUsers: "حسابات الموظفين النشطة", addUser: "إضافة مستخدم",
+                colName: "الموظف", colRole: "الدور", colLast: "آخر دخول", colStatus: "الحالة", colAction: "الإجراء",
+                edit: "تعديل", active: "نشط", inactive: "غير نشط",
+                aiWelcome: "أهلاً بك أيها المشرف. جميع الأنظمة تعمل بكفاءة. هل تريد تقرير عن سجلات الدخول؟"
+            },
+            en: {
+                adminPanel: "Control Panel", overview: "Overview", users: "User Management", permissions: "Permissions", monitor: "System Monitor", logout: "Logout",
+                centralAdmin: "Central System Admin",
+                statsTotal: "Total Users", statsOnline: "Online Now", statsWarnings: "Security Warnings", statsServer: "Server Usage",
+                activeUsers: "Active Employee Accounts", addUser: "Add User",
+                colName: "Employee", colRole: "Role", colLast: "Last Login", colStatus: "Status", colAction: "Action",
+                edit: "Edit", active: "Active", inactive: "Inactive",
+                aiWelcome: "Welcome Admin. All systems operational. Need a login log report?"
             }
-        } catch (e) {
-            console.error("Error reading user data:", e);
-            window.location.replace('./login.html');
+        };
+
+        // --- State ---
+        let currentLang = localStorage.getItem('lang') || 'ar';
+        let isDarkMode = localStorage.getItem('theme') === 'dark';
+        
+        // --- Init ---
+        function init() {
+            // Check Auth
+            try {
+                const user = JSON.parse(localStorage.getItem('currentUser'));
+                if (!user || user.id !== 'admin') window.location.replace('./login.html');
+            } catch { window.location.replace('./login.html'); }
+
+            applyTheme();
+            applyLanguage();
+            renderPage('overview');
+            
+            // Init AI
+            document.getElementById('chatArea').innerHTML = `
+                <div class="flex justify-end fade-in">
+                    <div class="chat-bubble chat-ai">${translations[currentLang].aiWelcome}</div>
+                </div>
+            `;
+        }
+
+        // --- Rendering Pages (Single Page Simulation) ---
+        function renderPage(page) {
+            const t = translations[currentLang];
+            const content = document.getElementById('mainContent');
+            
+            // Update Active Nav
+            document.querySelectorAll('.nav-item').forEach(el => {
+                el.classList.remove('bg-red-600', 'text-white');
+                el.classList.add('text-slate-300', 'hover:bg-slate-700');
+            });
+            const activeBtn = document.getElementById('nav-' + page);
+            if(activeBtn) {
+                activeBtn.classList.remove('text-slate-300', 'hover:bg-slate-700');
+                activeBtn.classList.add('bg-red-600', 'text-white');
+            }
+
+            if (page === 'overview') {
+                content.innerHTML = `
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8 fade-in">
+                        <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
+                            <p class="text-slate-500 dark:text-slate-400 text-xs mb-1 font-bold">${t.statsTotal}</p>
+                            <h3 class="text-3xl font-bold text-slate-800 dark:text-white">48</h3>
+                        </div>
+                        <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
+                            <p class="text-slate-500 dark:text-slate-400 text-xs mb-1 font-bold">${t.statsOnline}</p>
+                            <h3 class="text-3xl font-bold text-green-500">12</h3>
+                        </div>
+                        <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
+                            <p class="text-slate-500 dark:text-slate-400 text-xs mb-1 font-bold">${t.statsWarnings}</p>
+                            <h3 class="text-3xl font-bold text-slate-800 dark:text-white">0</h3>
+                        </div>
+                        <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
+                            <p class="text-slate-500 dark:text-slate-400 text-xs mb-1 font-bold">${t.statsServer}</p>
+                            <h3 class="text-3xl font-bold text-blue-500">34%</h3>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden fade-in" style="animation-delay: 0.1s">
+                        <div class="p-6 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center">
+                            <h3 class="font-bold text-slate-800 dark:text-white">${t.activeUsers}</h3>
+                            <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm transition">${t.addUser}</button>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-right text-sm text-slate-600 dark:text-slate-300">
+                                <thead class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 dark:text-slate-400 uppercase font-bold text-xs">
+                                    <tr>
+                                        <th class="p-4 whitespace-nowrap">${t.colName}</th>
+                                        <th class="p-4 whitespace-nowrap">${t.colRole}</th>
+                                        <th class="p-4 whitespace-nowrap">${t.colLast}</th>
+                                        <th class="p-4 whitespace-nowrap">${t.colStatus}</th>
+                                        <th class="p-4 whitespace-nowrap">${t.colAction}</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-200 dark:divide-slate-700">
+                                    <tr>
+                                        <td class="p-4 font-bold text-slate-800 dark:text-white">Hesham Alsuhaibani</td>
+                                        <td class="p-4"><span class="bg-amber-100 dark:bg-amber-900/50 text-amber-600 dark:text-amber-400 px-2 py-1 rounded text-xs font-bold">CEO</span></td>
+                                        <td class="p-4">5m ago</td>
+                                        <td class="p-4 text-green-500 font-bold">${t.active}</td>
+                                        <td class="p-4"><button class="text-blue-500 hover:underline font-bold">${t.edit}</button></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-4 font-bold text-slate-800 dark:text-white">Mansour Alyami</td>
+                                        <td class="p-4"><span class="bg-purple-100 dark:bg-purple-900/50 text-purple-600 dark:text-purple-400 px-2 py-1 rounded text-xs font-bold">HR</span></td>
+                                        <td class="p-4">1h ago</td>
+                                        <td class="p-4 text-green-500 font-bold">${t.active}</td>
+                                        <td class="p-4"><button class="text-blue-500 hover:underline font-bold">${t.edit}</button></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                `;
+            } else {
+                // Placeholder for other pages
+                content.innerHTML = `
+                    <div class="flex flex-col items-center justify-center h-64 text-slate-400 fade-in">
+                        <i class="fa-solid fa-person-digging text-4xl mb-4"></i>
+                        <p class="text-lg">Page Under Maintenance</p>
+                    </div>
+                `;
+            }
+            
+            // Close mobile sidebar after click
+            if(window.innerWidth < 768) toggleSidebar();
+        }
+
+        // --- Common ---
+        function toggleDarkMode() {
+            isDarkMode = !isDarkMode;
+            localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+            applyTheme();
+        }
+
+        function applyTheme() {
+            const html = document.documentElement;
+            const icon = document.getElementById('themeIcon');
+            if (isDarkMode) {
+                html.classList.add('dark');
+                icon.classList.replace('fa-moon', 'fa-sun');
+            } else {
+                html.classList.remove('dark');
+                icon.classList.replace('fa-sun', 'fa-moon');
+            }
+        }
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'ar' ? 'en' : 'ar';
+            localStorage.setItem('lang', currentLang);
+            applyLanguage();
+            renderPage('overview'); // Refresh content with new lang
+        }
+
+        function applyLanguage() {
+            const html = document.documentElement;
+            const t = translations[currentLang];
+            
+            html.setAttribute('lang', currentLang);
+            html.setAttribute('dir', currentLang === 'ar' ? 'rtl' : 'ltr');
+            document.getElementById('langLabel').innerText = currentLang === 'ar' ? 'EN' : 'عربي';
+
+            if(currentLang === 'ar') document.body.style.fontFamily = "'Tajawal', sans-serif";
+            else document.body.style.fontFamily = "'Inter', sans-serif";
+
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (t[key]) el.innerText = t[key];
+            });
+            
+            // Update sidebar/AI position logic based on dir
+            const aiPanel = document.getElementById('aiSidebar');
+            // Reset classes
+            aiPanel.classList.remove('left-0', 'right-0', '-translate-x-full', 'translate-x-full', 'border-r', 'border-l');
+            
+            if (currentLang === 'ar') { // RTL
+                aiPanel.classList.add('left-0', '-translate-x-full', 'border-r');
+            } else { // LTR
+                aiPanel.classList.add('right-0', 'translate-x-full', 'border-l');
+            }
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('mobileOverlay');
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('active');
+        }
+
+        function toggleAI() {
+            const aiPanel = document.getElementById('aiSidebar');
+            const isRTL = document.documentElement.dir === 'rtl';
+            
+            if (isRTL) {
+                if(aiPanel.classList.contains('-translate-x-full')) aiPanel.classList.remove('-translate-x-full');
+                else aiPanel.classList.add('-translate-x-full');
+            } else {
+                if(aiPanel.classList.contains('translate-x-full')) aiPanel.classList.remove('translate-x-full');
+                else aiPanel.classList.add('translate-x-full');
+            }
+        }
+
+        function sendAIMessage() {
+            const input = document.getElementById('aiInput');
+            const msg = input.value.trim();
+            if(!msg) return;
+            const chat = document.getElementById('chatArea');
+            chat.innerHTML += `<div class="flex justify-start fade-in"><div class="chat-bubble chat-user">${msg}</div></div>`;
+            input.value = '';
+            setTimeout(() => {
+                chat.innerHTML += `<div class="flex justify-end fade-in"><div class="chat-bubble chat-ai">System is stable. CPU load 34%. No intrusions detected.</div></div>`;
+                chat.scrollTop = chat.scrollHeight;
+            }, 800);
         }
 
         function logout() {
             localStorage.removeItem('currentUser');
-            // استخدام المسار النسبي الصريح
             window.location.href = './login.html';
         }
+
+        init();
     </script>
 </body>
 </html>
