@@ -18,24 +18,20 @@
             }
         }
     </script>
-    <style>
-        /* شريط التمرير المخصص */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 20px; }
-        .dark ::-webkit-scrollbar-thumb { background-color: #475569; }
-    </style>
 </head>
 <body class="bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-white min-h-screen flex flex-col lg:flex-row font-sans transition-colors duration-300">
 
-    <!-- القسم الجانبي (العلامة التجارية - يظهر فقط في الشاشات الكبيرة) -->
+    <!-- القسم الجانبي (يظهر فقط في الشاشات الكبيرة) -->
+    <!-- تم تثبيت هذا القسم ليملأ الشاشة في وضع الديسكتوب -->
     <div class="hidden lg:flex w-1/2 bg-slate-900 relative flex-col justify-between p-12 text-white overflow-hidden h-screen sticky top-0">
         <div class="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
         <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-brandBlue/40 to-slate-900/90 z-0"></div>
+        
         <div class="relative z-10 flex flex-col h-full justify-center">
             <img src="https://ait.sa/wp-content/uploads/2024/03/cropped-Square-Logo.png" class="w-28 h-28 rounded-3xl bg-white p-2 mb-8 shadow-2xl animate-pulse">
             <h1 class="text-6xl font-bold mb-4 tracking-tight" data-i18n="systemName">AndroGov</h1>
             <p class="text-2xl text-slate-300 font-light mb-8" data-i18n="systemDesc">نظام إدارة العمليات الموحد لشركة اندروميدا</p>
+            
             <div class="space-y-4 max-w-md">
                 <div class="flex items-center gap-4 text-slate-300">
                     <i class="fa-solid fa-shield-halved text-green-400 text-xl"></i>
@@ -47,17 +43,19 @@
                 </div>
             </div>
         </div>
+
         <div class="relative z-10 text-xs text-slate-500 flex justify-between">
             <p>© 2026 Andromeda IT.</p>
-            <p>v9.0.2</p>
+            <p>Version 9.0.2</p>
         </div>
     </div>
 
-    <!-- قسم تسجيل الدخول -->
+    <!-- قسم تسجيل الدخول (يمين الشاشة / كامل الشاشة في الجوال) -->
+    <!-- تم استخدام min-h-screen للسماح بالسكرول -->
     <div class="w-full lg:w-1/2 flex flex-col p-6 relative bg-slate-50 dark:bg-slate-900 transition-colors duration-300 min-h-screen">
         
-        <!-- أدوات التحكم العلوية (اللغة والمظهر) -->
-        <div class="w-full flex justify-end gap-3 mb-8 lg:mb-0 lg:absolute lg:top-6 lg:left-6 lg:rtl:left-6 lg:ltr:right-6 px-4 pt-4 lg:p-0">
+        <!-- أدوات التحكم العلوية (تم فصلها لتجنب التداخل) -->
+        <div class="w-full flex justify-end gap-3 mb-8 lg:absolute lg:top-6 lg:left-6 lg:rtl:left-6 lg:ltr:right-6 lg:mb-0 z-20">
             <button onclick="toggleLanguage()" class="w-10 h-10 rounded-full border border-slate-200 dark:border-slate-700 flex items-center justify-center hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors bg-white dark:bg-slate-800 shadow-sm">
                 <span class="font-bold text-xs" id="langLabel">EN</span>
             </button>
@@ -268,6 +266,7 @@
             btn.classList.add('opacity-75', 'cursor-not-allowed');
             
             setTimeout(() => {
+                // استخدام المسار النسبي الصحيح
                 if (selectedRole.type === 'system') window.location.href = './admin.html';
                 else window.location.href = './dashboard.html';
             }, 800);
