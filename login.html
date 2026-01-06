@@ -21,7 +21,7 @@
 </head>
 <body class="bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-white min-h-screen flex flex-col lg:flex-row font-sans transition-colors duration-300">
 
-    <!-- القسم الجانبي (يظهر فقط في الشاشات الكبيرة) -->
+    <!-- القسم الجانبي -->
     <div class="hidden lg:flex w-1/2 bg-slate-900 relative flex-col justify-between p-12 text-white overflow-hidden h-screen sticky top-0">
         <div class="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
         <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-brandBlue/40 to-slate-900/90 z-0"></div>
@@ -52,7 +52,6 @@
     <!-- قسم تسجيل الدخول -->
     <div class="w-full lg:w-1/2 flex flex-col p-6 relative bg-slate-50 dark:bg-slate-900 transition-colors duration-300 min-h-screen">
         
-        <!-- أدوات التحكم العلوية -->
         <div class="w-full flex justify-end gap-3 mb-8 lg:absolute lg:top-6 lg:left-6 lg:rtl:left-6 lg:ltr:right-6 lg:mb-0 z-20">
             <button onclick="toggleLanguage()" class="w-10 h-10 rounded-full border border-slate-200 dark:border-slate-700 flex items-center justify-center hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors bg-white dark:bg-slate-800 shadow-sm">
                 <span class="font-bold text-xs" id="langLabel">EN</span>
@@ -64,7 +63,6 @@
 
         <div class="flex-1 flex flex-col justify-center items-center w-full">
             <div class="w-full max-w-md">
-                <!-- الشعار للموبايل -->
                 <div class="lg:hidden text-center mb-8">
                     <img src="https://ait.sa/wp-content/uploads/2024/03/cropped-Square-Logo.png" class="w-16 h-16 mx-auto rounded-xl bg-white p-1 shadow-md">
                     <h2 class="text-2xl font-bold mt-4 text-slate-800 dark:text-white">AndroGov</h2>
@@ -74,14 +72,12 @@
                     <h2 class="text-2xl font-bold mb-2 text-slate-800 dark:text-white" data-i18n="loginTitle">تسجيل الدخول</h2>
                     <p class="text-slate-500 dark:text-slate-400 mb-8 text-sm" data-i18n="loginSub">أدخل بيانات اعتمادك للوصول للنظام</p>
 
-                    <!-- رسالة الخطأ -->
                     <div id="errorMsg" class="hidden mb-4 p-3 bg-red-100 text-red-700 rounded-lg text-sm border border-red-200 text-center flex items-center justify-center gap-2">
                         <i class="fa-solid fa-circle-exclamation"></i>
                         <span id="errorText">بيانات الدخول غير صحيحة</span>
                     </div>
 
                     <form onsubmit="handleLogin(event)" class="space-y-5">
-                        <!-- اسم المستخدم -->
                         <div class="input-group">
                             <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" data-i18n="emailLabel">اسم المستخدم</label>
                             <div class="relative">
@@ -92,7 +88,6 @@
                             </div>
                         </div>
 
-                        <!-- كلمة المرور -->
                         <div class="input-group">
                             <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" data-i18n="passLabel">كلمة المرور</label>
                             <div class="relative">
@@ -117,7 +112,6 @@
                         </button>
                     </form>
 
-                    <!-- تعبئة سريعة (Demo) -->
                     <div class="mt-8 pt-6 border-t border-slate-100 dark:border-slate-700">
                         <p class="text-[10px] text-center text-slate-400 uppercase tracking-widest mb-4" data-i18n="demoTitle">تعبئة سريعة (Demo)</p>
                         <div class="flex justify-center gap-3 flex-wrap pb-2" id="demoRoles">
@@ -129,15 +123,13 @@
         </div>
     </div>
 
-    <!-- Logic Script -->
     <script>
-        // تم تحديث القائمة لتشمل الصفحات المنجزة (page property)
         const roles = [
             { id: 'admin', username: 'admin', title_ar: 'مدير النظام', title_en: 'System Admin', icon: 'fa-user-shield', color: 'bg-slate-700', type: 'system', page: 'admin.html' },
             { id: 'grc', username: 'grc', title_ar: 'الحوكمة', title_en: 'GRC', icon: 'fa-scale-balanced', color: 'bg-red-600', type: 'employee', page: 'grc.html' },
             { id: 'hr', username: 'hr', title_ar: 'الموارد البشرية', title_en: 'HR', icon: 'fa-users-gear', color: 'bg-purple-600', type: 'employee', page: 'hr.html' },
-            { id: 'ceo', username: 'ceo', title_ar: 'الرئيس التنفيذي', title_en: 'CEO', icon: 'fa-chess-king', color: 'bg-amber-600', type: 'employee', page: 'dashboard.html' },
-            { id: 'finance', username: 'cfo', title_ar: 'المدير المالي', title_en: 'CFO', icon: 'fa-coins', color: 'bg-emerald-600', type: 'employee', page: 'dashboard.html' },
+            { id: 'ceo', username: 'ceo', title_ar: 'الرئيس التنفيذي', title_en: 'CEO', icon: 'fa-chess-king', color: 'bg-amber-600', type: 'employee', page: 'ceo.html' },
+            { id: 'finance', username: 'cfo', title_ar: 'المدير المالي', title_en: 'CFO', icon: 'fa-coins', color: 'bg-emerald-600', type: 'employee', page: 'cfo.html' },
         ];
 
         const translations = {
@@ -226,7 +218,7 @@
                         <div class="w-10 h-10 rounded-full ${role.color} text-white flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
                             <i class="fa-solid ${role.icon} text-xs"></i>
                         </div>
-                        <span class="text-[10px] text-slate-500 dark:text-slate-400 font-bold truncate w-full text-center mt-1">${role.username.toUpperCase()}</span>
+                        <span class="text-[9px] text-slate-500 dark:text-slate-400 font-bold truncate w-full text-center mt-1">${role.username.toUpperCase()}</span>
                     </button>
                 `;
             });
@@ -266,9 +258,7 @@
             btn.classList.add('opacity-75', 'cursor-not-allowed');
             
             setTimeout(() => {
-                // التوجيه للصفحة المحددة في بيانات الدور، أو صفحة افتراضية
-                const targetPage = selectedRole.page || 'dashboard.html';
-                window.location.href = targetPage;
+                window.location.href = selectedRole.page;
             }, 800);
         }
 
