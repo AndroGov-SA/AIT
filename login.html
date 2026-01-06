@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AndroGov | تسجيل الدخول</title>
+    
+    <!-- الخطوط -->
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brandDark: '#1E293B',
+                        brandBlue: '#4267B2',
+                        brandRed: '#FB4747',
+                    },
+                    fontFamily: {
+                        sans: ['Tajawal', 'Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { transition: background-color 0.3s, color 0.3s; }
+        .input-group:focus-within label { color: #4267B2; }
+        .input-group:focus-within i { color: #4267B2; }
+        .input-group input:focus { border-color: #4267B2; ring: 2px; }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 20px; }
+        .dark ::-webkit-scrollbar-thumb { background-color: #475569; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-white h-screen overflow-hidden flex font-sans transition-colors duration-300">
+
+    <!-- القسم الجانبي (العلامة التجارية - يظهر فقط في الشاشات الكبيرة) -->
+    <div class="hidden lg:flex w-1/2 bg-slate-900 relative flex-col justify-between p-12 text-white overflow-hidden">
+        <!-- خلفية متحركة -->
+        <div class="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
+        <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-brandBlue/40 to-slate-900/90 z-0"></div>
+
+        <!-- المحتوى -->
+        <div class="relative z-10 flex flex-col h-full justify-center">
+            <img src="https://ait.sa/wp-content/uploads/2024/03/cropped-Square-Logo.png" class="w-28 h-28 rounded-3xl bg-white p-2 mb-8 shadow-2xl animate-pulse" alt="Logo">
+            <h1 class="text-6xl font-bold mb-4 tracking-tight" data-i18n="systemName">AndroGov</h1>
+            <p class="text-2xl text-slate-300 font-light mb-8" data-i18n="systemDesc">نظام إدارة العمليات الموحد لشركة اندروميدا</p>
+            
+            <div class="space-y-4 max-w-md">
+                <div class="flex items-center gap-4 text-slate-300">
+                    <i class="fa-solid fa-shield-halved text-green-400 text-xl"></i>
+                    <span data-i18n="feat1">دخول آمن ومشفّر (SSO)</span>
+                </div>
+                <div class="flex items-center gap-4 text-slate-300">
+                    <i class="fa-solid fa-server text-blue-400 text-xl"></i>
+                    <span data-i18n="feat2">متصل بقواعد بيانات الشركة</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="relative z-10 text-xs text-slate-500 flex justify-between">
+            <p>© 2026 Andromeda IT.</p>
+            <p>Version 9.0.2</p>
+        </div>
+    </div>
+
+    <!-- قسم تسجيل الدخول -->
+    <div class="w-full lg:w-1/2 flex flex-col justify-center items-center p-6 relative bg-slate-50 dark:bg-slate-900 transition-colors duration-300">
+        
+        <!-- أدوات التحكم العلوية -->
+        <div class="absolute top-6 left-6 lg:right-6 lg:left-auto flex gap-3">
+            <button onclick="toggleLanguage()" class="w-10 h-10 rounded-full border border-slate-200 dark:border-slate-700 flex items-center justify-center hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                <span class="font-bold text-xs" id="langLabel">EN</span>
+            </button>
+            <button onclick="toggleDarkMode()" class="w-10 h-10 rounded-full border border-slate-200 dark:border-slate-700 flex items-center justify-center hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-600 dark:text-yellow-400">
+                <i id="themeIcon" class="fa-solid fa-moon"></i>
+            </button>
+        </div>
+
+        <div class="w-full max-w-md">
+            <!-- الشعار للموبايل -->
+            <div class="lg:hidden text-center mb-8">
+                <img src="https://ait.sa/wp-content/uploads/2024/03/cropped-Square-Logo.png" class="w-16 h-16 mx-auto rounded-xl bg-white p-1 shadow-md">
+                <h2 class="text-2xl font-bold mt-4 dark:text-white">AndroGov</h2>
+            </div>
+
+            <div class="bg-white dark:bg-slate-800 p-8 rounded-3xl shadow-xl border border-slate-100 dark:border-slate-700 transition-colors duration-300">
+                <h2 class="text-2xl font-bold mb-2 text-slate-800 dark:text-white" data-i18n="loginTitle">تسجيل الدخول</h2>
+                <p class="text-slate-500 dark:text-slate-400 mb-8 text-sm" data-i18n="loginSub">أدخل بيانات اعتمادك للوصول للنظام</p>
+
+                <!-- رسالة الخطأ -->
+                <div id="errorMsg" class="hidden mb-4 p-3 bg-red-100 text-red-700 rounded-lg text-sm border border-red-200 text-center">
+                    بيانات الدخول غير صحيحة
+                </div>
+
+                <form onsubmit="handleLogin(event)" class="space-y-5">
+                    <!-- البريد الإلكتروني أو اسم المستخدم -->
+                    <div class="input-group">
+                        <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" data-i18n="emailLabel">البريد الإلكتروني / اسم المستخدم</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 right-0 pr-3 rtl:right-0 rtl:pr-3 ltr:left-0 ltr:pl-3 flex items-center pointer-events-none">
+                                <i class="fa-regular fa-user text-slate-400 transition-colors"></i>
+                            </div>
+                            <input type="text" id="userInput" class="w-full pl-10 pr-10 rtl:pr-10 rtl:pl-4 ltr:pl-10 ltr:pr-4 py-3 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-brandBlue/50 text-slate-800 dark:text-white transition-all text-sm" placeholder="مثال: ceo أو user@androomeda.com" required>
+                        </div>
+                    </div>
+
+                    <!-- كلمة المرور -->
+                    <div class="input-group">
+                        <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" data-i18n="passLabel">كلمة المرور</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 right-0 pr-3 rtl:right-0 rtl:pr-3 ltr:left-0 ltr:pl-3 flex items-center pointer-events-none">
+                                <i class="fa-solid fa-lock text-slate-400 transition-colors"></i>
+                            </div>
+                            <input type="password" id="password" class="w-full pl-10 pr-10 rtl:pr-10 rtl:pl-4 ltr:pl-10 ltr:pr-4 py-3 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-brandBlue/50 text-slate-800 dark:text-white transition-all text-sm" placeholder="••••••••" required>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-between items-center text-xs">
+                        <label class="flex items-center gap-2 cursor-pointer text-slate-600 dark:text-slate-400">
+                            <input type="checkbox" class="rounded border-slate-300 text-brandBlue focus:ring-brandBlue">
+                            <span data-i18n="rememberMe">تذكرني</span>
+                        </label>
+                        <a href="#" class="text-brandBlue hover:underline" data-i18n="forgotPass">نسيت كلمة المرور؟</a>
+                    </div>
+
+                    <button type="submit" class="w-full bg-brandBlue hover:bg-blue-700 text-white font-bold py-3 rounded-xl transition-all shadow-lg hover:shadow-brandBlue/30 flex justify-center items-center gap-2">
+                        <span data-i18n="loginBtn">دخول</span>
+                        <i class="fa-solid fa-arrow-left rtl:rotate-0 ltr:rotate-180"></i>
+                    </button>
+                </form>
+
+                <!-- تعبئة سريعة (Demo) -->
+                <div class="mt-8 pt-6 border-t border-slate-100 dark:border-slate-700">
+                    <p class="text-[10px] text-center text-slate-400 uppercase tracking-widest mb-4" data-i18n="demoTitle">تعبئة سريعة (Demo)</p>
+                    <div class="flex justify-center gap-2 overflow-x-auto pb-2 custom-scroll" id="demoRoles">
+                        <!-- Icons Injected via JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Logic Script -->
+    <script>
+        // --- Data ---
+        // بيانات الأدوار - لاحظ إضافة username
+        const roles = [
+            { id: 'ceo', username: 'ceo', name: 'هشام السحيباني', title_ar: 'الرئيس التنفيذي', title_en: 'CEO', icon: 'fa-chess-king', color: 'bg-amber-600', email: 'ceo@androomeda.com' },
+            { id: 'grc', username: 'grc', name: 'أيمن المغربي', title_ar: 'مسؤول الحوكمة', title_en: 'GRC Officer', icon: 'fa-scale-balanced', color: 'bg-red-600', email: 'grc@androomeda.com' },
+            { id: 'hr', username: 'hr', name: 'منصور اليامي', title_ar: 'مدير الموارد البشرية', title_en: 'HR Manager', icon: 'fa-users-gear', color: 'bg-purple-600', email: 'hr@androomeda.com' },
+            { id: 'finance', username: 'cfo', name: 'محمد البخيتي', title_ar: 'المدير المالي', title_en: 'CFO', icon: 'fa-coins', color: 'bg-emerald-600', email: 'finance@androomeda.com' },
+            { id: 'tech', username: 'tech', name: 'رند الحوراني', title_ar: 'مدير تقني', title_en: 'Tech Lead', icon: 'fa-code', color: 'bg-blue-600', email: 'tech@androomeda.com' },
+        ];
+
+        const translations = {
+            ar: {
+                systemName: "AndroGov",
+                systemDesc: "نظام إدارة العمليات الموحد لشركة اندروميدا",
+                feat1: "دخول آمن ومشفّر (SSO)",
+                feat2: "متصل بقواعد بيانات الشركة",
+                loginTitle: "تسجيل الدخول",
+                loginSub: "أدخل بيانات اعتمادك للوصول للنظام",
+                emailLabel: "البريد الإلكتروني / اسم المستخدم",
+                passLabel: "كلمة المرور",
+                rememberMe: "تذكرني",
+                forgotPass: "نسيت كلمة المرور؟",
+                loginBtn: "دخول آمن",
+                demoTitle: "تعبئة سريعة (Demo)"
+            },
+            en: {
+                systemName: "AndroGov",
+                systemDesc: "Andromeda Unified Operations System",
+                feat1: "Secure SSO Login",
+                feat2: "Connected to Company DB",
+                loginTitle: "Sign In",
+                loginSub: "Enter your credentials to access the system",
+                emailLabel: "Email or Username",
+                passLabel: "Password",
+                rememberMe: "Remember me",
+                forgotPass: "Forgot password?",
+                loginBtn: "Secure Login",
+                demoTitle: "Quick Demo Fill"
+            }
+        };
+
+        // --- State ---
+        let currentLang = localStorage.getItem('lang') || 'ar';
+        let isDarkMode = localStorage.getItem('theme') === 'dark';
+
+        // --- Init ---
+        function init() {
+            applyTheme();
+            applyLanguage();
+            renderDemoRoles();
+        }
+
+        // --- Functions ---
+        // تصحيح اسم الدالة هنا لتتطابق مع HTML
+        function toggleDarkMode() {
+            isDarkMode = !isDarkMode;
+            localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+            applyTheme();
+        }
+
+        function applyTheme() {
+            const html = document.documentElement;
+            const icon = document.getElementById('themeIcon');
+            if (isDarkMode) {
+                html.classList.add('dark');
+                icon.classList.replace('fa-moon', 'fa-sun');
+            } else {
+                html.classList.remove('dark');
+                icon.classList.replace('fa-sun', 'fa-moon');
+            }
+        }
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'ar' ? 'en' : 'ar';
+            localStorage.setItem('lang', currentLang);
+            applyLanguage();
+            renderDemoRoles();
+        }
+
+        function applyLanguage() {
+            const html = document.documentElement;
+            const t = translations[currentLang];
+            
+            html.setAttribute('lang', currentLang);
+            html.setAttribute('dir', currentLang === 'ar' ? 'rtl' : 'ltr');
+            document.getElementById('langLabel').innerText = currentLang === 'ar' ? 'EN' : 'عربي';
+
+            // Swap Font
+            if(currentLang === 'ar') document.body.style.fontFamily = "'Tajawal', sans-serif";
+            else document.body.style.fontFamily = "'Inter', sans-serif";
+
+            // Update Text
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (t[key]) el.innerText = t[key];
+            });
+
+            // Update Icons Direction
+            const arrowIcon = document.querySelector('.fa-arrow-left');
+            if(arrowIcon) {
+                arrowIcon.className = `fa-solid fa-arrow-left ${currentLang === 'ar' ? '' : 'rotate-180'}`;
+            }
+        }
+
+        function renderDemoRoles() {
+            const container = document.getElementById('demoRoles');
+            container.innerHTML = '';
+            roles.forEach(role => {
+                const title = currentLang === 'ar' ? role.title_ar : role.title_en;
+                // عند الضغط يتم تعبئة الحقول
+                container.innerHTML += `
+                    <button onclick="fillDemo('${role.id}')" class="group flex flex-col items-center gap-1 min-w-[60px]" type="button" title="${title}">
+                        <div class="w-10 h-10 rounded-full ${role.color} text-white flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
+                            <i class="fa-solid ${role.icon} text-xs"></i>
+                        </div>
+                        <span class="text-[9px] text-slate-500 dark:text-slate-400 font-bold truncate w-full text-center">${role.username.toUpperCase()}</span>
+                    </button>
+                `;
+            });
+        }
+
+        function fillDemo(roleId) {
+            const role = roles.find(r => r.id === roleId);
+            // تعبئة اسم المستخدم بدلاً من الإيميل للتجربة
+            document.getElementById('userInput').value = role.username;
+            document.getElementById('password').value = '12341234';
+            
+            // وميض بسيط للحقل لإظهار التغيير
+            const inputs = document.querySelectorAll('input');
+            inputs.forEach(input => {
+                input.classList.add('bg-blue-50', 'dark:bg-slate-600');
+                setTimeout(() => input.classList.remove('bg-blue-50', 'dark:bg-slate-600'), 300);
+            });
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const inputVal = document.getElementById('userInput').value.trim();
+            const password = document.getElementById('password').value;
+            const errorMsg = document.getElementById('errorMsg');
+
+            // 1. التحقق من كلمة المرور الموحدة
+            if (password !== '12341234') {
+                errorMsg.innerText = currentLang === 'ar' ? 'كلمة المرور غير صحيحة' : 'Incorrect Password';
+                errorMsg.classList.remove('hidden');
+                return;
+            }
+            
+            // 2. البحث عن المستخدم (بالإيميل أو اسم المستخدم)
+            let selectedRole = roles.find(r => r.email.toLowerCase() === inputVal.toLowerCase() || r.username.toLowerCase() === inputVal.toLowerCase());
+
+            if (!selectedRole) {
+                errorMsg.innerText = currentLang === 'ar' ? 'المستخدم غير موجود' : 'User not found';
+                errorMsg.classList.remove('hidden');
+                return;
+            }
+
+            // إخفاء رسالة الخطأ إذا وجدت
+            errorMsg.classList.add('hidden');
+
+            const userContext = {
+                roleId: selectedRole.id,
+                name: selectedRole.name,
+                title: currentLang === 'ar' ? selectedRole.title_ar : selectedRole.title_en,
+                dept: 'Andromeda', 
+                color: selectedRole.color,
+                lang: currentLang
+            };
+            
+            // حفظ الجلسة
+            localStorage.setItem('currentUser', JSON.stringify(userContext));
+
+            // تأثير التحميل وإعادة التوجيه
+            const btn = document.querySelector('button[type="submit"]');
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> جار التحقق...';
+            btn.classList.add('opacity-75', 'cursor-not-allowed');
+            
+            setTimeout(() => {
+                window.location.href = 'admin.html';
+            }, 1000);
+        }
+
+        init();
+    </script>
+</body>
+</html>
