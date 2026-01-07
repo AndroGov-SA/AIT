@@ -21,10 +21,10 @@
             theme: {
                 extend: {
                     colors: {
-                        brandRed: '#FB4747', /* الهوية الرسمية */
+                        brandRed: '#FB4747',
                         brandDark: '#1E293B',
                         brandGray: '#F1F5F9',
-                        ceoGold: '#D97706', /* لمسات ذهبية خفيفة للرئيس */
+                        ceoGold: '#D97706',
                     },
                     fontFamily: { sans: ['Tajawal', 'Inter', 'sans-serif'] }
                 }
@@ -66,7 +66,7 @@
     <!-- Sidebar -->
     <aside id="sidebar" class="w-64 bg-white dark:bg-slate-800 border-l dark:border-slate-700 flex flex-col shadow-xl shrink-0 h-full">
         <div class="h-20 flex items-center px-6 border-b border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 shrink-0">
-            <img src="https://ait.sa/wp-content/uploads/2024/03/cropped-Square-Logo.png" class="w-10 h-10 rounded-lg bg-white p-0.5 shadow-sm shrink-0">
+            <div class="w-10 h-10 rounded-lg bg-brandRed text-white flex items-center justify-center font-bold shadow-sm shrink-0">AG</div>
             <div class="mr-3">
                 <h1 class="font-bold text-lg text-brandRed">AndroGov</h1>
                 <p class="text-[10px] text-slate-400 font-bold tracking-wider" data-i18n="sidebar_subtitle">المكتب التنفيذي</p>
@@ -190,6 +190,28 @@
         </div>
     </aside>
 
+    <!-- Toast -->
+    <div id="toast" class="fixed bottom-6 left-6 rtl:left-6 rtl:right-auto ltr:right-6 ltr:left-auto z-[9999] hidden">
+        <div id="toastBox" class="px-4 py-3 rounded-xl shadow-xl bg-slate-900 text-white text-sm"></div>
+    </div>
+
+    <!-- Modal Overlay -->
+    <div id="modalOverlay" class="fixed inset-0 bg-black/50 z-[9998] hidden" onclick="closeModal()"></div>
+
+    <!-- Modal -->
+    <div id="modal" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[92%] md:w-[720px] bg-white dark:bg-slate-800 rounded-2xl shadow-2xl z-[9999] hidden overflow-hidden border border-slate-200 dark:border-slate-700 flex flex-col max-h-[90vh]">
+        <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between bg-slate-50 dark:bg-slate-900 shrink-0">
+            <h3 id="modalTitle" class="font-bold text-slate-800 dark:text-white text-base">—</h3>
+            <button class="text-slate-500 hover:text-slate-800 dark:hover:text-white" onclick="closeModal()">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+        </div>
+        <div id="modalBody" class="p-6 overflow-y-auto flex-1"></div>
+        <div id="modalFooter" class="px-6 py-4 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 flex gap-2 justify-end shrink-0">
+            <!-- injected -->
+        </div>
+    </div>
+
     <script>
         const translations = {
             ar: {
@@ -262,6 +284,304 @@
         let currentView = 'dashboard';
         let ceoChart = null;
 
+        // Data Store
+        const demoDB = {
+            approvals: [
+                {
+                    id: "APR-10021",
+                    type: "contract",
+                    title_ar: "عقد شراكة استراتيجي (إعمار)",
+                    title_en: "Strategic Partnership Agreement (Emaar)",
+                    owner_ar: "الإدارة القانونية",
+                    owner_en: "Legal Dept.",
+                    amount: 0,
+                    priority: "high",
+                    status: "pending",
+                    createdAt: "2026-01-04 10:30",
+                    desc_ar: "منصة BQ Auctions — مدة 3 سنوات — يتطلب اعتماد الرئيس التنفيذي قبل الرفع للمجلس.",
+                    desc_en: "BQ Auctions platform — 3 years — CEO approval required before board submission.",
+                    attachments: [
+                        { name: "Draft Agreement v2.pdf", size: "1.8MB" },
+                        { name: "Board Brief.docx", size: "420KB" }
+                    ],
+                    steps: [
+                        { role_ar: "المدير المالي", role_en: "CFO", status: "approved" },
+                        { role_ar: "المستشار القانوني", role_en: "Legal Counsel", status: "approved" },
+                        { role_ar: "الرئيس التنفيذي", role_en: "CEO", status: "pending" }
+                    ]
+                },
+                {
+                    id: "APR-10022",
+                    type: "budget",
+                    title_ar: "ميزانية حملة التسويق Q4",
+                    title_en: "Q4 Marketing Campaign Budget",
+                    owner_ar: "الإدارة المالية",
+                    owner_en: "Finance Dept.",
+                    amount: 250000,
+                    priority: "medium",
+                    status: "pending",
+                    createdAt: "2026-01-05 09:15",
+                    desc_ar: "قيمة الميزانية 250,000 ريال — تشمل إعلانات جوجل وميتا + إنتاج محتوى.",
+                    desc_en: "Budget 250,000 SAR — Google & Meta ads + content production.",
+                    attachments: [
+                        { name: "Media Plan.xlsx", size: "760KB" },
+                        { name: "Scope of Work.pdf", size: "1.1MB" }
+                    ],
+                    steps: [
+                        { role_ar: "مدير التسويق", role_en: "Marketing Director", status: "approved" },
+                        { role_ar: "المدير المالي", role_en: "CFO", status: "pending" },
+                        { role_ar: "الرئيس التنفيذي", role_en: "CEO", status: "pending" }
+                    ]
+                },
+                {
+                    id: "APR-10023",
+                    type: "hiring",
+                    title_ar: "توظيف قيادي: مدير تطوير أعمال",
+                    title_en: "Executive Hiring: Business Development Manager",
+                    owner_ar: "الموارد البشرية",
+                    owner_en: "HR Dept.",
+                    amount: 0,
+                    priority: "high",
+                    status: "pending",
+                    createdAt: "2026-01-06 13:05",
+                    desc_ar: "اعتماد عرض وظيفي + هيكلة عمولة — مطلوب قرار تنفيذي.",
+                    desc_en: "Offer approval + commission structure — executive decision required.",
+                    attachments: [
+                        { name: "JD - BDM.pdf", size: "240KB" }
+                    ],
+                    steps: [
+                        { role_ar: "مدير الموارد البشرية", role_en: "HR Manager", status: "approved" },
+                        { role_ar: "الرئيس التنفيذي", role_en: "CEO", status: "pending" }
+                    ]
+                }
+            ],
+            financials: {
+                kpis: {
+                    revenueYTD: 12450000,
+                    netProfit: 3200000,
+                    expenses: 9250000,
+                    cash: 4200000
+                },
+                revenueMonthly: [1.2, 1.5, 1.8, 2.2, 2.5, 3.1], 
+                productPerformance: [
+                    { name: "AndroHealth", value: 6.5 },
+                    { name: "BQ Auctions", value: 4.2 },
+                    { name: "CyanCare", value: 1.7 }
+                ]
+            },
+            strategy: {
+                initiatives: [
+                    { id: "STR-01", ar: "رفع جاهزية الطرح في نمو", en: "Nomu IPO readiness", progress: 65, owner: "CEO Office" },
+                    { id: "STR-02", ar: "التوسع في مراكز جديدة", en: "Market expansion", progress: 45, owner: "Sales" },
+                    { id: "STR-03", ar: "تحسين الامتثال والحوكمة", en: "Governance & compliance uplift", progress: 70, owner: "GRC" }
+                ]
+            },
+            hrProfile: {
+                employeeId: "1001",
+                name_ar: "هشام السحيباني",
+                name_en: "Hesham Alsuhaibani",
+                role_ar: "الرئيس التنفيذي & نائب رئيس المجلس",
+                role_en: "CEO & Vice Chairman",
+                leaveBalance: 30,
+                commitmentScore: 92,
+                attendance: [
+                    { day_ar: "الأحد", day_en: "Sunday", date: "2026-01-05", in: "08:03", out: "17:02", status_ar: "مكتمل", status_en: "Complete" },
+                    { day_ar: "الإثنين", day_en: "Monday", date: "2026-01-06", in: "08:00", out: "17:00", status_ar: "في الوقت", status_en: "On time" },
+                    { day_ar: "الثلاثاء", day_en: "Tuesday", date: "2026-01-07", in: "08:12", out: "17:05", status_ar: "متأخر بسيط", status_en: "Slightly late" }
+                ]
+            }
+        };
+
+        // --- Helpers ---
+        function fmtMoney(n) {
+            try { return new Intl.NumberFormat(currentLang === 'ar' ? 'ar-SA' : 'en-US').format(n); } 
+            catch { return n; }
+        }
+
+        function tKey(arText, enText) { return currentLang === 'ar' ? arText : enText; }
+
+        function showToast(msg, type="ok") {
+            const t = document.getElementById('toast');
+            const box = document.getElementById('toastBox');
+            box.className = "px-4 py-3 rounded-xl shadow-xl text-white text-sm";
+            box.classList.add(type === "danger" ? "bg-red-600" : type === "warn" ? "bg-amber-600" : "bg-slate-900");
+            box.innerText = msg;
+            t.classList.remove('hidden');
+            setTimeout(() => t.classList.add('hidden'), 2200);
+        }
+
+        function openModal(title, bodyHTML, footerHTML="") {
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalBody').innerHTML = bodyHTML;
+            document.getElementById('modalFooter').innerHTML = footerHTML || `
+                <button onclick="closeModal()" class="px-4 py-2 rounded-lg bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-white text-sm font-bold">
+                    ${tKey("إغلاق","Close")}
+                </button>
+            `;
+            document.getElementById('modalOverlay').classList.remove('hidden');
+            document.getElementById('modal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('modalOverlay').classList.add('hidden');
+            document.getElementById('modal').classList.add('hidden');
+        }
+
+        // --- Logic Functions ---
+        function getApprovalById(id) { return demoDB.approvals.find(a => a.id === id); }
+
+        function renderApprovalDetails(id) {
+            const a = getApprovalById(id);
+            if (!a) return showToast(tKey("العنصر غير موجود","Item not found"), "danger");
+
+            const stepsHTML = a.steps.map(s => `
+                <div class="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700">
+                    <div class="text-sm font-bold text-slate-800 dark:text-white">${currentLang === 'ar' ? s.role_ar : s.role_en}</div>
+                    <span class="text-xs font-bold px-2 py-1 rounded-lg ${
+                        s.status === "approved" ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300" :
+                        s.status === "rejected" ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300" :
+                        "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300"
+                    }">
+                    ${tKey(
+                        s.status === "approved" ? "معتمد" : s.status === "rejected" ? "مرفوض" : "بانتظار الاعتماد",
+                        s.status === "approved" ? "Approved" : s.status === "rejected" ? "Rejected" : "Pending"
+                    )}
+                    </span>
+                </div>
+            `).join("");
+
+            const attHTML = (a.attachments || []).map(x => `
+                <div class="flex items-center justify-between p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                    <div class="flex items-center gap-3">
+                        <i class="fa-solid fa-paperclip text-brandRed"></i>
+                        <div>
+                            <p class="text-sm font-bold text-slate-800 dark:text-white">${x.name}</p>
+                            <p class="text-xs text-slate-500">${x.size}</p>
+                        </div>
+                    </div>
+                    <button onclick="showToast('${tKey("تم تنزيل الملف (ديمو)","Downloaded (demo)")}')" class="px-3 py-2 rounded-lg bg-slate-200 dark:bg-slate-700 text-xs font-bold">
+                        ${tKey("تنزيل","Download")}
+                    </button>
+                </div>
+            `).join("");
+
+            const body = `
+                <div class="space-y-4">
+                    <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                            <div><span class="text-slate-500">${tKey("الرقم","ID")}:</span> <span class="font-bold">${a.id}</span></div>
+                            <div><span class="text-slate-500">${tKey("الجهة","Owner")}:</span> <span class="font-bold">${currentLang==='ar'?a.owner_ar:a.owner_en}</span></div>
+                            <div><span class="text-slate-500">${tKey("التاريخ","Created")}:</span> <span class="font-bold">${a.createdAt}</span></div>
+                            <div><span class="text-slate-500">${tKey("الأولوية","Priority")}:</span> <span class="font-bold">${tKey(a.priority==="high"?"عالية":a.priority==="medium"?"متوسطة":"منخفضة", a.priority==="high"?"High":a.priority==="medium"?"Medium":"Low")}</span></div>
+                            ${a.amount ? `<div class="md:col-span-2"><span class="text-slate-500">${tKey("القيمة","Amount")}:</span> <span class="font-extrabold text-brandRed">${fmtMoney(a.amount)} ${tKey("ريال","SAR")}</span></div>` : ""}
+                        </div>
+                        <p class="mt-3 text-sm text-slate-700 dark:text-slate-200">${currentLang==='ar'?a.desc_ar:a.desc_en}</p>
+                    </div>
+                    <div>
+                        <h4 class="font-bold mb-2 text-slate-800 dark:text-white">${tKey("مسار الاعتماد","Approval Steps")}</h4>
+                        <div class="space-y-2">${stepsHTML}</div>
+                    </div>
+                    <div>
+                        <h4 class="font-bold mb-2 text-slate-800 dark:text-white">${tKey("المرفقات","Attachments")}</h4>
+                        <div class="space-y-2">${attHTML || `<div class="text-sm text-slate-500">${tKey("لا يوجد","None")}</div>`}</div>
+                    </div>
+                </div>
+            `;
+
+            const footer = `
+                <button onclick="approveRequest('${a.id}')" class="px-4 py-2 rounded-lg bg-green-600 hover:bg-green-700 text-white text-sm font-bold">
+                    ${tKey("اعتماد","Approve")}
+                </button>
+                <button onclick="rejectRequest('${a.id}')" class="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white text-sm font-bold">
+                    ${tKey("رفض","Reject")}
+                </button>
+                <button onclick="closeModal()" class="px-4 py-2 rounded-lg bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-white text-sm font-bold">
+                    ${tKey("إغلاق","Close")}
+                </button>
+            `;
+            openModal(currentLang === 'ar' ? a.title_ar : a.title_en, body, footer);
+        }
+
+        function approveRequest(id) {
+            const a = getApprovalById(id);
+            if (!a) return;
+            // Demo logic: Approve only last step
+            const last = a.steps[a.steps.length - 1];
+            last.status = "approved";
+            a.status = "approved";
+            showToast(tKey(`تم اعتماد الطلب ${id}` , `Approved ${id}`), "ok");
+            closeModal();
+            renderView(currentView);
+        }
+
+        function rejectRequest(id) {
+            const a = getApprovalById(id);
+            if (!a) return;
+            const last = a.steps[a.steps.length - 1];
+            last.status = "rejected";
+            a.status = "rejected";
+            showToast(tKey(`تم رفض الطلب ${id}` , `Rejected ${id}`), "danger");
+            closeModal();
+            renderView(currentView);
+        }
+
+        function quickAction(action) {
+            if(action === "approve_budget") {
+                const item = demoDB.approvals.find(x => x.type === "budget" && x.status==="pending") || demoDB.approvals.find(x=>x.status==="pending");
+                if(item) return renderApprovalDetails(item.id);
+                return showToast(tKey("لا توجد طلبات ميزانية معلقة","No pending budget requests"), "warn");
+            }
+            if(action === "sign_contract") {
+                const item = demoDB.approvals.find(x => x.type === "contract" && x.status==="pending");
+                if(item) return renderApprovalDetails(item.id);
+                return showToast(tKey("لا توجد عقود معلقة","No pending contracts"), "warn");
+            }
+            if(action === "call_meeting") {
+                openModal(
+                    tKey("دعوة لاجتماع (ديمو)","Meeting Invite (Demo)"),
+                    `<div class="space-y-4">
+                        <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700">
+                            <p class="text-sm text-slate-700 dark:text-slate-200">${tKey("تم إنشاء دعوة اجتماع تنفيذية تلقائيًا (ديمو).","An executive meeting invite has been generated (demo).")}</p>
+                            <div class="mt-3 text-sm">
+                                <div><b>${tKey("العنوان","Title")}:</b> ${tKey("مراجعة مؤشرات الأداء","KPI Review")}</div>
+                                <div><b>${tKey("الوقت","Time")}:</b> ${tKey("غداً 11:00 ص","Tomorrow 11:00 AM")}</div>
+                                <div><b>${tKey("الحضور","Attendees")}:</b> CEO, CFO, Product</div>
+                            </div>
+                        </div>
+                    </div>`,
+                    `<button onclick="showToast('${tKey("تم إرسال الدعوة (ديمو)","Invite sent (demo)")}'); closeModal();" class="px-4 py-2 rounded-lg bg-brandRed text-white text-sm font-bold">${tKey("إرسال","Send")}</button>
+                     <button onclick="closeModal()" class="px-4 py-2 rounded-lg bg-slate-200 dark:bg-slate-700 text-sm font-bold">${tKey("إغلاق","Close")}</button>`
+                );
+            }
+        }
+
+        function hrAction(type) {
+            if(type === "checkin") return showToast(tKey("تم تسجيل الحضور (ديمو)","Checked in (demo)"));
+            if(type === "leave") {
+                openModal(
+                    tKey("طلب إجازة (ديمو)","Leave Request (Demo)"),
+                    `<div class="space-y-3">
+                        <label class="text-sm font-bold">${tKey("عدد الأيام","Days")}</label>
+                        <input id="leaveDays" type="number" value="2" class="w-full p-3 rounded-xl bg-slate-100 dark:bg-slate-700 border-0 outline-none">
+                        <label class="text-sm font-bold">${tKey("السبب","Reason")}</label>
+                        <textarea id="leaveReason" class="w-full p-3 rounded-xl bg-slate-100 dark:bg-slate-700 border-0 outline-none" rows="3">${tKey("ظروف خاصة","Personal")}</textarea>
+                    </div>`,
+                    `<button onclick="submitLeave()" class="px-4 py-2 rounded-lg bg-brandRed text-white text-sm font-bold">${tKey("إرسال","Submit")}</button>
+                     <button onclick="closeModal()" class="px-4 py-2 rounded-lg bg-slate-200 dark:bg-slate-700 text-sm font-bold">${tKey("إلغاء","Cancel")}</button>`
+                );
+            }
+            if(type === "salary") return showToast(tKey("تم إصدار تعريف راتب (ديمو)","Salary certificate generated (demo)"));
+            if(type === "support") return showToast(tKey("تم فتح تذكرة دعم (ديمو)","Support ticket opened (demo)"));
+        }
+
+        function submitLeave() {
+            const days = document.getElementById('leaveDays').value;
+            demoDB.hrProfile.leaveBalance = Math.max(0, demoDB.hrProfile.leaveBalance - Number(days || 0));
+            showToast(tKey("تم رفع طلب الإجازة (ديمو)","Leave request submitted (demo)"));
+            closeModal();
+            renderView(currentView);
+        }
+
         function init() {
             if(localStorage.getItem('theme') === 'dark') {
                 document.documentElement.classList.add('dark');
@@ -311,25 +631,28 @@
             document.getElementById('nav-'+view).className = `w-full flex items-center gap-4 px-4 py-3 bg-brandRed text-white rounded-xl shadow-lg shadow-red-500/30 font-bold transition nav-item`;
 
             if (view === 'dashboard') {
+                const kpi = demoDB.financials.kpis;
+                const pendingCount = demoDB.approvals.filter(x => x.status === 'pending').length;
+                
                 pageTitle.innerText = t.overview;
                 content.innerHTML = `
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 fade-in">
                         <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 relative overflow-hidden">
                             <div class="absolute right-0 top-0 w-20 h-20 bg-green-50 dark:bg-green-900/20 rounded-bl-full transition-transform hover:scale-110"></div>
                             <p class="text-slate-500 dark:text-slate-400 text-xs font-bold mb-1 relative z-10">${t.revenue_ytd}</p>
-                            <h3 class="text-3xl font-extrabold text-green-600 relative z-10">12.4M</h3>
+                            <h3 class="text-3xl font-extrabold text-green-600 relative z-10">${fmtMoney(kpi.revenueYTD)}</h3>
                             <span class="text-[10px] text-green-600 bg-green-50 dark:bg-green-900/30 px-2 py-0.5 rounded relative z-10">+15% ${t.growth}</span>
                         </div>
                         <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 relative overflow-hidden">
                             <div class="absolute right-0 top-0 w-20 h-20 bg-blue-50 dark:bg-blue-900/20 rounded-bl-full transition-transform hover:scale-110"></div>
                             <p class="text-slate-500 dark:text-slate-400 text-xs font-bold mb-1 relative z-10">${t.cash_flow}</p>
-                            <h3 class="text-3xl font-extrabold text-blue-600 relative z-10">4.2M</h3>
+                            <h3 class="text-3xl font-extrabold text-blue-600 relative z-10">${fmtMoney(kpi.cash)}</h3>
                             <p class="text-[10px] text-slate-400 relative z-10">${t.healthy}</p>
                         </div>
                         <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 relative overflow-hidden">
                             <div class="absolute right-0 top-0 w-20 h-20 bg-red-50 dark:bg-red-900/20 rounded-bl-full transition-transform hover:scale-110"></div>
                             <p class="text-slate-500 dark:text-slate-400 text-xs font-bold mb-1 relative z-10">${t.pending_approvals}</p>
-                            <h3 class="text-3xl font-extrabold text-brandRed relative z-10">3</h3>
+                            <h3 class="text-3xl font-extrabold text-brandRed relative z-10">${pendingCount}</h3>
                             <p class="text-[10px] text-slate-400 relative z-10">${t.high_priority}</p>
                         </div>
                         <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 relative overflow-hidden">
@@ -355,13 +678,13 @@
                         <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
                             <h3 class="font-bold text-slate-800 dark:text-white mb-4">${t.quick_actions}</h3>
                             <div class="space-y-3">
-                                <button class="w-full text-start p-3 bg-slate-50 dark:bg-slate-700/50 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition group">
+                                <button onclick="quickAction('approve_budget')" class="w-full text-start p-3 bg-slate-50 dark:bg-slate-700/50 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition group">
                                     <p class="text-xs font-bold text-slate-700 dark:text-slate-200 group-hover:text-brandRed">${t.approve_budget}</p>
                                 </button>
-                                <button class="w-full text-start p-3 bg-slate-50 dark:bg-slate-700/50 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition group">
+                                <button onclick="quickAction('sign_contract')" class="w-full text-start p-3 bg-slate-50 dark:bg-slate-700/50 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition group">
                                     <p class="text-xs font-bold text-slate-700 dark:text-slate-200 group-hover:text-brandRed">${t.sign_contract}</p>
                                 </button>
-                                <button class="w-full text-start p-3 bg-slate-50 dark:bg-slate-700/50 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition group">
+                                <button onclick="quickAction('call_meeting')" class="w-full text-start p-3 bg-slate-50 dark:bg-slate-700/50 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition group">
                                     <p class="text-xs font-bold text-slate-700 dark:text-slate-200 group-hover:text-brandRed">${t.call_meeting}</p>
                                 </button>
                             </div>
@@ -372,61 +695,74 @@
             } 
             else if (view === 'approvals') {
                 pageTitle.innerText = t.approvals;
+                const pending = demoDB.approvals.filter(x => x.status === "pending");
+                const approved = demoDB.approvals.filter(x => x.status === "approved");
+                const rejected = demoDB.approvals.filter(x => x.status === "rejected");
+
+                function badge(status){
+                    if(status==="pending") return `bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300`;
+                    if(status==="approved") return `bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300`;
+                    return `bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300`;
+                }
+                function statusTxt(status){
+                    return tKey(status==="pending"?"بانتظار الاعتماد":status==="approved"?"معتمد":"مرفوض", status==="pending"?"Pending":status==="approved"?"Approved":"Rejected");
+                }
+
+                const listHTML = (arr) => arr.map(a => `
+                    <div class="p-5 border border-slate-100 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-700/30 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 transition hover:shadow-md">
+                        <div class="min-w-0">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="w-2 h-2 rounded-full ${a.priority==="high"?"bg-red-500":a.priority==="medium"?"bg-amber-500":"bg-slate-400"} shrink-0"></span>
+                                <h4 class="font-bold text-sm text-slate-800 dark:text-white truncate">${currentLang==='ar'?a.title_ar:a.title_en}</h4>
+                                <span class="text-[10px] font-bold px-2 py-1 rounded-lg ${badge(a.status)}">${statusTxt(a.status)}</span>
+                            </div>
+                            <p class="text-xs text-slate-500 truncate">${currentLang==='ar'?a.desc_ar:a.desc_en}</p>
+                            <p class="text-[10px] text-slate-400 mt-1">${tKey("المالك","Owner")}: ${currentLang==='ar'?a.owner_ar:a.owner_en} • ${a.createdAt}</p>
+                        </div>
+                        <div class="flex gap-2 w-full md:w-auto">
+                            ${a.status === "pending" ? `
+                            <button onclick="approveRequest('${a.id}')" class="px-4 py-2 bg-green-600 text-white text-xs font-bold rounded-lg hover:bg-green-700 transition">${t.btn_approve}</button>
+                            <button onclick="rejectRequest('${a.id}')" class="px-4 py-2 bg-red-600 text-white text-xs font-bold rounded-lg hover:bg-red-700 transition">${t.btn_reject}</button>
+                            ` : ''}
+                            <button onclick="renderApprovalDetails('${a.id}')" class="px-4 py-2 bg-slate-200 dark:bg-slate-600 text-slate-700 dark:text-white text-xs font-bold rounded-lg hover:bg-slate-300 transition">${t.btn_details}</button>
+                        </div>
+                    </div>
+                `).join("");
+
                 content.innerHTML = `
                     <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-6 fade-in">
-                        <div class="flex justify-between items-center mb-6">
+                        <div class="flex justify-between items-center mb-4">
                             <h3 class="font-bold text-lg text-slate-800 dark:text-white">${t.approval_center}</h3>
+                            <div class="text-xs text-slate-500">
+                                ${tKey("معلق","Pending")}: <b>${pending.length}</b> • 
+                                ${tKey("معتمد","Approved")}: <b>${approved.length}</b> • 
+                                ${tKey("مرفوض","Rejected")}: <b>${rejected.length}</b>
+                            </div>
                         </div>
                         <div class="space-y-4">
-                            <!-- Request 1 -->
-                            <div class="p-5 border border-slate-100 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-700/30 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 transition hover:shadow-md">
-                                <div>
-                                    <div class="flex items-center gap-2 mb-1">
-                                        <span class="w-2 h-2 rounded-full bg-blue-500 shrink-0"></span>
-                                        <h4 class="font-bold text-sm text-slate-800 dark:text-white">${t.req_1}</h4>
-                                    </div>
-                                    <p class="text-xs text-slate-500">${t.req_1_desc}</p>
-                                </div>
-                                <div class="flex gap-2 w-full md:w-auto">
-                                    <button class="px-4 py-2 bg-green-600 text-white text-xs font-bold rounded-lg hover:bg-green-700 transition">${t.btn_approve}</button>
-                                    <button class="px-4 py-2 bg-red-600 text-white text-xs font-bold rounded-lg hover:bg-red-700 transition">${t.btn_reject}</button>
-                                    <button class="px-4 py-2 bg-slate-200 dark:bg-slate-600 text-slate-700 dark:text-white text-xs font-bold rounded-lg hover:bg-slate-300 transition">${t.btn_details}</button>
-                                </div>
-                            </div>
-                            <!-- Request 2 -->
-                            <div class="p-5 border border-slate-100 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-700/30 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 transition hover:shadow-md">
-                                <div>
-                                    <div class="flex items-center gap-2 mb-1">
-                                        <span class="w-2 h-2 rounded-full bg-purple-500 shrink-0"></span>
-                                        <h4 class="font-bold text-sm text-slate-800 dark:text-white">${t.req_2}</h4>
-                                    </div>
-                                    <p class="text-xs text-slate-500">${t.req_2_desc}</p>
-                                </div>
-                                <div class="flex gap-2 w-full md:w-auto">
-                                    <button class="px-4 py-2 bg-green-600 text-white text-xs font-bold rounded-lg hover:bg-green-700 transition">${t.btn_approve}</button>
-                                    <button class="px-4 py-2 bg-red-600 text-white text-xs font-bold rounded-lg hover:bg-red-700 transition">${t.btn_reject}</button>
-                                    <button class="px-4 py-2 bg-slate-200 dark:bg-slate-600 text-slate-700 dark:text-white text-xs font-bold rounded-lg hover:bg-slate-300 transition">${t.btn_details}</button>
-                                </div>
-                            </div>
+                            ${pending.length ? listHTML(pending) : ''}
+                            ${approved.length || rejected.length ? `<div class="border-t border-slate-100 dark:border-slate-700 my-4 pt-2"><p class="text-xs text-slate-400 mb-2">${tKey("السجل التاريخي","History")}</p></div>` : ''}
+                            ${listHTML([...approved, ...rejected])}
                         </div>
                     </div>
                 `;
             }
             else if (view === 'financials') {
+                const kpi = demoDB.financials.kpis;
                 pageTitle.innerText = t.financials;
                 content.innerHTML = `
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 fade-in">
                         <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
                             <h3 class="font-bold text-slate-800 dark:text-white mb-2">${t.revenue_ytd}</h3>
-                            <p class="text-3xl font-extrabold text-green-600">12,450,000</p>
+                            <p class="text-3xl font-extrabold text-green-600">${fmtMoney(kpi.revenueYTD)}</p>
                         </div>
                         <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
                             <h3 class="font-bold text-slate-800 dark:text-white mb-2">${t.net_profit}</h3>
-                            <p class="text-3xl font-extrabold text-blue-600">3,200,000</p>
+                            <p class="text-3xl font-extrabold text-blue-600">${fmtMoney(kpi.netProfit)}</p>
                         </div>
                         <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
                             <h3 class="font-bold text-slate-800 dark:text-white mb-2">${t.expenses}</h3>
-                            <p class="text-3xl font-extrabold text-red-500">9,250,000</p>
+                            <p class="text-3xl font-extrabold text-red-500">${fmtMoney(kpi.expenses)}</p>
                         </div>
                         <div class="col-span-1 lg:col-span-3 bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
                             <h3 class="font-bold text-slate-800 dark:text-white mb-4">${t.chart_products}</h3>
@@ -439,20 +775,48 @@
                 setTimeout(() => initChart('bar'), 100);
             }
             else if (view === 'strategy') {
+                const strat = demoDB.strategy;
                 pageTitle.innerText = t.strategy;
+                const itemsHTML = strat.initiatives.map(i => `
+                    <div class="mb-4 text-start">
+                        <div class="flex justify-between text-sm mb-1">
+                            <span class="font-bold text-slate-700 dark:text-slate-200">${currentLang==='ar'?i.ar:i.en}</span>
+                            <span class="text-brandRed font-bold">${i.progress}%</span>
+                        </div>
+                        <div class="w-full bg-slate-100 dark:bg-slate-700 h-2.5 rounded-full overflow-hidden">
+                            <div class="bg-brandRed h-full rounded-full" style="width: ${i.progress}%"></div>
+                        </div>
+                        <p class="text-[10px] text-slate-400 mt-1">${tKey("المالك","Owner")}: ${i.owner}</p>
+                    </div>
+                `).join("");
+
                 content.innerHTML = `
                     <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-8 text-center fade-in">
                         <i class="fa-solid fa-rocket text-4xl text-brandRed mb-4"></i>
-                        <h3 class="font-bold text-xl text-slate-800 dark:text-white mb-2">${t.strat_plan}</h3>
-                        <div class="w-full bg-slate-100 dark:bg-slate-700 h-3 rounded-full mt-4 mb-2 overflow-hidden">
-                            <div class="bg-brandRed h-full rounded-full" style="width: 65%"></div>
+                        <h3 class="font-bold text-xl text-slate-800 dark:text-white mb-6">${t.strat_plan}</h3>
+                        <div class="max-w-2xl mx-auto">
+                            ${itemsHTML}
                         </div>
-                        <p class="text-sm text-slate-500">${t.goal_ipo}: 65% ${t.progress}</p>
                     </div>
                 `;
             }
             else if (view === 'profile') {
+                const p = demoDB.hrProfile;
                 pageTitle.innerText = t.profile_ceo;
+                
+                const attendHTML = p.attendance.map(a => `
+                    <div class="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-700/50 rounded-lg">
+                        <div class="flex items-center gap-3">
+                            <div class="w-2 h-10 bg-green-500 rounded-full"></div>
+                            <div>
+                                <p class="text-sm font-bold text-slate-800 dark:text-white">${currentLang==='ar'?a.day_ar:a.day_en}</p>
+                                <p class="text-xs text-slate-500">${a.in} - ${a.out}</p>
+                            </div>
+                        </div>
+                        <span class="text-xs font-bold text-green-600 bg-green-100 dark:bg-green-900/30 px-2 py-1 rounded">${currentLang==='ar'?a.status_ar:a.status_en}</span>
+                    </div>
+                `).join("");
+
                 content.innerHTML = `
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 fade-in">
                         <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-6 text-center relative overflow-hidden">
@@ -460,24 +824,37 @@
                             <div class="relative z-10 -mt-10 mb-4">
                                 <img src="https://ui-avatars.com/api/?name=Hesham+Alsuhaibani&background=FB4747&color=fff&size=128" class="w-24 h-24 rounded-full border-4 border-white dark:border-slate-800 shadow-lg mx-auto">
                             </div>
-                            <h3 class="text-xl font-bold text-slate-800 dark:text-white">${t.full_name}</h3>
-                            <p class="text-slate-500 dark:text-slate-400 text-sm mb-4">${t.full_role}</p>
+                            <h3 class="text-xl font-bold text-slate-800 dark:text-white">${currentLang==='ar'?p.name_ar:p.name_en}</h3>
+                            <p class="text-slate-500 dark:text-slate-400 text-sm mb-4">${currentLang==='ar'?p.role_ar:p.role_en}</p>
                             <div class="flex justify-center gap-2 mb-6">
-                                <span class="px-3 py-1 bg-slate-100 dark:bg-slate-700 rounded-full text-xs font-bold text-slate-600 dark:text-slate-300">ID: 1001</span>
+                                <span class="px-3 py-1 bg-slate-100 dark:bg-slate-700 rounded-full text-xs font-bold text-slate-600 dark:text-slate-300">ID: ${p.employeeId}</span>
                                 <span class="px-3 py-1 bg-green-100 dark:bg-green-900/30 rounded-full text-xs font-bold text-green-600">${t.on_job}</span>
                             </div>
+                            
+                            <div class="grid grid-cols-2 gap-4 mt-6 border-t border-slate-100 dark:border-slate-700 pt-6">
+                                <div>
+                                    <p class="text-xs text-slate-500">${t.leave_bal}</p>
+                                    <p class="text-lg font-bold text-brandRed">${p.leaveBalance} ${tKey("يوم","Days")}</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-slate-500">${t.commit_score}</p>
+                                    <p class="text-lg font-bold text-blue-600">${p.commitmentScore}%</p>
+                                </div>
+                            </div>
+
+                            <div class="space-y-2 mt-6">
+                                <button onclick="hrAction('checkin')" class="w-full py-2 bg-slate-50 dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 rounded-lg text-xs font-bold transition">${t.btn_checkin}</button>
+                                <button onclick="hrAction('leave')" class="w-full py-2 bg-slate-50 dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 rounded-lg text-xs font-bold transition">${t.btn_leave}</button>
+                                <button onclick="hrAction('salary')" class="w-full py-2 bg-slate-50 dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 rounded-lg text-xs font-bold transition">${t.btn_salary}</button>
+                                <button onclick="hrAction('support')" class="w-full py-2 bg-slate-50 dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 rounded-lg text-xs font-bold transition">${t.btn_support}</button>
+                            </div>
                         </div>
+
                         <div class="lg:col-span-2 space-y-6">
                             <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-6">
                                 <h3 class="font-bold text-slate-800 dark:text-white mb-4">${t.attend_log}</h3>
                                 <div class="space-y-3">
-                                    <div class="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-700/50 rounded-lg">
-                                        <div class="flex items-center gap-3">
-                                            <div class="w-2 h-10 bg-green-500 rounded-full"></div>
-                                            <div><p class="text-sm font-bold text-slate-800 dark:text-white">${t.day_sun}</p><p class="text-xs text-slate-500">08:00 AM - 05:00 PM</p></div>
-                                        </div>
-                                        <span class="text-xs font-bold text-green-600 bg-green-100 dark:bg-green-900/30 px-2 py-1 rounded">${t.status_complete}</span>
-                                    </div>
+                                    ${attendHTML}
                                 </div>
                             </div>
                         </div>
@@ -499,17 +876,17 @@
                 labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
                 datasets: [{
                     label: t.revenue_ytd,
-                    data: [1.2, 1.5, 1.8, 2.2, 2.5, 3.1],
+                    data: demoDB.financials.revenueMonthly,
                     borderColor: '#FB4747',
                     backgroundColor: 'rgba(251, 71, 71, 0.1)',
                     tension: 0.4,
                     fill: true
                 }]
             } : {
-                labels: ['AndroHealth', 'BQ Auctions', 'CyanCare'],
+                labels: demoDB.financials.productPerformance.map(p => p.name),
                 datasets: [{
                     label: t.revenue_ytd,
-                    data: [6.5, 4.2, 1.7],
+                    data: demoDB.financials.productPerformance.map(p => p.value),
                     backgroundColor: ['#FB4747', '#7C3AED', '#0891B2']
                 }]
             };
@@ -602,7 +979,9 @@
 
         function logout() {
             localStorage.removeItem('currentUser');
-            window.location.href = 'login.html';
+            // Mock logout
+            showToast(tKey("تم تسجيل الخروج","Logged out"), "ok");
+            setTimeout(() => location.reload(), 1000);
         }
 
         init();
