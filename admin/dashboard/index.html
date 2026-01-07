@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AndroGov | لوحة التحكم</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/admin.css">
+</head>
+
+<body>
+  <div class="container-admin">
+    <!-- Sidebar (Injected) -->
+    <aside class="sidebar" id="sidebar"></aside>
+
+    <!-- Main -->
+    <main class="main">
+      <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:12px;">
+        <div>
+          <h1 style="margin:0; font-size:22px; font-weight:800;">لوحة التحكم</h1>
+          <div class="small">نظرة عامة على الحوكمة والتشغيل — شركة اندروميدا لتقنية المعلومات</div>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <a class="btn" href="/admin/logs/audit.html">سجل التدقيق</a>
+          <button class="btn btn-primary" id="btnDemo">إجراء سريع (Demo)</button>
+        </div>
+      </div>
+
+      <div style="margin-top:16px; display:grid; grid-template-columns:1fr; gap:12px;">
+        <section class="card">
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <span class="badge">AndroHealth</span>
+            <span class="badge">BQ</span>
+            <span class="badge">CyanCare</span>
+          </div>
+          <div style="margin-top:10px; font-weight:700;">ملخص سريع</div>
+          <div class="small" style="margin-top:6px;">
+            هذي صفحة البداية. كل الأقسام في السايدبار تتفعل/تختفي حسب صلاحيات المستخدم (RBAC+ABAC).
+            بنبني بعدها: الجمعيات، المجلس، اللجان، السياسات، DOA، ثم إدارات التشغيل (HR/Finance/IT/Cyber/Sales/Procurement…).
+          </div>
+        </section>
+
+        <section class="card" id="userCard"></section>
+      </div>
+    </main>
+  </div>
+
+  <!-- Core -->
+  <script src="/assets/js/nav-config.js"></script>
+  <script src="/assets/js/permissions.js"></script>
+  <script src="/assets/js/sidebar.js"></script>
+
+  <script>
+    // Mount sidebar
+    AndroUI.mountSidebar();
+
+    // Page logic
+    const user = AndroAuth.getCurrentUser();
+    document.getElementById("userCard").innerHTML = `
+      <div style="font-weight:800;">المستخدم الحالي</div>
+      <div class="small" style="margin-top:8px;">
+        الاسم: <b>${user.name}</b><br>
+        الأدوار: <b>${user.roles.join(", ")}</b><br>
+        الصلاحيات الظاهرة في القائمة مبنية على Scopes.
+      </div>
+    `;
+
+    document.getElementById("btnDemo").addEventListener("click", () => {
+      alert("Demo: الإجراء السريع بيتحوّل لاحقاً لمركز إشعارات ومهام.");
+    });
+  </script>
+</body>
+</html>
