@@ -1,0 +1,34 @@
+{
+  "config": {
+    "threshold_request_internal": 5,
+    "threshold_request_bylaws": 10,
+    "min_notice_days": 21,
+    "board_invitation_sla_days": 30
+  },
+  "assemblies": [
+    {
+      "id": "GA_2026_AGM",
+      "type": "عادية",
+      "title": "الجمعية العامة العادية 2026",
+      "date": "2026-03-30",
+      "mode": "حضوري + عن بُعد",
+      "status": "مسودة",
+      "noticeSentAt": null,
+      "agenda": [
+        { "id": "AG_001", "title": "اعتماد القوائم المالية", "voteType": "أغلبية بسيطة", "conflictSensitive": false },
+        { "id": "AG_002", "title": "تشكيل لجنة المراجعة", "voteType": "أغلبية بسيطة", "conflictSensitive": false },
+        { "id": "AG_003", "title": "إبراء ذمة أعضاء المجلس", "voteType": "أغلبية بسيطة", "conflictSensitive": true }
+      ]
+    }
+  ],
+  "requests": [
+    { "id": "REQ_001", "shareholderId": "SH_002", "kind": "طلب اجتماع سنوي", "createdAt": "2026-01-10", "status": "جديد", "note": "طلب إدراج بند حوكمة" },
+    { "id": "REQ_002", "shareholderId": "SH_003", "kind": "طلب دعوة جمعية", "createdAt": "2026-01-12", "status": "قيد المراجعة", "note": "طلب عقد جمعية للنظر في بند استراتيجي" }
+  ],
+  "disclosures": [
+    { "id": "D_001", "personUserId": "U_BM", "assemblyId": "GA_2026_AGM", "agendaId": "AG_003", "type": "تعارض", "status": "مؤكد", "note": "مصلحة مباشرة/غير مباشرة" }
+  ],
+  "resolutions": [
+    { "id": "R_001", "assemblyId": "GA_2026_AGM", "agendaId": "AG_002", "text": "تشكيل لجنة المراجعة لدورة جديدة", "owner": "أمين السر", "due": "2026-04-10", "status": "جارٍ" }
+  ]
+}
