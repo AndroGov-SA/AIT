@@ -54,7 +54,16 @@
       70% { box-shadow: 0 0 0 10px rgba(251, 71, 71, 0); }
       100% { box-shadow: 0 0 0 0 rgba(251, 71, 71, 0); }
     }
+    /* مهم جداً إذا ما عندك Tailwind */
+.hidden { display: none !important; }
 
+/* احتياط: أي طبقة overlay لا تكون قابلة للضغط وهي مخفية */
+#modal, #modalBackdrop, #aiPanel, #notifDropdown {
+  pointer-events: none;
+}
+#modal.active, #modalBackdrop.active, #aiPanel.active, #notifDropdown:not(.hidden) {
+  pointer-events: auto;
+}
     @media (max-width: 768px) {
       #sidebar { position: fixed; right: 0; top: 0; height: 100%; transform: translateX(100%); transition: transform 0.3s; z-index: 50; }
       #sidebar.open { transform: translateX(0); }
