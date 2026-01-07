@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AndroGov | حوكمة الجمعيات</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/admin.css">
+</head>
+
+<body>
+  <div class="container-admin">
+    <aside class="sidebar" id="sidebar"></aside>
+
+    <main class="main">
+      <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:12px;">
+        <div>
+          <h1 style="margin:0; font-size:22px; font-weight:800;">حوكمة الجمعيات</h1>
+          <div class="small">تشغيل شامل: مساهمين، نسب 5%/10%، دعوات، جدول أعمال، إفصاح/تعارض، محاضر، متابعة قرارات.</div>
+        </div>
+
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <button class="btn" id="btnExport">تصدير تقرير (Demo)</button>
+          <button class="btn btn-primary" id="btnNewAssembly">إنشاء جمعية (Demo)</button>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="card" style="margin-top:14px;">
+        <div id="tabs" style="display:flex; gap:8px; flex-wrap:wrap;"></div>
+      </div>
+
+      <section class="card" style="margin-top:12px;">
+        <div id="content"></div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Core -->
+  <script src="/assets/js/nav-config.js"></script>
+  <script src="/assets/js/permissions.js"></script>
+  <script src="/assets/js/sidebar.js"></script>
+
+  <script>
+    AndroUI.mountSidebar();
+
+    const TABS = [
+      { id:"overview", label:"نظرة عامة" },
+      { id:"shareholders", label:"سجل المساهمين" },
+      { id:"requests", label:"طلبات الدعوة والبنود" },
+      { id:"assembly", label:"إدارة الجمعية" },
+      { id:"disclosures", label:"الإفصاح والتعارض" },
+      { id:"minutes", label:"المحاضر والمتابعة" }
+    ];
+
+    let state = {
+      active: "overview",
+      shareholders: [],
+      ga: null
+    };
+
+    const user = AndroAuth.getCurrentUser();
+
+    function badge(txt){ return `<span class="badge">${txt}</span>`; }
+
+    async function loadData(){
+      const sh = await fetch("/data/shareholders.json").then(r=>r.json());
+      const ga = await fetch("/data/ga.json").then(r=>r.json());
+      state.shareholders = sh.shareholders || [];
+      state.ga = ga;
+    }
+
+    function renderTabs(){
+      const el = document.getElementById("tabs");
+      el.innerHTML = TABS.map(t => {
+        const active = (t.id === state.active);
+        return `
+          <button class="btn" style="${active ? 'border-color: rgba(99,102,241,.6); background: rgba(15,23,42,.95); font-weight:800;' : ''}"
+            onclick="setTab('${t.id}')">${t.label}</button>
+        `;
+      }).join("");
+    }
+
+    window.setTab = (id) => { state.active = id; renderTabs(); renderContent(); };
+
+    function currentAssembly(){
+      return state.ga?.assemblies?.[0] || null;
+    }
+
+    function renderOverview(){
+      const cfg = state.ga.config;
+      const shPct = AndroAuth.shareholderPercent(user);
+      const rights = [];
+      rights.push(`طلب اجتماع/اقتراح بند (≥${cfg.threshold_request_internal}%): <b>${AndroAuth.can(user,"REQUEST_MEETING","GOV_GA") ? "نعم" : "لا"}</b>`);
+      rights.push(`طلب دعوة جمعية (≥${cfg.threshold_request_bylaws}%): <b>${AndroAuth.can(user,"REQUEST_CALL_GA","GOV_GA") ? "نعم" : "لا"}</b>`);
+      rights.push(`التصويت: <b>${AndroAuth.can(user,"VOTE","GOV_GA") ? "نعم" : "لا"}</b>`);
+
+      const a = currentAssembly();
+      const notice = a.noticeSentAt ? `تم إرسال الدعوة: <b>${a.noticeSentAt}</b>` : `<span style="color:#fbbf24;">لم تُرسل الدعوة بعد</span>`;
+      return `
+        <div style="display:grid; grid-template-columns:1fr; gap:12px;">
+          <div class="card">
+            <div style="font-weight:800;">ملخص الصلاحيات</div>
+            <div class="small" style="margin-top:8px;">
+              المستخدم: <b>${user.name}</b><br/>
+              الأدوار: <b>${user.roles.join(", ")}</b><br/>
+              ${user.roles.includes("SHAREHOLDER") ? `نسبة المساهم: <b>${shPct}%</b><br/>` : ""}
+              ${rights.join("<br/>")}
+            </div>
+          </div>
+
+          <div class="card">
+            <div style="font-weight:800;">الجمعية الحالية</div>
+            ${a ? `
+              <div class="small" style="margin-top:8px;">
+                العنوان: <b>${a.title}</b><br/>
+                النوع: <b>${a.type}</b> — التاريخ: <b>${a.date}</b> — النمط: <b>${a.mode}</b><br/>
+                حالة الدعوة: ${notice}<br/>
+                قاعدة الامتثال: الدعوة قبل <b>${cfg.min_notice_days}</b> يوم — استجابة المجلس خلال <b>${cfg.board_invitation_sla_days}</b> يوم لطلبات 10%.
+              </div>
+            ` : `<div class="small" style="margin-top:8px;">لا توجد جمعية.</div>`}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderShareholders(){
+      // Admin/Secretary يشوفون الكل، المساهم يشوف نفسه فقط
+      const canViewAll = AndroAuth.can(user,"VIEW","ADMIN_USERS") || AndroAuth.hasRole(user,"SECRETARY") || AndroAuth.hasRole(user,"ADMIN");
+      let list = state.shareholders;
+
+      if(user.roles.includes("SHAREHOLDER") && !canViewAll){
+        // في الديمو: نطابق حسب النسبة (لاحقًا نربطها بـ shareholderId الحقيقي)
+        const pct = AndroAuth.shareholderPercent(user);
+        list = list.filter(s => s.percent === pct);
+      }
+
+      const rows = list.map(s => `
+        <tr style="border-bottom:1px solid rgba(51,65,85,.55);">
+          <td style="padding:10px;">${s.name}</td>
+          <td style="padding:10px;">${s.percent}%</td>
+          <td style="padding:10px;">${s.shares}</td>
+          <td style="padding:10px;">${s.voting ? "نعم" : "لا"}</td>
+        </tr>
+      `).join("");
+
+      return `
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
+          <div style="font-weight:800;">سجل المساهمين</div>
+          <button class="btn" onclick="alert('Demo: تصدير سجل المساهمين')">تصدير</button>
+        </div>
+
+        <div style="margin-top:10px; overflow:auto; border:1px solid rgba(51,65,85,.55); border-radius:14px;">
+          <table style="width:100%; border-collapse:collapse; font-size:14px;">
+            <thead style="background: rgba(15,23,42,.85);">
+              <tr>
+                <th style="padding:10px; text-align:right;">المساهم</th>
+                <th style="padding:10px; text-align:right;">النسبة</th>
+                <th style="padding:10px; text-align:right;">الأسهم</th>
+                <th style="padding:10px; text-align:right;">حق التصويت</th>
+              </tr>
+            </thead>
+            <tbody style="background: rgba(2,6,23,.25);">
+              ${rows || `<tr><td colspan="4" style="padding:10px;" class="small">لا بيانات</td></tr>`}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    function renderRequests(){
+      const cfg = state.ga.config;
+
+      const canSubmit = AndroAuth.can(user,"REQUEST_MEETING","GOV_GA");
+      const canCallGA = AndroAuth.can(user,"REQUEST_CALL_GA","GOV_GA");
+      const canDecide = AndroAuth.hasRole(user,"SECRETARY") || AndroAuth.hasRole(user,"ADMIN");
+      const canEscalate = AndroAuth.hasRole(user,"COMMITTEE") || AndroAuth.hasRole(user,"EXTERNAL_AUDITOR");
+
+      const requests = state.ga.requests || [];
+
+      const cards = requests.map(r => {
+        const sh = state.shareholders.find(x=>x.id===r.shareholderId) || {name:"—", percent:0};
+        const eligible10 = sh.percent >= cfg.threshold_request_bylaws;
+        const eligible5  = sh.percent >= cfg.threshold_request_internal;
+
+        return `
+          <div class="card" style="margin-top:10px;">
+            <div style="display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap;">
+              <div style="font-weight:800;">${r.kind} ${badge(r.status)}</div>
+              <div class="small">${r.createdAt}</div>
+            </div>
+            <div class="small" style="margin-top:8px;">
+              مقدم الطلب: <b>${sh.name}</b> (${sh.percent}%)<br/>
+              الأهلية: ${eligible5 ? badge("يحقق 5%") : ""} ${eligible10 ? badge("يحقق 10%") : ""}<br/>
+              ملاحظة: ${r.note}
+            </div>
+            <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;">
+              <button class="btn" onclick="alert('Demo: تفاصيل الطلب')">التفاصيل</button>
+              <button class="btn btn-primary" ${canDecide ? "" : "disabled"} onclick="decideRequest('${r.id}','قبول')">قبول</button>
+              <button class="btn" ${canDecide ? "" : "disabled"} onclick="decideRequest('${r.id}','رفض')">رفض</button>
+              <button class="btn" ${canEscalate ? "" : "disabled"} onclick="alert('Demo: تصعيد وفق قواعد النظام')">تصعيد</button>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      return `
+        <div class="small">
+          • 5%: طلب اجتماع سنوي/اقتراح بند (سياسة داخلية - Demo)<br/>
+          • 10%: طلب دعوة جمعية (نظام أساس) — ويبدأ عدّاد 30 يوم لالتزام المجلس (Demo)
+        </div>
+
+        <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;">
+          <button class="btn btn-primary" ${canSubmit ? "" : "disabled"} onclick="newRequest('طلب اجتماع سنوي')">
+            تقديم طلب (≥${cfg.threshold_request_internal}%)
+          </button>
+
+          <button class="btn" ${canCallGA ? "" : "disabled"} onclick="newRequest('طلب دعوة جمعية')">
+            طلب دعوة جمعية (≥${cfg.threshold_request_bylaws}%)
+          </button>
+
+          <button class="btn" ${AndroAuth.can(user,"PROPOSE_AGENDA","GOV_GA") ? "" : "disabled"} onclick="alert('Demo: اقتراح بند جدول أعمال')">
+            اقتراح بند جدول أعمال
+          </button>
+        </div>
+
+        ${cards || `<div class="card" style="margin-top:10px;"><div class="small">لا توجد طلبات</div></div>`}
+      `;
+    }
+
+    window.decideRequest = (id, decision) => {
+      const r = state.ga.requests.find(x=>x.id===id);
+      if(!r) return;
+      r.status = (decision === "قبول") ? "مقبول" : "مرفوض";
+      alert(`Demo: تم ${decision} الطلب ${id}`);
+      renderContent();
+    };
+
+    window.newRequest = (kind) => {
+      const pct = AndroAuth.shareholderPercent(user);
+      const sh = state.shareholders.find(x=>x.percent===pct);
+      if(!sh) return alert("Demo: لا يوجد ربط مساهم لهذا المستخدم.");
+
+      const id = "REQ_" + Math.floor(Math.random()*900+100);
+      state.ga.requests.unshift({
+        id,
+        shareholderId: sh.id,
+        kind,
+        createdAt: new Date().toISOString().slice(0,10),
+        status: "جديد",
+        note: "طلب جديد من المستخدم (Demo)"
+      });
+      alert("Demo: تم إنشاء الطلب");
+      renderContent();
+    };
+
+    function renderAssembly(){
+      const cfg = state.ga.config;
+      const a = currentAssembly();
+      if(!a) return `<div class="small">لا توجد جمعية.</div>`;
+
+      const canSend = AndroAuth.hasRole(user,"SECRETARY") || AndroAuth.hasRole(user,"ADMIN");
+
+      const agenda = (a.agenda || []).map(it => {
+        const conflictNote = it.conflictSensitive ? `<span style="color:#fbbf24;">بند حساس للتعارض</span>` : "";
+        return `
+          <div class="card" style="margin-top:10px;">
+            <div style="font-weight:800;">${it.title}</div>
+            <div class="small" style="margin-top:6px;">
+              نوع التصويت: <b>${it.voteType}</b> ${conflictNote}
+            </div>
+            <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;">
+              <button class="btn" onclick="alert('Demo: فتح التصويت')">فتح التصويت</button>
+              <button class="btn" onclick="alert('Demo: احتساب النصاب')">احتساب النصاب</button>
+              <button class="btn" onclick="alert('Demo: إرفاق مستند للبند')">إرفاق مستند</button>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      const warnNotice = a.noticeSentAt ? "" : `<div class="small" style="color:#fbbf24; margin-top:8px;">تنبيه امتثال: الدعوة قبل ${cfg.min_notice_days} يوم على الأقل.</div>`;
+
+      return `
+        <div class="card">
+          <div style="font-weight:800;">بيانات الجمعية</div>
+          <div class="small" style="margin-top:8px;">
+            العنوان: <b>${a.title}</b><br/>
+            النوع: <b>${a.type}</b> — التاريخ: <b>${a.date}</b> — النمط: <b>${a.mode}</b><br/>
+            حالة الدعوة: <b>${a.noticeSentAt ? a.noticeSentAt : "لم تُرسل"}</b>
+            ${warnNotice}
+          </div>
+          <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;">
+            <button class="btn btn-primary" ${canSend ? "" : "disabled"} onclick="sendNotice()">إرسال الدعوة + إثبات الإرسال</button>
+            <button class="btn" onclick="alert('Demo: قفل إصدار جدول الأعمال')">قفل جدول الأعمال (Final)</button>
+          </div>
+        </div>
+
+        <div style="margin-top:12px;">
+          <div style="font-weight:800;">جدول الأعمال</div>
+          ${agenda}
+        </div>
+      `;
+    }
+
+    window.sendNotice = () => {
+      const a = currentAssembly();
+      a.noticeSentAt = new Date().toISOString().slice(0,10);
+      alert("Demo: تم إرسال الدعوة وتوثيق وقت الإرسال");
+      renderContent();
+    };
+
+    function renderDisclosures(){
+      const list = state.ga.disclosures || [];
+      // Admin/Secretary/Committee يشوفون الكل، غيرهم يشوف إفصاحه
+      const canViewAll = AndroAuth.hasRole(user,"ADMIN") || AndroAuth.hasRole(user,"SECRETARY") || AndroAuth.hasRole(user,"COMMITTEE");
+
+      const filtered = canViewAll ? list : list.filter(d => d.personUserId === user.id);
+
+      if(filtered.length === 0) return `<div class="small">لا توجد إفصاحات ظاهرة.</div>`;
+
+      return filtered.map(d => {
+        const a = currentAssembly();
+        const item = a?.agenda?.find(x=>x.id===d.agendaId);
+        const lock = (user.id === d.personUserId && AndroAuth.isConflicted(user, d.agendaId)) ? badge("ممنوع التصويت على البند") : "";
+        return `
+          <div class="card" style="margin-top:10px;">
+            <div style="display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap;">
+              <div style="font-weight:800;">${d.type} ${badge(d.status)}</div>
+              <div>${lock}</div>
+            </div>
+            <div class="small" style="margin-top:8px;">
+              البند: <b>${item ? item.title : d.agendaId}</b><br/>
+              ملاحظة: ${d.note}
+            </div>
+            <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;">
+              <button class="btn" onclick="alert('Demo: إرفاق مستند إفصاح')">إرفاق مستند</button>
+              <button class="btn btn-primary" ${AndroAuth.hasRole(user,"COMMITTEE") ? "" : "disabled"} onclick="alert('Demo: اعتماد/رفض الإفصاح')">مراجعة (لجنة)</button>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function renderMinutes(){
+      const list = state.ga.resolutions || [];
+      if(list.length === 0) return `<div class="small">لا توجد قرارات.</div>`;
+
+      return list.map(r => `
+        <div class="card" style="margin-top:10px;">
+          <div style="font-weight:800;">قرار ${badge(r.status)}</div>
+          <div class="small" style="margin-top:8px;">
+            النص: ${r.text}<br/>
+            المالك: <b>${r.owner}</b> — الاستحقاق: <b>${r.due}</b>
+          </div>
+          <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;">
+            <button class="btn" onclick="alert('Demo: عرض المحضر')">عرض المحضر</button>
+            <button class="btn btn-primary" ${AndroAuth.hasRole(user,"SECRETARY") ? "" : "disabled"} onclick="alert('Demo: تحديث حالة القرار')">تحديث الحالة</button>
+            <button class="btn" onclick="alert('Demo: إرفاق إثبات تنفيذ')">إرفاق إثبات</button>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function renderContent(){
+      const el = document.getElementById("content");
+      if(state.active === "overview") el.innerHTML = renderOverview();
+      if(state.active === "shareholders") el.innerHTML = renderShareholders();
+      if(state.active === "requests") el.innerHTML = renderRequests();
+      if(state.active === "assembly") el.innerHTML = renderAssembly();
+      if(state.active === "disclosures") el.innerHTML = renderDisclosures();
+      if(state.active === "minutes") el.innerHTML = renderMinutes();
+    }
+
+    document.getElementById("btnExport").addEventListener("click", () => alert("Demo: تصدير تقرير حوكمة الجمعيات (PDF لاحقًا)"));
+    document.getElementById("btnNewAssembly").addEventListener("click", () => {
+      if(!(AndroAuth.hasRole(user,"ADMIN") || AndroAuth.hasRole(user,"SECRETARY"))) return alert("صلاحية غير كافية");
+      alert("Demo: إنشاء جمعية جديدة (سيظهر نموذج لاحقًا)");
+    });
+
+    (async function init(){
+      await loadData();
+      renderTabs();
+      renderContent();
+    })();
+  </script>
+</body>
+</html>
