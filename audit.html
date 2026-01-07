@@ -134,7 +134,7 @@
       </button>
     </nav>
 
-    <div class="p-4 border-t border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition shrink-0" onclick="logout(login.html)">
+    <div class="p-4 border-t border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition shrink-0" onclick="logout()">
       <div class="flex items-center gap-3">
         <div class="relative">
           <div class="w-10 h-10 rounded-full bg-brandRed text-white flex items-center justify-center font-bold text-sm shadow-sm border-2 border-white dark:border-slate-700">IA</div>
@@ -231,9 +231,9 @@
 
   <!-- Modal -->
   <div id="modal" class="modal">
-    <!-- تم تعديل السطر التالي لإضافة max-h-[90vh] و flex-col لحل مشكلة السكرول -->
+    <!-- FIX: Added max-h-[90vh], flex flex-col for better scrolling -->
     <div class="w-full max-w-2xl bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden max-h-[90vh] flex flex-col">
-      <!-- الرأس: تم إضافة shrink-0 لمنع تقلصه -->
+      <!-- Header: Added shrink-0 to prevent shrinking -->
       <div class="p-4 md:p-5 border-b border-slate-100 dark:border-slate-700 flex items-center justify-between bg-slate-50 dark:bg-slate-900 shrink-0">
         <h3 class="font-bold text-slate-800 dark:text-white" id="modalTitle">Modal</h3>
         <button class="w-9 h-9 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition flex items-center justify-center"
@@ -241,9 +241,9 @@
           <i class="fa-solid fa-xmark"></i>
         </button>
       </div>
-      <!-- الجسم: تم إضافة overflow-y-auto و flex-1 ليصبح هو الجزء القابل للتمرير -->
+      <!-- Body: Added overflow-y-auto and flex-1 to enable scrolling here -->
       <div class="p-4 md:p-6 overflow-y-auto flex-1" id="modalBody"></div>
-      <!-- التذييل: تم إضافة shrink-0 ليبقى ثابتاً في الأسفل -->
+      <!-- Footer: Added shrink-0 to keep footer visible -->
       <div class="p-4 md:p-5 border-t border-slate-100 dark:border-slate-700 flex items-center justify-end gap-2 bg-slate-50 dark:bg-slate-900 shrink-0" id="modalFooter"></div>
     </div>
   </div>
@@ -2334,20 +2334,11 @@
     }
 
     function logout() {
-      const body = `
-        <div class="text-sm text-slate-600 dark:text-slate-300">
-          ${currentLang==='ar'
-            ? 'هذا ديمو. سيتم فقط إعادة ضبط الواجهة وإغلاق القوائم.'
-            : 'This is a demo. UI will reset and menus will close.'}
-        </div>
-      `;
-      const footer = `
-        <button class="px-4 py-2 rounded-lg text-sm font-bold border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition" onclick="closeModal()">${t('cancel')}</button>
-        <button class="px-4 py-2 rounded-lg text-sm font-bold bg-brandRed text-white hover:bg-red-600 transition" onclick="closeModal(); toggleAI(false); document.getElementById('notifDropdown').classList.add('hidden'); toast(currentLang==='ar'?'تم.':'Done.','info');">
-          ${t('confirm')}
-        </button>
-      `;
-      openModal(currentLang==='ar'?'تسجيل خروج':'Logout', body, footer);
+      localStorage.removeItem('currentUser');
+      showToast(currentLang === 'ar' ? "جاري تسجيل الخروج..." : "Logging out...", "ok");
+      setTimeout(() => {
+        window.location.href = 'login.html';
+      }, 1000);
     }
 
     // =========================
