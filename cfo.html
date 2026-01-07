@@ -21,7 +21,7 @@
             theme: {
                 extend: {
                     colors: {
-                        brandRed: '#FB4747', /* الهوية الرسمية */
+                        brandRed: '#FB4747',
                         brandDark: '#1E293B',
                         brandGray: '#F1F5F9',
                     },
@@ -32,7 +32,6 @@
     </script>
 
     <style>
-        /* تخصيص شريط التمرير */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 20px; }
@@ -43,6 +42,7 @@
 
         .sidebar-overlay { background: rgba(0,0,0,0.5); position: fixed; inset: 0; z-index: 40; display: none; }
         .sidebar-overlay.active { display: block; }
+        
         .notification-pulse { animation: pulse-red 2s infinite; }
         @keyframes pulse-red { 0% { box-shadow: 0 0 0 0 rgba(251, 71, 71, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(251, 71, 71, 0); } 100% { box-shadow: 0 0 0 0 rgba(251, 71, 71, 0); } }
 
@@ -66,7 +66,7 @@
     <!-- Sidebar -->
     <aside id="sidebar" class="w-64 bg-white dark:bg-slate-800 border-l dark:border-slate-700 flex flex-col shadow-xl shrink-0 h-full">
         <div class="h-20 flex items-center px-6 border-b border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 shrink-0">
-            <img src="https://ait.sa/wp-content/uploads/2024/03/cropped-Square-Logo.png" class="w-10 h-10 rounded-lg bg-white p-0.5 shadow-sm shrink-0">
+            <div class="w-10 h-10 rounded-lg bg-brandRed text-white flex items-center justify-center font-bold shadow-sm shrink-0">AG</div>
             <div class="mr-3">
                 <h1 class="font-bold text-lg text-brandRed">AndroGov</h1>
                 <p class="text-[10px] text-slate-400 font-bold tracking-wider" data-i18n="sidebar_subtitle">الإدارة المالية</p>
@@ -99,7 +99,7 @@
         <div class="p-4 border-t border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition shrink-0" onclick="logout()">
             <div class="flex items-center gap-3">
                 <div class="relative">
-                    <div class="w-10 h-10 rounded-full bg-brandRed text-white flex items-center justify-center font-bold text-sm shadow-sm border-2 border-white dark:border-slate-700">FM</div>
+                    <img src="https://ui-avatars.com/api/?name=Mohammed+Albukhaiti&background=FB4747&color=fff" class="w-10 h-10 rounded-full border-2 border-white dark:border-slate-700 shadow-sm">
                     <span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white dark:border-slate-700 rounded-full"></span>
                 </div>
                 <div class="flex-1 min-w-0">
@@ -190,6 +190,28 @@
         </div>
     </aside>
 
+    <!-- Toast -->
+    <div id="toast" class="fixed bottom-6 left-6 rtl:left-6 rtl:right-auto ltr:right-6 ltr:left-auto z-[9999] hidden">
+        <div id="toastBox" class="px-4 py-3 rounded-xl shadow-xl bg-slate-900 text-white text-sm"></div>
+    </div>
+
+    <!-- Modal Overlay -->
+    <div id="modalOverlay" class="fixed inset-0 bg-black/50 z-[9998] hidden" onclick="closeModal()"></div>
+
+    <!-- Modal -->
+    <div id="modal" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[92%] md:w-[720px] bg-white dark:bg-slate-800 rounded-2xl shadow-2xl z-[9999] hidden overflow-hidden border border-slate-200 dark:border-slate-700 flex flex-col max-h-[90vh]">
+        <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between bg-slate-50 dark:bg-slate-900 shrink-0">
+            <h3 id="modalTitle" class="font-bold text-slate-800 dark:text-white text-base">—</h3>
+            <button class="text-slate-500 hover:text-slate-800 dark:hover:text-white" onclick="closeModal()">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+        </div>
+        <div id="modalBody" class="p-6 overflow-y-auto flex-1"></div>
+        <div id="modalFooter" class="px-6 py-4 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 flex gap-2 justify-end shrink-0">
+            <!-- injected -->
+        </div>
+    </div>
+
     <script>
         const translations = {
             ar: {
@@ -198,15 +220,14 @@
                 ai_title: "المستشار المالي", ai_subtitle: "مساعدك المالي", ai_welcome: "مرحباً أستاذ محمد. السيولة النقدية الحالية ممتازة وتغطي العمليات لمدة 6 أشهر. هل تريد تقرير التدفق النقدي؟",
                 
                 // Dashboard
-                cash_flow: "السيولة النقدية", stable: "مستقر", revenue: "الإيرادات", expenses: "المصروفات",
+                revenue_ytd: "الإيرادات (YTD)", growth: "نمو سنوي", cash_flow: "السيولة النقدية", stable: "مستقر", revenue: "الإيرادات", expenses: "المصروفات",
                 pending_invoices: "فواتير معلقة", net_profit_margin: "هامش صافي الربح",
                 quick_actions: "إجراءات سريعة", create_invoice: "إنشاء فاتورة", approve_expense: "اعتماد مصروف", bank_reconcile: "مطابقة بنكية",
                 
                 // Invoices
                 invoices_list: "سجل الفواتير", search_placeholder: "بحث برقم الفاتورة...",
                 col_inv_no: "رقم الفاتورة", col_client: "العميل / المورد", col_amount: "المبلغ", col_status: "الحالة", col_actions: "الإجراءات",
-                inv_1: "INV-2025-001", client_1: "مستشفى الحياة", amount_1: "150,000 SAR", status_paid: "مدفوع",
-                inv_2: "PO-2025-882", client_2: "Jarir Bookstore", amount_2: "45,000 SAR", status_pending: "معلق",
+                status_paid: "مدفوع", status_pending: "معلق",
                 btn_view: "عرض", btn_pay: "سداد",
 
                 // Budget
@@ -221,7 +242,7 @@
 
                 // Profile
                 full_name: "محمد طاهر البخيتي", full_role: "المدير المالي (CFO)", on_job: "على رأس العمل",
-                leave_bal: "رصيد الإجازات", days_25: "25 يوم", commit_score: "مؤشر الالتزام",
+                leave_bal: "رصيد الإجازات", days_unit: "يوم", commit_score: "مؤشر الالتزام",
                 btn_checkin: "تسجيل حضور", btn_leave: "طلب إجازة", btn_salary: "تعريف راتب", btn_support: "دعم الموظف",
                 attend_log: "سجل الحضور", day_sun: "الأحد", status_complete: "مكتمل", day_thu: "الخميس", status_late: "في الوقت",
 
@@ -233,14 +254,13 @@
                 notif_title: "Notifications", read_all: "Read All", notif_1: "New Payment: Emaar", notif_1_time: "30m ago • Deposited", notif_2: "Due Invoice: Amazon", notif_2_time: "Due Tomorrow • Procurement", notif_3: "Payroll Review", notif_3_time: "Required • HR",
                 ai_title: "Finance Advisor", ai_subtitle: "Your Finance Assistant", ai_welcome: "Welcome Mr. Mohammed. Current liquidity is excellent, covering 6 months of ops. Need a Cash Flow report?",
                 
-                cash_flow: "Cash Flow", stable: "Stable", revenue: "Revenue", expenses: "Expenses",
+                revenue_ytd: "Revenue (YTD)", growth: "YoY Growth", cash_flow: "Cash Flow", stable: "Stable", revenue: "Revenue", expenses: "Expenses",
                 pending_invoices: "Pending Invoices", net_profit_margin: "Net Profit Margin",
                 quick_actions: "Quick Actions", create_invoice: "Create Invoice", approve_expense: "Approve Expense", bank_reconcile: "Bank Reconcile",
                 
                 invoices_list: "Invoices Log", search_placeholder: "Search Invoice #...",
                 col_inv_no: "Invoice #", col_client: "Client / Vendor", col_amount: "Amount", col_status: "Status", col_actions: "Actions",
-                inv_1: "INV-2025-001", client_1: "Al-Hayat Hospital", amount_1: "150,000 SAR", status_paid: "Paid",
-                inv_2: "PO-2025-882", client_2: "Jarir Bookstore", amount_2: "45,000 SAR", status_pending: "Pending",
+                status_paid: "Paid", status_pending: "Pending",
                 btn_view: "View", btn_pay: "Pay",
 
                 budget_overview: "Budget Monitoring (Q4)", 
@@ -252,7 +272,7 @@
                 rep_desc: "Q3 2025", btn_download: "Download Excel",
 
                 full_name: "Mohammed Abdullah Albukhaiti", full_role: "Chief Financial Officer", on_job: "Active",
-                leave_bal: "Leave Balance", days_25: "25 Days", commit_score: "Commitment Score",
+                leave_bal: "Leave Balance", days_unit: "Days", commit_score: "Commitment Score",
                 btn_checkin: "Check In", btn_leave: "Leave Request", btn_salary: "Salary Cert.", btn_support: "Support",
                 attend_log: "Attendance Log", day_sun: "Sunday", status_complete: "Complete", day_thu: "Thursday", status_late: "On Time",
 
@@ -263,6 +283,159 @@
         let currentLang = localStorage.getItem('lang') || 'ar';
         let currentView = 'dashboard';
         let finChart = null;
+
+        // Data Store
+        const demoDB = {
+            invoices: [
+                { id: "INV-2025-001", client_ar: "مستشفى الحياة", client_en: "Al-Hayat Hospital", amount: 150000, status: "paid", date: "2025-10-01", type: "Income" },
+                { id: "PO-2025-882", client_ar: "مكتبة جرير", client_en: "Jarir Bookstore", amount: 45000, status: "pending", date: "2025-10-05", type: "Expense" },
+                { id: "INV-2025-003", client_ar: "شركة الاتصالات", client_en: "STC", amount: 12500, status: "pending", date: "2025-10-06", type: "Expense" },
+                { id: "INV-2025-004", client_ar: "وزارة الصحة", client_en: "MOH", amount: 320000, status: "paid", date: "2025-09-28", type: "Income" }
+            ],
+            budget: [
+                { id: "tech", name_ar: "التقنية", name_en: "Technology", allocated: 500000, spent: 325000, color: "blue" },
+                { id: "mkt", name_ar: "التسويق", name_en: "Marketing", allocated: 250000, spent: 200000, color: "purple" },
+                { id: "ops", name_ar: "التشغيل", name_en: "Operations", allocated: 300000, spent: 135000, color: "orange" }
+            ],
+            hrProfile: {
+                employeeId: "1002",
+                name_ar: "محمد طاهر البخيتي",
+                name_en: "Mohammed Abdullah Albukhaiti",
+                role_ar: "المدير المالي (CFO)",
+                role_en: "Chief Financial Officer",
+                leaveBalance: 25,
+                commitmentScore: 98,
+                attendance: [
+                    { day_ar: "الأحد", day_en: "Sunday", date: "2026-01-05", in: "07:55", out: "16:05", status_ar: "مكتمل", status_en: "Complete" },
+                    { day_ar: "الإثنين", day_en: "Monday", date: "2026-01-06", in: "08:00", out: "16:00", status_ar: "في الوقت", status_en: "On time" },
+                    { day_ar: "الثلاثاء", day_en: "Tuesday", date: "2026-01-07", in: "08:05", out: "16:10", status_ar: "في الوقت", status_en: "On time" }
+                ]
+            }
+        };
+
+        // --- Helpers ---
+        function fmtMoney(n) {
+            try { return new Intl.NumberFormat(currentLang === 'ar' ? 'ar-SA' : 'en-US', { style: 'currency', currency: 'SAR', maximumFractionDigits: 0 }).format(n); } 
+            catch { return n + " SAR"; }
+        }
+
+        function tKey(arText, enText) { return currentLang === 'ar' ? arText : enText; }
+
+        function showToast(msg, type="ok") {
+            const t = document.getElementById('toast');
+            const box = document.getElementById('toastBox');
+            box.className = "px-4 py-3 rounded-xl shadow-xl text-white text-sm font-bold flex items-center gap-2";
+            const icon = type === "danger" ? '<i class="fa-solid fa-circle-xmark"></i>' : type === "warn" ? '<i class="fa-solid fa-triangle-exclamation"></i>' : '<i class="fa-solid fa-circle-check"></i>';
+            box.innerHTML = `${icon} <span>${msg}</span>`;
+            box.classList.add(type === "danger" ? "bg-red-600" : type === "warn" ? "bg-amber-600" : "bg-slate-900");
+            t.classList.remove('hidden');
+            setTimeout(() => t.classList.add('hidden'), 3000);
+        }
+
+        function openModal(title, bodyHTML, footerHTML="") {
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalBody').innerHTML = bodyHTML;
+            document.getElementById('modalFooter').innerHTML = footerHTML || `
+                <button onclick="closeModal()" class="px-4 py-2 rounded-lg bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-white text-sm font-bold">
+                    ${tKey("إغلاق","Close")}
+                </button>
+            `;
+            document.getElementById('modalOverlay').classList.remove('hidden');
+            document.getElementById('modal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('modalOverlay').classList.add('hidden');
+            document.getElementById('modal').classList.add('hidden');
+        }
+
+        // --- Actions ---
+        function viewInvoice(id) {
+            const inv = demoDB.invoices.find(i => i.id === id);
+            if(!inv) return;
+            const client = currentLang === 'ar' ? inv.client_ar : inv.client_en;
+            
+            openModal(
+                tKey(`تفاصيل الفاتورة: ${inv.id}`, `Invoice Details: ${inv.id}`),
+                `<div class="space-y-4">
+                    <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-xs text-slate-500 uppercase">${tKey("العميل / المورد","Client / Vendor")}</span>
+                            <span class="font-bold text-slate-800 dark:text-white">${client}</span>
+                        </div>
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-xs text-slate-500 uppercase">${tKey("المبلغ","Amount")}</span>
+                            <span class="font-extrabold text-brandRed">${fmtMoney(inv.amount)}</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs text-slate-500 uppercase">${tKey("التاريخ","Date")}</span>
+                            <span class="text-sm font-mono text-slate-600 dark:text-slate-300">${inv.date}</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
+                        <i class="fa-solid fa-circle-info text-blue-500"></i>
+                        <span>${tKey("هذه الفاتورة تم تدقيقها أولياً ومطابقتها مع أمر الشراء.","This invoice has been preliminary audited and matched with PO.")}</span>
+                    </div>
+                </div>`,
+                `<button onclick="closeModal()" class="px-4 py-2 rounded-lg bg-slate-200 dark:bg-slate-700 text-sm font-bold hover:bg-slate-300 transition">${tKey("إغلاق","Close")}</button>
+                 ${inv.status === 'pending' ? `<button onclick="payInvoice('${inv.id}')" class="px-4 py-2 rounded-lg bg-green-600 text-white text-sm font-bold hover:bg-green-700 transition"><i class="fa-solid fa-money-bill-wave"></i> ${tKey("سداد / تحصيل","Pay / Collect")}</button>` : ''}`
+            );
+        }
+
+        function payInvoice(id) {
+            const inv = demoDB.invoices.find(i => i.id === id);
+            if(inv) {
+                inv.status = 'paid';
+                showToast(tKey("تم تحديث حالة الفاتورة بنجاح", "Invoice status updated successfully"), "success");
+                closeModal();
+                renderView(currentView);
+            }
+        }
+
+        function quickAction(type) {
+            if(type === 'invoice') {
+                openModal(tKey("إنشاء فاتورة جديدة","Create New Invoice"), 
+                `<div class="space-y-3">
+                    <label class="block text-sm font-bold">${tKey("العميل","Client")}</label>
+                    <input type="text" class="w-full p-2 border rounded dark:bg-slate-700 dark:border-slate-600">
+                    <label class="block text-sm font-bold">${tKey("المبلغ","Amount")}</label>
+                    <input type="number" class="w-full p-2 border rounded dark:bg-slate-700 dark:border-slate-600">
+                 </div>`,
+                 `<button onclick="showToast(tKey('تم إنشاء المسودة (ديمو)','Draft created (demo)')); closeModal()" class="px-4 py-2 bg-brandRed text-white rounded font-bold">${tKey("حفظ","Save")}</button>`
+                );
+            } else if (type === 'expense') {
+                showToast(tKey("لا توجد مصروفات معلقة للاعتماد","No pending expenses to approve"), "warn");
+            } else if (type === 'reconcile') {
+                showToast(tKey("جاري المطابقة البنكية... (ديمو)","Running bank reconciliation... (demo)"), "ok");
+            }
+        }
+
+        function hrAction(type) {
+            if(type === "checkin") return showToast(tKey("تم تسجيل الحضور (ديمو)","Checked in (demo)"));
+            if(type === "leave") {
+                openModal(
+                    tKey("طلب إجازة (ديمو)","Leave Request (Demo)"),
+                    `<div class="space-y-3">
+                        <label class="text-sm font-bold">${tKey("عدد الأيام","Days")}</label>
+                        <input id="leaveDays" type="number" value="2" class="w-full p-3 rounded-xl bg-slate-100 dark:bg-slate-700 border-0 outline-none">
+                        <label class="text-sm font-bold">${tKey("السبب","Reason")}</label>
+                        <textarea id="leaveReason" class="w-full p-3 rounded-xl bg-slate-100 dark:bg-slate-700 border-0 outline-none" rows="3">${tKey("إجازة سنوية","Annual Leave")}</textarea>
+                    </div>`,
+                    `<button onclick="submitLeave()" class="px-4 py-2 rounded-lg bg-brandRed text-white text-sm font-bold">${tKey("إرسال","Submit")}</button>
+                     <button onclick="closeModal()" class="px-4 py-2 rounded-lg bg-slate-200 dark:bg-slate-700 text-sm font-bold">${tKey("إلغاء","Cancel")}</button>`
+                );
+            }
+            if(type === "salary") return showToast(tKey("تم إصدار تعريف راتب (ديمو)","Salary certificate generated (demo)"));
+            if(type === "support") return showToast(tKey("تم فتح تذكرة دعم (ديمو)","Support ticket opened (demo)"));
+        }
+
+        function submitLeave() {
+            const days = document.getElementById('leaveDays').value;
+            demoDB.hrProfile.leaveBalance = Math.max(0, demoDB.hrProfile.leaveBalance - Number(days || 0));
+            showToast(tKey("تم رفع طلب الإجازة (ديمو)","Leave request submitted (demo)"));
+            closeModal();
+            renderView(currentView);
+        }
 
         function init() {
             if(localStorage.getItem('theme') === 'dark') {
@@ -310,9 +483,11 @@
             document.querySelectorAll('.nav-item').forEach(el => {
                 el.className = `w-full flex items-center gap-4 px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 rounded-xl transition nav-item`;
             });
-            document.getElementById('nav-'+view).className = `w-full flex items-center gap-4 px-4 py-3 bg-brandRed text-white rounded-xl shadow-lg font-bold transition nav-item`;
+            document.getElementById('nav-'+view).className = `w-full flex items-center gap-4 px-4 py-3 bg-brandRed text-white rounded-xl shadow-lg shadow-red-500/30 font-bold transition nav-item`;
 
             if (view === 'dashboard') {
+                const pendingCount = demoDB.invoices.filter(i => i.status === 'pending').length;
+                
                 pageTitle.innerText = t.overview;
                 content.innerHTML = `
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 fade-in">
@@ -337,7 +512,7 @@
                         <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 relative overflow-hidden">
                             <div class="absolute right-0 top-0 w-20 h-20 bg-orange-50 dark:bg-orange-900/20 rounded-bl-full"></div>
                             <p class="text-slate-500 dark:text-slate-400 text-xs font-bold mb-1 relative z-10">${t.pending_invoices}</p>
-                            <h3 class="text-3xl font-extrabold text-orange-500 relative z-10">4</h3>
+                            <h3 class="text-3xl font-extrabold text-orange-500 relative z-10">${pendingCount}</h3>
                             <p class="text-[10px] text-slate-400 relative z-10">Due Soon</p>
                         </div>
                     </div>
@@ -357,30 +532,50 @@
                         <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
                             <h3 class="font-bold text-slate-800 dark:text-white mb-4">${t.quick_actions}</h3>
                             <div class="space-y-3">
-                                <button class="w-full text-start p-3 bg-slate-50 dark:bg-slate-700/50 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg transition group">
+                                <button onclick="quickAction('invoice')" class="w-full text-start p-3 bg-slate-50 dark:bg-slate-700/50 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg transition group">
                                     <p class="text-xs font-bold text-slate-700 dark:text-slate-200 group-hover:text-brandRed">${t.create_invoice}</p>
                                 </button>
-                                <button class="w-full text-start p-3 bg-slate-50 dark:bg-slate-700/50 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg transition group">
+                                <button onclick="quickAction('expense')" class="w-full text-start p-3 bg-slate-50 dark:bg-slate-700/50 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg transition group">
                                     <p class="text-xs font-bold text-slate-700 dark:text-slate-200 group-hover:text-brandRed">${t.approve_expense}</p>
                                 </button>
-                                <button class="w-full text-start p-3 bg-slate-50 dark:bg-slate-700/50 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg transition group">
+                                <button onclick="quickAction('reconcile')" class="w-full text-start p-3 bg-slate-50 dark:bg-slate-700/50 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg transition group">
                                     <p class="text-xs font-bold text-slate-700 dark:text-slate-200 group-hover:text-brandRed">${t.bank_reconcile}</p>
                                 </button>
                             </div>
                         </div>
                     </div>
                 `;
-                setTimeout(() => initChart(), 100);
+                setTimeout(() => initChart('line'), 100);
             } 
             else if (view === 'invoices') {
                 pageTitle.innerText = t.invoices;
+                
+                const list = demoDB.invoices.map(inv => {
+                    const client = currentLang === 'ar' ? inv.client_ar : inv.client_en;
+                    const statusClass = inv.status === 'paid' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300' : 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300';
+                    const statusText = inv.status === 'paid' ? t.status_paid : t.status_pending;
+                    const amountClass = inv.type === 'Income' ? 'text-green-600' : 'text-red-500';
+                    
+                    return `
+                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
+                        <td class="p-4 font-mono font-bold text-slate-800 dark:text-white">${inv.id}</td>
+                        <td class="p-4">${client}</td>
+                        <td class="p-4 ${amountClass} font-bold">${fmtMoney(inv.amount)}</td>
+                        <td class="p-4"><span class="px-2 py-1 rounded text-[10px] font-bold ${statusClass}">${statusText}</span></td>
+                        <td class="p-4 flex gap-2">
+                            <button onclick="viewInvoice('${inv.id}')" class="text-xs text-brandRed font-bold hover:underline">${t.btn_view}</button>
+                            ${inv.status === 'pending' ? `<button onclick="payInvoice('${inv.id}')" class="text-xs text-green-600 font-bold hover:underline">${t.btn_pay}</button>` : ''}
+                        </td>
+                    </tr>`;
+                }).join('');
+
                 content.innerHTML = `
                     <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-6 fade-in">
                         <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
                             <h3 class="font-bold text-lg text-slate-800 dark:text-white">${t.invoices_list}</h3>
                             <div class="flex gap-2 w-full md:w-auto">
                                 <input type="text" placeholder="${t.search_placeholder}" class="px-4 py-2 border border-slate-200 dark:border-slate-600 rounded-lg text-sm bg-slate-50 dark:bg-slate-700 dark:text-white w-full md:w-64">
-                                <button class="bg-brandRed text-white px-4 py-2 rounded-lg text-sm font-bold shadow-lg"><i class="fa-solid fa-plus"></i></button>
+                                <button onclick="quickAction('invoice')" class="bg-brandRed text-white px-4 py-2 rounded-lg text-sm font-bold shadow-lg"><i class="fa-solid fa-plus"></i></button>
                             </div>
                         </div>
                         <div class="overflow-x-auto">
@@ -395,20 +590,7 @@
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
-                                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
-                                        <td class="p-4 font-mono font-bold text-slate-800 dark:text-white">${t.inv_1}</td>
-                                        <td class="p-4">${t.client_1}</td>
-                                        <td class="p-4 text-green-600 font-bold">${t.amount_1}</td>
-                                        <td class="p-4"><span class="px-2 py-1 bg-green-100 dark:bg-green-900/30 text-green-600 rounded text-[10px] font-bold">${t.status_paid}</span></td>
-                                        <td class="p-4"><button class="text-xs text-brandRed font-bold hover:underline">${t.btn_view}</button></td>
-                                    </tr>
-                                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
-                                        <td class="p-4 font-mono font-bold text-slate-800 dark:text-white">${t.inv_2}</td>
-                                        <td class="p-4">${t.client_2}</td>
-                                        <td class="p-4 text-red-500 font-bold">${t.amount_2}</td>
-                                        <td class="p-4"><span class="px-2 py-1 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 rounded text-[10px] font-bold">${t.status_pending}</span></td>
-                                        <td class="p-4"><button class="text-xs text-red-500 font-bold hover:underline">${t.btn_pay}</button></td>
-                                    </tr>
+                                    ${list}
                                 </tbody>
                             </table>
                         </div>
@@ -417,40 +599,30 @@
             }
             else if (view === 'budget') {
                 pageTitle.innerText = t.budget;
+                
+                const budgetItems = demoDB.budget.map(b => {
+                    const name = currentLang === 'ar' ? b.name_ar : b.name_en;
+                    const percent = Math.round((b.spent / b.allocated) * 100);
+                    const remaining = b.allocated - b.spent;
+                    
+                    return `
+                    <div>
+                        <div class="flex justify-between text-sm mb-2">
+                            <span class="font-bold text-slate-700 dark:text-slate-300">${name}</span>
+                            <span class="text-slate-500">${percent}% ${t.spent}</span>
+                        </div>
+                        <div class="w-full bg-slate-100 dark:bg-slate-700 h-3 rounded-full overflow-hidden">
+                            <div class="bg-${b.color}-600 h-full rounded-full" style="width: ${percent}%"></div>
+                        </div>
+                        <p class="text-xs text-slate-400 mt-1">${t.allocated}: ${fmtMoney(b.allocated)} | ${t.remaining}: ${fmtMoney(remaining)}</p>
+                    </div>`;
+                }).join('');
+
                 content.innerHTML = `
                     <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-6 fade-in">
                         <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-6">${t.budget_overview}</h3>
                         <div class="space-y-6">
-                            <div>
-                                <div class="flex justify-between text-sm mb-2">
-                                    <span class="font-bold text-slate-700 dark:text-slate-300">${t.dept_tech}</span>
-                                    <span class="text-slate-500">65% ${t.spent}</span>
-                                </div>
-                                <div class="w-full bg-slate-100 dark:bg-slate-700 h-3 rounded-full overflow-hidden">
-                                    <div class="bg-blue-600 h-full rounded-full" style="width: 65%"></div>
-                                </div>
-                                <p class="text-xs text-slate-400 mt-1">${t.allocated}: 500,000 SAR | ${t.remaining}: 175,000 SAR</p>
-                            </div>
-                            <div>
-                                <div class="flex justify-between text-sm mb-2">
-                                    <span class="font-bold text-slate-700 dark:text-slate-300">${t.dept_mkt}</span>
-                                    <span class="text-slate-500">80% ${t.spent}</span>
-                                </div>
-                                <div class="w-full bg-slate-100 dark:bg-slate-700 h-3 rounded-full overflow-hidden">
-                                    <div class="bg-purple-600 h-full rounded-full" style="width: 80%"></div>
-                                </div>
-                                <p class="text-xs text-slate-400 mt-1">${t.allocated}: 250,000 SAR | ${t.remaining}: 50,000 SAR</p>
-                            </div>
-                            <div>
-                                <div class="flex justify-between text-sm mb-2">
-                                    <span class="font-bold text-slate-700 dark:text-slate-300">${t.dept_ops}</span>
-                                    <span class="text-slate-500">45% ${t.spent}</span>
-                                </div>
-                                <div class="w-full bg-slate-100 dark:bg-slate-700 h-3 rounded-full overflow-hidden">
-                                    <div class="bg-orange-500 h-full rounded-full" style="width: 45%"></div>
-                                </div>
-                                <p class="text-xs text-slate-400 mt-1">${t.allocated}: 300,000 SAR | ${t.remaining}: 165,000 SAR</p>
-                            </div>
+                            ${budgetItems}
                         </div>
                     </div>
                 `;
@@ -463,25 +635,40 @@
                             <i class="fa-solid fa-file-invoice text-4xl text-blue-500 mx-auto mb-4"></i>
                             <h3 class="font-bold text-slate-800 dark:text-white">${t.rep_income}</h3>
                             <p class="text-xs text-slate-500 mb-4">${t.rep_desc}</p>
-                            <button class="w-full py-2 bg-blue-50 dark:bg-blue-900/20 text-blue-600 rounded-lg text-sm font-bold hover:bg-blue-100 transition">${t.btn_download}</button>
+                            <button onclick="showToast(tKey('جاري التنزيل...','Downloading...'), 'success')" class="w-full py-2 bg-blue-50 dark:bg-blue-900/20 text-blue-600 rounded-lg text-sm font-bold hover:bg-blue-100 transition">${t.btn_download}</button>
                         </div>
                         <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 flex flex-col justify-between h-56 text-center hover:shadow-md transition">
                             <i class="fa-solid fa-scale-balanced text-4xl text-green-500 mx-auto mb-4"></i>
                             <h3 class="font-bold text-slate-800 dark:text-white">${t.rep_balance}</h3>
                             <p class="text-xs text-slate-500 mb-4">${t.rep_desc}</p>
-                            <button class="w-full py-2 bg-green-50 dark:bg-green-900/20 text-green-600 rounded-lg text-sm font-bold hover:bg-green-100 transition">${t.btn_download}</button>
+                            <button onclick="showToast(tKey('جاري التنزيل...','Downloading...'), 'success')" class="w-full py-2 bg-green-50 dark:bg-green-900/20 text-green-600 rounded-lg text-sm font-bold hover:bg-green-100 transition">${t.btn_download}</button>
                         </div>
                         <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 flex flex-col justify-between h-56 text-center hover:shadow-md transition">
                             <i class="fa-solid fa-money-bill-transfer text-4xl text-brandRed mx-auto mb-4"></i>
                             <h3 class="font-bold text-slate-800 dark:text-white">${t.rep_cash}</h3>
                             <p class="text-xs text-slate-500 mb-4">${t.rep_desc}</p>
-                            <button class="w-full py-2 bg-red-50 dark:bg-red-900/20 text-brandRed rounded-lg text-sm font-bold hover:bg-red-100 transition">${t.btn_download}</button>
+                            <button onclick="showToast(tKey('جاري التنزيل...','Downloading...'), 'success')" class="w-full py-2 bg-red-50 dark:bg-red-900/20 text-brandRed rounded-lg text-sm font-bold hover:bg-red-100 transition">${t.btn_download}</button>
                         </div>
                     </div>
                 `;
             }
             else if (view === 'profile') {
+                const p = demoDB.hrProfile;
                 pageTitle.innerText = t.profile_cfo;
+                
+                const attendHTML = p.attendance.map(a => `
+                    <div class="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-700/50 rounded-lg">
+                        <div class="flex items-center gap-3">
+                            <div class="w-2 h-10 bg-green-500 rounded-full"></div>
+                            <div>
+                                <p class="text-sm font-bold text-slate-800 dark:text-white">${currentLang==='ar'?a.day_ar:a.day_en}</p>
+                                <p class="text-xs text-slate-500">${a.in} - ${a.out}</p>
+                            </div>
+                        </div>
+                        <span class="text-xs font-bold text-green-600 bg-green-100 dark:bg-green-900/30 px-2 py-1 rounded">${currentLang==='ar'?a.status_ar:a.status_en}</span>
+                    </div>
+                `).join('');
+
                 content.innerHTML = `
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 fade-in">
                         <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-6 text-center relative overflow-hidden">
@@ -489,35 +676,29 @@
                             <div class="relative z-10 -mt-10 mb-4">
                                 <img src="https://ui-avatars.com/api/?name=Mohammed+Albukhaiti&background=FB4747&color=fff&size=128" class="w-24 h-24 rounded-full border-4 border-white dark:border-slate-800 shadow-lg mx-auto">
                             </div>
-                            <h3 class="text-xl font-bold text-slate-800 dark:text-white">${t.full_name}</h3>
-                            <p class="text-slate-500 dark:text-slate-400 text-sm mb-4">${t.full_role}</p>
+                            <h3 class="text-xl font-bold text-slate-800 dark:text-white">${currentLang==='ar'?p.name_ar:p.name_en}</h3>
+                            <p class="text-slate-500 dark:text-slate-400 text-sm mb-4">${currentLang==='ar'?p.role_ar:p.role_en}</p>
                             <div class="flex justify-center gap-2 mb-6">
-                                <span class="px-3 py-1 bg-slate-100 dark:bg-slate-700 rounded-full text-xs font-bold text-slate-600 dark:text-slate-300">ID: 1002</span>
+                                <span class="px-3 py-1 bg-slate-100 dark:bg-slate-700 rounded-full text-xs font-bold text-slate-600 dark:text-slate-300">ID: ${p.employeeId}</span>
                                 <span class="px-3 py-1 bg-green-100 dark:bg-green-900/30 rounded-full text-xs font-bold text-green-600">${t.on_job}</span>
                             </div>
                             <div class="grid grid-cols-2 gap-4 border-t border-slate-100 dark:border-slate-700 pt-4">
-                                <div><p class="text-slate-400 text-xs">${t.leave_bal}</p><p class="text-xl font-bold text-brandRed">${t.days_25}</p></div>
-                                <div><p class="text-slate-400 text-xs">${t.commit_score}</p><p class="text-xl font-bold text-blue-500">98%</p></div>
+                                <div><p class="text-slate-400 text-xs">${t.leave_bal}</p><p class="text-xl font-bold text-brandRed">${p.leaveBalance} ${t.days_unit}</p></div>
+                                <div><p class="text-slate-400 text-xs">${t.commit_score}</p><p class="text-xl font-bold text-blue-500">${p.commitmentScore}%</p></div>
+                            </div>
+                            
+                            <div class="space-y-2 mt-6">
+                                <button onclick="hrAction('checkin')" class="w-full py-2 bg-slate-50 dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 rounded-lg text-xs font-bold transition">${t.btn_checkin}</button>
+                                <button onclick="hrAction('leave')" class="w-full py-2 bg-slate-50 dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 rounded-lg text-xs font-bold transition">${t.btn_leave}</button>
+                                <button onclick="hrAction('salary')" class="w-full py-2 bg-slate-50 dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 rounded-lg text-xs font-bold transition">${t.btn_salary}</button>
+                                <button onclick="hrAction('support')" class="w-full py-2 bg-slate-50 dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 rounded-lg text-xs font-bold transition">${t.btn_support}</button>
                             </div>
                         </div>
                         <div class="lg:col-span-2 space-y-6">
                             <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-6">
                                 <h3 class="font-bold text-slate-800 dark:text-white mb-4">${t.attend_log}</h3>
                                 <div class="space-y-3">
-                                    <div class="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-700/50 rounded-lg">
-                                        <div class="flex items-center gap-3">
-                                            <div class="w-2 h-10 bg-green-500 rounded-full"></div>
-                                            <div><p class="text-sm font-bold text-slate-800 dark:text-white">${t.day_sun}</p><p class="text-xs text-slate-500">08:00 AM - 05:00 PM</p></div>
-                                        </div>
-                                        <span class="text-xs font-bold text-green-600 bg-green-100 dark:bg-green-900/30 px-2 py-1 rounded">${t.status_complete}</span>
-                                    </div>
-                                    <div class="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-700/50 rounded-lg">
-                                        <div class="flex items-center gap-3">
-                                            <div class="w-2 h-10 bg-green-500 rounded-full"></div>
-                                            <div><p class="text-sm font-bold text-slate-800 dark:text-white">${t.day_thu}</p><p class="text-xs text-slate-500">08:00 AM - 05:00 PM</p></div>
-                                        </div>
-                                        <span class="text-xs font-bold text-green-600 bg-green-100 dark:bg-green-900/30 px-2 py-1 rounded">${t.status_complete}</span>
-                                    </div>
+                                    ${attendHTML}
                                 </div>
                             </div>
                         </div>
@@ -528,7 +709,7 @@
             if(window.innerWidth < 768) toggleSidebar();
         }
 
-        function initChart() {
+        function initChart(type) {
             const ctx = document.getElementById('finChartCanvas');
             if(!ctx) return;
             const context = ctx.getContext('2d');
@@ -635,8 +816,16 @@
         }
 
         function logout() {
+            // مسح بيانات المستخدم
             localStorage.removeItem('currentUser');
-            window.location.href = 'login.html';
+            
+            // عرض رسالة تأكيد
+            showToast(tKey("جاري تسجيل الخروج...", "Logging out..."), "ok");
+            
+            // التوجيه إلى صفحة الدخول بعد ثانية
+            setTimeout(() => {
+                window.location.href = 'login.html';
+            }, 1000);
         }
 
         init();
