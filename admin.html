@@ -1,45 +1,42 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>System Admin | إدارة النظام</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
   <script>
     tailwind.config = {
-      darkMode: 'class',
+      darkMode: "class",
       theme: {
         extend: {
           colors: {
-            brandRed: '#FB4747',
-            brandDark: '#1E293B',
-            brandGray: '#F1F5F9',
+            brandRed: "#FB4747",
+            brandDark: "#1E293B",
+            brandGray: "#F1F5F9",
           },
-          fontFamily: { sans: ['Tajawal', 'Inter', 'sans-serif'] }
-        }
-      }
-    }
+          fontFamily: { sans: ["Tajawal", "Inter", "sans-serif"] },
+        },
+      },
+    };
   </script>
 
   <style>
     /* Scrollbar */
-    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 20px; }
     .dark ::-webkit-scrollbar-thumb { background-color: #475569; }
 
     /* Animations */
-    .fade-in { animation: fadeIn 0.25s ease-out forwards; }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(6px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
+    .fade-in { animation: fadeIn 0.22s ease-out forwards; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px);} to { opacity: 1; transform: translateY(0);} }
 
-    /* Mobile sidebar overlay */
+    /* Overlay */
     .sidebar-overlay { background: rgba(0,0,0,0.5); position: fixed; inset: 0; z-index: 40; display: none; }
     .sidebar-overlay.active { display: block; }
 
@@ -55,20 +52,23 @@
     /* Notification badge pulse */
     .notification-pulse { animation: pulse-red 2s infinite; }
     @keyframes pulse-red {
-      0% { box-shadow: 0 0 0 0 rgba(251, 71, 71, 0.7); }
-      70% { box-shadow: 0 0 0 10px rgba(251, 71, 71, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(251, 71, 71, 0); }
+      0% { box-shadow: 0 0 0 0 rgba(251,71,71,.7); }
+      70% { box-shadow: 0 0 0 10px rgba(251,71,71,0); }
+      100% { box-shadow: 0 0 0 0 rgba(251,71,71,0); }
     }
 
     /* Chat bubbles */
-    .chat-bubble { max-width: 85%; padding: 10px; border-radius: 12px; margin-bottom: 8px; font-size: 0.9rem; }
+    .chat-bubble { max-width: 85%; padding: 10px; border-radius: 12px; margin-bottom: 8px; font-size: .9rem; line-height: 1.35rem; }
     .chat-ai { background-color: #FB4747; color: white; border-bottom-left-radius: 0; }
     .chat-user { background-color: #f1f5f9; color: #1e293b; border-bottom-right-radius: 0; }
     .dark .chat-user { background-color: #334155; color: white; }
 
-    /* AI sidebar direction without Tailwind RTL plugin */
-    #aiSidebar { position: fixed; top: 0; height: 100%; width: 100%; max-width: 24rem; z-index: 60;
-      background: white; transition: transform 0.3s; box-shadow: 0 25px 50px -12px rgba(0,0,0,.25);
+    /* AI sidebar direction (no Tailwind RTL plugin) */
+    #aiSidebar {
+      position: fixed; top: 0; height: 100%; width: 100%; max-width: 24rem; z-index: 60;
+      background: white; transition: transform .3s;
+      box-shadow: 0 25px 50px -12px rgba(0,0,0,.25);
+      display: flex; flex-direction: column;
     }
     .dark #aiSidebar { background: #1f2937; }
 
@@ -78,20 +78,28 @@
     html[dir="ltr"] #aiSidebar { right: 0; left: auto; transform: translateX(100%); border-left: 1px solid rgba(148,163,184,.25); }
     html[dir="ltr"] #aiSidebar.open { transform: translateX(0); }
 
-    /* Input icon spacing (AI input) - simple */
-    html[dir="rtl"] #aiInput { padding-right: 1rem; padding-left: 1rem; }
-    html[dir="ltr"] #aiInput { padding-left: 1rem; padding-right: 1rem; }
+    /* Modal */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.55); z-index: 70; display: none; }
+    .modal-overlay.show { display: flex; }
+    .modal-card { width: min(720px, 92vw); max-height: 86vh; overflow: auto; }
+
+    /* Toast */
+    .toast { position: fixed; bottom: 18px; z-index: 80; display: none; }
+    html[dir="rtl"] .toast { right: 18px; }
+    html[dir="ltr"] .toast { left: 18px; }
+
+    /* Small helper */
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace; }
   </style>
 </head>
 
 <body class="bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-white h-screen overflow-hidden flex font-sans transition-colors duration-300">
-
   <div id="mobileOverlay" class="sidebar-overlay" onclick="toggleSidebar(false)"></div>
 
   <!-- Sidebar -->
   <aside id="sidebar" class="w-64 bg-white dark:bg-slate-800 border-l dark:border-slate-700 flex flex-col shadow-xl shrink-0 h-full">
     <div class="h-20 flex items-center px-6 border-b border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 shrink-0">
-      <img src="https://ait.sa/wp-content/uploads/2024/03/cropped-Square-Logo.png" class="w-10 h-10 rounded-lg bg-white p-0.5 shadow-sm shrink-0" alt="Andromeda">
+      <img src="https://ait.sa/wp-content/uploads/2024/03/cropped-Square-Logo.png" class="w-10 h-10 rounded-lg bg-white p-0.5 shadow-sm shrink-0" alt="Andromeda" />
       <div class="mr-3">
         <h1 class="font-bold text-lg text-brandRed">AndroGov</h1>
         <p class="text-[10px] text-slate-400 font-bold tracking-wider" data-i18n="sidebar_subtitle">إدارة النظام</p>
@@ -128,9 +136,8 @@
     </div>
   </aside>
 
-  <!-- Main Content -->
+  <!-- Main -->
   <main class="flex-1 flex flex-col h-full relative overflow-hidden bg-white dark:bg-slate-900">
-
     <header class="h-20 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-700 flex items-center justify-between px-4 md:px-8 shrink-0 z-10 sticky top-0">
       <div class="flex items-center gap-3">
         <button onclick="toggleSidebar()" class="md:hidden text-slate-600 dark:text-white p-2" aria-label="Menu">
@@ -138,12 +145,11 @@
         </button>
         <div>
           <h2 class="text-xl font-bold text-slate-800 dark:text-white" id="pageTitle">نظرة عامة</h2>
-          <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Central Admin Dashboard v2.1</p>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Central Admin Dashboard v2.2 (Demo)</p>
         </div>
       </div>
 
       <div class="flex items-center gap-3">
-
         <!-- Notifications -->
         <div class="relative" id="notifWrap">
           <button id="notifBtn" onclick="toggleNotifications()" class="relative w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center justify-center hover:bg-slate-200 dark:hover:bg-slate-700 transition" aria-label="Notifications">
@@ -160,12 +166,12 @@
           </div>
         </div>
 
-        <!-- AI Button -->
+        <!-- AI -->
         <button onclick="toggleAI()" class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 text-brandRed flex items-center justify-center hover:bg-red-50 dark:hover:bg-slate-600 transition relative group" aria-label="AI">
           <i class="fa-solid fa-robot text-lg group-hover:scale-110 transition-transform" aria-hidden="true"></i>
         </button>
 
-        <!-- Language -->
+        <!-- Lang -->
         <button onclick="toggleLanguage()" class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center justify-center hover:bg-slate-200 dark:hover:bg-slate-600 transition font-bold text-xs" id="langLabel">EN</button>
 
         <!-- Theme -->
@@ -197,8 +203,8 @@
 
     <div class="p-4 border-t border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shrink-0">
       <div class="flex gap-2 relative">
-        <input id="aiInput" type="text" placeholder="..." class="flex-1 bg-slate-100 dark:bg-slate-700 border-0 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brandRed dark:text-white transition-all"
-               onkeydown="if(event.key === 'Enter'){ event.preventDefault(); sendAIMessage(); }">
+        <input id="aiInput" type="text" placeholder="اسألني عن المستخدمين/السيرفر/الصلاحيات..." class="flex-1 bg-slate-100 dark:bg-slate-700 border-0 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brandRed dark:text-white transition-all"
+          onkeydown="if(event.key==='Enter'){event.preventDefault();sendAIMessage();}">
         <button onclick="sendAIMessage()" class="bg-brandRed hover:bg-red-600 text-white w-12 rounded-xl transition-colors flex items-center justify-center shadow-lg shadow-red-500/30" aria-label="Send">
           <i class="fa-solid fa-paper-plane" aria-hidden="true"></i>
         </button>
@@ -206,22 +212,54 @@
     </div>
   </aside>
 
+  <!-- Modal -->
+  <div id="modalOverlay" class="modal-overlay items-center justify-center p-4" onclick="if(event.target.id==='modalOverlay') closeModal()">
+    <div class="modal-card bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-slate-100 dark:border-slate-700 overflow-hidden">
+      <div class="p-5 border-b border-slate-100 dark:border-slate-700 flex items-center justify-between bg-slate-50 dark:bg-slate-900">
+        <div>
+          <h3 id="modalTitle" class="font-extrabold text-slate-800 dark:text-white">Modal</h3>
+          <p id="modalSub" class="text-xs text-slate-500 dark:text-slate-400 mt-1">...</p>
+        </div>
+        <button onclick="closeModal()" class="w-10 h-10 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center hover:bg-slate-100 dark:hover:bg-slate-700 transition" aria-label="Close">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div id="modalBody" class="p-5"></div>
+      <div id="modalFooter" class="p-5 border-t border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 flex items-center justify-end gap-2"></div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="toast">
+    <div class="bg-slate-900 text-white px-4 py-3 rounded-xl shadow-xl text-sm flex items-center gap-2">
+      <i class="fa-solid fa-circle-check text-green-400"></i>
+      <span id="toastText">Saved</span>
+    </div>
+  </div>
+
   <script>
     // ----------------------------
-    // State
+    // State + Storage Keys
     // ----------------------------
+    const K = {
+      lang: "lang",
+      theme: "theme",
+      view: "adminView",
+      users: "demo_admin_users",
+      perms: "demo_admin_perms",
+      notif: "demo_admin_notif"
+    };
+
     const state = {
-      lang: localStorage.getItem('lang') || 'ar',
-      view: localStorage.getItem('adminView') || 'overview',
-      dark: localStorage.getItem('theme') === 'dark',
-      notifOpen: false,
-      aiOpen: false,
-      sidebarOpen: false,
-      notificationsRead: false
+      lang: localStorage.getItem(K.lang) || "ar",
+      view: localStorage.getItem(K.view) || "overview",
+      dark: localStorage.getItem(K.theme) === "dark",
+      notificationsRead: localStorage.getItem(K.notif) === "read",
+      filters: { q: "", status: "all", role: "all" },
     };
 
     // ----------------------------
-    // Data
+    // Translations
     // ----------------------------
     const translations = {
       ar: {
@@ -234,7 +272,7 @@
         user_role: "System Admin",
         ai_title: "المساعد التقني",
         ai_subtitle: "Andromeda AI Core",
-        ai_welcome: "مرحباً أيها المشرف. جميع الأنظمة تعمل بكفاءة. هل تريد تقرير عن سجلات الدخول أو حالة السيرفرات؟",
+        ai_welcome: "مرحباً أيها المشرف. هل تريد تقرير المستخدمين، سجلات الدخول، أو حالة السيرفرات؟",
 
         notif_title: "التنبيهات",
         read_all: "قراءة الكل",
@@ -250,6 +288,7 @@
         online_now: "المتصلين الآن",
         warnings: "تحذيرات الأمان",
         server_load: "استهلاك السيرفر",
+
         active_users_list: "حسابات الموظفين النشطة",
         add_user: "إضافة مستخدم",
         col_name: "الموظف",
@@ -261,26 +300,37 @@
         edit: "تعديل",
         active: "نشط",
         inactive: "غير نشط",
+        locked: "مقفل",
+
+        search_placeholder: "بحث بالاسم أو البريد...",
+        filter_status: "الحالة",
+        filter_role: "الدور",
+        all: "الكل",
+        actions: "إجراءات",
+        enable: "تفعيل",
+        disable: "تعطيل",
+        lock: "قفل",
+        unlock: "فتح",
+        remove: "حذف",
+        confirm_delete: "تأكيد الحذف",
+        cancel: "إلغاء",
+        save: "حفظ",
+        close: "إغلاق",
 
         perm_matrix: "مصفوفة الصلاحيات",
         role: "الدور الوظيفي",
         access_level: "مستوى الوصول",
         modules: "الوحدات المصرحة",
-        full_access: "كامل (Full)",
+        full_access: "كامل",
         partial: "جزئي",
         read_only: "قراءة فقط",
-        ceo: "الرئيس التنفيذي",
-        hr: "الموارد البشرية",
-        grc: "الحوكمة",
+        manage_roles: "إدارة الأدوار (Demo)",
+        update_perms: "تحديث الصلاحيات",
 
-        server_status: "حالة السيرفرات",
-        uptime: "99.9% وقت التشغيل",
-        last_down: "آخر توقف: قبل 45 يوم",
-        db_status: "قواعد البيانات",
-        latency: "مستقر (12ms)",
-        backups: "نسخ احتياطي: يومي (تلقائي)",
-        api_status: "بوابات الربط (API)",
-        integrations: "نفيس، سداد، أبشر"
+        monitor_title: "مراقبة النظام (Demo)",
+        refresh: "تحديث",
+        logs: "سجل الأحداث",
+        export: "تصدير",
       },
       en: {
         sidebar_subtitle: "System Admin",
@@ -292,7 +342,7 @@
         user_role: "System Admin",
         ai_title: "Tech Assistant",
         ai_subtitle: "Andromeda AI Core",
-        ai_welcome: "Welcome Admin. All systems operational. Need a login log report or server status check?",
+        ai_welcome: "Welcome Admin. Ask me about users, login logs, or server health.",
 
         notif_title: "Notifications",
         read_all: "Read All",
@@ -308,6 +358,7 @@
         online_now: "Online Now",
         warnings: "Security Warnings",
         server_load: "Server Load",
+
         active_users_list: "Active Employee Accounts",
         add_user: "Add User",
         col_name: "Employee",
@@ -319,193 +370,629 @@
         edit: "Edit",
         active: "Active",
         inactive: "Inactive",
+        locked: "Locked",
+
+        search_placeholder: "Search name or email...",
+        filter_status: "Status",
+        filter_role: "Role",
+        all: "All",
+        actions: "Actions",
+        enable: "Enable",
+        disable: "Disable",
+        lock: "Lock",
+        unlock: "Unlock",
+        remove: "Delete",
+        confirm_delete: "Confirm Delete",
+        cancel: "Cancel",
+        save: "Save",
+        close: "Close",
 
         perm_matrix: "Permission Matrix",
         role: "Role",
         access_level: "Access Level",
-t,
         modules: "Authorized Modules",
-        full_access: "Full Access",
+        full_access: "Full",
         partial: "Partial",
         read_only: "Read Only",
-        ceo: "CEO",
-        hr: "HR Manager",
-        grc: "GRC Officer",
+        manage_roles: "Role Manager (Demo)",
+        update_perms: "Update Permissions",
 
-        server_status: "Server Status",
-        uptime: "99.9% Uptime",
-        last_down: "Last downtime: 45 days ago",
-        db_status: "Databases",
-        latency: "Stable (12ms)",
-        backups: "Backups: Automated (Daily)",
-        api_status: "API Gateways",
-        integrations: "Naphies, Sadad, Absher"
+        monitor_title: "System Monitor (Demo)",
+        refresh: "Refresh",
+        logs: "Event Logs",
+        export: "Export",
       }
     };
 
-    const sysUsers = [
-      { name: "Hesham Alsuhaibani",   email: "ceo@androomeda.com",     role: "CEO",        status: "active",   last: "5m ago"  },
-      { name: "Mansour Alyami",       email: "hr@androomeda.com",      role: "HR Manager", status: "active",   last: "1h ago"  },
-      { name: "Ayman Almaghrabi",     email: "grc@androomeda.com",     role: "GRC Officer",status: "active",   last: "30m ago" },
-      { name: "Mohammed Albukhaiti",  email: "cfo@androomeda.com",     role: "CFO",        status: "active",   last: "2h ago"  },
-      { name: "Rand Al-Hourani",      email: "tech@androomeda.com",    role: "Tech Lead",  status: "active",   last: "10m ago" },
-      { name: "Hadi",                 email: "pssc@androomeda.com",    role: "Procurement",status: "inactive", last: "2d ago"  }
+    // ----------------------------
+    // Demo Data (with persistence)
+    // ----------------------------
+    const defaultUsers = [
+      { id: uid(), name: "Hesham Alsuhaibani", email: "ceo@androomeda.com", role: "CEO", status: "active", locked: false, last: "5m ago" },
+      { id: uid(), name: "Mansour Alyami", email: "hr@androomeda.com", role: "HR Manager", status: "active", locked: false, last: "1h ago" },
+      { id: uid(), name: "Ayman Almaghrabi", email: "grc@androomeda.com", role: "GRC Officer", status: "active", locked: false, last: "30m ago" },
+      { id: uid(), name: "Mohammed Albukhaiti", email: "cfo@androomeda.com", role: "CFO", status: "active", locked: false, last: "2h ago" },
+      { id: uid(), name: "Rand Al-Hourani", email: "tech@androomeda.com", role: "Tech Lead", status: "active", locked: false, last: "10m ago" },
+      { id: uid(), name: "Hadi", email: "pssc@androomeda.com", role: "Procurement", status: "inactive", locked: true, last: "2d ago" }
     ];
+
+    const defaultPerms = [
+      { role: "CEO", access: "full", modules: ["All Modules"] },
+      { role: "HR Manager", access: "partial", modules: ["Employees", "Payroll"] },
+      { role: "GRC Officer", access: "read", modules: ["Audit Logs", "Policies"] },
+      { role: "CFO", access: "partial", modules: ["Invoices", "Payments", "Reports"] },
+      { role: "Tech Lead", access: "full", modules: ["Infrastructure", "Integrations", "Logs"] },
+      { role: "Procurement", access: "read", modules: ["Suppliers", "Requests"] },
+    ];
+
+    let users = loadJSON(K.users, defaultUsers);
+    let perms = loadJSON(K.perms, defaultPerms);
 
     // ----------------------------
     // Helpers
     // ----------------------------
     const $ = (id) => document.getElementById(id);
 
+    function uid() {
+      return Math.random().toString(16).slice(2) + Date.now().toString(16);
+    }
+
+    function loadJSON(key, fallback) {
+      try {
+        const v = localStorage.getItem(key);
+        if (!v) return structuredClone(fallback);
+        return JSON.parse(v);
+      } catch {
+        return structuredClone(fallback);
+      }
+    }
+
+    function saveJSON(key, value) {
+      localStorage.setItem(key, JSON.stringify(value));
+    }
+
     function escapeHtml(s) {
       return String(s).replace(/[&<>"']/g, m => ({
-        '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#039;'
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#039;"
       }[m]));
+    }
+
+    function toast(msg) {
+      $("toastText").innerText = msg;
+      const el = $("toast");
+      el.style.display = "block";
+      clearTimeout(toast._t);
+      toast._t = setTimeout(() => el.style.display = "none", 2200);
+    }
+
+    function t() { return translations[state.lang]; }
+
+    // ----------------------------
+    // Theme / Language
+    // ----------------------------
+    function applyTheme() {
+      const html = document.documentElement;
+      const icon = $("themeIcon");
+
+      if (state.dark) {
+        html.classList.add("dark");
+        localStorage.setItem(K.theme, "dark");
+        icon.classList.remove("fa-moon"); icon.classList.add("fa-sun");
+      } else {
+        html.classList.remove("dark");
+        localStorage.setItem(K.theme, "light");
+        icon.classList.remove("fa-sun"); icon.classList.add("fa-moon");
+      }
     }
 
     function applyLanguage() {
       const html = document.documentElement;
-      const t = translations[state.lang];
+      html.setAttribute("lang", state.lang);
+      html.setAttribute("dir", state.lang === "ar" ? "rtl" : "ltr");
+      $("langLabel").innerText = state.lang === "ar" ? "EN" : "عربي";
 
-      html.setAttribute('lang', state.lang);
-      html.setAttribute('dir', state.lang === 'ar' ? 'rtl' : 'ltr');
-      $('langLabel').innerText = state.lang === 'ar' ? 'EN' : 'عربي';
-
-      document.querySelectorAll('[data-i18n]').forEach(el => {
-        const key = el.getAttribute('data-i18n');
-        if (t[key]) el.innerText = t[key];
+      document.querySelectorAll("[data-i18n]").forEach(el => {
+        const key = el.getAttribute("data-i18n");
+        if (t()[key]) el.innerText = t()[key];
       });
 
-      // Update current title after translation
-      const titleMap = { overview: t.overview, users: t.users, perms: t.permissions, monitor: t.monitor };
-      $('pageTitle').innerText = titleMap[state.view] || t.overview;
-
-      // AI Welcome if empty
-      if (!$('chatArea').dataset.booted) {
-        addAIMessage(t.ai_welcome);
-        $('chatArea').dataset.booted = "1";
+      // AI welcome boot
+      if (!$("chatArea").dataset.booted) {
+        addAIMessage(t().ai_welcome);
+        $("chatArea").dataset.booted = "1";
       }
     }
 
-    function applyTheme() {
-      const html = document.documentElement;
-      const icon = $('themeIcon');
+    // ----------------------------
+    // Sidebar (Mobile)
+    // ----------------------------
+    window.toggleSidebar = function(force) {
+      const sb = $("sidebar");
+      const ov = $("mobileOverlay");
+      const shouldOpen = (typeof force === "boolean") ? force : !sb.classList.contains("open");
 
-      if (state.dark) {
-        html.classList.add('dark');
-        localStorage.setItem('theme', 'dark');
-        icon.classList.remove('fa-moon'); icon.classList.add('fa-sun');
-      } else {
-        html.classList.remove('dark');
-        localStorage.setItem('theme', 'light');
-        icon.classList.remove('fa-sun'); icon.classList.add('fa-moon');
-      }
-    }
-
-    function setNavActive(page) {
-      // reset
-      document.querySelectorAll('.nav-item').forEach(btn => {
-        btn.classList.remove('bg-brandRed','text-white','shadow-lg','shadow-red-500/30','font-bold');
-        btn.classList.add('text-slate-500','dark:text-slate-400','hover:bg-slate-50','dark:hover:bg-slate-700');
-      });
-
-      const active = $('nav-' + page);
-      if (active) {
-        active.classList.add('bg-brandRed','text-white','shadow-lg','shadow-red-500/30','font-bold');
-        active.classList.remove('text-slate-500','dark:text-slate-400');
-      }
-    }
+      if (shouldOpen) { sb.classList.add("open"); ov.classList.add("active"); }
+      else { sb.classList.remove("open"); ov.classList.remove("active"); }
+    };
 
     // ----------------------------
     // Notifications
     // ----------------------------
-    function renderNotifications() {
-      const t = translations[state.lang];
-      const list = $('notifList');
+    window.toggleNotifications = function(force) {
+      const dd = $("notifDropdown");
+      const shouldOpen = (typeof force === "boolean") ? force : dd.classList.contains("hidden");
+      dd.classList.toggle("hidden", !shouldOpen);
+    };
 
+    function renderNotifications() {
+      const list = $("notifList");
+      const title = $("notifTitle");
       if (state.notificationsRead) {
-        $('notifTitle').innerText = `${t.notif_title}`;
-        list.innerHTML = `<div class="p-6 text-center text-sm text-slate-400">${t.no_notif}</div>`;
+        title.innerText = `${t().notif_title}`;
+        list.innerHTML = `<div class="p-6 text-center text-sm text-slate-400">${t().no_notif}</div>`;
         return;
       }
 
-      $('notifTitle').innerText = `${t.notif_title} (3)`;
+      title.innerText = `${t().notif_title} (3)`;
       list.innerHTML = `
-        <div class="p-3 border-b border-slate-50 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 cursor-pointer border-r-4 border-red-500 bg-red-50 dark:bg-red-900/10">
-          <p class="text-xs font-bold text-slate-700 dark:text-slate-200">${t.notif_1}</p>
-          <p class="text-[10px] text-slate-400 mt-1">${t.notif_1_time}</p>
-        </div>
-        <div class="p-3 border-b border-slate-50 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 cursor-pointer border-r-4 border-green-500">
-          <p class="text-xs font-bold text-slate-700 dark:text-slate-200">${t.notif_2}</p>
-          <p class="text-[10px] text-slate-400 mt-1">${t.notif_2_time}</p>
-        </div>
-        <div class="p-3 hover:bg-slate-50 dark:hover:bg-slate-700 cursor-pointer border-r-4 border-blue-500">
-          <p class="text-xs font-bold text-slate-700 dark:text-slate-200">${t.notif_3}</p>
-          <p class="text-[10px] text-slate-400 mt-1">${t.notif_3_time}</p>
+        <button onclick="openNotif(1)" class="w-full text-start p-3 border-b border-slate-50 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 cursor-pointer border-r-4 border-red-500 bg-red-50 dark:bg-red-900/10">
+          <p class="text-xs font-bold text-slate-700 dark:text-slate-200">${t().notif_1}</p>
+          <p class="text-[10px] text-slate-400 mt-1">${t().notif_1_time}</p>
+        </button>
+        <button onclick="openNotif(2)" class="w-full text-start p-3 border-b border-slate-50 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 cursor-pointer border-r-4 border-green-500">
+          <p class="text-xs font-bold text-slate-700 dark:text-slate-200">${t().notif_2}</p>
+          <p class="text-[10px] text-slate-400 mt-1">${t().notif_2_time}</p>
+        </button>
+        <button onclick="openNotif(3)" class="w-full text-start p-3 hover:bg-slate-50 dark:hover:bg-slate-700 cursor-pointer border-r-4 border-blue-500">
+          <p class="text-xs font-bold text-slate-700 dark:text-slate-200">${t().notif_3}</p>
+          <p class="text-[10px] text-slate-400 mt-1">${t().notif_3_time}</p>
+        </button>
+      `;
+    }
+
+    window.markAllRead = function() {
+      state.notificationsRead = true;
+      localStorage.setItem(K.notif, "read");
+      $("notifBadge")?.classList.add("hidden");
+      renderNotifications();
+      toast(state.lang === "ar" ? "تمت قراءة التنبيهات" : "Notifications marked read");
+    };
+
+    window.openNotif = function(n) {
+      toggleNotifications(false);
+      const map = {
+        1: { title: t().notif_1, sub: t().notif_1_time, body: (state.lang==="ar" ? "تم اكتشاف محاولة دخول فاشلة. (Demo) يمكنك مراجعة السجلات من صفحة Monitor." : "Failed login attempt detected. (Demo) Review logs in Monitor.") },
+        2: { title: t().notif_2, sub: t().notif_2_time, body: (state.lang==="ar" ? "تم إتمام النسخ الاحتياطي بنجاح. (Demo) آخر نسخة محفوظة قبل 1 ساعة." : "Backup completed successfully. (Demo) Last snapshot 1h ago.") },
+        3: { title: t().notif_3, sub: t().notif_3_time, body: (state.lang==="ar" ? "هناك طلب صلاحية جديد لقسم المبيعات. (Demo) يمكنك الموافقة أو الرفض من صفحة Permissions." : "New permission request for Sales. (Demo) Approve/deny from Permissions.") },
+      };
+      const item = map[n];
+      showModal({
+        title: item.title,
+        sub: item.sub,
+        body: `
+          <div class="space-y-3">
+            <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200/60 dark:border-slate-700">
+              <p class="text-sm text-slate-700 dark:text-slate-200">${escapeHtml(item.body)}</p>
+            </div>
+            <div class="flex gap-2 justify-end">
+              <button class="px-4 py-2 rounded-xl bg-brandRed text-white font-bold hover:bg-red-600 transition" onclick="closeModal()">${t().close}</button>
+            </div>
+          </div>
+        `,
+      });
+    };
+
+    // ----------------------------
+    // Navigation Active
+    // ----------------------------
+    function setNavActive(page) {
+      document.querySelectorAll(".nav-item").forEach(btn => {
+        btn.classList.remove("bg-brandRed","text-white","shadow-lg","shadow-red-500/30","font-bold");
+        btn.classList.add("text-slate-500","dark:text-slate-400","hover:bg-slate-50","dark:hover:bg-slate-700");
+      });
+      const a = $("nav-"+page);
+      if (a) {
+        a.classList.add("bg-brandRed","text-white","shadow-lg","shadow-red-500/30","font-bold");
+        a.classList.remove("text-slate-500","dark:text-slate-400");
+      }
+    }
+
+    // ----------------------------
+    // Modal API
+    // ----------------------------
+    function showModal({ title, sub, body, footerHtml }) {
+      $("modalTitle").innerText = title || "Modal";
+      $("modalSub").innerText = sub || "";
+      $("modalBody").innerHTML = body || "";
+      $("modalFooter").innerHTML = footerHtml || "";
+      $("modalOverlay").classList.add("show");
+    }
+    function closeModal() {
+      $("modalOverlay").classList.remove("show");
+      $("modalBody").innerHTML = "";
+      $("modalFooter").innerHTML = "";
+    }
+    window.closeModal = closeModal;
+
+    // ----------------------------
+    // Users: filters + CRUD
+    // ----------------------------
+    function rolesList() {
+      return Array.from(new Set(users.map(u => u.role))).sort();
+    }
+
+    function filteredUsers() {
+      const q = state.filters.q.trim().toLowerCase();
+      const status = state.filters.status;
+      const role = state.filters.role;
+
+      return users.filter(u => {
+        const matchesQ = !q || (u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q));
+        const matchesStatus =
+          status === "all" ? true :
+          status === "active" ? (u.status === "active" && !u.locked) :
+          status === "inactive" ? (u.status === "inactive" && !u.locked) :
+          status === "locked" ? (u.locked === true) :
+          true;
+        const matchesRole = (role === "all") ? true : (u.role === role);
+        return matchesQ && matchesStatus && matchesRole;
+      });
+    }
+
+    function renderUsersPage() {
+      const content = $("mainContent");
+      const roles = rolesList();
+      const rows = filteredUsers().map(u => {
+        const statusText = u.locked ? t().locked : (u.status === "active" ? t().active : t().inactive);
+        const statusClass = u.locked
+          ? "bg-amber-100 text-amber-700 dark:bg-amber-900/30"
+          : (u.status === "active" ? "bg-green-100 text-green-700 dark:bg-green-900/30" : "bg-slate-100 text-slate-500 dark:bg-slate-700");
+
+        return `
+          <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition border-b border-slate-50 dark:border-slate-700 last:border-0">
+            <td class="p-4 font-bold text-slate-800 dark:text-white">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-full bg-slate-900 text-white flex items-center justify-center font-extrabold text-xs">${escapeHtml(initials(u.name))}</div>
+                <div>
+                  <div class="font-extrabold">${escapeHtml(u.name)}</div>
+                  <div class="text-[11px] text-slate-400 mono">${escapeHtml(u.id.slice(0,8).toUpperCase())}</div>
+                </div>
+              </div>
+            </td>
+            <td class="p-4 text-xs text-slate-500 mono">${escapeHtml(u.email)}</td>
+            <td class="p-4">
+              <span class="bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded text-xs font-bold text-slate-600 dark:text-slate-200">${escapeHtml(u.role)}</span>
+            </td>
+            <td class="p-4 text-xs text-slate-500">${escapeHtml(u.last)}</td>
+            <td class="p-4">
+              <span class="px-2 py-1 rounded text-[10px] font-extrabold ${statusClass}">${statusText}</span>
+            </td>
+            <td class="p-4">
+              <div class="flex flex-wrap gap-2 justify-end">
+                <button class="px-3 py-1.5 rounded-lg text-xs font-extrabold bg-slate-900 text-white hover:opacity-90 transition" onclick="openEditUser('${u.id}')">
+                  <i class="fa-regular fa-pen-to-square"></i> ${t().edit}
+                </button>
+
+                ${u.status === "active"
+                  ? `<button class="px-3 py-1.5 rounded-lg text-xs font-extrabold bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 transition" onclick="setUserStatus('${u.id}','inactive')">
+                      <i class="fa-solid fa-toggle-off"></i> ${t().disable}
+                     </button>`
+                  : `<button class="px-3 py-1.5 rounded-lg text-xs font-extrabold bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 transition" onclick="setUserStatus('${u.id}','active')">
+                      <i class="fa-solid fa-toggle-on"></i> ${t().enable}
+                     </button>`
+                }
+
+                ${u.locked
+                  ? `<button class="px-3 py-1.5 rounded-lg text-xs font-extrabold bg-amber-100 dark:bg-amber-900/30 text-amber-700 hover:opacity-90 transition" onclick="toggleUserLock('${u.id}', false)">
+                      <i class="fa-solid fa-lock-open"></i> ${t().unlock}
+                     </button>`
+                  : `<button class="px-3 py-1.5 rounded-lg text-xs font-extrabold bg-amber-100 dark:bg-amber-900/30 text-amber-700 hover:opacity-90 transition" onclick="toggleUserLock('${u.id}', true)">
+                      <i class="fa-solid fa-lock"></i> ${t().lock}
+                     </button>`
+                }
+
+                <button class="px-3 py-1.5 rounded-lg text-xs font-extrabold bg-brandRed text-white hover:bg-red-600 transition" onclick="confirmDeleteUser('${u.id}')">
+                  <i class="fa-solid fa-trash"></i> ${t().remove}
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join("");
+
+      content.innerHTML = `
+        <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden fade-in">
+          <div class="p-5 border-b border-slate-100 dark:border-slate-700 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 bg-slate-50 dark:bg-slate-900">
+            <div>
+              <h3 class="font-extrabold text-slate-800 dark:text-white">${t().active_users_list}</h3>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">${escapeHtml(users.length)} users • Demo CRUD enabled</p>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-2 sm:items-center">
+              <div class="relative flex-1">
+                <input id="q" value="${escapeHtml(state.filters.q)}" oninput="setFilter('q', this.value)" class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-brandRed outline-none"
+                  placeholder="${t().search_placeholder}">
+              </div>
+
+              <select id="statusFilter" onchange="setFilter('status', this.value)" class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-brandRed outline-none">
+                <option value="all" ${state.filters.status==="all"?"selected":""}>${t().filter_status}: ${t().all}</option>
+                <option value="active" ${state.filters.status==="active"?"selected":""}>${t().filter_status}: ${t().active}</option>
+                <option value="inactive" ${state.filters.status==="inactive"?"selected":""}>${t().filter_status}: ${t().inactive}</option>
+                <option value="locked" ${state.filters.status==="locked"?"selected":""}>${t().filter_status}: ${t().locked}</option>
+              </select>
+
+              <select id="roleFilter" onchange="setFilter('role', this.value)" class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-brandRed outline-none">
+                <option value="all">${t().filter_role}: ${t().all}</option>
+                ${roles.map(r => `<option value="${escapeHtml(r)}" ${state.filters.role===r?"selected":""}>${t().filter_role}: ${escapeHtml(r)}</option>`).join("")}
+              </select>
+
+              <button onclick="openAddUser()" class="bg-brandRed hover:bg-red-600 text-white px-4 py-2.5 rounded-xl text-sm transition font-extrabold shadow-lg shadow-red-500/20 whitespace-nowrap">
+                <i class="fa-solid fa-plus"></i> ${t().add_user}
+              </button>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-start text-sm text-slate-600 dark:text-slate-300">
+              <thead class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 dark:text-slate-400 uppercase font-extrabold text-xs">
+                <tr>
+                  <th class="p-4">${t().col_name}</th>
+                  <th class="p-4">${t().col_email}</th>
+                  <th class="p-4">${t().col_role}</th>
+                  <th class="p-4">${t().col_last}</th>
+                  <th class="p-4">${t().col_status}</th>
+                  <th class="p-4 text-end">${t().col_action}</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${rows || `<tr><td colspan="6" class="p-10 text-center text-slate-400">${state.lang==="ar"?"لا توجد نتائج":"No results"}</td></tr>`}
+              </tbody>
+            </table>
+          </div>
         </div>
       `;
     }
 
-    window.toggleNotifications = function(force) {
-      const dropdown = $('notifDropdown');
-      const shouldOpen = (typeof force === 'boolean') ? force : dropdown.classList.contains('hidden');
+    window.setFilter = function(key, value) {
+      state.filters[key] = value;
+      renderUsersPage();
+    };
 
-      if (shouldOpen) {
-        dropdown.classList.remove('hidden');
-        state.notifOpen = true;
-      } else {
-        dropdown.classList.add('hidden');
-        state.notifOpen = false;
+    window.openAddUser = function() {
+      showModal({
+        title: state.lang === "ar" ? "إضافة مستخدم" : "Add User",
+        sub: state.lang === "ar" ? "إنشاء حساب جديد (Demo)" : "Create a new account (Demo)",
+        body: userFormHtml({ mode: "add" }),
+        footerHtml: `
+          <button onclick="closeModal()" class="px-4 py-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition font-extrabold">${t().cancel}</button>
+          <button onclick="submitUserForm('add')" class="px-4 py-2.5 rounded-xl bg-brandRed text-white hover:bg-red-600 transition font-extrabold">${t().save}</button>
+        `
+      });
+      setTimeout(() => $("u_name")?.focus(), 50);
+    };
+
+    window.openEditUser = function(id) {
+      const u = users.find(x => x.id === id);
+      if (!u) return;
+      showModal({
+        title: state.lang === "ar" ? "تعديل مستخدم" : "Edit User",
+        sub: state.lang === "ar" ? `تعديل بيانات الحساب (ID: ${u.id.slice(0,8).toUpperCase()})` : `Update account (ID: ${u.id.slice(0,8).toUpperCase()})`,
+        body: userFormHtml({ mode: "edit", user: u }),
+        footerHtml: `
+          <button onclick="closeModal()" class="px-4 py-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition font-extrabold">${t().cancel}</button>
+          <button onclick="submitUserForm('edit','${u.id}')" class="px-4 py-2.5 rounded-xl bg-brandRed text-white hover:bg-red-600 transition font-extrabold">${t().save}</button>
+        `
+      });
+    };
+
+    function userFormHtml({ mode, user }) {
+      const u = user || { name: "", email: "", role: "Employee", status: "active", locked: false };
+      const roleOptions = ["CEO","CFO","HR Manager","GRC Officer","Tech Lead","Procurement","Employee","Sales"].filter((v,i,a)=>a.indexOf(v)===i);
+      return `
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="text-xs font-extrabold text-slate-500">${state.lang==="ar"?"الاسم":"Name"}</label>
+            <input id="u_name" class="mt-1 w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-brandRed outline-none"
+              value="${escapeHtml(u.name)}" placeholder="${state.lang==="ar"?"مثال: Ahmed":"e.g. Ahmed"}">
+          </div>
+          <div>
+            <label class="text-xs font-extrabold text-slate-500">${state.lang==="ar"?"البريد الإلكتروني":"Email"}</label>
+            <input id="u_email" class="mt-1 w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-brandRed outline-none mono"
+              value="${escapeHtml(u.email)}" placeholder="name@androomeda.com">
+          </div>
+
+          <div>
+            <label class="text-xs font-extrabold text-slate-500">${state.lang==="ar"?"الدور":"Role"}</label>
+            <select id="u_role" class="mt-1 w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-brandRed outline-none">
+              ${roleOptions.map(r => `<option value="${escapeHtml(r)}" ${u.role===r?"selected":""}>${escapeHtml(r)}</option>`).join("")}
+            </select>
+          </div>
+
+          <div>
+            <label class="text-xs font-extrabold text-slate-500">${state.lang==="ar"?"الحالة":"Status"}</label>
+            <select id="u_status" class="mt-1 w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-brandRed outline-none">
+              <option value="active" ${u.status==="active"?"selected":""}>${t().active}</option>
+              <option value="inactive" ${u.status==="inactive"?"selected":""}>${t().inactive}</option>
+            </select>
+          </div>
+
+          <div class="md:col-span-2">
+            <label class="inline-flex items-center gap-2 cursor-pointer">
+              <input id="u_locked" type="checkbox" ${u.locked?"checked":""} class="w-4 h-4 accent-brandRed">
+              <span class="text-sm font-extrabold">${state.lang==="ar"?"قفل الحساب":"Lock account"}</span>
+            </label>
+            <p class="text-[11px] text-slate-400 mt-1">${state.lang==="ar"?"الحساب المقفل يظهر بالحالة (مقفل) ولا يمكن تفعيله حتى يتم فتحه.":"Locked accounts show as Locked until unlocked."}</p>
+          </div>
+
+          <div class="md:col-span-2">
+            <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200/60 dark:border-slate-700">
+              <p class="text-xs text-slate-500">${state.lang==="ar" ? "ملاحظة: هذا نموذج ديمو. الحفظ يتم داخل LocalStorage فقط." : "Note: Demo only. Saved to LocalStorage."}</p>
+            </div>
+          </div>
+
+          <div id="u_err" class="md:col-span-2 hidden p-3 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-900/40 text-red-700 dark:text-red-300 text-sm font-bold"></div>
+        </div>
+      `;
+    }
+
+    window.submitUserForm = function(mode, id) {
+      const name = $("u_name").value.trim();
+      const email = $("u_email").value.trim().toLowerCase();
+      const role = $("u_role").value;
+      const status = $("u_status").value;
+      const locked = $("u_locked").checked;
+
+      const err = $("u_err");
+      err.classList.add("hidden");
+      err.innerText = "";
+
+      if (!name || name.length < 3) return showErr(state.lang==="ar"?"اكتب اسم صحيح":"Enter a valid name");
+      if (!email || !email.includes("@")) return showErr(state.lang==="ar"?"اكتب بريد صحيح":"Enter a valid email");
+
+      const emailTaken = users.some(u => u.email === email && u.id !== id);
+      if (emailTaken) return showErr(state.lang==="ar"?"هذا البريد مستخدم مسبقًا":"Email already exists");
+
+      if (mode === "add") {
+        users.unshift({ id: uid(), name, email, role, status, locked, last: "just now" });
+        saveJSON(K.users, users);
+        closeModal();
+        toast(state.lang==="ar"?"تمت إضافة المستخدم":"User added");
+        renderUsersPage();
+        return;
+      }
+
+      if (mode === "edit") {
+        const idx = users.findIndex(u => u.id === id);
+        if (idx === -1) return;
+        users[idx] = { ...users[idx], name, email, role, status, locked };
+        saveJSON(K.users, users);
+        closeModal();
+        toast(state.lang==="ar"?"تم حفظ التعديل":"Changes saved");
+        renderUsersPage();
+      }
+
+      function showErr(msg){
+        err.innerText = msg;
+        err.classList.remove("hidden");
       }
     };
 
-    window.markAllRead = function() {
-      state.notificationsRead = true;
-      $('notifBadge')?.classList.add('hidden');
-      renderNotifications();
+    window.setUserStatus = function(id, status) {
+      const u = users.find(x => x.id === id);
+      if (!u) return;
+      if (u.locked) return toast(state.lang==="ar"?"لا يمكن تفعيل/تعطيل حساب مقفل":"Cannot change status of locked user");
+      u.status = status;
+      u.last = "just now";
+      saveJSON(K.users, users);
+      toast(state.lang==="ar"?"تم تحديث الحالة":"Status updated");
+      renderUsersPage();
+      updateOverviewCards();
     };
 
-    // ----------------------------
-    // Users Table
-    // ----------------------------
-    function renderUserList(container, t, isOverview) {
-      let rows = '';
-      sysUsers.forEach(u => {
-        const statusClass = u.status === 'active'
-          ? 'bg-green-100 text-green-600 dark:bg-green-900/30'
-          : 'bg-slate-100 text-slate-500 dark:bg-slate-700';
-        const statusText = u.status === 'active' ? t.active : t.inactive;
+    window.toggleUserLock = function(id, lock) {
+      const u = users.find(x => x.id === id);
+      if (!u) return;
+      u.locked = lock;
+      if (lock) u.status = "inactive";
+      u.last = "just now";
+      saveJSON(K.users, users);
+      toast(lock ? (state.lang==="ar"?"تم قفل الحساب":"Account locked") : (state.lang==="ar"?"تم فتح الحساب":"Account unlocked"));
+      renderUsersPage();
+      updateOverviewCards();
+    };
 
-        rows += `
-          <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition border-b border-slate-50 dark:border-slate-700 last:border-0">
-            <td class="p-4 font-bold text-slate-800 dark:text-white">${escapeHtml(u.name)}</td>
-            ${!isOverview ? `<td class="p-4 text-xs font-mono text-slate-500">${escapeHtml(u.email)}</td>` : ''}
-            <td class="p-4"><span class="bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded text-xs font-bold text-slate-600 dark:text-slate-300">${escapeHtml(u.role)}</span></td>
-            <td class="p-4 text-xs text-slate-500">${escapeHtml(u.last)}</td>
-            <td class="p-4"><span class="px-2 py-1 rounded text-[10px] font-bold ${statusClass}">${statusText}</span></td>
-            <td class="p-4"><button class="text-brandRed hover:underline font-bold text-xs">${t.edit}</button></td>
+    window.confirmDeleteUser = function(id) {
+      const u = users.find(x => x.id === id);
+      if (!u) return;
+      showModal({
+        title: t().confirm_delete,
+        sub: state.lang==="ar" ? `سيتم حذف: ${u.name}` : `You will delete: ${u.name}`,
+        body: `
+          <div class="space-y-3">
+            <div class="p-4 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-900/40">
+              <p class="text-sm font-bold text-red-700 dark:text-red-300">
+                ${state.lang==="ar"?"هل أنت متأكد؟ هذا الإجراء لا يمكن التراجع عنه (Demo).":"Are you sure? This action is irreversible (Demo)."}
+              </p>
+            </div>
+          </div>
+        `,
+        footerHtml: `
+          <button onclick="closeModal()" class="px-4 py-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition font-extrabold">${t().cancel}</button>
+          <button onclick="deleteUser('${id}')" class="px-4 py-2.5 rounded-xl bg-brandRed text-white hover:bg-red-600 transition font-extrabold">
+            <i class="fa-solid fa-trash"></i> ${t().remove}
+          </button>
+        `
+      });
+    };
+
+    window.deleteUser = function(id) {
+      users = users.filter(u => u.id !== id);
+      saveJSON(K.users, users);
+      closeModal();
+      toast(state.lang==="ar"?"تم حذف المستخدم":"User deleted");
+      renderUsersPage();
+      updateOverviewCards();
+    };
+
+    function initials(name) {
+      const parts = name.split(" ").filter(Boolean);
+      const a = (parts[0]||"A")[0];
+      const b = (parts[1]||"D")[0];
+      return (a + b).toUpperCase();
+    }
+
+    // ----------------------------
+    // Permissions Page (Demo: editable)
+    // ----------------------------
+    function renderPermsPage() {
+      const content = $("mainContent");
+      const rows = perms.map((p, idx) => {
+        const accessOptions = [
+          { v: "full", label: t().full_access },
+          { v: "partial", label: t().partial },
+          { v: "read", label: t().read_only },
+        ];
+        return `
+          <tr class="border-b border-slate-50 dark:border-slate-700 last:border-0">
+            <td class="p-4 font-extrabold text-slate-800 dark:text-white">${escapeHtml(p.role)}</td>
+            <td class="p-4">
+              <select onchange="setPermAccess(${idx}, this.value)" class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-brandRed outline-none">
+                ${accessOptions.map(o => `<option value="${o.v}" ${p.access===o.v?"selected":""}>${o.label}</option>`).join("")}
+              </select>
+            </td>
+            <td class="p-4">
+              <input value="${escapeHtml(p.modules.join(', '))}" oninput="setPermModules(${idx}, this.value)"
+                class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-brandRed outline-none" />
+              <p class="text-[11px] text-slate-400 mt-1">${state.lang==="ar"?"افصل الوحدات بفاصلة":"Separate modules with comma"}</p>
+            </td>
           </tr>
         `;
-      });
+      }).join("");
 
-      const html = `
+      content.innerHTML = `
         <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden fade-in">
-          <div class="p-6 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center">
-            <h3 class="font-bold text-slate-800 dark:text-white">${t.active_users_list}</h3>
-            <button class="bg-brandRed hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm transition font-bold shadow-lg shadow-red-500/20">
-              <i class="fa-solid fa-plus" aria-hidden="true"></i> ${t.add_user}
-            </button>
+          <div class="p-5 border-b border-slate-100 dark:border-slate-700 flex items-center justify-between bg-slate-50 dark:bg-slate-900">
+            <div>
+              <h3 class="font-extrabold text-slate-800 dark:text-white">${t().perm_matrix}</h3>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">${t().manage_roles}</p>
+            </div>
+            <div class="flex gap-2">
+              <button onclick="resetPerms()" class="px-4 py-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition font-extrabold">
+                ${state.lang==="ar"?"إعادة ضبط":"Reset"}
+              </button>
+              <button onclick="savePerms()" class="px-4 py-2.5 rounded-xl bg-brandRed text-white hover:bg-red-600 transition font-extrabold">
+                <i class="fa-solid fa-floppy-disk"></i> ${t().update_perms}
+              </button>
+            </div>
           </div>
+
           <div class="overflow-x-auto">
             <table class="w-full text-start text-sm text-slate-600 dark:text-slate-300">
-              <thead class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 dark:text-slate-400 uppercase font-bold text-xs">
+              <thead class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 dark:text-slate-400 uppercase font-extrabold text-xs">
                 <tr>
-                  <th class="p-4">${t.col_name}</th>
-                  ${!isOverview ? `<th class="p-4">${t.col_email}</th>` : ''}
-                  <th class="p-4">${t.col_role}</th>
-                  <th class="p-4">${t.col_last}</th>
-                  <th class="p-4">${t.col_status}</th>
-                  <th class="p-4">${t.col_action}</th>
+                  <th class="p-4">${t().role}</th>
+                  <th class="p-4">${t().access_level}</th>
+                  <th class="p-4">${t().modules}</th>
                 </tr>
               </thead>
               <tbody>${rows}</tbody>
@@ -513,191 +1000,304 @@ t,
           </div>
         </div>
       `;
+    }
 
-      if (isOverview) container.insertAdjacentHTML('beforeend', html);
-      else container.innerHTML = html;
+    window.setPermAccess = function(idx, v) {
+      perms[idx].access = v;
+    };
+    window.setPermModules = function(idx, v) {
+      perms[idx].modules = v.split(",").map(s => s.trim()).filter(Boolean);
+    };
+    window.savePerms = function() {
+      saveJSON(K.perms, perms);
+      toast(state.lang==="ar"?"تم حفظ الصلاحيات":"Permissions saved");
+    };
+    window.resetPerms = function() {
+      perms = structuredClone(defaultPerms);
+      saveJSON(K.perms, perms);
+      toast(state.lang==="ar"?"تمت إعادة الضبط":"Reset done");
+      renderPermsPage();
+    };
+
+    // ----------------------------
+    // Monitor Page (Demo)
+    // ----------------------------
+    function renderMonitorPage() {
+      const content = $("mainContent");
+      const logs = demoLogs();
+
+      content.innerHTML = `
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 fade-in">
+          <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+            <div class="flex items-center justify-between">
+              <h3 class="font-extrabold">${t().monitor_title}</h3>
+              <div class="flex gap-2">
+                <button onclick="refreshMonitor()" class="px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 transition text-sm font-extrabold">
+                  <i class="fa-solid fa-rotate"></i> ${t().refresh}
+                </button>
+                <button onclick="exportLogs()" class="px-3 py-2 rounded-xl bg-brandRed text-white hover:bg-red-600 transition text-sm font-extrabold">
+                  <i class="fa-solid fa-download"></i> ${t().export}
+                </button>
+              </div>
+            </div>
+
+            <div class="mt-4 grid grid-cols-2 gap-3">
+              ${monitorCard("Uptime","99.9%","fa-solid fa-heart-pulse","text-green-500")}
+              ${monitorCard("DB Latency","12ms","fa-solid fa-database","text-blue-500")}
+              ${monitorCard("API Health","OK","fa-solid fa-network-wired","text-brandRed")}
+              ${monitorCard("CPU Load", randomPct()+"%","fa-solid fa-microchip","text-amber-500")}
+            </div>
+
+            <p class="text-[11px] text-slate-400 mt-4">${state.lang==="ar"?"القيم أعلاه افتراضية (Demo).":"Values above are simulated (Demo)."}</p>
+          </div>
+
+          <div class="lg:col-span-2 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden">
+            <div class="p-5 border-b border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 flex items-center justify-between">
+              <h3 class="font-extrabold">${t().logs}</h3>
+              <span class="text-xs text-slate-500 dark:text-slate-400 mono">${new Date().toLocaleString()}</span>
+            </div>
+            <div class="max-h-[60vh] overflow-y-auto">
+              ${logs.map(l => `
+                <div class="p-4 border-b border-slate-50 dark:border-slate-700 last:border-0 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
+                  <div class="flex items-start gap-3">
+                    <div class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-700 flex items-center justify-center ${l.color}">
+                      <i class="${l.icon}"></i>
+                    </div>
+                    <div class="flex-1">
+                      <div class="font-extrabold text-sm">${escapeHtml(l.title)}</div>
+                      <div class="text-xs text-slate-500 dark:text-slate-400 mt-1">${escapeHtml(l.desc)}</div>
+                    </div>
+                    <div class="text-[11px] text-slate-400 mono">${escapeHtml(l.time)}</div>
+                  </div>
+                </div>
+              `).join("")}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function monitorCard(label, value, icon, colorClass) {
+      return `
+        <div class="p-4 rounded-2xl border border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/40">
+          <div class="flex items-center justify-between">
+            <div class="text-xs text-slate-500 dark:text-slate-400 font-extrabold">${escapeHtml(label)}</div>
+            <i class="${icon} ${colorClass}"></i>
+          </div>
+          <div class="mt-2 text-2xl font-extrabold">${escapeHtml(value)}</div>
+        </div>
+      `;
+    }
+
+    function randomPct(){ return Math.floor(Math.random()*30)+25; }
+
+    function demoLogs() {
+      const now = new Date();
+      const fmt = (mins) => new Date(now.getTime() - mins*60000).toLocaleTimeString();
+      return [
+        { icon:"fa-solid fa-shield-halved", color:"text-brandRed", title: (state.lang==="ar"?"محاولة دخول فاشلة":"Failed Login Attempt"), desc:"IP: 192.168.1.15 • User: hr", time: fmt(3) },
+        { icon:"fa-solid fa-database", color:"text-blue-500", title:(state.lang==="ar"?"نسخ احتياطي مكتمل":"Backup Completed"), desc:(state.lang==="ar"?"تم حفظ Snapshot لقاعدة البيانات":"Database snapshot saved"), time: fmt(56) },
+        { icon:"fa-solid fa-plug", color:"text-amber-500", title:(state.lang==="ar"?"فحص التكاملات":"Integration Check"), desc:(state.lang==="ar"?"Nafis API: OK • Sadad: OK":"Nafis API: OK • Sadad: OK"), time: fmt(82) },
+        { icon:"fa-solid fa-user-gear", color:"text-green-500", title:(state.lang==="ar"?"تعديل مستخدم":"User Updated"), desc:(state.lang==="ar"?"تم تحديث صلاحيات المستخدم (Demo)":"User permissions updated (Demo)"), time: fmt(140) },
+      ];
+    }
+
+    window.refreshMonitor = function() {
+      toast(state.lang==="ar"?"تم تحديث البيانات":"Refreshed");
+      renderMonitorPage();
+    };
+
+    window.exportLogs = function() {
+      const data = demoLogs().map(x => `${x.time} - ${x.title}: ${x.desc}`).join("\n");
+      const blob = new Blob([data], { type: "text/plain;charset=utf-8" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "androgov-demo-logs.txt";
+      a.click();
+      URL.revokeObjectURL(a.href);
+      toast(state.lang==="ar"?"تم التصدير":"Exported");
+    };
+
+    // ----------------------------
+    // Overview Page
+    // ----------------------------
+    function updateOverviewCards() {
+      // For simplicity, if overview currently shown, rerender it
+      if (state.view === "overview") renderOverviewPage();
+    }
+
+    function renderOverviewPage() {
+      const content = $("mainContent");
+      const total = users.length;
+      const online = Math.max(3, Math.min(18, Math.floor(total/3)));
+      const locked = users.filter(u => u.locked).length;
+      const active = users.filter(u => u.status==="active" && !u.locked).length;
+      const load = randomPct();
+
+      content.innerHTML = `
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 fade-in">
+          ${overviewCard(t().total_users, total, "fa-solid fa-users", "text-slate-800 dark:text-white", "users")}
+          ${overviewCard(t().online_now, online, "fa-solid fa-signal", "text-green-500", "monitor")}
+          ${overviewCard(t().warnings, locked, "fa-solid fa-triangle-exclamation", "text-amber-500", "users")}
+          ${overviewCard(t().server_load, load+"%", "fa-solid fa-microchip", "text-blue-500", "monitor")}
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 fade-in">
+          <div class="lg:col-span-2 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden">
+            <div class="p-5 border-b border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 flex items-center justify-between">
+              <h3 class="font-extrabold">${t().active_users_list}</h3>
+              <button onclick="renderPage('users')" class="text-xs font-extrabold text-brandRed hover:underline">${state.lang==="ar"?"فتح الإدارة":"Open Manager"}</button>
+            </div>
+            <div class="p-4">
+              ${miniUsersList(users.slice(0,4))}
+            </div>
+          </div>
+
+          <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden">
+            <div class="p-5 border-b border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900">
+              <h3 class="font-extrabold">${state.lang==="ar"?"اختصارات":"Shortcuts"}</h3>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">${state.lang==="ar"?"كلها تشتغل (Demo)":"All working (Demo)"}</p>
+            </div>
+            <div class="p-5 space-y-2">
+              <button onclick="openAddUser()" class="w-full px-4 py-3 rounded-xl bg-brandRed text-white hover:bg-red-600 transition font-extrabold flex items-center justify-between">
+                <span><i class="fa-solid fa-user-plus"></i> ${t().add_user}</span>
+                <i class="fa-solid fa-arrow-left"></i>
+              </button>
+              <button onclick="renderPage('perms')" class="w-full px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 transition font-extrabold flex items-center justify-between">
+                <span><i class="fa-solid fa-lock"></i> ${t().permissions}</span>
+                <i class="fa-solid fa-arrow-left"></i>
+              </button>
+              <button onclick="renderPage('monitor')" class="w-full px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 transition font-extrabold flex items-center justify-between">
+                <span><i class="fa-solid fa-server"></i> ${t().monitor}</span>
+                <i class="fa-solid fa-arrow-left"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function overviewCard(label, value, icon, valueColor, go) {
+      return `
+        <button onclick="renderPage('${go}')" class="text-start bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 hover:-translate-y-0.5 hover:shadow-md transition">
+          <div class="flex items-center justify-between">
+            <p class="text-slate-500 dark:text-slate-400 text-xs font-extrabold mb-1">${escapeHtml(label)}</p>
+            <i class="${icon} text-slate-400"></i>
+          </div>
+          <h3 class="text-3xl font-extrabold ${valueColor}">${escapeHtml(value)}</h3>
+        </button>
+      `;
+    }
+
+    function miniUsersList(arr) {
+      return arr.map(u => `
+        <div class="flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full bg-slate-900 text-white flex items-center justify-center font-extrabold text-xs">${escapeHtml(initials(u.name))}</div>
+            <div>
+              <div class="font-extrabold text-sm">${escapeHtml(u.name)}</div>
+              <div class="text-[11px] text-slate-400">${escapeHtml(u.role)} • ${escapeHtml(u.last)}</div>
+            </div>
+          </div>
+          <button onclick="openEditUser('${u.id}')" class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 transition text-xs font-extrabold">
+            ${t().edit}
+          </button>
+        </div>
+      `).join("");
     }
 
     // ----------------------------
-    // Pages
-    // ----------------------------
-    window.renderPage = function(page) {
-      state.view = page;
-      localStorage.setItem('adminView', page);
-
-      const t = translations[state.lang];
-      const content = $('mainContent');
-      const pageTitle = $('pageTitle');
-
-      setNavActive(page);
-
-      if (page === 'overview') {
-        pageTitle.innerText = t.overview;
-        content.innerHTML = `
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 fade-in">
-            <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-              <p class="text-slate-500 dark:text-slate-400 text-xs font-bold mb-1">${t.total_users}</p>
-              <h3 class="text-3xl font-extrabold text-slate-800 dark:text-white">48</h3>
-            </div>
-            <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-              <p class="text-slate-500 dark:text-slate-400 text-xs font-bold mb-1">${t.online_now}</p>
-              <h3 class="text-3xl font-extrabold text-green-500">12</h3>
-            </div>
-            <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-              <p class="text-slate-500 dark:text-slate-400 text-xs font-bold mb-1">${t.warnings}</p>
-              <h3 class="text-3xl font-extrabold text-slate-800 dark:text-white">0</h3>
-            </div>
-            <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-              <p class="text-slate-500 dark:text-slate-400 text-xs font-bold mb-1">${t.server_load}</p>
-              <h3 class="text-3xl font-extrabold text-blue-500">34%</h3>
-            </div>
-          </div>
-        `;
-        renderUserList(content, t, true);
-
-      } else if (page === 'users') {
-        pageTitle.innerText = t.users;
-        renderUserList(content, t, false);
-
-      } else if (page === 'perms') {
-        pageTitle.innerText = t.permissions;
-        content.innerHTML = `
-          <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden fade-in">
-            <div class="p-6 border-b border-slate-100 dark:border-slate-700">
-              <h3 class="font-bold text-slate-800 dark:text-white">${t.perm_matrix}</h3>
-            </div>
-            <table class="w-full text-start text-sm text-slate-600 dark:text-slate-300">
-              <thead class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 dark:text-slate-400 uppercase font-bold text-xs">
-                <tr>
-                  <th class="p-4">${t.role}</th>
-                  <th class="p-4">${t.access_level}</th>
-                  <th class="p-4">${t.modules}</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
-                <tr>
-                  <td class="p-4 font-bold text-slate-800 dark:text-white">${t.ceo}</td>
-                  <td class="p-4 text-green-600 font-bold">${t.full_access}</td>
-                  <td class="p-4">All Modules</td>
-                </tr>
-                <tr>
-                  <td class="p-4 font-bold text-slate-800 dark:text-white">${t.hr}</td>
-                  <td class="p-4 text-blue-500 font-bold">${t.partial}</td>
-                  <td class="p-4">Employees, Payroll</td>
-                </tr>
-                <tr>
-                  <td class="p-4 font-bold text-slate-800 dark:text-white">${t.grc}</td>
-                  <td class="p-4 text-slate-600 dark:text-slate-300 font-bold">${t.read_only}</td>
-                  <td class="p-4">Audit Logs, Policies</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        `;
-
-      } else if (page === 'monitor') {
-        pageTitle.innerText = t.monitor;
-        content.innerHTML = `
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 fade-in">
-            <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 flex flex-col items-center text-center">
-              <div class="w-16 h-16 rounded-full bg-green-50 dark:bg-green-900/20 text-green-500 flex items-center justify-center text-3xl mb-4 animate-pulse">
-                <i class="fa-solid fa-server" aria-hidden="true"></i>
-              </div>
-              <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-1">${t.server_status}</h3>
-              <p class="text-green-500 font-bold text-sm">${t.uptime}</p>
-              <p class="text-[11px] text-slate-400 mt-2">${t.last_down}</p>
-            </div>
-
-            <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 flex flex-col items-center text-center">
-              <div class="w-16 h-16 rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-500 flex items-center justify-center text-3xl mb-4">
-                <i class="fa-solid fa-database" aria-hidden="true"></i>
-              </div>
-              <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-1">${t.db_status}</h3>
-              <p class="text-blue-500 font-bold text-sm">${t.latency}</p>
-              <p class="text-[11px] text-slate-400 mt-2">${t.backups}</p>
-            </div>
-
-            <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 flex flex-col items-center text-center">
-              <div class="w-16 h-16 rounded-full bg-red-50 dark:bg-red-900/20 text-brandRed flex items-center justify-center text-3xl mb-4">
-                <i class="fa-solid fa-network-wired" aria-hidden="true"></i>
-              </div>
-              <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-1">${t.api_status}</h3>
-              <p class="text-brandRed font-bold text-sm">${t.integrations}</p>
-            </div>
-          </div>
-        `;
-      }
-
-      // Close sidebar on mobile after navigation
-      if (window.innerWidth < 768) toggleSidebar(false);
-    };
-
-    // ----------------------------
-    // Sidebar (Mobile)
-    // ----------------------------
-    window.toggleSidebar = function(force) {
-      const sb = $('sidebar');
-      const ov = $('mobileOverlay');
-
-      const shouldOpen = (typeof force === 'boolean') ? force : !sb.classList.contains('open');
-      if (shouldOpen) {
-        sb.classList.add('open');
-        ov.classList.add('active');
-        state.sidebarOpen = true;
-      } else {
-        sb.classList.remove('open');
-        ov.classList.remove('active');
-        state.sidebarOpen = false;
-      }
-    };
-
-    // ----------------------------
-    // AI Sidebar
+    // AI (Demo with keywords)
     // ----------------------------
     function addAIMessage(text) {
-      const chat = $('chatArea');
-      chat.insertAdjacentHTML('beforeend',
-        `<div class="flex justify-start fade-in"><div class="chat-bubble chat-ai">${escapeHtml(text)}</div></div>`
-      );
+      const chat = $("chatArea");
+      chat.insertAdjacentHTML("beforeend", `<div class="flex justify-start fade-in"><div class="chat-bubble chat-ai">${escapeHtml(text)}</div></div>`);
       chat.scrollTop = chat.scrollHeight;
     }
 
     function addUserMessage(text) {
-      const chat = $('chatArea');
-      chat.insertAdjacentHTML('beforeend',
-        `<div class="flex justify-end fade-in"><div class="chat-bubble chat-user">${escapeHtml(text)}</div></div>`
-      );
+      const chat = $("chatArea");
+      chat.insertAdjacentHTML("beforeend", `<div class="flex justify-end fade-in"><div class="chat-bubble chat-user">${escapeHtml(text)}</div></div>`);
       chat.scrollTop = chat.scrollHeight;
     }
 
     window.toggleAI = function(force) {
-      const ai = $('aiSidebar');
-      const shouldOpen = (typeof force === 'boolean') ? force : !ai.classList.contains('open');
-
-      if (shouldOpen) {
-        ai.classList.add('open');
-        state.aiOpen = true;
-      } else {
-        ai.classList.remove('open');
-        state.aiOpen = false;
-      }
+      const ai = $("aiSidebar");
+      const shouldOpen = (typeof force === "boolean") ? force : !ai.classList.contains("open");
+      ai.classList.toggle("open", shouldOpen);
     };
 
     window.sendAIMessage = function() {
-      const input = $('aiInput');
+      const input = $("aiInput");
       const msg = input.value.trim();
       if (!msg) return;
 
       addUserMessage(msg);
-      input.value = '';
+      input.value = "";
 
       setTimeout(() => {
-        addAIMessage(state.lang === 'ar' ? "جار التحليل..." : "Analyzing...");
-      }, 600);
+        addAIMessage(aiReply(msg));
+      }, 450);
+    };
+
+    function aiReply(q) {
+      const s = q.toLowerCase();
+      const total = users.length;
+      const locked = users.filter(u => u.locked).length;
+      const inactive = users.filter(u => u.status === "inactive").length;
+
+      if (s.includes("user") || s.includes("مستخدم") || s.includes("users")) {
+        return state.lang === "ar"
+          ? `عدد المستخدمين: ${total}\nالنشط: ${total - inactive - locked} • غير نشط: ${inactive} • مقفل: ${locked}\n(هذه بيانات ديمو).`
+          : `Users: ${total}. Active: ${total - inactive - locked}, Inactive: ${inactive}, Locked: ${locked}. (Demo data).`;
+      }
+
+      if (s.includes("log") || s.includes("سجل") || s.includes("logs")) {
+        return state.lang === "ar"
+          ? "تم العثور على 4 أحداث حديثة (Demo). افتح صفحة Monitor لمراجعة التفاصيل وتصدير السجلات."
+          : "Found 4 recent events (Demo). Open Monitor page to review and export logs.";
+      }
+
+      if (s.includes("server") || s.includes("سيرفر") || s.includes("health")) {
+        return state.lang === "ar"
+          ? `حالة السيرفر: مستقرة.\nUptime: 99.9% • DB: 12ms • CPU: ${randomPct()}%\n(قيم افتراضية).`
+          : `Server health: Stable. Uptime 99.9%, DB 12ms, CPU ${randomPct()}% (simulated).`;
+      }
+
+      if (s.includes("permission") || s.includes("صلاح") || s.includes("perms")) {
+        return state.lang === "ar"
+          ? "تقدر تعدل صلاحيات الأدوار من صفحة Permissions. بعد التعديل اضغط (تحديث الصلاحيات)."
+          : "You can edit role permissions in Permissions page, then click Update Permissions.";
+      }
+
+      return state.lang === "ar"
+        ? "تمام. اكتب: (تقرير المستخدمين) أو (سجلات الدخول) أو (حالة السيرفر)."
+        : "Try: users report, login logs, or server health.";
+    }
+
+    // ----------------------------
+    // Page Router
+    // ----------------------------
+    window.renderPage = function(page) {
+      state.view = page;
+      localStorage.setItem(K.view, page);
+
+      setNavActive(page);
+      $("pageTitle").innerText =
+        page === "overview" ? t().overview :
+        page === "users" ? t().users :
+        page === "perms" ? t().permissions :
+        t().monitor;
+
+      if (page === "overview") renderOverviewPage();
+      if (page === "users") renderUsersPage();
+      if (page === "perms") renderPermsPage();
+      if (page === "monitor") renderMonitorPage();
+
+      if (window.innerWidth < 768) toggleSidebar(false);
     };
 
     // ----------------------------
-    // Theme / Language
+    // Theme / Language buttons
     // ----------------------------
     window.toggleDarkMode = function() {
       state.dark = !state.dark;
@@ -705,59 +1305,50 @@ t,
     };
 
     window.toggleLanguage = function() {
-      state.lang = (state.lang === 'ar') ? 'en' : 'ar';
-      localStorage.setItem('lang', state.lang);
+      state.lang = (state.lang === "ar") ? "en" : "ar";
+      localStorage.setItem(K.lang, state.lang);
       applyLanguage();
-      renderPage(state.view);
       renderNotifications();
+      renderPage(state.view);
     };
 
     // ----------------------------
     // Logout
     // ----------------------------
     window.logout = function() {
-      localStorage.removeItem('currentUser');
-      window.location.href = 'login.html';
+      localStorage.removeItem("currentUser");
+      window.location.href = "login.html";
     };
 
     // ----------------------------
     // Click outside + ESC close
     // ----------------------------
-    document.addEventListener('click', (e) => {
-      // Close notifications if clicked outside
-      if (!$('notifWrap').contains(e.target)) {
-        $('notifDropdown').classList.add('hidden');
-        state.notifOpen = false;
+    document.addEventListener("click", (e) => {
+      // Close notifications on outside click
+      if (!$("notifWrap").contains(e.target)) {
+        $("notifDropdown").classList.add("hidden");
       }
     });
 
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        // Close notifications
-        $('notifDropdown').classList.add('hidden');
-        state.notifOpen = false;
-
-        // Close AI
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        $("notifDropdown").classList.add("hidden");
         toggleAI(false);
-
-        // Close mobile sidebar
         if (window.innerWidth < 768) toggleSidebar(false);
+        closeModal();
       }
     });
 
     // ----------------------------
     // Init
     // ----------------------------
-    (function init() {
-      // Theme
+    (function init(){
       applyTheme();
-
-      // Language + initial notifications
       applyLanguage();
+
+      if (state.notificationsRead) $("notifBadge")?.classList.add("hidden");
       renderNotifications();
 
-      // Start page
-      setNavActive(state.view);
       renderPage(state.view);
     })();
   </script>
