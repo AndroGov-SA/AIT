@@ -1888,466 +1888,409 @@
       const next = (nums.length ? Math.max(...nums) : 0) + 1;
       return prefix + String(next).padStart(2,'0');
     }
-function openFindingDetails(id) {
-  const s = getStore();
-  const f = s.findings.find(x => x.id === id);
-  if (!f) return;
+<script>
+  // =========================
+  // Delete Finding (Safer + No inline onclick injection)
+  // =========================
+  function confirmDeleteFinding(id) {
+    const s = getStore();
+    const f = s.findings.find(x => x.id === id);
+    if (!f) return;
 
-  const desc = currentLang==='ar' ? f.desc_ar : f.desc_en;
-  const owner = currentLang==='ar' ? f.owner_ar : f.owner_en;
-  const rec = currentLang==='ar' ? f.recommendation_ar : f.recommendation_en;
-  const resp = currentLang==='ar' ? f.managementResponse_ar : f.managementResponse_en;
+    const title = currentLang === 'ar' ? 'تأكيد الحذف' : 'Confirm Delete';
 
-  const linkedMission = f.relatedMissionId ? s.missions.find(m => m.id === f.relatedMissionId) : null;
+    const body = `
+      <div class="text-sm text-slate-600 dark:text-slate-300">
+        ${currentLang === 'ar'
+          ? `هل أنت متأكد من حذف الملاحظة: <b class="text-slate-800 dark:text-white">${escapeHtml(f.ref)}</b>؟`
+          : `Are you sure you want to delete: <b class="text-slate-800 dark:text-white">${escapeHtml(f.ref)}</b>?`
+        }
+      </div>
+    `;
 
-  const body = `
-    <div class="space-y-4">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-        <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-700/40 border border-slate-100 dark:border-slate-700">
-          <div class="text-xs text-slate-500">${currentLang==='ar'?'المرجع':'Ref'}</div>
-          <div class="font-mono text-sm font-bold text-slate-800 dark:text-white">${escapeHtml(f.ref)}</div>
-        </div>
+    // مهم: بدون onclick داخل النص (عشان لا يصير مشاكل اقتباسات/حقن)
+    const footer = `
+      <button id="btn_cancel_del_finding"
+        class="px-4 py-2 rounded-lg text-sm font-bold border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition">
+        ${t('cancel')}
+      </button>
 
-        <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-700/40 border border-slate-100 dark:border-slate-700">
-          <div class="text-xs text-slate-500">${currentLang==='ar'?'الحالة':'State'}</div>
-          <div class="mt-1">${stateBadge(f.state)}</div>
-        </div>
+      <button id="btn_confirm_del_finding"
+        class="px-4 py-2 rounded-lg text-sm font-bold bg-red-600 text-white hover:bg-red-700 transition">
+        <i class="fa-solid fa-trash"></i> ${t('delete')}
+      </button>
+    `;
 
-        <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-700/40 border border-slate-100 dark:border-slate-700">
-          <div class="text-xs text-slate-500">${currentLang==='ar'?'المخاطرة':'Risk'}</div>
-          <div class="mt-1">${riskBadge(f.risk)}</div>
-        </div>
+    openModal(title, body, footer);
 
-        <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-700/40 border border-slate-100 dark:border-slate-700">
-          <div class="text-xs text-slate-500">${currentLang==='ar'?'المسؤول':'Owner'}</div>
-          <div class="text-sm font-bold text-slate-800 dark:text-white mt-1">${escapeHtml(owner)}</div>
-        </div>
+    // ربط الأحداث بعد فتح المودال
+    setTimeout(() => {
+      const btnCancel = document.getElementById('btn_cancel_del_finding');
+      const btnConfirm = document.getElementById('btn_confirm_del_finding');
+
+      if (btnCancel) {
+        btnCancel.onclick = () => closeModal();
+      }
+
+      if (btnConfirm) {
+        btnConfirm.onclick = () => {
+          // منع الضغط مرتين
+          btnConfirm.disabled = true;
+          btnConfirm.classList.add('opacity-60', 'cursor-not-allowed');
+
+          deleteFinding(id);
+        };
+      }
+    }, 0);
+  }
+
+  function deleteFinding(id) {
+    updateStore(s => {
+      s.findings = s.findings.filter(f => f.id !== id);
+      return s;
+    });
+
+    closeModal();
+
+    if (currentView === 'findings') renderFindingsTable();
+    if (currentView === 'dashboard') renderView('dashboard');
+
+    renderNotifications();
+    toast(currentLang === 'ar' ? 'تم حذف الملاحظة.' : 'Finding deleted.', 'danger');
+  }
+
+  // =========================
+  // Reports + PDF (jsPDF)
+  // =========================
+  function reportsHTML() {
+    return `
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 fade-in">
+        ${reportCard(t('rep_summary'), "openGenerateReport('summary')", "fa-clipboard-list")}
+        ${reportCard(t('rep_followup'), "openGenerateReport('followup')", "fa-rotate")}
+        ${reportCard(t('rep_missions'), "openGenerateReport('missions')", "fa-list-check")}
       </div>
 
-      ${linkedMission ? `
-        <div class="p-4 rounded-xl bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700">
-          <div class="text-xs text-slate-500">${currentLang==='ar'?'مرتبطة بمهمة':'Linked mission'}</div>
-          <div class="mt-1 flex items-center justify-between gap-3">
-            <div class="min-w-0">
-              <div class="text-[11px] font-mono text-slate-400">${escapeHtml(linkedMission.id)}</div>
-              <div class="font-bold text-slate-800 dark:text-white truncate">
-                ${escapeHtml(currentLang==='ar' ? linkedMission.title_ar : linkedMission.title_en)}
-              </div>
-            </div>
-            <button class="text-xs text-brandRed font-bold hover:underline shrink-0"
-              onclick="openMissionDetails('${escapeHtml(linkedMission.id)}')">
-              ${t('btn_details')}
-            </button>
-          </div>
-        </div>
-      ` : ''}
-
-      <div class="p-4 rounded-xl bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700">
-        <div class="text-xs text-slate-500">${currentLang==='ar'?'الوصف':'Description'}</div>
-        <div class="mt-1 text-sm font-bold text-slate-800 dark:text-white whitespace-pre-line">${escapeHtml(desc)}</div>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-        <div class="p-4 rounded-xl bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700">
-          <div class="text-xs text-slate-500">${currentLang==='ar'?'التوصية':'Recommendation'}</div>
-          <div class="mt-1 text-sm text-slate-700 dark:text-slate-200 whitespace-pre-line">${escapeHtml(rec || '-')}</div>
-        </div>
-
-        <div class="p-4 rounded-xl bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700">
-          <div class="text-xs text-slate-500">${currentLang==='ar'?'رد الإدارة':'Management Response'}</div>
-          <div class="mt-1 text-sm text-slate-700 dark:text-slate-200 whitespace-pre-line">${escapeHtml(resp || '-')}</div>
-        </div>
-      </div>
-
-      <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-700/40 border border-slate-100 dark:border-slate-700">
-        <div class="text-xs text-slate-500">${currentLang==='ar'?'تاريخ الاستحقاق':'Due date'}</div>
-        <div class="mt-1 text-sm font-bold text-slate-800 dark:text-white">${escapeHtml(f.due || '-')}</div>
-      </div>
-    </div>
-  `;
-
-  const footer = `
-    <button class="px-4 py-2 rounded-lg text-sm font-bold border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition"
-      onclick="closeModal()">${t('close')}</button>
-
-    <button class="px-4 py-2 rounded-lg text-sm font-bold bg-brandRed text-white hover:bg-red-600 transition"
-      onclick="openEditFinding('${escapeHtml(f.id)}')">
-      <i class="fa-solid fa-pen"></i> ${t('edit')}
-    </button>
-  `;
-
-  openModal(currentLang==='ar'?'تفاصيل الملاحظة':'Finding Details', body, footer);
-
-    }
-
-    function confirmDeleteFinding(id) {
-      const s = getStore();
-      const f = s.findings.find(x => x.id === id);
-      if (!f) return;
-
-      const body = `
-        <div class="text-sm text-slate-600 dark:text-slate-300">
+      <div class="mt-6 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-6 fade-in">
+        <h3 class="font-bold text-lg text-slate-800 dark:text-white">${t('audit_reports')}</h3>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
           ${currentLang==='ar'
-            ? `هل أنت متأكد من حذف الملاحظة: <b class="text-slate-800 dark:text-white">${escapeHtml(f.ref)}</b>؟`
-            : `Are you sure you want to delete: <b class="text-slate-800 dark:text-white">${escapeHtml(f.ref)}</b>?`
+            ? 'هذه صفحة Demo: توليد PDF داخل المتصفح باستخدام jsPDF.'
+            : 'Demo page: generate PDF in-browser using jsPDF.'
           }
-        </div>
-      `;
+        </p>
 
-      const footer = `
-        <button class="px-4 py-2 rounded-lg text-sm font-bold border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition" onclick="closeModal()">${t('cancel')}</button>
-        <button class="px-4 py-2 rounded-lg text-sm font-bold bg-red-600 text-white hover:bg-red-700 transition" onclick="deleteFinding('${id}')">
-          <i class="fa-solid fa-trash"></i> ${t('delete')}
-        </button>
-      `;
-
-      openModal(currentLang==='ar'?'تأكيد الحذف':'Confirm Delete', body, footer);
-    }
-
-    function deleteFinding(id) {
-      updateStore(s => {
-        s.findings = s.findings.filter(f => f.id !== id);
-        return s;
-      });
-      closeModal();
-      if (currentView === 'findings') renderFindingsTable();
-      if (currentView === 'dashboard') renderView('dashboard');
-      renderNotifications();
-      toast(currentLang==='ar'?'تم حذف الملاحظة.':'Finding deleted.', 'danger');
-    }
-
-    // =========================
-    // Reports + PDF (jsPDF)
-    // =========================
-    function reportsHTML() {
-      return `
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 fade-in">
-          ${reportCard(t('rep_summary'), "openGenerateReport('summary')", "fa-clipboard-list")}
-          ${reportCard(t('rep_followup'), "openGenerateReport('followup')", "fa-rotate")}
-          ${reportCard(t('rep_missions'), "openGenerateReport('missions')", "fa-list-check")}
-        </div>
-
-        <div class="mt-6 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-6 fade-in">
-          <h3 class="font-bold text-lg text-slate-800 dark:text-white">${t('audit_reports')}</h3>
-          <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            ${currentLang==='ar'
-              ? 'هذه صفحة Demo: توليد PDF داخل المتصفح باستخدام jsPDF.'
-              : 'Demo page: generate PDF in-browser using jsPDF.'
-            }
-          </p>
-
-          <div class="mt-4 flex flex-wrap gap-2">
-            <button class="bg-brandRed text-white px-4 py-2 rounded-lg text-sm font-bold shadow-lg hover:bg-red-600 transition" onclick="openGenerateReport()">
-              <i class="fa-solid fa-wand-magic-sparkles"></i> ${t('btn_generate')}
-            </button>
-            <button class="px-4 py-2 rounded-lg text-sm font-bold border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition" onclick="downloadPDF('summary')">
-              <i class="fa-solid fa-download"></i> ${t('btn_download')}
-            </button>
-          </div>
-        </div>
-      `;
-    }
-
-    function reportCard(title, action, icon) {
-      return `
-        <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-6">
-          <div class="flex items-center gap-3">
-            <div class="w-12 h-12 rounded-xl bg-red-50 dark:bg-red-900/20 text-brandRed flex items-center justify-center">
-              <i class="fa-solid ${icon}"></i>
-            </div>
-            <div class="min-w-0">
-              <div class="font-extrabold text-slate-800 dark:text-white truncate">${escapeHtml(title)}</div>
-              <div class="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                ${currentLang==='ar'?'تصدير تقرير PDF سريع':'Quick PDF export'}
-              </div>
-            </div>
-          </div>
-          <button class="mt-4 w-full bg-slate-50 dark:bg-slate-700/50 hover:bg-red-50 dark:hover:bg-slate-700 rounded-xl px-4 py-3 text-sm font-bold text-slate-700 dark:text-slate-200 transition"
-            onclick="${action}">
-            <i class="fa-solid fa-file-export text-brandRed"></i> ${t('export_pdf')}
+        <div class="mt-4 flex flex-wrap gap-2">
+          <button class="bg-brandRed text-white px-4 py-2 rounded-lg text-sm font-bold shadow-lg hover:bg-red-600 transition" onclick="openGenerateReport()">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> ${t('btn_generate')}
+          </button>
+          <button class="px-4 py-2 rounded-lg text-sm font-bold border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition" onclick="downloadPDF('summary')">
+            <i class="fa-solid fa-download"></i> ${t('btn_download')}
           </button>
         </div>
-      `;
-    }
+      </div>
+    `;
+  }
 
-    function openGenerateReport(type=null) {
-      const body = `
-        <div class="space-y-4">
-          <div>
-            <label class="text-xs text-slate-500">${currentLang==='ar'?'نوع التقرير':'Report Type'}</label>
-            <select id="rep_type" class="mt-1 w-full bg-slate-50 dark:bg-slate-700/40 border border-slate-100 dark:border-slate-700 rounded-xl px-3 py-3 text-sm outline-none">
-              <option value="summary">${t('rep_summary')}</option>
-              <option value="followup">${t('rep_followup')}</option>
-              <option value="missions">${t('rep_missions')}</option>
-              <option value="findings">${t('findings_log')}</option>
-            </select>
+  function reportCard(title, action, icon) {
+    return `
+      <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-6">
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-xl bg-red-50 dark:bg-red-900/20 text-brandRed flex items-center justify-center">
+            <i class="fa-solid ${icon}"></i>
           </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <div>
-              <label class="text-xs text-slate-500">${currentLang==='ar'?'من تاريخ':'From date'}</label>
-              <input id="rep_from" type="date" class="mt-1 w-full bg-slate-50 dark:bg-slate-700/40 border border-slate-100 dark:border-slate-700 rounded-xl px-3 py-3 text-sm outline-none" value="">
+          <div class="min-w-0">
+            <div class="font-extrabold text-slate-800 dark:text-white truncate">${escapeHtml(title)}</div>
+            <div class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+              ${currentLang==='ar'?'تصدير تقرير PDF سريع':'Quick PDF export'}
             </div>
-            <div>
-              <label class="text-xs text-slate-500">${currentLang==='ar'?'إلى تاريخ':'To date'}</label>
-              <input id="rep_to" type="date" class="mt-1 w-full bg-slate-50 dark:bg-slate-700/40 border border-slate-100 dark:border-slate-700 rounded-xl px-3 py-3 text-sm outline-none" value="">
-            </div>
-          </div>
-
-          <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-700/40 border border-slate-100 dark:border-slate-700 text-xs text-slate-500 dark:text-slate-300">
-            ${currentLang==='ar'
-              ? 'تنبيه: هذا PDF ديمو (نصي). بإمكاننا لاحقًا إضافة جداول منسقة أو شعار رسمي.'
-              : 'Note: this is a demo (text) PDF. We can later add formatted tables or official branding.'
-            }
           </div>
         </div>
-      `;
-
-      const footer = `
-        <button class="px-4 py-2 rounded-lg text-sm font-bold border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition" onclick="closeModal()">${t('cancel')}</button>
-        <button class="px-4 py-2 rounded-lg text-sm font-bold bg-brandRed text-white hover:bg-red-600 transition" onclick="downloadPDF(document.getElementById('rep_type').value)">
-          <i class="fa-solid fa-download"></i> ${t('btn_download')}
+        <button class="mt-4 w-full bg-slate-50 dark:bg-slate-700/50 hover:bg-red-50 dark:hover:bg-slate-700 rounded-xl px-4 py-3 text-sm font-bold text-slate-700 dark:text-slate-200 transition"
+          onclick="${action}">
+          <i class="fa-solid fa-file-export text-brandRed"></i> ${t('export_pdf')}
         </button>
-      `;
+      </div>
+    `;
+  }
 
-      openModal(currentLang==='ar'?'توليد تقرير':'Generate Report', body, footer);
-      if (type) setTimeout(() => { const el = document.getElementById('rep_type'); if (el) el.value = type; }, 0);
-    }
+  function openGenerateReport(type=null) {
+    const body = `
+      <div class="space-y-4">
+        <div>
+          <label class="text-xs text-slate-500">${currentLang==='ar'?'نوع التقرير':'Report Type'}</label>
+          <select id="rep_type" class="mt-1 w-full bg-slate-50 dark:bg-slate-700/40 border border-slate-100 dark:border-slate-700 rounded-xl px-3 py-3 text-sm outline-none">
+            <option value="summary">${t('rep_summary')}</option>
+            <option value="followup">${t('rep_followup')}</option>
+            <option value="missions">${t('rep_missions')}</option>
+            <option value="findings">${t('findings_log')}</option>
+          </select>
+        </div>
 
-    function downloadPDF(type='summary') {
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF({ unit: 'pt', format: 'a4' });
-
-      const s = getStore();
-      const title = (currentLang==='ar')
-        ? `AndroGov - ${type === 'summary' ? 'تقرير ملخص رقابي' : type === 'followup' ? 'تقرير متابعة' : type === 'missions' ? 'تقرير مهام التدقيق' : 'تقرير الملاحظات'}`
-        : `AndroGov - ${type === 'summary' ? 'Audit Summary' : type === 'followup' ? 'Follow-up' : type === 'missions' ? 'Missions' : 'Findings'}`;
-
-      // Header
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(14);
-      doc.text(title, 40, 50);
-
-      doc.setFont('helvetica', 'normal');
-      doc.setFontSize(10);
-      doc.text(`Generated: ${new Date().toLocaleString()}`, 40, 70);
-
-      let y = 100;
-      const line = (txt) => {
-        const maxWidth = 515;
-        const lines = doc.splitTextToSize(txt, maxWidth);
-        doc.text(lines, 40, y);
-        y += (lines.length * 14) + 6;
-        if (y > 760) { doc.addPage(); y = 60; }
-      };
-
-      // Content
-      if (type === 'summary') {
-        const done = s.missions.filter(m => m.status==='done').length;
-        const ongoing = s.missions.filter(m => m.status==='ongoing').length;
-        const planned = s.missions.filter(m => m.status==='planned').length;
-        const openFindings = s.findings.filter(f => f.state!=='closed').length;
-        const highOpen = s.findings.filter(f => f.risk==='high' && f.state!=='closed').length;
-
-        line(currentLang==='ar' ? `ملخص المؤشرات:` : `Key metrics:`);
-        line((currentLang==='ar' ? `- المهام: مكتمل ${done} | قيد التنفيذ ${ongoing} | مخطط ${planned}` : `- Missions: done ${done} | ongoing ${ongoing} | planned ${planned}`));
-        line((currentLang==='ar' ? `- الملاحظات المفتوحة: ${openFindings} (عالية المخاطر: ${highOpen})` : `- Open findings: ${openFindings} (high risk: ${highOpen})`));
-      }
-
-      if (type === 'missions') {
-        line(currentLang==='ar' ? `قائمة مهام التدقيق:` : `Audit missions list:`);
-        s.missions.forEach(m => {
-          const titleX = currentLang==='ar' ? m.title_ar : m.title_en;
-          const deptX = currentLang==='ar' ? m.dept_ar : m.dept_en;
-          line(`${m.id} | ${titleX} | ${deptX} | ${m.status} | due: ${m.due}`);
-        });
-      }
-
-      if (type === 'findings' || type === 'followup') {
-        line(currentLang==='ar' ? `قائمة الملاحظات:` : `Findings list:`);
-        const list = (type === 'followup')
-          ? s.findings.filter(f => f.state !== 'closed')
-          : s.findings;
-
-        list.forEach(f => {
-          const desc = currentLang==='ar' ? f.desc_ar : f.desc_en;
-          const owner = currentLang==='ar' ? f.owner_ar : f.owner_en;
-          line(`${f.ref} | ${f.risk} | ${f.state} | ${owner} | due: ${f.due}`);
-          line(`- ${desc}`);
-        });
-      }
-
-      doc.save(`AndroGov_${type}_${todayISO()}.pdf`);
-      toast(currentLang==='ar'?'تم تحميل التقرير.':'Report downloaded.', 'success');
-      closeModal();
-    }
-
-    // =========================
-    // Profile (HR)
-    // =========================
-    function profileHTML() {
-      const s = getStore();
-      const p = s.profile;
-
-      const name = currentLang==='ar' ? p.name_ar : p.name_en;
-      const role = currentLang==='ar' ? p.role_ar : p.role_en;
-
-      return `
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 fade-in">
-          <div class="lg:col-span-2 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-6">
-            <div class="flex items-center gap-4">
-              <div class="w-14 h-14 rounded-2xl bg-brandRed text-white flex items-center justify-center font-extrabold text-xl shadow-lg shadow-red-500/30">
-                IA
-              </div>
-              <div class="min-w-0">
-                <div class="text-lg font-extrabold text-slate-800 dark:text-white truncate">${escapeHtml(name)}</div>
-                <div class="text-xs text-slate-500 dark:text-slate-400 mt-1">${escapeHtml(role)}</div>
-              </div>
-              <div class="ms-auto text-xs font-bold px-3 py-1.5 rounded-full bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-200">
-                ${t('on_job')}
-              </div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mt-6">
-              <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-700/40 border border-slate-100 dark:border-slate-700">
-                <div class="text-xs text-slate-500">${t('leave_bal')}</div>
-                <div class="text-2xl font-extrabold text-slate-800 dark:text-white mt-1">${p.leaveBalance} <span class="text-xs font-bold text-slate-400">${currentLang==='ar'?'يوم':'Days'}</span></div>
-              </div>
-              <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-700/40 border border-slate-100 dark:border-slate-700">
-                <div class="text-xs text-slate-500">${t('commit_score')}</div>
-                <div class="text-2xl font-extrabold text-slate-800 dark:text-white mt-1">${p.commitment}%</div>
-              </div>
-              <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-700/40 border border-slate-100 dark:border-slate-700">
-                <div class="text-xs text-slate-500">${currentLang==='ar'?'رقم الموظف':'Employee ID'}</div>
-                <div class="text-2xl font-extrabold text-slate-800 dark:text-white mt-1">${escapeHtml(p.employeeId)}</div>
-              </div>
-            </div>
-
-            <div class="mt-6 flex flex-wrap gap-2">
-              <button class="bg-brandRed text-white px-4 py-2 rounded-lg text-sm font-bold shadow-lg hover:bg-red-600 transition" onclick="checkinToggle()">
-                <i class="fa-solid fa-fingerprint"></i> ${t('btn_checkin')}
-              </button>
-              <button class="px-4 py-2 rounded-lg text-sm font-bold border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition" onclick="demoHR('${t('btn_leave')}')">
-                <i class="fa-solid fa-plane-departure"></i> ${t('btn_leave')}
-              </button>
-              <button class="px-4 py-2 rounded-lg text-sm font-bold border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition" onclick="demoHR('${t('btn_salary')}')">
-                <i class="fa-solid fa-file-invoice"></i> ${t('btn_salary')}
-              </button>
-              <button class="px-4 py-2 rounded-lg text-sm font-bold border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition" onclick="demoHR('${t('btn_support')}')">
-                <i class="fa-solid fa-headset"></i> ${t('btn_support')}
-              </button>
-            </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div>
+            <label class="text-xs text-slate-500">${currentLang==='ar'?'من تاريخ':'From date'}</label>
+            <input id="rep_from" type="date" class="mt-1 w-full bg-slate-50 dark:bg-slate-700/40 border border-slate-100 dark:border-slate-700 rounded-xl px-3 py-3 text-sm outline-none" value="">
           </div>
-
-          <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-6">
-            <h3 class="font-bold text-slate-800 dark:text-white">${t('attend_log')}</h3>
-            <div class="mt-4 space-y-2">
-              ${p.attendance.map(a => `
-                <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-700/40 border border-slate-100 dark:border-slate-700">
-                  <div class="text-xs font-bold text-slate-700 dark:text-slate-200">${escapeHtml(currentLang==='ar'?a.date_ar:a.date_en)}</div>
-                  <div class="text-[11px] text-slate-500 mt-1">
-                    ${currentLang==='ar'
-                      ? `دخول: <b>${a.in_ar}</b> • خروج: <b>${a.out_ar}</b> • ${a.status_ar}`
-                      : `In: <b>${a.in_en}</b> • Out: <b>${a.out_en}</b> • ${a.status_en}`
-                    }
-                  </div>
-                </div>
-              `).join('')}
-            </div>
+          <div>
+            <label class="text-xs text-slate-500">${currentLang==='ar'?'إلى تاريخ':'To date'}</label>
+            <input id="rep_to" type="date" class="mt-1 w-full bg-slate-50 dark:bg-slate-700/40 border border-slate-100 dark:border-slate-700 rounded-xl px-3 py-3 text-sm outline-none" value="">
           </div>
         </div>
-      `;
-    }
 
-    function demoHR(title) {
-      openModal(title, `
-        <div class="text-sm text-slate-600 dark:text-slate-300">
-          ${currentLang==='ar' ? 'هذه وظيفة تجريبية (Demo). سيتم ربطها لاحقًا بالأنظمة.' : 'This is a demo action. Will be integrated later.'}
-        </div>
-      `, `
-        <button class="px-4 py-2 rounded-lg text-sm font-bold bg-brandRed text-white hover:bg-red-600 transition" onclick="closeModal()">${t('close')}</button>
-      `);
-    }
-
-    function checkinToggle() {
-      updateStore(s => {
-        const p = s.profile;
-        const now = new Date();
-        p.lastCheck = now.toISOString();
-        return s;
-      });
-      toast(currentLang==='ar'?'تم تسجيل العملية (Demo).':'Action recorded (Demo).', 'success');
-    }
-
-    // =========================
-    // Logout (Demo)
-    // =========================
-    function logout() {
-      openModal(currentLang==='ar'?'تسجيل خروج':'Logout', `
-        <div class="text-sm text-slate-600 dark:text-slate-300">
+        <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-700/40 border border-slate-100 dark:border-slate-700 text-xs text-slate-500 dark:text-slate-300">
           ${currentLang==='ar'
-            ? 'هذه نسخة Demo. هل تريد تصفير بيانات الديمو (localStorage)؟'
-            : 'This is a demo. Do you want to reset demo data (localStorage)?'
+            ? 'تنبيه: هذا PDF ديمو (نصي). بإمكاننا لاحقًا إضافة جداول منسقة أو شعار رسمي.'
+            : 'Note: this is a demo (text) PDF. We can later add formatted tables or official branding.'
           }
         </div>
-      `, `
-        <button class="px-4 py-2 rounded-lg text-sm font-bold border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition" onclick="closeModal()">${t('cancel')}</button>
-        <button class="px-4 py-2 rounded-lg text-sm font-bold bg-red-600 text-white hover:bg-red-700 transition" onclick="resetDemo()">
-          <i class="fa-solid fa-rotate-left"></i> ${currentLang==='ar'?'تصفير الديمو':'Reset Demo'}
-        </button>
-      `);
+      </div>
+    `;
+
+    const footer = `
+      <button class="px-4 py-2 rounded-lg text-sm font-bold border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition" onclick="closeModal()">${t('cancel')}</button>
+      <button class="px-4 py-2 rounded-lg text-sm font-bold bg-brandRed text-white hover:bg-red-600 transition" onclick="downloadPDF(document.getElementById('rep_type').value)">
+        <i class="fa-solid fa-download"></i> ${t('btn_download')}
+      </button>
+    `;
+
+    openModal(currentLang==='ar'?'توليد تقرير':'Generate Report', body, footer);
+    if (type) setTimeout(() => { const el = document.getElementById('rep_type'); if (el) el.value = type; }, 0);
+  }
+
+  function downloadPDF(type='summary') {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit: 'pt', format: 'a4' });
+
+    const s = getStore();
+    const title = (currentLang==='ar')
+      ? `AndroGov - ${type === 'summary' ? 'تقرير ملخص رقابي' : type === 'followup' ? 'تقرير متابعة' : type === 'missions' ? 'تقرير مهام التدقيق' : 'تقرير الملاحظات'}`
+      : `AndroGov - ${type === 'summary' ? 'Audit Summary' : type === 'followup' ? 'Follow-up' : type === 'missions' ? 'Missions' : 'Findings'}`;
+
+    // Header
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(14);
+    doc.text(title, 40, 50);
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(10);
+    doc.text(`Generated: ${new Date().toLocaleString()}`, 40, 70);
+
+    let y = 100;
+    const line = (txt) => {
+      const maxWidth = 515;
+      const lines = doc.splitTextToSize(txt, maxWidth);
+      doc.text(lines, 40, y);
+      y += (lines.length * 14) + 6;
+      if (y > 760) { doc.addPage(); y = 60; }
+    };
+
+    // Content
+    if (type === 'summary') {
+      const done = s.missions.filter(m => m.status==='done').length;
+      const ongoing = s.missions.filter(m => m.status==='ongoing').length;
+      const planned = s.missions.filter(m => m.status==='planned').length;
+      const openFindings = s.findings.filter(f => f.state!=='closed').length;
+      const highOpen = s.findings.filter(f => f.risk==='high' && f.state!=='closed').length;
+
+      line(currentLang==='ar' ? `ملخص المؤشرات:` : `Key metrics:`);
+      line((currentLang==='ar' ? `- المهام: مكتمل ${done} | قيد التنفيذ ${ongoing} | مخطط ${planned}` : `- Missions: done ${done} | ongoing ${ongoing} | planned ${planned}`));
+      line((currentLang==='ar' ? `- الملاحظات المفتوحة: ${openFindings} (عالية المخاطر: ${highOpen})` : `- Open findings: ${openFindings} (high risk: ${highOpen})`));
     }
 
-    function resetDemo() {
-      localStorage.removeItem(STORE_KEY);
-      closeModal();
-      renderNotifications();
-      renderView('dashboard');
-      initChat();
-      toast(currentLang==='ar'?'تم تصفير بيانات الديمو.':'Demo data reset.', 'success');
+    if (type === 'missions') {
+      line(currentLang==='ar' ? `قائمة مهام التدقيق:` : `Audit missions list:`);
+      s.missions.forEach(m => {
+        const titleX = currentLang==='ar' ? m.title_ar : m.title_en;
+        const deptX = currentLang==='ar' ? m.dept_ar : m.dept_en;
+        line(`${m.id} | ${titleX} | ${deptX} | ${m.status} | due: ${m.due}`);
+      });
     }
 
-    // =========================
-    // Global UX fixes
-    // =========================
-    document.addEventListener('click', (e) => {
+    if (type === 'findings' || type === 'followup') {
+      line(currentLang==='ar' ? `قائمة الملاحظات:` : `Findings list:`);
+      const list = (type === 'followup')
+        ? s.findings.filter(f => f.state !== 'closed')
+        : s.findings;
+
+      list.forEach(f => {
+        const desc = currentLang==='ar' ? f.desc_ar : f.desc_en;
+        const owner = currentLang==='ar' ? f.owner_ar : f.owner_en;
+        line(`${f.ref} | ${f.risk} | ${f.state} | ${owner} | due: ${f.due}`);
+        line(`- ${desc}`);
+      });
+    }
+
+    doc.save(`AndroGov_${type}_${todayISO()}.pdf`);
+    toast(currentLang==='ar'?'تم تحميل التقرير.':'Report downloaded.', 'success');
+    closeModal();
+  }
+
+  // =========================
+  // Profile (HR)
+  // =========================
+  function profileHTML() {
+    const s = getStore();
+    const p = s.profile;
+
+    const name = currentLang==='ar' ? p.name_ar : p.name_en;
+    const role = currentLang==='ar' ? p.role_ar : p.role_en;
+
+    return `
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 fade-in">
+        <div class="lg:col-span-2 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-6">
+          <div class="flex items-center gap-4">
+            <div class="w-14 h-14 rounded-2xl bg-brandRed text-white flex items-center justify-center font-extrabold text-xl shadow-lg shadow-red-500/30">
+              IA
+            </div>
+            <div class="min-w-0">
+              <div class="text-lg font-extrabold text-slate-800 dark:text-white truncate">${escapeHtml(name)}</div>
+              <div class="text-xs text-slate-500 dark:text-slate-400 mt-1">${escapeHtml(role)}</div>
+            </div>
+            <div class="ms-auto text-xs font-bold px-3 py-1.5 rounded-full bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-200">
+              ${t('on_job')}
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mt-6">
+            <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-700/40 border border-slate-100 dark:border-slate-700">
+              <div class="text-xs text-slate-500">${t('leave_bal')}</div>
+              <div class="text-2xl font-extrabold text-slate-800 dark:text-white mt-1">${p.leaveBalance} <span class="text-xs font-bold text-slate-400">${currentLang==='ar'?'يوم':'Days'}</span></div>
+            </div>
+            <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-700/40 border border-slate-100 dark:border-slate-700">
+              <div class="text-xs text-slate-500">${t('commit_score')}</div>
+              <div class="text-2xl font-extrabold text-slate-800 dark:text-white mt-1">${p.commitment}%</div>
+            </div>
+            <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-700/40 border border-slate-100 dark:border-slate-700">
+              <div class="text-xs text-slate-500">${currentLang==='ar'?'رقم الموظف':'Employee ID'}</div>
+              <div class="text-2xl font-extrabold text-slate-800 dark:text-white mt-1">${escapeHtml(p.employeeId)}</div>
+            </div>
+          </div>
+
+          <div class="mt-6 flex flex-wrap gap-2">
+            <button class="bg-brandRed text-white px-4 py-2 rounded-lg text-sm font-bold shadow-lg hover:bg-red-600 transition" onclick="checkinToggle()">
+              <i class="fa-solid fa-fingerprint"></i> ${t('btn_checkin')}
+            </button>
+            <button class="px-4 py-2 rounded-lg text-sm font-bold border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition" onclick="demoHR('${t('btn_leave')}')">
+              <i class="fa-solid fa-plane-departure"></i> ${t('btn_leave')}
+            </button>
+            <button class="px-4 py-2 rounded-lg text-sm font-bold border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition" onclick="demoHR('${t('btn_salary')}')">
+              <i class="fa-solid fa-file-invoice"></i> ${t('btn_salary')}
+            </button>
+            <button class="px-4 py-2 rounded-lg text-sm font-bold border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition" onclick="demoHR('${t('btn_support')}')">
+              <i class="fa-solid fa-headset"></i> ${t('btn_support')}
+            </button>
+          </div>
+        </div>
+
+        <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-6">
+          <h3 class="font-bold text-slate-800 dark:text-white">${t('attend_log')}</h3>
+          <div class="mt-4 space-y-2">
+            ${p.attendance.map(a => `
+              <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-700/40 border border-slate-100 dark:border-slate-700">
+                <div class="text-xs font-bold text-slate-700 dark:text-slate-200">${escapeHtml(currentLang==='ar'?a.date_ar:a.date_en)}</div>
+                <div class="text-[11px] text-slate-500 mt-1">
+                  ${currentLang==='ar'
+                    ? `دخول: <b>${a.in_ar}</b> • خروج: <b>${a.out_ar}</b> • ${a.status_ar}`
+                    : `In: <b>${a.in_en}</b> • Out: <b>${a.out_en}</b> • ${a.status_en}`
+                  }
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  function demoHR(title) {
+    openModal(title, `
+      <div class="text-sm text-slate-600 dark:text-slate-300">
+        ${currentLang==='ar' ? 'هذه وظيفة تجريبية (Demo). سيتم ربطها لاحقًا بالأنظمة.' : 'This is a demo action. Will be integrated later.'}
+      </div>
+    `, `
+      <button class="px-4 py-2 rounded-lg text-sm font-bold bg-brandRed text-white hover:bg-red-600 transition" onclick="closeModal()">${t('close')}</button>
+    `);
+  }
+
+  function checkinToggle() {
+    updateStore(s => {
+      const p = s.profile;
+      const now = new Date();
+      p.lastCheck = now.toISOString();
+      return s;
+    });
+    toast(currentLang==='ar'?'تم تسجيل العملية (Demo).':'Action recorded (Demo).', 'success');
+  }
+
+  // =========================
+  // Logout (Demo)
+  // =========================
+  function logout() {
+    openModal(currentLang==='ar'?'تسجيل خروج':'Logout', `
+      <div class="text-sm text-slate-600 dark:text-slate-300">
+        ${currentLang==='ar'
+          ? 'هذه نسخة Demo. هل تريد تصفير بيانات الديمو (localStorage)؟'
+          : 'This is a demo. Do you want to reset demo data (localStorage)?'
+        }
+      </div>
+    `, `
+      <button class="px-4 py-2 rounded-lg text-sm font-bold border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition" onclick="closeModal()">${t('cancel')}</button>
+      <button class="px-4 py-2 rounded-lg text-sm font-bold bg-red-600 text-white hover:bg-red-700 transition" onclick="resetDemo()">
+        <i class="fa-solid fa-rotate-left"></i> ${currentLang==='ar'?'تصفير الديمو':'Reset Demo'}
+      </button>
+    `);
+  }
+
+  function resetDemo() {
+    localStorage.removeItem(STORE_KEY);
+    closeModal();
+    renderNotifications();
+    renderView('dashboard');
+    initChat();
+    toast(currentLang==='ar'?'تم تصفير بيانات الديمو.':'Demo data reset.', 'success');
+  }
+
+  // =========================
+  // Global UX fixes
+  // =========================
+  document.addEventListener('click', (e) => {
+    const dd = document.getElementById('notifDropdown');
+    const wrap = document.getElementById('notifWrap');
+    if (!dd || !wrap) return;
+    if (!wrap.contains(e.target)) dd.classList.add('hidden');
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      // close modal first if open
+      const modal = document.getElementById('modal');
+      if (modal && modal.classList.contains('active')) { closeModal(); return; }
+      // else close AI
+      if (aiOpen) { toggleAI(false); return; }
+      // else close notif
       const dd = document.getElementById('notifDropdown');
-      const wrap = document.getElementById('notifWrap');
-      if (!dd || !wrap) return;
-      if (!wrap.contains(e.target)) dd.classList.add('hidden');
-    });
+      if (dd && !dd.classList.contains('hidden')) dd.classList.add('hidden');
+    }
+  });
 
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        // close modal first if open
-        const modal = document.getElementById('modal');
-        if (modal && modal.classList.contains('active')) { closeModal(); return; }
-        // else close AI
-        if (aiOpen) { toggleAI(false); return; }
-        // else close notif
-        const dd = document.getElementById('notifDropdown');
-        if (dd && !dd.classList.contains('hidden')) dd.classList.add('hidden');
-      }
-    });
+  // =========================
+  // Boot
+  // =========================
+  (function boot() {
+    // Theme
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    if (savedTheme === 'dark') document.documentElement.classList.add('dark');
+    document.getElementById('themeIcon').className = isDark() ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
 
-    // =========================
-    // Boot
-    // =========================
-    (function boot() {
-      // Theme
-      const savedTheme = localStorage.getItem('theme') || 'light';
-      if (savedTheme === 'dark') document.documentElement.classList.add('dark');
-      document.getElementById('themeIcon').className = isDark() ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+    // Language
+    applyLanguage();
+    positionAI();
 
-      // Language
-      applyLanguage();
-      positionAI();
-
-      // Initial
-      renderNotifications();
-      initChat();
-      renderView('dashboard');
-    })();
-  </script>
+    // Initial
+    renderNotifications();
+    initChat();
+    renderView('dashboard');
+  })();
+</script>
 </body>
 </html>
