@@ -1888,126 +1888,96 @@
       const next = (nums.length ? Math.max(...nums) : 0) + 1;
       return prefix + String(next).padStart(2,'0');
     }
+function openFindingDetails(id) {
+  const s = getStore();
+  const f = s.findings.find(x => x.id === id);
+  if (!f) return;
 
-    function openFindingDetails(id) {
-      const s = getStore();
-      const f = s.findings.find(x => x.id === id);
-      if (!f) return;
+  const desc = currentLang==='ar' ? f.desc_ar : f.desc_en;
+  const owner = currentLang==='ar' ? f.owner_ar : f.owner_en;
+  const rec = currentLang==='ar' ? f.recommendation_ar : f.recommendation_en;
+  const resp = currentLang==='ar' ? f.managementResponse_ar : f.managementResponse_en;
 
-      const desc = currentLang==='ar'?f.desc_ar:f.desc_en;
-      const owner = currentLang==='ar'?f.owner_ar:f.owner_en;
-      const rec = currentLang==='ar'?f.recommendation_ar:f.recommendation_en;
-      const resp = currentLang==='ar'?f.managementResponse_ar:f.managementResponse_en;
+  const linkedMission = f.relatedMissionId ? s.missions.find(m => m.id === f.relatedMissionId) : null;
 
-      const linkedMission = f.relatedMissionId ? s.missions.find(m => m.id === f.relatedMissionId) : null;
+  const body = `
+    <div class="space-y-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-700/40 border border-slate-100 dark:border-slate-700">
+          <div class="text-xs text-slate-500">${currentLang==='ar'?'المرجع':'Ref'}</div>
+          <div class="font-mono text-sm font-bold text-slate-800 dark:text-white">${escapeHtml(f.ref)}</div>
+        </div>
 
-      const body = `
-        <div class="space-y-4">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-700/40 border border-slate-100 dark:border-slate-700">
-              <div class="text-xs text-slate-500">${currentLang==='ar'?'المرجع':'Ref'}</div>
-              <div class="font-mono text-sm font-bold text-slate-800 dark:text-white">${escapeHtml(f.ref)}</div>
-            </div>
-            <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-700/40 border border-slate-100 dark:border-slate-700">
-              <div class="text-xs text-slate-500">${currentLang==='ar'?'الحالة':'State'}</div>
-              <div class="mt-1">${stateBadge(f.state)}</div>
-            </div>
-            <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-700/40 border border-slate-100 dark:border-slate-700">
-              <div class="text-xs text-slate-500">${currentLang==='ar'?'المخاطرة':'Risk'}</div>
-              <div class="mt-1">${riskBadge(f.risk)}</div>
-            </div>
-            <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-700/40 border border-slate-100 dark:border-slate-700">
-              <div class="text-xs text-slate-500">${currentLang==='ar'?'المسؤول':'Owner'}</div>
-              <div class="text-sm font-bold text-slate-800 dark:text-white mt-1">${escapeHtml(owner)}</div>
-            </div>
-          </div>
+        <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-700/40 border border-slate-100 dark:border-slate-700">
+          <div class="text-xs text-slate-500">${currentLang==='ar'?'الحالة':'State'}</div>
+          <div class="mt-1">${stateBadge(f.state)}</div>
+        </div>
 
-          ${linkedMission ? `
-            <div class="p-4 rounded-xl bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700">
-              <div class="text-xs text-slate-500">${currentLang==='ar'?'مرتبطة بمهمة':'Linked mission'}</div>
-              <div class="mt-1 flex items-center justify-between gap-3">
-                <div class="min-w-0">
-                  <div class="text-[11px] font-mono text-slate-400">${escapeHtml(linkedMission.id)}</div>
-                  <div class="font-bold text-slate-800 dark:text-white truncate">${escapeHtml(currentLang==='ar'?linkedMission.title_ar:linkedMission.title_en)}</div>
-                </div>
-                <button class="text-xs font-bold text-brandRed hover:underline shrink-0" onclick="openMissionDetails('${linkedMission.id}')">${t('btn_details')}</button>
+        <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-700/40 border border-slate-100 dark:border-slate-700">
+          <div class="text-xs text-slate-500">${currentLang==='ar'?'المخاطرة':'Risk'}</div>
+          <div class="mt-1">${riskBadge(f.risk)}</div>
+        </div>
+
+        <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-700/40 border border-slate-100 dark:border-slate-700">
+          <div class="text-xs text-slate-500">${currentLang==='ar'?'المسؤول':'Owner'}</div>
+          <div class="text-sm font-bold text-slate-800 dark:text-white mt-1">${escapeHtml(owner)}</div>
+        </div>
+      </div>
+
+      ${linkedMission ? `
+        <div class="p-4 rounded-xl bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700">
+          <div class="text-xs text-slate-500">${currentLang==='ar'?'مرتبطة بمهمة':'Linked mission'}</div>
+          <div class="mt-1 flex items-center justify-between gap-3">
+            <div class="min-w-0">
+              <div class="text-[11px] font-mono text-slate-400">${escapeHtml(linkedMission.id)}</div>
+              <div class="font-bold text-slate-800 dark:text-white truncate">
+                ${escapeHtml(currentLang==='ar' ? linkedMission.title_ar : linkedMission.title_en)}
               </div>
             </div>
-          ` : ''}
-
-          <div class="p-4 rounded-xl bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700">
-            <div class="text-xs text-slate-500">${currentLang==='ar'?'الوصف':'Description'}</div>
-            <div class="text-sm font-bold text-slate-800 dark:text-white mt-1">${escapeHtml(desc)}</div>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-700/40 border border-slate-100 dark:border-slate-700">
-              <div class="text-xs font-bold text-slate-700 dark:text-slate-200">${currentLang==='ar'?'التوصية':'Recommendation'}</div>
-              <p class="text-sm text-slate-600 dark:text-slate-300 mt-1">${escapeHtml(rec || (currentLang==='ar'?'—':'—'))}</p>
-            </div>
-            <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-700/40 border border-slate-100 dark:border-slate-700">
-              <div class="text-xs font-bold text-slate-700 dark:text-slate-200">${currentLang==='ar'?'رد الإدارة':'Mgmt response'}</div>
-              <p class="text-sm text-slate-600 dark:text-slate-300 mt-1">${escapeHtml(resp || (currentLang==='ar'?'—':'—'))}</p>
-            </div>
-          </div>
-
-          <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-700/40 border border-slate-100 dark:border-slate-700">
-            <div class="text-xs text-slate-500">${currentLang==='ar'?'تاريخ الاستحقاق':'Due date'}</div>
-            <div class="text-sm font-bold text-slate-800 dark:text-white mt-1">${escapeHtml(f.due || '—')}</div>
+            <button class="text-xs text-brandRed font-bold hover:underline shrink-0"
+              onclick="openMissionDetails('${escapeHtml(linkedMission.id)}')">
+              ${t('btn_details')}
+            </button>
           </div>
         </div>
-      `;
+      ` : ''}
 
-      const footer = `
-        <button class="px-4 py-2 rounded-lg text-sm font-bold border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition" onclick="closeModal()">${t('close')}</button>
-        <button class="px-4 py-2 rounded-lg text-sm font-bold border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition" onclick="openCloseFinding('${f.id}')">
-          <i class="fa-solid fa-circle-check"></i> ${currentLang==='ar'
-                  <div class="font-bold text-slate-800 dark:text-white truncate">${escapeHtml(currentLang==='ar'?linkedMission.title_ar:linkedMission.title_en)}</div>
-                </div>
-                <button class="text-xs text-brandRed font-bold hover:underline shrink-0" onclick="openMissionDetails('${linkedMission.id}')">${t('btn_details')}</button>
-              </div>
-            </div>
-          ` : ''}
+      <div class="p-4 rounded-xl bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700">
+        <div class="text-xs text-slate-500">${currentLang==='ar'?'الوصف':'Description'}</div>
+        <div class="mt-1 text-sm font-bold text-slate-800 dark:text-white whitespace-pre-line">${escapeHtml(desc)}</div>
+      </div>
 
-          <div class="p-4 rounded-xl bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700">
-            <div class="text-xs text-slate-500">${currentLang==='ar'?'الوصف':'Description'}</div>
-            <div class="text-sm font-bold text-slate-800 dark:text-white mt-1">${escapeHtml(desc)}</div>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-700/40 border border-slate-100 dark:border-slate-700">
-              <div class="text-xs font-bold text-slate-700 dark:text-slate-200">${currentLang==='ar'?'التوصية':'Recommendation'}</div>
-              <p class="text-sm text-slate-600 dark:text-slate-300 mt-1">${escapeHtml(rec || (currentLang==='ar'?'—':'—'))}</p>
-            </div>
-            <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-700/40 border border-slate-100 dark:border-slate-700">
-              <div class="text-xs font-bold text-slate-700 dark:text-slate-200">${currentLang==='ar'?'رد الإدارة':'Management Response'}</div>
-              <p class="text-sm text-slate-600 dark:text-slate-300 mt-1">${escapeHtml(resp || (currentLang==='ar'?'—':'—'))}</p>
-            </div>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-700/40 border border-slate-100 dark:border-slate-700">
-              <div class="text-xs text-slate-500">${currentLang==='ar'?'تاريخ الاستحقاق':'Due date'}</div>
-              <div class="text-sm font-bold text-slate-800 dark:text-white mt-1">${escapeHtml(f.due || '—')}</div>
-            </div>
-            <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-700/40 border border-slate-100 dark:border-slate-700">
-              <div class="text-xs text-slate-500">${currentLang==='ar'?'تاريخ التسجيل':'Created at'}</div>
-              <div class="text-sm font-bold text-slate-800 dark:text-white mt-1">${escapeHtml(f.createdAt || '—')}</div>
-            </div>
-          </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div class="p-4 rounded-xl bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700">
+          <div class="text-xs text-slate-500">${currentLang==='ar'?'التوصية':'Recommendation'}</div>
+          <div class="mt-1 text-sm text-slate-700 dark:text-slate-200 whitespace-pre-line">${escapeHtml(rec || '-')}</div>
         </div>
-      `;
 
-      const footer = `
-        <button class="px-4 py-2 rounded-lg text-sm font-bold border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition" onclick="closeModal()">
-          ${t('close')}
-        </button>
-        <button class="px-4 py-2 rounded-lg text-sm font-bold bg-brandRed text-white hover:bg-red-600 transition" onclick="openEditFinding('${f.id}')">
-          <i class="fa-solid fa-pen"></i> ${t('edit')}
-        </button>
-      `;
+        <div class="p-4 rounded-xl bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700">
+          <div class="text-xs text-slate-500">${currentLang==='ar'?'رد الإدارة':'Management Response'}</div>
+          <div class="mt-1 text-sm text-slate-700 dark:text-slate-200 whitespace-pre-line">${escapeHtml(resp || '-')}</div>
+        </div>
+      </div>
 
-      openModal(currentLang==='ar'?'تفاصيل الملاحظة':'Finding Details', body, footer);
+      <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-700/40 border border-slate-100 dark:border-slate-700">
+        <div class="text-xs text-slate-500">${currentLang==='ar'?'تاريخ الاستحقاق':'Due date'}</div>
+        <div class="mt-1 text-sm font-bold text-slate-800 dark:text-white">${escapeHtml(f.due || '-')}</div>
+      </div>
+    </div>
+  `;
+
+  const footer = `
+    <button class="px-4 py-2 rounded-lg text-sm font-bold border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition"
+      onclick="closeModal()">${t('close')}</button>
+
+    <button class="px-4 py-2 rounded-lg text-sm font-bold bg-brandRed text-white hover:bg-red-600 transition"
+      onclick="openEditFinding('${escapeHtml(f.id)}')">
+      <i class="fa-solid fa-pen"></i> ${t('edit')}
+    </button>
+  `;
+
+  openModal(currentLang==='ar'?'تفاصيل الملاحظة':'Finding Details', body, footer);
+
     }
 
     function confirmDeleteFinding(id) {
