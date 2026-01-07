@@ -231,16 +231,20 @@
 
   <!-- Modal -->
   <div id="modal" class="modal">
-    <div class="w-full max-w-2xl bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden">
-      <div class="p-4 md:p-5 border-b border-slate-100 dark:border-slate-700 flex items-center justify-between bg-slate-50 dark:bg-slate-900">
+    <!-- تم تعديل السطر التالي لإضافة max-h-[90vh] و flex-col لحل مشكلة السكرول -->
+    <div class="w-full max-w-2xl bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden max-h-[90vh] flex flex-col">
+      <!-- الرأس: تم إضافة shrink-0 لمنع تقلصه -->
+      <div class="p-4 md:p-5 border-b border-slate-100 dark:border-slate-700 flex items-center justify-between bg-slate-50 dark:bg-slate-900 shrink-0">
         <h3 class="font-bold text-slate-800 dark:text-white" id="modalTitle">Modal</h3>
         <button class="w-9 h-9 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition flex items-center justify-center"
           onclick="closeModal()" aria-label="Close modal">
           <i class="fa-solid fa-xmark"></i>
         </button>
       </div>
-      <div class="p-4 md:p-6" id="modalBody"></div>
-      <div class="p-4 md:p-5 border-t border-slate-100 dark:border-slate-700 flex items-center justify-end gap-2 bg-slate-50 dark:bg-slate-900" id="modalFooter"></div>
+      <!-- الجسم: تم إضافة overflow-y-auto و flex-1 ليصبح هو الجزء القابل للتمرير -->
+      <div class="p-4 md:p-6 overflow-y-auto flex-1" id="modalBody"></div>
+      <!-- التذييل: تم إضافة shrink-0 ليبقى ثابتاً في الأسفل -->
+      <div class="p-4 md:p-5 border-t border-slate-100 dark:border-slate-700 flex items-center justify-end gap-2 bg-slate-50 dark:bg-slate-900 shrink-0" id="modalFooter"></div>
     </div>
   </div>
 
