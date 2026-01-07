@@ -17,7 +17,7 @@
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-  <!-- jsPDF (PDF generation) -->
+  <!-- jsPDF -->
   <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 
   <script>
@@ -37,7 +37,6 @@
   </script>
 
   <style>
-    /* Scrollbar */
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 20px; }
@@ -56,7 +55,6 @@
       100% { box-shadow: 0 0 0 0 rgba(251, 71, 71, 0); }
     }
 
-    /* Mobile sidebar slide */
     @media (max-width: 768px) {
       #sidebar { position: fixed; right: 0; top: 0; height: 100%; transform: translateX(100%); transition: transform 0.3s; z-index: 50; }
       #sidebar.open { transform: translateX(0); }
@@ -64,13 +62,11 @@
       html[dir="ltr"] #sidebar.open { transform: translateX(0); }
     }
 
-    /* Chat bubbles */
     .chat-bubble { max-width: 85%; padding: 10px 12px; border-radius: 14px; margin-bottom: 10px; font-size: 0.9rem; line-height: 1.4; }
     .chat-ai { background-color: #FB4747; color: white; border-bottom-left-radius: 4px; }
     .chat-user { background-color: #f1f5f9; color: #1e293b; border-bottom-right-radius: 4px; }
     .dark .chat-user { background-color: #334155; color: white; }
 
-    /* AI Sidebar (controlled by JS) */
     #aiSidebar {
       position: fixed;
       top: 0;
@@ -83,7 +79,6 @@
     }
     @media (max-width: 768px) { #aiSidebar { max-width: 100%; } }
 
-    /* Modal */
     .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 70; display: none; }
     .modal-overlay.active { display: block; }
     .modal { position: fixed; inset: 0; z-index: 80; display: none; align-items: center; justify-content: center; padding: 16px; }
@@ -93,10 +88,7 @@
 
 <body class="bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-white h-screen overflow-hidden flex font-sans transition-colors duration-300">
 
-  <!-- Mobile overlay -->
   <div id="mobileOverlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
-
-  <!-- Toast container -->
   <div id="toastContainer" class="fixed top-4 z-[90] flex flex-col gap-2" style="right:16px;"></div>
 
   <!-- Sidebar -->
@@ -149,7 +141,6 @@
 
   <!-- Main -->
   <main class="flex-1 flex flex-col h-full relative overflow-hidden bg-white dark:bg-slate-900">
-
     <header class="h-20 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-700 flex items-center justify-between px-4 md:px-8 shrink-0 z-10 sticky top-0">
       <div class="flex items-center gap-3">
         <button onclick="toggleSidebar()" class="md:hidden text-slate-600 dark:text-white p-2" aria-label="Open menu">
@@ -193,9 +184,7 @@
       </div>
     </header>
 
-    <div id="mainContent" class="flex-1 overflow-y-auto p-4 md:p-8 bg-slate-50 dark:bg-slate-900">
-      <!-- injected -->
-    </div>
+    <div id="mainContent" class="flex-1 overflow-y-auto p-4 md:p-8 bg-slate-50 dark:bg-slate-900"></div>
   </main>
 
   <!-- AI Sidebar -->
@@ -267,7 +256,6 @@
         ai_title: "المستشار الرقابي",
         ai_welcome: "مرحباً 👋\nأنا مساعد ديمو للتدقيق الداخلي. اكتب: (ملاحظة) أو (خطة) أو (تقرير) وسأقترح لك خطوات جاهزة.",
 
-        // Dashboard
         plan_progress: "إنجاز الخطة السنوية",
         open_findings: "ملاحظات مفتوحة",
         urgent_actions: "إجراءات عاجلة",
@@ -281,7 +269,6 @@
         add_finding: "تسجيل ملاحظة",
         generate_report: "إصدار تقرير",
 
-        // Missions
         audit_missions: "مهام التدقيق",
         search: "بحث",
         filter_status: "فلترة الحالة",
@@ -296,7 +283,6 @@
         col_actions: "الإجراءات",
         btn_details: "التفاصيل",
 
-        // Findings
         findings_log: "سجل الملاحظات والمخالفات",
         col_ref: "المرجع",
         col_desc: "الوصف",
@@ -306,11 +292,10 @@
         risk_low: "منخفضة",
         risk_med: "متوسطة",
         risk_high: "عالية",
-        state_open: "Open",
-        state_progress: "In Progress",
-        state_closed: "Closed",
+        state_open: "مفتوحة",
+        state_progress: "قيد المعالجة",
+        state_closed: "مقفلة",
 
-        // Reports
         audit_reports: "التقارير الرقابية",
         btn_download: "تحميل PDF",
         btn_generate: "توليد تقرير",
@@ -318,7 +303,6 @@
         rep_followup: "تقرير متابعة الملاحظات",
         rep_missions: "تقرير مهام التدقيق",
 
-        // Profile
         full_name: "علي عبدالله الغامدي",
         full_role: "مراجع داخلي أول",
         on_job: "على رأس العمل",
@@ -331,7 +315,6 @@
         btn_support: "دعم الموظف",
         attend_log: "سجل الحضور (آخر 3 أيام)",
 
-        // Common
         save: "حفظ",
         cancel: "إلغاء",
         close: "إغلاق",
@@ -357,7 +340,6 @@
         ai_title: "Audit Consultant",
         ai_welcome: "Hello 👋\nI’m a demo audit assistant. Type: (finding) or (plan) or (report) and I’ll propose ready steps.",
 
-        // Dashboard
         plan_progress: "Annual Plan Progress",
         open_findings: "Open Findings",
         urgent_actions: "Urgent Actions",
@@ -371,7 +353,6 @@
         add_finding: "Log Finding",
         generate_report: "Generate Report",
 
-        // Missions
         audit_missions: "Audit Missions",
         search: "Search",
         filter_status: "Status Filter",
@@ -386,7 +367,6 @@
         col_actions: "Actions",
         btn_details: "Details",
 
-        // Findings
         findings_log: "Findings & Violations Log",
         col_ref: "Ref",
         col_desc: "Description",
@@ -400,7 +380,6 @@
         state_progress: "In Progress",
         state_closed: "Closed",
 
-        // Reports
         audit_reports: "Audit Reports",
         btn_download: "Download PDF",
         btn_generate: "Generate",
@@ -408,7 +387,6 @@
         rep_followup: "Follow-up Report",
         rep_missions: "Missions Report",
 
-        // Profile
         full_name: "Ali Abdullah Alghamdi",
         full_role: "Senior Internal Auditor",
         on_job: "Active",
@@ -421,7 +399,6 @@
         btn_support: "Support",
         attend_log: "Attendance Log (3 Days)",
 
-        // Common
         save: "Save",
         cancel: "Cancel",
         close: "Close",
@@ -436,9 +413,6 @@
     let currentView = 'dashboard';
     let auditChart = null;
 
-    // =========================
-    // Demo Data Store (localStorage)
-    // =========================
     const STORE_KEY = "AndroGovDemoStore_v1";
 
     function todayISO() {
@@ -574,9 +548,7 @@
       }
     }
 
-    function setStore(next) {
-      localStorage.setItem(STORE_KEY, JSON.stringify(next));
-    }
+    function setStore(next) { localStorage.setItem(STORE_KEY, JSON.stringify(next)); }
 
     function updateStore(mutator) {
       const s = getStore();
@@ -585,9 +557,6 @@
       return next;
     }
 
-    // =========================
-    // Helpers
-    // =========================
     function t(key) { return translations[currentLang][key] || key; }
     function isDark() { return document.documentElement.classList.contains('dark'); }
     function escapeHtml(str) {
@@ -633,13 +602,10 @@
 
     function toast(message, type='info') {
       const wrap = document.getElementById('toastContainer');
-      // place based on dir
       if (document.documentElement.dir === 'rtl') {
-        wrap.style.right = '16px';
-        wrap.style.left = 'auto';
+        wrap.style.right = '16px'; wrap.style.left = 'auto';
       } else {
-        wrap.style.left = '16px';
-        wrap.style.right = 'auto';
+        wrap.style.left = '16px'; wrap.style.right = 'auto';
       }
 
       const colors = {
@@ -668,7 +634,7 @@
     }
 
     // =========================
-    // Modal Engine
+    // Modal
     // =========================
     function openModal(title, bodyHTML, footerHTML) {
       document.getElementById('modalTitle').innerText = title;
@@ -774,12 +740,10 @@
       html.setAttribute('dir', currentLang === 'ar' ? 'rtl' : 'ltr');
       document.getElementById('langLabel').innerText = currentLang === 'ar' ? 'EN' : 'AR';
 
-      // Notifications dropdown anchor
       const dd = document.getElementById('notifDropdown');
       dd.style.left = (currentLang === 'ar') ? '0' : 'auto';
       dd.style.right = (currentLang === 'ar') ? 'auto' : '0';
 
-      // Translate any static elements
       document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
         if (translations[currentLang][key]) el.innerText = translations[currentLang][key];
@@ -787,7 +751,7 @@
     }
 
     // =========================
-    // AI Sidebar (stable RTL/LTR)
+    // AI
     // =========================
     let aiOpen = false;
 
@@ -807,12 +771,7 @@
     function toggleAI(open) {
       aiOpen = open;
       positionAI();
-      if (aiOpen) document.getElementById('aiInput').focus();
-    }
-
-    function closeAI() {
-      aiOpen = false;
-      positionAI();
+      if (aiOpen) setTimeout(() => document.getElementById('aiInput')?.focus(), 50);
     }
 
     function initChat() {
@@ -842,37 +801,30 @@
       setTimeout(() => {
         chat.innerHTML += `<div id="${typingId}" class="flex ${aiAlign} fade-in"><div class="chat-bubble chat-ai">…</div></div>`;
         chat.scrollTop = chat.scrollHeight;
-      }, 250);
+      }, 200);
 
       setTimeout(() => {
         const node = document.getElementById(typingId);
         if (!node) return;
 
-        // Simple demo "intent"
         const lower = msg.toLowerCase();
         let reply = (currentLang==='ar')
           ? "تم. تبي تسوي: 1) تسجيل ملاحظة 2) إضافة مهمة 3) توليد تقرير؟"
           : "Got it. Do you want: 1) log a finding 2) add a mission 3) generate a report?";
 
         if (lower.includes('ملاحظة') || lower.includes('finding')) {
-          reply = currentLang==='ar'
-            ? "ممتاز. افتح لك نموذج تسجيل ملاحظة؟"
-            : "Great. Want me to open the Log Finding form?";
+          reply = currentLang==='ar' ? "ممتاز. افتح لك نموذج تسجيل ملاحظة؟" : "Great. Want me to open the Log Finding form?";
         }
         if (lower.includes('مهمة') || lower.includes('mission')) {
-          reply = currentLang==='ar'
-            ? "تمام. تبي نضيف مهمة تدقيق جديدة ونحدد الإدارة والاستحقاق؟"
-            : "Sure. Shall we add a new mission with department and due date?";
+          reply = currentLang==='ar' ? "تمام. تبي نضيف مهمة تدقيق جديدة ونحدد الإدارة والاستحقاق؟" : "Sure. Shall we add a new mission with department and due date?";
         }
         if (lower.includes('تقرير') || lower.includes('report')) {
-          reply = currentLang==='ar'
-            ? "أقدر أطلع لك تقرير PDF (ملخص/متابعة/مهام). تبي أي واحد؟"
-            : "I can generate a PDF (summary/follow-up/missions). Which one?";
+          reply = currentLang==='ar' ? "أقدر أطلع لك تقرير PDF (ملخص/متابعة/مهام). تبي أي واحد؟" : "I can generate a PDF (summary/follow-up/missions). Which one?";
         }
 
         node.innerHTML = `<div class="chat-bubble chat-ai">${escapeHtml(reply)}</div>`;
         chat.scrollTop = chat.scrollHeight;
-      }, 900);
+      }, 700);
     }
 
     // =========================
@@ -881,7 +833,6 @@
     function renderView(view) {
       currentView = view;
 
-      // nav highlight
       document.querySelectorAll('.nav-item').forEach(el => {
         el.className = `w-full flex items-center gap-4 px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 rounded-xl transition nav-item`;
       });
@@ -895,29 +846,22 @@
         pageTitle.innerText = t('overview');
         content.innerHTML = dashboardHTML();
         setTimeout(initChart, 40);
-      }
-
-      if (view === 'missions') {
+      } else if (view === 'missions') {
         pageTitle.innerText = t('missions');
         content.innerHTML = missionsHTML();
-      }
-
-      if (view === 'findings') {
+        setTimeout(renderMissionsTable, 0);
+      } else if (view === 'findings') {
         pageTitle.innerText = t('findings');
         content.innerHTML = findingsHTML();
-      }
-
-      if (view === 'reports') {
+        setTimeout(renderFindingsTable, 0);
+      } else if (view === 'reports') {
         pageTitle.innerText = t('reports');
         content.innerHTML = reportsHTML();
-      }
-
-      if (view === 'profile') {
+      } else if (view === 'profile') {
         pageTitle.innerText = t('profile_hr');
         content.innerHTML = profileHTML();
       }
 
-      // close mobile sidebar when navigating
       if (window.innerWidth < 768) {
         const sb = document.getElementById('sidebar');
         if (sb.classList.contains('open')) toggleSidebar();
@@ -935,7 +879,7 @@
       const completed = s.missions.filter(m => m.status === 'done').length;
       const total = Math.max(1, s.missions.length);
       const progress = Math.round((completed / total) * 100);
-      const coverage = Math.min(95, Math.max(60, Math.round((total / 10) * 100))); // just demo
+      const coverage = Math.min(95, Math.max(60, Math.round((total / 10) * 100)));
 
       return `
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 fade-in">
@@ -953,7 +897,7 @@
               </h3>
               <div class="flex gap-2">
                 <button class="px-3 py-2 text-xs font-bold rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition"
-                        onclick="openGenerateReport()">
+                        onclick="openGenerateReport('summary')">
                   <i class="fa-solid fa-file-export"></i> ${t('export_pdf')}
                 </button>
               </div>
@@ -968,7 +912,7 @@
             <div class="space-y-3">
               ${quickActionBtn(t('new_mission'), 'fa-plus', "openNewMission()")}
               ${quickActionBtn(t('add_finding'), 'fa-pen-to-square', "openNewFinding()")}
-              ${quickActionBtn(t('generate_report'), 'fa-file-lines', "openGenerateReport()")}
+              ${quickActionBtn(t('generate_report'), 'fa-file-lines', "renderView('reports')")}
             </div>
 
             <div class="mt-6 p-4 rounded-xl bg-slate-50 dark:bg-slate-700/40 border border-slate-100 dark:border-slate-700">
@@ -1029,7 +973,6 @@
       const planned = s.missions.filter(m => m.status === 'planned').length;
 
       if (auditChart) auditChart.destroy();
-
       const legendColor = isDark() ? '#E2E8F0' : '#334155';
 
       auditChart = new Chart(canvas.getContext('2d'), {
@@ -1046,10 +989,7 @@
           responsive: true,
           maintainAspectRatio: false,
           plugins: {
-            legend: {
-              position: 'bottom',
-              labels: { color: legendColor }
-            }
+            legend: { position: 'bottom', labels: { color: legendColor } }
           }
         }
       });
@@ -1059,7 +999,6 @@
     // Missions
     // =========================
     function missionsHTML() {
-      const s = getStore();
       return `
         <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-6 fade-in">
           <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-5">
@@ -1113,8 +1052,6 @@
             </table>
           </div>
         </div>
-
-        <script>setTimeout(renderMissionsTable, 0);<\/script>
       `;
     }
 
@@ -1135,9 +1072,7 @@
       });
 
       if (filtered.length === 0) {
-        tbody.innerHTML = `
-          <tr><td colspan="5" class="p-6 text-center text-sm text-slate-500">${currentLang==='ar'?'لا توجد نتائج.':'No results found.'}</td></tr>
-        `;
+        tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-sm text-slate-500">${currentLang==='ar'?'لا توجد نتائج.':'No results found.'}</td></tr>`;
         return;
       }
 
@@ -1386,7 +1321,6 @@
             <label class="text-xs text-slate-500">${currentLang==='ar'?'التقدم (%)':'Progress (%)'}</label>
             <input id="m_progress" type="number" min="0" max="100" class="mt-1 w-full bg-slate-50 dark:bg-slate-700/40 border border-slate-100 dark:border-slate-700 rounded-xl px-3 py-3 text-sm outline-none"
               value="${escapeHtml(m.progress ?? 0)}" />
-            <p class="text-[11px] text-slate-400 mt-1">${currentLang==='ar'?'ملاحظة: إذا الحالة "مكتمل" يفضّل 100% تلقائيًا.':'Tip: if status is Completed, set progress to 100%.'}</p>
           </div>
         </div>
       `;
@@ -1409,21 +1343,15 @@
       progress = Math.max(0, Math.min(100, isFinite(progress) ? progress : 0));
       if (status === 'done') progress = 100;
 
-      if (!title_ar && !title_en) {
-        toast(currentLang==='ar'?'لازم تكتب عنوان عربي أو إنجليزي.':'Please enter a title (AR or EN).', 'warning');
-        return;
-      }
-      if (!dept_ar && !dept_en) {
-        toast(currentLang==='ar'?'لازم تكتب اسم الإدارة.':'Please enter a department.', 'warning');
-        return;
-      }
+      if (!title_ar && !title_en) { toast(currentLang==='ar'?'لازم تكتب عنوان عربي أو إنجليزي.':'Please enter a title (AR or EN).', 'warning'); return; }
+      if (!dept_ar && !dept_en) { toast(currentLang==='ar'?'لازم تكتب اسم الإدارة.':'Please enter a department.', 'warning'); return; }
 
       if (mode === 'new') {
         const newId = generateMissionId();
         updateStore(s => {
           s.missions.unshift({
             id: newId,
-            title_ar: title_ar || (currentLang==='ar' ? title_ar : ''),
+            title_ar: title_ar || '',
             title_en: title_en || title_ar || '',
             dept_ar: dept_ar || '',
             dept_en: dept_en || dept_ar || '',
@@ -1478,7 +1406,6 @@
 
         closeModal();
         if (currentView === 'missions') renderMissionsTable();
-        if (currentView === 'dashboard') renderView('dashboard');
         toast(currentLang==='ar'?'تم حفظ التعديل.':'Changes saved.', 'success');
       }
     }
@@ -1544,7 +1471,6 @@
     // Findings
     // =========================
     function findingsHTML() {
-      const s = getStore();
       return `
         <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-6 fade-in">
           <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-5">
@@ -1599,8 +1525,6 @@
             </table>
           </div>
         </div>
-
-        <script>setTimeout(renderFindingsTable, 0);<\/script>
       `;
     }
 
@@ -1802,35 +1726,32 @@
       const managementResponse_ar = document.getElementById('f_resp_ar')?.value.trim();
       const managementResponse_en = document.getElementById('f_resp_en')?.value.trim();
 
-      if (!desc_ar && !desc_en) {
-        toast(currentLang==='ar'?'لازم تكتب وصف عربي أو إنجليزي.':'Please enter a description (AR or EN).', 'warning');
-        return;
-      }
-      if (!owner_ar && !owner_en) {
-        toast(currentLang==='ar'?'لازم تحدد المسؤول.':'Please enter an owner.', 'warning');
-        return;
-      }
+      if (!desc_ar && !desc_en) { toast(currentLang==='ar'?'لازم تكتب وصف عربي أو إنجليزي.':'Please enter a description (AR or EN).', 'warning'); return; }
+      if (!owner_ar && !owner_en) { toast(currentLang==='ar'?'لازم تحدد المسؤول.':'Please enter an owner.', 'warning'); return; }
 
       if (mode === 'new') {
         const ref = generateFindingRef();
         updateStore(s => {
+          s.findings.unshift
+              updateStore(s => {
           s.findings.unshift({
-            id: ref,
+            id: 'F-' + Date.now(),
             ref,
             desc_ar: desc_ar || '',
             desc_en: desc_en || desc_ar || '',
             risk,
-            owner_ar,
-            owner_en: owner_en || owner_ar,
+            owner_ar: owner_ar || '',
+            owner_en: owner_en || owner_ar || '',
             state,
-            relatedMissionId: mission,
-            recommendation_ar,
-            recommendation_en: recommendation_en || recommendation_ar,
-            managementResponse_ar,
-            managementResponse_en: managementResponse_en || managementResponse_ar,
+            relatedMissionId: mission || null,
+            recommendation_ar: recommendation_ar || '',
+            recommendation_en: recommendation_en || recommendation_ar || '',
+            managementResponse_ar: managementResponse_ar || '',
+            managementResponse_en: managementResponse_en || managementResponse_ar || '',
             due,
             createdAt: todayISO()
           });
+
           s.notifications.unshift({
             id: 'n' + Date.now(),
             title_ar: 'تم تسجيل ملاحظة جديدة',
@@ -1845,7 +1766,7 @@
         closeModal();
         renderView('findings');
         renderNotifications();
-        toast(currentLang==='ar'?'تم تسجيل الملاحظة.':'Finding logged.', 'success');
+        toast(currentLang==='ar'?'تم تسجيل الملاحظة بنجاح.':'Finding logged successfully.', 'success');
         return;
       }
 
@@ -1853,24 +1774,25 @@
         updateStore(s => {
           const f = s.findings.find(x => x.id === id);
           if (!f) return s;
-          f.desc_ar = desc_ar;
-          f.desc_en = desc_en || desc_ar;
-          f.risk = risk;
-          f.state = state;
+
+          f.desc_ar = desc_ar || f.desc_ar;
+          f.desc_en = desc_en || f.desc_en;
+          f.risk = risk || f.risk;
+          f.state = state || f.state;
           f.owner_ar = owner_ar;
-          f.owner_en = owner_en || owner_ar;
-          f.relatedMissionId = mission;
-          f.recommendation_ar = recommendation_ar;
-          f.recommendation_en = recommendation_en || recommendation_ar;
-          f.managementResponse_ar = managementResponse_ar;
-          f.managementResponse_en = managementResponse_en || managementResponse_ar;
+          f.owner_en = owner_en;
+          f.relatedMissionId = mission || null;
           f.due = due;
+          f.recommendation_ar = recommendation_ar;
+          f.recommendation_en = recommendation_en;
+          f.managementResponse_ar = managementResponse_ar;
+          f.managementResponse_en = managementResponse_en;
+
           return s;
         });
 
         closeModal();
         if (currentView === 'findings') renderFindingsTable();
-        if (currentView === 'dashboard') renderView('dashboard');
         renderNotifications();
         toast(currentLang==='ar'?'تم حفظ التعديل.':'Changes saved.', 'success');
       }
@@ -1882,415 +1804,585 @@
       const prefix = `F-${year}-`;
       const nums = s.findings
         .map(f => f.ref)
-        .filter(r => r.startsWith(prefix))
-        .map(r => parseInt(r.slice(prefix.length), 10))
+        .filter(ref => ref.startsWith(prefix))
+        .map(ref => parseInt(ref.slice(prefix.length), 10))
         .filter(n => !isNaN(n));
       const next = (nums.length ? Math.max(...nums) : 0) + 1;
-      return prefix + String(next).padStart(2,'0');
+      return prefix + String(next).padStart(3,'0');
     }
-<script>
-  // =========================
-  // Delete Finding (Safer + No inline onclick injection)
-  // =========================
-  function confirmDeleteFinding(id) {
-    const s = getStore();
-    const f = s.findings.find(x => x.id === id);
-    if (!f) return;
 
-    const title = currentLang === 'ar' ? 'تأكيد الحذف' : 'Confirm Delete';
+    function openFindingDetails(id) {
+      const s = getStore();
+      const f = s.findings.find(x => x.id === id);
+      if (!f) return;
 
-    const body = `
-      <div class="text-sm text-slate-600 dark:text-slate-300">
-        ${currentLang === 'ar'
-          ? `هل أنت متأكد من حذف الملاحظة: <b class="text-slate-800 dark:text-white">${escapeHtml(f.ref)}</b>؟`
-          : `Are you sure you want to delete: <b class="text-slate-800 dark:text-white">${escapeHtml(f.ref)}</b>?`
-        }
-      </div>
-    `;
+      const desc = currentLang==='ar'?f.desc_ar:f.desc_en;
+      const owner = currentLang==='ar'?f.owner_ar:f.owner_en;
+      const rec = currentLang==='ar'?f.recommendation_ar:f.recommendation_en;
+      const resp = currentLang==='ar'?f.managementResponse_ar:f.managementResponse_en;
 
-    // مهم: بدون onclick داخل النص (عشان لا يصير مشاكل اقتباسات/حقن)
-    const footer = `
-      <button id="btn_cancel_del_finding"
-        class="px-4 py-2 rounded-lg text-sm font-bold border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition">
-        ${t('cancel')}
-      </button>
+      const linkedMission = f.relatedMissionId ? s.missions.find(m => m.id === f.relatedMissionId) : null;
 
-      <button id="btn_confirm_del_finding"
-        class="px-4 py-2 rounded-lg text-sm font-bold bg-red-600 text-white hover:bg-red-700 transition">
-        <i class="fa-solid fa-trash"></i> ${t('delete')}
-      </button>
-    `;
-
-    openModal(title, body, footer);
-
-    // ربط الأحداث بعد فتح المودال
-    setTimeout(() => {
-      const btnCancel = document.getElementById('btn_cancel_del_finding');
-      const btnConfirm = document.getElementById('btn_confirm_del_finding');
-
-      if (btnCancel) {
-        btnCancel.onclick = () => closeModal();
-      }
-
-      if (btnConfirm) {
-        btnConfirm.onclick = () => {
-          // منع الضغط مرتين
-          btnConfirm.disabled = true;
-          btnConfirm.classList.add('opacity-60', 'cursor-not-allowed');
-
-          deleteFinding(id);
-        };
-      }
-    }, 0);
-  }
-
-  function deleteFinding(id) {
-    updateStore(s => {
-      s.findings = s.findings.filter(f => f.id !== id);
-      return s;
-    });
-
-    closeModal();
-
-    if (currentView === 'findings') renderFindingsTable();
-    if (currentView === 'dashboard') renderView('dashboard');
-
-    renderNotifications();
-    toast(currentLang === 'ar' ? 'تم حذف الملاحظة.' : 'Finding deleted.', 'danger');
-  }
-
-  // =========================
-  // Reports + PDF (jsPDF)
-  // =========================
-  function reportsHTML() {
-    return `
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 fade-in">
-        ${reportCard(t('rep_summary'), "openGenerateReport('summary')", "fa-clipboard-list")}
-        ${reportCard(t('rep_followup'), "openGenerateReport('followup')", "fa-rotate")}
-        ${reportCard(t('rep_missions'), "openGenerateReport('missions')", "fa-list-check")}
-      </div>
-
-      <div class="mt-6 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-6 fade-in">
-        <h3 class="font-bold text-lg text-slate-800 dark:text-white">${t('audit_reports')}</h3>
-        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
-          ${currentLang==='ar'
-            ? 'هذه صفحة Demo: توليد PDF داخل المتصفح باستخدام jsPDF.'
-            : 'Demo page: generate PDF in-browser using jsPDF.'
-          }
-        </p>
-
-        <div class="mt-4 flex flex-wrap gap-2">
-          <button class="bg-brandRed text-white px-4 py-2 rounded-lg text-sm font-bold shadow-lg hover:bg-red-600 transition" onclick="openGenerateReport()">
-            <i class="fa-solid fa-wand-magic-sparkles"></i> ${t('btn_generate')}
-          </button>
-          <button class="px-4 py-2 rounded-lg text-sm font-bold border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition" onclick="downloadPDF('summary')">
-            <i class="fa-solid fa-download"></i> ${t('btn_download')}
-          </button>
-        </div>
-      </div>
-    `;
-  }
-
-  function reportCard(title, action, icon) {
-    return `
-      <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-6">
-        <div class="flex items-center gap-3">
-          <div class="w-12 h-12 rounded-xl bg-red-50 dark:bg-red-900/20 text-brandRed flex items-center justify-center">
-            <i class="fa-solid ${icon}"></i>
+      const body = `
+        <div class="space-y-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-700/40 border border-slate-100 dark:border-slate-700">
+              <div class="text-xs text-slate-500">${currentLang==='ar'?'المرجع':'Ref'}</div>
+              <div class="font-mono text-sm font-bold text-slate-800 dark:text-white">${escapeHtml(f.ref)}</div>
+            </div>
+            <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-700/40 border border-slate-100 dark:border-slate-700">
+              <div class="text-xs text-slate-500">${currentLang==='ar'?'الحالة':'State'}</div>
+              <div class="mt-1">${stateBadge(f.state)}</div>
+            </div>
+            <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-700/40 border border-slate-100 dark:border-slate-700">
+              <div class="text-xs text-slate-500">${currentLang==='ar'?'المخاطرة':'Risk'}</div>
+              <div class="mt-1">${riskBadge(f.risk)}</div>
+            </div>
+            <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-700/40 border border-slate-100 dark:border-slate-700">
+              <div class="text-xs text-slate-500">${currentLang==='ar'?'تاريخ الاستحقاق':'Due date'}</div>
+              <div class="text-sm font-bold text-slate-800 dark:text-white">${escapeHtml(f.due)}</div>
+            </div>
           </div>
-          <div class="min-w-0">
-            <div class="font-extrabold text-slate-800 dark:text-white truncate">${escapeHtml(title)}</div>
-            <div class="text-xs text-slate-500 dark:text-slate-400 mt-1">
-              ${currentLang==='ar'?'تصدير تقرير PDF سريع':'Quick PDF export'}
+
+          ${linkedMission ? `
+            <div class="p-4 rounded-xl bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700">
+              <div class="text-xs text-slate-500">${currentLang==='ar'?'مرتبطة بمهمة':'Linked Mission'}</div>
+              <div class="mt-1">
+                <div class="font-mono text-xs text-slate-400">${escapeHtml(linkedMission.id)}</div>
+                <div class="font-bold text-slate-800 dark:text-white">${escapeHtml(currentLang==='ar'?linkedMission.title_ar:linkedMission.title_en)}</div>
+              </div>
+            </div>
+          ` : ''}
+
+          <div class="p-4 rounded-xl bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700">
+            <div class="text-xs text-slate-500">${currentLang==='ar'?'الوصف':'Description'}</div>
+            <div class="text-sm font-bold text-slate-800 dark:text-white mt-1">${escapeHtml(desc)}</div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4">
+              <div>
+                <div class="text-xs font-bold text-slate-700 dark:text-slate-200">${currentLang==='ar'?'المسؤول':'Owner'}</div>
+                <div class="text-sm text-slate-600 dark:text-slate-300 mt-1">${escapeHtml(owner)}</div>
+              </div>
+              <div>
+                <div class="text-xs font-bold text-slate-700 dark:text-slate-200">${currentLang==='ar'?'تاريخ الإنشاء':'Created'}</div>
+                <div class="text-sm text-slate-600 dark:text-slate-300 mt-1">${escapeHtml(f.createdAt || '')}</div>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4">
+              <div>
+                <div class="text-xs font-bold text-slate-700 dark:text-slate-200">${currentLang==='ar'?'التوصية':'Recommendation'}</div>
+                <p class="text-sm text-slate-600 dark:text-slate-300 mt-1 whitespace-pre-line">${escapeHtml(rec || (currentLang==='ar'?'—':'—'))}</p>
+              </div>
+              <div>
+                <div class="text-xs font-bold text-slate-700 dark:text-slate-200">${currentLang==='ar'?'رد الإدارة':'Management Response'}</div>
+                <p class="text-sm text-slate-600 dark:text-slate-300 mt-1 whitespace-pre-line">${escapeHtml(resp || (currentLang==='ar'?'—':'—'))}</p>
+              </div>
             </div>
           </div>
         </div>
-        <button class="mt-4 w-full bg-slate-50 dark:bg-slate-700/50 hover:bg-red-50 dark:hover:bg-slate-700 rounded-xl px-4 py-3 text-sm font-bold text-slate-700 dark:text-slate-200 transition"
-          onclick="${action}">
-          <i class="fa-solid fa-file-export text-brandRed"></i> ${t('export_pdf')}
+      `;
+
+      const footer = `
+        <button class="px-4 py-2 rounded-lg text-sm font-bold border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition" onclick="closeModal()">
+          ${t('close')}
         </button>
-      </div>
-    `;
-  }
+        <button class="px-4 py-2 rounded-lg text-sm font-bold bg-brandRed text-white hover:bg-red-600 transition" onclick="openEditFinding('${f.id}')">
+          <i class="fa-solid fa-pen"></i> ${t('edit')}
+        </button>
+      `;
 
-  function openGenerateReport(type=null) {
-    const body = `
-      <div class="space-y-4">
-        <div>
-          <label class="text-xs text-slate-500">${currentLang==='ar'?'نوع التقرير':'Report Type'}</label>
-          <select id="rep_type" class="mt-1 w-full bg-slate-50 dark:bg-slate-700/40 border border-slate-100 dark:border-slate-700 rounded-xl px-3 py-3 text-sm outline-none">
-            <option value="summary">${t('rep_summary')}</option>
-            <option value="followup">${t('rep_followup')}</option>
-            <option value="missions">${t('rep_missions')}</option>
-            <option value="findings">${t('findings_log')}</option>
-          </select>
-        </div>
+      openModal(currentLang==='ar'?'تفاصيل الملاحظة':'Finding Details', body, footer);
+    }
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-          <div>
-            <label class="text-xs text-slate-500">${currentLang==='ar'?'من تاريخ':'From date'}</label>
-            <input id="rep_from" type="date" class="mt-1 w-full bg-slate-50 dark:bg-slate-700/40 border border-slate-100 dark:border-slate-700 rounded-xl px-3 py-3 text-sm outline-none" value="">
-          </div>
-          <div>
-            <label class="text-xs text-slate-500">${currentLang==='ar'?'إلى تاريخ':'To date'}</label>
-            <input id="rep_to" type="date" class="mt-1 w-full bg-slate-50 dark:bg-slate-700/40 border border-slate-100 dark:border-slate-700 rounded-xl px-3 py-3 text-sm outline-none" value="">
-          </div>
-        </div>
+    function confirmDeleteFinding(id) {
+      const s = getStore();
+      const f = s.findings.find(x => x.id === id);
+      if (!f) return;
 
-        <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-700/40 border border-slate-100 dark:border-slate-700 text-xs text-slate-500 dark:text-slate-300">
+      const desc = currentLang==='ar' ? f.desc_ar : f.desc_en;
+
+      const body = `
+        <div class="text-sm text-slate-600 dark:text-slate-300">
           ${currentLang==='ar'
-            ? 'تنبيه: هذا PDF ديمو (نصي). بإمكاننا لاحقًا إضافة جداول منسقة أو شعار رسمي.'
-            : 'Note: this is a demo (text) PDF. We can later add formatted tables or official branding.'
+            ? `هل أنت متأكد من حذف الملاحظة: <b class="text-slate-800 dark:text-white">${escapeHtml(f.ref)}</b>؟`
+            : `Are you sure you want to delete: <b class="text-slate-800 dark:text-white">${escapeHtml(f.ref)}</b>?`
           }
+          <div class="mt-2 text-xs text-slate-500 dark:text-slate-400">${escapeHtml(desc)}</div>
         </div>
-      </div>
-    `;
+      `;
 
-    const footer = `
-      <button class="px-4 py-2 rounded-lg text-sm font-bold border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition" onclick="closeModal()">${t('cancel')}</button>
-      <button class="px-4 py-2 rounded-lg text-sm font-bold bg-brandRed text-white hover:bg-red-600 transition" onclick="downloadPDF(document.getElementById('rep_type').value)">
-        <i class="fa-solid fa-download"></i> ${t('btn_download')}
-      </button>
-    `;
+      const footer = `
+        <button class="px-4 py-2 rounded-lg text-sm font-bold border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition" onclick="closeModal()">${t('cancel')}</button>
+        <button class="px-4 py-2 rounded-lg text-sm font-bold bg-red-600 text-white hover:bg-red-700 transition" onclick="deleteFinding('${id}')">
+          <i class="fa-solid fa-trash"></i> ${t('delete')}
+        </button>
+      `;
 
-    openModal(currentLang==='ar'?'توليد تقرير':'Generate Report', body, footer);
-    if (type) setTimeout(() => { const el = document.getElementById('rep_type'); if (el) el.value = type; }, 0);
-  }
-
-  function downloadPDF(type='summary') {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF({ unit: 'pt', format: 'a4' });
-
-    const s = getStore();
-    const title = (currentLang==='ar')
-      ? `AndroGov - ${type === 'summary' ? 'تقرير ملخص رقابي' : type === 'followup' ? 'تقرير متابعة' : type === 'missions' ? 'تقرير مهام التدقيق' : 'تقرير الملاحظات'}`
-      : `AndroGov - ${type === 'summary' ? 'Audit Summary' : type === 'followup' ? 'Follow-up' : type === 'missions' ? 'Missions' : 'Findings'}`;
-
-    // Header
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(14);
-    doc.text(title, 40, 50);
-
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(10);
-    doc.text(`Generated: ${new Date().toLocaleString()}`, 40, 70);
-
-    let y = 100;
-    const line = (txt) => {
-      const maxWidth = 515;
-      const lines = doc.splitTextToSize(txt, maxWidth);
-      doc.text(lines, 40, y);
-      y += (lines.length * 14) + 6;
-      if (y > 760) { doc.addPage(); y = 60; }
-    };
-
-    // Content
-    if (type === 'summary') {
-      const done = s.missions.filter(m => m.status==='done').length;
-      const ongoing = s.missions.filter(m => m.status==='ongoing').length;
-      const planned = s.missions.filter(m => m.status==='planned').length;
-      const openFindings = s.findings.filter(f => f.state!=='closed').length;
-      const highOpen = s.findings.filter(f => f.risk==='high' && f.state!=='closed').length;
-
-      line(currentLang==='ar' ? `ملخص المؤشرات:` : `Key metrics:`);
-      line((currentLang==='ar' ? `- المهام: مكتمل ${done} | قيد التنفيذ ${ongoing} | مخطط ${planned}` : `- Missions: done ${done} | ongoing ${ongoing} | planned ${planned}`));
-      line((currentLang==='ar' ? `- الملاحظات المفتوحة: ${openFindings} (عالية المخاطر: ${highOpen})` : `- Open findings: ${openFindings} (high risk: ${highOpen})`));
+      openModal(currentLang==='ar'?'تأكيد الحذف':'Confirm Delete', body, footer);
     }
 
-    if (type === 'missions') {
-      line(currentLang==='ar' ? `قائمة مهام التدقيق:` : `Audit missions list:`);
-      s.missions.forEach(m => {
-        const titleX = currentLang==='ar' ? m.title_ar : m.title_en;
-        const deptX = currentLang==='ar' ? m.dept_ar : m.dept_en;
-        line(`${m.id} | ${titleX} | ${deptX} | ${m.status} | due: ${m.due}`);
+    function deleteFinding(id) {
+      updateStore(s => {
+        s.findings = s.findings.filter(f => f.id !== id);
+        return s;
       });
+      closeModal();
+      if (currentView === 'findings') renderFindingsTable();
+      renderNotifications();
+      toast(currentLang==='ar'?'تم حذف الملاحظة.':'Finding deleted.', 'danger');
     }
 
-    if (type === 'findings' || type === 'followup') {
-      line(currentLang==='ar' ? `قائمة الملاحظات:` : `Findings list:`);
-      const list = (type === 'followup')
-        ? s.findings.filter(f => f.state !== 'closed')
-        : s.findings;
+    // =========================
+    // Reports
+    // =========================
+    function reportsHTML() {
+      return `
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 fade-in">
+          <div class="lg:col-span-2 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-6">
+            <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-2">${t('audit_reports')}</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mb-6">
+              ${currentLang==='ar'?'اختر نوع التقرير ثم اضغط توليد. سيتم تحميله كـ PDF (Demo).':'Pick a report type then generate. PDF will download (Demo).'}
+            </p>
 
-      list.forEach(f => {
-        const desc = currentLang==='ar' ? f.desc_ar : f.desc_en;
-        const owner = currentLang==='ar' ? f.owner_ar : f.owner_en;
-        line(`${f.ref} | ${f.risk} | ${f.state} | ${owner} | due: ${f.due}`);
-        line(`- ${desc}`);
-      });
+            <div class="space-y-3">
+              ${reportCard('summary', t('rep_summary'), currentLang==='ar'?'ملخص مؤشرات + حالة المهام والملاحظات.':'KPIs summary + missions/findings status.')}
+              ${reportCard('followup', t('rep_followup'), currentLang==='ar'?'متابعة الملاحظات المفتوحة وقيد المعالجة حسب المخاطرة.':'Follow-up for open/in-progress findings by risk.')}
+              ${reportCard('missions', t('rep_missions'), currentLang==='ar'?'قائمة مهام التدقيق ونطاقها والاستحقاقات.':'List missions, scope, and due dates.')}
+              ${reportCard('findings', currentLang==='ar'?'تقرير سجل الملاحظات':'Findings Log Report', currentLang==='ar'?'قائمة الملاحظات مع التوصيات ورد الإدارة.':'Findings with recommendations and management responses.')}
+            </div>
+          </div>
+
+          <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-6">
+            <h3 class="font-bold text-slate-800 dark:text-white mb-3">${currentLang==='ar'?'ملاحظات':'Notes'}</h3>
+            <div class="text-xs text-slate-600 dark:text-slate-300 space-y-2">
+              <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-700/40 border border-slate-100 dark:border-slate-700">
+                • ${currentLang==='ar'?'الـ PDF هنا ديمو (تنسيق بسيط).':'PDF is demo (simple formatting).'}
+              </div>
+              <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-700/40 border border-slate-100 dark:border-slate-700">
+                • ${currentLang==='ar'?'البيانات محفوظة في LocalStorage على جهازك.':'Data is stored in LocalStorage on your device.'}
+              </div>
+              <button class="w-full mt-2 px-4 py-2 rounded-lg text-sm font-bold border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition"
+                onclick="resetDemo()">
+                <i class="fa-solid fa-rotate"></i> ${currentLang==='ar'?'إعادة ضبط الديمو':'Reset Demo'}
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
     }
 
-    doc.save(`AndroGov_${type}_${todayISO()}.pdf`);
-    toast(currentLang==='ar'?'تم تحميل التقرير.':'Report downloaded.', 'success');
-    closeModal();
-  }
+    function reportCard(type, title, desc) {
+      return `
+        <div class="p-4 rounded-2xl border border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-700/30">
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <div class="font-bold text-slate-800 dark:text-white">${escapeHtml(title)}</div>
+              <div class="text-xs text-slate-500 dark:text-slate-300 mt-1">${escapeHtml(desc)}</div>
+            </div>
+            <div class="flex gap-2">
+              <button class="px-3 py-2 rounded-lg text-xs font-bold bg-brandRed text-white hover:bg-red-600 transition"
+                onclick="openGenerateReport('${type}')">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> ${t('btn_generate')}
+              </button>
+              <button class="px-3 py-2 rounded-lg text-xs font-bold border border-slate-200 dark:border-slate-700 hover:bg-white/60 dark:hover:bg-slate-700 transition"
+                onclick="downloadReportPDF('${type}')">
+                <i class="fa-solid fa-download"></i> ${t('btn_download')}
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
 
-  // =========================
-  // Profile (HR)
-  // =========================
-  function profileHTML() {
-    const s = getStore();
-    const p = s.profile;
+    function openGenerateReport(type) {
+      const titleMap = {
+        summary: t('rep_summary'),
+        followup: t('rep_followup'),
+        missions: t('rep_missions'),
+        findings: currentLang==='ar'?'تقرير سجل الملاحظات':'Findings Log Report'
+      };
+      const title = titleMap[type] || 'Report';
 
-    const name = currentLang==='ar' ? p.name_ar : p.name_en;
-    const role = currentLang==='ar' ? p.role_ar : p.role_en;
+      const body = `
+        <div class="space-y-3">
+          <div class="text-sm text-slate-600 dark:text-slate-300">
+            ${currentLang==='ar'
+              ? 'سيتم إنشاء تقرير PDF بناءً على البيانات الحالية.'
+              : 'A PDF will be generated from current data.'}
+          </div>
+          <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-700/40 border border-slate-100 dark:border-slate-700 text-xs text-slate-600 dark:text-slate-300">
+            • ${currentLang==='ar'?'النوع':'Type'}: <b>${escapeHtml(title)}</b><br/>
+            • ${currentLang==='ar'?'التاريخ':'Date'}: <b>${escapeHtml(todayISO())}</b>
+          </div>
+        </div>
+      `;
 
-    return `
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 fade-in">
-        <div class="lg:col-span-2 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-6">
-          <div class="flex items-center gap-4">
-            <div class="w-14 h-14 rounded-2xl bg-brandRed text-white flex items-center justify-center font-extrabold text-xl shadow-lg shadow-red-500/30">
-              IA
+      const footer = `
+        <button class="px-4 py-2 rounded-lg text-sm font-bold border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition" onclick="closeModal()">${t('cancel')}</button>
+        <button class="px-4 py-2 rounded-lg text-sm font-bold bg-brandRed text-white hover:bg-red-600 transition" onclick="downloadReportPDF('${type}'); closeModal();">
+          <i class="fa-solid fa-file-arrow-down"></i> ${t('btn_download')}
+        </button>
+      `;
+
+      openModal(currentLang==='ar'?'توليد تقرير':'Generate Report', body, footer);
+    }
+
+    function downloadReportPDF(type) {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF({ orientation: 'p', unit: 'pt', format: 'a4' });
+
+      const s = getStore();
+      const margin = 40;
+      let y = 48;
+
+      const titleMap = {
+        summary: t('rep_summary'),
+        followup: t('rep_followup'),
+        missions: t('rep_missions'),
+        findings: currentLang==='ar'?'تقرير سجل الملاحظات':'Findings Log Report'
+      };
+      const reportTitle = titleMap[type] || 'Report';
+
+      // Header
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(16);
+      doc.text(`AndroGov — ${reportTitle}`, margin, y);
+      y += 18;
+
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(10);
+      doc.text(`Date: ${todayISO()}  |  Language: ${currentLang.toUpperCase()}`, margin, y);
+      y += 22;
+
+      const line = () => { doc.setDrawColor(220); doc.line(margin, y, 555, y); y += 18; };
+
+      const addSectionTitle = (txt) => {
+        doc.setFont('helvetica','bold');
+        doc.setFontSize(12);
+        doc.text(txt, margin, y);
+        y += 14;
+        doc.setFont('helvetica','normal');
+        doc.setFontSize(10);
+      };
+
+      const addText = (txt) => {
+        const maxW = 515;
+        const lines = doc.splitTextToSize(String(txt || ''), maxW);
+        lines.forEach(l => {
+          if (y > 780) { doc.addPage(); y = 48; }
+          doc.text(l, margin, y);
+          y += 14;
+        });
+      };
+
+      const riskLabel = (r) => ({low:t('risk_low'), med:t('risk_med'), high:t('risk_high')}[r] || r);
+      const stateLabel = (st) => ({open:t('state_open'), progress:t('state_progress'), closed:t('state_closed')}[st] || st);
+      const stMission = (st) => ({planned:t('status_planned'), ongoing:t('status_ongoing'), done:t('status_done')}[st] || st);
+
+      if (type === 'summary') {
+        const openFindings = s.findings.filter(f => f.state !== 'closed').length;
+        const urgentActions = s.findings.filter(f => f.risk === 'high' && f.state !== 'closed').length;
+        const completed = s.missions.filter(m => m.status === 'done').length;
+        const total = Math.max(1, s.missions.length);
+        const progress = Math.round((completed / total) * 100);
+
+        addSectionTitle('Key Metrics');
+        addText(`Annual Plan Progress: ${progress}%`);
+        addText(`Open Findings: ${openFindings}`);
+        addText(`High Risk Open Findings: ${urgentActions}`);
+        addText(`Missions (Total/Completed): ${s.missions.length}/${completed}`);
+        line();
+
+        addSectionTitle('Missions Status');
+        s.missions.forEach(m => {
+          if (y > 780) { doc.addPage(); y = 48; }
+          addText(`• ${m.id} — ${currentLang==='ar'?m.title_ar:m.title_en} | ${stMission(m.status)} | Due: ${m.due}`);
+        });
+        line();
+
+        addSectionTitle('Findings Snapshot');
+        s.findings.forEach(f => {
+          if (y > 780) { doc.addPage(); y = 48; }
+          addText(`• ${f.ref} | ${riskLabel(f.risk)} | ${stateLabel(f.state)} | Owner: ${currentLang==='ar'?f.owner_ar:f.owner_en}`);
+        });
+      }
+
+      if (type === 'followup') {
+        addSectionTitle('Open / In Progress Findings');
+        const list = s.findings.filter(f => f.state !== 'closed');
+        if (!list.length) addText('—');
+        list.forEach(f => {
+          if (y > 780) { doc.addPage(); y = 48; }
+          addText(`${f.ref} | Risk: ${riskLabel(f.risk)} | State: ${stateLabel(f.state)} | Due: ${f.due}`);
+          addText(`Desc: ${currentLang==='ar'?f.desc_ar:f.desc_en}`);
+          addText(`Rec: ${currentLang==='ar'?f.recommendation_ar:f.recommendation_en}`);
+          addText(`Resp: ${currentLang==='ar'?f.managementResponse_ar:f.managementResponse_en}`);
+          y += 6;
+        });
+      }
+
+      if (type === 'missions') {
+        addSectionTitle('Audit Missions');
+        if (!s.missions.length) addText('—');
+        s.missions.forEach(m => {
+          if (y > 780) { doc.addPage(); y = 48; }
+          addText(`${m.id} | ${stMission(m.status)} | Dept: ${currentLang==='ar'?m.dept_ar:m.dept_en} | Due: ${m.due}`);
+          addText(`Title: ${currentLang==='ar'?m.title_ar:m.title_en}`);
+          addText(`Objective: ${currentLang==='ar'?m.objective_ar:m.objective_en}`);
+          addText(`Scope: ${currentLang==='ar'?m.scope_ar:m.scope_en}`);
+          addText(`Owner: ${currentLang==='ar'?m.owner_ar:m.owner_en} | Progress: ${m.progress || 0}%`);
+          y += 6;
+        });
+      }
+
+      if (type === 'findings') {
+        addSectionTitle('Findings Log');
+        if (!s.findings.length) addText('—');
+        s.findings.forEach(f => {
+          if (y > 780) { doc.addPage(); y = 48; }
+          addText(`${f.ref} | Risk: ${riskLabel(f.risk)} | State: ${stateLabel(f.state)} | Due: ${f.due}`);
+          if (f.relatedMissionId) addText(`Linked Mission: ${f.relatedMissionId}`);
+          addText(`Owner: ${currentLang==='ar'?f.owner_ar:f.owner_en}`);
+          addText(`Desc: ${currentLang==='ar'?f.desc_ar:f.desc_en}`);
+          addText(`Recommendation: ${currentLang==='ar'?f.recommendation_ar:f.recommendation_en}`);
+          addText(`Mgmt Response: ${currentLang==='ar'?f.managementResponse_ar:f.managementResponse_en}`);
+          y += 6;
+        });
+      }
+
+      const safeType = String(type || 'report').replace(/[^a-z0-9_-]/gi,'');
+      doc.save(`AndroGov_${safeType}_${todayISO()}.pdf`);
+      toast(currentLang==='ar'?'تم تحميل التقرير.':'Report downloaded.', 'success');
+    }
+
+    // =========================
+    // Profile (HR)
+    // =========================
+    function profileHTML() {
+      const s = getStore();
+      const p = s.profile;
+
+      const name = currentLang==='ar'?p.name_ar:p.name_en;
+      const role = currentLang==='ar'?p.role_ar:p.role_en;
+
+      const attendRows = p.attendance.map(a => `
+        <tr class="border-b border-slate-100 dark:border-slate-700">
+          <td class="p-3 text-xs">${escapeHtml(currentLang==='ar'?a.date_ar:a.date_en)}</td>
+          <td class="p-3 text-xs font-bold">${escapeHtml(currentLang==='ar'?a.in_ar:a.in_en)}</td>
+          <td class="p-3 text-xs font-bold">${escapeHtml(currentLang==='ar'?a.out_ar:a.out_en)}</td>
+          <td class="p-3 text-xs">${escapeHtml(currentLang==='ar'?a.status_ar:a.status_en)}</td>
+        </tr>
+      `).join('');
+
+      return `
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 fade-in">
+          <div class="lg:col-span-2 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-6">
+            <div class="flex items-center gap-4">
+              <div class="w-14 h-14 rounded-2xl bg-brandRed text-white flex items-center justify-center font-extrabold shadow-lg">IA</div>
+              <div class="min-w-0">
+                <div class="text-lg font-extrabold text-slate-800 dark:text-white truncate">${escapeHtml(name)}</div>
+                <div class="text-xs text-slate-500 dark:text-slate-300">${escapeHtml(role)} • ID: <span class="font-mono">${escapeHtml(p.employeeId)}</span></div>
+              </div>
+              <div class="ms-auto">
+                <span class="px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-200">
+                  ${t('on_job')}
+                </span>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+              ${miniCard(t('leave_bal'), `${p.leaveBalance} ${currentLang==='ar'?'يوم':'Days'}`, 'fa-umbrella-beach')}
+              ${miniCard(t('commit_score'), `${p.commitment}%`, 'fa-shield-heart')}
+              ${miniCard(currentLang==='ar'?'آخر حركة':'Last Action', p.lastCheck ? escapeHtml(p.lastCheck) : (currentLang==='ar'?'—':'—'), 'fa-clock')}
+            </div>
+
+            <div class="mt-6">
+              <div class="flex items-center justify-between">
+                <h4 class="font-bold text-slate-800 dark:text-white">${t('attend_log')}</h4>
+                <button class="px-4 py-2 rounded-lg text-sm font-bold bg-brandRed text-white hover:bg-red-600 transition" onclick="toggleCheckin()">
+                  <i class="fa-solid fa-fingerprint"></i> ${t('btn_checkin')}
+                </button>
+              </div>
+
+              <div class="mt-3 overflow-x-auto">
+                <table class="w-full text-start text-slate-600 dark:text-slate-300">
+                  <thead class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 dark:text-slate-400 text-xs font-bold uppercase">
+                    <tr>
+                      <th class="p-3">${currentLang==='ar'?'اليوم':'Day'}</th>
+                      <th class="p-3">${currentLang==='ar'?'دخول':'In'}</th>
+                      <th class="p-3">${currentLang==='ar'?'خروج':'Out'}</th>
+                      <th class="p-3">${currentLang==='ar'?'الحالة':'Status'}</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
+                    ${attendRows}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-6">
+            <h4 class="font-bold text-slate-800 dark:text-white mb-4">${currentLang==='ar'?'خدمات الموظف':'Employee Services'}</h4>
+            <div class="space-y-3">
+              <button class="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-700/40 hover:bg-red-50 dark:hover:bg-slate-700 transition text-start"
+                onclick="toast(currentLang==='ar'?'تم فتح نموذج طلب إجازة (Demo).':'Leave request opened (Demo).','info')">
+                <div class="flex items-center gap-2">
+                  <i class="fa-solid fa-plane-departure text-slate-400"></i>
+                  <div class="text-xs font-bold text-slate-700 dark:text-slate-200">${t('btn_leave')}</div>
+                </div>
+              </button>
+
+              <button class="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-700/40 hover:bg-red-50 dark:hover:bg-slate-700 transition text-start"
+                onclick="downloadSalaryCertificate()">
+                <div class="flex items-center gap-2">
+                  <i class="fa-solid fa-file-signature text-slate-400"></i>
+                  <div class="text-xs font-bold text-slate-700 dark:text-slate-200">${t('btn_salary')}</div>
+                </div>
+              </button>
+
+              <button class="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-700/40 hover:bg-red-50 dark:hover:bg-slate-700 transition text-start"
+                onclick="toast(currentLang==='ar'?'تم فتح الدعم (Demo).':'Support opened (Demo).','info')">
+                <div class="flex items-center gap-2">
+                  <i class="fa-solid fa-headset text-slate-400"></i>
+                  <div class="text-xs font-bold text-slate-700 dark:text-slate-200">${t('btn_support')}</div>
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function miniCard(label, value, icon) {
+      return `
+        <div class="p-4 rounded-2xl border border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-700/30">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 flex items-center justify-center">
+              <i class="fa-solid ${icon} text-brandRed"></i>
             </div>
             <div class="min-w-0">
-              <div class="text-lg font-extrabold text-slate-800 dark:text-white truncate">${escapeHtml(name)}</div>
-              <div class="text-xs text-slate-500 dark:text-slate-400 mt-1">${escapeHtml(role)}</div>
+              <div class="text-xs text-slate-500 dark:text-slate-300">${escapeHtml(label)}</div>
+              <div class="text-sm font-extrabold text-slate-800 dark:text-white truncate">${escapeHtml(value)}</div>
             </div>
-            <div class="ms-auto text-xs font-bold px-3 py-1.5 rounded-full bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-200">
-              ${t('on_job')}
-            </div>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mt-6">
-            <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-700/40 border border-slate-100 dark:border-slate-700">
-              <div class="text-xs text-slate-500">${t('leave_bal')}</div>
-              <div class="text-2xl font-extrabold text-slate-800 dark:text-white mt-1">${p.leaveBalance} <span class="text-xs font-bold text-slate-400">${currentLang==='ar'?'يوم':'Days'}</span></div>
-            </div>
-            <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-700/40 border border-slate-100 dark:border-slate-700">
-              <div class="text-xs text-slate-500">${t('commit_score')}</div>
-              <div class="text-2xl font-extrabold text-slate-800 dark:text-white mt-1">${p.commitment}%</div>
-            </div>
-            <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-700/40 border border-slate-100 dark:border-slate-700">
-              <div class="text-xs text-slate-500">${currentLang==='ar'?'رقم الموظف':'Employee ID'}</div>
-              <div class="text-2xl font-extrabold text-slate-800 dark:text-white mt-1">${escapeHtml(p.employeeId)}</div>
-            </div>
-          </div>
-
-          <div class="mt-6 flex flex-wrap gap-2">
-            <button class="bg-brandRed text-white px-4 py-2 rounded-lg text-sm font-bold shadow-lg hover:bg-red-600 transition" onclick="checkinToggle()">
-              <i class="fa-solid fa-fingerprint"></i> ${t('btn_checkin')}
-            </button>
-            <button class="px-4 py-2 rounded-lg text-sm font-bold border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition" onclick="demoHR('${t('btn_leave')}')">
-              <i class="fa-solid fa-plane-departure"></i> ${t('btn_leave')}
-            </button>
-            <button class="px-4 py-2 rounded-lg text-sm font-bold border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition" onclick="demoHR('${t('btn_salary')}')">
-              <i class="fa-solid fa-file-invoice"></i> ${t('btn_salary')}
-            </button>
-            <button class="px-4 py-2 rounded-lg text-sm font-bold border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition" onclick="demoHR('${t('btn_support')}')">
-              <i class="fa-solid fa-headset"></i> ${t('btn_support')}
-            </button>
           </div>
         </div>
-
-        <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-6">
-          <h3 class="font-bold text-slate-800 dark:text-white">${t('attend_log')}</h3>
-          <div class="mt-4 space-y-2">
-            ${p.attendance.map(a => `
-              <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-700/40 border border-slate-100 dark:border-slate-700">
-                <div class="text-xs font-bold text-slate-700 dark:text-slate-200">${escapeHtml(currentLang==='ar'?a.date_ar:a.date_en)}</div>
-                <div class="text-[11px] text-slate-500 mt-1">
-                  ${currentLang==='ar'
-                    ? `دخول: <b>${a.in_ar}</b> • خروج: <b>${a.out_ar}</b> • ${a.status_ar}`
-                    : `In: <b>${a.in_en}</b> • Out: <b>${a.out_en}</b> • ${a.status_en}`
-                  }
-                </div>
-              </div>
-            `).join('')}
-          </div>
-        </div>
-      </div>
-    `;
-  }
-
-  function demoHR(title) {
-    openModal(title, `
-      <div class="text-sm text-slate-600 dark:text-slate-300">
-        ${currentLang==='ar' ? 'هذه وظيفة تجريبية (Demo). سيتم ربطها لاحقًا بالأنظمة.' : 'This is a demo action. Will be integrated later.'}
-      </div>
-    `, `
-      <button class="px-4 py-2 rounded-lg text-sm font-bold bg-brandRed text-white hover:bg-red-600 transition" onclick="closeModal()">${t('close')}</button>
-    `);
-  }
-
-  function checkinToggle() {
-    updateStore(s => {
-      const p = s.profile;
-      const now = new Date();
-      p.lastCheck = now.toISOString();
-      return s;
-    });
-    toast(currentLang==='ar'?'تم تسجيل العملية (Demo).':'Action recorded (Demo).', 'success');
-  }
-
-  // =========================
-  // Logout (Demo)
-  // =========================
-  function logout() {
-    openModal(currentLang==='ar'?'تسجيل خروج':'Logout', `
-      <div class="text-sm text-slate-600 dark:text-slate-300">
-        ${currentLang==='ar'
-          ? 'هذه نسخة Demo. هل تريد تصفير بيانات الديمو (localStorage)؟'
-          : 'This is a demo. Do you want to reset demo data (localStorage)?'
-        }
-      </div>
-    `, `
-      <button class="px-4 py-2 rounded-lg text-sm font-bold border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition" onclick="closeModal()">${t('cancel')}</button>
-      <button class="px-4 py-2 rounded-lg text-sm font-bold bg-red-600 text-white hover:bg-red-700 transition" onclick="resetDemo()">
-        <i class="fa-solid fa-rotate-left"></i> ${currentLang==='ar'?'تصفير الديمو':'Reset Demo'}
-      </button>
-    `);
-  }
-
-  function resetDemo() {
-    localStorage.removeItem(STORE_KEY);
-    closeModal();
-    renderNotifications();
-    renderView('dashboard');
-    initChat();
-    toast(currentLang==='ar'?'تم تصفير بيانات الديمو.':'Demo data reset.', 'success');
-  }
-
-  // =========================
-  // Global UX fixes
-  // =========================
-  document.addEventListener('click', (e) => {
-    const dd = document.getElementById('notifDropdown');
-    const wrap = document.getElementById('notifWrap');
-    if (!dd || !wrap) return;
-    if (!wrap.contains(e.target)) dd.classList.add('hidden');
-  });
-
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-      // close modal first if open
-      const modal = document.getElementById('modal');
-      if (modal && modal.classList.contains('active')) { closeModal(); return; }
-      // else close AI
-      if (aiOpen) { toggleAI(false); return; }
-      // else close notif
-      const dd = document.getElementById('notifDropdown');
-      if (dd && !dd.classList.contains('hidden')) dd.classList.add('hidden');
+      `;
     }
-  });
 
-  // =========================
-  // Boot
-  // =========================
-  (function boot() {
-    // Theme
-    const savedTheme = localStorage.getItem('theme') || 'light';
-    if (savedTheme === 'dark') document.documentElement.classList.add('dark');
-    document.getElementById('themeIcon').className = isDark() ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+    function toggleCheckin() {
+      updateStore(s => {
+        s.profile.lastCheck = (new Date()).toLocaleString(currentLang==='ar'?'ar-SA':'en-US');
+        return s;
+      });
+      renderView('profile');
+      toast(currentLang==='ar'?'تم تسجيل الحركة (Demo).':'Action recorded (Demo).','success');
+    }
 
-    // Language
-    applyLanguage();
-    positionAI();
+    function downloadSalaryCertificate() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF({ unit: 'pt', format: 'a4' });
 
-    // Initial
-    renderNotifications();
-    initChat();
-    renderView('dashboard');
-  })();
-</script>
+      const s = getStore();
+      const p = s.profile;
+
+      const name = currentLang==='ar'?p.name_ar:p.name_en;
+      const role = currentLang==='ar'?p.role_ar:p.role_en;
+
+      let y = 60;
+      doc.setFont('helvetica','bold'); doc.setFontSize(16);
+      doc.text(currentLang==='ar'?'Salary Certificate (Demo)':'Salary Certificate (Demo)', 40, y);
+      y += 24;
+
+      doc.setFont('helvetica','normal'); doc.setFontSize(11);
+      doc.text(`Date: ${todayISO()}`, 40, y); y += 18;
+      doc.text(`Employee: ${name}`, 40, y); y += 18;
+      doc.text(`Role: ${role}`, 40, y); y += 18;
+      doc.text(`Employee ID: ${p.employeeId}`, 40, y); y += 18;
+
+      y += 8;
+      doc.setDrawColor(220); doc.line(40, y, 555, y); y += 22;
+
+      doc.setFontSize(10);
+      doc.text('This is a demo certificate generated by AndroGov UI (non-official).', 40, y);
+
+      doc.save(`AndroGov_SalaryCertificate_${todayISO()}.pdf`);
+      toast(currentLang==='ar'?'تم تحميل تعريف الراتب (Demo).':'Salary certificate downloaded (Demo).','success');
+    }
+
+    // =========================
+    // Reset / Logout
+    // =========================
+    function resetDemo() {
+      localStorage.removeItem(STORE_KEY);
+      renderNotifications();
+      renderView(currentView);
+      toast(currentLang==='ar'?'تمت إعادة ضبط بيانات الديمو.':'Demo data reset.', 'warning');
+    }
+
+    function logout() {
+      const body = `
+        <div class="text-sm text-slate-600 dark:text-slate-300">
+          ${currentLang==='ar'
+            ? 'هذا ديمو. سيتم فقط إعادة ضبط الواجهة وإغلاق القوائم.'
+            : 'This is a demo. UI will reset and menus will close.'}
+        </div>
+      `;
+      const footer = `
+        <button class="px-4 py-2 rounded-lg text-sm font-bold border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition" onclick="closeModal()">${t('cancel')}</button>
+        <button class="px-4 py-2 rounded-lg text-sm font-bold bg-brandRed text-white hover:bg-red-600 transition" onclick="closeModal(); toggleAI(false); document.getElementById('notifDropdown').classList.add('hidden'); toast(currentLang==='ar'?'تم.':'Done.','info');">
+          ${t('confirm')}
+        </button>
+      `;
+      openModal(currentLang==='ar'?'تسجيل خروج':'Logout', body, footer);
+    }
+
+    // =========================
+    // Global handlers / Init
+    // =========================
+    function closeDropdownsOnOutsideClick(e) {
+      const dd = document.getElementById('notifDropdown');
+      const wrap = document.getElementById('notifWrap');
+      if (!wrap.contains(e.target)) dd.classList.add('hidden');
+    }
+
+    document.addEventListener('click', closeDropdownsOnOutsideClick);
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        // Close modal first
+        const modalActive = document.getElementById('modal')?.classList.contains('active');
+        if (modalActive) { closeModal(); return; }
+        // Close AI
+        if (aiOpen) { toggleAI(false); return; }
+        // Close sidebar on mobile
+        if (window.innerWidth < 768) {
+          const sb = document.getElementById('sidebar');
+          if (sb.classList.contains('open')) toggleSidebar();
+        }
+      }
+    });
+
+    (function initApp() {
+      // theme
+      const th = localStorage.getItem('theme') || 'light';
+      if (th === 'dark') document.documentElement.classList.add('dark');
+      document.getElementById('themeIcon').className = isDark() ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+
+      // lang
+      currentLang = localStorage.getItem('lang') || 'ar';
+      applyLanguage();
+
+      // seed store
+      getStore();
+
+      // UI
+      renderNotifications();
+      initChat();
+      positionAI();
+      renderView('dashboard');
+    })();
+  </script>
 </body>
-</html>
+</html>    
