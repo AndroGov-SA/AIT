@@ -54,16 +54,17 @@
       70% { box-shadow: 0 0 0 10px rgba(251, 71, 71, 0); }
       100% { box-shadow: 0 0 0 0 rgba(251, 71, 71, 0); }
     }
-    /* مهم جداً إذا ما عندك Tailwind */
-.hidden { display: none !important; }
+    
+    .hidden { display: none !important; }
 
-/* احتياط: أي طبقة overlay لا تكون قابلة للضغط وهي مخفية */
-#modal, #modalBackdrop, #aiPanel, #notifDropdown {
-  pointer-events: none;
-}
-#modal.active, #modalBackdrop.active, #aiPanel.active, #notifDropdown:not(.hidden) {
-  pointer-events: auto;
-}
+    /* Prevent clicks on overlays/backgrounds when hidden */
+    #modal, #modalBackdrop, #aiPanel, #notifDropdown {
+      pointer-events: none;
+    }
+    #modal.active, #modalBackdrop.active, #aiPanel.active, #notifDropdown:not(.hidden) {
+      pointer-events: auto;
+    }
+
     @media (max-width: 768px) {
       #sidebar { position: fixed; right: 0; top: 0; height: 100%; transform: translateX(100%); transition: transform 0.3s; z-index: 50; }
       #sidebar.open { transform: translateX(0); }
@@ -103,7 +104,7 @@
   <!-- Sidebar -->
   <aside id="sidebar" class="w-64 bg-white dark:bg-slate-800 border-l dark:border-slate-700 flex flex-col shadow-xl shrink-0 h-full">
     <div class="h-20 flex items-center px-6 border-b border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 shrink-0">
-      <img src="https://ait.sa/wp-content/uploads/2024/03/cropped-Square-Logo.png" class="w-10 h-10 rounded-lg bg-white p-0.5 shadow-sm shrink-0" alt="Andromeda Logo">
+      <div class="w-10 h-10 rounded-lg bg-brandRed flex items-center justify-center text-white font-bold shadow-sm shrink-0">AG</div>
       <div class="mr-3">
         <h1 class="font-bold text-lg text-brandRed">AndroGov</h1>
         <p class="text-[10px] text-slate-400 font-bold tracking-wider" data-i18n="sidebar_subtitle">بوابة التدقيق الداخلي</p>
@@ -1741,8 +1742,6 @@
       if (mode === 'new') {
         const ref = generateFindingRef();
         updateStore(s => {
-          s.findings.unshift
-              updateStore(s => {
           s.findings.unshift({
             id: 'F-' + Date.now(),
             ref,
@@ -2021,8 +2020,8 @@
               : 'A PDF will be generated from current data.'}
           </div>
           <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-700/40 border border-slate-100 dark:border-slate-700 text-xs text-slate-600 dark:text-slate-300">
-            • ${currentLang==='ar'?'النوع':'Type'}: <b>${escapeHtml(title)}</b><br/>
-            • ${currentLang==='ar'?'التاريخ':'Date'}: <b>${escapeHtml(todayISO())}</b>
+            • ${currentLang==='ar'?'النوع':'Type'}: <b>${escapeHtml(title)}</b><br/><br>
+            • ${currentLang==='ar'?'التاريخ':'Date'}: <b>${escapeHtml(todayISO())}</b><br>
           </div>
         </div>
       `;
@@ -2394,4 +2393,4 @@
     })();
   </script>
 </body>
-</html>    
+</html>
