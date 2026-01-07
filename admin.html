@@ -26,21 +26,17 @@
   </script>
 
   <style>
-    /* Scrollbar */
     ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 20px; }
     .dark ::-webkit-scrollbar-thumb { background-color: #475569; }
 
-    /* Animations */
     .fade-in { animation: fadeIn 0.22s ease-out forwards; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(6px);} to { opacity: 1; transform: translateY(0);} }
 
-    /* Overlay */
     .sidebar-overlay { background: rgba(0,0,0,0.5); position: fixed; inset: 0; z-index: 40; display: none; }
     .sidebar-overlay.active { display: block; }
 
-    /* Mobile sidebar slide */
     @media (max-width: 768px) {
       #sidebar { position: fixed; top: 0; height: 100%; z-index: 50; transition: transform 0.3s; }
       html[dir="rtl"] #sidebar { right: 0; transform: translateX(100%); }
@@ -49,7 +45,6 @@
       html[dir="ltr"] #sidebar.open { transform: translateX(0); }
     }
 
-    /* Notification badge pulse */
     .notification-pulse { animation: pulse-red 2s infinite; }
     @keyframes pulse-red {
       0% { box-shadow: 0 0 0 0 rgba(251,71,71,.7); }
@@ -57,13 +52,11 @@
       100% { box-shadow: 0 0 0 0 rgba(251,71,71,0); }
     }
 
-    /* Chat bubbles */
-    .chat-bubble { max-width: 85%; padding: 10px; border-radius: 12px; margin-bottom: 8px; font-size: .9rem; line-height: 1.35rem; }
+    .chat-bubble { max-width: 85%; padding: 10px; border-radius: 12px; margin-bottom: 8px; font-size: .9rem; line-height: 1.35rem; white-space: pre-line; }
     .chat-ai { background-color: #FB4747; color: white; border-bottom-left-radius: 0; }
     .chat-user { background-color: #f1f5f9; color: #1e293b; border-bottom-right-radius: 0; }
     .dark .chat-user { background-color: #334155; color: white; }
 
-    /* AI sidebar direction (no Tailwind RTL plugin) */
     #aiSidebar {
       position: fixed; top: 0; height: 100%; width: 100%; max-width: 24rem; z-index: 60;
       background: white; transition: transform .3s;
@@ -71,24 +64,19 @@
       display: flex; flex-direction: column;
     }
     .dark #aiSidebar { background: #1f2937; }
-
     html[dir="rtl"] #aiSidebar { left: 0; right: auto; transform: translateX(-100%); border-right: 1px solid rgba(148,163,184,.25); }
     html[dir="rtl"] #aiSidebar.open { transform: translateX(0); }
-
     html[dir="ltr"] #aiSidebar { right: 0; left: auto; transform: translateX(100%); border-left: 1px solid rgba(148,163,184,.25); }
     html[dir="ltr"] #aiSidebar.open { transform: translateX(0); }
 
-    /* Modal */
     .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.55); z-index: 70; display: none; }
     .modal-overlay.show { display: flex; }
     .modal-card { width: min(720px, 92vw); max-height: 86vh; overflow: auto; }
 
-    /* Toast */
     .toast { position: fixed; bottom: 18px; z-index: 80; display: none; }
     html[dir="rtl"] .toast { right: 18px; }
     html[dir="ltr"] .toast { left: 18px; }
 
-    /* Small helper */
     .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace; }
   </style>
 </head>
@@ -145,7 +133,7 @@
         </button>
         <div>
           <h2 class="text-xl font-bold text-slate-800 dark:text-white" id="pageTitle">نظرة عامة</h2>
-          <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Central Admin Dashboard v2.2 (Demo)</p>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Central Admin Dashboard v2.3 (Smart Demo)</p>
         </div>
       </div>
 
@@ -239,7 +227,7 @@
 
   <script>
     // ----------------------------
-    // State + Storage Keys
+    // Storage Keys
     // ----------------------------
     const K = {
       lang: "lang",
@@ -247,19 +235,21 @@
       view: "adminView",
       users: "demo_admin_users",
       perms: "demo_admin_perms",
-      notif: "demo_admin_notif"
+      notif: "demo_admin_notifications_v2",
+      logs:  "demo_admin_logs_v2",
+      notifSeq: "demo_admin_notif_seq",
+      logSeq: "demo_admin_log_seq"
     };
 
     const state = {
       lang: localStorage.getItem(K.lang) || "ar",
       view: localStorage.getItem(K.view) || "overview",
       dark: localStorage.getItem(K.theme) === "dark",
-      notificationsRead: localStorage.getItem(K.notif) === "read",
       filters: { q: "", status: "all", role: "all" },
     };
 
     // ----------------------------
-    // Translations
+    // i18n
     // ----------------------------
     const translations = {
       ar: {
@@ -272,16 +262,10 @@
         user_role: "System Admin",
         ai_title: "المساعد التقني",
         ai_subtitle: "Andromeda AI Core",
-        ai_welcome: "مرحباً أيها المشرف. هل تريد تقرير المستخدمين، سجلات الدخول، أو حالة السيرفرات؟",
+        ai_welcome: "مرحباً أيها المشرف. هل تريد تقرير المستخدمين، أحدث التنبيهات، أو ملخص السجلات؟",
 
         notif_title: "التنبيهات",
         read_all: "قراءة الكل",
-        notif_1: "تحذير: محاولة دخول غير مصرحة",
-        notif_1_time: "منذ 2 دقيقة • IP: 192.168.1.15",
-        notif_2: "نسخ احتياطي ناجح",
-        notif_2_time: "منذ 1 ساعة • قاعدة البيانات",
-        notif_3: "طلب صلاحية جديد",
-        notif_3_time: "منذ 3 ساعات • المبيعات",
         no_notif: "لا توجد تنبيهات جديدة",
 
         total_users: "إجمالي المستخدمين",
@@ -306,7 +290,6 @@
         filter_status: "الحالة",
         filter_role: "الدور",
         all: "الكل",
-        actions: "إجراءات",
         enable: "تفعيل",
         disable: "تعطيل",
         lock: "قفل",
@@ -342,16 +325,10 @@
         user_role: "System Admin",
         ai_title: "Tech Assistant",
         ai_subtitle: "Andromeda AI Core",
-        ai_welcome: "Welcome Admin. Ask me about users, login logs, or server health.",
+        ai_welcome: "Welcome Admin. Ask for users report, latest notifications, or logs summary.",
 
         notif_title: "Notifications",
         read_all: "Read All",
-        notif_1: "Warning: Unauthorized Access",
-        notif_1_time: "2m ago • IP: 192.168.1.15",
-        notif_2: "Backup Successful",
-        notif_2_time: "1h ago • Database",
-        notif_3: "New Permission Request",
-        notif_3_time: "3h ago • Sales",
         no_notif: "No new notifications",
 
         total_users: "Total Users",
@@ -376,7 +353,6 @@
         filter_status: "Status",
         filter_role: "Role",
         all: "All",
-        actions: "Actions",
         enable: "Enable",
         disable: "Disable",
         lock: "Lock",
@@ -405,7 +381,141 @@
     };
 
     // ----------------------------
-    // Demo Data (with persistence)
+    // Helpers
+    // ----------------------------
+    const $ = (id) => document.getElementById(id);
+
+    function uid() { return Math.random().toString(16).slice(2) + Date.now().toString(16); }
+
+    function loadJSON(key, fallback) {
+      try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : structuredClone(fallback); }
+      catch { return structuredClone(fallback); }
+    }
+
+    function saveJSON(key, value) { localStorage.setItem(key, JSON.stringify(value)); }
+
+    function escapeHtml(s) {
+      return String(s).replace(/[&<>"']/g, m => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#039;"
+      }[m]));
+    }
+
+    function toast(msg) {
+      $("toastText").innerText = msg;
+      const el = $("toast");
+      el.style.display = "block";
+      clearTimeout(toast._t);
+      toast._t = setTimeout(() => el.style.display = "none", 2200);
+    }
+
+    function t() { return translations[state.lang]; }
+    function nowISO(){ return new Date().toISOString(); }
+    function nowHuman(){ return new Date().toLocaleString(); }
+
+    function seqNext(key){
+      const cur = Number(localStorage.getItem(key) || "0");
+      const next = cur + 1;
+      localStorage.setItem(key, String(next));
+      return next;
+    }
+
+    // ----------------------------
+    // Smart Demo: Logs + Notifications (Persistent)
+    // ----------------------------
+    const defaultNotifications = [
+      {
+        id: 1,
+        type: "warn",
+        title_ar: "تحذير: محاولة دخول غير مصرحة",
+        title_en: "Warning: Unauthorized Access",
+        meta_ar: "منذ 2 دقيقة • IP: 192.168.1.15",
+        meta_en: "2m ago • IP: 192.168.1.15",
+        body_ar: "تم اكتشاف محاولة دخول فاشلة. (Demo) راجع السجلات من Monitor.",
+        body_en: "Failed login attempt detected. (Demo) Review logs in Monitor.",
+        createdAt: nowISO(),
+        read: false
+      },
+      {
+        id: 2,
+        type: "ok",
+        title_ar: "نسخ احتياطي ناجح",
+        title_en: "Backup Successful",
+        meta_ar: "منذ 1 ساعة • قاعدة البيانات",
+        meta_en: "1h ago • Database",
+        body_ar: "تم إتمام النسخ الاحتياطي بنجاح. (Demo)",
+        body_en: "Backup completed successfully. (Demo)",
+        createdAt: nowISO(),
+        read: false
+      },
+      {
+        id: 3,
+        type: "info",
+        title_ar: "طلب صلاحية جديد",
+        title_en: "New Permission Request",
+        meta_ar: "منذ 3 ساعات • المبيعات",
+        meta_en: "3h ago • Sales",
+        body_ar: "يوجد طلب صلاحية جديد. (Demo) يمكنك إدارة الصلاحيات من Permissions.",
+        body_en: "There is a new permission request. (Demo) Manage in Permissions.",
+        createdAt: nowISO(),
+        read: false
+      }
+    ];
+
+    const defaultLogs = [
+      { id: 1, icon:"fa-solid fa-shield-halved", color:"text-brandRed", title_ar:"محاولة دخول فاشلة", title_en:"Failed Login Attempt", desc:"IP: 192.168.1.15 • User: hr", createdAt: nowISO() },
+      { id: 2, icon:"fa-solid fa-database", color:"text-blue-500", title_ar:"نسخ احتياطي مكتمل", title_en:"Backup Completed", desc:"Database snapshot saved", createdAt: nowISO() },
+      { id: 3, icon:"fa-solid fa-plug", color:"text-amber-500", title_ar:"فحص التكاملات", title_en:"Integration Check", desc:"Nafis API: OK • Sadad: OK", createdAt: nowISO() },
+      { id: 4, icon:"fa-solid fa-user-gear", color:"text-green-500", title_ar:"تعديل مستخدم", title_en:"User Updated", desc:"User permissions updated (Demo)", createdAt: nowISO() },
+    ];
+
+    // Ensure sequences start
+    if (!localStorage.getItem(K.notifSeq)) localStorage.setItem(K.notifSeq, "3");
+    if (!localStorage.getItem(K.logSeq)) localStorage.setItem(K.logSeq, "4");
+
+    let notifications = loadJSON(K.notif, defaultNotifications);
+    let logs = loadJSON(K.logs, defaultLogs);
+
+    function addLog({ icon, color, title_ar, title_en, desc }) {
+      const id = seqNext(K.logSeq);
+      const item = { id, icon, color, title_ar, title_en, desc, createdAt: nowISO() };
+      logs.unshift(item);
+      logs = logs.slice(0, 200);
+      saveJSON(K.logs, logs);
+    }
+
+    function addNotification({ type, title_ar, title_en, meta_ar, meta_en, body_ar, body_en }) {
+      const id = seqNext(K.notifSeq);
+      const item = {
+        id, type,
+        title_ar, title_en,
+        meta_ar: meta_ar || nowHuman(),
+        meta_en: meta_en || nowHuman(),
+        body_ar: body_ar || "",
+        body_en: body_en || "",
+        createdAt: nowISO(),
+        read: false
+      };
+      notifications.unshift(item);
+      notifications = notifications.slice(0, 200);
+      saveJSON(K.notif, notifications);
+      syncNotifBadge();
+      renderNotifications();
+    }
+
+    function unreadCount(){ return notifications.filter(n => !n.read).length; }
+
+    function syncNotifBadge() {
+      const c = unreadCount();
+      const badge = $("notifBadge");
+      if (!badge) return;
+      if (c <= 0) badge.classList.add("hidden");
+      else badge.classList.remove("hidden");
+      const title = $("notifTitle");
+      if (title) title.innerText = `${t().notif_title}${c>0 ? " ("+c+")" : ""}`;
+    }
+
+    // ----------------------------
+    // Demo Data Users/Perms (Persistent)
     // ----------------------------
     const defaultUsers = [
       { id: uid(), name: "Hesham Alsuhaibani", email: "ceo@androomeda.com", role: "CEO", status: "active", locked: false, last: "5m ago" },
@@ -429,51 +539,11 @@
     let perms = loadJSON(K.perms, defaultPerms);
 
     // ----------------------------
-    // Helpers
-    // ----------------------------
-    const $ = (id) => document.getElementById(id);
-
-    function uid() {
-      return Math.random().toString(16).slice(2) + Date.now().toString(16);
-    }
-
-    function loadJSON(key, fallback) {
-      try {
-        const v = localStorage.getItem(key);
-        if (!v) return structuredClone(fallback);
-        return JSON.parse(v);
-      } catch {
-        return structuredClone(fallback);
-      }
-    }
-
-    function saveJSON(key, value) {
-      localStorage.setItem(key, JSON.stringify(value));
-    }
-
-    function escapeHtml(s) {
-      return String(s).replace(/[&<>"']/g, m => ({
-        "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#039;"
-      }[m]));
-    }
-
-    function toast(msg) {
-      $("toastText").innerText = msg;
-      const el = $("toast");
-      el.style.display = "block";
-      clearTimeout(toast._t);
-      toast._t = setTimeout(() => el.style.display = "none", 2200);
-    }
-
-    function t() { return translations[state.lang]; }
-
-    // ----------------------------
     // Theme / Language
     // ----------------------------
     function applyTheme() {
       const html = document.documentElement;
       const icon = $("themeIcon");
-
       if (state.dark) {
         html.classList.add("dark");
         localStorage.setItem(K.theme, "dark");
@@ -496,11 +566,11 @@
         if (t()[key]) el.innerText = t()[key];
       });
 
-      // AI welcome boot
       if (!$("chatArea").dataset.booted) {
         addAIMessage(t().ai_welcome);
         $("chatArea").dataset.booted = "1";
       }
+      syncNotifBadge();
     }
 
     // ----------------------------
@@ -510,75 +580,109 @@
       const sb = $("sidebar");
       const ov = $("mobileOverlay");
       const shouldOpen = (typeof force === "boolean") ? force : !sb.classList.contains("open");
-
       if (shouldOpen) { sb.classList.add("open"); ov.classList.add("active"); }
       else { sb.classList.remove("open"); ov.classList.remove("active"); }
     };
 
     // ----------------------------
-    // Notifications
+    // Notifications (Dynamic)
     // ----------------------------
     window.toggleNotifications = function(force) {
       const dd = $("notifDropdown");
       const shouldOpen = (typeof force === "boolean") ? force : dd.classList.contains("hidden");
       dd.classList.toggle("hidden", !shouldOpen);
+      if (shouldOpen) renderNotifications();
     };
+
+    function notifStyle(type){
+      if (type==="warn") return { border:"border-r-4 border-red-500 bg-red-50 dark:bg-red-900/10", icon:"fa-solid fa-triangle-exclamation text-brandRed" };
+      if (type==="ok") return { border:"border-r-4 border-green-500", icon:"fa-solid fa-circle-check text-green-500" };
+      return { border:"border-r-4 border-blue-500", icon:"fa-solid fa-circle-info text-blue-500" };
+    }
 
     function renderNotifications() {
       const list = $("notifList");
-      const title = $("notifTitle");
-      if (state.notificationsRead) {
-        title.innerText = `${t().notif_title}`;
+      const c = unreadCount();
+      $("notifTitle").innerText = `${t().notif_title}${c>0 ? " ("+c+")" : ""}`;
+
+      if (notifications.length === 0 || c === 0) {
         list.innerHTML = `<div class="p-6 text-center text-sm text-slate-400">${t().no_notif}</div>`;
+        syncNotifBadge();
         return;
       }
 
-      title.innerText = `${t().notif_title} (3)`;
-      list.innerHTML = `
-        <button onclick="openNotif(1)" class="w-full text-start p-3 border-b border-slate-50 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 cursor-pointer border-r-4 border-red-500 bg-red-50 dark:bg-red-900/10">
-          <p class="text-xs font-bold text-slate-700 dark:text-slate-200">${t().notif_1}</p>
-          <p class="text-[10px] text-slate-400 mt-1">${t().notif_1_time}</p>
-        </button>
-        <button onclick="openNotif(2)" class="w-full text-start p-3 border-b border-slate-50 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 cursor-pointer border-r-4 border-green-500">
-          <p class="text-xs font-bold text-slate-700 dark:text-slate-200">${t().notif_2}</p>
-          <p class="text-[10px] text-slate-400 mt-1">${t().notif_2_time}</p>
-        </button>
-        <button onclick="openNotif(3)" class="w-full text-start p-3 hover:bg-slate-50 dark:hover:bg-slate-700 cursor-pointer border-r-4 border-blue-500">
-          <p class="text-xs font-bold text-slate-700 dark:text-slate-200">${t().notif_3}</p>
-          <p class="text-[10px] text-slate-400 mt-1">${t().notif_3_time}</p>
-        </button>
-      `;
+      const items = notifications.filter(n => !n.read).slice(0, 20).map(n => {
+        const st = notifStyle(n.type);
+        const title = state.lang==="ar" ? n.title_ar : n.title_en;
+        const meta  = state.lang==="ar" ? n.meta_ar  : n.meta_en;
+        return `
+          <button onclick="openNotif(${n.id})" class="w-full text-start p-3 border-b border-slate-50 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 cursor-pointer ${st.border}">
+            <div class="flex items-start gap-3">
+              <i class="${st.icon} mt-0.5"></i>
+              <div class="flex-1">
+                <p class="text-xs font-bold text-slate-700 dark:text-slate-200">${escapeHtml(title)}</p>
+                <p class="text-[10px] text-slate-400 mt-1">${escapeHtml(meta)}</p>
+              </div>
+              <span class="text-[10px] text-slate-400 mono">#${n.id}</span>
+            </div>
+          </button>
+        `;
+      }).join("");
+
+      list.innerHTML = items;
+      syncNotifBadge();
     }
 
     window.markAllRead = function() {
-      state.notificationsRead = true;
-      localStorage.setItem(K.notif, "read");
-      $("notifBadge")?.classList.add("hidden");
+      notifications = notifications.map(n => ({...n, read:true}));
+      saveJSON(K.notif, notifications);
+      syncNotifBadge();
       renderNotifications();
       toast(state.lang === "ar" ? "تمت قراءة التنبيهات" : "Notifications marked read");
+      addLog({
+        icon:"fa-solid fa-bell",
+        color:"text-blue-500",
+        title_ar:"قراءة التنبيهات",
+        title_en:"Notifications Read",
+        desc:"Admin marked all notifications as read"
+      });
     };
 
-    window.openNotif = function(n) {
+    window.openNotif = function(id) {
+      const n = notifications.find(x => x.id === id);
+      if (!n) return;
+
+      n.read = true;
+      saveJSON(K.notif, notifications);
+      syncNotifBadge();
+      renderNotifications();
       toggleNotifications(false);
-      const map = {
-        1: { title: t().notif_1, sub: t().notif_1_time, body: (state.lang==="ar" ? "تم اكتشاف محاولة دخول فاشلة. (Demo) يمكنك مراجعة السجلات من صفحة Monitor." : "Failed login attempt detected. (Demo) Review logs in Monitor.") },
-        2: { title: t().notif_2, sub: t().notif_2_time, body: (state.lang==="ar" ? "تم إتمام النسخ الاحتياطي بنجاح. (Demo) آخر نسخة محفوظة قبل 1 ساعة." : "Backup completed successfully. (Demo) Last snapshot 1h ago.") },
-        3: { title: t().notif_3, sub: t().notif_3_time, body: (state.lang==="ar" ? "هناك طلب صلاحية جديد لقسم المبيعات. (Demo) يمكنك الموافقة أو الرفض من صفحة Permissions." : "New permission request for Sales. (Demo) Approve/deny from Permissions.") },
-      };
-      const item = map[n];
+
+      const title = state.lang==="ar" ? n.title_ar : n.title_en;
+      const sub = state.lang==="ar" ? n.meta_ar : n.meta_en;
+      const body = state.lang==="ar" ? n.body_ar : n.body_en;
+
       showModal({
-        title: item.title,
-        sub: item.sub,
+        title,
+        sub,
         body: `
           <div class="space-y-3">
             <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200/60 dark:border-slate-700">
-              <p class="text-sm text-slate-700 dark:text-slate-200">${escapeHtml(item.body)}</p>
+              <p class="text-sm text-slate-700 dark:text-slate-200">${escapeHtml(body || (state.lang==="ar"?"لا يوجد تفاصيل إضافية":"No extra details"))}</p>
             </div>
             <div class="flex gap-2 justify-end">
               <button class="px-4 py-2 rounded-xl bg-brandRed text-white font-bold hover:bg-red-600 transition" onclick="closeModal()">${t().close}</button>
             </div>
           </div>
         `,
+      });
+
+      addLog({
+        icon:"fa-solid fa-bell",
+        color:"text-amber-500",
+        title_ar:"فتح تنبيه",
+        title_en:"Notification Opened",
+        desc:`Notification #${id} opened`
       });
     };
 
@@ -617,9 +721,7 @@
     // ----------------------------
     // Users: filters + CRUD
     // ----------------------------
-    function rolesList() {
-      return Array.from(new Set(users.map(u => u.role))).sort();
-    }
+    function rolesList() { return Array.from(new Set(users.map(u => u.role))).sort(); }
 
     function filteredUsers() {
       const q = state.filters.q.trim().toLowerCase();
@@ -705,7 +807,7 @@
           <div class="p-5 border-b border-slate-100 dark:border-slate-700 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 bg-slate-50 dark:bg-slate-900">
             <div>
               <h3 class="font-extrabold text-slate-800 dark:text-white">${t().active_users_list}</h3>
-              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">${escapeHtml(users.length)} users • Demo CRUD enabled</p>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">${escapeHtml(users.length)} users • Smart Demo enabled</p>
             </div>
 
             <div class="flex flex-col sm:flex-row gap-2 sm:items-center">
@@ -761,7 +863,7 @@
     window.openAddUser = function() {
       showModal({
         title: state.lang === "ar" ? "إضافة مستخدم" : "Add User",
-        sub: state.lang === "ar" ? "إنشاء حساب جديد (Demo)" : "Create a new account (Demo)",
+        sub: state.lang === "ar" ? "إنشاء حساب جديد (Smart Demo)" : "Create a new account (Smart Demo)",
         body: userFormHtml({ mode: "add" }),
         footerHtml: `
           <button onclick="closeModal()" class="px-4 py-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition font-extrabold">${t().cancel}</button>
@@ -824,12 +926,6 @@
             <p class="text-[11px] text-slate-400 mt-1">${state.lang==="ar"?"الحساب المقفل يظهر بالحالة (مقفل) ولا يمكن تفعيله حتى يتم فتحه.":"Locked accounts show as Locked until unlocked."}</p>
           </div>
 
-          <div class="md:col-span-2">
-            <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200/60 dark:border-slate-700">
-              <p class="text-xs text-slate-500">${state.lang==="ar" ? "ملاحظة: هذا نموذج ديمو. الحفظ يتم داخل LocalStorage فقط." : "Note: Demo only. Saved to LocalStorage."}</p>
-            </div>
-          </div>
-
           <div id="u_err" class="md:col-span-2 hidden p-3 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-900/40 text-red-700 dark:text-red-300 text-sm font-bold"></div>
         </div>
       `;
@@ -853,22 +949,50 @@
       if (emailTaken) return showErr(state.lang==="ar"?"هذا البريد مستخدم مسبقًا":"Email already exists");
 
       if (mode === "add") {
-        users.unshift({ id: uid(), name, email, role, status, locked, last: "just now" });
+        const newUser = { id: uid(), name, email, role, status, locked, last: "just now" };
+        users.unshift(newUser);
         saveJSON(K.users, users);
         closeModal();
         toast(state.lang==="ar"?"تمت إضافة المستخدم":"User added");
         renderUsersPage();
+        updateOverviewCards();
+
+        addLog({ icon:"fa-solid fa-user-plus", color:"text-green-500", title_ar:"إضافة مستخدم", title_en:"User Added", desc:`${name} • ${email}` });
+        addNotification({
+          type:"ok",
+          title_ar:"تمت إضافة مستخدم جديد",
+          title_en:"New user added",
+          meta_ar:`${nowHuman()} • ${email}`,
+          meta_en:`${nowHuman()} • ${email}`,
+          body_ar:`تم إنشاء حساب جديد للمستخدم: ${name} (${role}).`,
+          body_en:`A new account has been created: ${name} (${role}).`
+        });
+
         return;
       }
 
       if (mode === "edit") {
         const idx = users.findIndex(u => u.id === id);
         if (idx === -1) return;
-        users[idx] = { ...users[idx], name, email, role, status, locked };
+
+        const before = users[idx];
+        users[idx] = { ...users[idx], name, email, role, status, locked, last: "just now" };
         saveJSON(K.users, users);
         closeModal();
         toast(state.lang==="ar"?"تم حفظ التعديل":"Changes saved");
         renderUsersPage();
+        updateOverviewCards();
+
+        addLog({ icon:"fa-solid fa-user-gear", color:"text-blue-500", title_ar:"تعديل مستخدم", title_en:"User Updated", desc:`${before.email} -> ${email} • role=${role}` });
+        addNotification({
+          type:"info",
+          title_ar:"تم تعديل بيانات مستخدم",
+          title_en:"User updated",
+          meta_ar:`${nowHuman()} • ${email}`,
+          meta_en:`${nowHuman()} • ${email}`,
+          body_ar:`تم تحديث بيانات المستخدم: ${name}.`,
+          body_en:`User profile updated: ${name}.`
+        });
       }
 
       function showErr(msg){
@@ -887,6 +1011,24 @@
       toast(state.lang==="ar"?"تم تحديث الحالة":"Status updated");
       renderUsersPage();
       updateOverviewCards();
+
+      addLog({
+        icon:"fa-solid fa-toggle-on",
+        color:"text-amber-500",
+        title_ar:"تغيير حالة مستخدم",
+        title_en:"User Status Changed",
+        desc:`${u.email} -> ${status}`
+      });
+
+      addNotification({
+        type:"info",
+        title_ar:"تغيير حالة حساب",
+        title_en:"Account status changed",
+        meta_ar:`${nowHuman()} • ${u.email}`,
+        meta_en:`${nowHuman()} • ${u.email}`,
+        body_ar:`تم تغيير حالة الحساب إلى: ${status==="active"?"نشط":"غير نشط"}.`,
+        body_en:`Account status set to: ${status}.`
+      });
     };
 
     window.toggleUserLock = function(id, lock) {
@@ -899,6 +1041,24 @@
       toast(lock ? (state.lang==="ar"?"تم قفل الحساب":"Account locked") : (state.lang==="ar"?"تم فتح الحساب":"Account unlocked"));
       renderUsersPage();
       updateOverviewCards();
+
+      addLog({
+        icon:"fa-solid fa-lock",
+        color:"text-brandRed",
+        title_ar: lock ? "قفل حساب" : "فتح حساب",
+        title_en: lock ? "Account Locked" : "Account Unlocked",
+        desc:`${u.email}`
+      });
+
+      addNotification({
+        type: lock ? "warn" : "ok",
+        title_ar: lock ? "تم قفل حساب مستخدم" : "تم فتح حساب مستخدم",
+        title_en: lock ? "User account locked" : "User account unlocked",
+        meta_ar:`${nowHuman()} • ${u.email}`,
+        meta_en:`${nowHuman()} • ${u.email}`,
+        body_ar: lock ? `تم قفل الحساب: ${u.name}.` : `تم فتح الحساب: ${u.name}.`,
+        body_en: lock ? `Account locked: ${u.name}.` : `Account unlocked: ${u.name}.`
+      });
     };
 
     window.confirmDeleteUser = function(id) {
@@ -926,12 +1086,24 @@
     };
 
     window.deleteUser = function(id) {
-      users = users.filter(u => u.id !== id);
+      const u = users.find(x => x.id === id);
+      users = users.filter(x => x.id !== id);
       saveJSON(K.users, users);
       closeModal();
       toast(state.lang==="ar"?"تم حذف المستخدم":"User deleted");
       renderUsersPage();
       updateOverviewCards();
+
+      addLog({ icon:"fa-solid fa-trash", color:"text-brandRed", title_ar:"حذف مستخدم", title_en:"User Deleted", desc:`${u?.email || id}` });
+      addNotification({
+        type:"warn",
+        title_ar:"تم حذف مستخدم",
+        title_en:"User deleted",
+        meta_ar:`${nowHuman()} • ${u?.email || id}`,
+        meta_en:`${nowHuman()} • ${u?.email || id}`,
+        body_ar:`تم حذف حساب المستخدم: ${u?.name || ""}`,
+        body_en:`Account removed: ${u?.name || ""}`
+      });
     };
 
     function initials(name) {
@@ -942,7 +1114,7 @@
     }
 
     // ----------------------------
-    // Permissions Page (Demo: editable)
+    // Permissions Page
     // ----------------------------
     function renderPermsPage() {
       const content = $("mainContent");
@@ -1002,29 +1174,51 @@
       `;
     }
 
-    window.setPermAccess = function(idx, v) {
-      perms[idx].access = v;
-    };
-    window.setPermModules = function(idx, v) {
-      perms[idx].modules = v.split(",").map(s => s.trim()).filter(Boolean);
-    };
+    window.setPermAccess = function(idx, v) { perms[idx].access = v; };
+    window.setPermModules = function(idx, v) { perms[idx].modules = v.split(",").map(s => s.trim()).filter(Boolean); };
+
     window.savePerms = function() {
       saveJSON(K.perms, perms);
       toast(state.lang==="ar"?"تم حفظ الصلاحيات":"Permissions saved");
+
+      addLog({ icon:"fa-solid fa-lock", color:"text-blue-500", title_ar:"تحديث الصلاحيات", title_en:"Permissions Updated", desc:`Roles updated: ${perms.length}` });
+      addNotification({
+        type:"info",
+        title_ar:"تم تحديث الصلاحيات",
+        title_en:"Permissions updated",
+        meta_ar:`${nowHuman()} • Roles: ${perms.length}`,
+        meta_en:`${nowHuman()} • Roles: ${perms.length}`,
+        body_ar:"تم حفظ مصفوفة الصلاحيات بنجاح. (Demo)",
+        body_en:"Permission matrix saved successfully. (Demo)"
+      });
     };
+
     window.resetPerms = function() {
       perms = structuredClone(defaultPerms);
       saveJSON(K.perms, perms);
       toast(state.lang==="ar"?"تمت إعادة الضبط":"Reset done");
+      addLog({ icon:"fa-solid fa-rotate", color:"text-amber-500", title_ar:"إعادة ضبط الصلاحيات", title_en:"Permissions Reset", desc:"Default permission matrix restored" });
+      addNotification({
+        type:"warn",
+        title_ar:"تمت إعادة ضبط الصلاحيات",
+        title_en:"Permissions reset",
+        meta_ar:`${nowHuman()}`,
+        meta_en:`${nowHuman()}`,
+        body_ar:"تمت إعادة مصفوفة الصلاحيات للوضع الافتراضي. (Demo)",
+        body_en:"Permission matrix restored to default. (Demo)"
+      });
       renderPermsPage();
     };
 
     // ----------------------------
-    // Monitor Page (Demo)
+    // Monitor Page (Reads real logs)
     // ----------------------------
     function renderMonitorPage() {
       const content = $("mainContent");
-      const logs = demoLogs();
+      const cpu = randomPct();
+      const uptime = "99.9%";
+      const db = "12ms";
+      const api = "OK";
 
       content.innerHTML = `
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 fade-in">
@@ -1042,10 +1236,10 @@
             </div>
 
             <div class="mt-4 grid grid-cols-2 gap-3">
-              ${monitorCard("Uptime","99.9%","fa-solid fa-heart-pulse","text-green-500")}
-              ${monitorCard("DB Latency","12ms","fa-solid fa-database","text-blue-500")}
-              ${monitorCard("API Health","OK","fa-solid fa-network-wired","text-brandRed")}
-              ${monitorCard("CPU Load", randomPct()+"%","fa-solid fa-microchip","text-amber-500")}
+              ${monitorCard("Uptime", uptime, "fa-solid fa-heart-pulse", "text-green-500")}
+              ${monitorCard("DB Latency", db, "fa-solid fa-database", "text-blue-500")}
+              ${monitorCard("API Health", api, "fa-solid fa-network-wired", "text-brandRed")}
+              ${monitorCard("CPU Load", cpu+"%", "fa-solid fa-microchip", "text-amber-500")}
             </div>
 
             <p class="text-[11px] text-slate-400 mt-4">${state.lang==="ar"?"القيم أعلاه افتراضية (Demo).":"Values above are simulated (Demo)."}</p>
@@ -1057,17 +1251,17 @@
               <span class="text-xs text-slate-500 dark:text-slate-400 mono">${new Date().toLocaleString()}</span>
             </div>
             <div class="max-h-[60vh] overflow-y-auto">
-              ${logs.map(l => `
+              ${logs.slice(0, 60).map(l => `
                 <div class="p-4 border-b border-slate-50 dark:border-slate-700 last:border-0 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
                   <div class="flex items-start gap-3">
                     <div class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-700 flex items-center justify-center ${l.color}">
                       <i class="${l.icon}"></i>
                     </div>
                     <div class="flex-1">
-                      <div class="font-extrabold text-sm">${escapeHtml(l.title)}</div>
+                      <div class="font-extrabold text-sm">${escapeHtml(state.lang==="ar" ? l.title_ar : l.title_en)}</div>
                       <div class="text-xs text-slate-500 dark:text-slate-400 mt-1">${escapeHtml(l.desc)}</div>
                     </div>
-                    <div class="text-[11px] text-slate-400 mono">${escapeHtml(l.time)}</div>
+                    <div class="text-[11px] text-slate-400 mono">#${l.id}</div>
                   </div>
                 </div>
               `).join("")}
@@ -1091,24 +1285,14 @@
 
     function randomPct(){ return Math.floor(Math.random()*30)+25; }
 
-    function demoLogs() {
-      const now = new Date();
-      const fmt = (mins) => new Date(now.getTime() - mins*60000).toLocaleTimeString();
-      return [
-        { icon:"fa-solid fa-shield-halved", color:"text-brandRed", title: (state.lang==="ar"?"محاولة دخول فاشلة":"Failed Login Attempt"), desc:"IP: 192.168.1.15 • User: hr", time: fmt(3) },
-        { icon:"fa-solid fa-database", color:"text-blue-500", title:(state.lang==="ar"?"نسخ احتياطي مكتمل":"Backup Completed"), desc:(state.lang==="ar"?"تم حفظ Snapshot لقاعدة البيانات":"Database snapshot saved"), time: fmt(56) },
-        { icon:"fa-solid fa-plug", color:"text-amber-500", title:(state.lang==="ar"?"فحص التكاملات":"Integration Check"), desc:(state.lang==="ar"?"Nafis API: OK • Sadad: OK":"Nafis API: OK • Sadad: OK"), time: fmt(82) },
-        { icon:"fa-solid fa-user-gear", color:"text-green-500", title:(state.lang==="ar"?"تعديل مستخدم":"User Updated"), desc:(state.lang==="ar"?"تم تحديث صلاحيات المستخدم (Demo)":"User permissions updated (Demo)"), time: fmt(140) },
-      ];
-    }
-
     window.refreshMonitor = function() {
       toast(state.lang==="ar"?"تم تحديث البيانات":"Refreshed");
+      addLog({ icon:"fa-solid fa-rotate", color:"text-blue-500", title_ar:"تحديث يدوي", title_en:"Manual Refresh", desc:"Admin refreshed Monitor view" });
       renderMonitorPage();
     };
 
     window.exportLogs = function() {
-      const data = demoLogs().map(x => `${x.time} - ${x.title}: ${x.desc}`).join("\n");
+      const data = logs.map(x => `${x.id} | ${new Date(x.createdAt).toLocaleString()} | ${(state.lang==="ar"?x.title_ar:x.title_en)} | ${x.desc}`).join("\n");
       const blob = new Blob([data], { type: "text/plain;charset=utf-8" });
       const a = document.createElement("a");
       a.href = URL.createObjectURL(blob);
@@ -1116,22 +1300,20 @@
       a.click();
       URL.revokeObjectURL(a.href);
       toast(state.lang==="ar"?"تم التصدير":"Exported");
+
+      addLog({ icon:"fa-solid fa-download", color:"text-amber-500", title_ar:"تصدير السجلات", title_en:"Logs Exported", desc:"Admin exported logs file" });
     };
 
     // ----------------------------
     // Overview Page
     // ----------------------------
-    function updateOverviewCards() {
-      // For simplicity, if overview currently shown, rerender it
-      if (state.view === "overview") renderOverviewPage();
-    }
+    function updateOverviewCards() { if (state.view === "overview") renderOverviewPage(); }
 
     function renderOverviewPage() {
       const content = $("mainContent");
       const total = users.length;
       const online = Math.max(3, Math.min(18, Math.floor(total/3)));
       const locked = users.filter(u => u.locked).length;
-      const active = users.filter(u => u.status==="active" && !u.locked).length;
       const load = randomPct();
 
       content.innerHTML = `
@@ -1141,6 +1323,7 @@
           ${overviewCard(t().warnings, locked, "fa-solid fa-triangle-exclamation", "text-amber-500", "users")}
           ${overviewCard(t().server_load, load+"%", "fa-solid fa-microchip", "text-blue-500", "monitor")}
         </div>
+
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 fade-in">
           <div class="lg:col-span-2 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden">
             <div class="p-5 border-b border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 flex items-center justify-between">
@@ -1155,7 +1338,7 @@
           <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden">
             <div class="p-5 border-b border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900">
               <h3 class="font-extrabold">${state.lang==="ar"?"اختصارات":"Shortcuts"}</h3>
-              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">${state.lang==="ar"?"كلها تشتغل (Demo)":"All working (Demo)"}</p>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">${state.lang==="ar"?"كلها تشتغل (Smart Demo)":"All working (Smart Demo)"}</p>
             </div>
             <div class="p-5 space-y-2">
               <button onclick="openAddUser()" class="w-full px-4 py-3 rounded-xl bg-brandRed text-white hover:bg-red-600 transition font-extrabold flex items-center justify-between">
@@ -1169,6 +1352,14 @@
               <button onclick="renderPage('monitor')" class="w-full px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 transition font-extrabold flex items-center justify-between">
                 <span><i class="fa-solid fa-server"></i> ${t().monitor}</span>
                 <i class="fa-solid fa-arrow-left"></i>
+              </button>
+            </div>
+
+            <div class="p-5 border-t border-slate-100 dark:border-slate-700">
+              <div class="text-xs text-slate-500 dark:text-slate-400 font-extrabold">${state.lang==="ar"?"غير مقروء":"Unread"}</div>
+              <div class="text-3xl font-extrabold mt-1">${unreadCount()}</div>
+              <button onclick="toggleNotifications(true)" class="mt-3 text-xs font-extrabold text-brandRed hover:underline">
+                ${state.lang==="ar"?"عرض التنبيهات":"View notifications"}
               </button>
             </div>
           </div>
@@ -1206,7 +1397,7 @@
     }
 
     // ----------------------------
-    // AI (Demo with keywords)
+    // AI (Now knows notifications/logs)
     // ----------------------------
     function addAIMessage(text) {
       const chat = $("chatArea");
@@ -1230,13 +1421,9 @@
       const input = $("aiInput");
       const msg = input.value.trim();
       if (!msg) return;
-
       addUserMessage(msg);
       input.value = "";
-
-      setTimeout(() => {
-        addAIMessage(aiReply(msg));
-      }, 450);
+      setTimeout(() => addAIMessage(aiReply(msg)), 350);
     };
 
     function aiReply(q) {
@@ -1244,17 +1431,27 @@
       const total = users.length;
       const locked = users.filter(u => u.locked).length;
       const inactive = users.filter(u => u.status === "inactive").length;
+      const unread = unreadCount();
 
-      if (s.includes("user") || s.includes("مستخدم") || s.includes("users")) {
-        return state.lang === "ar"
-          ? `عدد المستخدمين: ${total}\nالنشط: ${total - inactive - locked} • غير نشط: ${inactive} • مقفل: ${locked}\n(هذه بيانات ديمو).`
-          : `Users: ${total}. Active: ${total - inactive - locked}, Inactive: ${inactive}, Locked: ${locked}. (Demo data).`;
+      if (s.includes("notif") || s.includes("تنبيه") || s.includes("notifications")) {
+        const top = notifications.find(n => !n.read);
+        if (!top) return state.lang==="ar" ? "ما عندك تنبيهات غير مقروءة." : "No unread notifications.";
+        return state.lang==="ar"
+          ? `عندك ${unread} تنبيه غير مقروء.\nأحدث واحد: ${top.title_ar}\nافتح زر الجرس لمشاهدتها.`
+          : `You have ${unread} unread notifications.\nLatest: ${top.title_en}\nOpen the bell to view.`;
       }
 
       if (s.includes("log") || s.includes("سجل") || s.includes("logs")) {
+        const top = logs[0];
+        return state.lang==="ar"
+          ? `عدد السجلات: ${logs.length}\nآخر حدث: ${(top?top.title_ar:"-")} (#${top?top.id:"-"})\nتقدر تشوف التفاصيل من Monitor.`
+          : `Logs: ${logs.length}\nLatest: ${(top?top.title_en:"-")} (#${top?top.id:"-"})\nOpen Monitor for details.`;
+      }
+
+      if (s.includes("user") || s.includes("مستخدم") || s.includes("users")) {
         return state.lang === "ar"
-          ? "تم العثور على 4 أحداث حديثة (Demo). افتح صفحة Monitor لمراجعة التفاصيل وتصدير السجلات."
-          : "Found 4 recent events (Demo). Open Monitor page to review and export logs.";
+          ? `عدد المستخدمين: ${total}\nالنشط: ${total - inactive - locked} • غير نشط: ${inactive} • مقفل: ${locked}\n(ديمو).`
+          : `Users: ${total}. Active: ${total - inactive - locked}, Inactive: ${inactive}, Locked: ${locked}. (Demo).`;
       }
 
       if (s.includes("server") || s.includes("سيرفر") || s.includes("health")) {
@@ -1265,13 +1462,13 @@
 
       if (s.includes("permission") || s.includes("صلاح") || s.includes("perms")) {
         return state.lang === "ar"
-          ? "تقدر تعدل صلاحيات الأدوار من صفحة Permissions. بعد التعديل اضغط (تحديث الصلاحيات)."
-          : "You can edit role permissions in Permissions page, then click Update Permissions.";
+          ? "تقدر تعدل صلاحيات الأدوار من صفحة Permissions. بعد التعديل اضغط (تحديث الصلاحيات) ويطلع Log + Notification."
+          : "Edit roles in Permissions page, then click Update Permissions (creates a Log + Notification).";
       }
 
-      return state.lang === "ar"
-        ? "تمام. اكتب: (تقرير المستخدمين) أو (سجلات الدخول) أو (حالة السيرفر)."
-        : "Try: users report, login logs, or server health.";
+      return state.lang==="ar"
+        ? "جرب: (تقرير المستخدمين) أو (آخر التنبيهات) أو (ملخص السجلات) أو (حالة السيرفر)."
+        : "Try: users report, latest notifications, logs summary, or server health.";
     }
 
     // ----------------------------
@@ -1297,12 +1494,9 @@
     };
 
     // ----------------------------
-    // Theme / Language buttons
+    // Buttons
     // ----------------------------
-    window.toggleDarkMode = function() {
-      state.dark = !state.dark;
-      applyTheme();
-    };
+    window.toggleDarkMode = function() { state.dark = !state.dark; applyTheme(); };
 
     window.toggleLanguage = function() {
       state.lang = (state.lang === "ar") ? "en" : "ar";
@@ -1321,13 +1515,10 @@
     };
 
     // ----------------------------
-    // Click outside + ESC close
+    // Click outside + ESC
     // ----------------------------
     document.addEventListener("click", (e) => {
-      // Close notifications on outside click
-      if (!$("notifWrap").contains(e.target)) {
-        $("notifDropdown").classList.add("hidden");
-      }
+      if (!$("notifWrap").contains(e.target)) $("notifDropdown").classList.add("hidden");
     });
 
     document.addEventListener("keydown", (e) => {
@@ -1345,10 +1536,8 @@
     (function init(){
       applyTheme();
       applyLanguage();
-
-      if (state.notificationsRead) $("notifBadge")?.classList.add("hidden");
+      syncNotifBadge();
       renderNotifications();
-
       renderPage(state.view);
     })();
   </script>
