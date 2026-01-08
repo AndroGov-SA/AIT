@@ -1,7 +1,7 @@
 /**
- * AndroGov Layout Engine v3.0 (Full Sitemap)
- * - Based on 'androgov.pdf' sitemap structure
- * - Includes detailed sections for Governance, Ops, and Departments
+ * AndroGov Layout Engine v3.1 (Fix Layout Overlap)
+ * - Fixes: Sidebar overlap in English mode by forcing Tailwind classes generation.
+ * - Fixes: Content margins swapping logic.
  */
 
 // 1. استرجاع الإعدادات
@@ -22,7 +22,7 @@ const config = {
     theme: localStorage.getItem('theme') || 'light'
 };
 
-// 2. قاموس النصوص (شامل لكافة أقسام النظام)
+// 2. قاموس النصوص
 const layoutDict = {
     ar: {
         sysName: "AndroGov",
@@ -37,21 +37,17 @@ const layoutDict = {
         },
         menu: {
             dash: "لوحة القيادة",
-            // Governance
             ga: "الجمعيات العمومية",
             board: "مجلس الإدارة",
             committees: "اللجان المنبثقة",
             shareholders: "سجل المساهمين",
-            // Ops Governance
             doa: "مصفوفة الصلاحيات (DOA)",
             policies: "مركز السياسات واللوائح",
             compliance: "الامتثال والمخاطر",
-            // Departments
             hr: "الموارد البشرية",
             finance: "الشؤون المالية",
             procurement: "المشتريات والعقود",
             it: "التقنية والأمن السيبراني",
-            // Admin
             users: "المستخدمين والصلاحيات",
             audit: "سجل التدقيق والرقابة"
         }
@@ -69,21 +65,17 @@ const layoutDict = {
         },
         menu: {
             dash: "Dashboard",
-            // Governance
             ga: "General Assembly",
             board: "Board of Directors",
             committees: "Committees",
             shareholders: "Shareholders Registry",
-            // Ops Governance
             doa: "Authority Matrix (DOA)",
             policies: "Policy Center",
             compliance: "Compliance & Risk",
-            // Departments
             hr: "Human Resources",
             finance: "Finance",
             procurement: "Procurement",
             it: "IT & Cybersecurity",
-            // Admin
             users: "Users & Roles",
             audit: "Audit Log"
         }
@@ -114,15 +106,26 @@ function applyConfig() {
         html.classList.remove('dark');
     }
 
+    // --- FIX: Force Tailwind to generate margin classes ---
+    // هذا الكود يضمن وجود الكلاسات في الصفحة حتى لو لم تكن في HTML الأصلي
+    if (!document.getElementById('tailwind-margin-fix')) {
+        const fixDiv = document.createElement('div');
+        fixDiv.id = 'tailwind-margin-fix';
+        fixDiv.className = 'hidden md:ml-72 md:mr-72';
+        document.body.appendChild(fixDiv);
+    }
+
+    // ضبط هوامش المحتوى لمنع التداخل
     const main = document.querySelector('.main-content') || document.querySelector('.main-content-wrapper');
     if (main) {
-        // تنظيف الكلاسات القديمة
+        // إزالة الكلاسات القديمة أولاً
         main.classList.remove('md:ml-72', 'md:mr-72');
         
+        // إضافة الكلاس الصحيح بناءً على اللغة
         if (config.lang === 'ar') {
-            main.classList.add('md:mr-72');
+            main.classList.add('md:mr-72'); // هامش يمين للعربي
         } else {
-            main.classList.add('md:ml-72');
+            main.classList.add('md:ml-72'); // هامش يسار للإنجليزي
         }
     }
 }
@@ -140,7 +143,6 @@ function renderSidebar() {
 
     const isActive = (p) => path.includes(p) ? 'bg-brandRed text-white shadow-lg shadow-red-500/30 font-bold' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800';
 
-    // أيقونات وتصنيفات بناءً على androgov.pdf
     el.innerHTML = `
     <aside class="fixed top-0 ${isRtl ? 'right-0' : 'left-0'} z-50 h-screen w-72 flex-col hidden md:flex transition-all duration-300 bg-white dark:bg-[#0F172A] border-${isRtl ? 'l' : 'r'} border-slate-200 dark:border-slate-800 shadow-xl">
         
