@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl" class="opacity-0 transition-opacity duration-300">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AndroGov | لوحة التحكم</title>
     
-    <!-- الخطوط والأيقونات -->
+    <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Tailwind CSS -->
+    <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -31,19 +31,19 @@
 </head>
 <body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300">
 
-    <!-- حاوية القائمة الجانبية (من layout.js) -->
+    <!-- Sidebar Container -->
     <div id="sidebar-container"></div>
 
-    <!-- المحتوى الرئيسي -->
+    <!-- Main Content -->
     <div class="main-content-wrapper md:mr-72 transition-all duration-300 flex flex-col min-h-screen">
         
-        <!-- الهيدر (من layout.js) -->
+        <!-- Header Container -->
         <div id="header-container"></div>
 
-        <!-- محتوى الصفحة -->
+        <!-- Content -->
         <main class="p-6 space-y-6">
             
-            <!-- تنبيه المسودة -->
+            <!-- Alert Banner -->
             <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 border border-orange-100 dark:border-orange-900/30 shadow-sm flex flex-col md:flex-row justify-between items-center gap-4 relative overflow-hidden">
                 <div class="absolute inset-0 bg-orange-50/50 dark:bg-orange-900/10 pointer-events-none"></div>
                 <div class="flex items-center gap-4 relative z-10">
@@ -57,17 +57,17 @@
                         </p>
                     </div>
                 </div>
-                <button class="relative z-10 px-6 py-2.5 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-600 transition shadow-sm">
-                    <i class="fa-solid fa-eye text-brandRed mx-1"></i> <span data-i18n="viewDraft">معاينة الملف</span>
+                <button class="relative z-10 px-6 py-2.5 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-600 transition shadow-sm flex items-center gap-2">
+                    <i class="fa-solid fa-eye text-brandRed"></i> <span data-i18n="viewDraft">معاينة الملف</span>
                 </button>
             </div>
 
-            <!-- البطاقات الإحصائية -->
+            <!-- KPI Cards -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-                <!-- بطاقة 1 -->
-                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-sm group hover:shadow-md transition-all">
+                <!-- Card 1 -->
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md transition-all">
                     <div class="flex justify-between items-start mb-4">
-                        <div class="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-500/10 text-brandBlue dark:text-blue-400 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
+                        <div class="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-500/10 text-brandBlue dark:text-blue-400 flex items-center justify-center text-xl">
                             <i class="fa-solid fa-coins"></i>
                         </div>
                         <span class="bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 text-[10px] font-bold px-2 py-1 rounded-lg uppercase" data-i18n="kpiCapLabel">رأس المال</span>
@@ -78,24 +78,22 @@
                     </p>
                 </div>
 
-                <!-- بطاقة 2 -->
-                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-sm group hover:shadow-md transition-all">
+                <!-- Card 2 -->
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md transition-all">
                     <div class="flex justify-between items-start mb-4">
-                        <div class="w-12 h-12 rounded-2xl bg-purple-50 dark:bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
+                        <div class="w-12 h-12 rounded-2xl bg-purple-50 dark:bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center text-xl">
                             <i class="fa-solid fa-users"></i>
                         </div>
                         <span class="bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 text-[10px] font-bold px-2 py-1 rounded-lg uppercase" data-i18n="kpiShareLabel">المساهمين</span>
                     </div>
                     <h3 class="text-3xl font-extrabold text-slate-800 dark:text-white tracking-tight font-sans" dir="ltr">14</h3>
-                    <div class="mt-2 flex -space-x-2 space-x-reverse">
-                        <span class="text-xs text-slate-400" data-i18n="shareholders">ورثة السحيباني، عبدالله، منصور...</span>
-                    </div>
+                    <div class="mt-2 text-xs text-slate-400 truncate" data-i18n="shareholders">ورثة السحيباني، هشام، إبراهيم...</div>
                 </div>
 
-                <!-- بطاقة 3 -->
-                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-sm group hover:shadow-md transition-all">
+                <!-- Card 3 -->
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md transition-all">
                     <div class="flex justify-between items-start mb-4">
-                        <div class="w-12 h-12 rounded-2xl bg-brandRed/10 text-brandRed flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
+                        <div class="w-12 h-12 rounded-2xl bg-brandRed/10 text-brandRed flex items-center justify-center text-xl">
                             <i class="fa-solid fa-signature"></i>
                         </div>
                         <span class="bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 text-[10px] font-bold px-2 py-1 rounded-lg uppercase" data-i18n="kpiDecLabel">قرارات</span>
@@ -107,10 +105,10 @@
                     </p>
                 </div>
 
-                <!-- بطاقة 4 -->
-                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-sm group hover:shadow-md transition-all">
+                <!-- Card 4 -->
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md transition-all">
                     <div class="flex justify-between items-start mb-4">
-                        <div class="w-12 h-12 rounded-2xl bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
+                        <div class="w-12 h-12 rounded-2xl bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400 flex items-center justify-center text-xl">
                             <i class="fa-solid fa-shield-halved"></i>
                         </div>
                         <span class="bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 text-[10px] font-bold px-2 py-1 rounded-lg uppercase" data-i18n="kpiCompLabel">الامتثال</span>
@@ -122,7 +120,7 @@
                 </div>
             </div>
 
-            <!-- سجل النظام -->
+            <!-- Audit Log -->
             <div class="bg-slate-900 rounded-3xl p-6 shadow-lg border border-slate-800 text-slate-300">
                 <div class="flex justify-between items-center mb-4 border-b border-slate-800 pb-4">
                     <h3 class="font-bold text-white flex items-center gap-2">
@@ -134,19 +132,18 @@
                     </span>
                 </div>
                 <div class="font-mono text-xs space-y-3 h-48 overflow-y-auto pr-2" id="audit-log-container">
-                    <!-- Logs will be loaded here -->
+                    <!-- JS fills this -->
                 </div>
             </div>
 
         </main>
     </div>
 
-    <!-- استدعاء ملف Layout الأساسي -->
     <script src="layout.js"></script>
 
-    <!-- منطق الصفحة والترجمة -->
     <script>
-        const contentTranslations = {
+        // Content Translations
+        const contentTrans = {
             ar: {
                 alertTitle: 'مسودة "الدليل الداخلي" بانتظار الاعتماد',
                 alertDesc: 'قام برفعها:',
@@ -154,7 +151,7 @@
                 kpiCapLabel: 'رأس المال',
                 fullyPaid: 'مدفوع بالكامل',
                 kpiShareLabel: 'المساهمين',
-                shareholders: 'ورثة السحيباني، عبدالله، منصور...',
+                shareholders: 'ورثة السحيباني، هشام، إبراهيم...',
                 kpiDecLabel: 'قرارات',
                 pendingAction: 'بانتظار: هشام السحيباني',
                 kpiCompLabel: 'الامتثال',
@@ -176,16 +173,14 @@
         };
 
         document.addEventListener('DOMContentLoaded', () => {
-            // تطبيق ترجمة المحتوى
             const lang = localStorage.getItem('lang') || 'ar';
-            const t = contentTranslations[lang];
+            const t = contentTrans[lang];
             
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
                 if(t[key]) el.innerText = t[key];
             });
 
-            // تحميل السجل
             renderLogs();
         });
 
