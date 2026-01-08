@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AndroGov | لوحة القيادة</title>
+    <title data-i18n="pageTitle">AndroGov | لوحة القيادة</title>
     
     <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -47,7 +47,7 @@
         <!-- Body Content -->
         <main class="p-6 space-y-6">
             
-            <!-- 1. التنبيهات العاجلة (Action Required) -->
+            <!-- 1. التنبيهات العاجلة -->
             <div class="bg-white dark:bg-slate-800 rounded-2xl p-1 border-l-4 border-orange-500 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4 overflow-hidden">
                 <div class="p-4 flex items-center gap-4">
                     <div class="w-12 h-12 rounded-full bg-orange-100 dark:bg-orange-500/20 text-orange-600 dark:text-orange-400 flex items-center justify-center text-xl shrink-0">
@@ -75,7 +75,7 @@
                     <div class="flex justify-between items-start">
                         <div>
                             <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase" data-i18n="kpiCapital">رأس المال المصدر</p>
-                            <h3 class="text-2xl font-bold mt-1 font-en">6,000,000 <span class="text-xs font-sans text-slate-400">ر.س</span></h3>
+                            <h3 class="text-2xl font-bold mt-1 font-en">6,000,000 <span class="text-xs font-sans text-slate-400" data-i18n="currency">ر.س</span></h3>
                         </div>
                         <div class="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/30 text-blue-600 flex items-center justify-center">
                             <i class="fa-solid fa-coins"></i>
@@ -97,7 +97,7 @@
                             <i class="fa-solid fa-users"></i>
                         </div>
                     </div>
-                    <div class="mt-4 text-xs text-slate-400 truncate w-full">
+                    <div class="mt-4 text-xs text-slate-400 truncate w-full" data-i18n="shareholdersList">
                         ورثة محمد السحيباني، هشام، إبراهيم...
                     </div>
                 </div>
@@ -136,10 +136,10 @@
                 </div>
             </div>
 
-            <!-- 3. لوحات المعلومات التفصيلية (Charts & Lists) -->
+            <!-- 3. لوحات المعلومات التفصيلية -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 
-                <!-- هيكل الملكية (Ownership Chart) -->
+                <!-- هيكل الملكية -->
                 <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
                     <div class="flex justify-between items-center mb-6">
                         <h3 class="font-bold text-slate-700 dark:text-white flex items-center gap-2">
@@ -150,23 +150,12 @@
                     <div class="h-48 relative flex justify-center">
                         <canvas id="ownershipChart"></canvas>
                     </div>
-                    <div class="mt-6 space-y-3">
-                        <div class="flex justify-between items-center text-xs">
-                            <span class="flex items-center gap-2 text-slate-600 dark:text-slate-300"><span class="w-2 h-2 rounded-full bg-brandRed"></span> ورثة محمد السحيباني</span>
-                            <span class="font-bold font-en">35%</span>
-                        </div>
-                        <div class="flex justify-between items-center text-xs">
-                            <span class="flex items-center gap-2 text-slate-600 dark:text-slate-300"><span class="w-2 h-2 rounded-full bg-blue-500"></span> هشام السحيباني</span>
-                            <span class="font-bold font-en">10%</span>
-                        </div>
-                        <div class="flex justify-between items-center text-xs">
-                            <span class="flex items-center gap-2 text-slate-600 dark:text-slate-300"><span class="w-2 h-2 rounded-full bg-slate-300"></span> آخرون (12 مساهم)</span>
-                            <span class="font-bold font-en">55%</span>
-                        </div>
+                    <div class="mt-6 space-y-3" id="chartLegend">
+                        <!-- Legend inserted via JS for translation -->
                     </div>
                 </div>
 
-                <!-- اللجان والحوكمة (Committees) -->
+                <!-- اللجان والحوكمة -->
                 <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
                     <h3 class="font-bold text-slate-700 dark:text-white mb-6 flex items-center gap-2">
                         <i class="fa-solid fa-users-gear text-purple-500"></i> <span data-i18n="commTitle">اللجان والمجلس</span>
@@ -176,8 +165,8 @@
                         <!-- Audit Committee -->
                         <div class="p-4 bg-slate-50 dark:bg-slate-700/50 rounded-xl border border-slate-100 dark:border-slate-700">
                             <div class="flex justify-between items-center mb-2">
-                                <h4 class="font-bold text-sm text-slate-800 dark:text-white">لجنة المراجعة</h4>
-                                <span class="bg-green-100 text-green-700 text-[10px] px-2 py-0.5 rounded-full font-bold">دورة جديدة</span>
+                                <h4 class="font-bold text-sm text-slate-800 dark:text-white" data-i18n="auditComm">لجنة المراجعة</h4>
+                                <span class="bg-green-100 text-green-700 text-[10px] px-2 py-0.5 rounded-full font-bold" data-i18n="newCycle">دورة جديدة</span>
                             </div>
                             <div class="space-y-2 mt-3">
                                 <div class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
@@ -190,8 +179,8 @@
                                 </div>
                             </div>
                             <div class="mt-3 pt-3 border-t border-slate-200 dark:border-slate-600 flex justify-between text-[10px]">
-                                <span class="text-slate-400">آخر اجتماع: 22/12/2025</span>
-                                <a href="#" class="text-brandBlue hover:underline">المحضر</a>
+                                <span class="text-slate-400" data-i18n="lastMeeting">آخر اجتماع: 22/12/2025</span>
+                                <a href="#" class="text-brandBlue hover:underline" data-i18n="minutes">المحضر</a>
                             </div>
                         </div>
 
@@ -200,16 +189,16 @@
                             <div class="flex items-center gap-3">
                                 <div class="w-8 h-8 rounded bg-purple-100 text-purple-600 flex items-center justify-center text-xs"><i class="fa-solid fa-calendar"></i></div>
                                 <div>
-                                    <p class="text-xs font-bold dark:text-white">اجتماع المجلس القادم</p>
-                                    <p class="text-[10px] text-slate-400">الربع الأول 2026</p>
+                                    <p class="text-xs font-bold dark:text-white" data-i18n="nextBoardMeeting">اجتماع المجلس القادم</p>
+                                    <p class="text-[10px] text-slate-400" data-i18n="q1_2026">الربع الأول 2026</p>
                                 </div>
                             </div>
-                            <button class="text-xs bg-white dark:bg-slate-600 border border-slate-200 dark:border-slate-500 px-3 py-1 rounded hover:bg-slate-50">جدولة</button>
+                            <button class="text-xs bg-white dark:bg-slate-600 border border-slate-200 dark:border-slate-500 px-3 py-1 rounded hover:bg-slate-50" data-i18n="schedule">جدولة</button>
                         </div>
                     </div>
                 </div>
 
-                <!-- العمليات والمهام (Operations) -->
+                <!-- العمليات والمهام -->
                 <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 flex flex-col">
                     <h3 class="font-bold text-slate-700 dark:text-white mb-6 flex items-center gap-2">
                         <i class="fa-solid fa-list-check text-green-500"></i> <span data-i18n="opsTitle">المهام التشغيلية</span>
@@ -220,40 +209,40 @@
                         <div class="flex gap-3 items-start p-3 rounded-xl bg-slate-50 dark:bg-slate-700/30 border border-slate-100 dark:border-slate-700/50">
                             <div class="mt-1"><input type="checkbox" class="accent-brandRed w-4 h-4"></div>
                             <div>
-                                <p class="text-xs font-bold text-slate-800 dark:text-white">اعتماد سياسة المكافآت</p>
-                                <p class="text-[10px] text-slate-400 mt-1">تاريخ الاستحقاق: 01/02/2026</p>
-                                <span class="inline-block mt-1 bg-yellow-100 text-yellow-700 text-[9px] px-1.5 py-0.5 rounded">Gov</span>
+                                <p class="text-xs font-bold text-slate-800 dark:text-white" data-i18n="task1">اعتماد سياسة المكافآت</p>
+                                <p class="text-[10px] text-slate-400 mt-1"><span data-i18n="dueDate">تاريخ الاستحقاق</span>: 01/02/2026</p>
+                                <span class="inline-block mt-1 bg-yellow-100 text-yellow-700 text-[9px] px-1.5 py-0.5 rounded" data-i18n="gov">Gov</span>
                             </div>
                         </div>
                         <!-- Task 2 -->
                         <div class="flex gap-3 items-start p-3 rounded-xl bg-slate-50 dark:bg-slate-700/30 border border-slate-100 dark:border-slate-700/50">
                             <div class="mt-1"><input type="checkbox" class="accent-brandRed w-4 h-4"></div>
                             <div>
-                                <p class="text-xs font-bold text-slate-800 dark:text-white">مراجعة تقرير الرواتب (HR)</p>
-                                <p class="text-[10px] text-slate-400 mt-1">من: منصور اليامي</p>
-                                <span class="inline-block mt-1 bg-blue-100 text-blue-700 text-[9px] px-1.5 py-0.5 rounded">Ops</span>
+                                <p class="text-xs font-bold text-slate-800 dark:text-white" data-i18n="task2">مراجعة تقرير الرواتب (HR)</p>
+                                <p class="text-[10px] text-slate-400 mt-1"><span data-i18n="from">من</span>: منصور اليامي</p>
+                                <span class="inline-block mt-1 bg-blue-100 text-blue-700 text-[9px] px-1.5 py-0.5 rounded" data-i18n="ops">Ops</span>
                             </div>
                         </div>
                         <!-- Task 3 -->
                         <div class="flex gap-3 items-start p-3 rounded-xl bg-slate-50 dark:bg-slate-700/30 border border-slate-100 dark:border-slate-700/50">
                             <div class="mt-1"><input type="checkbox" class="accent-brandRed w-4 h-4"></div>
                             <div>
-                                <p class="text-xs font-bold text-slate-800 dark:text-white">تحديث بيانات السجل التجاري</p>
-                                <p class="text-[10px] text-slate-400 mt-1">وزارة التجارة</p>
-                                <span class="inline-block mt-1 bg-purple-100 text-purple-700 text-[9px] px-1.5 py-0.5 rounded">Legal</span>
+                                <p class="text-xs font-bold text-slate-800 dark:text-white" data-i18n="task3">تحديث بيانات السجل التجاري</p>
+                                <p class="text-[10px] text-slate-400 mt-1" data-i18n="ministry">وزارة التجارة</p>
+                                <span class="inline-block mt-1 bg-purple-100 text-purple-700 text-[9px] px-1.5 py-0.5 rounded" data-i18n="legal">Legal</span>
                             </div>
                         </div>
                     </div>
                     
-                    <a href="#" class="mt-4 text-center text-xs text-brandBlue hover:underline">عرض كل المهام (12)</a>
+                    <a href="#" class="mt-4 text-center text-xs text-brandBlue hover:underline" data-i18n="viewAll">عرض كل المهام (12)</a>
                 </div>
             </div>
 
-            <!-- 4. سجل النظام المباشر (Audit Log) -->
+            <!-- 4. سجل النظام المباشر -->
             <div class="bg-slate-900 rounded-2xl p-5 shadow-lg text-slate-300 font-mono text-xs border border-slate-800">
                 <div class="flex justify-between items-center mb-3 border-b border-slate-700 pb-3">
-                    <span class="flex items-center gap-2 font-bold text-white"><i class="fa-solid fa-terminal text-brandRed"></i> System Audit Log</span>
-                    <span class="flex items-center gap-2 text-green-400"><span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span> Live Monitoring</span>
+                    <span class="flex items-center gap-2 font-bold text-white"><i class="fa-solid fa-terminal text-brandRed"></i> <span data-i18n="auditTitle">سجل النظام المباشر</span></span>
+                    <span class="flex items-center gap-2 text-green-400"><span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span> Live</span>
                 </div>
                 <div class="space-y-2 h-32 overflow-y-auto custom-scroll" id="audit-log-container">
                     <!-- Logs will be populated via JS -->
@@ -267,67 +256,135 @@
     <script src="layout.js"></script>
 
     <script>
-        // --- بيانات الصفحة والترجمة ---
+        // --- بيانات الترجمة الشاملة (لكل النصوص الظاهرة) ---
         const pageContent = {
             ar: {
+                pageTitle: "AndroGov | لوحة القيادة",
                 alertTitle: 'إجراء مطلوب: اعتماد "الدليل الداخلي"',
                 alertDesc: 'مسودة بانتظار الاعتماد النهائي من المجلس. الرافغ:',
                 reviewBtn: 'مراجعة واعتماد',
                 kpiCapital: 'رأس المال المصدر',
+                currency: 'ر.س',
                 fullyPaid: 'مدفوع بالكامل',
                 kpiShareholders: 'المساهمين',
                 member: 'عضو',
+                shareholdersList: 'ورثة محمد السحيباني، هشام، إبراهيم...',
                 kpiGov: 'قرارات بالتمرير',
                 pending: 'قيد التوقيع',
                 waitingFor: 'بانتظار: هشام السحيباني',
                 kpiComp: 'نسبة الامتثال',
                 chartTitle: 'هيكل الملكية',
                 commTitle: 'اللجان والمجلس',
-                opsTitle: 'المهام التشغيلية'
+                auditComm: 'لجنة المراجعة',
+                newCycle: 'دورة جديدة',
+                lastMeeting: 'آخر اجتماع: 22/12/2025',
+                minutes: 'المحضر',
+                nextBoardMeeting: 'اجتماع المجلس القادم',
+                q1_2026: 'الربع الأول 2026',
+                schedule: 'جدولة',
+                opsTitle: 'المهام التشغيلية',
+                task1: 'اعتماد سياسة المكافآت',
+                dueDate: 'تاريخ الاستحقاق',
+                gov: 'حوكمة',
+                task2: 'مراجعة تقرير الرواتب (HR)',
+                from: 'من',
+                ops: 'تشغيل',
+                task3: 'تحديث بيانات السجل التجاري',
+                ministry: 'وزارة التجارة',
+                legal: 'قانونية',
+                viewAll: 'عرض كل المهام (12)',
+                auditTitle: 'سجل النظام المباشر',
+                // Chart Labels
+                heirs: 'ورثة السحيباني',
+                hesham: 'هشام',
+                others: 'آخرون',
+                // Logs
+                log_backup: 'تم إكمال النسخ الاحتياطي بنجاح',
+                log_policy: 'قام هشام باستعراض "سياسة المكافآت"',
+                log_upload: 'قام أيمن برفع "مسودة الدليل الداخلي"',
+                log_firewall: 'تم حظر محاولة دخول مشبوهة'
             },
             en: {
+                pageTitle: "AndroGov | Dashboard",
                 alertTitle: 'Action Required: Approve "Internal Manual"',
                 alertDesc: 'Draft waiting for final board approval. Uploaded by:',
                 reviewBtn: 'Review & Approve',
                 kpiCapital: 'Issued Capital',
+                currency: 'SAR',
                 fullyPaid: 'Fully Paid',
                 kpiShareholders: 'Shareholders',
                 member: 'Members',
+                shareholdersList: 'Heirs of Al-Suhaibani, Hesham, Ibrahim...',
                 kpiGov: 'Resolutions',
                 pending: 'Pending Signature',
                 waitingFor: 'Waiting: Hesham',
                 kpiComp: 'Compliance Rate',
                 chartTitle: 'Ownership Structure',
                 commTitle: 'Committees & Board',
-                opsTitle: 'Operational Tasks'
+                auditComm: 'Audit Committee',
+                newCycle: 'New Cycle',
+                lastMeeting: 'Last meeting: 22/12/2025',
+                minutes: 'Minutes',
+                nextBoardMeeting: 'Next Board Meeting',
+                q1_2026: 'Q1 2026',
+                schedule: 'Schedule',
+                opsTitle: 'Operational Tasks',
+                task1: 'Approve Bonus Policy',
+                dueDate: 'Due Date',
+                gov: 'Gov',
+                task2: 'Review Payroll Report (HR)',
+                from: 'From',
+                ops: 'Ops',
+                task3: 'Update Commercial Registry',
+                ministry: 'Min. of Commerce',
+                legal: 'Legal',
+                viewAll: 'View All Tasks (12)',
+                auditTitle: 'Live System Audit',
+                // Chart Labels
+                heirs: 'Heirs of Al-Suhaibani',
+                hesham: 'Hesham',
+                others: 'Others',
+                // Logs
+                log_backup: 'Backup completed successfully',
+                log_policy: 'Hesham viewed "Bonus Policy.pdf"',
+                log_upload: 'Ayman uploaded "Internal Manual Draft"',
+                log_firewall: 'Firewall blocked suspicious IP'
             }
         };
 
+        // دالة التهيئة
         document.addEventListener('DOMContentLoaded', () => {
-            // 1. تطبيق الترجمة
+            updateContent();
+            initCharts();
+            renderLogs();
+            
+            // مراقب لتغيير اللغة من ملف layout.js
+            // بما أن layout.js يقوم بعمل reload عند تغيير اللغة، فإنDOMContentLoaded سيعمل مجدداً
+        });
+
+        function updateContent() {
             const lang = localStorage.getItem('lang') || 'ar';
             const t = pageContent[lang];
             
             if(t) {
+                // تحديث عنوان الصفحة
+                document.title = t.pageTitle;
+
+                // تحديث كل عنصر يحتوي على data-i18n
                 document.querySelectorAll('[data-i18n]').forEach(el => {
                     const key = el.getAttribute('data-i18n');
                     if(t[key]) el.innerText = t[key];
                 });
             }
-
-            // 2. رسم المخطط (Chart.js)
-            initCharts();
-
-            // 3. تعبئة السجل (Logs)
-            renderLogs();
-        });
+        }
 
         function initCharts() {
             const ctx = document.getElementById('ownershipChart').getContext('2d');
-            
-            // بيانات دقيقة حسب ملف CSV
+            const lang = localStorage.getItem('lang') || 'ar';
+            const t = pageContent[lang];
+
             const data = {
-                labels: ['Heirs of Al-Suhaibani', 'Hesham', 'Ibrahim', 'Others'],
+                labels: [t.heirs, t.hesham, 'Ibrahim', t.others],
                 datasets: [{
                     data: [35, 10, 10, 45],
                     backgroundColor: ['#FB4747', '#3B82F6', '#10B981', '#CBD5E1'],
@@ -335,6 +392,25 @@
                     hoverOffset: 10
                 }]
             };
+
+            // رسم المفتاح (Legend) يدوياً لدعم الترجمة بشكل أفضل
+            const legendContainer = document.getElementById('chartLegend');
+            if(legendContainer) {
+                legendContainer.innerHTML = `
+                    <div class="flex justify-between items-center text-xs">
+                        <span class="flex items-center gap-2 text-slate-600 dark:text-slate-300"><span class="w-2 h-2 rounded-full bg-brandRed"></span> ${t.heirs}</span>
+                        <span class="font-bold font-en">35%</span>
+                    </div>
+                    <div class="flex justify-between items-center text-xs">
+                        <span class="flex items-center gap-2 text-slate-600 dark:text-slate-300"><span class="w-2 h-2 rounded-full bg-blue-500"></span> ${t.hesham}</span>
+                        <span class="font-bold font-en">10%</span>
+                    </div>
+                    <div class="flex justify-between items-center text-xs">
+                        <span class="flex items-center gap-2 text-slate-600 dark:text-slate-300"><span class="w-2 h-2 rounded-full bg-slate-300"></span> ${t.others}</span>
+                        <span class="font-bold font-en">55%</span>
+                    </div>
+                `;
+            }
 
             new Chart(ctx, {
                 type: 'doughnut',
@@ -356,11 +432,14 @@
         }
 
         function renderLogs() {
+            const lang = localStorage.getItem('lang') || 'ar';
+            const t = pageContent[lang];
+
             const logs = [
-                { t: "10:45:22", type: "INFO", u: "System", msg: "Backup completed successfully", c: "text-green-400" },
-                { t: "10:42:15", type: "WARN", u: "Hesham", msg: "Viewed 'Bonus Policy.pdf'", c: "text-yellow-400" },
-                { t: "10:30:01", type: "INFO", u: "Ayman", msg: "Uploaded 'Internal_Manual_Draft.pdf'", c: "text-blue-400" },
-                { t: "09:15:00", type: "CRIT", u: "Firewall", msg: "Blocked suspicious IP 192.168.x.x", c: "text-red-400" }
+                { t: "10:45:22", type: "INFO", u: "System", msg: t.log_backup, c: "text-green-400" },
+                { t: "10:42:15", type: "WARN", u: "Hesham", msg: t.log_policy, c: "text-yellow-400" },
+                { t: "10:30:01", type: "INFO", u: "Ayman", msg: t.log_upload, c: "text-blue-400" },
+                { t: "09:15:00", type: "CRIT", u: "Firewall", msg: t.log_firewall, c: "text-red-400" }
             ];
             
             const container = document.getElementById('audit-log-container');
