@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="pageTitle">AndroGov | مجلس الإدارة</title>
+    
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brandRed: '#FB4747',
+                        brandBlue: '#4267B2',
+                        brandDark: '#1E293B',
+                        brandGray: '#F8FAFC'
+                    },
+                    fontFamily: {
+                        sans: ['Tajawal', 'Inter', 'sans-serif'],
+                        en: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @media print {
+            .no-print { display: none !important; }
+            body { background: white; }
+        }
+    </style>
+</head>
+<body class="bg-brandGray dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300">
+
+    <div id="sidebar-container" class="no-print"></div>
+    
+    <div class="main-content-wrapper md:mr-72 transition-all duration-300 flex flex-col min-h-screen">
+        <div id="header-container" class="no-print"></div>
+
+        <main class="p-6 space-y-6">
+            
+            <!-- 1. معلومات الدورة الحالية (Term Info) -->
+            <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 relative overflow-hidden">
+                <!-- Decoration -->
+                <div class="absolute top-0 left-0 w-2 h-full bg-brandBlue"></div>
+                <div class="absolute -right-10 -top-10 w-40 h-40 bg-blue-50 dark:bg-blue-900/10 rounded-full blur-2xl"></div>
+
+                <div class="flex flex-col md:flex-row justify-between items-center relative z-10">
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-800 dark:text-white flex items-center gap-2">
+                            <i class="fa-solid fa-building-columns text-brandBlue"></i> الدورة الحالية لمجلس الإدارة
+                        </h2>
+                        <p class="text-sm text-slate-500 mt-1">
+                            مدة الدورة: 3 سنوات (ميلادية)
+                        </p>
+                    </div>
+                    <div class="flex gap-6 text-center mt-4 md:mt-0">
+                        <div>
+                            <p class="text-[10px] text-slate-400 font-bold uppercase">تاريخ البداية</p>
+                            <p class="text-sm font-bold font-en text-slate-700 dark:text-slate-200">06/11/2025</p>
+                        </div>
+                        <div class="w-px bg-slate-200 h-8"></div>
+                        <div>
+                            <p class="text-[10px] text-slate-400 font-bold uppercase">تاريخ الانتهاء</p>
+                            <p class="text-sm font-bold font-en text-brandRed">05/11/2028</p>
+                        </div>
+                        <div class="w-px bg-slate-200 h-8"></div>
+                        <div>
+                            <p class="text-[10px] text-slate-400 font-bold uppercase">المتبقي</p>
+                            <p class="text-sm font-bold font-en text-green-600">~ 2 Years</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. أعضاء المجلس (Members Grid) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                
+                <!-- Chairman -->
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition group">
+                    <div class="flex justify-between items-start mb-3">
+                        <span class="bg-blue-100 text-blue-700 text-[10px] px-2 py-0.5 rounded font-bold">غير تنفيذي</span>
+                        <i class="fa-solid fa-crown text-yellow-500 text-lg" title="رئيس المجلس"></i>
+                    </div>
+                    <div class="text-center mb-4">
+                        <div class="w-16 h-16 mx-auto bg-slate-100 rounded-full flex items-center justify-center text-xl font-bold text-slate-500 border-2 border-white shadow-sm mb-2">A</div>
+                        <h3 class="font-bold text-sm">عبدالله بن محمد الحواس</h3>
+                        <p class="text-xs text-slate-400">رئيس مجلس الإدارة</p>
+                    </div>
+                    <div class="border-t pt-3 flex justify-between text-[10px] text-slate-500">
+                        <span><i class="fa-solid fa-chart-pie"></i> الملكية: 5%</span>
+                        <span class="text-green-600"><i class="fa-solid fa-circle-check"></i> نشط</span>
+                    </div>
+                </div>
+
+                <!-- Vice / CEO -->
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition group">
+                    <div class="flex justify-between items-start mb-3">
+                        <span class="bg-purple-100 text-purple-700 text-[10px] px-2 py-0.5 rounded font-bold">تنفيذي</span>
+                    </div>
+                    <div class="text-center mb-4">
+                        <div class="w-16 h-16 mx-auto bg-slate-100 rounded-full flex items-center justify-center text-xl font-bold text-slate-500 border-2 border-white shadow-sm mb-2">H</div>
+                        <h3 class="font-bold text-sm">هشام بن محمد السحيباني</h3>
+                        <p class="text-xs text-slate-400">نائب الرئيس / الرئيس التنفيذي</p>
+                    </div>
+                    <div class="border-t pt-3 flex justify-between text-[10px] text-slate-500">
+                        <span><i class="fa-solid fa-chart-pie"></i> الملكية: 10%</span>
+                        <span class="text-green-600"><i class="fa-solid fa-circle-check"></i> نشط</span>
+                    </div>
+                </div>
+
+                <!-- Member (Exec) -->
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition group">
+                    <div class="flex justify-between items-start mb-3">
+                        <span class="bg-purple-100 text-purple-700 text-[10px] px-2 py-0.5 rounded font-bold">تنفيذي</span>
+                    </div>
+                    <div class="text-center mb-4">
+                        <div class="w-16 h-16 mx-auto bg-slate-100 rounded-full flex items-center justify-center text-xl font-bold text-slate-500 border-2 border-white shadow-sm mb-2">M</div>
+                        <h3 class="font-bold text-sm">منصور بن حسن اليامي</h3>
+                        <p class="text-xs text-slate-400">عضو / مدير الشؤون الإدارية</p>
+                    </div>
+                    <div class="border-t pt-3 flex justify-between text-[10px] text-slate-500">
+                        <span><i class="fa-solid fa-chart-pie"></i> الملكية: 5%</span>
+                        <span class="text-green-600"><i class="fa-solid fa-circle-check"></i> نشط</span>
+                    </div>
+                </div>
+
+                <!-- Member (Independent) -->
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition group">
+                    <div class="flex justify-between items-start mb-3">
+                        <span class="bg-green-100 text-green-700 text-[10px] px-2 py-0.5 rounded font-bold">مستقل</span>
+                        <i class="fa-solid fa-shield-halved text-slate-300" title="عضو لجنة مراجعة"></i>
+                    </div>
+                    <div class="text-center mb-4">
+                        <div class="w-16 h-16 mx-auto bg-slate-100 rounded-full flex items-center justify-center text-xl font-bold text-slate-500 border-2 border-white shadow-sm mb-2">A</div>
+                        <h3 class="font-bold text-sm">أحمد بن سلطان السحيباني</h3>
+                        <p class="text-xs text-slate-400">عضو مجلس الإدارة</p>
+                    </div>
+                    <div class="border-t pt-3 flex justify-between text-[10px] text-slate-500">
+                        <span><i class="fa-solid fa-chart-pie"></i> الملكية: -</span>
+                        <span class="text-green-600"><i class="fa-solid fa-circle-check"></i> نشط</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- 3. إدارة الاجتماعات والقرارات -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                
+                <!-- اليسار: جدول الاجتماعات والقرارات -->
+                <div class="lg:col-span-2 bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="font-bold text-slate-800 dark:text-white flex items-center gap-2">
+                            <i class="fa-solid fa-briefcase text-brandRed"></i> أعمال المجلس
+                        </h3>
+                        <div class="flex gap-2">
+                            <button onclick="openResolutionModal()" class="px-3 py-1.5 bg-brandRed text-white rounded-lg text-xs font-bold hover:bg-red-700 flex items-center gap-2">
+                                <i class="fa-solid fa-pen-nib"></i> قرار بالتمرير
+                            </button>
+                            <button onclick="alert('جدولة اجتماع جديد')" class="px-3 py-1.5 bg-slate-100 text-slate-600 rounded-lg text-xs font-bold hover:bg-slate-200">
+                                <i class="fa-solid fa-plus"></i> اجتماع
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Tabs -->
+                    <div class="border-b border-slate-200 dark:border-slate-700 mb-4">
+                        <nav class="flex gap-6">
+                            <button onclick="switchTab('circular')" class="pb-3 text-sm font-bold text-brandRed border-b-2 border-brandRed tab-btn" data-target="circular">القرارات بالتمرير</button>
+                            <button onclick="switchTab('meetings')" class="pb-3 text-sm font-bold text-slate-500 hover:text-slate-700 border-b-2 border-transparent tab-btn" data-target="meetings">محاضر الاجتماعات</button>
+                        </nav>
+                    </div>
+
+                    <!-- Circular Resolutions List -->
+                    <div id="tab-circular" class="tab-content block space-y-3">
+                        
+                        <!-- قرار تشكيل لجنة المراجعة (من الملف المرفق) -->
+                        <div class="p-4 bg-slate-50 dark:bg-slate-700/50 rounded-xl border border-slate-200 dark:border-slate-600 flex justify-between items-center group hover:border-brandRed/30 transition">
+                            <div class="flex items-start gap-3">
+                                <div class="w-10 h-10 rounded-lg bg-green-100 text-green-600 flex items-center justify-center text-lg shrink-0">
+                                    <i class="fa-solid fa-check-double"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-sm text-slate-800 dark:text-white">تشكيل لجنة المراجعة لدورة جديدة</h4>
+                                    <p class="text-xs text-slate-500 mt-1">رقم القرار: 251222001 | التاريخ: 22/12/2025</p>
+                                    <div class="flex gap-2 mt-2">
+                                        <span class="text-[10px] bg-white border px-2 py-0.5 rounded text-slate-500">محمد العنزي</span>
+                                        <span class="text-[10px] bg-white border px-2 py-0.5 rounded text-slate-500">عادل سعسع</span>
+                                        <span class="text-[10px] bg-white border px-2 py-0.5 rounded text-slate-500">أحمد السحيباني</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-center">
+                                <span class="block text-[10px] bg-green-100 text-green-700 px-2 py-1 rounded font-bold mb-2">معتمد</span>
+                                <button class="text-xs text-brandBlue hover:underline"><i class="fa-solid fa-file-pdf"></i> عرض</button>
+                            </div>
+                        </div>
+
+                        <!-- قرار آخر (افتراضي) -->
+                        <div class="p-4 bg-slate-50 dark:bg-slate-700/50 rounded-xl border border-slate-200 dark:border-slate-600 flex justify-between items-center group hover:border-brandRed/30 transition opacity-60">
+                            <div class="flex items-start gap-3">
+                                <div class="w-10 h-10 rounded-lg bg-slate-200 text-slate-500 flex items-center justify-center text-lg shrink-0">
+                                    <i class="fa-solid fa-clock"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-sm text-slate-800 dark:text-white">اعتماد الموازنة التقديرية 2026</h4>
+                                    <p class="text-xs text-slate-500 mt-1">تحت التوقيع (3/5)</p>
+                                </div>
+                            </div>
+                            <div class="text-center">
+                                <span class="block text-[10px] bg-yellow-100 text-yellow-700 px-2 py-1 rounded font-bold mb-2">جاري</span>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Meetings List -->
+                    <div id="tab-meetings" class="tab-content hidden space-y-3">
+                        <p class="text-center text-slate-400 py-10 text-sm">لا توجد اجتماعات فعلية مسجلة لهذه الدورة بعد.</p>
+                    </div>
+                </div>
+
+                <!-- اليمين: المالية والمكافآت -->
+                <div class="lg:col-span-1 space-y-6">
+                    
+                    <!-- Remuneration Policy (حسب الملف) -->
+                    <div class="bg-white dark:bg-slate-800 p-5 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700">
+                        <h3 class="font-bold text-sm mb-4 flex items-center gap-2">
+                            <i class="fa-solid fa-money-check-dollar text-green-500"></i> المستحقات والمكافآت
+                        </h3>
+                        
+                        <div class="bg-slate-50 dark:bg-slate-700/50 p-3 rounded-xl border border-slate-200 dark:border-slate-600 mb-4">
+                            <p class="text-[10px] text-slate-400 mb-1 uppercase">سياسة بدل الحضور (لكل اجتماع)</p>
+                            <div class="flex justify-between items-center border-b border-slate-200 pb-2 mb-2">
+                                <span class="text-xs font-bold">عضو مجلس</span>
+                                <span class="text-xs font-bold font-en text-green-600">2,000 SAR</span>
+                            </div>
+                            <div class="flex justify-between items-center border-b border-slate-200 pb-2 mb-2">
+                                <span class="text-xs font-bold">عضو لجنة</span>
+                                <span class="text-xs font-bold font-en text-green-600">1,500 SAR</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs font-bold">أمين السر</span>
+                                <span class="text-xs font-bold font-en text-green-600">1,000 SAR</span>
+                            </div>
+                        </div>
+
+                        <div class="space-y-3">
+                            <h4 class="text-xs font-bold text-slate-500">المستحق للدورة الحالية (تقديري):</h4>
+                            <div class="flex justify-between text-xs">
+                                <span>عبدالله الحواس (1)</span>
+                                <span class="font-en">2,000</span>
+                            </div>
+                            <div class="flex justify-between text-xs">
+                                <span>هشام السحيباني (1)</span>
+                                <span class="font-en">2,000</span>
+                            </div>
+                            <div class="pt-2 border-t text-right">
+                                <span class="text-xs font-bold text-brandBlue">الإجمالي: 8,000 SAR</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Secretary Widget -->
+                    <div class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-3xl p-5 text-white shadow-lg">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center"><i class="fa-solid fa-feather"></i></div>
+                            <div>
+                                <p class="text-xs text-slate-400">أمين سر المجلس</p>
+                                <p class="font-bold text-sm">أيمن المغربي</p>
+                            </div>
+                        </div>
+                        <div class="text-[10px] bg-white/5 p-2 rounded border border-white/10">
+                            مسؤول عن صياغة المحاضر، حفظ السجلات، وتنسيق الاجتماعات وفق المادة (30).
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <!-- Resolution Wizard -->
+    <div id="resolutionModal" class="fixed inset-0 bg-black/60 hidden z-50 flex items-center justify-center backdrop-blur-sm">
+        <div class="bg-white dark:bg-slate-800 w-full max-w-2xl rounded-2xl shadow-2xl p-6">
+            <div class="flex justify-between items-center mb-6 border-b pb-4">
+                <h3 class="font-bold text-lg dark:text-white">إنشاء قرار مجلس إدارة بالتمرير</h3>
+                <button onclick="closeModal('resolutionModal')" class="text-slate-400 hover:text-red-500"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1">عنوان القرار</label>
+                    <input type="text" class="w-full border rounded-lg p-2 text-sm" placeholder="مثال: الموافقة على تسهيلات بنكية">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1">تاريخ القرار</label>
+                    <input type="date" class="w-full border rounded-lg p-2 text-sm" value="2026-01-08">
+                </div>
+            </div>
+            
+            <div class="mb-4">
+                <label class="block text-xs font-bold text-slate-500 mb-1">نص القرار والمبررات</label>
+                <textarea class="w-full border rounded-lg p-3 text-sm h-32" placeholder="إشارة إلى... وبناءً على... يقرر المجلس ما يلي..."></textarea>
+            </div>
+
+            <div class="mb-6 bg-blue-50 p-3 rounded-lg border border-blue-100">
+                <label class="flex items-center gap-2 text-xs font-bold text-blue-800">
+                    <input type="checkbox" checked disabled class="accent-brandBlue">
+                    يتم إرساله لجميع الأعضاء (4) للتوقيع الإلكتروني عبر النظام.
+                </label>
+            </div>
+
+            <div class="flex justify-end gap-3">
+                <button onclick="closeModal('resolutionModal')" class="px-5 py-2 border rounded-xl text-xs font-bold hover:bg-slate-50">إلغاء</button>
+                <button onclick="alert('تم إنشاء القرار وإرسال إشعارات للأعضاء')" class="px-6 py-2 bg-brandBlue text-white rounded-xl text-xs font-bold hover:bg-blue-700">اعتماد وإرسال</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="layout.js"></script>
+
+    <script>
+        // --- Tab Logic ---
+        function switchTab(target) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(el => {
+                el.classList.remove('text-brandRed', 'border-brandRed');
+                el.classList.add('text-slate-500', 'border-transparent');
+            });
+            document.getElementById(`tab-${target}`).classList.remove('hidden');
+            const btn = document.querySelector(`button[data-target="${target}"]`);
+            if(btn) {
+                btn.classList.remove('text-slate-500', 'border-transparent');
+                btn.classList.add('text-brandRed', 'border-brandRed');
+            }
+        }
+
+        // --- Modals ---
+        function openResolutionModal() {
+            document.getElementById('resolutionModal').classList.remove('hidden');
+        }
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
