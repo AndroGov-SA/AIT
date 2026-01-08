@@ -1,1545 +1,223 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" class="light">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>System Admin | إدارة النظام</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AndroGov | نظرة عامة</title>
+    
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@200;300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Libraries -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-
-  <script>
-    tailwind.config = {
-      darkMode: "class",
-      theme: {
-        extend: {
-          colors: {
-            brandRed: "#FB4747",
-            brandDark: "#1E293B",
-            brandGray: "#F1F5F9",
-          },
-          fontFamily: { sans: ["Tajawal", "Inter", "sans-serif"] },
-        },
-      },
-    };
-  </script>
-
-  <style>
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 20px; }
-    .dark ::-webkit-scrollbar-thumb { background-color: #475569; }
-
-    .fade-in { animation: fadeIn 0.22s ease-out forwards; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px);} to { opacity: 1; transform: translateY(0);} }
-
-    .sidebar-overlay { background: rgba(0,0,0,0.5); position: fixed; inset: 0; z-index: 40; display: none; }
-    .sidebar-overlay.active { display: block; }
-
-    @media (max-width: 768px) {
-      #sidebar { position: fixed; top: 0; height: 100%; z-index: 50; transition: transform 0.3s; }
-      html[dir="rtl"] #sidebar { right: 0; transform: translateX(100%); }
-      html[dir="rtl"] #sidebar.open { transform: translateX(0); }
-      html[dir="ltr"] #sidebar { left: 0; transform: translateX(-100%); }
-      html[dir="ltr"] #sidebar.open { transform: translateX(0); }
-    }
-
-    .notification-pulse { animation: pulse-red 2s infinite; }
-    @keyframes pulse-red {
-      0% { box-shadow: 0 0 0 0 rgba(251,71,71,.7); }
-      70% { box-shadow: 0 0 0 10px rgba(251,71,71,0); }
-      100% { box-shadow: 0 0 0 0 rgba(251,71,71,0); }
-    }
-
-    .chat-bubble { max-width: 85%; padding: 10px; border-radius: 12px; margin-bottom: 8px; font-size: .9rem; line-height: 1.35rem; white-space: pre-line; }
-    .chat-ai { background-color: #FB4747; color: white; border-bottom-left-radius: 0; }
-    .chat-user { background-color: #f1f5f9; color: #1e293b; border-bottom-right-radius: 0; }
-    .dark .chat-user { background-color: #334155; color: white; }
-
-    #aiSidebar {
-      position: fixed; top: 0; height: 100%; width: 100%; max-width: 24rem; z-index: 60;
-      background: white; transition: transform .3s;
-      box-shadow: 0 25px 50px -12px rgba(0,0,0,.25);
-      display: flex; flex-direction: column;
-    }
-    .dark #aiSidebar { background: #1f2937; }
-    html[dir="rtl"] #aiSidebar { left: 0; right: auto; transform: translateX(-100%); border-right: 1px solid rgba(148,163,184,.25); }
-    html[dir="rtl"] #aiSidebar.open { transform: translateX(0); }
-    html[dir="ltr"] #aiSidebar { right: 0; left: auto; transform: translateX(100%); border-left: 1px solid rgba(148,163,184,.25); }
-    html[dir="ltr"] #aiSidebar.open { transform: translateX(0); }
-
-    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.55); z-index: 70; display: none; }
-    .modal-overlay.show { display: flex; }
-    .modal-card { width: min(720px, 92vw); max-height: 86vh; overflow: auto; }
-
-    .toast { position: fixed; bottom: 18px; z-index: 80; display: none; }
-    html[dir="rtl"] .toast { right: 18px; }
-    html[dir="ltr"] .toast { left: 18px; }
-
-    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace; }
-  </style>
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brandRed: '#FB4747',
+                        darkBg: '#0F172A',
+                        darkSurface: '#1E293B',
+                    },
+                    fontFamily: {
+                        sans: ['Tajawal', 'sans-serif'],
+                        en: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
 </head>
-
-<body class="bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-white h-screen overflow-hidden flex font-sans transition-colors duration-300">
-  <div id="mobileOverlay" class="sidebar-overlay" onclick="toggleSidebar(false)"></div>
-
-  <!-- Sidebar -->
-  <aside id="sidebar" class="w-64 bg-white dark:bg-slate-800 border-l dark:border-slate-700 flex flex-col shadow-xl shrink-0 h-full">
-    <div class="h-20 flex items-center px-6 border-b border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 shrink-0">
-      <img src="https://ait.sa/wp-content/uploads/2024/03/cropped-Square-Logo.png" class="w-10 h-10 rounded-lg bg-white p-0.5 shadow-sm shrink-0" alt="Andromeda" />
-      <div class="mr-3">
-        <h1 class="font-bold text-lg text-brandRed">AndroGov</h1>
-        <p class="text-[10px] text-slate-400 font-bold tracking-wider" data-i18n="sidebar_subtitle">إدارة النظام</p>
-      </div>
-    </div>
-
-    <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
-      <button onclick="renderPage('overview')" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl transition nav-item" id="nav-overview">
-        <i class="fa-solid fa-gauge-high w-5 text-center"></i> <span data-i18n="overview">نظرة عامة</span>
-      </button>
-      <button onclick="renderPage('users')" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl transition nav-item" id="nav-users">
-        <i class="fa-solid fa-users-gear w-5 text-center"></i> <span data-i18n="users">إدارة المستخدمين</span>
-      </button>
-      <button onclick="renderPage('perms')" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl transition nav-item" id="nav-perms">
-        <i class="fa-solid fa-lock w-5 text-center"></i> <span data-i18n="permissions">الصلاحيات</span>
-      </button>
-      <button onclick="renderPage('monitor')" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl transition nav-item" id="nav-monitor">
-        <i class="fa-solid fa-server w-5 text-center"></i> <span data-i18n="monitor">مراقبة النظام</span>
-      </button>
-    </nav>
-
-    <div class="p-4 border-t border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition shrink-0" onclick="logout()">
-      <div class="flex items-center gap-3">
-        <div class="relative">
-          <div class="w-10 h-10 rounded-full bg-slate-800 text-white flex items-center justify-center font-bold text-sm shadow-sm border-2 border-white dark:border-slate-700">SA</div>
-          <span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white dark:border-slate-700 rounded-full"></span>
-        </div>
-        <div class="flex-1 min-w-0">
-          <p class="text-sm font-bold truncate text-slate-800 dark:text-white" data-i18n="user_name">مدير النظام</p>
-          <p class="text-[10px] text-slate-500 truncate" data-i18n="user_role">System Admin</p>
-        </div>
-        <i class="fa-solid fa-right-from-bracket text-brandRed text-sm" title="Logout" aria-hidden="true"></i>
-      </div>
-    </div>
-  </aside>
-
-  <!-- Main -->
-  <main class="flex-1 flex flex-col h-full relative overflow-hidden bg-white dark:bg-slate-900">
-    <header class="h-20 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-700 flex items-center justify-between px-4 md:px-8 shrink-0 z-10 sticky top-0">
-      <div class="flex items-center gap-3">
-        <button onclick="toggleSidebar()" class="md:hidden text-slate-600 dark:text-white p-2" aria-label="Menu">
-          <i class="fa-solid fa-bars text-xl" aria-hidden="true"></i>
-        </button>
-        <div>
-          <h2 class="text-xl font-bold text-slate-800 dark:text-white" id="pageTitle">نظرة عامة</h2>
-          <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Central Admin Dashboard v2.3 (Smart Demo)</p>
-        </div>
-      </div>
-
-      <div class="flex items-center gap-3">
-        <!-- Notifications -->
-        <div class="relative" id="notifWrap">
-          <button id="notifBtn" onclick="toggleNotifications()" class="relative w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center justify-center hover:bg-slate-200 dark:hover:bg-slate-700 transition" aria-label="Notifications">
-            <i class="fa-regular fa-bell" aria-hidden="true"></i>
-            <span id="notifBadge" class="absolute top-0 right-0 w-3 h-3 bg-brandRed border-2 border-white dark:border-slate-900 rounded-full notification-pulse"></span>
-          </button>
-
-          <div id="notifDropdown" class="absolute top-12 w-80 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-100 dark:border-slate-700 hidden z-50 overflow-hidden">
-            <div class="p-3 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-900">
-              <h4 class="font-bold text-sm text-slate-800 dark:text-white" id="notifTitle" data-i18n="notif_title">التنبيهات</h4>
-              <button onclick="markAllRead()" class="text-xs text-brandRed hover:underline" data-i18n="read_all">قراءة الكل</button>
-            </div>
-            <div class="max-h-64 overflow-y-auto" id="notifList"></div>
-          </div>
-        </div>
-
-        <!-- AI -->
-        <button onclick="toggleAI()" class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 text-brandRed flex items-center justify-center hover:bg-red-50 dark:hover:bg-slate-600 transition relative group" aria-label="AI">
-          <i class="fa-solid fa-robot text-lg group-hover:scale-110 transition-transform" aria-hidden="true"></i>
-        </button>
-
-        <!-- Lang -->
-        <button onclick="toggleLanguage()" class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center justify-center hover:bg-slate-200 dark:hover:bg-slate-600 transition font-bold text-xs" id="langLabel">EN</button>
-
-        <!-- Theme -->
-        <button onclick="toggleDarkMode()" class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-yellow-400 flex items-center justify-center hover:bg-slate-200 dark:hover:bg-slate-600 transition" aria-label="Theme">
-          <i id="themeIcon" class="fa-solid fa-moon" aria-hidden="true"></i>
-        </button>
-      </div>
-    </header>
-
-    <div id="mainContent" class="flex-1 overflow-y-auto p-4 md:p-8 bg-slate-50 dark:bg-slate-900"></div>
-  </main>
-
-  <!-- AI Sidebar -->
-  <aside id="aiSidebar" aria-label="AI Sidebar">
-    <div class="h-20 flex items-center justify-between px-6 bg-brandRed text-white shrink-0">
-      <div class="flex items-center gap-3">
-        <i class="fa-solid fa-microchip text-xl" aria-hidden="true"></i>
-        <div>
-          <h3 class="font-bold text-sm" data-i18n="ai_title">المساعد التقني</h3>
-          <p class="text-[10px] text-red-100" data-i18n="ai_subtitle">Andromeda AI Core</p>
-        </div>
-      </div>
-      <button onclick="toggleAI(false)" class="text-white/80 hover:text-white transition" aria-label="Close AI">
-        <i class="fa-solid fa-xmark text-lg" aria-hidden="true"></i>
-      </button>
-    </div>
-
-    <div id="chatArea" class="flex-1 bg-slate-50 dark:bg-slate-900 p-4 overflow-y-auto flex flex-col"></div>
-
-    <div class="p-4 border-t border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shrink-0">
-      <div class="flex gap-2 relative">
-        <input id="aiInput" type="text" placeholder="اسألني عن المستخدمين/السيرفر/الصلاحيات..." class="flex-1 bg-slate-100 dark:bg-slate-700 border-0 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brandRed dark:text-white transition-all"
-          onkeydown="if(event.key==='Enter'){event.preventDefault();sendAIMessage();}">
-        <button onclick="sendAIMessage()" class="bg-brandRed hover:bg-red-600 text-white w-12 rounded-xl transition-colors flex items-center justify-center shadow-lg shadow-red-500/30" aria-label="Send">
-          <i class="fa-solid fa-paper-plane" aria-hidden="true"></i>
-        </button>
-      </div>
-    </div>
-  </aside>
-
-  <!-- Modal -->
-  <div id="modalOverlay" class="modal-overlay items-center justify-center p-4" onclick="if(event.target.id==='modalOverlay') closeModal()">
-    <div class="modal-card bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-slate-100 dark:border-slate-700 overflow-hidden">
-      <div class="p-5 border-b border-slate-100 dark:border-slate-700 flex items-center justify-between bg-slate-50 dark:bg-slate-900">
-        <div>
-          <h3 id="modalTitle" class="font-extrabold text-slate-800 dark:text-white">Modal</h3>
-          <p id="modalSub" class="text-xs text-slate-500 dark:text-slate-400 mt-1">...</p>
-        </div>
-        <button onclick="closeModal()" class="w-10 h-10 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center hover:bg-slate-100 dark:hover:bg-slate-700 transition" aria-label="Close">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-      </div>
-      <div id="modalBody" class="p-5"></div>
-      <div id="modalFooter" class="p-5 border-t border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 flex items-center justify-end gap-2"></div>
-    </div>
-  </div>
-
-  <!-- Toast -->
-  <div id="toast" class="toast">
-    <div class="bg-slate-900 text-white px-4 py-3 rounded-xl shadow-xl text-sm flex items-center gap-2">
-      <i class="fa-solid fa-circle-check text-green-400"></i>
-      <span id="toastText">Saved</span>
-    </div>
-  </div>
-
-  <script>
-    // ----------------------------
-    // Storage Keys
-    // ----------------------------
-    const K = {
-      lang: "lang",
-      theme: "theme",
-      view: "adminView",
-      users: "demo_admin_users",
-      perms: "demo_admin_perms",
-      notif: "demo_admin_notifications_v2",
-      logs:  "demo_admin_logs_v2",
-      notifSeq: "demo_admin_notif_seq",
-      logSeq: "demo_admin_log_seq"
-    };
-
-    const state = {
-      lang: localStorage.getItem(K.lang) || "ar",
-      view: localStorage.getItem(K.view) || "overview",
-      dark: localStorage.getItem(K.theme) === "dark",
-      filters: { q: "", status: "all", role: "all" },
-    };
-
-    // ----------------------------
-    // i18n
-    // ----------------------------
-    const translations = {
-      ar: {
-        sidebar_subtitle: "إدارة النظام",
-        overview: "نظرة عامة",
-        users: "إدارة المستخدمين",
-        permissions: "الصلاحيات",
-        monitor: "مراقبة النظام",
-        user_name: "مدير النظام",
-        user_role: "System Admin",
-        ai_title: "المساعد التقني",
-        ai_subtitle: "Andromeda AI Core",
-        ai_welcome: "مرحباً أيها المشرف. هل تريد تقرير المستخدمين، أحدث التنبيهات، أو ملخص السجلات؟",
-
-        notif_title: "التنبيهات",
-        read_all: "قراءة الكل",
-        no_notif: "لا توجد تنبيهات جديدة",
-
-        total_users: "إجمالي المستخدمين",
-        online_now: "المتصلين الآن",
-        warnings: "تحذيرات الأمان",
-        server_load: "استهلاك السيرفر",
-
-        active_users_list: "حسابات الموظفين النشطة",
-        add_user: "إضافة مستخدم",
-        col_name: "الموظف",
-        col_email: "البريد الإلكتروني",
-        col_role: "الدور",
-        col_last: "آخر دخول",
-        col_status: "الحالة",
-        col_action: "الإجراء",
-        edit: "تعديل",
-        active: "نشط",
-        inactive: "غير نشط",
-        locked: "مقفل",
-
-        search_placeholder: "بحث بالاسم أو البريد...",
-        filter_status: "الحالة",
-        filter_role: "الدور",
-        all: "الكل",
-        enable: "تفعيل",
-        disable: "تعطيل",
-        lock: "قفل",
-        unlock: "فتح",
-        remove: "حذف",
-        confirm_delete: "تأكيد الحذف",
-        cancel: "إلغاء",
-        save: "حفظ",
-        close: "إغلاق",
-
-        perm_matrix: "مصفوفة الصلاحيات",
-        role: "الدور الوظيفي",
-        access_level: "مستوى الوصول",
-        modules: "الوحدات المصرحة",
-        full_access: "كامل",
-        partial: "جزئي",
-        read_only: "قراءة فقط",
-        manage_roles: "إدارة الأدوار (Demo)",
-        update_perms: "تحديث الصلاحيات",
-
-        monitor_title: "مراقبة النظام (Demo)",
-        refresh: "تحديث",
-        logs: "سجل الأحداث",
-        export: "تصدير",
-      },
-      en: {
-        sidebar_subtitle: "System Admin",
-        overview: "Overview",
-        users: "User Management",
-        permissions: "Permissions",
-        monitor: "System Monitor",
-        user_name: "System Admin",
-        user_role: "System Admin",
-        ai_title: "Tech Assistant",
-        ai_subtitle: "Andromeda AI Core",
-        ai_welcome: "Welcome Admin. Ask for users report, latest notifications, or logs summary.",
-
-        notif_title: "Notifications",
-        read_all: "Read All",
-        no_notif: "No new notifications",
-
-        total_users: "Total Users",
-        online_now: "Online Now",
-        warnings: "Security Warnings",
-        server_load: "Server Load",
-
-        active_users_list: "Active Employee Accounts",
-        add_user: "Add User",
-        col_name: "Employee",
-        col_email: "Email",
-        col_role: "Role",
-        col_last: "Last Login",
-        col_status: "Status",
-        col_action: "Action",
-        edit: "Edit",
-        active: "Active",
-        inactive: "Inactive",
-        locked: "Locked",
-
-        search_placeholder: "Search name or email...",
-        filter_status: "Status",
-        filter_role: "Role",
-        all: "All",
-        enable: "Enable",
-        disable: "Disable",
-        lock: "Lock",
-        unlock: "Unlock",
-        remove: "Delete",
-        confirm_delete: "Confirm Delete",
-        cancel: "Cancel",
-        save: "Save",
-        close: "Close",
-
-        perm_matrix: "Permission Matrix",
-        role: "Role",
-        access_level: "Access Level",
-        modules: "Authorized Modules",
-        full_access: "Full",
-        partial: "Partial",
-        read_only: "Read Only",
-        manage_roles: "Role Manager (Demo)",
-        update_perms: "Update Permissions",
-
-        monitor_title: "System Monitor (Demo)",
-        refresh: "Refresh",
-        logs: "Event Logs",
-        export: "Export",
-      }
-    };
-
-    // ----------------------------
-    // Helpers
-    // ----------------------------
-    const $ = (id) => document.getElementById(id);
-
-    function uid() { return Math.random().toString(16).slice(2) + Date.now().toString(16); }
-
-    function loadJSON(key, fallback) {
-      try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : structuredClone(fallback); }
-      catch { return structuredClone(fallback); }
-    }
-
-    function saveJSON(key, value) { localStorage.setItem(key, JSON.stringify(value)); }
-
-    function escapeHtml(s) {
-      return String(s).replace(/[&<>"']/g, m => ({
-        "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#039;"
-      }[m]));
-    }
-
-    function toast(msg) {
-      $("toastText").innerText = msg;
-      const el = $("toast");
-      el.style.display = "block";
-      clearTimeout(toast._t);
-      toast._t = setTimeout(() => el.style.display = "none", 2200);
-    }
-
-    function t() { return translations[state.lang]; }
-    function nowISO(){ return new Date().toISOString(); }
-    function nowHuman(){ return new Date().toLocaleString(); }
-
-    function seqNext(key){
-      const cur = Number(localStorage.getItem(key) || "0");
-      const next = cur + 1;
-      localStorage.setItem(key, String(next));
-      return next;
-    }
-
-    // ----------------------------
-    // Smart Demo: Logs + Notifications (Persistent)
-    // ----------------------------
-    const defaultNotifications = [
-      {
-        id: 1,
-        type: "warn",
-        title_ar: "تحذير: محاولة دخول غير مصرحة",
-        title_en: "Warning: Unauthorized Access",
-        meta_ar: "منذ 2 دقيقة • IP: 192.168.1.15",
-        meta_en: "2m ago • IP: 192.168.1.15",
-        body_ar: "تم اكتشاف محاولة دخول فاشلة. (Demo) راجع السجلات من Monitor.",
-        body_en: "Failed login attempt detected. (Demo) Review logs in Monitor.",
-        createdAt: nowISO(),
-        read: false
-      },
-      {
-        id: 2,
-        type: "ok",
-        title_ar: "نسخ احتياطي ناجح",
-        title_en: "Backup Successful",
-        meta_ar: "منذ 1 ساعة • قاعدة البيانات",
-        meta_en: "1h ago • Database",
-        body_ar: "تم إتمام النسخ الاحتياطي بنجاح. (Demo)",
-        body_en: "Backup completed successfully. (Demo)",
-        createdAt: nowISO(),
-        read: false
-      },
-      {
-        id: 3,
-        type: "info",
-        title_ar: "طلب صلاحية جديد",
-        title_en: "New Permission Request",
-        meta_ar: "منذ 3 ساعات • المبيعات",
-        meta_en: "3h ago • Sales",
-        body_ar: "يوجد طلب صلاحية جديد. (Demo) يمكنك إدارة الصلاحيات من Permissions.",
-        body_en: "There is a new permission request. (Demo) Manage in Permissions.",
-        createdAt: nowISO(),
-        read: false
-      }
-    ];
-
-    const defaultLogs = [
-      { id: 1, icon:"fa-solid fa-shield-halved", color:"text-brandRed", title_ar:"محاولة دخول فاشلة", title_en:"Failed Login Attempt", desc:"IP: 192.168.1.15 • User: hr", createdAt: nowISO() },
-      { id: 2, icon:"fa-solid fa-database", color:"text-blue-500", title_ar:"نسخ احتياطي مكتمل", title_en:"Backup Completed", desc:"Database snapshot saved", createdAt: nowISO() },
-      { id: 3, icon:"fa-solid fa-plug", color:"text-amber-500", title_ar:"فحص التكاملات", title_en:"Integration Check", desc:"Nafis API: OK • Sadad: OK", createdAt: nowISO() },
-      { id: 4, icon:"fa-solid fa-user-gear", color:"text-green-500", title_ar:"تعديل مستخدم", title_en:"User Updated", desc:"User permissions updated (Demo)", createdAt: nowISO() },
-    ];
-
-    // Ensure sequences start
-    if (!localStorage.getItem(K.notifSeq)) localStorage.setItem(K.notifSeq, "3");
-    if (!localStorage.getItem(K.logSeq)) localStorage.setItem(K.logSeq, "4");
-
-    let notifications = loadJSON(K.notif, defaultNotifications);
-    let logs = loadJSON(K.logs, defaultLogs);
-
-    function addLog({ icon, color, title_ar, title_en, desc }) {
-      const id = seqNext(K.logSeq);
-      const item = { id, icon, color, title_ar, title_en, desc, createdAt: nowISO() };
-      logs.unshift(item);
-      logs = logs.slice(0, 200);
-      saveJSON(K.logs, logs);
-    }
-
-    function addNotification({ type, title_ar, title_en, meta_ar, meta_en, body_ar, body_en }) {
-      const id = seqNext(K.notifSeq);
-      const item = {
-        id, type,
-        title_ar, title_en,
-        meta_ar: meta_ar || nowHuman(),
-        meta_en: meta_en || nowHuman(),
-        body_ar: body_ar || "",
-        body_en: body_en || "",
-        createdAt: nowISO(),
-        read: false
-      };
-      notifications.unshift(item);
-      notifications = notifications.slice(0, 200);
-      saveJSON(K.notif, notifications);
-      syncNotifBadge();
-      renderNotifications();
-    }
-
-    function unreadCount(){ return notifications.filter(n => !n.read).length; }
-
-    function syncNotifBadge() {
-      const c = unreadCount();
-      const badge = $("notifBadge");
-      if (!badge) return;
-      if (c <= 0) badge.classList.add("hidden");
-      else badge.classList.remove("hidden");
-      const title = $("notifTitle");
-      if (title) title.innerText = `${t().notif_title}${c>0 ? " ("+c+")" : ""}`;
-    }
-
-    // ----------------------------
-    // Demo Data Users/Perms (Persistent)
-    // ----------------------------
-    const defaultUsers = [
-      { id: uid(), name: "Hesham Alsuhaibani", email: "ceo@androomeda.com", role: "CEO", status: "active", locked: false, last: "5m ago" },
-      { id: uid(), name: "Mansour Alyami", email: "hr@androomeda.com", role: "HR Manager", status: "active", locked: false, last: "1h ago" },
-      { id: uid(), name: "Ayman Almaghrabi", email: "grc@androomeda.com", role: "GRC Officer", status: "active", locked: false, last: "30m ago" },
-      { id: uid(), name: "Mohammed Albukhaiti", email: "cfo@androomeda.com", role: "CFO", status: "active", locked: false, last: "2h ago" },
-      { id: uid(), name: "Rand Al-Hourani", email: "tech@androomeda.com", role: "Tech Lead", status: "active", locked: false, last: "10m ago" },
-      { id: uid(), name: "Hadi", email: "pssc@androomeda.com", role: "Procurement", status: "inactive", locked: true, last: "2d ago" }
-    ];
-
-    const defaultPerms = [
-      { role: "CEO", access: "full", modules: ["All Modules"] },
-      { role: "HR Manager", access: "partial", modules: ["Employees", "Payroll"] },
-      { role: "GRC Officer", access: "read", modules: ["Audit Logs", "Policies"] },
-      { role: "CFO", access: "partial", modules: ["Invoices", "Payments", "Reports"] },
-      { role: "Tech Lead", access: "full", modules: ["Infrastructure", "Integrations", "Logs"] },
-      { role: "Procurement", access: "read", modules: ["Suppliers", "Requests"] },
-    ];
-
-    let users = loadJSON(K.users, defaultUsers);
-    let perms = loadJSON(K.perms, defaultPerms);
-
-    // ----------------------------
-    // Theme / Language
-    // ----------------------------
-    function applyTheme() {
-      const html = document.documentElement;
-      const icon = $("themeIcon");
-      if (state.dark) {
-        html.classList.add("dark");
-        localStorage.setItem(K.theme, "dark");
-        icon.classList.remove("fa-moon"); icon.classList.add("fa-sun");
-      } else {
-        html.classList.remove("dark");
-        localStorage.setItem(K.theme, "light");
-        icon.classList.remove("fa-sun"); icon.classList.add("fa-moon");
-      }
-    }
-
-    function applyLanguage() {
-      const html = document.documentElement;
-      html.setAttribute("lang", state.lang);
-      html.setAttribute("dir", state.lang === "ar" ? "rtl" : "ltr");
-      $("langLabel").innerText = state.lang === "ar" ? "EN" : "عربي";
-
-      document.querySelectorAll("[data-i18n]").forEach(el => {
-        const key = el.getAttribute("data-i18n");
-        if (t()[key]) el.innerText = t()[key];
-      });
-
-      if (!$("chatArea").dataset.booted) {
-        addAIMessage(t().ai_welcome);
-        $("chatArea").dataset.booted = "1";
-      }
-      syncNotifBadge();
-    }
-
-    // ----------------------------
-    // Sidebar (Mobile)
-    // ----------------------------
-    window.toggleSidebar = function(force) {
-      const sb = $("sidebar");
-      const ov = $("mobileOverlay");
-      const shouldOpen = (typeof force === "boolean") ? force : !sb.classList.contains("open");
-      if (shouldOpen) { sb.classList.add("open"); ov.classList.add("active"); }
-      else { sb.classList.remove("open"); ov.classList.remove("active"); }
-    };
-
-    // ----------------------------
-    // Notifications (Dynamic)
-    // ----------------------------
-    window.toggleNotifications = function(force) {
-      const dd = $("notifDropdown");
-      const shouldOpen = (typeof force === "boolean") ? force : dd.classList.contains("hidden");
-      dd.classList.toggle("hidden", !shouldOpen);
-      if (shouldOpen) renderNotifications();
-    };
-
-    function notifStyle(type){
-      if (type==="warn") return { border:"border-r-4 border-red-500 bg-red-50 dark:bg-red-900/10", icon:"fa-solid fa-triangle-exclamation text-brandRed" };
-      if (type==="ok") return { border:"border-r-4 border-green-500", icon:"fa-solid fa-circle-check text-green-500" };
-      return { border:"border-r-4 border-blue-500", icon:"fa-solid fa-circle-info text-blue-500" };
-    }
-
-    function renderNotifications() {
-      const list = $("notifList");
-      const c = unreadCount();
-      $("notifTitle").innerText = `${t().notif_title}${c>0 ? " ("+c+")" : ""}`;
-
-      if (notifications.length === 0 || c === 0) {
-        list.innerHTML = `<div class="p-6 text-center text-sm text-slate-400">${t().no_notif}</div>`;
-        syncNotifBadge();
-        return;
-      }
-
-      const items = notifications.filter(n => !n.read).slice(0, 20).map(n => {
-        const st = notifStyle(n.type);
-        const title = state.lang==="ar" ? n.title_ar : n.title_en;
-        const meta  = state.lang==="ar" ? n.meta_ar  : n.meta_en;
-        return `
-          <button onclick="openNotif(${n.id})" class="w-full text-start p-3 border-b border-slate-50 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 cursor-pointer ${st.border}">
-            <div class="flex items-start gap-3">
-              <i class="${st.icon} mt-0.5"></i>
-              <div class="flex-1">
-                <p class="text-xs font-bold text-slate-700 dark:text-slate-200">${escapeHtml(title)}</p>
-                <p class="text-[10px] text-slate-400 mt-1">${escapeHtml(meta)}</p>
-              </div>
-              <span class="text-[10px] text-slate-400 mono">#${n.id}</span>
-            </div>
-          </button>
-        `;
-      }).join("");
-
-      list.innerHTML = items;
-      syncNotifBadge();
-    }
-
-    window.markAllRead = function() {
-      notifications = notifications.map(n => ({...n, read:true}));
-      saveJSON(K.notif, notifications);
-      syncNotifBadge();
-      renderNotifications();
-      toast(state.lang === "ar" ? "تمت قراءة التنبيهات" : "Notifications marked read");
-      addLog({
-        icon:"fa-solid fa-bell",
-        color:"text-blue-500",
-        title_ar:"قراءة التنبيهات",
-        title_en:"Notifications Read",
-        desc:"Admin marked all notifications as read"
-      });
-    };
-
-    window.openNotif = function(id) {
-      const n = notifications.find(x => x.id === id);
-      if (!n) return;
-
-      n.read = true;
-      saveJSON(K.notif, notifications);
-      syncNotifBadge();
-      renderNotifications();
-      toggleNotifications(false);
-
-      const title = state.lang==="ar" ? n.title_ar : n.title_en;
-      const sub = state.lang==="ar" ? n.meta_ar : n.meta_en;
-      const body = state.lang==="ar" ? n.body_ar : n.body_en;
-
-      showModal({
-        title,
-        sub,
-        body: `
-          <div class="space-y-3">
-            <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200/60 dark:border-slate-700">
-              <p class="text-sm text-slate-700 dark:text-slate-200">${escapeHtml(body || (state.lang==="ar"?"لا يوجد تفاصيل إضافية":"No extra details"))}</p>
-            </div>
-            <div class="flex gap-2 justify-end">
-              <button class="px-4 py-2 rounded-xl bg-brandRed text-white font-bold hover:bg-red-600 transition" onclick="closeModal()">${t().close}</button>
-            </div>
-          </div>
-        `,
-      });
-
-      addLog({
-        icon:"fa-solid fa-bell",
-        color:"text-amber-500",
-        title_ar:"فتح تنبيه",
-        title_en:"Notification Opened",
-        desc:`Notification #${id} opened`
-      });
-    };
-
-    // ----------------------------
-    // Navigation Active
-    // ----------------------------
-    function setNavActive(page) {
-      document.querySelectorAll(".nav-item").forEach(btn => {
-        btn.classList.remove("bg-brandRed","text-white","shadow-lg","shadow-red-500/30","font-bold");
-        btn.classList.add("text-slate-500","dark:text-slate-400","hover:bg-slate-50","dark:hover:bg-slate-700");
-      });
-      const a = $("nav-"+page);
-      if (a) {
-        a.classList.add("bg-brandRed","text-white","shadow-lg","shadow-red-500/30","font-bold");
-        a.classList.remove("text-slate-500","dark:text-slate-400");
-      }
-    }
-
-    // ----------------------------
-    // Modal API
-    // ----------------------------
-    function showModal({ title, sub, body, footerHtml }) {
-      $("modalTitle").innerText = title || "Modal";
-      $("modalSub").innerText = sub || "";
-      $("modalBody").innerHTML = body || "";
-      $("modalFooter").innerHTML = footerHtml || "";
-      $("modalOverlay").classList.add("show");
-    }
-    function closeModal() {
-      $("modalOverlay").classList.remove("show");
-      $("modalBody").innerHTML = "";
-      $("modalFooter").innerHTML = "";
-    }
-    window.closeModal = closeModal;
-
-    // ----------------------------
-    // Users: filters + CRUD
-    // ----------------------------
-    function rolesList() { return Array.from(new Set(users.map(u => u.role))).sort(); }
-
-    function filteredUsers() {
-      const q = state.filters.q.trim().toLowerCase();
-      const status = state.filters.status;
-      const role = state.filters.role;
-
-      return users.filter(u => {
-        const matchesQ = !q || (u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q));
-        const matchesStatus =
-          status === "all" ? true :
-          status === "active" ? (u.status === "active" && !u.locked) :
-          status === "inactive" ? (u.status === "inactive" && !u.locked) :
-          status === "locked" ? (u.locked === true) :
-          true;
-        const matchesRole = (role === "all") ? true : (u.role === role);
-        return matchesQ && matchesStatus && matchesRole;
-      });
-    }
-
-    function renderUsersPage() {
-      const content = $("mainContent");
-      const roles = rolesList();
-      const rows = filteredUsers().map(u => {
-        const statusText = u.locked ? t().locked : (u.status === "active" ? t().active : t().inactive);
-        const statusClass = u.locked
-          ? "bg-amber-100 text-amber-700 dark:bg-amber-900/30"
-          : (u.status === "active" ? "bg-green-100 text-green-700 dark:bg-green-900/30" : "bg-slate-100 text-slate-500 dark:bg-slate-700");
-
-        return `
-          <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition border-b border-slate-50 dark:border-slate-700 last:border-0">
-            <td class="p-4 font-bold text-slate-800 dark:text-white">
-              <div class="flex items-center gap-3">
-                <div class="w-9 h-9 rounded-full bg-slate-900 text-white flex items-center justify-center font-extrabold text-xs">${escapeHtml(initials(u.name))}</div>
-                <div>
-                  <div class="font-extrabold">${escapeHtml(u.name)}</div>
-                  <div class="text-[11px] text-slate-400 mono">${escapeHtml(u.id.slice(0,8).toUpperCase())}</div>
+<body class="bg-slate-50 dark:bg-darkBg text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300">
+
+    <!-- الحاويات التي سيملؤها ملف layout.js -->
+    <div id="sidebar-container"></div>
+
+    <!-- Main Content Wrapper -->
+    <div class="md:mr-72 transition-all duration-300 flex flex-col min-h-screen">
+        
+        <!-- Header Container -->
+        <div id="header-container"></div>
+
+        <!-- محتوى الصفحة المتغير -->
+        <main class="p-6 space-y-6 animate-fade-in">
+            
+            <!-- 1. Alert Banner (Draft Policy) -->
+            <div class="bg-orange-50 dark:bg-orange-900/10 border-r-4 border-orange-500 p-4 rounded-lg flex justify-between items-center shadow-sm">
+                <div class="flex items-center gap-4">
+                    <div class="w-10 h-10 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center text-orange-600">
+                        <i class="fa-solid fa-file-signature"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-orange-900 dark:text-orange-200 text-sm">إجراء مطلوب: اعتماد الدليل الداخلي</h3>
+                        <p class="text-xs text-orange-700 dark:text-orange-300 mt-1">يوجد (1) ملف سياسات بانتظار الاعتماد النهائي من مجلس الإدارة. قام برفعه: أيمن المغربي.</p>
+                    </div>
                 </div>
-              </div>
-            </td>
-            <td class="p-4 text-xs text-slate-500 mono">${escapeHtml(u.email)}</td>
-            <td class="p-4">
-              <span class="bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded text-xs font-bold text-slate-600 dark:text-slate-200">${escapeHtml(u.role)}</span>
-            </td>
-            <td class="p-4 text-xs text-slate-500">${escapeHtml(u.last)}</td>
-            <td class="p-4">
-              <span class="px-2 py-1 rounded text-[10px] font-extrabold ${statusClass}">${statusText}</span>
-            </td>
-            <td class="p-4">
-              <div class="flex flex-wrap gap-2 justify-end">
-                <button class="px-3 py-1.5 rounded-lg text-xs font-extrabold bg-slate-900 text-white hover:opacity-90 transition" onclick="openEditUser('${u.id}')">
-                  <i class="fa-regular fa-pen-to-square"></i> ${t().edit}
-                </button>
-
-                ${u.status === "active"
-                  ? `<button class="px-3 py-1.5 rounded-lg text-xs font-extrabold bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 transition" onclick="setUserStatus('${u.id}','inactive')">
-                      <i class="fa-solid fa-toggle-off"></i> ${t().disable}
-                     </button>`
-                  : `<button class="px-3 py-1.5 rounded-lg text-xs font-extrabold bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 transition" onclick="setUserStatus('${u.id}','active')">
-                      <i class="fa-solid fa-toggle-on"></i> ${t().enable}
-                     </button>`
-                }
-
-                ${u.locked
-                  ? `<button class="px-3 py-1.5 rounded-lg text-xs font-extrabold bg-amber-100 dark:bg-amber-900/30 text-amber-700 hover:opacity-90 transition" onclick="toggleUserLock('${u.id}', false)">
-                      <i class="fa-solid fa-lock-open"></i> ${t().unlock}
-                     </button>`
-                  : `<button class="px-3 py-1.5 rounded-lg text-xs font-extrabold bg-amber-100 dark:bg-amber-900/30 text-amber-700 hover:opacity-90 transition" onclick="toggleUserLock('${u.id}', true)">
-                      <i class="fa-solid fa-lock"></i> ${t().lock}
-                     </button>`
-                }
-
-                <button class="px-3 py-1.5 rounded-lg text-xs font-extrabold bg-brandRed text-white hover:bg-red-600 transition" onclick="confirmDeleteUser('${u.id}')">
-                  <i class="fa-solid fa-trash"></i> ${t().remove}
-                </button>
-              </div>
-            </td>
-          </tr>
-        `;
-      }).join("");
-
-      content.innerHTML = `
-        <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden fade-in">
-          <div class="p-5 border-b border-slate-100 dark:border-slate-700 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 bg-slate-50 dark:bg-slate-900">
-            <div>
-              <h3 class="font-extrabold text-slate-800 dark:text-white">${t().active_users_list}</h3>
-              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">${escapeHtml(users.length)} users • Smart Demo enabled</p>
+                <a href="policies.html" class="px-4 py-2 bg-white dark:bg-darkSurface border border-orange-200 dark:border-orange-800 text-orange-600 dark:text-orange-400 text-xs rounded-lg font-bold hover:bg-orange-50 dark:hover:bg-slate-800 transition shadow-sm">
+                    مراجعة الملف
+                </a>
             </div>
 
-            <div class="flex flex-col sm:flex-row gap-2 sm:items-center">
-              <div class="relative flex-1">
-                <input id="q" value="${escapeHtml(state.filters.q)}" oninput="setFilter('q', this.value)" class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-brandRed outline-none"
-                  placeholder="${t().search_placeholder}">
-              </div>
+            <!-- 2. KPI Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <!-- رأس المال -->
+                <div class="bg-white dark:bg-darkSurface p-5 rounded-2xl border border-slate-100 dark:border-slate-700/50 shadow-sm hover:shadow-md transition">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">رأس المال المصرح</p>
+                            <h3 class="text-xl font-bold mt-1 dark:text-white">6,000,000 <span class="text-xs font-normal">ر.س</span></h3>
+                        </div>
+                        <div class="w-10 h-10 rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-600 flex items-center justify-center">
+                            <i class="fa-solid fa-coins"></i>
+                        </div>
+                    </div>
+                    <div class="mt-3 w-full bg-slate-100 dark:bg-slate-700 h-1.5 rounded-full overflow-hidden">
+                        <div class="bg-blue-500 h-full w-full"></div>
+                    </div>
+                    <p class="text-[10px] text-slate-400 mt-2 text-left">مدفوع بالكامل</p>
+                </div>
 
-              <select id="statusFilter" onchange="setFilter('status', this.value)" class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-brandRed outline-none">
-                <option value="all" ${state.filters.status==="all"?"selected":""}>${t().filter_status}: ${t().all}</option>
-                <option value="active" ${state.filters.status==="active"?"selected":""}>${t().filter_status}: ${t().active}</option>
-                <option value="inactive" ${state.filters.status==="inactive"?"selected":""}>${t().filter_status}: ${t().inactive}</option>
-                <option value="locked" ${state.filters.status==="locked"?"selected":""}>${t().filter_status}: ${t().locked}</option>
-              </select>
+                <!-- المساهمين -->
+                <div class="bg-white dark:bg-darkSurface p-5 rounded-2xl border border-slate-100 dark:border-slate-700/50 shadow-sm hover:shadow-md transition">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">عدد المساهمين</p>
+                            <h3 class="text-xl font-bold mt-1 dark:text-white">14 <span class="text-xs font-normal">مساهم</span></h3>
+                        </div>
+                        <div class="w-10 h-10 rounded-full bg-green-50 dark:bg-green-900/20 text-green-600 flex items-center justify-center">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex -space-x-2 space-x-reverse overflow-hidden">
+                        <img class="inline-block h-6 w-6 rounded-full ring-2 ring-white dark:ring-darkSurface" src="https://ui-avatars.com/api/?name=H&background=random" alt=""/>
+                        <img class="inline-block h-6 w-6 rounded-full ring-2 ring-white dark:ring-darkSurface" src="https://ui-avatars.com/api/?name=W&background=random" alt=""/>
+                        <img class="inline-block h-6 w-6 rounded-full ring-2 ring-white dark:ring-darkSurface" src="https://ui-avatars.com/api/?name=S&background=random" alt=""/>
+                    </div>
+                </div>
 
-              <select id="roleFilter" onchange="setFilter('role', this.value)" class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-brandRed outline-none">
-                <option value="all">${t().filter_role}: ${t().all}</option>
-                ${roles.map(r => `<option value="${escapeHtml(r)}" ${state.filters.role===r?"selected":""}>${t().filter_role}: ${escapeHtml(r)}</option>`).join("")}
-              </select>
+                <!-- القرارات -->
+                <div class="bg-white dark:bg-darkSurface p-5 rounded-2xl border border-slate-100 dark:border-slate-700/50 shadow-sm hover:shadow-md transition">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">قرارات بالتمرير</p>
+                            <h3 class="text-xl font-bold mt-1 dark:text-white">2 <span class="text-xs font-normal">قيد التوقيع</span></h3>
+                        </div>
+                        <div class="w-10 h-10 rounded-full bg-purple-50 dark:bg-purple-900/20 text-purple-600 flex items-center justify-center">
+                            <i class="fa-solid fa-signature"></i>
+                        </div>
+                    </div>
+                    <p class="text-[10px] text-brandRed mt-3 font-bold flex items-center gap-1">
+                        <span class="w-1.5 h-1.5 rounded-full bg-brandRed animate-pulse"></span>
+                        انتظار: هشام السحيباني
+                    </p>
+                </div>
 
-              <button onclick="openAddUser()" class="bg-brandRed hover:bg-red-600 text-white px-4 py-2.5 rounded-xl text-sm transition font-extrabold shadow-lg shadow-red-500/20 whitespace-nowrap">
-                <i class="fa-solid fa-plus"></i> ${t().add_user}
-              </button>
+                <!-- نسبة الامتثال -->
+                <div class="bg-white dark:bg-darkSurface p-5 rounded-2xl border border-slate-100 dark:border-slate-700/50 shadow-sm hover:shadow-md transition">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">مؤشر الامتثال</p>
+                            <h3 class="text-xl font-bold mt-1 dark:text-white">92% <span class="text-xs font-normal text-green-500">مستقر</span></h3>
+                        </div>
+                        <div class="w-10 h-10 rounded-full bg-slate-50 dark:bg-slate-800 text-slate-600 flex items-center justify-center">
+                            <i class="fa-solid fa-chart-pie"></i>
+                        </div>
+                    </div>
+                    <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-1.5 mt-3">
+                        <div class="bg-green-500 h-1.5 rounded-full" style="width: 92%"></div>
+                    </div>
+                </div>
             </div>
-          </div>
 
-          <div class="overflow-x-auto">
-            <table class="w-full text-start text-sm text-slate-600 dark:text-slate-300">
-              <thead class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 dark:text-slate-400 uppercase font-extrabold text-xs">
-                <tr>
-                  <th class="p-4">${t().col_name}</th>
-                  <th class="p-4">${t().col_email}</th>
-                  <th class="p-4">${t().col_role}</th>
-                  <th class="p-4">${t().col_last}</th>
-                  <th class="p-4">${t().col_status}</th>
-                  <th class="p-4 text-end">${t().col_action}</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${rows || `<tr><td colspan="6" class="p-10 text-center text-slate-400">${state.lang==="ar"?"لا توجد نتائج":"No results"}</td></tr>`}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      `;
-    }
+            <!-- 3. Complex Layout: Audit Log & Quick Actions -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 h-auto lg:h-96">
+                
+                <!-- Audit Log -->
+                <div class="lg:col-span-2 bg-[#0B1120] rounded-2xl shadow-lg border border-slate-800 flex flex-col overflow-hidden">
+                    <div class="px-4 py-3 border-b border-slate-800 flex justify-between items-center bg-[#0F172A]">
+                        <h3 class="text-sm font-bold text-slate-200 flex items-center gap-2">
+                            <i class="fa-solid fa-terminal text-brandRed"></i> سجل النظام المباشر
+                        </h3>
+                        <span class="text-[10px] text-green-500 font-mono flex items-center gap-1">
+                            <span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span> Live
+                        </span>
+                    </div>
+                    <div class="flex-1 overflow-y-auto p-4 font-mono text-xs space-y-3" id="audit-log-container">
+                        <!-- سيتم تعبئته بواسطة JS -->
+                    </div>
+                </div>
 
-    window.setFilter = function(key, value) {
-      state.filters[key] = value;
-      renderUsersPage();
-    };
+                <!-- Quick Links -->
+                <div class="bg-white dark:bg-darkSurface rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700/50 p-6 flex flex-col">
+                    <h3 class="text-sm font-bold text-slate-700 dark:text-white mb-4">روابط سريعة للأدمن</h3>
+                    
+                    <div class="space-y-3 flex-1">
+                        <a href="users.html" class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 transition group">
+                            <div class="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900/30 text-blue-600 flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition">
+                                <i class="fa-solid fa-user-plus"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-xs dark:text-slate-200">إضافة مستخدم جديد</h4>
+                                <p class="text-[10px] text-slate-400">صلاحيات RBAC</p>
+                            </div>
+                        </a>
 
-    window.openAddUser = function() {
-      showModal({
-        title: state.lang === "ar" ? "إضافة مستخدم" : "Add User",
-        sub: state.lang === "ar" ? "إنشاء حساب جديد (Smart Demo)" : "Create a new account (Smart Demo)",
-        body: userFormHtml({ mode: "add" }),
-        footerHtml: `
-          <button onclick="closeModal()" class="px-4 py-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition font-extrabold">${t().cancel}</button>
-          <button onclick="submitUserForm('add')" class="px-4 py-2.5 rounded-xl bg-brandRed text-white hover:bg-red-600 transition font-extrabold">${t().save}</button>
-        `
-      });
-      setTimeout(() => $("u_name")?.focus(), 50);
-    };
+                        <a href="governance.html" class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 transition group">
+                            <div class="w-8 h-8 rounded-lg bg-purple-100 dark:bg-purple-900/30 text-purple-600 flex items-center justify-center group-hover:bg-purple-600 group-hover:text-white transition">
+                                <i class="fa-solid fa-calendar-plus"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-xs dark:text-slate-200">جدولة اجتماع مجلس</h4>
+                                <p class="text-[10px] text-slate-400">أمانة السر</p>
+                            </div>
+                        </a>
 
-    window.openEditUser = function(id) {
-      const u = users.find(x => x.id === id);
-      if (!u) return;
-      showModal({
-        title: state.lang === "ar" ? "تعديل مستخدم" : "Edit User",
-        sub: state.lang === "ar" ? `تعديل بيانات الحساب (ID: ${u.id.slice(0,8).toUpperCase()})` : `Update account (ID: ${u.id.slice(0,8).toUpperCase()})`,
-        body: userFormHtml({ mode: "edit", user: u }),
-        footerHtml: `
-          <button onclick="closeModal()" class="px-4 py-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition font-extrabold">${t().cancel}</button>
-          <button onclick="submitUserForm('edit','${u.id}')" class="px-4 py-2.5 rounded-xl bg-brandRed text-white hover:bg-red-600 transition font-extrabold">${t().save}</button>
-        `
-      });
-    };
-
-    function userFormHtml({ mode, user }) {
-      const u = user || { name: "", email: "", role: "Employee", status: "active", locked: false };
-      const roleOptions = ["CEO","CFO","HR Manager","GRC Officer","Tech Lead","Procurement","Employee","Sales"].filter((v,i,a)=>a.indexOf(v)===i);
-      return `
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label class="text-xs font-extrabold text-slate-500">${state.lang==="ar"?"الاسم":"Name"}</label>
-            <input id="u_name" class="mt-1 w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-brandRed outline-none"
-              value="${escapeHtml(u.name)}" placeholder="${state.lang==="ar"?"مثال: Ahmed":"e.g. Ahmed"}">
-          </div>
-          <div>
-            <label class="text-xs font-extrabold text-slate-500">${state.lang==="ar"?"البريد الإلكتروني":"Email"}</label>
-            <input id="u_email" class="mt-1 w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-brandRed outline-none mono"
-              value="${escapeHtml(u.email)}" placeholder="name@androomeda.com">
-          </div>
-
-          <div>
-            <label class="text-xs font-extrabold text-slate-500">${state.lang==="ar"?"الدور":"Role"}</label>
-            <select id="u_role" class="mt-1 w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-brandRed outline-none">
-              ${roleOptions.map(r => `<option value="${escapeHtml(r)}" ${u.role===r?"selected":""}>${escapeHtml(r)}</option>`).join("")}
-            </select>
-          </div>
-
-          <div>
-            <label class="text-xs font-extrabold text-slate-500">${state.lang==="ar"?"الحالة":"Status"}</label>
-            <select id="u_status" class="mt-1 w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-brandRed outline-none">
-              <option value="active" ${u.status==="active"?"selected":""}>${t().active}</option>
-              <option value="inactive" ${u.status==="inactive"?"selected":""}>${t().inactive}</option>
-            </select>
-          </div>
-
-          <div class="md:col-span-2">
-            <label class="inline-flex items-center gap-2 cursor-pointer">
-              <input id="u_locked" type="checkbox" ${u.locked?"checked":""} class="w-4 h-4 accent-brandRed">
-              <span class="text-sm font-extrabold">${state.lang==="ar"?"قفل الحساب":"Lock account"}</span>
-            </label>
-            <p class="text-[11px] text-slate-400 mt-1">${state.lang==="ar"?"الحساب المقفل يظهر بالحالة (مقفل) ولا يمكن تفعيله حتى يتم فتحه.":"Locked accounts show as Locked until unlocked."}</p>
-          </div>
-
-          <div id="u_err" class="md:col-span-2 hidden p-3 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-900/40 text-red-700 dark:text-red-300 text-sm font-bold"></div>
-        </div>
-      `;
-    }
-
-    window.submitUserForm = function(mode, id) {
-      const name = $("u_name").value.trim();
-      const email = $("u_email").value.trim().toLowerCase();
-      const role = $("u_role").value;
-      const status = $("u_status").value;
-      const locked = $("u_locked").checked;
-
-      const err = $("u_err");
-      err.classList.add("hidden");
-      err.innerText = "";
-
-      if (!name || name.length < 3) return showErr(state.lang==="ar"?"اكتب اسم صحيح":"Enter a valid name");
-      if (!email || !email.includes("@")) return showErr(state.lang==="ar"?"اكتب بريد صحيح":"Enter a valid email");
-
-      const emailTaken = users.some(u => u.email === email && u.id !== id);
-      if (emailTaken) return showErr(state.lang==="ar"?"هذا البريد مستخدم مسبقًا":"Email already exists");
-
-      if (mode === "add") {
-        const newUser = { id: uid(), name, email, role, status, locked, last: "just now" };
-        users.unshift(newUser);
-        saveJSON(K.users, users);
-        closeModal();
-        toast(state.lang==="ar"?"تمت إضافة المستخدم":"User added");
-        renderUsersPage();
-        updateOverviewCards();
-
-        addLog({ icon:"fa-solid fa-user-plus", color:"text-green-500", title_ar:"إضافة مستخدم", title_en:"User Added", desc:`${name} • ${email}` });
-        addNotification({
-          type:"ok",
-          title_ar:"تمت إضافة مستخدم جديد",
-          title_en:"New user added",
-          meta_ar:`${nowHuman()} • ${email}`,
-          meta_en:`${nowHuman()} • ${email}`,
-          body_ar:`تم إنشاء حساب جديد للمستخدم: ${name} (${role}).`,
-          body_en:`A new account has been created: ${name} (${role}).`
-        });
-
-        return;
-      }
-
-      if (mode === "edit") {
-        const idx = users.findIndex(u => u.id === id);
-        if (idx === -1) return;
-
-        const before = users[idx];
-        users[idx] = { ...users[idx], name, email, role, status, locked, last: "just now" };
-        saveJSON(K.users, users);
-        closeModal();
-        toast(state.lang==="ar"?"تم حفظ التعديل":"Changes saved");
-        renderUsersPage();
-        updateOverviewCards();
-
-        addLog({ icon:"fa-solid fa-user-gear", color:"text-blue-500", title_ar:"تعديل مستخدم", title_en:"User Updated", desc:`${before.email} -> ${email} • role=${role}` });
-        addNotification({
-          type:"info",
-          title_ar:"تم تعديل بيانات مستخدم",
-          title_en:"User updated",
-          meta_ar:`${nowHuman()} • ${email}`,
-          meta_en:`${nowHuman()} • ${email}`,
-          body_ar:`تم تحديث بيانات المستخدم: ${name}.`,
-          body_en:`User profile updated: ${name}.`
-        });
-      }
-
-      function showErr(msg){
-        err.innerText = msg;
-        err.classList.remove("hidden");
-      }
-    };
-
-    window.setUserStatus = function(id, status) {
-      const u = users.find(x => x.id === id);
-      if (!u) return;
-      if (u.locked) return toast(state.lang==="ar"?"لا يمكن تفعيل/تعطيل حساب مقفل":"Cannot change status of locked user");
-      u.status = status;
-      u.last = "just now";
-      saveJSON(K.users, users);
-      toast(state.lang==="ar"?"تم تحديث الحالة":"Status updated");
-      renderUsersPage();
-      updateOverviewCards();
-
-      addLog({
-        icon:"fa-solid fa-toggle-on",
-        color:"text-amber-500",
-        title_ar:"تغيير حالة مستخدم",
-        title_en:"User Status Changed",
-        desc:`${u.email} -> ${status}`
-      });
-
-      addNotification({
-        type:"info",
-        title_ar:"تغيير حالة حساب",
-        title_en:"Account status changed",
-        meta_ar:`${nowHuman()} • ${u.email}`,
-        meta_en:`${nowHuman()} • ${u.email}`,
-        body_ar:`تم تغيير حالة الحساب إلى: ${status==="active"?"نشط":"غير نشط"}.`,
-        body_en:`Account status set to: ${status}.`
-      });
-    };
-
-    window.toggleUserLock = function(id, lock) {
-      const u = users.find(x => x.id === id);
-      if (!u) return;
-      u.locked = lock;
-      if (lock) u.status = "inactive";
-      u.last = "just now";
-      saveJSON(K.users, users);
-      toast(lock ? (state.lang==="ar"?"تم قفل الحساب":"Account locked") : (state.lang==="ar"?"تم فتح الحساب":"Account unlocked"));
-      renderUsersPage();
-      updateOverviewCards();
-
-      addLog({
-        icon:"fa-solid fa-lock",
-        color:"text-brandRed",
-        title_ar: lock ? "قفل حساب" : "فتح حساب",
-        title_en: lock ? "Account Locked" : "Account Unlocked",
-        desc:`${u.email}`
-      });
-
-      addNotification({
-        type: lock ? "warn" : "ok",
-        title_ar: lock ? "تم قفل حساب مستخدم" : "تم فتح حساب مستخدم",
-        title_en: lock ? "User account locked" : "User account unlocked",
-        meta_ar:`${nowHuman()} • ${u.email}`,
-        meta_en:`${nowHuman()} • ${u.email}`,
-        body_ar: lock ? `تم قفل الحساب: ${u.name}.` : `تم فتح الحساب: ${u.name}.`,
-        body_en: lock ? `Account locked: ${u.name}.` : `Account unlocked: ${u.name}.`
-      });
-    };
-
-    window.confirmDeleteUser = function(id) {
-      const u = users.find(x => x.id === id);
-      if (!u) return;
-      showModal({
-        title: t().confirm_delete,
-        sub: state.lang==="ar" ? `سيتم حذف: ${u.name}` : `You will delete: ${u.name}`,
-        body: `
-          <div class="space-y-3">
-            <div class="p-4 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-900/40">
-              <p class="text-sm font-bold text-red-700 dark:text-red-300">
-                ${state.lang==="ar"?"هل أنت متأكد؟ هذا الإجراء لا يمكن التراجع عنه (Demo).":"Are you sure? This action is irreversible (Demo)."}
-              </p>
+                        <a href="audit.html" class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 transition group">
+                            <div class="w-8 h-8 rounded-lg bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 flex items-center justify-center group-hover:bg-yellow-600 group-hover:text-white transition">
+                                <i class="fa-solid fa-file-export"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-xs dark:text-slate-200">تصدير تقرير الامتثال</h4>
+                                <p class="text-[10px] text-slate-400">الربع الرابع 2025</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
             </div>
-          </div>
-        `,
-        footerHtml: `
-          <button onclick="closeModal()" class="px-4 py-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition font-extrabold">${t().cancel}</button>
-          <button onclick="deleteUser('${id}')" class="px-4 py-2.5 rounded-xl bg-brandRed text-white hover:bg-red-600 transition font-extrabold">
-            <i class="fa-solid fa-trash"></i> ${t().remove}
-          </button>
-        `
-      });
-    };
 
-    window.deleteUser = function(id) {
-      const u = users.find(x => x.id === id);
-      users = users.filter(x => x.id !== id);
-      saveJSON(K.users, users);
-      closeModal();
-      toast(state.lang==="ar"?"تم حذف المستخدم":"User deleted");
-      renderUsersPage();
-      updateOverviewCards();
+        </main>
+    </div>
 
-      addLog({ icon:"fa-solid fa-trash", color:"text-brandRed", title_ar:"حذف مستخدم", title_en:"User Deleted", desc:`${u?.email || id}` });
-      addNotification({
-        type:"warn",
-        title_ar:"تم حذف مستخدم",
-        title_en:"User deleted",
-        meta_ar:`${nowHuman()} • ${u?.email || id}`,
-        meta_en:`${nowHuman()} • ${u?.email || id}`,
-        body_ar:`تم حذف حساب المستخدم: ${u?.name || ""}`,
-        body_en:`Account removed: ${u?.name || ""}`
-      });
-    };
-
-    function initials(name) {
-      const parts = name.split(" ").filter(Boolean);
-      const a = (parts[0]||"A")[0];
-      const b = (parts[1]||"D")[0];
-      return (a + b).toUpperCase();
-    }
-
-    // ----------------------------
-    // Permissions Page
-    // ----------------------------
-    function renderPermsPage() {
-      const content = $("mainContent");
-      const rows = perms.map((p, idx) => {
-        const accessOptions = [
-          { v: "full", label: t().full_access },
-          { v: "partial", label: t().partial },
-          { v: "read", label: t().read_only },
+    <!-- استدعاء ملف Layout الأساسي -->
+    <script src="layout.js"></script>
+    
+    <!-- Script خاص بهذه الصفحة فقط -->
+    <script>
+        // محاكاة سجل التدقيق
+        const logs = [
+            { t: "10:45:22", u: "Admin", a: "UPDATE", obj: "Users_Table", msg: "Added new user 'Nasser'" },
+            { t: "10:42:10", u: "System", a: "AUTO", obj: "Backup", msg: "Daily backup completed" },
+            { t: "10:30:05", u: "Hesham", a: "VIEW", obj: "Board_Meeting_05", msg: "Viewed agenda" },
+            { t: "09:15:00", u: "Finance", a: "ALERT", obj: "Budget", msg: "Threshold reached 80%" }
         ];
-        return `
-          <tr class="border-b border-slate-50 dark:border-slate-700 last:border-0">
-            <td class="p-4 font-extrabold text-slate-800 dark:text-white">${escapeHtml(p.role)}</td>
-            <td class="p-4">
-              <select onchange="setPermAccess(${idx}, this.value)" class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-brandRed outline-none">
-                ${accessOptions.map(o => `<option value="${o.v}" ${p.access===o.v?"selected":""}>${o.label}</option>`).join("")}
-              </select>
-            </td>
-            <td class="p-4">
-              <input value="${escapeHtml(p.modules.join(', '))}" oninput="setPermModules(${idx}, this.value)"
-                class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-brandRed outline-none" />
-              <p class="text-[11px] text-slate-400 mt-1">${state.lang==="ar"?"افصل الوحدات بفاصلة":"Separate modules with comma"}</p>
-            </td>
-          </tr>
-        `;
-      }).join("");
 
-      content.innerHTML = `
-        <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden fade-in">
-          <div class="p-5 border-b border-slate-100 dark:border-slate-700 flex items-center justify-between bg-slate-50 dark:bg-slate-900">
-            <div>
-              <h3 class="font-extrabold text-slate-800 dark:text-white">${t().perm_matrix}</h3>
-              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">${t().manage_roles}</p>
-            </div>
-            <div class="flex gap-2">
-              <button onclick="resetPerms()" class="px-4 py-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition font-extrabold">
-                ${state.lang==="ar"?"إعادة ضبط":"Reset"}
-              </button>
-              <button onclick="savePerms()" class="px-4 py-2.5 rounded-xl bg-brandRed text-white hover:bg-red-600 transition font-extrabold">
-                <i class="fa-solid fa-floppy-disk"></i> ${t().update_perms}
-              </button>
-            </div>
-          </div>
-
-          <div class="overflow-x-auto">
-            <table class="w-full text-start text-sm text-slate-600 dark:text-slate-300">
-              <thead class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 dark:text-slate-400 uppercase font-extrabold text-xs">
-                <tr>
-                  <th class="p-4">${t().role}</th>
-                  <th class="p-4">${t().access_level}</th>
-                  <th class="p-4">${t().modules}</th>
-                </tr>
-              </thead>
-              <tbody>${rows}</tbody>
-            </table>
-          </div>
-        </div>
-      `;
-    }
-
-    window.setPermAccess = function(idx, v) { perms[idx].access = v; };
-    window.setPermModules = function(idx, v) { perms[idx].modules = v.split(",").map(s => s.trim()).filter(Boolean); };
-
-    window.savePerms = function() {
-      saveJSON(K.perms, perms);
-      toast(state.lang==="ar"?"تم حفظ الصلاحيات":"Permissions saved");
-
-      addLog({ icon:"fa-solid fa-lock", color:"text-blue-500", title_ar:"تحديث الصلاحيات", title_en:"Permissions Updated", desc:`Roles updated: ${perms.length}` });
-      addNotification({
-        type:"info",
-        title_ar:"تم تحديث الصلاحيات",
-        title_en:"Permissions updated",
-        meta_ar:`${nowHuman()} • Roles: ${perms.length}`,
-        meta_en:`${nowHuman()} • Roles: ${perms.length}`,
-        body_ar:"تم حفظ مصفوفة الصلاحيات بنجاح. (Demo)",
-        body_en:"Permission matrix saved successfully. (Demo)"
-      });
-    };
-
-    window.resetPerms = function() {
-      perms = structuredClone(defaultPerms);
-      saveJSON(K.perms, perms);
-      toast(state.lang==="ar"?"تمت إعادة الضبط":"Reset done");
-      addLog({ icon:"fa-solid fa-rotate", color:"text-amber-500", title_ar:"إعادة ضبط الصلاحيات", title_en:"Permissions Reset", desc:"Default permission matrix restored" });
-      addNotification({
-        type:"warn",
-        title_ar:"تمت إعادة ضبط الصلاحيات",
-        title_en:"Permissions reset",
-        meta_ar:`${nowHuman()}`,
-        meta_en:`${nowHuman()}`,
-        body_ar:"تمت إعادة مصفوفة الصلاحيات للوضع الافتراضي. (Demo)",
-        body_en:"Permission matrix restored to default. (Demo)"
-      });
-      renderPermsPage();
-    };
-
-    // ----------------------------
-    // Monitor Page (Reads real logs)
-    // ----------------------------
-    function renderMonitorPage() {
-      const content = $("mainContent");
-      const cpu = randomPct();
-      const uptime = "99.9%";
-      const db = "12ms";
-      const api = "OK";
-
-      content.innerHTML = `
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 fade-in">
-          <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-            <div class="flex items-center justify-between">
-              <h3 class="font-extrabold">${t().monitor_title}</h3>
-              <div class="flex gap-2">
-                <button onclick="refreshMonitor()" class="px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 transition text-sm font-extrabold">
-                  <i class="fa-solid fa-rotate"></i> ${t().refresh}
-                </button>
-                <button onclick="exportLogs()" class="px-3 py-2 rounded-xl bg-brandRed text-white hover:bg-red-600 transition text-sm font-extrabold">
-                  <i class="fa-solid fa-download"></i> ${t().export}
-                </button>
-              </div>
-            </div>
-
-            <div class="mt-4 grid grid-cols-2 gap-3">
-              ${monitorCard("Uptime", uptime, "fa-solid fa-heart-pulse", "text-green-500")}
-              ${monitorCard("DB Latency", db, "fa-solid fa-database", "text-blue-500")}
-              ${monitorCard("API Health", api, "fa-solid fa-network-wired", "text-brandRed")}
-              ${monitorCard("CPU Load", cpu+"%", "fa-solid fa-microchip", "text-amber-500")}
-            </div>
-
-            <p class="text-[11px] text-slate-400 mt-4">${state.lang==="ar"?"القيم أعلاه افتراضية (Demo).":"Values above are simulated (Demo)."}</p>
-          </div>
-
-          <div class="lg:col-span-2 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden">
-            <div class="p-5 border-b border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 flex items-center justify-between">
-              <h3 class="font-extrabold">${t().logs}</h3>
-              <span class="text-xs text-slate-500 dark:text-slate-400 mono">${new Date().toLocaleString()}</span>
-            </div>
-            <div class="max-h-[60vh] overflow-y-auto">
-              ${logs.slice(0, 60).map(l => `
-                <div class="p-4 border-b border-slate-50 dark:border-slate-700 last:border-0 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
-                  <div class="flex items-start gap-3">
-                    <div class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-700 flex items-center justify-center ${l.color}">
-                      <i class="${l.icon}"></i>
-                    </div>
-                    <div class="flex-1">
-                      <div class="font-extrabold text-sm">${escapeHtml(state.lang==="ar" ? l.title_ar : l.title_en)}</div>
-                      <div class="text-xs text-slate-500 dark:text-slate-400 mt-1">${escapeHtml(l.desc)}</div>
-                    </div>
-                    <div class="text-[11px] text-slate-400 mono">#${l.id}</div>
-                  </div>
+        const logContainer = document.getElementById('audit-log-container');
+        logs.forEach(log => {
+            logContainer.innerHTML += `
+                <div class="border-l-2 border-slate-700 pl-3 py-1">
+                    <span class="text-slate-500">[${log.t}]</span>
+                    <span class="text-brandRed font-bold">${log.u}</span>
+                    <span class="text-slate-400 mx-1">::</span>
+                    <span class="text-yellow-500">${log.a}</span>
+                    <span class="text-slate-300 ml-2">${log.msg}</span>
                 </div>
-              `).join("")}
-            </div>
-          </div>
-        </div>
-      `;
-    }
-
-    function monitorCard(label, value, icon, colorClass) {
-      return `
-        <div class="p-4 rounded-2xl border border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/40">
-          <div class="flex items-center justify-between">
-            <div class="text-xs text-slate-500 dark:text-slate-400 font-extrabold">${escapeHtml(label)}</div>
-            <i class="${icon} ${colorClass}"></i>
-          </div>
-          <div class="mt-2 text-2xl font-extrabold">${escapeHtml(value)}</div>
-        </div>
-      `;
-    }
-
-    function randomPct(){ return Math.floor(Math.random()*30)+25; }
-
-    window.refreshMonitor = function() {
-      toast(state.lang==="ar"?"تم تحديث البيانات":"Refreshed");
-      addLog({ icon:"fa-solid fa-rotate", color:"text-blue-500", title_ar:"تحديث يدوي", title_en:"Manual Refresh", desc:"Admin refreshed Monitor view" });
-      renderMonitorPage();
-    };
-
-    window.exportLogs = function() {
-      const data = logs.map(x => `${x.id} | ${new Date(x.createdAt).toLocaleString()} | ${(state.lang==="ar"?x.title_ar:x.title_en)} | ${x.desc}`).join("\n");
-      const blob = new Blob([data], { type: "text/plain;charset=utf-8" });
-      const a = document.createElement("a");
-      a.href = URL.createObjectURL(blob);
-      a.download = "androgov-demo-logs.txt";
-      a.click();
-      URL.revokeObjectURL(a.href);
-      toast(state.lang==="ar"?"تم التصدير":"Exported");
-
-      addLog({ icon:"fa-solid fa-download", color:"text-amber-500", title_ar:"تصدير السجلات", title_en:"Logs Exported", desc:"Admin exported logs file" });
-    };
-
-    // ----------------------------
-    // Overview Page
-    // ----------------------------
-    function updateOverviewCards() { if (state.view === "overview") renderOverviewPage(); }
-
-    function renderOverviewPage() {
-      const content = $("mainContent");
-      const total = users.length;
-      const online = Math.max(3, Math.min(18, Math.floor(total/3)));
-      const locked = users.filter(u => u.locked).length;
-      const load = randomPct();
-
-      content.innerHTML = `
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 fade-in">
-          ${overviewCard(t().total_users, total, "fa-solid fa-users", "text-slate-800 dark:text-white", "users")}
-          ${overviewCard(t().online_now, online, "fa-solid fa-signal", "text-green-500", "monitor")}
-          ${overviewCard(t().warnings, locked, "fa-solid fa-triangle-exclamation", "text-amber-500", "users")}
-          ${overviewCard(t().server_load, load+"%", "fa-solid fa-microchip", "text-blue-500", "monitor")}
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 fade-in">
-          <div class="lg:col-span-2 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden">
-            <div class="p-5 border-b border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 flex items-center justify-between">
-              <h3 class="font-extrabold">${t().active_users_list}</h3>
-              <button onclick="renderPage('users')" class="text-xs font-extrabold text-brandRed hover:underline">${state.lang==="ar"?"فتح الإدارة":"Open Manager"}</button>
-            </div>
-            <div class="p-4">
-              ${miniUsersList(users.slice(0,4))}
-            </div>
-          </div>
-
-          <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden">
-            <div class="p-5 border-b border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900">
-              <h3 class="font-extrabold">${state.lang==="ar"?"اختصارات":"Shortcuts"}</h3>
-              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">${state.lang==="ar"?"كلها تشتغل (Smart Demo)":"All working (Smart Demo)"}</p>
-            </div>
-            <div class="p-5 space-y-2">
-              <button onclick="openAddUser()" class="w-full px-4 py-3 rounded-xl bg-brandRed text-white hover:bg-red-600 transition font-extrabold flex items-center justify-between">
-                <span><i class="fa-solid fa-user-plus"></i> ${t().add_user}</span>
-                <i class="fa-solid fa-arrow-left"></i>
-              </button>
-              <button onclick="renderPage('perms')" class="w-full px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 transition font-extrabold flex items-center justify-between">
-                <span><i class="fa-solid fa-lock"></i> ${t().permissions}</span>
-                <i class="fa-solid fa-arrow-left"></i>
-              </button>
-              <button onclick="renderPage('monitor')" class="w-full px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 transition font-extrabold flex items-center justify-between">
-                <span><i class="fa-solid fa-server"></i> ${t().monitor}</span>
-                <i class="fa-solid fa-arrow-left"></i>
-              </button>
-            </div>
-
-            <div class="p-5 border-t border-slate-100 dark:border-slate-700">
-              <div class="text-xs text-slate-500 dark:text-slate-400 font-extrabold">${state.lang==="ar"?"غير مقروء":"Unread"}</div>
-              <div class="text-3xl font-extrabold mt-1">${unreadCount()}</div>
-              <button onclick="toggleNotifications(true)" class="mt-3 text-xs font-extrabold text-brandRed hover:underline">
-                ${state.lang==="ar"?"عرض التنبيهات":"View notifications"}
-              </button>
-            </div>
-          </div>
-        </div>
-      `;
-    }
-
-    function overviewCard(label, value, icon, valueColor, go) {
-      return `
-        <button onclick="renderPage('${go}')" class="text-start bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 hover:-translate-y-0.5 hover:shadow-md transition">
-          <div class="flex items-center justify-between">
-            <p class="text-slate-500 dark:text-slate-400 text-xs font-extrabold mb-1">${escapeHtml(label)}</p>
-            <i class="${icon} text-slate-400"></i>
-          </div>
-          <h3 class="text-3xl font-extrabold ${valueColor}">${escapeHtml(value)}</h3>
-        </button>
-      `;
-    }
-
-    function miniUsersList(arr) {
-      return arr.map(u => `
-        <div class="flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
-          <div class="flex items-center gap-3">
-            <div class="w-9 h-9 rounded-full bg-slate-900 text-white flex items-center justify-center font-extrabold text-xs">${escapeHtml(initials(u.name))}</div>
-            <div>
-              <div class="font-extrabold text-sm">${escapeHtml(u.name)}</div>
-              <div class="text-[11px] text-slate-400">${escapeHtml(u.role)} • ${escapeHtml(u.last)}</div>
-            </div>
-          </div>
-          <button onclick="openEditUser('${u.id}')" class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 transition text-xs font-extrabold">
-            ${t().edit}
-          </button>
-        </div>
-      `).join("");
-    }
-
-    // ----------------------------
-    // AI (Now knows notifications/logs)
-    // ----------------------------
-    function addAIMessage(text) {
-      const chat = $("chatArea");
-      chat.insertAdjacentHTML("beforeend", `<div class="flex justify-start fade-in"><div class="chat-bubble chat-ai">${escapeHtml(text)}</div></div>`);
-      chat.scrollTop = chat.scrollHeight;
-    }
-
-    function addUserMessage(text) {
-      const chat = $("chatArea");
-      chat.insertAdjacentHTML("beforeend", `<div class="flex justify-end fade-in"><div class="chat-bubble chat-user">${escapeHtml(text)}</div></div>`);
-      chat.scrollTop = chat.scrollHeight;
-    }
-
-    window.toggleAI = function(force) {
-      const ai = $("aiSidebar");
-      const shouldOpen = (typeof force === "boolean") ? force : !ai.classList.contains("open");
-      ai.classList.toggle("open", shouldOpen);
-    };
-
-    window.sendAIMessage = function() {
-      const input = $("aiInput");
-      const msg = input.value.trim();
-      if (!msg) return;
-      addUserMessage(msg);
-      input.value = "";
-      setTimeout(() => addAIMessage(aiReply(msg)), 350);
-    };
-
-    function aiReply(q) {
-      const s = q.toLowerCase();
-      const total = users.length;
-      const locked = users.filter(u => u.locked).length;
-      const inactive = users.filter(u => u.status === "inactive").length;
-      const unread = unreadCount();
-
-      if (s.includes("notif") || s.includes("تنبيه") || s.includes("notifications")) {
-        const top = notifications.find(n => !n.read);
-        if (!top) return state.lang==="ar" ? "ما عندك تنبيهات غير مقروءة." : "No unread notifications.";
-        return state.lang==="ar"
-          ? `عندك ${unread} تنبيه غير مقروء.\nأحدث واحد: ${top.title_ar}\nافتح زر الجرس لمشاهدتها.`
-          : `You have ${unread} unread notifications.\nLatest: ${top.title_en}\nOpen the bell to view.`;
-      }
-
-      if (s.includes("log") || s.includes("سجل") || s.includes("logs")) {
-        const top = logs[0];
-        return state.lang==="ar"
-          ? `عدد السجلات: ${logs.length}\nآخر حدث: ${(top?top.title_ar:"-")} (#${top?top.id:"-"})\nتقدر تشوف التفاصيل من Monitor.`
-          : `Logs: ${logs.length}\nLatest: ${(top?top.title_en:"-")} (#${top?top.id:"-"})\nOpen Monitor for details.`;
-      }
-
-      if (s.includes("user") || s.includes("مستخدم") || s.includes("users")) {
-        return state.lang === "ar"
-          ? `عدد المستخدمين: ${total}\nالنشط: ${total - inactive - locked} • غير نشط: ${inactive} • مقفل: ${locked}\n(ديمو).`
-          : `Users: ${total}. Active: ${total - inactive - locked}, Inactive: ${inactive}, Locked: ${locked}. (Demo).`;
-      }
-
-      if (s.includes("server") || s.includes("سيرفر") || s.includes("health")) {
-        return state.lang === "ar"
-          ? `حالة السيرفر: مستقرة.\nUptime: 99.9% • DB: 12ms • CPU: ${randomPct()}%\n(قيم افتراضية).`
-          : `Server health: Stable. Uptime 99.9%, DB 12ms, CPU ${randomPct()}% (simulated).`;
-      }
-
-      if (s.includes("permission") || s.includes("صلاح") || s.includes("perms")) {
-        return state.lang === "ar"
-          ? "تقدر تعدل صلاحيات الأدوار من صفحة Permissions. بعد التعديل اضغط (تحديث الصلاحيات) ويطلع Log + Notification."
-          : "Edit roles in Permissions page, then click Update Permissions (creates a Log + Notification).";
-      }
-
-      return state.lang==="ar"
-        ? "جرب: (تقرير المستخدمين) أو (آخر التنبيهات) أو (ملخص السجلات) أو (حالة السيرفر)."
-        : "Try: users report, latest notifications, logs summary, or server health.";
-    }
-
-    // ----------------------------
-    // Page Router
-    // ----------------------------
-    window.renderPage = function(page) {
-      state.view = page;
-      localStorage.setItem(K.view, page);
-
-      setNavActive(page);
-      $("pageTitle").innerText =
-        page === "overview" ? t().overview :
-        page === "users" ? t().users :
-        page === "perms" ? t().permissions :
-        t().monitor;
-
-      if (page === "overview") renderOverviewPage();
-      if (page === "users") renderUsersPage();
-      if (page === "perms") renderPermsPage();
-      if (page === "monitor") renderMonitorPage();
-
-      if (window.innerWidth < 768) toggleSidebar(false);
-    };
-
-    // ----------------------------
-    // Buttons
-    // ----------------------------
-    window.toggleDarkMode = function() { state.dark = !state.dark; applyTheme(); };
-
-    window.toggleLanguage = function() {
-      state.lang = (state.lang === "ar") ? "en" : "ar";
-      localStorage.setItem(K.lang, state.lang);
-      applyLanguage();
-      renderNotifications();
-      renderPage(state.view);
-    };
-
-    // ----------------------------
-    // Logout
-    // ----------------------------
-    window.logout = function() {
-      localStorage.removeItem("currentUser");
-      window.location.href = "login.html";
-    };
-
-    // ----------------------------
-    // Click outside + ESC
-    // ----------------------------
-    document.addEventListener("click", (e) => {
-      if (!$("notifWrap").contains(e.target)) $("notifDropdown").classList.add("hidden");
-    });
-
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") {
-        $("notifDropdown").classList.add("hidden");
-        toggleAI(false);
-        if (window.innerWidth < 768) toggleSidebar(false);
-        closeModal();
-      }
-    });
-
-    // ----------------------------
-    // Init
-    // ----------------------------
-    (function init(){
-      applyTheme();
-      applyLanguage();
-      syncNotifBadge();
-      renderNotifications();
-      renderPage(state.view);
-    })();
-  </script>
+            `;
+        });
+    </script>
 </body>
 </html>
