@@ -1,14 +1,12 @@
 /**
- * AndroGov Layout Engine v2.5
- * - Fixes: User Name translation logic
- * - Fixes: Sidebar Colors
+ * AndroGov Layout Engine v3.0 (Full Sitemap)
+ * - Based on 'androgov.pdf' sitemap structure
+ * - Includes detailed sections for Governance, Ops, and Departments
  */
 
 // 1. استرجاع الإعدادات
-// نستخدم البيانات المخزنة التي تحتوي الآن على nameAr و nameEn
 const storedUser = JSON.parse(localStorage.getItem('currentUser'));
 
-// بيانات افتراضية في حال لم يتم تسجيل الدخول (للمعاينة فقط)
 const defaultUser = {
     nameAr: "أيمن المغربي",
     nameEn: "Ayman Almaghrabi",
@@ -17,7 +15,6 @@ const defaultUser = {
     avatar: "https://ui-avatars.com/api/?name=Ayman+Almaghrabi&background=FB4747&color=fff"
 };
 
-// دمج المستخدم الحالي مع الافتراضي لتجنب الأخطاء
 const currentUser = storedUser || defaultUser;
 
 const config = {
@@ -25,43 +22,85 @@ const config = {
     theme: localStorage.getItem('theme') || 'light'
 };
 
-// 2. قاموس النصوص للقوائم
+// 2. قاموس النصوص (شامل لكافة أقسام النظام)
 const layoutDict = {
     ar: {
         sysName: "AndroGov",
-        logout: "خروج",
+        sysVer: "Enterprise v3.0",
+        logout: "تسجيل خروج",
+        sections: {
+            main: "الرئيسية",
+            gov: "الحوكمة المؤسسية",
+            ops: "الحوكمة التشغيلية",
+            dept: "الإدارات والخدمات",
+            admin: "إدارة النظام"
+        },
         menu: {
-            dash: "نظرة عامة",
-            audit: "سجل التدقيق",
-            users: "المستخدمين",
-            gov: "الحوكمة",
-            ops: "التشغيل",
-            policies: "السياسات",
-            cyber: "الأمن السيبراني",
-            it: "البنية التحتية"
+            dash: "لوحة القيادة",
+            // Governance
+            ga: "الجمعيات العمومية",
+            board: "مجلس الإدارة",
+            committees: "اللجان المنبثقة",
+            shareholders: "سجل المساهمين",
+            // Ops Governance
+            doa: "مصفوفة الصلاحيات (DOA)",
+            policies: "مركز السياسات واللوائح",
+            compliance: "الامتثال والمخاطر",
+            // Departments
+            hr: "الموارد البشرية",
+            finance: "الشؤون المالية",
+            procurement: "المشتريات والعقود",
+            it: "التقنية والأمن السيبراني",
+            // Admin
+            users: "المستخدمين والصلاحيات",
+            audit: "سجل التدقيق والرقابة"
         }
     },
     en: {
         sysName: "AndroGov",
+        sysVer: "Enterprise v3.0",
         logout: "Logout",
+        sections: {
+            main: "Main",
+            gov: "Corporate Governance",
+            ops: "Operating Governance",
+            dept: "Departments",
+            admin: "System Administration"
+        },
         menu: {
             dash: "Dashboard",
-            audit: "Audit Log",
-            users: "Users",
-            gov: "Governance",
-            ops: "Operations",
-            policies: "Policies",
-            cyber: "Cybersecurity",
-            it: "Infrastructure"
+            // Governance
+            ga: "General Assembly",
+            board: "Board of Directors",
+            committees: "Committees",
+            shareholders: "Shareholders Registry",
+            // Ops Governance
+            doa: "Authority Matrix (DOA)",
+            policies: "Policy Center",
+            compliance: "Compliance & Risk",
+            // Departments
+            hr: "Human Resources",
+            finance: "Finance",
+            procurement: "Procurement",
+            it: "IT & Cybersecurity",
+            // Admin
+            users: "Users & Roles",
+            audit: "Audit Log"
         }
     }
 };
 
 // 3. التشغيل
 document.addEventListener('DOMContentLoaded', () => {
-    applyConfig();
-    renderSidebar();
-    renderHeader();
+    try {
+        applyConfig();
+        renderSidebar();
+        renderHeader();
+        document.body.style.opacity = '1';
+    } catch (e) {
+        console.error(e);
+        document.body.style.opacity = '1';
+    }
 });
 
 function applyConfig() {
@@ -95,16 +134,16 @@ function renderSidebar() {
     const isRtl = config.lang === 'ar';
     const path = window.location.pathname;
     
-    // منطق اختيار الاسم والمنصب حسب اللغة
     const displayName = isRtl ? (currentUser.nameAr || currentUser.name) : (currentUser.nameEn || currentUser.name);
     const displayTitle = isRtl ? (currentUser.titleAr || currentUser.title) : (currentUser.titleEn || currentUser.title);
 
-    const isActive = (p) => path.includes(p) ? 'bg-brandRed text-white shadow-lg shadow-red-500/30' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800';
+    const isActive = (p) => path.includes(p) ? 'bg-brandRed text-white shadow-lg shadow-red-500/30 font-bold' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800';
 
+    // أيقونات وتصنيفات بناءً على androgov.pdf
     el.innerHTML = `
     <aside class="fixed top-0 ${isRtl ? 'right-0' : 'left-0'} z-50 h-screen w-72 flex-col hidden md:flex transition-colors duration-300 bg-white dark:bg-[#0F172A] border-${isRtl ? 'l' : 'r'} border-slate-200 dark:border-slate-800 shadow-xl">
         
-        <!-- Logo -->
+        <!-- Logo Area -->
         <div class="h-20 flex items-center px-6 border-b border-slate-100 dark:border-slate-800 bg-white dark:bg-[#0B1120]">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-xl bg-slate-50 p-1 flex items-center justify-center border border-slate-100 dark:border-transparent">
@@ -112,15 +151,15 @@ function renderSidebar() {
                 </div>
                 <div>
                     <h1 class="font-bold text-lg text-slate-800 dark:text-white font-sans">${t.sysName}</h1>
-                    <p class="text-[10px] text-slate-500 uppercase tracking-widest">Portal v2.5</p>
+                    <p class="text-[10px] text-slate-500 uppercase tracking-widest">${t.sysVer}</p>
                 </div>
             </div>
         </div>
 
-        <!-- User Profile (Dynamic Name) -->
+        <!-- User Profile -->
         <div class="p-4">
             <div class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700">
-                <img src="${currentUser.avatar}" class="w-10 h-10 rounded-full border-2 border-white dark:border-slate-600">
+                <img src="${currentUser.avatar}" class="w-10 h-10 rounded-full border-2 border-white dark:border-slate-600 object-cover">
                 <div class="overflow-hidden">
                     <p class="text-sm font-bold text-slate-800 dark:text-white truncate">${displayName}</p>
                     <p class="text-[10px] text-brandRed font-medium truncate">${displayTitle}</p>
@@ -128,18 +167,38 @@ function renderSidebar() {
             </div>
         </div>
 
-        <!-- Nav Links -->
-        <nav class="flex-1 overflow-y-auto px-3 space-y-1 py-2">
+        <!-- Navigation Menu -->
+        <nav class="flex-1 overflow-y-auto px-3 space-y-1 py-2 custom-scroll">
+            
+            <!-- Dashboard -->
+            <div class="px-3 mt-2 mb-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider">${t.sections.main}</div>
             ${navItem(t.menu.dash, 'fa-gauge-high', 'admin.html', isActive('admin.html'))}
+
+            <!-- Governance Module -->
+            <div class="px-3 mt-6 mb-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider">${t.sections.gov}</div>
+            ${navItem(t.menu.ga, 'fa-users-rectangle', 'ga.html', isActive('ga.html'))}
+            ${navItem(t.menu.board, 'fa-building-columns', 'board.html', isActive('board.html'))}
+            ${navItem(t.menu.committees, 'fa-people-group', 'committees.html', isActive('committees.html'))}
+            ${navItem(t.menu.shareholders, 'fa-id-card', 'shareholders.html', isActive('shareholders.html'))}
+
+            <!-- Operating Governance -->
+            <div class="px-3 mt-6 mb-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider">${t.sections.ops}</div>
+            ${navItem(t.menu.doa, 'fa-sitemap', 'doa.html', isActive('doa.html'))}
+            ${navItem(t.menu.policies, 'fa-book-open', 'policies.html', isActive('policies.html'), 'Draft')}
+            ${navItem(t.menu.compliance, 'fa-scale-balanced', 'compliance.html', isActive('compliance.html'))}
+
+            <!-- Departments -->
+            <div class="px-3 mt-6 mb-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider">${t.sections.dept}</div>
+            ${navItem(t.menu.hr, 'fa-user-tie', 'hr.html', isActive('hr.html'))}
+            ${navItem(t.menu.finance, 'fa-money-bill-wave', 'finance.html', isActive('finance.html'))}
+            ${navItem(t.menu.procurement, 'fa-boxes-packing', 'procurement.html', isActive('procurement.html'))}
+            ${navItem(t.menu.it, 'fa-shield-cat', 'it.html', isActive('it.html'))}
+
+            <!-- Admin -->
+            <div class="px-3 mt-6 mb-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider">${t.sections.admin}</div>
+            ${navItem(t.menu.users, 'fa-users-gear', 'users.html', isActive('users.html'))}
             ${navItem(t.menu.audit, 'fa-list-ul', 'audit.html', isActive('audit.html'))}
-            ${navItem(t.menu.users, 'fa-users', 'users.html', isActive('users.html'))}
-            
-            <div class="px-3 mt-6 mb-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider">${t.menu.gov}</div>
-            ${navItem(t.menu.gov, 'fa-gavel', 'governance.html', isActive('governance.html'))}
-            ${navItem(t.menu.policies, 'fa-book-open', 'policies.html', isActive('policies.html'))}
-            
-            <div class="px-3 mt-6 mb-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider">${t.menu.tech}</div>
-            ${navItem(t.menu.cyber, 'fa-shield-cat', 'cybersecurity.html', isActive('cyber.html'))}
+
         </nav>
 
         <div class="p-4 text-center text-[10px] text-slate-400 border-t border-slate-100 dark:border-slate-800">
@@ -148,10 +207,11 @@ function renderSidebar() {
     </aside>`;
 }
 
-function navItem(label, icon, url, classes) {
+function navItem(label, icon, url, classes, badge = null) {
     return `<a href="${url}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${classes}">
         <i class="fa-solid ${icon} w-5 text-center"></i>
-        <span>${label}</span>
+        <span class="flex-1">${label}</span>
+        ${badge ? `<span class="text-[9px] bg-orange-100 text-orange-600 px-1.5 py-0.5 rounded border border-orange-200 dark:bg-orange-900/30 dark:text-orange-400 dark:border-orange-800">${badge}</span>` : ''}
     </a>`;
 }
 
@@ -183,7 +243,7 @@ function renderHeader() {
     </header>`;
 }
 
-// الوظائف العامة
+// Global Functions
 window.changeTheme = () => {
     const newTheme = config.theme === 'dark' ? 'light' : 'dark';
     localStorage.setItem('theme', newTheme);
@@ -197,7 +257,7 @@ window.changeLang = () => {
 };
 
 window.doLogout = () => {
-    if(confirm('تسجيل الخروج؟')) {
+    if(confirm('هل تريد تسجيل الخروج؟')) {
         localStorage.removeItem('currentUser');
         window.location.href = 'https://androgov-sa.github.io/AIT/login.html'; 
     }
