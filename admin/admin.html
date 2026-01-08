@@ -1,241 +1,213 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl" class="light">
+<html lang="ar" dir="rtl" class="opacity-0 transition-opacity duration-300">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AndroGov | لوحة تحكم المسؤول</title>
+    <title>AndroGov | لوحة التحكم</title>
     
     <!-- الخطوط والأيقونات -->
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- مكتبات خارجية -->
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-    <!-- إعدادات Tailwind -->
     <script>
         tailwind.config = {
             darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
-                        brandRed: '#FB4747',  // أحمر اندروميدا الرسمي
-                        brandDark: '#0F172A', // خلفية القائمة الداكنة
-                        darkBg: '#0B1120',    // خلفية الصفحة في الوضع الليلي (أغمق قليلاً للتباين)
-                        darkCard: '#1E293B'   // لون البطاقات في الوضع الليلي
+                        brandRed: '#FB4747',
+                        brandBlue: '#4267B2',
+                        brandDark: '#1E293B'
                     },
                     fontFamily: {
-                        sans: ['Tajawal', 'sans-serif'],
-                        en: ['Inter', 'sans-serif']
+                        sans: ['Tajawal', 'Inter', 'sans-serif']
                     }
                 }
             }
         }
     </script>
-    
-    <style>
-        body { opacity: 0; transition: opacity 0.5s ease; } /* لمنع وميض التحميل */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-        .dark ::-webkit-scrollbar-thumb { background: #334155; }
-    </style>
 </head>
-<body class="bg-[#F8FAFC] dark:bg-darkBg text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300">
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300">
 
-    <!-- 1. حاوية القائمة الجانبية (يتم تعبئتها من layout.js) -->
+    <!-- حاوية القائمة الجانبية (من layout.js) -->
     <div id="sidebar-container"></div>
 
-    <!-- 2. محتوى الصفحة -->
-    <div class="md:mr-72 transition-all duration-300 flex flex-col min-h-screen">
+    <!-- المحتوى الرئيسي -->
+    <div class="main-content-wrapper md:mr-72 transition-all duration-300 flex flex-col min-h-screen">
         
-        <!-- حاوية الهيدر (يتم تعبئتها من layout.js) -->
+        <!-- الهيدر (من layout.js) -->
         <div id="header-container"></div>
 
-        <!-- المحتوى المتغير -->
+        <!-- محتوى الصفحة -->
         <main class="p-6 space-y-6">
             
-            <!-- تنبيه مسودة السياسات (مبني على الملف المرفق) -->
-            <div class="bg-orange-50 dark:bg-orange-900/10 border border-orange-200 dark:border-orange-800 p-4 rounded-2xl flex flex-col md:flex-row justify-between items-center gap-4 shadow-sm">
-                <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center text-orange-600 dark:text-orange-400 shrink-0">
-                        <i class="fa-solid fa-file-contract text-xl"></i>
+            <!-- تنبيه المسودة -->
+            <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 border border-orange-100 dark:border-orange-900/30 shadow-sm flex flex-col md:flex-row justify-between items-center gap-4 relative overflow-hidden">
+                <div class="absolute inset-0 bg-orange-50/50 dark:bg-orange-900/10 pointer-events-none"></div>
+                <div class="flex items-center gap-4 relative z-10">
+                    <div class="w-12 h-12 rounded-2xl bg-orange-100 dark:bg-orange-500/20 text-orange-600 dark:text-orange-400 flex items-center justify-center text-xl shadow-sm">
+                        <i class="fa-solid fa-file-signature"></i>
                     </div>
                     <div>
-                        <h3 class="font-bold text-slate-800 dark:text-white">تنبيه إداري: مسودة "الدليل الداخلي" تتطلب الاعتماد</h3>
+                        <h3 class="font-bold text-lg text-slate-800 dark:text-white" data-i18n="alertTitle">مسودة "الدليل الداخلي" بانتظار الاعتماد</h3>
                         <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">
-                            يوجد ملف سياسات معلق (Draft) تم رفعه بواسطة <span class="font-bold text-slate-700 dark:text-slate-300">أيمن المغربي</span>. يرجى المراجعة قبل الرفع للمجلس.
+                            <span data-i18n="alertDesc">قام برفعها:</span> <span class="font-bold text-slate-700 dark:text-slate-300">أيمن المغربي</span>
                         </p>
                     </div>
                 </div>
-                <div class="flex gap-3 w-full md:w-auto">
-                    <button class="flex-1 md:flex-none px-5 py-2.5 bg-white dark:bg-darkCard border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 rounded-xl font-bold hover:bg-slate-50 dark:hover:bg-slate-700 transition text-sm">
-                        تجاهل
-                    </button>
-                    <a href="policies.html" class="flex-1 md:flex-none px-5 py-2.5 bg-brandRed text-white rounded-xl font-bold hover:bg-red-700 transition text-sm flex items-center justify-center gap-2 shadow-lg shadow-red-500/20">
-                        <i class="fa-solid fa-eye"></i> معاينة المسودة
-                    </a>
-                </div>
+                <button class="relative z-10 px-6 py-2.5 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-600 transition shadow-sm">
+                    <i class="fa-solid fa-eye text-brandRed mx-1"></i> <span data-i18n="viewDraft">معاينة الملف</span>
+                </button>
             </div>
 
-            <!-- بطاقات المؤشرات (KPIs) -->
+            <!-- البطاقات الإحصائية -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-                
-                <!-- رأس المال -->
-                <div class="bg-white dark:bg-darkCard p-5 rounded-2xl border border-slate-100 dark:border-slate-700/50 shadow-sm hover:shadow-md transition-shadow group">
+                <!-- بطاقة 1 -->
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-sm group hover:shadow-md transition-all">
                     <div class="flex justify-between items-start mb-4">
-                        <div class="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                        <div class="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-500/10 text-brandBlue dark:text-blue-400 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
                             <i class="fa-solid fa-coins"></i>
                         </div>
-                        <span class="text-[10px] font-bold bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-300 px-2 py-1 rounded-lg">رأس المال</span>
+                        <span class="bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 text-[10px] font-bold px-2 py-1 rounded-lg uppercase" data-i18n="kpiCapLabel">رأس المال</span>
                     </div>
-                    <h3 class="text-2xl font-bold text-slate-800 dark:text-white font-en">6,000,000 <span class="text-sm text-slate-400 font-sans">ر.س</span></h3>
-                    <div class="mt-3 flex items-center gap-2 text-xs text-green-500 font-bold">
-                        <i class="fa-solid fa-check-circle"></i> مدفوع بالكامل
-                    </div>
+                    <h3 class="text-3xl font-extrabold text-slate-800 dark:text-white tracking-tight font-sans" dir="ltr">6,000,000</h3>
+                    <p class="text-xs text-green-500 font-bold mt-2 flex items-center gap-1">
+                        <i class="fa-solid fa-check-circle"></i> <span data-i18n="fullyPaid">مدفوع بالكامل</span>
+                    </p>
                 </div>
 
-                <!-- المساهمين -->
-                <div class="bg-white dark:bg-darkCard p-5 rounded-2xl border border-slate-100 dark:border-slate-700/50 shadow-sm hover:shadow-md transition-shadow group">
+                <!-- بطاقة 2 -->
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-sm group hover:shadow-md transition-all">
                     <div class="flex justify-between items-start mb-4">
-                        <div class="w-10 h-10 rounded-xl bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400 flex items-center justify-center group-hover:bg-green-600 group-hover:text-white transition-colors">
-                            <i class="fa-solid fa-users-viewfinder"></i>
+                        <div class="w-12 h-12 rounded-2xl bg-purple-50 dark:bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-users"></i>
                         </div>
-                        <span class="text-[10px] font-bold bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-300 px-2 py-1 rounded-lg">المساهمين</span>
+                        <span class="bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 text-[10px] font-bold px-2 py-1 rounded-lg uppercase" data-i18n="kpiShareLabel">المساهمين</span>
                     </div>
-                    <h3 class="text-2xl font-bold text-slate-800 dark:text-white font-en">14 <span class="text-sm text-slate-400 font-sans">عضو</span></h3>
-                    <div class="mt-3 flex -space-x-2 space-x-reverse">
-                        <img src="https://ui-avatars.com/api/?name=H&background=random" class="w-6 h-6 rounded-full border-2 border-white dark:border-darkCard" title="هشام">
-                        <img src="https://ui-avatars.com/api/?name=M&background=random" class="w-6 h-6 rounded-full border-2 border-white dark:border-darkCard" title="محمد">
-                        <img src="https://ui-avatars.com/api/?name=I&background=random" class="w-6 h-6 rounded-full border-2 border-white dark:border-darkCard" title="إبراهيم">
-                        <span class="w-6 h-6 rounded-full border-2 border-white dark:border-darkCard bg-slate-100 dark:bg-slate-700 text-[8px] flex items-center justify-center text-slate-500 font-bold">+11</span>
+                    <h3 class="text-3xl font-extrabold text-slate-800 dark:text-white tracking-tight font-sans" dir="ltr">14</h3>
+                    <div class="mt-2 flex -space-x-2 space-x-reverse">
+                        <span class="text-xs text-slate-400" data-i18n="shareholders">ورثة السحيباني، عبدالله، منصور...</span>
                     </div>
                 </div>
 
-                <!-- القرارات -->
-                <div class="bg-white dark:bg-darkCard p-5 rounded-2xl border border-slate-100 dark:border-slate-700/50 shadow-sm hover:shadow-md transition-shadow group">
+                <!-- بطاقة 3 -->
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-sm group hover:shadow-md transition-all">
                     <div class="flex justify-between items-start mb-4">
-                        <div class="w-10 h-10 rounded-xl bg-purple-50 dark:bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center group-hover:bg-purple-600 group-hover:text-white transition-colors">
+                        <div class="w-12 h-12 rounded-2xl bg-brandRed/10 text-brandRed flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
                             <i class="fa-solid fa-signature"></i>
                         </div>
-                        <span class="text-[10px] font-bold bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-300 px-2 py-1 rounded-lg">بالتمرير</span>
+                        <span class="bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 text-[10px] font-bold px-2 py-1 rounded-lg uppercase" data-i18n="kpiDecLabel">قرارات</span>
                     </div>
-                    <h3 class="text-2xl font-bold text-slate-800 dark:text-white font-en">2 <span class="text-sm text-slate-400 font-sans">قيد الانتظار</span></h3>
-                    <div class="mt-3 flex items-center gap-1 text-xs text-brandRed font-medium">
-                        <span class="w-1.5 h-1.5 rounded-full bg-brandRed animate-pulse"></span>
-                        بانتظار: هشام السحيباني
-                    </div>
+                    <h3 class="text-3xl font-extrabold text-slate-800 dark:text-white tracking-tight font-sans" dir="ltr">2</h3>
+                    <p class="text-xs text-brandRed font-bold mt-2 flex items-center gap-1">
+                        <span class="w-2 h-2 rounded-full bg-brandRed animate-pulse"></span>
+                        <span data-i18n="pendingAction">بانتظار: هشام السحيباني</span>
+                    </p>
                 </div>
 
-                <!-- الامتثال -->
-                <div class="bg-white dark:bg-darkCard p-5 rounded-2xl border border-slate-100 dark:border-slate-700/50 shadow-sm hover:shadow-md transition-shadow group">
+                <!-- بطاقة 4 -->
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-sm group hover:shadow-md transition-all">
                     <div class="flex justify-between items-start mb-4">
-                        <div class="w-10 h-10 rounded-xl bg-yellow-50 dark:bg-yellow-500/10 text-yellow-600 dark:text-yellow-400 flex items-center justify-center group-hover:bg-yellow-600 group-hover:text-white transition-colors">
+                        <div class="w-12 h-12 rounded-2xl bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
                             <i class="fa-solid fa-shield-halved"></i>
                         </div>
-                        <span class="text-[10px] font-bold bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-300 px-2 py-1 rounded-lg">الامتثال</span>
+                        <span class="bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 text-[10px] font-bold px-2 py-1 rounded-lg uppercase" data-i18n="kpiCompLabel">الامتثال</span>
                     </div>
-                    <h3 class="text-2xl font-bold text-slate-800 dark:text-white font-en">92%</h3>
+                    <h3 class="text-3xl font-extrabold text-slate-800 dark:text-white tracking-tight font-sans" dir="ltr">92%</h3>
                     <div class="w-full bg-slate-100 dark:bg-slate-700 h-1.5 rounded-full mt-3 overflow-hidden">
-                        <div class="bg-green-500 h-full w-[92%] rounded-full"></div>
+                        <div class="bg-green-500 h-full w-[92%]"></div>
                     </div>
                 </div>
             </div>
 
-            <!-- القسم السفلي: السجل والوصول السريع -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                
-                <!-- سجل التدقيق الحي -->
-                <div class="lg:col-span-2 bg-[#0B1120] rounded-2xl shadow-xl border border-slate-800 flex flex-col h-96 overflow-hidden">
-                    <div class="px-5 py-4 border-b border-slate-800 flex justify-between items-center bg-[#0F172A]">
-                        <h3 class="text-sm font-bold text-slate-200 flex items-center gap-2">
-                            <i class="fa-solid fa-terminal text-brandRed"></i> سجل النظام المباشر (Live System Audit)
-                        </h3>
-                        <div class="flex items-center gap-2">
-                            <span class="flex h-2 w-2 relative">
-                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                                <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-                            </span>
-                            <span class="text-[10px] text-slate-400 font-mono">Monitoring...</span>
-                        </div>
-                    </div>
-                    
-                    <!-- محتوى السجل -->
-                    <div class="flex-1 overflow-y-auto p-4 space-y-3 font-mono text-xs" id="audit-log-container">
-                        <!-- يتم تعبئته بالجافاسكربت -->
-                    </div>
-                </div>
-
-                <!-- قائمة الوصول السريع -->
-                <div class="bg-white dark:bg-darkCard rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700/50 p-6 flex flex-col">
-                    <h3 class="font-bold text-slate-800 dark:text-white mb-4 flex items-center gap-2">
-                        <i class="fa-solid fa-bolt text-yellow-500"></i> إجراءات سريعة
+            <!-- سجل النظام -->
+            <div class="bg-slate-900 rounded-3xl p-6 shadow-lg border border-slate-800 text-slate-300">
+                <div class="flex justify-between items-center mb-4 border-b border-slate-800 pb-4">
+                    <h3 class="font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-terminal text-brandRed"></i> 
+                        <span data-i18n="auditTitle">سجل النظام المباشر</span>
                     </h3>
-                    
-                    <div class="space-y-3 flex-1 overflow-y-auto pr-1">
-                        <a href="users.html" class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-700/50 hover:bg-slate-100 dark:hover:bg-slate-700 transition group border border-transparent hover:border-slate-200 dark:hover:border-slate-600">
-                            <div class="w-8 h-8 rounded-lg bg-white dark:bg-slate-600 text-blue-500 flex items-center justify-center shadow-sm">
-                                <i class="fa-solid fa-user-plus"></i>
-                            </div>
-                            <div>
-                                <h4 class="font-bold text-xs text-slate-700 dark:text-slate-200 group-hover:text-blue-500 transition-colors">إضافة مستخدم جديد</h4>
-                                <p class="text-[10px] text-slate-400">تحديث صلاحيات RBAC</p>
-                            </div>
-                        </a>
-
-                        <a href="governance.html" class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-700/50 hover:bg-slate-100 dark:hover:bg-slate-700 transition group border border-transparent hover:border-slate-200 dark:hover:border-slate-600">
-                            <div class="w-8 h-8 rounded-lg bg-white dark:bg-slate-600 text-purple-500 flex items-center justify-center shadow-sm">
-                                <i class="fa-solid fa-calendar-check"></i>
-                            </div>
-                            <div>
-                                <h4 class="font-bold text-xs text-slate-700 dark:text-slate-200 group-hover:text-purple-500 transition-colors">جدولة اجتماع مجلس</h4>
-                                <p class="text-[10px] text-slate-400">الدورة القادمة</p>
-                            </div>
-                        </a>
-
-                        <a href="audit.html" class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-700/50 hover:bg-slate-100 dark:hover:bg-slate-700 transition group border border-transparent hover:border-slate-200 dark:hover:border-slate-600">
-                            <div class="w-8 h-8 rounded-lg bg-white dark:bg-slate-600 text-green-500 flex items-center justify-center shadow-sm">
-                                <i class="fa-solid fa-file-invoice"></i>
-                            </div>
-                            <div>
-                                <h4 class="font-bold text-xs text-slate-700 dark:text-slate-200 group-hover:text-green-500 transition-colors">تقرير الامتثال الربع سنوي</h4>
-                                <p class="text-[10px] text-slate-400">Q4-2025 Report</p>
-                            </div>
-                        </a>
-                    </div>
+                    <span class="flex items-center gap-2 text-xs text-green-400 font-mono">
+                        <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span> Live
+                    </span>
+                </div>
+                <div class="font-mono text-xs space-y-3 h-48 overflow-y-auto pr-2" id="audit-log-container">
+                    <!-- Logs will be loaded here -->
                 </div>
             </div>
 
         </main>
     </div>
 
-    <!-- استدعاء ملف Layout الأساسي (يجب أن يكون في نفس المجلد) -->
+    <!-- استدعاء ملف Layout الأساسي -->
     <script src="layout.js"></script>
 
-    <!-- سكريبت خاص بهذه الصفحة فقط (محاكاة السجل) -->
+    <!-- منطق الصفحة والترجمة -->
     <script>
-        const logs = [
-            { t: "10:45:22", type: "INFO", u: "System", msg: "Backup completed successfully", color: "text-green-400" },
-            { t: "10:42:15", type: "WARN", u: "Hesham", msg: "Attempted access to restricted policy", color: "text-yellow-400" },
-            { t: "10:30:01", type: "INFO", u: "Ayman", msg: "Uploaded 'Internal_Manual_Draft_v3.pdf'", color: "text-blue-400" },
-            { t: "09:15:44", type: "CRIT", u: "Firewall", msg: "Blocked IP 192.168.1.105 (Too many requests)", color: "text-red-400" },
-            { t: "09:10:20", type: "INFO", u: "Finance", msg: "Generated Monthly Payroll Report", color: "text-slate-300" }
-        ];
+        const contentTranslations = {
+            ar: {
+                alertTitle: 'مسودة "الدليل الداخلي" بانتظار الاعتماد',
+                alertDesc: 'قام برفعها:',
+                viewDraft: 'معاينة الملف',
+                kpiCapLabel: 'رأس المال',
+                fullyPaid: 'مدفوع بالكامل',
+                kpiShareLabel: 'المساهمين',
+                shareholders: 'ورثة السحيباني، عبدالله، منصور...',
+                kpiDecLabel: 'قرارات',
+                pendingAction: 'بانتظار: هشام السحيباني',
+                kpiCompLabel: 'الامتثال',
+                auditTitle: 'سجل النظام المباشر'
+            },
+            en: {
+                alertTitle: '"Internal Manual" Draft Pending Approval',
+                alertDesc: 'Uploaded by:',
+                viewDraft: 'View File',
+                kpiCapLabel: 'Capital',
+                fullyPaid: 'Fully Paid',
+                kpiShareLabel: 'Shareholders',
+                shareholders: 'Heirs of AlSuhaibani, Hesham...',
+                kpiDecLabel: 'Decisions',
+                pendingAction: 'Waiting for: Hesham',
+                kpiCompLabel: 'Compliance',
+                auditTitle: 'Live System Audit'
+            }
+        };
 
-        const container = document.getElementById('audit-log-container');
-        
-        logs.forEach(log => {
-            container.innerHTML += `
-                <div class="flex gap-3 items-start border-l-2 border-slate-700 pl-3 py-1 hover:bg-slate-800/50 transition rounded-r cursor-default">
-                    <span class="text-slate-500 w-14 shrink-0 font-en">[${log.t}]</span>
-                    <span class="${log.color} font-bold w-16 shrink-0 font-en">${log.type}</span>
-                    <span class="text-brandRed w-20 shrink-0 font-en text-xs opacity-80">${log.u}</span>
-                    <span class="text-slate-300 break-all">${log.msg}</span>
-                </div>
-            `;
+        document.addEventListener('DOMContentLoaded', () => {
+            // تطبيق ترجمة المحتوى
+            const lang = localStorage.getItem('lang') || 'ar';
+            const t = contentTranslations[lang];
+            
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if(t[key]) el.innerText = t[key];
+            });
+
+            // تحميل السجل
+            renderLogs();
         });
-    </script>
 
+        function renderLogs() {
+            const logs = [
+                { t: "10:45:22", type: "INFO", u: "System", msg: "Backup completed successfully", color: "text-green-400" },
+                { t: "10:42:15", type: "WARN", u: "Hesham", msg: "Attempted access to restricted policy", color: "text-yellow-400" },
+                { t: "10:30:01", type: "INFO", u: "Ayman", msg: "Uploaded 'Internal_Manual_Draft_v3.pdf'", color: "text-blue-400" }
+            ];
+            const container = document.getElementById('audit-log-container');
+            if(container) {
+                logs.forEach(log => {
+                    container.innerHTML += `
+                        <div class="flex gap-3 border-l-2 border-slate-700 pl-3 py-1 hover:bg-slate-800 transition">
+                            <span class="text-slate-500 w-16 shrink-0">[${log.t}]</span>
+                            <span class="${log.color} font-bold w-12 shrink-0">${log.type}</span>
+                            <span class="text-brandRed w-16 shrink-0 font-bold">${log.u}</span>
+                            <span class="text-slate-400 truncate">${log.msg}</span>
+                        </div>`;
+                });
+            }
+        }
+    </script>
 </body>
 </html>
