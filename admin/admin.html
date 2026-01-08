@@ -57,7 +57,7 @@
                         <h3 class="font-bold text-lg dark:text-white" data-i18n="alertTitle">إجراء مطلوب: اعتماد "الدليل الداخلي"</h3>
                         <p class="text-sm text-slate-500 dark:text-slate-400">
                             <span data-i18n="alertDesc">مسودة بانتظار الاعتماد النهائي من المجلس. الرافغ:</span> 
-                            <span class="font-bold text-slate-700 dark:text-slate-300">أيمن المغربي</span>
+                            <span class="font-bold text-slate-700 dark:text-slate-300" data-i18n="uploaderName">أيمن المغربي</span>
                         </p>
                     </div>
                 </div>
@@ -151,7 +151,7 @@
                         <canvas id="ownershipChart"></canvas>
                     </div>
                     <div class="mt-6 space-y-3" id="chartLegend">
-                        <!-- Legend inserted via JS for translation -->
+                        <!-- Legend -->
                     </div>
                 </div>
 
@@ -171,11 +171,15 @@
                             <div class="space-y-2 mt-3">
                                 <div class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
                                     <img src="https://ui-avatars.com/api/?name=M&background=random" class="w-5 h-5 rounded-full">
-                                    <span>محمد بن منصور العنزي (رئيس)</span>
+                                    <span data-i18n="commMember1">محمد بن منصور العنزي (رئيس)</span>
                                 </div>
                                 <div class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
                                     <img src="https://ui-avatars.com/api/?name=A&background=random" class="w-5 h-5 rounded-full">
-                                    <span>أحمد بن سلطان السحيباني</span>
+                                    <span data-i18n="commMember2">أحمد بن سلطان السحيباني (عضو)</span>
+                                </div>
+                                <div class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+                                    <img src="https://ui-avatars.com/api/?name=A&background=random" class="w-5 h-5 rounded-full">
+                                    <span data-i18n="commMember3">عادل بن عدنان سعسع (رئيس)</span>
                                 </div>
                             </div>
                             <div class="mt-3 pt-3 border-t border-slate-200 dark:border-slate-600 flex justify-between text-[10px]">
@@ -187,13 +191,12 @@
                         <!-- Board Info -->
                         <div class="flex items-center justify-between p-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition">
                             <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded bg-purple-100 text-purple-600 flex items-center justify-center text-xs"><i class="fa-solid fa-calendar"></i></div>
+                                <div class="w-8 h-8 rounded bg-purple-100 text-purple-600 flex items-center justify-center text-xs"><i class="fa-solid fa-user-tie"></i></div>
                                 <div>
-                                    <p class="text-xs font-bold dark:text-white" data-i18n="nextBoardMeeting">اجتماع المجلس القادم</p>
-                                    <p class="text-[10px] text-slate-400" data-i18n="q1_2026">الربع الأول 2026</p>
+                                    <p class="text-xs font-bold dark:text-white" data-i18n="boardSec">أمين السر</p>
+                                    <p class="text-[10px] text-slate-400" data-i18n="secName">أيمن بن علي المغربي</p>
                                 </div>
                             </div>
-                            <button class="text-xs bg-white dark:bg-slate-600 border border-slate-200 dark:border-slate-500 px-3 py-1 rounded hover:bg-slate-50" data-i18n="schedule">جدولة</button>
                         </div>
                     </div>
                 </div>
@@ -218,8 +221,8 @@
                         <div class="flex gap-3 items-start p-3 rounded-xl bg-slate-50 dark:bg-slate-700/30 border border-slate-100 dark:border-slate-700/50">
                             <div class="mt-1"><input type="checkbox" class="accent-brandRed w-4 h-4"></div>
                             <div>
-                                <p class="text-xs font-bold text-slate-800 dark:text-white" data-i18n="task2">مراجعة تقرير الرواتب (HR)</p>
-                                <p class="text-[10px] text-slate-400 mt-1"><span data-i18n="from">من</span>: منصور اليامي</p>
+                                <p class="text-xs font-bold text-slate-800 dark:text-white" data-i18n="taskPayroll">مراجعة تقرير الرواتب (HR)</p>
+                                <p class="text-[10px] text-slate-400 mt-1"><span data-i18n="fromLabel">من</span>: <span data-i18n="senderName">منصور اليامي</span></p>
                                 <span class="inline-block mt-1 bg-blue-100 text-blue-700 text-[9px] px-1.5 py-0.5 rounded" data-i18n="ops">Ops</span>
                             </div>
                         </div>
@@ -262,6 +265,7 @@
                 pageTitle: "AndroGov | لوحة القيادة",
                 alertTitle: 'إجراء مطلوب: اعتماد "الدليل الداخلي"',
                 alertDesc: 'مسودة بانتظار الاعتماد النهائي من المجلس. الرافغ:',
+                uploaderName: 'أيمن المغربي',
                 reviewBtn: 'مراجعة واعتماد',
                 kpiCapital: 'رأس المال المصدر',
                 currency: 'ر.س',
@@ -277,18 +281,31 @@
                 commTitle: 'اللجان والمجلس',
                 auditComm: 'لجنة المراجعة',
                 newCycle: 'دورة جديدة',
+                
+                // أسماء أعضاء اللجنة
+                commMember1: 'محمد بن منصور العنزي (رئيس)',
+                commMember2: 'أحمد بن سلطان السحيباني (عضو)',
+                commMember3: 'عادل بن عدنان سعسع (رئيس)',
+                
                 lastMeeting: 'آخر اجتماع: 22/12/2025',
                 minutes: 'المحضر',
-                nextBoardMeeting: 'اجتماع المجلس القادم',
-                q1_2026: 'الربع الأول 2026',
+                
+                // أمين السر
+                boardSec: 'أمين السر',
+                secName: 'أيمن بن علي المغربي',
+                
                 schedule: 'جدولة',
                 opsTitle: 'المهام التشغيلية',
                 task1: 'اعتماد سياسة المكافآت',
                 dueDate: 'تاريخ الاستحقاق',
                 gov: 'حوكمة',
-                task2: 'مراجعة تقرير الرواتب (HR)',
-                from: 'من',
+                
+                // مهمة الرواتب
+                taskPayroll: 'مراجعة تقرير الرواتب (HR)',
+                fromLabel: 'من',
+                senderName: 'منصور اليامي',
                 ops: 'تشغيل',
+                
                 task3: 'تحديث بيانات السجل التجاري',
                 ministry: 'وزارة التجارة',
                 legal: 'قانونية',
@@ -308,6 +325,7 @@
                 pageTitle: "AndroGov | Dashboard",
                 alertTitle: 'Action Required: Approve "Internal Manual"',
                 alertDesc: 'Draft waiting for final board approval. Uploaded by:',
+                uploaderName: 'Ayman Almaghrabi',
                 reviewBtn: 'Review & Approve',
                 kpiCapital: 'Issued Capital',
                 currency: 'SAR',
@@ -323,18 +341,31 @@
                 commTitle: 'Committees & Board',
                 auditComm: 'Audit Committee',
                 newCycle: 'New Cycle',
+                
+                // Committee Members Translations
+                commMember1: 'Mohammed Al-Enezi (Chairman)',
+                commMember2: 'Ahmed Al-Suhaibani (Member)',
+                commMember3: 'Adel Sasa (Chairman)',
+                
                 lastMeeting: 'Last meeting: 22/12/2025',
                 minutes: 'Minutes',
-                nextBoardMeeting: 'Next Board Meeting',
-                q1_2026: 'Q1 2026',
+                
+                // Secretary
+                boardSec: 'Board Secretary',
+                secName: 'Ayman Almaghrabi',
+                
                 schedule: 'Schedule',
                 opsTitle: 'Operational Tasks',
                 task1: 'Approve Bonus Policy',
                 dueDate: 'Due Date',
                 gov: 'Gov',
-                task2: 'Review Payroll Report (HR)',
-                from: 'From',
+                
+                // Payroll Task Translation
+                taskPayroll: 'Review Payroll Report (HR)',
+                fromLabel: 'From',
+                senderName: 'Mansour Alyami',
                 ops: 'Ops',
+                
                 task3: 'Update Commercial Registry',
                 ministry: 'Min. of Commerce',
                 legal: 'Legal',
@@ -357,9 +388,6 @@
             updateContent();
             initCharts();
             renderLogs();
-            
-            // مراقب لتغيير اللغة من ملف layout.js
-            // بما أن layout.js يقوم بعمل reload عند تغيير اللغة، فإنDOMContentLoaded سيعمل مجدداً
         });
 
         function updateContent() {
