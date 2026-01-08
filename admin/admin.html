@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AndroGov | لوحة التحكم</title>
+    <title>AndroGov | الرئيسية</title>
     
-    <!-- Fonts & Icons -->
+    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -28,6 +28,15 @@
             }
         }
     </script>
+    
+    <style>
+        /* إزالة أي إخفاء للصفحة لضمان عدم ظهور الشاشة البيضاء */
+        body { opacity: 1 !important; visibility: visible !important; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .dark ::-webkit-scrollbar-thumb { background: #334155; }
+    </style>
 </head>
 <body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300">
 
@@ -35,19 +44,19 @@
     <div id="sidebar-container"></div>
 
     <!-- Main Content -->
-    <div class="main-content-wrapper md:mr-72 transition-all duration-300 flex flex-col min-h-screen">
+    <div class="main-content md:mr-72 transition-all duration-300 flex flex-col min-h-screen">
         
-        <!-- Header Container -->
+        <!-- Header -->
         <div id="header-container"></div>
 
-        <!-- Content -->
+        <!-- Body -->
         <main class="p-6 space-y-6">
             
-            <!-- Alert Banner -->
+            <!-- Alert -->
             <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 border border-orange-100 dark:border-orange-900/30 shadow-sm flex flex-col md:flex-row justify-between items-center gap-4 relative overflow-hidden">
                 <div class="absolute inset-0 bg-orange-50/50 dark:bg-orange-900/10 pointer-events-none"></div>
                 <div class="flex items-center gap-4 relative z-10">
-                    <div class="w-12 h-12 rounded-2xl bg-orange-100 dark:bg-orange-500/20 text-orange-600 dark:text-orange-400 flex items-center justify-center text-xl shadow-sm">
+                    <div class="w-12 h-12 rounded-2xl bg-orange-100 dark:bg-orange-500/20 text-orange-600 dark:text-orange-400 flex items-center justify-center text-xl">
                         <i class="fa-solid fa-file-signature"></i>
                     </div>
                     <div>
@@ -62,7 +71,7 @@
                 </button>
             </div>
 
-            <!-- KPI Cards -->
+            <!-- Cards -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
                 <!-- Card 1 -->
                 <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md transition-all">
@@ -70,7 +79,7 @@
                         <div class="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-500/10 text-brandBlue dark:text-blue-400 flex items-center justify-center text-xl">
                             <i class="fa-solid fa-coins"></i>
                         </div>
-                        <span class="bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 text-[10px] font-bold px-2 py-1 rounded-lg uppercase" data-i18n="kpiCapLabel">رأس المال</span>
+                        <span class="bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 text-[10px] font-bold px-2 py-1 rounded-lg uppercase" data-i18n="kpiCap">رأس المال</span>
                     </div>
                     <h3 class="text-3xl font-extrabold text-slate-800 dark:text-white tracking-tight font-sans" dir="ltr">6,000,000</h3>
                     <p class="text-xs text-green-500 font-bold mt-2 flex items-center gap-1">
@@ -84,7 +93,7 @@
                         <div class="w-12 h-12 rounded-2xl bg-purple-50 dark:bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center text-xl">
                             <i class="fa-solid fa-users"></i>
                         </div>
-                        <span class="bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 text-[10px] font-bold px-2 py-1 rounded-lg uppercase" data-i18n="kpiShareLabel">المساهمين</span>
+                        <span class="bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 text-[10px] font-bold px-2 py-1 rounded-lg uppercase" data-i18n="kpiShare">المساهمين</span>
                     </div>
                     <h3 class="text-3xl font-extrabold text-slate-800 dark:text-white tracking-tight font-sans" dir="ltr">14</h3>
                     <div class="mt-2 text-xs text-slate-400 truncate" data-i18n="shareholders">ورثة السحيباني، هشام، إبراهيم...</div>
@@ -96,12 +105,12 @@
                         <div class="w-12 h-12 rounded-2xl bg-brandRed/10 text-brandRed flex items-center justify-center text-xl">
                             <i class="fa-solid fa-signature"></i>
                         </div>
-                        <span class="bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 text-[10px] font-bold px-2 py-1 rounded-lg uppercase" data-i18n="kpiDecLabel">قرارات</span>
+                        <span class="bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 text-[10px] font-bold px-2 py-1 rounded-lg uppercase" data-i18n="kpiDec">قرارات</span>
                     </div>
                     <h3 class="text-3xl font-extrabold text-slate-800 dark:text-white tracking-tight font-sans" dir="ltr">2</h3>
                     <p class="text-xs text-brandRed font-bold mt-2 flex items-center gap-1">
                         <span class="w-2 h-2 rounded-full bg-brandRed animate-pulse"></span>
-                        <span data-i18n="pendingAction">بانتظار: هشام السحيباني</span>
+                        <span data-i18n="waiting">بانتظار: هشام السحيباني</span>
                     </p>
                 </div>
 
@@ -111,7 +120,7 @@
                         <div class="w-12 h-12 rounded-2xl bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400 flex items-center justify-center text-xl">
                             <i class="fa-solid fa-shield-halved"></i>
                         </div>
-                        <span class="bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 text-[10px] font-bold px-2 py-1 rounded-lg uppercase" data-i18n="kpiCompLabel">الامتثال</span>
+                        <span class="bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 text-[10px] font-bold px-2 py-1 rounded-lg uppercase" data-i18n="kpiComp">الامتثال</span>
                     </div>
                     <h3 class="text-3xl font-extrabold text-slate-800 dark:text-white tracking-tight font-sans" dir="ltr">92%</h3>
                     <div class="w-full bg-slate-100 dark:bg-slate-700 h-1.5 rounded-full mt-3 overflow-hidden">
@@ -120,65 +129,68 @@
                 </div>
             </div>
 
-            <!-- Audit Log -->
-            <div class="bg-slate-900 rounded-3xl p-6 shadow-lg border border-slate-800 text-slate-300">
-                <div class="flex justify-between items-center mb-4 border-b border-slate-800 pb-4">
-                    <h3 class="font-bold text-white flex items-center gap-2">
+            <!-- Audit Log (محدث: يدعم الوضع الفاتح والداكن) -->
+            <div class="bg-white dark:bg-[#0F172A] rounded-3xl p-6 shadow-sm border border-slate-100 dark:border-slate-800 text-slate-700 dark:text-slate-300">
+                <div class="flex justify-between items-center mb-4 border-b border-slate-100 dark:border-slate-800 pb-4">
+                    <h3 class="font-bold text-slate-800 dark:text-white flex items-center gap-2">
                         <i class="fa-solid fa-terminal text-brandRed"></i> 
-                        <span data-i18n="auditTitle">سجل النظام المباشر</span>
+                        <span data-i18n="liveAudit">سجل النظام المباشر</span>
                     </h3>
-                    <span class="flex items-center gap-2 text-xs text-green-400 font-mono">
+                    <span class="flex items-center gap-2 text-xs text-green-500 font-mono">
                         <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span> Live
                     </span>
                 </div>
-                <div class="font-mono text-xs space-y-3 h-48 overflow-y-auto pr-2" id="audit-log-container">
-                    <!-- JS fills this -->
+                <div class="font-mono text-xs space-y-2 h-48 overflow-y-auto pr-2" id="audit-log-container">
+                    <!-- سيتم تعبئته بواسطة JS -->
                 </div>
             </div>
 
         </main>
     </div>
 
+    <!-- استدعاء ملف Layout الأساسي -->
     <script src="layout.js"></script>
 
+    <!-- كود الترجمة الخاص بالمحتوى -->
     <script>
-        // Content Translations
-        const contentTrans = {
+        // قاموس ترجمة المحتوى
+        const pageContent = {
             ar: {
                 alertTitle: 'مسودة "الدليل الداخلي" بانتظار الاعتماد',
                 alertDesc: 'قام برفعها:',
                 viewDraft: 'معاينة الملف',
-                kpiCapLabel: 'رأس المال',
+                kpiCap: 'رأس المال',
                 fullyPaid: 'مدفوع بالكامل',
-                kpiShareLabel: 'المساهمين',
+                kpiShare: 'المساهمين',
                 shareholders: 'ورثة السحيباني، هشام، إبراهيم...',
-                kpiDecLabel: 'قرارات',
-                pendingAction: 'بانتظار: هشام السحيباني',
-                kpiCompLabel: 'الامتثال',
-                auditTitle: 'سجل النظام المباشر'
+                kpiDec: 'قرارات',
+                waiting: 'بانتظار: هشام السحيباني',
+                kpiComp: 'الامتثال',
+                liveAudit: 'سجل النظام المباشر'
             },
             en: {
                 alertTitle: '"Internal Manual" Draft Pending Approval',
                 alertDesc: 'Uploaded by:',
                 viewDraft: 'View File',
-                kpiCapLabel: 'Capital',
+                kpiCap: 'Capital',
                 fullyPaid: 'Fully Paid',
-                kpiShareLabel: 'Shareholders',
+                kpiShare: 'Shareholders',
                 shareholders: 'Heirs of AlSuhaibani, Hesham...',
-                kpiDecLabel: 'Decisions',
-                pendingAction: 'Waiting for: Hesham',
-                kpiCompLabel: 'Compliance',
-                auditTitle: 'Live System Audit'
+                kpiDec: 'Decisions',
+                waiting: 'Waiting for: Hesham',
+                kpiComp: 'Compliance',
+                liveAudit: 'Live System Audit'
             }
         };
 
+        // تفعيل الترجمة عند التحميل
         document.addEventListener('DOMContentLoaded', () => {
             const lang = localStorage.getItem('lang') || 'ar';
-            const t = contentTrans[lang];
+            const t = pageContent[lang];
             
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
-                if(t[key]) el.innerText = t[key];
+                if(t && t[key]) el.innerText = t[key];
             });
 
             renderLogs();
@@ -186,19 +198,19 @@
 
         function renderLogs() {
             const logs = [
-                { t: "10:45:22", type: "INFO", u: "System", msg: "Backup completed successfully", color: "text-green-400" },
-                { t: "10:42:15", type: "WARN", u: "Hesham", msg: "Attempted access to restricted policy", color: "text-yellow-400" },
-                { t: "10:30:01", type: "INFO", u: "Ayman", msg: "Uploaded 'Internal_Manual_Draft_v3.pdf'", color: "text-blue-400" }
+                { t: "10:45:22", type: "INFO", u: "System", msg: "Backup completed successfully", color: "text-green-500" },
+                { t: "10:42:15", type: "WARN", u: "Hesham", msg: "Attempted access to restricted policy", color: "text-yellow-500" },
+                { t: "10:30:01", type: "INFO", u: "Ayman", msg: "Uploaded 'Internal_Manual_Draft_v3.pdf'", color: "text-blue-500" }
             ];
             const container = document.getElementById('audit-log-container');
             if(container) {
                 logs.forEach(log => {
                     container.innerHTML += `
-                        <div class="flex gap-3 border-l-2 border-slate-700 pl-3 py-1 hover:bg-slate-800 transition">
-                            <span class="text-slate-500 w-16 shrink-0">[${log.t}]</span>
+                        <div class="flex gap-3 border-l-2 border-slate-200 dark:border-slate-700 pl-3 py-1.5 hover:bg-slate-50 dark:hover:bg-slate-800 transition rounded-r">
+                            <span class="text-slate-400 dark:text-slate-500 w-16 shrink-0">[${log.t}]</span>
                             <span class="${log.color} font-bold w-12 shrink-0">${log.type}</span>
                             <span class="text-brandRed w-16 shrink-0 font-bold">${log.u}</span>
-                            <span class="text-slate-400 truncate">${log.msg}</span>
+                            <span class="text-slate-600 dark:text-slate-400 truncate">${log.msg}</span>
                         </div>`;
                 });
             }
