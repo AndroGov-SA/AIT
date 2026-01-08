@@ -60,8 +60,9 @@
 
     <div class="relative flex flex-col h-full justify-center">
       <div class="flex items-center gap-5 mb-8">
-        <img src="https://ait.sa/wp-content/uploads/2024/03/cropped-Square-Logo.png"
-             class="w-20 h-20 rounded-3xl bg-white p-2 shadow-2xl"
+        <!-- شعار الشركة الرسمي -->
+        <img src="https://ait.sa/wp-content/uploads/2024/03/cropped-Square-Logo.png" 
+             class="w-20 h-20 rounded-3xl bg-white p-2 shadow-2xl object-contain" 
              alt="Andromeda Logo">
         <div>
           <h1 class="text-5xl font-extrabold tracking-tight leading-none" data-i18n="systemName">AndroGov</h1>
@@ -87,7 +88,7 @@
 
     <div class="relative text-xs text-slate-500 flex justify-between">
       <p>© 2026 Andromeda IT.</p>
-      <p>Version 9.0.2</p>
+      <p>Version 2.1.0</p>
     </div>
   </aside>
 
@@ -96,10 +97,8 @@
 
     <!-- Top bar -->
     <header class="w-full flex justify-between items-center gap-3 p-6 lg:absolute lg:top-0 lg:left-0 lg:right-0 z-20">
-      <a href="index.html"
-         class="text-slate-500 dark:text-slate-400 hover:text-brandRed transition-colors flex items-center gap-2 text-sm font-bold">
-        <i class="fa-solid fa-arrow-right dir-rotate transition-transform" aria-hidden="true"></i>
-        <span data-i18n="backToHome">العودة للرئيسية</span>
+      <a href="#" class="text-slate-500 dark:text-slate-400 hover:text-brandRed transition-colors flex items-center gap-2 text-sm font-bold opacity-0 cursor-default">
+        <!-- Hidden back button logic tailored for Login page -->
       </a>
 
       <div class="flex gap-3">
@@ -122,9 +121,9 @@
 
         <!-- Mobile logo -->
         <div class="lg:hidden text-center mb-8">
-          <img src="https://ait.sa/wp-content/uploads/2024/03/cropped-Square-Logo.png"
-               class="w-16 h-16 mx-auto rounded-2xl bg-white p-1 shadow-md"
-               alt="Andromeda Logo">
+            <img src="https://ait.sa/wp-content/uploads/2024/03/cropped-Square-Logo.png" 
+                 class="w-20 h-20 mx-auto rounded-2xl bg-white p-1 shadow-md object-contain" 
+                 alt="Andromeda Logo">
           <h2 class="text-2xl font-extrabold mt-4 text-slate-800 dark:text-white">AndroGov</h2>
           <p class="text-slate-500 dark:text-slate-400 mt-1 text-sm" data-i18n="systemDesc">نظام إدارة العمليات الموحد لشركة اندروميدا</p>
         </div>
@@ -186,7 +185,7 @@
 
             <!-- Submit -->
             <button id="loginBtn" type="submit"
-                    class="w-full bg-brandBlue hover:bg-blue-700 text-white font-extrabold py-3 rounded-xl transition-all shadow-lg hover:shadow-brandBlue/30 flex justify-center items-center gap-2 focus:outline-none focus:ring-4 focus:ring-brandBlue/30">
+                    class="w-full bg-brandRed hover:bg-red-700 text-white font-extrabold py-3 rounded-xl transition-all shadow-lg hover:shadow-brandRed/30 flex justify-center items-center gap-2 focus:outline-none focus:ring-4 focus:ring-brandRed/30">
               <span data-i18n="loginBtn">دخول آمن</span>
               <i class="fa-solid fa-arrow-left dir-rotate transition-transform" aria-hidden="true"></i>
             </button>
@@ -208,17 +207,15 @@
   </main>
 
   <script>
-    // ✅ ضع صورك بمسار ثابت داخل المشروع (اختياري)
-    // مثال: assets/avatars/admin.jpg
-    const AVATAR_BASE = ""; // اتركه فاضي لو الصور جنب صفحة الـ HTML
+    const AVATAR_BASE = ""; 
 
+    // تم تحديث الروابط لتستخدم UI Avatars لضمان ظهور الصور في العرض التوضيحي
     const roles = [
-      { id: 'admin',  username: 'admin',  name: 'مدير النظام',     title: 'System Admin',      page: 'admin.html', img: 'admin.jpg' },
-      { id: 'ceo',    username: 'ceo',    name: 'هشام السحيباني',  title: 'CEO',               page: 'ceo.html',   img: 'ceo.jpeg' },
-      { id: 'grc',    username: 'grc',    name: 'أيمن المغربي',    title: 'GRC',               page: 'grc.html',   img: 'grc.png' },
-      { id: 'hr',     username: 'hr',     name: 'منصور اليامي',    title: 'HR',                page: 'hr.html',    img: 'hr.JPG' },
-      { id: 'finance',username: 'cfo',    name: 'محمد البخيتي',    title: 'CFO',               page: 'cfo.html',   img: 'cfo.jpg' },
-      { id: 'audit',  username: 'audit',  name: 'موظف التدقيق',    title: 'Internal Auditor',  page: 'audit.html', img: 'admin.jpg' }
+      { id: 'admin',   username: 'admin',   name: 'أيمن المغربي',     title: 'System Admin',     page: 'admin.html', img: 'https://ui-avatars.com/api/?name=Admin+Sys&background=FB4747&color=fff' },
+      { id: 'ceo',     username: 'ceo',     name: 'هشام السحيباني',  title: 'CEO',              page: 'ceo.html',   img: 'https://ui-avatars.com/api/?name=Hesham+S&background=3b82f6&color=fff' },
+      { id: 'hr',      username: 'hr',      name: 'منصور اليامي',    title: 'HR',               page: 'hr.html',    img: 'https://ui-avatars.com/api/?name=Mansour+Y&background=f59e0b&color=fff' },
+      { id: 'finance', username: 'cfo',     name: 'محمد البخيتي',    title: 'CFO',              page: 'cfo.html',   img: 'https://ui-avatars.com/api/?name=Mohammed+B&background=8b5cf6&color=fff' },
+      { id: 'audit',   username: 'audit',   name: 'موظف التدقيق',    title: 'Internal Auditor', page: 'audit.html', img: 'https://ui-avatars.com/api/?name=Auditor&background=64748b&color=fff' }
     ];
 
     const translations = {
@@ -377,6 +374,7 @@
         ? (selectedRole.img.startsWith('http') ? selectedRole.img : (AVATAR_BASE + selectedRole.img))
         : "";
 
+      // تخزين بيانات المستخدم لاستخدامها في layout.js لاحقاً
       storage.setItem('currentUser', JSON.stringify({
         ...selectedRole,
         lang: state.lang,
@@ -403,7 +401,7 @@
           <button type="button" onclick="fillDemo('${role.id}')"
                   class="group flex flex-col items-center gap-2 min-w-[64px] focus:outline-none"
                   title="${role.name}">
-            <div class="w-12 h-12 rounded-full overflow-hidden border-2 border-slate-200 dark:border-slate-700 shadow-sm group-hover:scale-110 group-hover:border-brandBlue transition-all">
+            <div class="w-12 h-12 rounded-full overflow-hidden border-2 border-slate-200 dark:border-slate-700 shadow-sm group-hover:scale-110 group-hover:border-brandRed transition-all">
               <img src="${avatarSrc}" alt="${role.name}" class="w-full h-full object-cover">
             </div>
             <span class="text-[9px] text-slate-500 dark:text-slate-400 font-extrabold truncate w-full text-center">
