@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="pageTitle">AndroGov | مكتبة السياسات</title>
+    
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brandRed: '#FB4747',
+                        brandBlue: '#4267B2',
+                        brandDark: '#1E293B',
+                        brandGray: '#F8FAFC'
+                    },
+                    fontFamily: {
+                        sans: ['Tajawal', 'Inter', 'sans-serif'],
+                        en: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @media print {
+            .no-print { display: none !important; }
+            body { background: white; }
+        }
+    </style>
+</head>
+<body class="bg-brandGray dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300">
+
+    <div id="sidebar-container" class="no-print"></div>
+    
+    <div class="main-content-wrapper md:mr-72 transition-all duration-300 flex flex-col min-h-screen">
+        <div id="header-container" class="no-print"></div>
+
+        <main class="p-6 space-y-6">
+            
+            <!-- Header & Search -->
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4 bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700">
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-800 dark:text-white flex items-center gap-2">
+                        <i class="fa-solid fa-book-open text-brandRed"></i> مكتبة السياسات واللوائح
+                    </h2>
+                    <p class="text-xs text-slate-500 mt-1">المرجع الموحد لجميع لوائح وسياسات الشركة وإصداراتها.</p>
+                </div>
+                <div class="flex gap-3 w-full md:w-auto">
+                    <div class="relative w-full md:w-64">
+                        <input type="text" id="policySearch" onkeyup="filterPolicies()" placeholder="بحث عن سياسة..." class="w-full pl-10 pr-4 py-2.5 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl text-sm focus:ring-2 focus:ring-brandBlue outline-none transition-all">
+                        <i class="fa-solid fa-search absolute left-3 top-3 text-slate-400"></i>
+                    </div>
+                    <button onclick="openUploadModal()" class="px-5 py-2.5 bg-brandBlue text-white rounded-xl text-sm font-bold shadow-lg hover:bg-blue-700 transition flex items-center gap-2 whitespace-nowrap">
+                        <i class="fa-solid fa-cloud-arrow-up"></i> رفع جديد
+                    </button>
+                </div>
+            </div>
+
+            <!-- Categories Grid -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <button onclick="filterCategory('all')" class="p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 hover:border-brandBlue transition text-center group active-category ring-2 ring-brandBlue ring-offset-2 ring-offset-slate-50 dark:ring-offset-slate-900" id="cat-all">
+                    <i class="fa-solid fa-layer-group text-2xl text-brandBlue mb-2 group-hover:scale-110 transition-transform"></i>
+                    <h4 class="font-bold text-sm">الكل</h4>
+                    <span class="text-[10px] text-slate-400" id="count-all">0 وثيقة</span>
+                </button>
+                <button onclick="filterCategory('governance')" class="p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 hover:border-purple-500 transition text-center group" id="cat-gov">
+                    <i class="fa-solid fa-gavel text-2xl text-purple-500 mb-2 group-hover:scale-110 transition-transform"></i>
+                    <h4 class="font-bold text-sm">الحوكمة</h4>
+                    <span class="text-[10px] text-slate-400" id="count-gov">0 وثيقة</span>
+                </button>
+                <button onclick="filterCategory('hr')" class="p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 hover:border-green-500 transition text-center group" id="cat-hr">
+                    <i class="fa-solid fa-users text-2xl text-green-500 mb-2 group-hover:scale-110 transition-transform"></i>
+                    <h4 class="font-bold text-sm">الموارد البشرية</h4>
+                    <span class="text-[10px] text-slate-400" id="count-hr">0 وثيقة</span>
+                </button>
+                <button onclick="filterCategory('finance')" class="p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 hover:border-yellow-500 transition text-center group" id="cat-fin">
+                    <i class="fa-solid fa-money-bill-wave text-2xl text-yellow-500 mb-2 group-hover:scale-110 transition-transform"></i>
+                    <h4 class="font-bold text-sm">المالية</h4>
+                    <span class="text-[10px] text-slate-400" id="count-fin">0 وثيقة</span>
+                </button>
+            </div>
+
+            <!-- Policies List -->
+            <div class="bg-white dark:bg-slate-800 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden">
+                <div class="p-5 border-b border-slate-100 dark:border-slate-700 bg-slate-50/50 flex justify-between items-center">
+                    <h3 class="font-bold text-slate-800 dark:text-white text-sm">قائمة الوثائق</h3>
+                    <div class="flex gap-2">
+                        <select class="bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs rounded-lg px-3 py-1.5 focus:outline-none">
+                            <option>الأحدث أولاً</option>
+                            <option>الأقدم أولاً</option>
+                            <option>حسب الاسم</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-right">
+                        <thead class="bg-slate-50 dark:bg-slate-700 font-bold text-slate-500 text-xs uppercase">
+                            <tr>
+                                <th class="p-4 rounded-r-lg">اسم السياسة</th>
+                                <th class="p-4">التصنيف</th>
+                                <th class="p-4">الإصدار</th>
+                                <th class="p-4">تاريخ التحديث</th>
+                                <th class="p-4">الحالة</th>
+                                <th class="p-4 text-center rounded-l-lg">إجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 dark:divide-slate-700" id="policiesTable">
+                            <!-- JS Injection -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Upload Modal -->
+    <div id="uploadModal" class="fixed inset-0 bg-black/60 hidden z-50 flex items-center justify-center backdrop-blur-sm">
+        <div class="bg-white dark:bg-slate-800 w-full max-w-lg rounded-2xl shadow-2xl p-6 transform transition-all scale-100">
+            <div class="flex justify-between items-center mb-6 border-b pb-4 dark:border-slate-700">
+                <h3 class="font-bold text-lg dark:text-white">رفع وثيقة جديدة</h3>
+                <button onclick="closeModal('uploadModal')" class="text-slate-400 hover:text-red-500"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <form onsubmit="handleUpload(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1">اسم الوثيقة</label>
+                    <input type="text" required class="w-full border dark:border-slate-600 bg-white dark:bg-slate-700 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-brandBlue outline-none dark:text-white" placeholder="مثال: سياسة الأمن السيبراني">
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1">التصنيف</label>
+                        <select class="w-full border dark:border-slate-600 bg-white dark:bg-slate-700 rounded-lg p-2.5 text-sm dark:text-white">
+                            <option value="governance">حوكمة</option>
+                            <option value="hr">موارد بشرية</option>
+                            <option value="finance">مالية</option>
+                            <option value="ops">تشغيل</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1">رقم الإصدار</label>
+                        <input type="text" class="w-full border dark:border-slate-600 bg-white dark:bg-slate-700 rounded-lg p-2.5 text-sm dark:text-white" placeholder="v1.0">
+                    </div>
+                </div>
+
+                <div class="border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-xl p-6 text-center hover:bg-slate-50 dark:hover:bg-slate-700/50 transition cursor-pointer relative">
+                    <input type="file" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" onchange="fileSelected(this)">
+                    <i class="fa-solid fa-cloud-arrow-up text-3xl text-slate-400 mb-2"></i>
+                    <p class="text-sm text-slate-500 font-bold" id="uploadText">اضغط لاختيار ملف PDF</p>
+                    <p class="text-[10px] text-slate-400 mt-1">الحد الأقصى: 10 ميجابايت</p>
+                </div>
+
+                <div class="flex items-center gap-2 mt-2">
+                    <input type="checkbox" id="notifyUsers" class="w-4 h-4 rounded text-brandBlue focus:ring-brandBlue bg-slate-100 border-gray-300">
+                    <label for="notifyUsers" class="text-xs text-slate-600 dark:text-slate-400">إشعار الموظفين وطلب الإقرار بالقراءة</label>
+                </div>
+
+                <div class="mt-6 flex justify-end gap-3 pt-4 border-t dark:border-slate-700">
+                    <button type="button" onclick="closeModal('uploadModal')" class="px-4 py-2 border dark:border-slate-600 rounded-lg text-xs font-bold dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700">إلغاء</button>
+                    <button type="submit" class="px-6 py-2 bg-brandBlue text-white rounded-lg text-xs font-bold hover:bg-blue-700 shadow-md">رفع وحفظ</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- History Modal -->
+    <div id="historyModal" class="fixed inset-0 bg-black/60 hidden z-50 flex items-center justify-center backdrop-blur-sm">
+        <div class="bg-white dark:bg-slate-800 w-full max-w-2xl rounded-2xl shadow-xl p-6">
+            <div class="flex justify-between items-center mb-4 border-b pb-2 dark:border-slate-700">
+                <h3 class="font-bold text-lg dark:text-white">سجل الإصدارات</h3>
+                <button onclick="closeModal('historyModal')"><i class="fa-solid fa-xmark text-slate-400"></i></button>
+            </div>
+            <div class="space-y-3" id="historyContent">
+                <!-- Injected via JS -->
+            </div>
+        </div>
+    </div>
+
+    <script src="layout.js"></script>
+
+    <script>
+        // --- Mock Data ---
+        const policies = [
+            { id: 1, name: "النظام الأساس", cat: "governance", ver: "v3.0", date: "2025-09-21", status: "active", file: "bylaws.pdf" },
+            { id: 2, name: "سياسة المكافآت", cat: "governance", ver: "v2.1", date: "2022-05-19", status: "active", file: "rewards.pdf" },
+            { id: 3, name: "لائحة الموارد البشرية", cat: "hr", ver: "v1.5", date: "2024-01-10", status: "active", file: "hr_policy.pdf" },
+            { id: 4, name: "الدليل الداخلي (مسودة)", cat: "ops", ver: "v0.9", date: "2025-12-30", status: "draft", file: "internal_manual.pdf", author: "Ayman" },
+            { id: 5, name: "سياسة المشتريات", cat: "finance", ver: "v1.0", date: "2023-06-15", status: "active", file: "procurement.pdf" },
+            { id: 6, name: "ميثاق لجنة المراجعة", cat: "governance", ver: "v1.2", date: "2025-12-22", status: "active", file: "audit_charter.pdf" }
+        ];
+
+        let currentFilter = 'all';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderPolicies();
+            updateCounts();
+        });
+
+        // --- Rendering ---
+        function renderPolicies() {
+            const tbody = document.getElementById('policiesTable');
+            tbody.innerHTML = '';
+
+            const filtered = policies.filter(p => {
+                const matchCat = currentFilter === 'all' || p.cat === currentFilter;
+                const search = document.getElementById('policySearch').value.toLowerCase();
+                const matchSearch = p.name.toLowerCase().includes(search);
+                return matchCat && matchSearch;
+            });
+
+            if(filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-slate-400 text-sm">لا توجد نتائج مطابقة</td></tr>`;
+                return;
+            }
+
+            filtered.forEach(p => {
+                let statusBadge = '';
+                if(p.status === 'active') statusBadge = `<span class="bg-green-100 text-green-700 text-[10px] px-2 py-0.5 rounded-full font-bold border border-green-200">معتمد</span>`;
+                else if(p.status === 'draft') statusBadge = `<span class="bg-orange-100 text-orange-700 text-[10px] px-2 py-0.5 rounded-full font-bold border border-orange-200 animate-pulse">مسودة</span>`;
+                else statusBadge = `<span class="bg-gray-100 text-gray-600 text-[10px] px-2 py-0.5 rounded-full">ملغى</span>`;
+
+                const catLabel = { governance: 'حوكمة', hr: 'موارد بشرية', finance: 'مالية', ops: 'تشغيل' }[p.cat] || p.cat;
+
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition border-b border-slate-100 dark:border-slate-700 group">
+                        <td class="p-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-slate-500">
+                                    <i class="fa-regular fa-file-pdf"></i>
+                                </div>
+                                <div>
+                                    <p class="font-bold text-slate-800 dark:text-white text-xs">${p.name}</p>
+                                    ${p.status === 'draft' ? `<p class="text-[9px] text-slate-400">بواسطة: ${p.author}</p>` : ''}
+                                </div>
+                            </div>
+                        </td>
+                        <td class="p-4 text-xs text-slate-500 dark:text-slate-400">${catLabel}</td>
+                        <td class="p-4 font-mono text-xs">${p.ver}</td>
+                        <td class="p-4 font-en text-xs text-slate-500">${p.date}</td>
+                        <td class="p-4">${statusBadge}</td>
+                        <td class="p-4 text-center">
+                            <div class="flex justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <button onclick="window.open('${p.file}')" class="w-7 h-7 rounded bg-blue-50 text-blue-600 hover:bg-blue-100 flex items-center justify-center transition" title="عرض"><i class="fa-solid fa-eye"></i></button>
+                                <button onclick="showHistory(${p.id})" class="w-7 h-7 rounded bg-slate-50 text-slate-600 hover:bg-slate-200 flex items-center justify-center transition" title="السجل"><i class="fa-solid fa-clock-rotate-left"></i></button>
+                                ${p.status === 'draft' ? 
+                                    `<button onclick="approveDraft(${p.id})" class="w-7 h-7 rounded bg-green-50 text-green-600 hover:bg-green-100 flex items-center justify-center transition" title="اعتماد"><i class="fa-solid fa-check"></i></button>` : ''
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        // --- Filtering ---
+        function filterCategory(cat) {
+            currentFilter = cat;
+            
+            // UI Update
+            document.querySelectorAll('.group').forEach(el => {
+                el.classList.remove('ring-2', 'ring-brandBlue', 'ring-offset-2');
+            });
+            const activeBtn = document.getElementById(`cat-${cat === 'all' ? 'all' : cat === 'governance' ? 'gov' : cat.substring(0,3)}`);
+            if(activeBtn) activeBtn.classList.add('ring-2', 'ring-brandBlue', 'ring-offset-2', 'dark:ring-offset-slate-900');
+
+            renderPolicies();
+        }
+
+        function filterPolicies() {
+            renderPolicies();
+        }
+
+        function updateCounts() {
+            document.getElementById('count-all').innerText = policies.length + ' وثيقة';
+            document.getElementById('count-gov').innerText = policies.filter(p => p.cat === 'governance').length + ' وثيقة';
+            document.getElementById('count-hr').innerText = policies.filter(p => p.cat === 'hr').length + ' وثيقة';
+            document.getElementById('count-fin').innerText = policies.filter(p => p.cat === 'finance').length + ' وثيقة';
+        }
+
+        // --- Modals ---
+        function openUploadModal() {
+            document.getElementById('uploadModal').classList.remove('hidden');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
+        }
+
+        function fileSelected(input) {
+            if(input.files && input.files[0]) {
+                const text = document.getElementById('uploadText');
+                text.innerText = input.files[0].name;
+                text.classList.add('text-brandBlue');
+            }
+        }
+
+        function handleUpload(e) {
+            e.preventDefault();
+            // Simulation
+            alert('تم رفع الوثيقة بنجاح! ستظهر كمسودة بانتظار الاعتماد.');
+            closeModal('uploadModal');
+            // In real app, add to array and re-render
+        }
+
+        function showHistory(id) {
+            const p = policies.find(x => x.id === id);
+            const modal = document.getElementById('historyModal');
+            const content = document.getElementById('historyContent');
+            
+            content.innerHTML = `
+                <div class="bg-slate-50 dark:bg-slate-700/50 p-3 rounded border dark:border-slate-600 mb-3">
+                    <h4 class="font-bold text-sm dark:text-white">${p.name}</h4>
+                    <p class="text-xs text-slate-500">الإصدار الحالي: ${p.ver}</p>
+                </div>
+                <div class="relative pl-4 border-r border-slate-200 dark:border-slate-600 space-y-4 mr-2">
+                    <div class="relative">
+                        <div class="absolute top-1 -right-[21px] w-3 h-3 bg-green-500 rounded-full border-2 border-white dark:border-slate-800"></div>
+                        <p class="text-xs font-bold dark:text-white">الإصدار ${p.ver}</p>
+                        <p class="text-[10px] text-slate-500">${p.date} - اعتماد نهائي</p>
+                    </div>
+                    ${p.ver !== 'v1.0' ? `
+                    <div class="relative opacity-60">
+                        <div class="absolute top-1 -right-[21px] w-3 h-3 bg-slate-300 rounded-full border-2 border-white dark:border-slate-800"></div>
+                        <p class="text-xs font-bold dark:text-white">الإصدار v1.0</p>
+                        <p class="text-[10px] text-slate-500">2020-01-01 - الإصدار الأولي</p>
+                    </div>` : ''}
+                </div>
+            `;
+            modal.classList.remove('hidden');
+        }
+
+        function approveDraft(id) {
+            if(confirm('هل أنت متأكد من اعتماد هذه الوثيقة ونشرها؟')) {
+                const p = policies.find(x => x.id === id);
+                p.status = 'active';
+                renderPolicies();
+                alert('تم الاعتماد بنجاح.');
+            }
+        }
+
+    </script>
+</body>
+</html>
