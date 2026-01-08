@@ -21,10 +21,6 @@
           },
           fontFamily: {
             sans: ['Tajawal', 'Inter', 'sans-serif']
-          },
-          boxShadow: {
-            soft: '0 10px 30px rgba(0,0,0,.10)',
-            softDark: '0 10px 30px rgba(0,0,0,.35)'
           }
         }
       }
@@ -32,37 +28,26 @@
   </script>
 
   <style>
-    /* ✅ Direction helpers (بدون Tailwind RTL plugin) */
+    /* تحسينات الاتجاه */
     [dir="rtl"] .dir-rotate { transform: rotate(0deg); }
     [dir="ltr"] .dir-rotate { transform: rotate(180deg); }
-
-    /* icon inset for inputs (user/lock) */
     [dir="rtl"] .icon-inset { right: .75rem; left: auto; }
     [dir="ltr"] .icon-inset { left: .75rem; right: auto; }
-
-    /* password toggle positioning */
     [dir="rtl"] .pass-toggle { left: .5rem; right: auto; }
     [dir="ltr"] .pass-toggle { right: .5rem; left: auto; }
-
-    input:-webkit-autofill {
-      -webkit-text-fill-color: inherit !important;
-      transition: background-color 9999s ease-out 0s;
-    }
   </style>
 </head>
 
 <body class="bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-white min-h-screen flex flex-col lg:flex-row font-sans transition-colors duration-300">
 
-  <!-- ✅ Left Side (Desktop) -->
+  <!-- القسم الأيمن (الخلفية) -->
   <aside class="hidden lg:flex w-1/2 bg-slate-900 relative flex-col justify-between p-12 text-white overflow-hidden h-screen sticky top-0">
-    <div class="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
     <div class="absolute inset-0 bg-gradient-to-br from-brandBlue/35 to-slate-900/95"></div>
 
     <div class="relative flex flex-col h-full justify-center">
       <div class="flex items-center gap-5 mb-8">
-        <!-- شعار الشركة الرسمي -->
         <img src="https://ait.sa/wp-content/uploads/2024/03/cropped-Square-Logo.png" 
-             class="w-20 h-20 rounded-3xl bg-white p-2 shadow-2xl object-contain" 
+             class="w-24 h-24 rounded-3xl bg-white p-2 shadow-2xl object-contain" 
              alt="Andromeda Logo">
         <div>
           <h1 class="text-5xl font-extrabold tracking-tight leading-none" data-i18n="systemName">AndroGov</h1>
@@ -72,150 +57,89 @@
 
       <div class="space-y-4 max-w-md">
         <div class="flex items-center gap-4 text-slate-300">
-          <i class="fa-solid fa-shield-halved text-green-400 text-xl" aria-hidden="true"></i>
+          <i class="fa-solid fa-shield-halved text-green-400 text-xl"></i>
           <span data-i18n="feat1">دخول آمن ومشفّر (SSO)</span>
         </div>
         <div class="flex items-center gap-4 text-slate-300">
-          <i class="fa-solid fa-server text-blue-400 text-xl" aria-hidden="true"></i>
+          <i class="fa-solid fa-server text-blue-400 text-xl"></i>
           <span data-i18n="feat2">متصل بقواعد بيانات الشركة</span>
-        </div>
-        <div class="flex items-center gap-4 text-slate-300">
-          <i class="fa-solid fa-bolt text-yellow-300 text-xl" aria-hidden="true"></i>
-          <span data-i18n="feat3">واجهة سريعة واستجابة عالية</span>
         </div>
       </div>
     </div>
-
     <div class="relative text-xs text-slate-500 flex justify-between">
       <p>© 2026 Andromeda IT.</p>
-      <p>Version 2.1.0</p>
     </div>
   </aside>
 
-  <!-- ✅ Right Side -->
+  <!-- القسم الأيسر (النموذج) -->
   <main class="w-full lg:w-1/2 flex flex-col relative bg-slate-50 dark:bg-slate-900 transition-colors duration-300 min-h-screen">
-
-    <!-- Top bar -->
-    <header class="w-full flex justify-between items-center gap-3 p-6 lg:absolute lg:top-0 lg:left-0 lg:right-0 z-20">
-      <a href="#" class="text-slate-500 dark:text-slate-400 hover:text-brandRed transition-colors flex items-center gap-2 text-sm font-bold opacity-0 cursor-default">
-        <!-- Hidden back button logic tailored for Login page -->
-      </a>
-
-      <div class="flex gap-3">
-        <button type="button" onclick="toggleLanguage()"
-                class="w-10 h-10 rounded-full border border-slate-200 dark:border-slate-700 flex items-center justify-center hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors bg-white dark:bg-slate-800 shadow-sm"
-                aria-label="Toggle language">
+    <header class="w-full flex justify-end items-center gap-3 p-6">
+        <button type="button" onclick="toggleLanguage()" class="w-10 h-10 rounded-full border border-slate-200 dark:border-slate-700 flex items-center justify-center bg-white dark:bg-slate-800 shadow-sm">
           <span class="font-bold text-xs" id="langLabel">EN</span>
         </button>
-
-        <button type="button" onclick="toggleDarkMode()"
-                class="w-10 h-10 rounded-full border border-slate-200 dark:border-slate-700 flex items-center justify-center hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-600 dark:text-yellow-300 bg-white dark:bg-slate-800 shadow-sm"
-                aria-label="Toggle theme">
-          <i id="themeIcon" class="fa-solid fa-moon" aria-hidden="true"></i>
+        <button type="button" onclick="toggleDarkMode()" class="w-10 h-10 rounded-full border border-slate-200 dark:border-slate-700 flex items-center justify-center bg-white dark:bg-slate-800 shadow-sm">
+          <i id="themeIcon" class="fa-solid fa-moon"></i>
         </button>
-      </div>
     </header>
 
-    <section class="flex-1 flex flex-col justify-center items-center w-full px-6 py-12">
+    <section class="flex-1 flex flex-col justify-center items-center w-full px-6">
       <div class="w-full max-w-md">
-
-        <!-- Mobile logo -->
         <div class="lg:hidden text-center mb-8">
-            <img src="https://ait.sa/wp-content/uploads/2024/03/cropped-Square-Logo.png" 
-                 class="w-20 h-20 mx-auto rounded-2xl bg-white p-1 shadow-md object-contain" 
-                 alt="Andromeda Logo">
-          <h2 class="text-2xl font-extrabold mt-4 text-slate-800 dark:text-white">AndroGov</h2>
-          <p class="text-slate-500 dark:text-slate-400 mt-1 text-sm" data-i18n="systemDesc">نظام إدارة العمليات الموحد لشركة اندروميدا</p>
+            <img src="https://ait.sa/wp-content/uploads/2024/03/cropped-Square-Logo.png" class="w-20 h-20 mx-auto rounded-2xl bg-white p-1 shadow-md object-contain">
+            <h2 class="text-2xl font-extrabold mt-4">AndroGov</h2>
         </div>
 
-        <div class="bg-white/90 dark:bg-slate-800/90 backdrop-blur p-8 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-soft dark:shadow-softDark transition-colors duration-300">
-
+        <div class="bg-white/90 dark:bg-slate-800/90 backdrop-blur p-8 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-lg">
           <h2 class="text-2xl font-extrabold mb-2 text-slate-800 dark:text-white" data-i18n="loginTitle">تسجيل الدخول</h2>
           <p class="text-slate-500 dark:text-slate-400 mb-8 text-sm" data-i18n="loginSub">أدخل بيانات اعتمادك للوصول للنظام</p>
 
-          <!-- Error -->
-          <div id="errorMsg" class="hidden mb-5 p-3 bg-red-100 text-red-700 rounded-xl text-sm border border-red-200 text-center flex items-center justify-center gap-2" role="alert" aria-live="polite">
-            <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
+          <div id="errorMsg" class="hidden mb-5 p-3 bg-red-100 text-red-700 rounded-xl text-sm border border-red-200 text-center flex items-center justify-center gap-2">
+            <i class="fa-solid fa-circle-exclamation"></i>
             <span id="errorText">بيانات الدخول غير صحيحة</span>
           </div>
 
           <form onsubmit="handleLogin(event)" class="space-y-5" novalidate>
-
-            <!-- Username -->
             <div>
-              <label for="userInput" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" data-i18n="emailLabel">اسم المستخدم</label>
+              <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" data-i18n="emailLabel">اسم المستخدم</label>
               <div class="relative">
-                <div class="absolute inset-y-0 flex items-center pointer-events-none icon-inset">
-                  <i class="fa-regular fa-user text-slate-400" aria-hidden="true"></i>
-                </div>
-                <input type="text" id="userInput" autocomplete="username"
-                       class="w-full py-3 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-brandBlue/50 text-slate-800 dark:text-white transition-all text-sm px-10"
-                       placeholder="admin, hr, grc..." required>
+                <div class="absolute inset-y-0 flex items-center pointer-events-none icon-inset"><i class="fa-regular fa-user text-slate-400"></i></div>
+                <input type="text" id="userInput" class="w-full py-3 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-10 focus:ring-2 focus:ring-brandRed/50 outline-none transition-all dark:text-white" placeholder="admin, ceo, hr..." required>
               </div>
             </div>
 
-            <!-- Password -->
             <div>
-              <label for="password" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" data-i18n="passLabel">كلمة المرور</label>
+              <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" data-i18n="passLabel">كلمة المرور</label>
               <div class="relative">
-                <div class="absolute inset-y-0 flex items-center pointer-events-none icon-inset">
-                  <i class="fa-solid fa-lock text-slate-400" aria-hidden="true"></i>
-                </div>
-
-                <input type="password" id="password" autocomplete="current-password"
-                       class="w-full py-3 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-brandBlue/50 text-slate-800 dark:text-white transition-all text-sm px-10"
-                       placeholder="••••••••" required>
-
-                <!-- Show/Hide -->
-                <button type="button" class="absolute inset-y-0 pass-toggle flex items-center px-3 text-slate-500 hover:text-slate-700 dark:text-slate-300 dark:hover:text-white transition-colors"
-                        onclick="togglePassword()" aria-label="Toggle password visibility">
-                  <i id="passIcon" class="fa-regular fa-eye" aria-hidden="true"></i>
-                </button>
+                <div class="absolute inset-y-0 flex items-center pointer-events-none icon-inset"><i class="fa-solid fa-lock text-slate-400"></i></div>
+                <input type="password" id="password" class="w-full py-3 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-10 focus:ring-2 focus:ring-brandRed/50 outline-none transition-all dark:text-white" placeholder="••••••••" required>
+                <button type="button" class="absolute inset-y-0 pass-toggle px-3 text-slate-500" onclick="togglePassword()"><i id="passIcon" class="fa-regular fa-eye"></i></button>
               </div>
             </div>
 
-            <!-- Remember / Forgot -->
-            <div class="flex justify-between items-center text-xs">
-              <label class="flex items-center gap-2 cursor-pointer text-slate-600 dark:text-slate-400 select-none">
-                <input id="rememberMe" type="checkbox" class="rounded border-slate-300 text-brandBlue focus:ring-brandBlue">
-                <span data-i18n="rememberMe">تذكرني</span>
-              </label>
-              <a href="#" class="text-brandBlue hover:underline" data-i18n="forgotPass">نسيت كلمة المرور؟</a>
-            </div>
-
-            <!-- Submit -->
-            <button id="loginBtn" type="submit"
-                    class="w-full bg-brandRed hover:bg-red-700 text-white font-extrabold py-3 rounded-xl transition-all shadow-lg hover:shadow-brandRed/30 flex justify-center items-center gap-2 focus:outline-none focus:ring-4 focus:ring-brandRed/30">
+            <button id="loginBtn" type="submit" class="w-full bg-brandRed hover:bg-red-700 text-white font-extrabold py-3 rounded-xl transition-all shadow-lg hover:shadow-brandRed/30 flex justify-center items-center gap-2">
               <span data-i18n="loginBtn">دخول آمن</span>
-              <i class="fa-solid fa-arrow-left dir-rotate transition-transform" aria-hidden="true"></i>
+              <i class="fa-solid fa-arrow-left dir-rotate"></i>
             </button>
           </form>
 
-          <!-- Demo -->
           <div class="mt-8 pt-6 border-t border-slate-100 dark:border-slate-700">
-            <p class="text-[10px] text-center text-slate-400 uppercase tracking-widest mb-4" data-i18n="demoTitle">تعبئة سريعة (Demo)</p>
+            <p class="text-[10px] text-center text-slate-400 uppercase tracking-widest mb-4" data-i18n="demoTitle">اختر مستخدم للتجربة (Demo)</p>
             <div class="flex justify-center gap-3 flex-wrap pb-2" id="demoRoles"></div>
           </div>
-
-          <div class="mt-6 text-center text-[11px] text-slate-400">
-            <span data-i18n="support">للدعم الفني:</span> <span class="font-semibold">IT Helpdesk</span> • <span class="font-semibold">920012888</span>
-          </div>
         </div>
-
       </div>
     </section>
   </main>
 
   <script>
-    const AVATAR_BASE = ""; 
-
-    // تم تحديث الروابط لتستخدم UI Avatars لضمان ظهور الصور في العرض التوضيحي
+    // جميع المستخدمين يتم توجيههم إلى admin.html للتجربة الحالية
+    // الصور يتم جلبها من UI Avatars لضمان عملها
     const roles = [
       { id: 'admin',   username: 'admin',   name: 'أيمن المغربي',     title: 'System Admin',     page: 'admin.html', img: 'https://ui-avatars.com/api/?name=Admin+Sys&background=FB4747&color=fff' },
-      { id: 'ceo',     username: 'ceo',     name: 'هشام السحيباني',  title: 'CEO',              page: 'ceo.html',   img: 'https://ui-avatars.com/api/?name=Hesham+S&background=3b82f6&color=fff' },
-      { id: 'hr',      username: 'hr',      name: 'منصور اليامي',    title: 'HR',               page: 'hr.html',    img: 'https://ui-avatars.com/api/?name=Mansour+Y&background=f59e0b&color=fff' },
-      { id: 'finance', username: 'cfo',     name: 'محمد البخيتي',    title: 'CFO',              page: 'cfo.html',   img: 'https://ui-avatars.com/api/?name=Mohammed+B&background=8b5cf6&color=fff' },
-      { id: 'audit',   username: 'audit',   name: 'موظف التدقيق',    title: 'Internal Auditor', page: 'audit.html', img: 'https://ui-avatars.com/api/?name=Auditor&background=64748b&color=fff' }
+      { id: 'ceo',     username: 'ceo',     name: 'هشام السحيباني',  title: 'CEO',              page: 'admin.html', img: 'https://ui-avatars.com/api/?name=Hesham+S&background=3b82f6&color=fff' },
+      { id: 'hr',      username: 'hr',      name: 'منصور اليامي',    title: 'HR Manager',       page: 'admin.html', img: 'https://ui-avatars.com/api/?name=Mansour+Y&background=f59e0b&color=fff' },
+      { id: 'finance', username: 'cfo',     name: 'محمد البخيتي',    title: 'CFO',              page: 'admin.html', img: 'https://ui-avatars.com/api/?name=Mohammed+B&background=8b5cf6&color=fff' },
+      { id: 'audit',   username: 'audit',   name: 'موظف التدقيق',    title: 'Internal Auditor', page: 'admin.html', img: 'https://ui-avatars.com/api/?name=Auditor&background=64748b&color=fff' }
     ];
 
     const translations = {
@@ -224,207 +148,143 @@
         systemDesc: "نظام إدارة العمليات الموحد لشركة اندروميدا",
         feat1: "دخول آمن ومشفّر (SSO)",
         feat2: "متصل بقواعد بيانات الشركة",
-        feat3: "واجهة سريعة واستجابة عالية",
         loginTitle: "تسجيل الدخول",
         loginSub: "أدخل بيانات اعتمادك للوصول للنظام",
         emailLabel: "اسم المستخدم",
         passLabel: "كلمة المرور",
-        rememberMe: "تذكرني",
-        forgotPass: "نسيت كلمة المرور؟",
         loginBtn: "دخول آمن",
-        demoTitle: "تعبئة سريعة (Demo)",
-        errorPass: "كلمة المرور غير صحيحة",
-        errorUser: "المستخدم غير موجود",
-        redirecting: "جار التوجيه...",
-        backToHome: "العودة للرئيسية",
-        support: "للدعم الفني:"
+        demoTitle: "اختر مستخدم للتجربة (Demo)"
       },
       en: {
         systemName: "AndroGov",
         systemDesc: "Andromeda Unified Operations System",
         feat1: "Secure SSO Login",
         feat2: "Connected to Company DB",
-        feat3: "Fast UI & High Responsiveness",
         loginTitle: "Sign In",
         loginSub: "Enter your credentials to access the system",
         emailLabel: "Username",
         passLabel: "Password",
-        rememberMe: "Remember me",
-        forgotPass: "Forgot password?",
         loginBtn: "Secure Login",
-        demoTitle: "Quick Demo Fill",
-        errorPass: "Incorrect Password",
-        errorUser: "User not found",
-        redirecting: "Redirecting...",
-        backToHome: "Back to Home",
-        support: "Support:"
+        demoTitle: "Select User (Demo)"
       }
     };
 
-    const state = {
-      lang: localStorage.getItem('lang') || 'ar',
-      dark: localStorage.getItem('theme') === 'dark'
-    };
+    let lang = localStorage.getItem('lang') || 'ar';
+    let dark = localStorage.getItem('theme') === 'dark';
 
-    // Helpers
-    const $ = (id) => document.getElementById(id);
-
-    function setHTMLAttrs(lang) {
-      document.documentElement.setAttribute('lang', lang);
-      document.documentElement.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
-      document.body.style.fontFamily = (lang === 'ar') ? "'Tajawal', sans-serif" : "'Inter', sans-serif";
-      $('langLabel').innerText = (lang === 'ar') ? 'EN' : 'عربي';
-    }
-
-    function applyI18n() {
-      const t = translations[state.lang];
-      document.querySelectorAll('[data-i18n]').forEach(el => {
-        const key = el.getAttribute('data-i18n');
-        if (t[key]) el.innerText = t[key];
-      });
+    function init() {
+      applyTheme();
+      applyLang();
+      renderRoles();
     }
 
     function applyTheme() {
-      const html = document.documentElement;
-      const icon = $('themeIcon');
-      if (state.dark) {
-        html.classList.add('dark');
-        icon.classList.remove('fa-moon'); icon.classList.add('fa-sun');
-      } else {
-        html.classList.remove('dark');
-        icon.classList.remove('fa-sun'); icon.classList.add('fa-moon');
-      }
+        const html = document.documentElement;
+        const icon = document.getElementById('themeIcon');
+        if (dark) {
+            html.classList.add('dark');
+            icon.classList.replace('fa-moon', 'fa-sun');
+        } else {
+            html.classList.remove('dark');
+            icon.classList.replace('fa-sun', 'fa-moon');
+        }
     }
+
+    function applyLang() {
+        document.documentElement.lang = lang;
+        document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+        document.getElementById('langLabel').innerText = lang === 'ar' ? 'EN' : 'عربي';
+        
+        const t = translations[lang];
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            if(t[key]) el.innerText = t[key];
+        });
+    }
+
+    window.toggleDarkMode = () => {
+        dark = !dark;
+        localStorage.setItem('theme', dark ? 'dark' : 'light');
+        applyTheme();
+    };
+
+    window.toggleLanguage = () => {
+        lang = lang === 'ar' ? 'en' : 'ar';
+        localStorage.setItem('lang', lang);
+        applyLang();
+    };
+
+    window.togglePassword = () => {
+        const inp = document.getElementById('password');
+        const icon = document.getElementById('passIcon');
+        if(inp.type === 'password') {
+            inp.type = 'text';
+            icon.classList.replace('fa-eye', 'fa-eye-slash');
+        } else {
+            inp.type = 'password';
+            icon.classList.replace('fa-eye-slash', 'fa-eye');
+        }
+    };
+
+    window.fillDemo = (id) => {
+        const role = roles.find(r => r.id === id);
+        document.getElementById('userInput').value = role.username;
+        document.getElementById('password').value = '12341234';
+    };
+
+    window.handleLogin = (e) => {
+        e.preventDefault();
+        const userVal = document.getElementById('userInput').value.toLowerCase();
+        const passVal = document.getElementById('password').value;
+
+        if(passVal !== '12341234') {
+            showError('كلمة المرور غير صحيحة');
+            return;
+        }
+
+        const role = roles.find(r => r.username === userVal);
+        if(!role) {
+            showError('المستخدم غير موجود');
+            return;
+        }
+
+        // حفظ المستخدم للدخول
+        localStorage.setItem('currentUser', JSON.stringify({
+            name: role.name,
+            role: role.title, // or role.id
+            title: role.title,
+            avatar: role.img
+        }));
+
+        const btn = document.getElementById('loginBtn');
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري التوجيه...';
+        btn.disabled = true;
+
+        setTimeout(() => {
+            window.location.href = role.page;
+        }, 800);
+    };
 
     function showError(msg) {
-      $('errorText').innerText = msg;
-      $('errorMsg').classList.remove('hidden');
+        const el = document.getElementById('errorMsg');
+        document.getElementById('errorText').innerText = msg;
+        el.classList.remove('hidden');
     }
 
-    function hideError() {
-      $('errorMsg').classList.add('hidden');
+    function renderRoles() {
+        const c = document.getElementById('demoRoles');
+        c.innerHTML = '';
+        roles.forEach(r => {
+            c.innerHTML += `
+                <button type="button" onclick="fillDemo('${r.id}')" class="flex flex-col items-center gap-1 group">
+                    <img src="${r.img}" class="w-10 h-10 rounded-full border-2 border-transparent group-hover:border-brandRed transition-all">
+                    <span class="text-[10px] text-slate-500 font-bold uppercase">${r.username}</span>
+                </button>
+            `;
+        });
     }
 
-    function lockLoginButton(locked, text) {
-      const btn = $('loginBtn');
-      if (!locked) {
-        btn.disabled = false;
-        btn.classList.remove('opacity-75', 'cursor-not-allowed');
-        btn.innerHTML = `<span data-i18n="loginBtn">${translations[state.lang].loginBtn}</span>
-                         <i class="fa-solid fa-arrow-left dir-rotate transition-transform" aria-hidden="true"></i>`;
-        applyI18n(); // لإعادة ترجمة النص داخل الزر
-        return;
-      }
-
-      btn.disabled = true;
-      btn.classList.add('opacity-75', 'cursor-not-allowed');
-      btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> ${text}`;
-    }
-
-    // Globals (buttons)
-    window.toggleDarkMode = function() {
-      state.dark = !state.dark;
-      localStorage.setItem('theme', state.dark ? 'dark' : 'light');
-      applyTheme();
-    };
-
-    window.toggleLanguage = function() {
-      state.lang = (state.lang === 'ar') ? 'en' : 'ar';
-      localStorage.setItem('lang', state.lang);
-      setHTMLAttrs(state.lang);
-      applyI18n();
-      renderDemoRoles();
-    };
-
-    window.togglePassword = function() {
-      const input = $('password');
-      const icon  = $('passIcon');
-      const isText = input.type === 'text';
-      input.type = isText ? 'password' : 'text';
-      icon.classList.toggle('fa-eye');
-      icon.classList.toggle('fa-eye-slash');
-    };
-
-    window.fillDemo = function(roleId) {
-      const role = roles.find(r => r.id === roleId);
-      $('userInput').value = role.username;
-      $('password').value = '12341234';
-      hideError();
-      $('userInput').focus();
-    };
-
-    window.handleLogin = function(e) {
-      e.preventDefault();
-
-      const inputVal = $('userInput').value.trim().toLowerCase();
-      const passVal  = $('password').value;
-      const t = translations[state.lang];
-
-      if (passVal !== '12341234') { showError(t.errorPass); return; }
-
-      const selectedRole = roles.find(r => r.username === inputVal);
-      if (!selectedRole) { showError(t.errorUser); return; }
-
-      hideError();
-
-      const remember = $('rememberMe').checked;
-      const storage  = remember ? localStorage : sessionStorage;
-
-      const avatarUrl = selectedRole.img
-        ? (selectedRole.img.startsWith('http') ? selectedRole.img : (AVATAR_BASE + selectedRole.img))
-        : "";
-
-      // تخزين بيانات المستخدم لاستخدامها في layout.js لاحقاً
-      storage.setItem('currentUser', JSON.stringify({
-        ...selectedRole,
-        lang: state.lang,
-        avatar: avatarUrl
-      }));
-
-      lockLoginButton(true, t.redirecting);
-
-      setTimeout(() => {
-        window.location.href = selectedRole.page;
-      }, 700);
-    };
-
-    function renderDemoRoles() {
-      const container = $('demoRoles');
-      container.innerHTML = '';
-
-      roles.forEach(role => {
-        const avatarSrc = role.img
-          ? (role.img.startsWith('http') ? role.img : (AVATAR_BASE + role.img))
-          : '';
-
-        container.insertAdjacentHTML('beforeend', `
-          <button type="button" onclick="fillDemo('${role.id}')"
-                  class="group flex flex-col items-center gap-2 min-w-[64px] focus:outline-none"
-                  title="${role.name}">
-            <div class="w-12 h-12 rounded-full overflow-hidden border-2 border-slate-200 dark:border-slate-700 shadow-sm group-hover:scale-110 group-hover:border-brandRed transition-all">
-              <img src="${avatarSrc}" alt="${role.name}" class="w-full h-full object-cover">
-            </div>
-            <span class="text-[9px] text-slate-500 dark:text-slate-400 font-extrabold truncate w-full text-center">
-              ${role.username.toUpperCase()}
-            </span>
-          </button>
-        `);
-      });
-    }
-
-    function bindUX() {
-      $('userInput').addEventListener('input', hideError);
-      $('password').addEventListener('input', hideError);
-    }
-
-    // Init
-    (function init() {
-      setHTMLAttrs(state.lang);
-      applyTheme();
-      applyI18n();
-      renderDemoRoles();
-      bindUX();
-    })();
+    init();
   </script>
 </body>
 </html>
