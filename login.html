@@ -73,13 +73,23 @@
 
   <!-- القسم الأيسر (النموذج) -->
   <main class="w-full lg:w-1/2 flex flex-col relative bg-slate-50 dark:bg-slate-900 transition-colors duration-300 min-h-screen">
-    <header class="w-full flex justify-end items-center gap-3 p-6">
-        <button type="button" onclick="toggleLanguage()" class="w-10 h-10 rounded-full border border-slate-200 dark:border-slate-700 flex items-center justify-center bg-white dark:bg-slate-800 shadow-sm">
-          <span class="font-bold text-xs" id="langLabel">EN</span>
-        </button>
-        <button type="button" onclick="toggleDarkMode()" class="w-10 h-10 rounded-full border border-slate-200 dark:border-slate-700 flex items-center justify-center bg-white dark:bg-slate-800 shadow-sm">
-          <i id="themeIcon" class="fa-solid fa-moon"></i>
-        </button>
+    
+    <!-- Top Bar with Back Button -->
+    <header class="w-full flex justify-between items-center gap-3 p-6">
+        <!-- زر العودة للموقع الرئيسي -->
+        <a href="index.html" class="flex items-center gap-2 text-sm font-bold text-slate-500 hover:text-brandBlue transition-colors group">
+            <i class="fa-solid fa-arrow-right dir-rotate group-hover:-translate-x-1 transition-transform"></i>
+            <span data-i18n="backToHome">العودة للرئيسية</span>
+        </a>
+
+        <div class="flex gap-2">
+            <button type="button" onclick="toggleLanguage()" class="w-10 h-10 rounded-full border border-slate-200 dark:border-slate-700 flex items-center justify-center bg-white dark:bg-slate-800 shadow-sm">
+                <span class="font-bold text-xs" id="langLabel">EN</span>
+            </button>
+            <button type="button" onclick="toggleDarkMode()" class="w-10 h-10 rounded-full border border-slate-200 dark:border-slate-700 flex items-center justify-center bg-white dark:bg-slate-800 shadow-sm">
+                <i id="themeIcon" class="fa-solid fa-moon"></i>
+            </button>
+        </div>
     </header>
 
     <section class="flex-1 flex flex-col justify-center items-center w-full px-6">
@@ -132,8 +142,7 @@
   </main>
 
   <script>
-    // تكوين المستخدمين والروابط
-    // ملاحظة: تم توجيه "admin" إلى ملف "admin.html" الموجود في الجذر لضمان عمل العرض التجريبي حالياً
+    // بيانات المستخدمين والروابط (محدثة حسب الطلب)
     const roles = [
       { id: 'admin',   username: 'admin',   name: 'أيمن المغربي',     title: 'System Admin',     page: 'admin/admin.html', img: 'https://ui-avatars.com/api/?name=Admin+Sys&background=FB4747&color=fff' },
       { id: 'ceo',     username: 'ceo',     name: 'هشام السحيباني',  title: 'CEO',              page: 'users/ceo.html', img: 'https://ui-avatars.com/api/?name=Hesham+S&background=3b82f6&color=fff' },
@@ -153,7 +162,8 @@
         emailLabel: "اسم المستخدم",
         passLabel: "كلمة المرور",
         loginBtn: "دخول آمن",
-        demoTitle: "اختر مستخدم للتجربة (Demo)"
+        demoTitle: "اختر مستخدم للتجربة (Demo)",
+        backToHome: "العودة للرئيسية"
       },
       en: {
         systemName: "AndroGov",
@@ -165,7 +175,8 @@
         emailLabel: "Username",
         passLabel: "Password",
         loginBtn: "Secure Login",
-        demoTitle: "Select User (Demo)"
+        demoTitle: "Select User (Demo)",
+        backToHome: "Back to Home"
       }
     };
 
@@ -248,12 +259,16 @@
             return;
         }
 
-        // حفظ المستخدم للدخول
+        // حفظ المستخدم بكامل تفاصيل اللغات
         localStorage.setItem('currentUser', JSON.stringify({
-            name: role.name,
-            role: role.title, // or role.id
-            title: role.title,
-            avatar: role.img
+             name: role.name,
+             nameAr: role.name, // Simplified for demo
+             nameEn: role.name, 
+             title: role.title,
+             titleAr: role.title,
+             titleEn: role.title,
+             avatar: role.img,
+             role: role.title
         }));
 
         const btn = document.getElementById('loginBtn');
