@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="pageTitle">AndroGov | الموارد البشرية</title>
+    
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Libraries -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brandRed: '#FB4747',
+                        brandBlue: '#4267B2',
+                        brandDark: '#1E293B',
+                        brandGray: '#F8FAFC'
+                    },
+                    fontFamily: {
+                        sans: ['Tajawal', 'Inter', 'sans-serif'],
+                        en: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @media print {
+            .no-print { display: none !important; }
+            body { background: white; }
+        }
+        /* Custom Toggles */
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #4267B2;
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: #4267B2;
+        }
+    </style>
+</head>
+<body class="bg-brandGray dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300">
+
+    <div id="sidebar-container" class="no-print"></div>
+    
+    <div class="main-content-wrapper md:mr-72 transition-all duration-300 flex flex-col min-h-screen">
+        <div id="header-container" class="no-print"></div>
+
+        <main class="p-6 space-y-6">
+            
+            <!-- 1. HR Dashboard Stats -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 no-print">
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs text-slate-500 font-bold uppercase">إجمالي الموظفين</p>
+                        <h3 class="text-2xl font-bold mt-1 font-en">45</h3>
+                    </div>
+                    <div class="w-10 h-10 bg-blue-50 text-brandBlue rounded-xl flex items-center justify-center text-xl"><i class="fa-solid fa-users"></i></div>
+                </div>
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs text-slate-500 font-bold uppercase">حضور اليوم</p>
+                        <h3 class="text-2xl font-bold mt-1 font-en text-green-600">42 <span class="text-xs text-slate-400">/ 45</span></h3>
+                    </div>
+                    <div class="w-10 h-10 bg-green-50 text-green-600 rounded-xl flex items-center justify-center text-xl"><i class="fa-solid fa-fingerprint"></i></div>
+                </div>
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs text-slate-500 font-bold uppercase">في إجازة</p>
+                        <h3 class="text-2xl font-bold mt-1 font-en text-orange-500">3</h3>
+                    </div>
+                    <div class="w-10 h-10 bg-orange-50 text-orange-500 rounded-xl flex items-center justify-center text-xl"><i class="fa-solid fa-plane-departure"></i></div>
+                </div>
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs text-slate-500 font-bold uppercase">مخالفات هذا الشهر</p>
+                        <h3 class="text-2xl font-bold mt-1 font-en text-red-500">2</h3>
+                    </div>
+                    <div class="w-10 h-10 bg-red-50 text-red-500 rounded-xl flex items-center justify-center text-xl"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                </div>
+            </div>
+
+            <!-- 2. Main Workspace -->
+            <div class="bg-white dark:bg-slate-800 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 min-h-[600px] flex flex-col">
+                
+                <!-- Toolbar -->
+                <div class="p-6 border-b border-slate-100 dark:border-slate-700 flex flex-col md:flex-row justify-between items-center gap-4">
+                    <div class="flex bg-slate-100 dark:bg-slate-700 p-1 rounded-xl w-full md:w-auto overflow-x-auto">
+                        <button onclick="switchTab('employees')" id="btn-employees" class="px-5 py-2 text-xs font-bold rounded-lg bg-white text-brandBlue shadow-sm transition-all tab-btn">دليل الموظفين</button>
+                        <button onclick="switchTab('permissions')" id="btn-permissions" class="px-5 py-2 text-xs font-bold rounded-lg text-slate-500 hover:text-slate-700 transition-all tab-btn">الحسابات والصلاحيات</button>
+                        <button onclick="switchTab('attendance')" id="btn-attendance" class="px-5 py-2 text-xs font-bold rounded-lg text-slate-500 hover:text-slate-700 transition-all tab-btn">الحضور والغياب</button>
+                        <button onclick="switchTab('violations')" id="btn-violations" class="px-5 py-2 text-xs font-bold rounded-lg text-slate-500 hover:text-slate-700 transition-all tab-btn">الجزاءات</button>
+                    </div>
+                    <button onclick="openAddUserModal()" class="px-4 py-2 bg-brandBlue text-white rounded-xl text-xs font-bold hover:bg-blue-700 transition flex items-center gap-2 shadow-lg">
+                        <i class="fa-solid fa-user-plus"></i> إضافة موظف جديد
+                    </button>
+                </div>
+
+                <!-- Tab 1: Employees Directory -->
+                <div id="tab-employees" class="tab-content block p-6">
+                    <div class="flex justify-between mb-4">
+                        <div class="relative w-64">
+                            <input type="text" placeholder="بحث بالاسم أو الرقم الوظيفي..." class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-brandBlue outline-none">
+                            <i class="fa-solid fa-search absolute left-3 top-2.5 text-slate-400"></i>
+                        </div>
+                        <div class="flex gap-2">
+                            <button class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500 hover:text-brandBlue"><i class="fa-solid fa-filter"></i></button>
+                            <button class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500 hover:text-brandBlue"><i class="fa-solid fa-download"></i></button>
+                        </div>
+                    </div>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-right">
+                            <thead class="bg-slate-50 dark:bg-slate-700 text-xs font-bold text-slate-500 uppercase">
+                                <tr>
+                                    <th class="p-4 rounded-r-lg">الموظف</th>
+                                    <th class="p-4">القسم / الدور</th>
+                                    <th class="p-4">تاريخ الانضمام</th>
+                                    <th class="p-4">الراتب الأساسي</th>
+                                    <th class="p-4">التقييم</th>
+                                    <th class="p-4 text-center rounded-l-lg">الحالة</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 dark:divide-slate-700" id="employeesTable">
+                                <!-- JS Populated -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Tab 2: Permissions (RBAC) -->
+                <div id="tab-permissions" class="tab-content hidden p-6">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <!-- User List for Permissions -->
+                        <div class="lg:col-span-1 border-l border-slate-200 dark:border-slate-700 pl-4">
+                            <h4 class="font-bold text-sm mb-3">اختر موظفاً لتعديل صلاحياته</h4>
+                            <div class="space-y-2 max-h-[500px] overflow-y-auto" id="permUserList">
+                                <!-- Users List -->
+                            </div>
+                        </div>
+
+                        <!-- Permissions Matrix -->
+                        <div class="lg:col-span-2">
+                            <div class="bg-blue-50 p-4 rounded-xl border border-blue-100 mb-6 flex items-start gap-3">
+                                <i class="fa-solid fa-shield-halved text-blue-600 mt-1"></i>
+                                <div>
+                                    <h4 class="font-bold text-blue-800 text-sm">إدارة حساب: <span id="selectedUserPerm">منصور اليامي</span></h4>
+                                    <p class="text-xs text-blue-600">تفعيل الصلاحيات يتيح للموظف الوصول للوحدات المحددة.</p>
+                                </div>
+                            </div>
+
+                            <div class="space-y-4">
+                                <!-- Module 1 -->
+                                <div class="flex justify-between items-center p-3 border rounded-xl hover:bg-slate-50">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center"><i class="fa-solid fa-gavel"></i></div>
+                                        <div>
+                                            <p class="font-bold text-sm">بوابة الحوكمة والمجلس</p>
+                                            <p class="text-[10px] text-slate-500">الوصول للمحاضر، الجمعيات، والقرارات</p>
+                                        </div>
+                                    </div>
+                                    <label class="relative inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" class="sr-only peer" checked>
+                                        <div class="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brandBlue"></div>
+                                    </label>
+                                </div>
+
+                                <!-- Module 2 -->
+                                <div class="flex justify-between items-center p-3 border rounded-xl hover:bg-slate-50">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 rounded-lg bg-green-100 text-green-600 flex items-center justify-center"><i class="fa-solid fa-money-bill-wave"></i></div>
+                                        <div>
+                                            <p class="font-bold text-sm">النظام المالي</p>
+                                            <p class="text-[10px] text-slate-500">الرواتب، الميزانية، المصروفات</p>
+                                        </div>
+                                    </div>
+                                    <label class="relative inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" class="sr-only peer">
+                                        <div class="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brandBlue"></div>
+                                    </label>
+                                </div>
+
+                                <!-- Module 3 -->
+                                <div class="flex justify-between items-center p-3 border rounded-xl hover:bg-slate-50">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center"><i class="fa-solid fa-users"></i></div>
+                                        <div>
+                                            <p class="font-bold text-sm">نظام الموارد البشرية (Admin)</p>
+                                            <p class="text-[10px] text-slate-500">تعديل الموظفين، الرواتب، العقود</p>
+                                        </div>
+                                    </div>
+                                    <label class="relative inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" class="sr-only peer" checked>
+                                        <div class="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brandBlue"></div>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-6 flex justify-end">
+                                <button onclick="alert('تم تحديث الصلاحيات بنجاح')" class="px-6 py-2 bg-slate-800 text-white rounded-lg text-xs font-bold hover:bg-black">حفظ التغييرات</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 3: Attendance -->
+                <div id="tab-attendance" class="tab-content hidden p-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="border rounded-2xl p-4">
+                            <h4 class="font-bold text-sm mb-4">سجل اليوم (08 Jan 2026)</h4>
+                            <div class="space-y-3" id="dailyAttendanceList">
+                                <!-- Generated -->
+                            </div>
+                        </div>
+                        <div class="border rounded-2xl p-4">
+                            <h4 class="font-bold text-sm mb-4">طلبات الإجازة المعلقة</h4>
+                            <div class="space-y-3">
+                                <div class="p-3 bg-slate-50 rounded-lg flex justify-between items-center">
+                                    <div>
+                                        <p class="text-xs font-bold">محمد أحمد (مطور)</p>
+                                        <p class="text-[10px] text-slate-500">إجازة سنوية (5 أيام)</p>
+                                    </div>
+                                    <div class="flex gap-2">
+                                        <button class="text-green-600 hover:bg-green-50 p-1 rounded"><i class="fa-solid fa-check"></i></button>
+                                        <button class="text-red-600 hover:bg-red-50 p-1 rounded"><i class="fa-solid fa-xmark"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 4: Violations & Penalties -->
+                <div id="tab-violations" class="tab-content hidden p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h4 class="font-bold text-sm">سجل الجزاءات والمخالفات</h4>
+                        <button onclick="alert('نموذج تسجيل مخالفة')" class="text-xs text-red-600 border border-red-200 px-3 py-1 rounded hover:bg-red-50">
+                            + تسجيل مخالفة
+                        </button>
+                    </div>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-right">
+                            <thead class="bg-red-50 text-red-900 text-xs">
+                                <tr>
+                                    <th class="p-3">الموظف</th>
+                                    <th class="p-3">نوع المخالفة</th>
+                                    <th class="p-3">الجزاء</th>
+                                    <th class="p-3">التاريخ</th>
+                                    <th class="p-3">الحالة</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y">
+                                <tr>
+                                    <td class="p-3 font-bold">سعيد القحطاني</td>
+                                    <td class="p-3 text-xs">غياب بدون عذر</td>
+                                    <td class="p-3 text-xs">خصم يوم</td>
+                                    <td class="p-3 font-en text-xs">02 Jan 2026</td>
+                                    <td class="p-3"><span class="bg-slate-200 px-2 py-0.5 rounded text-[10px]">مؤرشف</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3 font-bold">خالد الحربي</td>
+                                    <td class="p-3 text-xs">تأخير متكرر</td>
+                                    <td class="p-3 text-xs">إنذار كتابي أول</td>
+                                    <td class="p-3 font-en text-xs">05 Jan 2026</td>
+                                    <td class="p-3"><span class="bg-green-100 text-green-700 px-2 py-0.5 rounded text-[10px]">تم التوقيع</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Add User Modal -->
+    <div id="addUserModal" class="fixed inset-0 bg-black/60 hidden z-50 flex items-center justify-center backdrop-blur-sm">
+        <div class="bg-white dark:bg-slate-800 w-full max-w-lg rounded-2xl shadow-xl p-6">
+            <div class="flex justify-between items-center mb-4 border-b pb-2">
+                <h3 class="font-bold text-lg dark:text-white">إضافة موظف / حساب جديد</h3>
+                <button onclick="document.getElementById('addUserModal').classList.add('hidden')"><i class="fa-solid fa-xmark text-slate-400"></i></button>
+            </div>
+            
+            <form class="space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1">الاسم الأول</label>
+                        <input type="text" class="w-full border rounded p-2 text-sm bg-slate-50" placeholder="محمد">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1">اسم العائلة</label>
+                        <input type="text" class="w-full border rounded p-2 text-sm bg-slate-50" placeholder="العلي">
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1">البريد الإلكتروني (اسم المستخدم)</label>
+                    <input type="email" class="w-full border rounded p-2 text-sm bg-slate-50" placeholder="name@androomeda.com">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1">القسم</label>
+                        <select class="w-full border rounded p-2 text-sm bg-slate-50">
+                            <option>الموارد البشرية</option>
+                            <option>المالية</option>
+                            <option>تقنية المعلومات</option>
+                            <option>المبيعات</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1">المسمى الوظيفي</label>
+                        <input type="text" class="w-full border rounded p-2 text-sm bg-slate-50" placeholder="مثال: محاسب">
+                    </div>
+                </div>
+
+                <div class="border-t pt-3">
+                    <p class="text-xs font-bold text-brandBlue mb-2">صلاحيات النظام الافتراضية</p>
+                    <div class="flex gap-4">
+                        <label class="flex items-center gap-2 text-xs"><input type="checkbox" class="accent-brandBlue"> بوابة الموظف (الخدمة الذاتية)</label>
+                        <label class="flex items-center gap-2 text-xs"><input type="checkbox" class="accent-brandBlue"> البريد الإلكتروني</label>
+                    </div>
+                </div>
+            </form>
+
+            <div class="mt-6 flex justify-end gap-3">
+                <button onclick="document.getElementById('addUserModal').classList.add('hidden')" class="px-4 py-2 border rounded-lg text-xs font-bold hover:bg-slate-50">إلغاء</button>
+                <button onclick="alert('تم إنشاء حساب الموظف بنجاح'); document.getElementById('addUserModal').classList.add('hidden')" class="px-6 py-2 bg-brandBlue text-white rounded-lg text-xs font-bold hover:bg-blue-700">حفظ وإرسال بيانات الدخول</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="layout.js"></script>
+
+    <script>
+        // Mock Data
+        const employees = [
+            { id: 1, name: "منصور بن حسن اليامي", dept: "الإدارة العليا", role: "مدير الموارد البشرية", joinDate: "2020-05-01", salary: 35000, status: "نشط", avatar: "M" },
+            { id: 2, name: "أيمن المغربي", dept: "الحوكمة", role: "مدير الحوكمة", joinDate: "2021-03-15", salary: 28000, status: "نشط", avatar: "A" },
+            { id: 3, name: "محمد البخيتي", dept: "المالية", role: "المدير المالي (CFO)", joinDate: "2022-01-10", salary: 32000, status: "نشط", avatar: "M" },
+            { id: 4, name: "سارة الأسمري", dept: "الموارد البشرية", role: "أخصائي توظيف", joinDate: "2024-06-01", salary: 12000, status: "نشط", avatar: "S" },
+            { id: 5, name: "خالد الحربي", dept: "التقنية", role: "مطور برمجيات", joinDate: "2023-11-20", salary: 18000, status: "إجازة", avatar: "K" }
+        ];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderEmployees();
+            renderPermList();
+            renderDailyAttendance();
+        });
+
+        // --- Tab Switching ---
+        function switchTab(target) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(el => {
+                el.classList.remove('bg-white', 'text-brandBlue', 'shadow-sm');
+                el.classList.add('text-slate-500');
+            });
+            document.getElementById(`tab-${target}`).classList.remove('hidden');
+            document.getElementById(`btn-${target}`).classList.add('bg-white', 'text-brandBlue', 'shadow-sm');
+        }
+
+        // --- Render Functions ---
+        function renderEmployees() {
+            const tbody = document.getElementById('employeesTable');
+            tbody.innerHTML = employees.map(e => `
+                <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition border-b border-slate-100 dark:border-slate-700">
+                    <td class="p-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-600 flex items-center justify-center font-bold text-xs text-slate-500">${e.avatar}</div>
+                            <div>
+                                <p class="font-bold text-slate-800 dark:text-white text-xs">${e.name}</p>
+                                <p class="text-[9px] text-slate-400 font-en">ID: ${2000 + e.id}</p>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="p-4 text-xs">
+                        <p class="font-bold">${e.role}</p>
+                        <p class="text-slate-400">${e.dept}</p>
+                    </td>
+                    <td class="p-4 font-en text-xs text-slate-500">${e.joinDate}</td>
+                    <td class="p-4 font-en text-xs font-bold text-slate-700 dark:text-slate-300">${e.salary.toLocaleString()}</td>
+                    <td class="p-4 text-xs text-yellow-500"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i></td>
+                    <td class="p-4 text-center">
+                        <span class="px-2 py-1 rounded text-[10px] font-bold ${e.status === 'نشط' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'}">${e.status}</span>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function renderPermList() {
+            const list = document.getElementById('permUserList');
+            list.innerHTML = employees.map(e => `
+                <div onclick="selectUserForPerm('${e.name}')" class="p-2 hover:bg-blue-50 rounded cursor-pointer flex items-center gap-2 border-b border-slate-50">
+                    <div class="w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center text-[10px]">${e.avatar}</div>
+                    <div>
+                        <p class="text-xs font-bold">${e.name}</p>
+                        <p class="text-[9px] text-slate-400">${e.role}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderDailyAttendance() {
+            const list = document.getElementById('dailyAttendanceList');
+            list.innerHTML = employees.map(e => `
+                <div class="flex items-center justify-between p-2 hover:bg-slate-50 rounded">
+                    <div class="flex items-center gap-2">
+                        <div class="w-2 h-2 rounded-full ${e.status === 'نشط' ? 'bg-green-500' : 'bg-orange-500'}"></div>
+                        <span class="text-xs font-bold">${e.name}</span>
+                    </div>
+                    <span class="text-[10px] font-en text-slate-500">${e.status === 'نشط' ? '08:00 AM' : '-'}</span>
+                </div>
+            `).join('');
+        }
+
+        // --- Logic ---
+        function selectUserForPerm(name) {
+            document.getElementById('selectedUserPerm').innerText = name;
+        }
+
+        function openAddUserModal() {
+            document.getElementById('addUserModal').classList.remove('hidden');
+        }
+
+    </script>
+</body>
+</html>
