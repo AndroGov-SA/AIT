@@ -1,7 +1,7 @@
 /**
- * AndroGov Layout Engine v3.1 (Fixed English Layout)
- * - Fixes: Sidebar/Content overlap in English mode
- * - Handles margin swapping (mr-72 vs ml-72) correctly
+ * AndroGov Layout Engine v3.0 (Full Sitemap)
+ * - Based on 'androgov.pdf' sitemap structure
+ * - Includes detailed sections for Governance, Ops, and Departments
  */
 
 // 1. استرجاع الإعدادات
@@ -22,7 +22,7 @@ const config = {
     theme: localStorage.getItem('theme') || 'light'
 };
 
-// 2. قاموس النصوص
+// 2. قاموس النصوص (شامل لكافة أقسام النظام)
 const layoutDict = {
     ar: {
         sysName: "AndroGov",
@@ -37,17 +37,21 @@ const layoutDict = {
         },
         menu: {
             dash: "لوحة القيادة",
+            // Governance
             ga: "الجمعيات العمومية",
             board: "مجلس الإدارة",
             committees: "اللجان المنبثقة",
             shareholders: "سجل المساهمين",
+            // Ops Governance
             doa: "مصفوفة الصلاحيات (DOA)",
             policies: "مركز السياسات واللوائح",
             compliance: "الامتثال والمخاطر",
+            // Departments
             hr: "الموارد البشرية",
             finance: "الشؤون المالية",
             procurement: "المشتريات والعقود",
             it: "التقنية والأمن السيبراني",
+            // Admin
             users: "المستخدمين والصلاحيات",
             audit: "سجل التدقيق والرقابة"
         }
@@ -65,17 +69,21 @@ const layoutDict = {
         },
         menu: {
             dash: "Dashboard",
+            // Governance
             ga: "General Assembly",
             board: "Board of Directors",
             committees: "Committees",
             shareholders: "Shareholders Registry",
+            // Ops Governance
             doa: "Authority Matrix (DOA)",
             policies: "Policy Center",
             compliance: "Compliance & Risk",
+            // Departments
             hr: "Human Resources",
             finance: "Finance",
             procurement: "Procurement",
             it: "IT & Cybersecurity",
+            // Admin
             users: "Users & Roles",
             audit: "Audit Log"
         }
@@ -100,26 +108,20 @@ function applyConfig() {
     html.lang = config.lang;
     html.dir = config.lang === 'ar' ? 'rtl' : 'ltr';
     
-    // تطبيق الثيم
     if (config.theme === 'dark') {
         html.classList.add('dark');
     } else {
         html.classList.remove('dark');
     }
 
-    // ✅ إصلاح التنسيق: ضبط هوامش المحتوى بناءً على اللغة
-    // نبحث عن الحاوية سواء كان اسمها main-content أو main-content-wrapper
     const main = document.querySelector('.main-content') || document.querySelector('.main-content-wrapper');
-    
     if (main) {
-        // تنظيف الكلاسات القديمة أولاً لمنع التضارب
-        main.classList.remove('md:mr-72', 'md:ml-72');
-
+        // تنظيف الكلاسات القديمة
+        main.classList.remove('md:ml-72', 'md:mr-72');
+        
         if (config.lang === 'ar') {
-            // عربي: القائمة يمين -> المحتوى يبتعد من اليمين
             main.classList.add('md:mr-72');
         } else {
-            // إنجليزي: القائمة يسار -> المحتوى يبتعد من اليسار
             main.classList.add('md:ml-72');
         }
     }
@@ -138,7 +140,7 @@ function renderSidebar() {
 
     const isActive = (p) => path.includes(p) ? 'bg-brandRed text-white shadow-lg shadow-red-500/30 font-bold' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800';
 
-    // ✅ إصلاح القائمة: التموضع (left-0 vs right-0) والحدود (border-l vs border-r)
+    // أيقونات وتصنيفات بناءً على androgov.pdf
     el.innerHTML = `
     <aside class="fixed top-0 ${isRtl ? 'right-0' : 'left-0'} z-50 h-screen w-72 flex-col hidden md:flex transition-all duration-300 bg-white dark:bg-[#0F172A] border-${isRtl ? 'l' : 'r'} border-slate-200 dark:border-slate-800 shadow-xl">
         
@@ -169,26 +171,31 @@ function renderSidebar() {
         <!-- Navigation Menu -->
         <nav class="flex-1 overflow-y-auto px-3 space-y-1 py-2 custom-scroll">
             
+            <!-- Dashboard -->
             <div class="px-3 mt-2 mb-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider">${t.sections.main}</div>
             ${navItem(t.menu.dash, 'fa-gauge-high', 'admin.html', isActive('admin.html'))}
 
+            <!-- Governance Module -->
             <div class="px-3 mt-6 mb-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider">${t.sections.gov}</div>
             ${navItem(t.menu.ga, 'fa-users-rectangle', 'ga.html', isActive('ga.html'))}
             ${navItem(t.menu.board, 'fa-building-columns', 'board.html', isActive('board.html'))}
             ${navItem(t.menu.committees, 'fa-people-group', 'committees.html', isActive('committees.html'))}
             ${navItem(t.menu.shareholders, 'fa-id-card', 'shareholders.html', isActive('shareholders.html'))}
 
+            <!-- Operating Governance -->
             <div class="px-3 mt-6 mb-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider">${t.sections.ops}</div>
             ${navItem(t.menu.doa, 'fa-sitemap', 'doa.html', isActive('doa.html'))}
             ${navItem(t.menu.policies, 'fa-book-open', 'policies.html', isActive('policies.html'), 'Draft')}
             ${navItem(t.menu.compliance, 'fa-scale-balanced', 'compliance.html', isActive('compliance.html'))}
 
+            <!-- Departments -->
             <div class="px-3 mt-6 mb-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider">${t.sections.dept}</div>
             ${navItem(t.menu.hr, 'fa-user-tie', 'hr.html', isActive('hr.html'))}
             ${navItem(t.menu.finance, 'fa-money-bill-wave', 'finance.html', isActive('finance.html'))}
             ${navItem(t.menu.procurement, 'fa-boxes-packing', 'procurement.html', isActive('procurement.html'))}
             ${navItem(t.menu.it, 'fa-shield-cat', 'it.html', isActive('it.html'))}
 
+            <!-- Admin -->
             <div class="px-3 mt-6 mb-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider">${t.sections.admin}</div>
             ${navItem(t.menu.users, 'fa-users-gear', 'users.html', isActive('users.html'))}
             ${navItem(t.menu.audit, 'fa-list-ul', 'audit.html', isActive('audit.html'))}
