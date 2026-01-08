@@ -36,7 +36,12 @@
         @media print {
             .no-print { display: none !important; }
             body { background: white; }
+            .print-area { display: block !important; padding: 20px; }
         }
+        /* Wizard Steps */
+        .step-active { @apply border-brandBlue text-brandBlue; }
+        .step-completed { @apply border-green-500 text-green-500; }
+        .step-inactive { @apply border-slate-200 text-slate-400; }
     </style>
 </head>
 <body class="bg-brandGray dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300">
@@ -48,126 +53,101 @@
 
         <main class="p-6 space-y-6">
             
-            <!-- 1. معلومات الدورة الحالية (Term Info) -->
+            <!-- 1. لوحة معلومات الدورة (Term Info) -->
             <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 relative overflow-hidden">
-                <!-- Decoration -->
                 <div class="absolute top-0 left-0 w-2 h-full bg-brandBlue"></div>
-                <div class="absolute -right-10 -top-10 w-40 h-40 bg-blue-50 dark:bg-blue-900/10 rounded-full blur-2xl"></div>
-
                 <div class="flex flex-col md:flex-row justify-between items-center relative z-10">
                     <div>
                         <h2 class="text-xl font-bold text-slate-800 dark:text-white flex items-center gap-2">
                             <i class="fa-solid fa-building-columns text-brandBlue"></i> الدورة الحالية لمجلس الإدارة
                         </h2>
-                        <p class="text-sm text-slate-500 mt-1">
-                            مدة الدورة: 3 سنوات (ميلادية)
-                        </p>
+                        <p class="text-sm text-slate-500 mt-1">الدورة الخامسة (2025 - 2028)</p>
                     </div>
                     <div class="flex gap-6 text-center mt-4 md:mt-0">
                         <div>
                             <p class="text-[10px] text-slate-400 font-bold uppercase">تاريخ البداية</p>
                             <p class="text-sm font-bold font-en text-slate-700 dark:text-slate-200">06/11/2025</p>
                         </div>
-                        <div class="w-px bg-slate-200 h-8"></div>
+                        <div class="w-px bg-slate-200 dark:bg-slate-700 h-8"></div>
                         <div>
                             <p class="text-[10px] text-slate-400 font-bold uppercase">تاريخ الانتهاء</p>
                             <p class="text-sm font-bold font-en text-brandRed">05/11/2028</p>
                         </div>
-                        <div class="w-px bg-slate-200 h-8"></div>
+                        <div class="w-px bg-slate-200 dark:bg-slate-700 h-8"></div>
                         <div>
-                            <p class="text-[10px] text-slate-400 font-bold uppercase">المتبقي</p>
-                            <p class="text-sm font-bold font-en text-green-600">~ 2 Years</p>
+                            <p class="text-[10px] text-slate-400 font-bold uppercase">الحالة</p>
+                            <span class="text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded font-bold">سارية</span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- 2. أعضاء المجلس (Members Grid) -->
+            <!-- 2. بطاقات الأعضاء (Members) -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                
                 <!-- Chairman -->
-                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition group">
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition">
                     <div class="flex justify-between items-start mb-3">
                         <span class="bg-blue-100 text-blue-700 text-[10px] px-2 py-0.5 rounded font-bold">غير تنفيذي</span>
                         <i class="fa-solid fa-crown text-yellow-500 text-lg" title="رئيس المجلس"></i>
                     </div>
                     <div class="text-center mb-4">
-                        <div class="w-16 h-16 mx-auto bg-slate-100 rounded-full flex items-center justify-center text-xl font-bold text-slate-500 border-2 border-white shadow-sm mb-2">A</div>
+                        <div class="w-14 h-14 mx-auto bg-slate-100 rounded-full flex items-center justify-center text-lg font-bold text-slate-500 mb-2">A</div>
                         <h3 class="font-bold text-sm">عبدالله بن محمد الحواس</h3>
-                        <p class="text-xs text-slate-400">رئيس مجلس الإدارة</p>
-                    </div>
-                    <div class="border-t pt-3 flex justify-between text-[10px] text-slate-500">
-                        <span><i class="fa-solid fa-chart-pie"></i> الملكية: 5%</span>
-                        <span class="text-green-600"><i class="fa-solid fa-circle-check"></i> نشط</span>
+                        <p class="text-[10px] text-slate-400">رئيس مجلس الإدارة</p>
                     </div>
                 </div>
-
                 <!-- Vice / CEO -->
-                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition group">
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition">
                     <div class="flex justify-between items-start mb-3">
                         <span class="bg-purple-100 text-purple-700 text-[10px] px-2 py-0.5 rounded font-bold">تنفيذي</span>
+                        <i class="fa-solid fa-user-tie text-slate-300"></i>
                     </div>
                     <div class="text-center mb-4">
-                        <div class="w-16 h-16 mx-auto bg-slate-100 rounded-full flex items-center justify-center text-xl font-bold text-slate-500 border-2 border-white shadow-sm mb-2">H</div>
+                        <div class="w-14 h-14 mx-auto bg-slate-100 rounded-full flex items-center justify-center text-lg font-bold text-slate-500 mb-2">H</div>
                         <h3 class="font-bold text-sm">هشام بن محمد السحيباني</h3>
-                        <p class="text-xs text-slate-400">نائب الرئيس / الرئيس التنفيذي</p>
-                    </div>
-                    <div class="border-t pt-3 flex justify-between text-[10px] text-slate-500">
-                        <span><i class="fa-solid fa-chart-pie"></i> الملكية: 10%</span>
-                        <span class="text-green-600"><i class="fa-solid fa-circle-check"></i> نشط</span>
+                        <p class="text-[10px] text-slate-400">نائب الرئيس / الرئيس التنفيذي</p>
                     </div>
                 </div>
-
-                <!-- Member (Exec) -->
-                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition group">
+                <!-- Member Exec -->
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition">
                     <div class="flex justify-between items-start mb-3">
                         <span class="bg-purple-100 text-purple-700 text-[10px] px-2 py-0.5 rounded font-bold">تنفيذي</span>
                     </div>
                     <div class="text-center mb-4">
-                        <div class="w-16 h-16 mx-auto bg-slate-100 rounded-full flex items-center justify-center text-xl font-bold text-slate-500 border-2 border-white shadow-sm mb-2">M</div>
+                        <div class="w-14 h-14 mx-auto bg-slate-100 rounded-full flex items-center justify-center text-lg font-bold text-slate-500 mb-2">M</div>
                         <h3 class="font-bold text-sm">منصور بن حسن اليامي</h3>
-                        <p class="text-xs text-slate-400">عضو / مدير الشؤون الإدارية</p>
-                    </div>
-                    <div class="border-t pt-3 flex justify-between text-[10px] text-slate-500">
-                        <span><i class="fa-solid fa-chart-pie"></i> الملكية: 5%</span>
-                        <span class="text-green-600"><i class="fa-solid fa-circle-check"></i> نشط</span>
+                        <p class="text-[10px] text-slate-400">عضو / مدير الشؤون الإدارية</p>
                     </div>
                 </div>
-
-                <!-- Member (Independent) -->
-                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition group">
+                <!-- Independent -->
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition">
                     <div class="flex justify-between items-start mb-3">
                         <span class="bg-green-100 text-green-700 text-[10px] px-2 py-0.5 rounded font-bold">مستقل</span>
-                        <i class="fa-solid fa-shield-halved text-slate-300" title="عضو لجنة مراجعة"></i>
+                        <i class="fa-solid fa-shield-halved text-slate-300"></i>
                     </div>
                     <div class="text-center mb-4">
-                        <div class="w-16 h-16 mx-auto bg-slate-100 rounded-full flex items-center justify-center text-xl font-bold text-slate-500 border-2 border-white shadow-sm mb-2">A</div>
+                        <div class="w-14 h-14 mx-auto bg-slate-100 rounded-full flex items-center justify-center text-lg font-bold text-slate-500 mb-2">A</div>
                         <h3 class="font-bold text-sm">أحمد بن سلطان السحيباني</h3>
-                        <p class="text-xs text-slate-400">عضو مجلس الإدارة</p>
-                    </div>
-                    <div class="border-t pt-3 flex justify-between text-[10px] text-slate-500">
-                        <span><i class="fa-solid fa-chart-pie"></i> الملكية: -</span>
-                        <span class="text-green-600"><i class="fa-solid fa-circle-check"></i> نشط</span>
+                        <p class="text-[10px] text-slate-400">عضو مجلس الإدارة</p>
                     </div>
                 </div>
-
             </div>
 
-            <!-- 3. إدارة الاجتماعات والقرارات -->
+            <!-- 3. منطقة العمليات (Operations Hub) -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 
-                <!-- اليسار: جدول الاجتماعات والقرارات -->
+                <!-- اليسار: إدارة الاجتماعات والأرشيف -->
                 <div class="lg:col-span-2 bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700">
                     <div class="flex justify-between items-center mb-6">
                         <h3 class="font-bold text-slate-800 dark:text-white flex items-center gap-2">
                             <i class="fa-solid fa-briefcase text-brandRed"></i> أعمال المجلس
                         </h3>
                         <div class="flex gap-2">
-                            <button onclick="openResolutionModal()" class="px-3 py-1.5 bg-brandRed text-white rounded-lg text-xs font-bold hover:bg-red-700 flex items-center gap-2">
+                            <button onclick="openResolutionModal()" class="px-3 py-1.5 bg-brandRed text-white rounded-lg text-xs font-bold hover:bg-red-700 flex items-center gap-2 shadow-md transition">
                                 <i class="fa-solid fa-pen-nib"></i> قرار بالتمرير
                             </button>
-                            <button onclick="alert('جدولة اجتماع جديد')" class="px-3 py-1.5 bg-slate-100 text-slate-600 rounded-lg text-xs font-bold hover:bg-slate-200">
-                                <i class="fa-solid fa-plus"></i> اجتماع
+                            <button onclick="startBoardWizard()" class="px-3 py-1.5 bg-slate-800 text-white rounded-lg text-xs font-bold hover:bg-black shadow-md flex items-center gap-2 transition">
+                                <i class="fa-solid fa-plus"></i> اجتماع جديد
                             </button>
                         </div>
                     </div>
@@ -175,15 +155,42 @@
                     <!-- Tabs -->
                     <div class="border-b border-slate-200 dark:border-slate-700 mb-4">
                         <nav class="flex gap-6">
-                            <button onclick="switchTab('circular')" class="pb-3 text-sm font-bold text-brandRed border-b-2 border-brandRed tab-btn" data-target="circular">القرارات بالتمرير</button>
-                            <button onclick="switchTab('meetings')" class="pb-3 text-sm font-bold text-slate-500 hover:text-slate-700 border-b-2 border-transparent tab-btn" data-target="meetings">محاضر الاجتماعات</button>
+                            <button onclick="switchTab('archive')" class="pb-3 text-sm font-bold text-brandRed border-b-2 border-brandRed tab-btn" data-target="archive">سجل الاجتماعات</button>
+                            <button onclick="switchTab('circular')" class="pb-3 text-sm font-bold text-slate-500 hover:text-slate-700 dark:text-slate-400 border-b-2 border-transparent tab-btn" data-target="circular">القرارات بالتمرير</button>
                         </nav>
                     </div>
 
-                    <!-- Circular Resolutions List -->
-                    <div id="tab-circular" class="tab-content block space-y-3">
-                        
-                        <!-- قرار تشكيل لجنة المراجعة (من الملف المرفق) -->
+                    <!-- Tab: Archive -->
+                    <div id="tab-archive" class="tab-content block">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm text-right">
+                                <thead class="bg-slate-50 dark:bg-slate-700/50 text-[10px] text-slate-500 uppercase">
+                                    <tr>
+                                        <th class="p-3">الرقم</th>
+                                        <th class="p-3">التاريخ</th>
+                                        <th class="p-3">العنوان</th>
+                                        <th class="p-3">حالة الوزارة</th>
+                                        <th class="p-3 text-center">إجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
+                                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition">
+                                        <td class="p-3 font-mono">BM-01-2025</td>
+                                        <td class="p-3 font-en">07 Nov 2025</td>
+                                        <td class="p-3 font-bold text-xs">الاجتماع الأول (تعيين الرئيس ونائبه)</td>
+                                        <td class="p-3"><span class="bg-green-100 text-green-700 px-2 py-0.5 rounded text-[10px] border border-green-200"><i class="fa-solid fa-check"></i> تم الرفع والإفادة</span></td>
+                                        <td class="p-3 text-center">
+                                            <button onclick="viewArchiveDoc('BM-01')" class="text-xs bg-white border border-slate-300 px-2 py-1 rounded hover:bg-brandBlue hover:text-white transition">عرض التفاصيل</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Tab: Circular Resolutions -->
+                    <div id="tab-circular" class="tab-content hidden space-y-3">
+                        <!-- Resolution Item -->
                         <div class="p-4 bg-slate-50 dark:bg-slate-700/50 rounded-xl border border-slate-200 dark:border-slate-600 flex justify-between items-center group hover:border-brandRed/30 transition">
                             <div class="flex items-start gap-3">
                                 <div class="w-10 h-10 rounded-lg bg-green-100 text-green-600 flex items-center justify-center text-lg shrink-0">
@@ -191,140 +198,194 @@
                                 </div>
                                 <div>
                                     <h4 class="font-bold text-sm text-slate-800 dark:text-white">تشكيل لجنة المراجعة لدورة جديدة</h4>
-                                    <p class="text-xs text-slate-500 mt-1">رقم القرار: 251222001 | التاريخ: 22/12/2025</p>
-                                    <div class="flex gap-2 mt-2">
-                                        <span class="text-[10px] bg-white border px-2 py-0.5 rounded text-slate-500">محمد العنزي</span>
-                                        <span class="text-[10px] bg-white border px-2 py-0.5 rounded text-slate-500">عادل سعسع</span>
-                                        <span class="text-[10px] bg-white border px-2 py-0.5 rounded text-slate-500">أحمد السحيباني</span>
-                                    </div>
+                                    <p class="text-xs text-slate-500 mt-1">القرار رقم: 251222001 | بتاريخ: 22/12/2025</p>
                                 </div>
                             </div>
-                            <div class="text-center">
-                                <span class="block text-[10px] bg-green-100 text-green-700 px-2 py-1 rounded font-bold mb-2">معتمد</span>
-                                <button class="text-xs text-brandBlue hover:underline"><i class="fa-solid fa-file-pdf"></i> عرض</button>
-                            </div>
+                            <button onclick="viewArchiveDoc('RES-01')" class="text-xs text-brandBlue hover:underline">عرض القرار</button>
                         </div>
-
-                        <!-- قرار آخر (افتراضي) -->
-                        <div class="p-4 bg-slate-50 dark:bg-slate-700/50 rounded-xl border border-slate-200 dark:border-slate-600 flex justify-between items-center group hover:border-brandRed/30 transition opacity-60">
-                            <div class="flex items-start gap-3">
-                                <div class="w-10 h-10 rounded-lg bg-slate-200 text-slate-500 flex items-center justify-center text-lg shrink-0">
-                                    <i class="fa-solid fa-clock"></i>
-                                </div>
-                                <div>
-                                    <h4 class="font-bold text-sm text-slate-800 dark:text-white">اعتماد الموازنة التقديرية 2026</h4>
-                                    <p class="text-xs text-slate-500 mt-1">تحت التوقيع (3/5)</p>
-                                </div>
-                            </div>
-                            <div class="text-center">
-                                <span class="block text-[10px] bg-yellow-100 text-yellow-700 px-2 py-1 rounded font-bold mb-2">جاري</span>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <!-- Meetings List -->
-                    <div id="tab-meetings" class="tab-content hidden space-y-3">
-                        <p class="text-center text-slate-400 py-10 text-sm">لا توجد اجتماعات فعلية مسجلة لهذه الدورة بعد.</p>
                     </div>
                 </div>
 
-                <!-- اليمين: المالية والمكافآت -->
+                <!-- اليمين: السياسة المالية وأمين السر -->
                 <div class="lg:col-span-1 space-y-6">
                     
-                    <!-- Remuneration Policy (حسب الملف) -->
+                    <!-- Remuneration Policy (محدثة حسب الملف) -->
                     <div class="bg-white dark:bg-slate-800 p-5 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700">
                         <h3 class="font-bold text-sm mb-4 flex items-center gap-2">
-                            <i class="fa-solid fa-money-check-dollar text-green-500"></i> المستحقات والمكافآت
+                            <i class="fa-solid fa-money-check-dollar text-green-500"></i> لائحة المكافآت المعتمدة
                         </h3>
                         
-                        <div class="bg-slate-50 dark:bg-slate-700/50 p-3 rounded-xl border border-slate-200 dark:border-slate-600 mb-4">
-                            <p class="text-[10px] text-slate-400 mb-1 uppercase">سياسة بدل الحضور (لكل اجتماع)</p>
-                            <div class="flex justify-between items-center border-b border-slate-200 pb-2 mb-2">
-                                <span class="text-xs font-bold">عضو مجلس</span>
-                                <span class="text-xs font-bold font-en text-green-600">2,000 SAR</span>
-                            </div>
-                            <div class="flex justify-between items-center border-b border-slate-200 pb-2 mb-2">
-                                <span class="text-xs font-bold">عضو لجنة</span>
-                                <span class="text-xs font-bold font-en text-green-600">1,500 SAR</span>
-                            </div>
-                            <div class="flex justify-between items-center">
-                                <span class="text-xs font-bold">أمين السر</span>
-                                <span class="text-xs font-bold font-en text-green-600">1,000 SAR</span>
-                            </div>
+                        <div class="overflow-hidden rounded-xl border border-slate-200 dark:border-slate-600">
+                            <table class="w-full text-xs">
+                                <thead class="bg-slate-100 dark:bg-slate-700 text-slate-500">
+                                    <tr>
+                                        <th class="p-2 text-right">المنصب</th>
+                                        <th class="p-2 text-left font-en">المكافأة (ريال)</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-100 dark:divide-slate-600 bg-slate-50 dark:bg-slate-700/50">
+                                    <tr>
+                                        <td class="p-2 font-bold">عضو مجلس الإدارة</td>
+                                        <td class="p-2 text-left font-en text-green-600 font-bold">2,000</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-2 font-bold">عضو لجنة منبثقة</td>
+                                        <td class="p-2 text-left font-en text-green-600 font-bold">1,500</td>
+                                    </tr>
+                                    <!-- Secretary Fee Restored -->
+                                    <tr class="bg-yellow-50 dark:bg-yellow-900/10">
+                                        <td class="p-2 font-bold text-yellow-800 dark:text-yellow-500">أمين سر المجلس</td>
+                                        <td class="p-2 text-left font-en text-green-600 font-bold">1,000</td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
-
-                        <div class="space-y-3">
-                            <h4 class="text-xs font-bold text-slate-500">المستحق للدورة الحالية (تقديري):</h4>
-                            <div class="flex justify-between text-xs">
-                                <span>عبدالله الحواس (1)</span>
-                                <span class="font-en">2,000</span>
-                            </div>
-                            <div class="flex justify-between text-xs">
-                                <span>هشام السحيباني (1)</span>
-                                <span class="font-en">2,000</span>
-                            </div>
-                            <div class="pt-2 border-t text-right">
-                                <span class="text-xs font-bold text-brandBlue">الإجمالي: 8,000 SAR</span>
-                            </div>
+                        <div class="mt-3 text-[10px] text-slate-400">
+                            * الحد الأقصى السنوي: 500,000 ريال للعضو.
                         </div>
                     </div>
 
-                    <!-- Secretary Widget -->
+                    <!-- Secretary Info (Updated) -->
                     <div class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-3xl p-5 text-white shadow-lg">
-                        <div class="flex items-center gap-3 mb-3">
-                            <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center"><i class="fa-solid fa-feather"></i></div>
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-lg"><i class="fa-solid fa-feather"></i></div>
                             <div>
                                 <p class="text-xs text-slate-400">أمين سر المجلس</p>
-                                <p class="font-bold text-sm">أيمن المغربي</p>
+                                <p class="font-bold text-base">أيمن المغربي</p>
                             </div>
                         </div>
-                        <div class="text-[10px] bg-white/5 p-2 rounded border border-white/10">
-                            مسؤول عن صياغة المحاضر، حفظ السجلات، وتنسيق الاجتماعات وفق المادة (30).
+                        <div class="space-y-2 text-xs border-t border-white/10 pt-3">
+                            <div class="flex justify-between">
+                                <span class="text-slate-400">بدل الجلسة:</span>
+                                <span class="font-bold text-green-400 font-en">1,000 SAR</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-400">المسؤوليات:</span>
+                                <span>ضبط المحاضر، الحفظ</span>
+                            </div>
                         </div>
                     </div>
 
                 </div>
             </div>
-
         </main>
     </div>
 
-    <!-- Modals -->
-    <!-- Resolution Wizard -->
+    <!-- 1. BOARD MEETING WIZARD -->
+    <div id="boardWizardModal" class="fixed inset-0 bg-black/60 hidden z-50 flex items-center justify-center backdrop-blur-sm">
+        <div class="bg-white dark:bg-slate-800 w-full max-w-3xl rounded-2xl shadow-2xl flex flex-col max-h-[90vh]">
+            
+            <!-- Header -->
+            <div class="p-5 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-900 rounded-t-2xl">
+                <div>
+                    <h3 class="font-bold text-lg flex items-center gap-2 text-slate-800 dark:text-white">
+                        <i class="fa-solid fa-plus-circle text-brandBlue"></i> اجتماع مجلس إدارة جديد
+                    </h3>
+                    <p class="text-xs text-slate-500 mt-1" id="bz-subtitle">الخطوة 1: الإعداد والجدولة</p>
+                </div>
+                <button onclick="closeBoardWizard()" class="text-slate-400 hover:text-red-500"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <!-- Body -->
+            <div class="flex-1 p-6 overflow-y-auto" id="wizardContent">
+                
+                <!-- Step 1 -->
+                <div id="bz-step1" class="space-y-4">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 mb-1">رقم الاجتماع</label>
+                            <input type="text" class="w-full border rounded p-2 text-sm bg-slate-50" value="BM-02-2026" readonly>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 mb-1">التاريخ</label>
+                            <input type="date" class="w-full border rounded p-2 text-sm" id="bz-date">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1">المكان / الرابط</label>
+                        <input type="text" class="w-full border rounded p-2 text-sm" value="المقر الرئيسي - قاعة الاجتماعات">
+                    </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div id="bz-step2" class="hidden space-y-4">
+                    <div class="bg-blue-50 p-3 rounded-lg border border-blue-100 flex justify-between items-center">
+                        <span class="text-xs font-bold text-blue-800">حضور الأعضاء وأمين السر</span>
+                        <span class="text-[10px] text-blue-600">سيتم احتساب البدلات تلقائياً (2000 للأعضاء / 1000 للأمين).</span>
+                    </div>
+                    <table class="w-full text-sm text-right border rounded-lg overflow-hidden">
+                        <thead class="bg-slate-100 dark:bg-slate-700">
+                            <tr><th class="p-2">العضو</th><th class="p-2">المنصب</th><th class="p-2 text-center">حاضر</th></tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
+                            <tr><td class="p-2">عبدالله الحواس</td><td class="p-2 text-xs">رئيس</td><td class="p-2 text-center"><input type="checkbox" checked class="accent-brandBlue bz-att"></td></tr>
+                            <tr><td class="p-2">هشام السحيباني</td><td class="p-2 text-xs">نائب</td><td class="p-2 text-center"><input type="checkbox" checked class="accent-brandBlue bz-att"></td></tr>
+                            <tr><td class="p-2">منصور اليامي</td><td class="p-2 text-xs">عضو</td><td class="p-2 text-center"><input type="checkbox" checked class="accent-brandBlue bz-att"></td></tr>
+                            <tr><td class="p-2">أحمد السحيباني</td><td class="p-2 text-xs">عضو</td><td class="p-2 text-center"><input type="checkbox" checked class="accent-brandBlue bz-att"></td></tr>
+                            <!-- Secretary included here -->
+                            <tr class="bg-yellow-50/50"><td class="p-2 font-bold text-slate-700">أيمن المغربي</td><td class="p-2 text-xs">أمين سر</td><td class="p-2 text-center"><input type="checkbox" checked class="accent-yellow-600 bz-att"></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Step 3 -->
+                <div id="bz-step3" class="hidden space-y-4">
+                    <h4 class="font-bold text-brandBlue border-b pb-2 mb-4">3. القرارات والمحضر</h4>
+                    <div class="space-y-3">
+                        <div class="p-3 border rounded bg-slate-50">
+                            <p class="font-bold text-sm mb-2">1. مراجعة أداء الربع الأول</p>
+                            <div class="flex gap-2 text-xs">
+                                <label><input type="radio" name="d1" checked> موافقة</label>
+                                <label><input type="radio" name="d1"> رفض</label>
+                            </div>
+                        </div>
+                    </div>
+                    <button onclick="bzAddAgenda()" class="text-xs bg-slate-100 px-3 py-1 rounded hover:bg-slate-200 w-full font-bold">+ إضافة بند</button>
+                </div>
+
+                <!-- Step 4: Preview -->
+                <div id="bz-step4" class="hidden">
+                    <div class="bg-white border p-6 rounded shadow-inner text-sm leading-relaxed min-h-[300px]" id="bz-preview">
+                        <!-- Preview content -->
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Footer -->
+            <div class="p-5 border-t border-slate-200 bg-slate-50 dark:bg-slate-900 rounded-b-2xl flex justify-between">
+                <button onclick="bzPrev()" id="bz-prev" class="px-4 py-2 border rounded text-xs font-bold bg-white text-slate-600 disabled:opacity-50" disabled>السابق</button>
+                <button onclick="bzNext()" id="bz-next" class="px-6 py-2 bg-brandBlue text-white rounded text-xs font-bold hover:bg-blue-700">التالي</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. Resolution Modal -->
     <div id="resolutionModal" class="fixed inset-0 bg-black/60 hidden z-50 flex items-center justify-center backdrop-blur-sm">
-        <div class="bg-white dark:bg-slate-800 w-full max-w-2xl rounded-2xl shadow-2xl p-6">
-            <div class="flex justify-between items-center mb-6 border-b pb-4">
-                <h3 class="font-bold text-lg dark:text-white">إنشاء قرار مجلس إدارة بالتمرير</h3>
+        <div class="bg-white dark:bg-slate-800 w-full max-w-lg rounded-2xl shadow-2xl p-6">
+            <div class="flex justify-between items-center mb-4 border-b pb-2">
+                <h3 class="font-bold text-lg dark:text-white">قرار بالتمرير</h3>
                 <button onclick="closeModal('resolutionModal')" class="text-slate-400 hover:text-red-500"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            
-            <div class="grid grid-cols-2 gap-4 mb-4">
-                <div>
-                    <label class="block text-xs font-bold text-slate-500 mb-1">عنوان القرار</label>
-                    <input type="text" class="w-full border rounded-lg p-2 text-sm" placeholder="مثال: الموافقة على تسهيلات بنكية">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-500 mb-1">تاريخ القرار</label>
-                    <input type="date" class="w-full border rounded-lg p-2 text-sm" value="2026-01-08">
-                </div>
+            <div class="space-y-3">
+                <input type="text" class="w-full border rounded p-2 text-sm" placeholder="عنوان القرار">
+                <textarea class="w-full border rounded p-2 text-sm h-24" placeholder="نص القرار..."></textarea>
             </div>
-            
-            <div class="mb-4">
-                <label class="block text-xs font-bold text-slate-500 mb-1">نص القرار والمبررات</label>
-                <textarea class="w-full border rounded-lg p-3 text-sm h-32" placeholder="إشارة إلى... وبناءً على... يقرر المجلس ما يلي..."></textarea>
+            <div class="mt-4 flex justify-end gap-2">
+                <button onclick="alert('تم الإرسال للأعضاء (4) للتوقيع')" class="px-4 py-2 bg-brandBlue text-white rounded text-xs font-bold">إرسال للتوقيع</button>
             </div>
+        </div>
+    </div>
 
-            <div class="mb-6 bg-blue-50 p-3 rounded-lg border border-blue-100">
-                <label class="flex items-center gap-2 text-xs font-bold text-blue-800">
-                    <input type="checkbox" checked disabled class="accent-brandBlue">
-                    يتم إرساله لجميع الأعضاء (4) للتوقيع الإلكتروني عبر النظام.
-                </label>
+    <!-- 3. Archive Details Modal -->
+    <div id="archiveDetailsModal" class="fixed inset-0 bg-black/60 hidden z-[60] flex items-center justify-center backdrop-blur-sm">
+        <div class="bg-white w-[600px] rounded-2xl shadow-xl p-6">
+            <div class="flex justify-between items-center mb-4 border-b pb-2">
+                <h3 class="font-bold">تفاصيل الاجتماع (أرشيف)</h3>
+                <button onclick="closeModal('archiveDetailsModal')"><i class="fa-solid fa-xmark"></i></button>
             </div>
-
-            <div class="flex justify-end gap-3">
-                <button onclick="closeModal('resolutionModal')" class="px-5 py-2 border rounded-xl text-xs font-bold hover:bg-slate-50">إلغاء</button>
-                <button onclick="alert('تم إنشاء القرار وإرسال إشعارات للأعضاء')" class="px-6 py-2 bg-brandBlue text-white rounded-xl text-xs font-bold hover:bg-blue-700">اعتماد وإرسال</button>
+            <div class="space-y-4 text-sm" id="archiveContent">
+                <!-- Content injected via JS -->
             </div>
         </div>
     </div>
@@ -332,7 +393,107 @@
     <script src="layout.js"></script>
 
     <script>
-        // --- Tab Logic ---
+        // --- Board Wizard Logic ---
+        let bzStep = 1;
+        let bzData = { agenda: ["مراجعة أداء الربع السابق"] };
+
+        function startBoardWizard() {
+            document.getElementById('boardWizardModal').classList.remove('hidden');
+            bzStep = 1;
+            updateBzUI();
+        }
+
+        function closeBoardWizard() {
+            document.getElementById('boardWizardModal').classList.add('hidden');
+        }
+
+        function bzNext() {
+            if(bzStep < 4) {
+                bzStep++;
+                updateBzUI();
+                if(bzStep === 4) renderBzPreview();
+            } else {
+                alert("تم حفظ المحضر وتسجيل المكافآت المالية.");
+                closeBoardWizard();
+            }
+        }
+
+        function bzPrev() {
+            if(bzStep > 1) {
+                bzStep--;
+                updateBzUI();
+            }
+        }
+
+        function updateBzUI() {
+            for(let i=1; i<=4; i++) document.getElementById(`bz-step${i}`).classList.add('hidden');
+            document.getElementById(`bz-step${bzStep}`).classList.remove('hidden');
+            
+            const titles = ["", "الإعداد", "الحضور", "القرارات", "المعاينة"];
+            document.getElementById('bz-subtitle').innerText = `الخطوة ${bzStep}: ${titles[bzStep]}`;
+
+            document.getElementById('bz-prev').disabled = bzStep === 1;
+            document.getElementById('bz-next').innerText = bzStep === 4 ? "حفظ نهائي" : "التالي";
+        }
+
+        function bzAddAgenda() {
+            const txt = prompt("نص البند:");
+            if(txt) {
+                bzData.agenda.push(txt);
+                // Re-render agenda list logic here (simplified)
+                alert("تمت الإضافة");
+            }
+        }
+
+        function renderBzPreview() {
+            const date = document.getElementById('bz-date').value || new Date().toLocaleDateString();
+            document.getElementById('bz-preview').innerHTML = `
+                <h3 class="text-center font-bold text-lg mb-2">محضر اجتماع مجلس الإدارة رقم (02)</h3>
+                <p class="text-center text-xs mb-4">التاريخ: ${date}</p>
+                <p><strong>الحضور:</strong> عبدالله الحواس، هشام السحيباني، منصور اليامي، أحمد السحيباني.</p>
+                <p><strong>أمين السر:</strong> أيمن المغربي (حضور).</p>
+                <div class="my-4 border-t border-b py-2 bg-slate-50 text-center text-xs text-green-700">
+                    تم احتساب مكافأة حضور 2000 ريال للأعضاء و 1000 ريال لأمين السر.
+                </div>
+                <p class="mt-2"><strong>القرارات:</strong></p>
+                <ul class="list-disc list-inside">
+                    ${bzData.agenda.map(a => `<li>${a} (تمت الموافقة)</li>`).join('')}
+                </ul>
+            `;
+        }
+
+        // --- Archive View ---
+        function viewArchiveDoc(id) {
+            const modal = document.getElementById('archiveDetailsModal');
+            const content = document.getElementById('archiveContent');
+            modal.classList.remove('hidden');
+            
+            if (id === 'BM-01') {
+                content.innerHTML = `
+                    <div class="bg-slate-50 p-3 rounded border mb-3">
+                        <p class="font-bold">الاجتماع الأول (تأسيسي للدورة)</p>
+                        <p class="text-xs text-slate-500">22 Dec 2025</p>
+                    </div>
+                    <ul class="space-y-2">
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-green-500"></i> تعيين عبدالله الحواس رئيساً.</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-green-500"></i> تعيين هشام السحيباني نائباً ورئيساً تنفيذياً.</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-green-500"></i> تعيين أيمن المغربي أميناً للسر.</li>
+                    </ul>
+                    <div class="mt-4 pt-4 border-t flex justify-between items-center">
+                        <span class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded font-bold">تم رفع الإحاطة لوزارة التجارة</span>
+                    </div>
+                `;
+            } else if (id === 'RES-01') {
+                 content.innerHTML = `
+                    <div class="p-3 bg-white border rounded">
+                        <h4 class="font-bold">تشكيل لجنة المراجعة</h4>
+                        <p class="text-xs mt-2">الموافقة على تعيين: محمد العنزي، عادل سعسع، أحمد السحيباني.</p>
+                    </div>
+                `;
+            }
+        }
+
+        // --- Tabs ---
         function switchTab(target) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             document.querySelectorAll('.tab-btn').forEach(el => {
@@ -348,12 +509,9 @@
         }
 
         // --- Modals ---
-        function openResolutionModal() {
-            document.getElementById('resolutionModal').classList.remove('hidden');
-        }
-        function closeModal(id) {
-            document.getElementById(id).classList.add('hidden');
-        }
+        function openResolutionModal() { document.getElementById('resolutionModal').classList.remove('hidden'); }
+        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
     </script>
 </body>
 </html>
