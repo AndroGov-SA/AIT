@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="pageTitle">AndroGov | إدارة الجمعيات</title>
+    
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brandRed: '#FB4747',
+                        brandBlue: '#4267B2',
+                        brandDark: '#1E293B',
+                        brandGray: '#F8FAFC'
+                    },
+                    fontFamily: {
+                        sans: ['Tajawal', 'Inter', 'sans-serif'],
+                        en: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @media print {
+            .no-print { display: none !important; }
+            body { background: white; }
+            .print-area { display: block !important; padding: 20px; }
+        }
+        /* Steps Progress Line */
+        .step-active { @apply border-brandBlue text-brandBlue; }
+        .step-completed { @apply border-green-500 text-green-500; }
+        .step-inactive { @apply border-slate-200 text-slate-400; }
+    </style>
+</head>
+<body class="bg-brandGray dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300">
+
+    <div id="sidebar-container" class="no-print"></div>
+    
+    <div class="main-content-wrapper md:mr-72 transition-all duration-300 flex flex-col min-h-screen">
+        <div id="header-container" class="no-print"></div>
+
+        <main class="p-6 space-y-6">
+            
+            <!-- Dashboard Home (Initial View) -->
+            <div id="dashboardView" class="space-y-6 no-print">
+                
+                <!-- Capital Info -->
+                <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 flex justify-between items-center">
+                    <div>
+                        <h2 class="text-lg font-bold">مركز إدارة الجمعيات</h2>
+                        <p class="text-xs text-slate-500">رأس المال: <span class="font-en font-bold text-brandBlue">6,000,000</span> SAR | الأسهم: <span class="font-en font-bold">600,000</span></p>
+                    </div>
+                    <!-- طلبات المساهمين -->
+                    <div class="flex gap-2">
+                        <button onclick="document.getElementById('requestsModal').classList.remove('hidden')" class="relative px-4 py-2 bg-orange-50 text-orange-600 rounded-xl text-xs font-bold hover:bg-orange-100">
+                            <i class="fa-solid fa-inbox"></i> طلبات المساهمين
+                            <span class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-[9px] rounded-full flex items-center justify-center">1</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Main Actions -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- 1. Start Meeting -->
+                    <div class="bg-white dark:bg-slate-800 p-8 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition cursor-pointer text-center group" onclick="startMeetingWizard()">
+                        <div class="w-16 h-16 bg-blue-50 text-brandBlue rounded-full flex items-center justify-center text-3xl mx-auto mb-4 group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-users-rectangle"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">عقد اجتماع جمعية</h3>
+                        <p class="text-sm text-slate-500">إدارة دورة حياة الاجتماع: الإعداد، الحضور، التصويت، والمحاضر.</p>
+                        <button class="mt-6 px-6 py-2 bg-brandBlue text-white rounded-lg text-sm font-bold">بدء المعالج</button>
+                    </div>
+
+                    <!-- 2. Circular Resolution -->
+                    <div class="bg-white dark:bg-slate-800 p-8 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition cursor-pointer text-center group" onclick="openCircularModal()">
+                        <div class="w-16 h-16 bg-purple-50 text-purple-600 rounded-full flex items-center justify-center text-3xl mx-auto mb-4 group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-file-signature"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">قرار بالتمرير</h3>
+                        <p class="text-sm text-slate-500">إصدار قرارات دون الحاجة لعقد اجتماع (يتطلب موافقة 100%).</p>
+                        <button class="mt-6 px-6 py-2 bg-purple-600 text-white rounded-lg text-sm font-bold">إنشاء قرار</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MEETING WIZARD (Hidden by default) -->
+            <div id="meetingWizard" class="hidden bg-white dark:bg-slate-800 rounded-3xl shadow-lg border border-slate-200 dark:border-slate-700 min-h-[600px] flex flex-col">
+                
+                <!-- Wizard Header -->
+                <div class="p-6 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center no-print">
+                    <div>
+                        <h2 class="text-xl font-bold flex items-center gap-2">
+                            <i class="fa-solid fa-gavel text-brandRed"></i> إدارة الاجتماع
+                        </h2>
+                        <p class="text-xs text-slate-500 mt-1" id="wizardSubtitle">الخطوة 1: الإعداد والبنود</p>
+                    </div>
+                    <button onclick="exitWizard()" class="text-slate-400 hover:text-red-500 text-sm font-bold flex items-center gap-1"><i class="fa-solid fa-xmark"></i> إلغاء</button>
+                </div>
+
+                <!-- Steps Indicator -->
+                <div class="px-6 pt-6 no-print">
+                    <div class="flex items-center justify-between text-xs font-bold text-center">
+                        <div class="flex-1 border-b-4 step-active pb-2 transition-colors" id="step1-ind">1. الإعداد والبنود</div>
+                        <div class="flex-1 border-b-4 step-inactive pb-2 transition-colors" id="step2-ind">2. سجل الحضور</div>
+                        <div class="flex-1 border-b-4 step-inactive pb-2 transition-colors" id="step3-ind">3. التصويت</div>
+                        <div class="flex-1 border-b-4 step-inactive pb-2 transition-colors" id="step4-ind">4. المخرجات</div>
+                    </div>
+                </div>
+
+                <!-- Step Content Area -->
+                <div class="p-6 flex-1 overflow-y-auto">
+                    
+                    <!-- STEP 1: Setup & Agenda -->
+                    <div id="step1" class="wizard-step space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 mb-1">نوع الجمعية</label>
+                                <select id="meetingType" onchange="updateDefaultAgenda()" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm focus:ring-2 focus:ring-brandBlue">
+                                    <option value="ordinary">جمعية عامة عادية (OGA)</option>
+                                    <option value="extra">جمعية عامة غير عادية (EGA)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 mb-1">تاريخ ووقت الاجتماع</label>
+                                <input type="datetime-local" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm">
+                            </div>
+                        </div>
+
+                        <!-- Agenda Builder -->
+                        <div class="border border-slate-200 rounded-xl p-4">
+                            <h4 class="font-bold text-sm mb-3 flex justify-between items-center">
+                                <span>جدول الأعمال</span>
+                                <button onclick="openAddAgendaModal()" class="text-xs bg-green-50 text-green-600 px-3 py-1.5 rounded-lg hover:bg-green-100 font-bold border border-green-200">
+                                    <i class="fa-solid fa-plus"></i> إضافة بند مخصص
+                                </button>
+                            </h4>
+                            <div class="space-y-2" id="agendaList">
+                                <!-- Default Items inserted by JS -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- STEP 2: Attendance -->
+                    <div id="step2" class="wizard-step hidden space-y-4">
+                        <div class="flex justify-between items-center bg-blue-50 p-3 rounded-xl border border-blue-100">
+                            <div>
+                                <p class="text-xs text-blue-800 font-bold">النصاب المطلوب: <span id="requiredQuorum">50%</span></p>
+                                <p class="text-xs text-blue-600 mt-1">الحضور الحالي: <span class="font-en text-lg font-bold" id="currentQuorum">0%</span></p>
+                            </div>
+                            <div class="w-1/3 h-2 bg-blue-200 rounded-full overflow-hidden">
+                                <div id="quorumBar" class="h-full bg-brandBlue w-0 transition-all duration-500"></div>
+                            </div>
+                        </div>
+
+                        <div class="overflow-x-auto border border-slate-200 rounded-xl max-h-96">
+                            <table class="w-full text-xs text-right">
+                                <thead class="bg-slate-100 font-bold text-slate-600 sticky top-0">
+                                    <tr>
+                                        <th class="p-3">المساهم</th>
+                                        <th class="p-3">الأسهم</th>
+                                        <th class="p-3 text-center">حاضر؟</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y" id="attendanceTable">
+                                    <!-- JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- STEP 3: Voting -->
+                    <div id="step3" class="wizard-step hidden space-y-4">
+                        <p class="text-xs text-slate-500 text-center bg-slate-50 p-2 rounded">قم بإدخال عدد الأسهم الموافقة والمعارضة لكل بند.</p>
+                        <div id="votingList" class="space-y-4">
+                            <!-- Items from Step 1 will be rendered here for voting -->
+                        </div>
+                    </div>
+
+                    <!-- STEP 4: Outputs -->
+                    <div id="step4" class="wizard-step hidden space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 no-print">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 mb-1">وقت انتهاء الاجتماع</label>
+                                <input type="time" class="w-full border rounded-lg p-2 text-sm" id="endTime">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 mb-1">ملاحظات / تحفظات</label>
+                                <textarea class="w-full border rounded-lg p-2 text-sm h-10" placeholder="لا يوجد..."></textarea>
+                            </div>
+                        </div>
+
+                        <div class="border-t pt-4">
+                            <div class="flex gap-4 mb-4 no-print">
+                                <button onclick="showPreview('minutes')" class="flex-1 py-3 bg-white border border-slate-200 rounded-xl hover:border-brandBlue text-sm font-bold text-slate-600 hover:text-brandBlue shadow-sm">
+                                    <i class="fa-solid fa-file-contract"></i> معاينة محضر الاجتماع
+                                </button>
+                                <button onclick="showPreview('sorting')" class="flex-1 py-3 bg-white border border-slate-200 rounded-xl hover:border-brandBlue text-sm font-bold text-slate-600 hover:text-brandBlue shadow-sm">
+                                    <i class="fa-solid fa-chart-pie"></i> معاينة محضر الفرز
+                                </button>
+                                <button onclick="showPreview('attendance')" class="flex-1 py-3 bg-white border border-slate-200 rounded-xl hover:border-brandBlue text-sm font-bold text-slate-600 hover:text-brandBlue shadow-sm">
+                                    <i class="fa-solid fa-list-check"></i> معاينة سجل الحضور
+                                </button>
+                            </div>
+
+                            <!-- Preview Container -->
+                            <div id="previewContainer" class="bg-white border border-slate-300 p-8 rounded-none shadow-sm min-h-[500px] text-black">
+                                <div class="text-center text-slate-400 py-20">اختر وثيقة للمعاينة</div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Footer Navigation -->
+                <div class="p-6 border-t border-slate-100 dark:border-slate-700 flex justify-between bg-slate-50 dark:bg-slate-900 rounded-b-3xl no-print">
+                    <button onclick="prevStep()" id="btnPrev" class="px-6 py-2 bg-white border border-slate-300 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-50 disabled:opacity-50" disabled>السابق</button>
+                    <button onclick="nextStep()" id="btnNext" class="px-8 py-2 bg-brandBlue text-white rounded-xl text-sm font-bold hover:bg-blue-700 shadow-lg">التالي</button>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <!-- Add Custom Agenda Modal -->
+    <div id="addAgendaModal" class="fixed inset-0 bg-black/50 hidden z-[60] flex items-center justify-center">
+        <div class="bg-white w-96 p-6 rounded-2xl shadow-xl">
+            <h3 class="font-bold text-lg mb-4">إضافة بند جديد</h3>
+            <div class="space-y-3">
+                <input type="text" id="newAgendaText" class="w-full border rounded p-2 text-sm" placeholder="نص البند...">
+                <div>
+                    <label class="flex items-center gap-2 text-xs font-bold text-red-600 cursor-pointer">
+                        <input type="checkbox" id="hasConflict" class="accent-red-600"> يوجد تعارض مصالح؟
+                    </label>
+                </div>
+                <div id="conflictList" class="hidden text-xs space-y-1 bg-red-50 p-2 rounded">
+                    <p class="font-bold">منع التصويت عن:</p>
+                    <label class="flex items-center gap-2"><input type="checkbox" value="board"> أعضاء المجلس</label>
+                    <label class="flex items-center gap-2"><input type="checkbox" value="major"> كبار المساهمين</label>
+                </div>
+            </div>
+            <div class="mt-4 flex justify-end gap-2">
+                <button onclick="document.getElementById('addAgendaModal').classList.add('hidden')" class="px-4 py-1.5 border rounded text-xs">إلغاء</button>
+                <button onclick="confirmAddAgenda()" class="px-4 py-1.5 bg-brandBlue text-white rounded text-xs font-bold">إضافة</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Requests Inbox Modal -->
+    <div id="requestsModal" class="fixed inset-0 bg-black/50 hidden z-[60] flex items-center justify-center">
+        <div class="bg-white w-[500px] p-6 rounded-2xl shadow-xl">
+            <div class="flex justify-between items-center mb-4 border-b pb-2">
+                <h3 class="font-bold text-lg">طلبات المساهمين</h3>
+                <button onclick="document.getElementById('requestsModal').classList.add('hidden')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div id="inboxContent">
+                <div class="p-3 bg-slate-50 border rounded-xl flex flex-col gap-2" id="req1">
+                    <div class="flex justify-between">
+                        <span class="font-bold text-sm">هشام السحيباني</span>
+                        <span class="text-[10px] bg-green-100 text-green-700 px-2 rounded">مؤهل (10%)</span>
+                    </div>
+                    <p class="text-xs text-slate-600 bg-white p-2 rounded border">"نبي نعين مراجع خارجي إضافي للتدقيق"</p>
+                    <div class="flex gap-2 mt-1">
+                        <button onclick="processRequest('reject')" class="flex-1 py-1 bg-red-50 text-red-600 text-xs rounded hover:bg-red-100">رفض</button>
+                        <button onclick="processRequest('edit')" class="flex-1 py-1 bg-yellow-50 text-yellow-700 text-xs rounded hover:bg-yellow-100">تعديل وقبول</button>
+                        <button onclick="processRequest('accept')" class="flex-1 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700">قبول</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="layout.js"></script>
+
+    <script>
+        // --- Data ---
+        // بيانات المساهمين الصحيحة
+        const shareholders = [
+            { id: 1, name: "ورثة محمد السحيباني", shares: 210000, percent: 35, role: "وكيل", isBoard: false },
+            { id: 2, name: "شركة بيجي المحدودة", shares: 90000, percent: 15, role: "وكالة", isBoard: false },
+            { id: 3, name: "هشام السحيباني", shares: 60000, percent: 10, role: "أصيل", isBoard: true },
+            { id: 4, name: "عبدالله الحواس", shares: 30000, percent: 5, role: "أصيل", isBoard: true },
+            { id: 5, name: "منصور اليامي", shares: 30000, percent: 5, role: "أصيل", isBoard: true },
+            { id: 6, name: "إبراهيم السكيتي", shares: 30000, percent: 5, role: "أصيل", isBoard: false },
+            { id: 7, name: "وائل السحيباني", shares: 30000, percent: 5, role: "أصيل", isBoard: false },
+            { id: 8, name: "هيثم السحيباني", shares: 30000, percent: 5, role: "أصيل", isBoard: false },
+            { id: 9, name: "أحمد الجاسر", shares: 30000, percent: 5, role: "أصيل", isBoard: false },
+            { id: 10, name: "صالح الوهيبي", shares: 30000, percent: 5, role: "أصيل", isBoard: false },
+            { id: 11, name: "عبدالله الفريجي", shares: 30000, percent: 5, role: "أصيل", isBoard: false }
+        ];
+
+        let currentStep = 1;
+        let meetingData = {
+            type: 'ordinary',
+            agenda: [],
+            attendance: {}, // { id: true/false }
+            votes: {} // { itemId: { agree: 0, disagree: 0, abstain: 0 } }
+        };
+
+        // --- Wizard Logic ---
+        function startMeetingWizard() {
+            document.getElementById('dashboardView').classList.add('hidden');
+            document.getElementById('meetingWizard').classList.remove('hidden');
+            updateDefaultAgenda();
+            currentStep = 1;
+            updateStepUI();
+        }
+
+        function exitWizard() {
+            if(confirm("سيتم فقدان البيانات غير المحفوظة. هل أنت متأكد؟")) {
+                document.getElementById('meetingWizard').classList.add('hidden');
+                document.getElementById('dashboardView').classList.remove('hidden');
+            }
+        }
+
+        function nextStep() {
+            if (currentStep < 4) {
+                currentStep++;
+                updateStepUI();
+                if(currentStep === 2) renderAttendanceStep();
+                if(currentStep === 3) renderVotingStep();
+            } else {
+                window.print(); // Final step action
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 1) {
+                currentStep--;
+                updateStepUI();
+            }
+        }
+
+        function updateStepUI() {
+            // Hide all steps
+            for(let i=1; i<=4; i++) document.getElementById(`step${i}`).classList.add('hidden');
+            // Show current
+            document.getElementById(`step${currentStep}`).classList.remove('hidden');
+            
+            // Update Header & Buttons
+            document.getElementById('wizardSubtitle').innerText = `الخطوة ${currentStep}: ${getStepTitle(currentStep)}`;
+            document.getElementById('btnPrev').disabled = currentStep === 1;
+            document.getElementById('btnNext').innerText = currentStep === 4 ? "طباعة / إنهاء" : "التالي";
+
+            // Update Indicators
+            for(let i=1; i<=4; i++) {
+                const ind = document.getElementById(`step${i}-ind`);
+                ind.className = i === currentStep ? "flex-1 border-b-4 step-active pb-2 transition-colors font-bold" : (i < currentStep ? "flex-1 border-b-4 step-completed pb-2 transition-colors" : "flex-1 border-b-4 step-inactive pb-2 transition-colors");
+            }
+        }
+
+        function getStepTitle(s) {
+            return ["", "الإعداد", "سجل الحضور", "التصويت", "المخرجات"][s];
+        }
+
+        // --- Step 1: Agenda ---
+        function updateDefaultAgenda() {
+            const type = document.getElementById('meetingType').value;
+            meetingData.type = type;
+            const list = document.getElementById('agendaList');
+            meetingData.agenda = []; // Reset
+
+            if (type === 'ordinary') {
+                addAgendaToData("التصويت على تقرير مجلس الإدارة والقوائم المالية", false);
+                addAgendaToData("تعيين مراجع الحسابات وتحديد أتعابه", false);
+                addAgendaToData("إبراء ذمة أعضاء مجلس الإدارة", true, "يحظر تصويت أعضاء المجلس");
+            } else {
+                addAgendaToData("الموافقة على تعديل المادة (3) من النظام الأساس", false);
+                addAgendaToData("الموافقة على زيادة/خفيض رأس المال", false);
+            }
+            renderAgendaList();
+        }
+
+        function addAgendaToData(text, conflict = false, note = "") {
+            meetingData.agenda.push({ id: Date.now() + Math.random(), text, conflict, note });
+        }
+
+        function renderAgendaList() {
+            const list = document.getElementById('agendaList');
+            list.innerHTML = meetingData.agenda.map((item, index) => `
+                <div class="flex justify-between items-center p-3 bg-slate-50 border rounded-lg mb-2">
+                    <div>
+                        <span class="font-bold text-sm text-slate-700">${index + 1}. ${item.text}</span>
+                        ${item.conflict ? `<div class="text-[10px] text-red-500 mt-1"><i class="fa-solid fa-ban"></i> ${item.note}</div>` : ''}
+                    </div>
+                    <button onclick="removeAgendaItem(${index})" class="text-slate-400 hover:text-red-500"><i class="fa-solid fa-trash"></i></button>
+                </div>
+            `).join('');
+        }
+
+        function removeAgendaItem(index) {
+            meetingData.agenda.splice(index, 1);
+            renderAgendaList();
+        }
+
+        // Modal for Custom Agenda
+        function openAddAgendaModal() {
+            document.getElementById('addAgendaModal').classList.remove('hidden');
+            // Checkbox logic toggles conflict list display
+            document.getElementById('hasConflict').onchange = (e) => {
+                document.getElementById('conflictList').classList.toggle('hidden', !e.target.checked);
+            };
+        }
+
+        function confirmAddAgenda() {
+            const text = document.getElementById('newAgendaText').value;
+            const conflict = document.getElementById('hasConflict').checked;
+            if(text) {
+                addAgendaToData(text, conflict, conflict ? "تعارض مصالح مخصص" : "");
+                renderAgendaList();
+                document.getElementById('addAgendaModal').classList.add('hidden');
+                document.getElementById('newAgendaText').value = ''; // reset
+            }
+        }
+
+        // --- Step 2: Attendance ---
+        function renderAttendanceStep() {
+            const tbody = document.getElementById('attendanceTable');
+            tbody.innerHTML = shareholders.map((s, idx) => `
+                <tr class="border-b">
+                    <td class="p-3 font-bold">${s.name}</td>
+                    <td class="p-3 font-mono">${s.shares.toLocaleString()}</td>
+                    <td class="p-3 text-center">
+                        <input type="checkbox" onchange="updateQuorum()" class="w-5 h-5 accent-brandBlue attendance-chk" data-shares="${s.shares}">
+                    </td>
+                </tr>
+            `).join('');
+            updateQuorum();
+        }
+
+        function updateQuorum() {
+            const totalShares = 600000;
+            let present = 0;
+            document.querySelectorAll('.attendance-chk:checked').forEach(cb => {
+                present += parseInt(cb.getAttribute('data-shares'));
+            });
+            
+            const pct = Math.round((present / totalShares) * 100);
+            document.getElementById('currentQuorum').innerText = pct + '%';
+            document.getElementById('quorumBar').style.width = pct + '%';
+            
+            const req = meetingData.type === 'ordinary' ? 50 : 66; // Example logic
+            document.getElementById('requiredQuorum').innerText = req + '%';
+            
+            meetingData.totalPresent = present;
+            meetingData.quorumPct = pct;
+        }
+
+        // --- Step 3: Voting ---
+        function renderVotingStep() {
+            const container = document.getElementById('votingList');
+            container.innerHTML = meetingData.agenda.map((item, idx) => `
+                <div class="border rounded-xl p-4">
+                    <div class="flex justify-between mb-3 border-b pb-2">
+                        <span class="font-bold text-sm">${idx+1}. ${item.text}</span>
+                        ${item.conflict ? '<span class="text-[10px] bg-red-100 text-red-600 px-2 rounded">يوجد استبعاد أصوات</span>' : ''}
+                    </div>
+                    <div class="grid grid-cols-3 gap-3">
+                        <div><label class="text-[10px] block">موافق</label><input type="number" class="w-full border rounded p-1 bg-green-50 text-center vote-agree" data-idx="${idx}"></div>
+                        <div><label class="text-[10px] block">معارض</label><input type="number" class="w-full border rounded p-1 bg-red-50 text-center vote-disagree" data-idx="${idx}"></div>
+                        <div><label class="text-[10px] block">ممتنع</label><input type="number" class="w-full border rounded p-1 bg-slate-50 text-center vote-abstain" data-idx="${idx}"></div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // --- Step 4: Outputs (Preview) ---
+        function showPreview(type) {
+            const container = document.getElementById('previewContainer');
+            const date = new Date().toLocaleDateString('ar-SA');
+            
+            if (type === 'minutes') {
+                container.innerHTML = `
+                    <div class="text-center font-bold text-lg mb-4">محضر اجتماع الجمعية العامة</div>
+                    <p class="text-sm mb-2">عقدت الجمعية بتاريخ ${date}...</p>
+                    <p class="text-sm mb-4">بلغت نسبة الحضور ${meetingData.quorumPct}%.</p>
+                    <div class="text-sm font-bold mb-2">القرارات:</div>
+                    <ul class="list-disc list-inside text-sm">
+                        ${meetingData.agenda.map(i => `<li>${i.text}: (تمت الموافقة)</li>`).join('')}
+                    </ul>
+                `;
+            } else if (type === 'sorting') {
+                container.innerHTML = `
+                    <div class="text-center font-bold text-lg mb-4">محضر لجنة فرز الأصوات</div>
+                    <table class="w-full border text-sm text-center">
+                        <thead class="bg-gray-100"><tr><th class="border p-2">البند</th><th class="border p-2">موافق</th></tr></thead>
+                        <tbody>
+                            ${meetingData.agenda.map(i => `<tr><td class="border p-2 text-right">${i.text}</td><td class="border p-2">--</td></tr>`).join('')}
+                        </tbody>
+                    </table>
+                `;
+            } else {
+                container.innerHTML = `<div class="text-center">سجل الحضور (قائمة الأسماء)</div>`;
+            }
+        }
+
+        // --- Requests Box Logic ---
+        function processRequest(action) {
+            const reqDiv = document.getElementById('req1');
+            if (action === 'reject') {
+                reqDiv.remove();
+            } else if (action === 'edit') {
+                const newText = prompt("قم بصياغة البند:", "الموافقة على تعيين مراجع خارجي إضافي...");
+                if (newText) {
+                    // Logic to add to next meeting queue would go here
+                    alert("تم تعديل البند وقبوله في المسودة.");
+                    reqDiv.remove();
+                }
+            } else {
+                alert("تم قبول البند وإضافته للجدول.");
+                reqDiv.remove();
+            }
+        }
+
+        function openCircularModal() { alert('Circular Resolution Wizard opens here.'); }
+
+    </script>
+</body>
+</html>
