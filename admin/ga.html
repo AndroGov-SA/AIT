@@ -91,6 +91,38 @@
                         <button class="mt-6 px-6 py-2 bg-purple-600 text-white rounded-lg text-sm font-bold">إنشاء قرار</button>
                     </div>
                 </div>
+
+                <!-- Archive Section -->
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <h3 class="font-bold text-slate-700 dark:text-white mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-clock-rotate-left"></i> الأرشيف والاجتماعات السابقة
+                    </h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-right">
+                            <thead class="bg-slate-50 dark:bg-slate-700 font-bold text-slate-500 text-xs">
+                                <tr>
+                                    <th class="p-3">التاريخ</th>
+                                    <th class="p-3">نوع الجمعية</th>
+                                    <th class="p-3">أبرز القرارات</th>
+                                    <th class="p-3">حالة الإحاطة</th>
+                                    <th class="p-3">المستندات</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
+                                <tr class="hover:bg-slate-50">
+                                    <td class="p-3 font-en">21 Sep 2025</td>
+                                    <td class="p-3">غير عادية (الثانية)</td>
+                                    <td class="p-3 text-xs">تخفيض رأس المال 50%، انتخاب المجلس</td>
+                                    <td class="p-3"><span class="bg-green-100 text-green-700 px-2 rounded text-[10px]">مكتملة</span></td>
+                                    <td class="p-3">
+                                        <button onclick="viewArchiveDoc('minutes')" class="text-blue-600 hover:underline text-xs">المحضر</button> | 
+                                        <button onclick="viewArchiveDoc('attendance')" class="text-blue-600 hover:underline text-xs">الحضور</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
 
             <!-- MEETING WIZARD (Hidden by default) -->
@@ -133,6 +165,10 @@
                             <div>
                                 <label class="block text-xs font-bold text-slate-500 mb-1">تاريخ ووقت الاجتماع</label>
                                 <input type="datetime-local" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm">
+                            </div>
+                            <div class="col-span-2">
+                                <label class="block text-xs font-bold text-slate-500 mb-1">المكان</label>
+                                <input type="text" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm" value="المقر الرئيسي - الرياض (وعبر وسائل التقنية الحديثة)">
                             </div>
                         </div>
 
@@ -276,6 +312,25 @@
                         <button onclick="processRequest('accept')" class="flex-1 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700">قبول</button>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Circular Resolution Modal -->
+    <div id="circularModal" class="fixed inset-0 bg-black/50 hidden z-[60] flex items-center justify-center">
+        <div class="bg-white w-[500px] p-6 rounded-2xl shadow-xl">
+            <div class="flex justify-between items-center mb-4 border-b pb-2">
+                <h3 class="font-bold text-lg">قرار بالتمرير</h3>
+                <button onclick="document.getElementById('circularModal').classList.add('hidden')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="space-y-3">
+                <input type="text" class="w-full border rounded p-2 text-sm" placeholder="عنوان القرار">
+                <textarea class="w-full border rounded p-2 text-sm h-24" placeholder="نص القرار..."></textarea>
+                <p class="text-[10px] text-red-500 bg-red-50 p-2 rounded">تنبيه: يجب موافقة جميع المساهمين كتابياً على القرارات بالتمرير.</p>
+            </div>
+            <div class="mt-4 flex justify-end gap-2">
+                <button onclick="document.getElementById('circularModal').classList.add('hidden')" class="px-4 py-1.5 border rounded text-xs">إلغاء</button>
+                <button onclick="alert('تم الإرسال للمساهمين')" class="px-4 py-1.5 bg-purple-600 text-white rounded text-xs font-bold">إرسال للتوقيع</button>
             </div>
         </div>
     </div>
@@ -500,7 +555,19 @@
                     </table>
                 `;
             } else {
-                container.innerHTML = `<div class="text-center">سجل الحضور (قائمة الأسماء)</div>`;
+                // Attendance Preview
+                container.innerHTML = `
+                    <div class="text-center font-bold text-lg mb-4">سجل حضور المساهمين</div>
+                    <p class="text-sm mb-2 text-center">التاريخ: ${date}</p>
+                    <table class="w-full border text-sm text-center">
+                         <thead class="bg-gray-100"><tr><th class="border p-2">المساهم</th><th class="border p-2">الأسهم</th></tr></thead>
+                         <tbody>
+                            ${shareholders.filter((s, i) => document.querySelectorAll('.attendance-chk')[i].checked).map(s => 
+                                `<tr><td class="border p-2">${s.name}</td><td class="border p-2">${s.shares.toLocaleString()}</td></tr>`
+                            ).join('')}
+                         </tbody>
+                    </table>
+                `;
             }
         }
 
@@ -512,8 +579,8 @@
             } else if (action === 'edit') {
                 const newText = prompt("قم بصياغة البند:", "الموافقة على تعيين مراجع خارجي إضافي...");
                 if (newText) {
-                    // Logic to add to next meeting queue would go here
-                    alert("تم تعديل البند وقبوله في المسودة.");
+                    // In a real app, this would add to the "MeetingWizard" agenda
+                    alert("تم تعديل البند وقبوله. سيظهر في الاجتماع القادم.");
                     reqDiv.remove();
                 }
             } else {
@@ -522,7 +589,15 @@
             }
         }
 
-        function openCircularModal() { alert('Circular Resolution Wizard opens here.'); }
+        function openCircularModal() { 
+            document.getElementById('circularModal').classList.remove('hidden'); 
+        }
+
+        // --- Archive View ---
+        function viewArchiveDoc(type) {
+            // Placeholder for viewing archive pdfs
+            alert(`سيتم عرض ملف PDF الخاص بـ ${type === 'minutes' ? 'المحضر' : 'الحضور'} للاجتماع السابق.`);
+        }
 
     </script>
 </body>
