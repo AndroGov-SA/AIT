@@ -199,6 +199,6 @@ window.changeLang = () => {
 window.doLogout = () => {
     if(confirm('تسجيل الخروج؟')) {
         localStorage.removeItem('currentUser');
-        window.location.href = 'login.html'; 
+        window.location.href = 'https://androgov-sa.github.io/AIT/login.html'; 
     }
 };
