@@ -3,34 +3,32 @@
     const lang = localStorage.getItem('lang') || 'ar';
     const isAr = lang === 'ar';
 
-    // 2. Dictionary for Static Text
+    // 2. Dictionary for Static Text (UI Elements)
     const t = {
         title: 'AndroBot',
-        subtitle: isAr ? 'مساعد الحوكمة الذكي' : 'AI Governance Assistant',
+        subtitle: isAr ? 'مساعد الحوكمة الذكي (Live AI)' : 'AI Governance Assistant (Live)',
         welcome: isAr 
-            ? 'مرحباً بك في AndroGov 👋<br>أنا مساعدك الذكي. يمكنني الإجابة عن استفسارات الحوكمة، نسب الملكية، أو المهام العاجلة.' 
-            : 'Welcome to AndroGov 👋<br>I am your AI assistant. I can answer questions about governance, ownership structure, or urgent tasks.',
+            ? 'مرحباً بك في AndroGov 👋<br>أنا متصل الآن بنظام Gemini الذكي. اسألني عن أي تفاصيل تخص الشركة، اللوائح، أو المساهمين.' 
+            : 'Welcome to AndroGov 👋<br>I am connected to Gemini AI. Ask me anything about the company, bylaws, or shareholders.',
         placeholder: isAr ? 'اكتب استفسارك هنا...' : 'Type your query here...',
         suggestions: {
             quorum: { 
                 label: isAr ? 'ما هو النصاب؟' : 'What is the quorum?', 
-                val: isAr ? 'ما هو النصاب القانوني؟' : 'What is the legal quorum?' 
+                val: isAr ? 'ما هو نصاب الجمعية العامة العادية وغير العادية؟' : 'What is the quorum for OGA and EGA?' 
             },
             owners: { 
                 label: isAr ? 'كبار المساهمين' : 'Major Shareholders', 
-                val: isAr ? 'من هم كبار المساهمين؟' : 'Who are major shareholders?' 
+                val: isAr ? 'من هم كبار المساهمين ونسب ملكيتهم؟' : 'Who are the major shareholders and their percentages?' 
             },
-            tasks: { 
-                label: isAr ? 'المهام العاجلة' : 'Urgent Tasks', 
-                val: isAr ? 'المهام العاجلة' : 'Urgent tasks' 
+            fees: { 
+                label: isAr ? 'مكافآت المجلس' : 'Board Fees', 
+                val: isAr ? 'كم تبلغ مكافأة حضور اجتماعات مجلس الإدارة واللجان؟' : 'What are the meeting fees for Board and Committees?' 
             }
         },
-        direction: isAr ? 'rtl' : 'ltr',
-        align: isAr ? 'right-0' : 'left-0' // For FAB positioning adjustment if needed
+        direction: isAr ? 'rtl' : 'ltr'
     };
 
     // 3. Inject HTML UI
-    // Note: We remove the hardcoded dir="rtl" and use ${t.direction}
     const botHTML = `
     <div id="andro-bot-container" class="fixed bottom-6 ${isAr ? 'left-6' : 'right-6'} z-50 flex flex-col items-start gap-4 font-sans" dir="${t.direction}">
         <!-- Chat Window -->
@@ -57,7 +55,7 @@
                 <div class="flex flex-wrap gap-2 mt-2" id="suggestions">
                     <button class="suggestion-btn" data-q="${t.suggestions.quorum.val}">${t.suggestions.quorum.label}</button>
                     <button class="suggestion-btn" data-q="${t.suggestions.owners.val}">${t.suggestions.owners.label}</button>
-                    <button class="suggestion-btn" data-q="${t.suggestions.tasks.val}">${t.suggestions.tasks.label}</button>
+                    <button class="suggestion-btn" data-q="${t.suggestions.fees.val}">${t.suggestions.fees.label}</button>
                 </div>
             </div>
 
@@ -77,7 +75,6 @@
         </button>
     </div>`;
 
-    // Only inject if not already there (to prevent duplicates on re-runs)
     if (!document.getElementById('andro-bot-container')) {
         document.body.insertAdjacentHTML('beforeend', botHTML);
     }
@@ -90,7 +87,6 @@
     const input = document.getElementById('chat-input');
     const chatBody = document.getElementById('chat-body');
 
-    // Toggle Chat
     function toggleChat() {
         chatWindow.classList.toggle('hidden');
         if (!chatWindow.classList.contains('hidden')) input.focus();
@@ -99,30 +95,31 @@
     if(fab) fab.addEventListener('click', toggleChat);
     if(closeBtn) closeBtn.addEventListener('click', toggleChat);
 
-    // Send Message
-    function sendMessage() {
+    // --- GEMINI INTEGRATION ---
+    async function sendMessage() {
         const text = input.value.trim();
         if (!text) return;
 
-        // User Message
+        // UI: User Message
         appendMessage(text, 'user');
         input.value = '';
-
-        // Typing Indicator
         showTyping();
 
-        // Process (Simulated Delay)
-        setTimeout(() => {
+        try {
+            // Call Gemini API
+            const responseText = await callGeminiAPI(text);
             removeTyping();
-            const response = getAIResponse(text, isAr);
-            appendMessage(response, 'bot');
-        }, 1000);
+            appendMessage(responseText, 'bot');
+        } catch (error) {
+            console.error("Gemini Error:", error);
+            removeTyping();
+            appendMessage(isAr ? "عذراً، حدث خطأ في الاتصال بالنظام." : "Sorry, connection error.", 'bot');
+        }
     }
 
     if(sendBtn) sendBtn.addEventListener('click', sendMessage);
     if(input) input.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
 
-    // Handle Suggestions
     document.querySelectorAll('.suggestion-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             input.value = btn.getAttribute('data-q');
@@ -130,6 +127,78 @@
         });
     });
 
+    // --- API LOGIC ---
+    async function callGeminiAPI(userQuery) {
+        const apiKey = ""; // API Key injected by environment
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+
+        // System Prompt: Context about Andromeda
+        const systemInstruction = `
+        You are AndroBot, the AI Governance Assistant for 'Andromeda Information Technology' (Saudi Closed Joint Stock Company).
+        
+        KEY DATA (Context):
+        - Capital: 6,000,000 SAR (Fully Paid).
+        - Shares: 600,000 Shares (Par value 10 SAR).
+        - Headquarters: Riyadh.
+        
+        OWNERSHIP (Shareholders):
+        1. Heirs of Mohammed Al-Suhaibani: 35% (210,000 shares).
+        2. BG LTD Company: 15% (90,000 shares).
+        3. Hesham Al-Suhaibani (Vice/CEO): 10% (60,000 shares).
+        4. Others (Abdullah Al-Hawas, Mansour Al-Yami, etc.): 5% each.
+
+        BOARD OF DIRECTORS (Current Term 2025-2028):
+        - Chairman: Abdullah Al-Hawas (Non-Executive).
+        - Vice/CEO: Hesham Al-Suhaibani (Executive).
+        - Member: Mansour Al-Yami (Executive).
+        - Member: Ahmed Al-Suhaibani (Independent).
+        - Secretary: Ayman Almaghrabi.
+
+        COMMITTEES:
+        - Audit Committee (Active): Mohammed Al-Enezi (Chair), Adel Sasa, Ahmed Al-Suhaibani.
+        - Nomination & Remuneration: Not yet formed.
+        - Executive Committee: Not yet formed.
+
+        FINANCIAL POLICY (Remuneration):
+        - Board Meeting Fee: 2,000 SAR per member.
+        - Committee Meeting Fee: 1,500 SAR per member.
+        - Secretary Meeting Fee: 1,000 SAR.
+        - Annual Cap: 500,000 SAR per member.
+
+        GOVERNANCE RULES (Bylaws):
+        - Ordinary GA Quorum: 25% of capital.
+        - Extraordinary GA Quorum: 50% of capital.
+        - Circular Resolutions: Require 100% approval (unanimous).
+
+        INSTRUCTIONS:
+        - Provide short, concise, and professional answers.
+        - If the user asks in Arabic, reply in Arabic. If in English, reply in English.
+        - Format key numbers in bold <b>text</b>.
+        - Do not hallucinate. If info is missing, say it's not in the current context.
+        `;
+
+        const payload = {
+            contents: [{ parts: [{ text: userQuery }] }],
+            systemInstruction: { parts: [{ text: systemInstruction }] }
+        };
+
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) throw new Error('API Request Failed');
+
+        const data = await response.json();
+        // Extract text and convert markdown bold (**text**) to HTML bold (<b>text</b>) for the chat UI
+        let text = data.candidates?.[0]?.content?.parts?.[0]?.text || (isAr ? "لا توجد إجابة" : "No response");
+        text = text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>'); // Simple Markdown parser
+        text = text.replace(/\n/g, '<br>'); // Line breaks
+        return text;
+    }
+
+    // --- UI Helpers ---
     function appendMessage(html, sender) {
         const div = document.createElement('div');
         div.className = `chat-bubble ${sender}`;
@@ -150,53 +219,5 @@
     function removeTyping() {
         const el = document.getElementById('typing-indicator');
         if (el) el.remove();
-    }
-
-    // 5. Knowledge Base (Multilingual)
-    function getAIResponse(query, isArabic) {
-        const q = query.toLowerCase();
-        
-        if (isArabic) {
-            // --- Arabic Logic ---
-            if (q.includes('نصاب') || q.includes('حضور')) {
-                return `وفقاً للنظام الأساسي:<br>
-                - <b>الجمعية العادية:</b> تتطلب حضور مساهمين يمثلون <b>25%</b> من رأس المال.<br>
-                - <b>الجمعية غير العادية:</b> تتطلب حضور <b>50%</b> من رأس المال.`;
-            }
-            if (q.includes('امتثال') || q.includes('نسبة')) {
-                return `نسبة الامتثال الحالية هي <b class="text-green-600">92%</b>.<br>للوصول إلى 100%، يرجى استكمال تحديث السجل التجاري.`;
-            }
-            if (q.includes('مهام') || q.includes('عاجل')) {
-                return `لديك مهمة عاجلة: <b>اعتماد سياسة المكافآت</b> (الاستحقاق: 01/02/2026).<br>وهناك طلب مراجعة تقرير الرواتب.`;
-            }
-            if (q.includes('ورثة') || q.includes('سحيباني') || q.includes('مساهم')) {
-                return `أكبر الملاك هم <b>ورثة محمد السحيباني</b> (35%)، يليهم هشام السحيباني (10%)، وشركة بيجي المحدودة.`;
-            }
-            if (q.includes('صلاحي') || q.includes('أمين')) {
-                return `بصفتك <b>أمين السر</b>، تشمل صلاحياتك: تدوين المحاضر، حفظ السجلات، ومتابعة تنفيذ القرارات.`;
-            }
-            return `عذراً، لم أفهم استفسارك.<br>جرب السؤال عن: <b>النصاب، الامتثال، أو كبار المساهمين</b>.`;
-
-        } else {
-            // --- English Logic ---
-            if (q.includes('quorum') || q.includes('attend')) {
-                return `According to the Bylaws:<br>
-                - <b>Ordinary Assembly:</b> Requires shareholders representing <b>25%</b> of capital.<br>
-                - <b>Extraordinary Assembly:</b> Requires attendance of <b>50%</b> of capital.`;
-            }
-            if (q.includes('compliance') || q.includes('rate')) {
-                return `Current compliance rate is <b class="text-green-600">92%</b>.<br>To reach 100%, please complete the Commercial Registry update.`;
-            }
-            if (q.includes('task') || q.includes('urgent')) {
-                return `You have an urgent task: <b>Approve Bonus Policy</b> (Due: 01/02/2026).<br>Also, pending Payroll Report review.`;
-            }
-            if (q.includes('heirs') || q.includes('shareholder') || q.includes('owner')) {
-                return `Major shareholders are <b>Heirs of Al-Suhaibani</b> (35%), followed by Hesham Al-Suhaibani (10%), and BG Ltd.`;
-            }
-            if (q.includes('permission') || q.includes('secretary')) {
-                return `As <b>Board Secretary</b>, your role includes: Drafting minutes, maintaining records, and tracking resolution implementation.`;
-            }
-            return `Sorry, I didn't catch that.<br>Try asking about: <b>Quorum, Compliance, or Shareholders</b>.`;
-        }
     }
 })();
