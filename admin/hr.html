@@ -45,6 +45,19 @@
         .toggle-checkbox:checked + .toggle-label {
             background-color: #4267B2;
         }
+        
+        body { transition: opacity 0.2s ease-in-out; }
+
+        /* Bot Styles */
+        .chat-window-anim { transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); transform-origin: bottom left; }
+        .chat-bubble { max-width: 85%; padding: 10px 14px; border-radius: 12px; font-size: 0.9rem; line-height: 1.5; word-wrap: break-word; }
+        .chat-bubble.bot { background-color: #f1f5f9; color: #334155; border-bottom-right-radius: 2px; }
+        .dark .chat-bubble.bot { background-color: #334155; color: #f8fafc; }
+        .chat-bubble.user { background-color: #4267B2; color: white; border-bottom-left-radius: 2px; margin-right: auto; }
+        .typing-indicator span { display: inline-block; width: 6px; height: 6px; background-color: #94a3b8; border-radius: 50%; animation: typing 1.4s infinite ease-in-out both; margin: 0 1px; }
+        .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
+        .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes typing { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
     </style>
 </head>
 <body class="bg-brandGray dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300">
@@ -60,31 +73,31 @@
             <div class="grid grid-cols-1 md:grid-cols-4 gap-6 no-print">
                 <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 flex items-center justify-between">
                     <div>
-                        <p class="text-xs text-slate-500 font-bold uppercase">إجمالي الموظفين</p>
-                        <h3 class="text-2xl font-bold mt-1 font-en">45</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase" data-i18n="kpiTotal">إجمالي الموظفين</p>
+                        <h3 class="text-2xl font-bold mt-1 font-en dark:text-white">45</h3>
                     </div>
-                    <div class="w-10 h-10 bg-blue-50 text-brandBlue rounded-xl flex items-center justify-center text-xl"><i class="fa-solid fa-users"></i></div>
+                    <div class="w-10 h-10 bg-blue-50 dark:bg-blue-900/30 text-brandBlue rounded-xl flex items-center justify-center text-xl"><i class="fa-solid fa-users"></i></div>
                 </div>
                 <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 flex items-center justify-between">
                     <div>
-                        <p class="text-xs text-slate-500 font-bold uppercase">حضور اليوم</p>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase" data-i18n="kpiAttend">حضور اليوم</p>
                         <h3 class="text-2xl font-bold mt-1 font-en text-green-600">42 <span class="text-xs text-slate-400">/ 45</span></h3>
                     </div>
-                    <div class="w-10 h-10 bg-green-50 text-green-600 rounded-xl flex items-center justify-center text-xl"><i class="fa-solid fa-fingerprint"></i></div>
+                    <div class="w-10 h-10 bg-green-50 dark:bg-green-900/30 text-green-600 rounded-xl flex items-center justify-center text-xl"><i class="fa-solid fa-fingerprint"></i></div>
                 </div>
                 <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 flex items-center justify-between">
                     <div>
-                        <p class="text-xs text-slate-500 font-bold uppercase">في إجازة</p>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase" data-i18n="kpiLeave">في إجازة</p>
                         <h3 class="text-2xl font-bold mt-1 font-en text-orange-500">3</h3>
                     </div>
-                    <div class="w-10 h-10 bg-orange-50 text-orange-500 rounded-xl flex items-center justify-center text-xl"><i class="fa-solid fa-plane-departure"></i></div>
+                    <div class="w-10 h-10 bg-orange-50 dark:bg-orange-900/30 text-orange-500 rounded-xl flex items-center justify-center text-xl"><i class="fa-solid fa-plane-departure"></i></div>
                 </div>
                 <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 flex items-center justify-between">
                     <div>
-                        <p class="text-xs text-slate-500 font-bold uppercase">مخالفات هذا الشهر</p>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase" data-i18n="kpiViolations">مخالفات هذا الشهر</p>
                         <h3 class="text-2xl font-bold mt-1 font-en text-red-500">2</h3>
                     </div>
-                    <div class="w-10 h-10 bg-red-50 text-red-500 rounded-xl flex items-center justify-center text-xl"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                    <div class="w-10 h-10 bg-red-50 dark:bg-red-900/30 text-red-500 rounded-xl flex items-center justify-center text-xl"><i class="fa-solid fa-triangle-exclamation"></i></div>
                 </div>
             </div>
 
@@ -94,13 +107,13 @@
                 <!-- Toolbar -->
                 <div class="p-6 border-b border-slate-100 dark:border-slate-700 flex flex-col md:flex-row justify-between items-center gap-4">
                     <div class="flex bg-slate-100 dark:bg-slate-700 p-1 rounded-xl w-full md:w-auto overflow-x-auto">
-                        <button onclick="switchTab('employees')" id="btn-employees" class="px-5 py-2 text-xs font-bold rounded-lg bg-white text-brandBlue shadow-sm transition-all tab-btn">دليل الموظفين</button>
-                        <button onclick="switchTab('permissions')" id="btn-permissions" class="px-5 py-2 text-xs font-bold rounded-lg text-slate-500 hover:text-slate-700 transition-all tab-btn">الحسابات والصلاحيات</button>
-                        <button onclick="switchTab('attendance')" id="btn-attendance" class="px-5 py-2 text-xs font-bold rounded-lg text-slate-500 hover:text-slate-700 transition-all tab-btn">الحضور والغياب</button>
-                        <button onclick="switchTab('violations')" id="btn-violations" class="px-5 py-2 text-xs font-bold rounded-lg text-slate-500 hover:text-slate-700 transition-all tab-btn">الجزاءات</button>
+                        <button onclick="switchTab('employees')" id="btn-employees" class="px-5 py-2 text-xs font-bold rounded-lg bg-white text-brandBlue shadow-sm transition-all tab-btn" data-i18n="tabDir">دليل الموظفين</button>
+                        <button onclick="switchTab('permissions')" id="btn-permissions" class="px-5 py-2 text-xs font-bold rounded-lg text-slate-500 hover:text-slate-700 transition-all tab-btn" data-i18n="tabPerm">الحسابات والصلاحيات</button>
+                        <button onclick="switchTab('attendance')" id="btn-attendance" class="px-5 py-2 text-xs font-bold rounded-lg text-slate-500 hover:text-slate-700 transition-all tab-btn" data-i18n="tabAtt">الحضور والغياب</button>
+                        <button onclick="switchTab('violations')" id="btn-violations" class="px-5 py-2 text-xs font-bold rounded-lg text-slate-500 hover:text-slate-700 transition-all tab-btn" data-i18n="tabVio">الجزاءات</button>
                     </div>
                     <button onclick="openAddUserModal()" class="px-4 py-2 bg-brandBlue text-white rounded-xl text-xs font-bold hover:bg-blue-700 transition flex items-center gap-2 shadow-lg">
-                        <i class="fa-solid fa-user-plus"></i> إضافة موظف جديد
+                        <i class="fa-solid fa-user-plus"></i> <span data-i18n="btnAdd">إضافة موظف جديد</span>
                     </button>
                 </div>
 
@@ -108,25 +121,25 @@
                 <div id="tab-employees" class="tab-content block p-6">
                     <div class="flex justify-between mb-4">
                         <div class="relative w-64">
-                            <input type="text" placeholder="بحث بالاسم أو الرقم الوظيفي..." class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-brandBlue outline-none">
-                            <i class="fa-solid fa-search absolute left-3 top-2.5 text-slate-400"></i>
+                            <input type="text" id="empSearch" onkeyup="filterEmployees()" placeholder="..." class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 dark:border-slate-600 dark:bg-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-brandBlue outline-none dark:text-white" data-i18n-placeholder="plhSearch">
+                            <i class="fa-solid fa-search absolute left-3 top-2.5 text-slate-400 rtl:left-3 ltr:right-3"></i>
                         </div>
                         <div class="flex gap-2">
-                            <button class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500 hover:text-brandBlue"><i class="fa-solid fa-filter"></i></button>
-                            <button class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500 hover:text-brandBlue"><i class="fa-solid fa-download"></i></button>
+                            <button class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-slate-500 hover:text-brandBlue"><i class="fa-solid fa-filter"></i></button>
+                            <button class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-slate-500 hover:text-brandBlue"><i class="fa-solid fa-download"></i></button>
                         </div>
                     </div>
                     
                     <div class="overflow-x-auto">
-                        <table class="w-full text-sm text-right">
+                        <table class="w-full text-sm text-right rtl:text-right ltr:text-left">
                             <thead class="bg-slate-50 dark:bg-slate-700 text-xs font-bold text-slate-500 uppercase">
                                 <tr>
-                                    <th class="p-4 rounded-r-lg">الموظف</th>
-                                    <th class="p-4">القسم / الدور</th>
-                                    <th class="p-4">تاريخ الانضمام</th>
-                                    <th class="p-4">الراتب الأساسي</th>
-                                    <th class="p-4">التقييم</th>
-                                    <th class="p-4 text-center rounded-l-lg">الحالة</th>
+                                    <th class="p-4 rounded-r-lg" data-i18n="colEmp">الموظف</th>
+                                    <th class="p-4" data-i18n="colRole">القسم / الدور</th>
+                                    <th class="p-4" data-i18n="colDate">تاريخ الانضمام</th>
+                                    <th class="p-4" data-i18n="colSal">الراتب الأساسي</th>
+                                    <th class="p-4" data-i18n="colRate">التقييم</th>
+                                    <th class="p-4 text-center rounded-l-lg" data-i18n="colStat">الحالة</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-100 dark:divide-slate-700" id="employeesTable">
@@ -139,9 +152,9 @@
                 <!-- Tab 2: Permissions (RBAC) -->
                 <div id="tab-permissions" class="tab-content hidden p-6">
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        <!-- User List for Permissions -->
-                        <div class="lg:col-span-1 border-l border-slate-200 dark:border-slate-700 pl-4">
-                            <h4 class="font-bold text-sm mb-3">اختر موظفاً لتعديل صلاحياته</h4>
+                        <!-- User List -->
+                        <div class="lg:col-span-1 border-l rtl:border-l ltr:border-r border-slate-200 dark:border-slate-700 pl-4 rtl:pl-4 ltr:pl-0 ltr:pr-4">
+                            <h4 class="font-bold text-sm mb-3 dark:text-white" data-i18n="permSelect">اختر موظفاً لتعديل صلاحياته</h4>
                             <div class="space-y-2 max-h-[500px] overflow-y-auto" id="permUserList">
                                 <!-- Users List -->
                             </div>
@@ -149,63 +162,63 @@
 
                         <!-- Permissions Matrix -->
                         <div class="lg:col-span-2">
-                            <div class="bg-blue-50 p-4 rounded-xl border border-blue-100 mb-6 flex items-start gap-3">
+                            <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl border border-blue-100 dark:border-blue-900/50 mb-6 flex items-start gap-3">
                                 <i class="fa-solid fa-shield-halved text-blue-600 mt-1"></i>
                                 <div>
-                                    <h4 class="font-bold text-blue-800 text-sm">إدارة حساب: <span id="selectedUserPerm">منصور اليامي</span></h4>
-                                    <p class="text-xs text-blue-600">تفعيل الصلاحيات يتيح للموظف الوصول للوحدات المحددة.</p>
+                                    <h4 class="font-bold text-blue-800 dark:text-blue-300 text-sm"><span data-i18n="permManage">إدارة حساب:</span> <span id="selectedUserPerm">منصور اليامي</span></h4>
+                                    <p class="text-xs text-blue-600 dark:text-blue-400" data-i18n="permDesc">تفعيل الصلاحيات يتيح للموظف الوصول للوحدات المحددة.</p>
                                 </div>
                             </div>
 
                             <div class="space-y-4">
                                 <!-- Module 1 -->
-                                <div class="flex justify-between items-center p-3 border rounded-xl hover:bg-slate-50">
+                                <div class="flex justify-between items-center p-3 border dark:border-slate-700 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700/50">
                                     <div class="flex items-center gap-3">
                                         <div class="w-8 h-8 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center"><i class="fa-solid fa-gavel"></i></div>
                                         <div>
-                                            <p class="font-bold text-sm">بوابة الحوكمة والمجلس</p>
-                                            <p class="text-[10px] text-slate-500">الوصول للمحاضر، الجمعيات، والقرارات</p>
+                                            <p class="font-bold text-sm dark:text-white" data-i18n="modGov">بوابة الحوكمة والمجلس</p>
+                                            <p class="text-[10px] text-slate-500" data-i18n="modGovSub">الوصول للمحاضر، الجمعيات، والقرارات</p>
                                         </div>
                                     </div>
                                     <label class="relative inline-flex items-center cursor-pointer">
                                         <input type="checkbox" class="sr-only peer" checked>
-                                        <div class="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brandBlue"></div>
+                                        <div class="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] rtl:after:right-[2px] rtl:after:left-auto after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brandBlue"></div>
                                     </label>
                                 </div>
 
                                 <!-- Module 2 -->
-                                <div class="flex justify-between items-center p-3 border rounded-xl hover:bg-slate-50">
+                                <div class="flex justify-between items-center p-3 border dark:border-slate-700 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700/50">
                                     <div class="flex items-center gap-3">
                                         <div class="w-8 h-8 rounded-lg bg-green-100 text-green-600 flex items-center justify-center"><i class="fa-solid fa-money-bill-wave"></i></div>
                                         <div>
-                                            <p class="font-bold text-sm">النظام المالي</p>
-                                            <p class="text-[10px] text-slate-500">الرواتب، الميزانية، المصروفات</p>
+                                            <p class="font-bold text-sm dark:text-white" data-i18n="modFin">النظام المالي</p>
+                                            <p class="text-[10px] text-slate-500" data-i18n="modFinSub">الرواتب، الميزانية، المصروفات</p>
                                         </div>
                                     </div>
                                     <label class="relative inline-flex items-center cursor-pointer">
                                         <input type="checkbox" class="sr-only peer">
-                                        <div class="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brandBlue"></div>
+                                        <div class="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] rtl:after:right-[2px] rtl:after:left-auto after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brandBlue"></div>
                                     </label>
                                 </div>
 
                                 <!-- Module 3 -->
-                                <div class="flex justify-between items-center p-3 border rounded-xl hover:bg-slate-50">
+                                <div class="flex justify-between items-center p-3 border dark:border-slate-700 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700/50">
                                     <div class="flex items-center gap-3">
                                         <div class="w-8 h-8 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center"><i class="fa-solid fa-users"></i></div>
                                         <div>
-                                            <p class="font-bold text-sm">نظام الموارد البشرية (Admin)</p>
-                                            <p class="text-[10px] text-slate-500">تعديل الموظفين، الرواتب، العقود</p>
+                                            <p class="font-bold text-sm dark:text-white" data-i18n="modHR">نظام الموارد البشرية (Admin)</p>
+                                            <p class="text-[10px] text-slate-500" data-i18n="modHRSub">تعديل الموظفين، الرواتب، العقود</p>
                                         </div>
                                     </div>
                                     <label class="relative inline-flex items-center cursor-pointer">
                                         <input type="checkbox" class="sr-only peer" checked>
-                                        <div class="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brandBlue"></div>
+                                        <div class="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] rtl:after:right-[2px] rtl:after:left-auto after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brandBlue"></div>
                                     </label>
                                 </div>
                             </div>
                             
                             <div class="mt-6 flex justify-end">
-                                <button onclick="alert('تم تحديث الصلاحيات بنجاح')" class="px-6 py-2 bg-slate-800 text-white rounded-lg text-xs font-bold hover:bg-black">حفظ التغييرات</button>
+                                <button onclick="alert('تم تحديث الصلاحيات بنجاح')" class="px-6 py-2 bg-slate-800 text-white rounded-lg text-xs font-bold hover:bg-black" data-i18n="btnSavePerm">حفظ التغييرات</button>
                             </div>
                         </div>
                     </div>
@@ -214,19 +227,19 @@
                 <!-- Tab 3: Attendance -->
                 <div id="tab-attendance" class="tab-content hidden p-6">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="border rounded-2xl p-4">
-                            <h4 class="font-bold text-sm mb-4">سجل اليوم (08 Jan 2026)</h4>
+                        <div class="border dark:border-slate-700 rounded-2xl p-4">
+                            <h4 class="font-bold text-sm mb-4 dark:text-white" data-i18n="attToday">سجل اليوم (08 Jan 2026)</h4>
                             <div class="space-y-3" id="dailyAttendanceList">
                                 <!-- Generated -->
                             </div>
                         </div>
-                        <div class="border rounded-2xl p-4">
-                            <h4 class="font-bold text-sm mb-4">طلبات الإجازة المعلقة</h4>
+                        <div class="border dark:border-slate-700 rounded-2xl p-4">
+                            <h4 class="font-bold text-sm mb-4 dark:text-white" data-i18n="attPending">طلبات الإجازة المعلقة</h4>
                             <div class="space-y-3">
-                                <div class="p-3 bg-slate-50 rounded-lg flex justify-between items-center">
+                                <div class="p-3 bg-slate-50 dark:bg-slate-700/50 rounded-lg flex justify-between items-center">
                                     <div>
-                                        <p class="text-xs font-bold">اختر محمد (مطور)</p>
-                                        <p class="text-[10px] text-slate-500">إجازة سنوية (5 أيام)</p>
+                                        <p class="text-xs font-bold dark:text-white" data-i18n="leaveReqName">محمد (مطور)</p>
+                                        <p class="text-[10px] text-slate-500" data-i18n="leaveReqType">إجازة سنوية (5 أيام)</p>
                                     </div>
                                     <div class="flex gap-2">
                                         <button class="text-green-600 hover:bg-green-50 p-1 rounded"><i class="fa-solid fa-check"></i></button>
@@ -241,37 +254,37 @@
                 <!-- Tab 4: Violations & Penalties -->
                 <div id="tab-violations" class="tab-content hidden p-6">
                     <div class="flex justify-between items-center mb-4">
-                        <h4 class="font-bold text-sm">سجل الجزاءات والمخالفات</h4>
-                        <button onclick="alert('نموذج تسجيل مخالفة')" class="text-xs text-red-600 border border-red-200 px-3 py-1 rounded hover:bg-red-50">
+                        <h4 class="font-bold text-sm dark:text-white" data-i18n="vioTitle">سجل الجزاءات والمخالفات</h4>
+                        <button onclick="alert('نموذج تسجيل مخالفة')" class="text-xs text-red-600 border border-red-200 px-3 py-1 rounded hover:bg-red-50" data-i18n="btnAddVio">
                             + تسجيل مخالفة
                         </button>
                     </div>
                     
                     <div class="overflow-x-auto">
-                        <table class="w-full text-sm text-right">
-                            <thead class="bg-red-50 text-red-900 text-xs">
+                        <table class="w-full text-sm text-right rtl:text-right ltr:text-left">
+                            <thead class="bg-red-50 dark:bg-red-900/10 text-red-900 dark:text-red-200 text-xs">
                                 <tr>
-                                    <th class="p-3">الموظف</th>
-                                    <th class="p-3">نوع المخالفة</th>
-                                    <th class="p-3">الجزاء</th>
-                                    <th class="p-3">التاريخ</th>
-                                    <th class="p-3">الحالة</th>
+                                    <th class="p-3" data-i18n="colVioName">الموظف</th>
+                                    <th class="p-3" data-i18n="colVioType">نوع المخالفة</th>
+                                    <th class="p-3" data-i18n="colVioPen">الجزاء</th>
+                                    <th class="p-3" data-i18n="colVioDate">التاريخ</th>
+                                    <th class="p-3" data-i18n="colVioStat">الحالة</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y">
+                            <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
                                 <tr>
-                                    <td class="p-3 font-bold">الحسين حمود الحميدي</td>
-                                    <td class="p-3 text-xs">غياب بدون عذر</td>
-                                    <td class="p-3 text-xs">خصم يوم</td>
-                                    <td class="p-3 font-en text-xs">02 Jan 2026</td>
-                                    <td class="p-3"><span class="bg-slate-200 px-2 py-0.5 rounded text-[10px]">مؤرشف</span></td>
+                                    <td class="p-3 font-bold dark:text-white" data-i18n="vio1Name">الحسين حمود الحميدي</td>
+                                    <td class="p-3 text-xs text-slate-500" data-i18n="vio1Type">غياب بدون عذر</td>
+                                    <td class="p-3 text-xs text-red-500" data-i18n="vio1Pen">خصم يوم</td>
+                                    <td class="p-3 font-en text-xs text-slate-500">02 Jan 2026</td>
+                                    <td class="p-3"><span class="bg-slate-200 dark:bg-slate-600 px-2 py-0.5 rounded text-[10px]" data-i18n="vioArch">مؤرشف</span></td>
                                 </tr>
                                 <tr>
-                                    <td class="p-3 font-bold">هادي احمد</td>
-                                    <td class="p-3 text-xs">تأخير متكرر</td>
-                                    <td class="p-3 text-xs">إنذار كتابي أول</td>
-                                    <td class="p-3 font-en text-xs">05 Jan 2026</td>
-                                    <td class="p-3"><span class="bg-green-100 text-green-700 px-2 py-0.5 rounded text-[10px]">تم التوقيع</span></td>
+                                    <td class="p-3 font-bold dark:text-white" data-i18n="vio2Name">هادي احمد</td>
+                                    <td class="p-3 text-xs text-slate-500" data-i18n="vio2Type">تأخير متكرر</td>
+                                    <td class="p-3 text-xs text-orange-500" data-i18n="vio2Pen">إنذار كتابي أول</td>
+                                    <td class="p-3 font-en text-xs text-slate-500">05 Jan 2026</td>
+                                    <td class="p-3"><span class="bg-green-100 text-green-700 px-2 py-0.5 rounded text-[10px]" data-i18n="vioSigned">تم التوقيع</span></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -286,80 +299,298 @@
     <!-- Add User Modal -->
     <div id="addUserModal" class="fixed inset-0 bg-black/60 hidden z-50 flex items-center justify-center backdrop-blur-sm">
         <div class="bg-white dark:bg-slate-800 w-full max-w-lg rounded-2xl shadow-xl p-6">
-            <div class="flex justify-between items-center mb-4 border-b pb-2">
-                <h3 class="font-bold text-lg dark:text-white">إضافة موظف / حساب جديد</h3>
+            <div class="flex justify-between items-center mb-4 border-b pb-2 dark:border-slate-700">
+                <h3 class="font-bold text-lg dark:text-white" data-i18n="modAddTitle">إضافة موظف / حساب جديد</h3>
                 <button onclick="document.getElementById('addUserModal').classList.add('hidden')"><i class="fa-solid fa-xmark text-slate-400"></i></button>
             </div>
             
             <form class="space-y-4">
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-bold text-slate-500 mb-1">الاسم الأول</label>
-                        <input type="text" class="w-full border rounded p-2 text-sm bg-slate-50" placeholder="محمد">
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="modFName">الاسم الأول</label>
+                        <input type="text" class="w-full border dark:border-slate-600 rounded p-2 text-sm bg-slate-50 dark:bg-slate-700 dark:text-white" placeholder="...">
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-500 mb-1">اسم العائلة</label>
-                        <input type="text" class="w-full border rounded p-2 text-sm bg-slate-50" placeholder="العلي">
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="modLName">اسم العائلة</label>
+                        <input type="text" class="w-full border dark:border-slate-600 rounded p-2 text-sm bg-slate-50 dark:bg-slate-700 dark:text-white" placeholder="...">
                     </div>
                 </div>
                 
                 <div>
-                    <label class="block text-xs font-bold text-slate-500 mb-1">البريد الإلكتروني (اسم المستخدم)</label>
-                    <input type="email" class="w-full border rounded p-2 text-sm bg-slate-50" placeholder="name@androomeda.com">
+                    <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="modEmail">البريد الإلكتروني (اسم المستخدم)</label>
+                    <input type="email" class="w-full border dark:border-slate-600 rounded p-2 text-sm bg-slate-50 dark:bg-slate-700 dark:text-white" placeholder="name@androomeda.com">
                 </div>
 
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-bold text-slate-500 mb-1">القسم</label>
-                        <select class="w-full border rounded p-2 text-sm bg-slate-50">
-                            <option>الموارد البشرية</option>
-                            <option>المالية</option>
-                            <option>تقنية المعلومات</option>
-                            <option>المبيعات</option>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="modDept">القسم</label>
+                        <select class="w-full border dark:border-slate-600 rounded p-2 text-sm bg-slate-50 dark:bg-slate-700 dark:text-white">
+                            <option data-i18n="dHR">الموارد البشرية</option>
+                            <option data-i18n="dFin">المالية</option>
+                            <option data-i18n="dIT">تقنية المعلومات</option>
+                            <option data-i18n="dSales">المبيعات</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-500 mb-1">المسمى الوظيفي</label>
-                        <input type="text" class="w-full border rounded p-2 text-sm bg-slate-50" placeholder="مثال: محاسب">
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="modJob">المسمى الوظيفي</label>
+                        <input type="text" class="w-full border dark:border-slate-600 rounded p-2 text-sm bg-slate-50 dark:bg-slate-700 dark:text-white" placeholder="...">
                     </div>
                 </div>
 
-                <div class="border-t pt-3">
-                    <p class="text-xs font-bold text-brandBlue mb-2">صلاحيات النظام الافتراضية</p>
+                <div class="border-t pt-3 dark:border-slate-700">
+                    <p class="text-xs font-bold text-brandBlue mb-2" data-i18n="modPerms">صلاحيات النظام الافتراضية</p>
                     <div class="flex gap-4">
-                        <label class="flex items-center gap-2 text-xs"><input type="checkbox" class="accent-brandBlue"> بوابة الموظف (الخدمة الذاتية)</label>
-                        <label class="flex items-center gap-2 text-xs"><input type="checkbox" class="accent-brandBlue"> البريد الإلكتروني</label>
+                        <label class="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-400"><input type="checkbox" class="accent-brandBlue"> <span data-i18n="modPortal">بوابة الموظف</span></label>
+                        <label class="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-400"><input type="checkbox" class="accent-brandBlue"> <span data-i18n="modMail">البريد الإلكتروني</span></label>
                     </div>
                 </div>
             </form>
 
             <div class="mt-6 flex justify-end gap-3">
-                <button onclick="document.getElementById('addUserModal').classList.add('hidden')" class="px-4 py-2 border rounded-lg text-xs font-bold hover:bg-slate-50">إلغاء</button>
-                <button onclick="alert('تم إنشاء حساب الموظف بنجاح'); document.getElementById('addUserModal').classList.add('hidden')" class="px-6 py-2 bg-brandBlue text-white rounded-lg text-xs font-bold hover:bg-blue-700">حفظ وإرسال بيانات الدخول</button>
+                <button onclick="document.getElementById('addUserModal').classList.add('hidden')" class="px-4 py-2 border rounded-lg text-xs font-bold hover:bg-slate-50 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700" data-i18n="cancel">إلغاء</button>
+                <button onclick="alert('تم إنشاء الحساب'); document.getElementById('addUserModal').classList.add('hidden')" class="px-6 py-2 bg-brandBlue text-white rounded-lg text-xs font-bold hover:bg-blue-700" data-i18n="btnSave">حفظ</button>
             </div>
         </div>
     </div>
 
+    <!-- AndroBot Widget (AI Assistant) -->
+    <div id="andro-bot-container" class="fixed bottom-6 left-6 z-50 flex flex-col items-start gap-4 font-sans" dir="rtl">
+        <!-- Chat Window -->
+        <div id="chat-window" class="hidden bg-white dark:bg-slate-800 w-80 md:w-96 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden flex flex-col chat-window-anim" style="height: 500px; max-height: 70vh;">
+            <div class="bg-brandBlue p-4 flex justify-between items-center text-white">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center"><i class="fa-solid fa-robot"></i></div>
+                    <div><h4 class="font-bold text-sm">AndroBot</h4><p class="text-[10px] text-white/80">مساعد الحوكمة الذكي</p></div>
+                </div>
+                <button id="close-chat-btn" class="text-white/80 hover:text-white transition"><i class="fa-solid fa-times"></i></button>
+            </div>
+            <div id="chat-body" class="flex-1 p-4 bg-slate-50 dark:bg-slate-900/50 overflow-y-auto custom-scroll space-y-3 flex flex-col">
+                <div class="chat-bubble bot">مرحباً بك 👋<br>أنا هنا لمساعدتك في استفسارات الموظفين، الرواتب، أو الإجازات.</div>
+                <div class="flex flex-wrap gap-2 mt-2" id="suggestions">
+                    <button class="suggestion-btn text-xs bg-white border border-brandBlue/30 text-brandBlue px-3 py-1.5 rounded-full" data-q="عدد الموظفين">عدد الموظفين</button>
+                    <button class="suggestion-btn text-xs bg-white border border-brandBlue/30 text-brandBlue px-3 py-1.5 rounded-full" data-q="من هو المدير المالي؟">من هو المدير المالي؟</button>
+                </div>
+            </div>
+            <div class="p-3 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 flex gap-2">
+                <input type="text" id="chat-input" placeholder="اكتب استفسارك..." class="flex-1 bg-slate-100 dark:bg-slate-900 border-none rounded-lg text-sm px-4 py-2 focus:ring-2 focus:ring-brandBlue outline-none dark:text-white">
+                <button id="send-btn" class="w-10 h-10 rounded-lg bg-brandBlue text-white hover:bg-blue-700 transition flex items-center justify-center"><i class="fa-solid fa-paper-plane"></i></button>
+            </div>
+        </div>
+        <!-- Floating Button -->
+        <button id="chat-fab" class="w-14 h-14 bg-brandBlue hover:bg-blue-700 text-white rounded-full shadow-lg shadow-blue-600/30 flex items-center justify-center text-2xl transition-all transform hover:scale-110 active:scale-95 animate-bounce-slow">
+            <i class="fa-solid fa-comment-dots"></i>
+            <span class="absolute top-0 right-0 w-4 h-4 bg-brandRed rounded-full border-2 border-white dark:border-slate-900"></span>
+        </button>
+    </div>
+
     <script src="layout.js"></script>
+    <script src="bot.js"></script>
 
     <script>
+        // --- Translation Dictionary ---
+        const t = {
+            ar: {
+                pageTitle: "AndroGov | الموارد البشرية",
+                kpiTotal: "إجمالي الموظفين",
+                kpiAttend: "حضور اليوم",
+                kpiLeave: "في إجازة",
+                kpiViolations: "مخالفات هذا الشهر",
+                tabDir: "دليل الموظفين",
+                tabPerm: "الحسابات والصلاحيات",
+                tabAtt: "الحضور والغياب",
+                tabVio: "الجزاءات",
+                btnAdd: "إضافة موظف جديد",
+                searchPlh: "بحث بالاسم أو الرقم الوظيفي...",
+                colEmp: "الموظف",
+                colRole: "القسم / الدور",
+                colDate: "تاريخ الانضمام",
+                colSal: "الراتب الأساسي",
+                colRate: "التقييم",
+                colStatus: "الحالة",
+                statActive: "نشط",
+                statLeave: "إجازة",
+                permSelect: "اختر موظفاً لتعديل صلاحياته",
+                permManage: "إدارة حساب:",
+                permDesc: "تفعيل الصلاحيات يتيح للموظف الوصول للوحدات المحددة.",
+                modGov: "بوابة الحوكمة والمجلس",
+                modGovSub: "الوصول للمحاضر، الجمعيات، والقرارات",
+                modFin: "النظام المالي",
+                modFinSub: "الرواتب، الميزانية، المصروفات",
+                modHR: "نظام الموارد البشرية (Admin)",
+                modHRSub: "تعديل الموظفين، الرواتب، العقود",
+                btnSavePerm: "حفظ التغييرات",
+                attToday: "سجل اليوم (08 Jan 2026)",
+                attPending: "طلبات الإجازة المعلقة",
+                leaveReqName: "محمد (مطور)",
+                leaveReqType: "إجازة سنوية (5 أيام)",
+                vioTitle: "سجل الجزاءات والمخالفات",
+                btnAddVio: "+ تسجيل مخالفة",
+                colVioName: "الموظف",
+                colVioType: "نوع المخالفة",
+                colVioPen: "الجزاء",
+                colVioDate: "التاريخ",
+                colVioStat: "الحالة",
+                vio1Name: "الحسين حمود الحميدي",
+                vio1Type: "غياب بدون عذر",
+                vio1Pen: "خصم يوم",
+                vioArch: "مؤرشف",
+                vio2Name: "هادي احمد",
+                vio2Type: "تأخير متكرر",
+                vio2Pen: "إنذار كتابي أول",
+                vioSigned: "تم التوقيع",
+                modAddTitle: "إضافة موظف / حساب جديد",
+                modFName: "الاسم الأول",
+                modLName: "اسم العائلة",
+                modEmail: "البريد الإلكتروني (اسم المستخدم)",
+                modDept: "القسم",
+                dHR: "الموارد البشرية",
+                dFin: "المالية",
+                dIT: "تقنية المعلومات",
+                dSales: "المبيعات",
+                modJob: "المسمى الوظيفي",
+                modPerms: "صلاحيات النظام الافتراضية",
+                modPortal: "بوابة الموظف (الخدمة الذاتية)",
+                modMail: "البريد الإلكتروني",
+                cancel: "إلغاء",
+                btnSave: "حفظ",
+                // Data
+                e1Name: "منصور حسن اليامي",
+                e1Role: "مدير الموارد البشرية",
+                e1Dept: "الإدارة العليا",
+                e2Name: "أيمن علي المغربي",
+                e2Role: "مدير الحوكمة",
+                e2Dept: "الحوكمة",
+                e3Name: "محمد طاهر البخيتي",
+                e3Role: "المدير المالي (CFO)",
+                e3Dept: "المالية",
+                e4Name: "وعد عصمت حسين",
+                e4Role: "مشرفة طبية",
+                e4Dept: "التطوير",
+                e5Name: "رند الحوراني",
+                e5Role: "مديرة التطوير",
+                e5Dept: "التقنية"
+            },
+            en: {
+                pageTitle: "AndroGov | Human Resources",
+                kpiTotal: "Total Employees",
+                kpiAttend: "Today's Attendance",
+                kpiLeave: "On Leave",
+                kpiViolations: "Violations This Month",
+                tabDir: "Employee Directory",
+                tabPerm: "Accounts & Permissions",
+                tabAtt: "Attendance & Leaves",
+                tabVio: "Penalties",
+                btnAdd: "Add New Employee",
+                searchPlh: "Search by Name or ID...",
+                colEmp: "Employee",
+                colRole: "Dept / Role",
+                colDate: "Join Date",
+                colSal: "Basic Salary",
+                colRate: "Rating",
+                colStatus: "Status",
+                statActive: "Active",
+                statLeave: "On Leave",
+                permSelect: "Select Employee to Edit Permissions",
+                permManage: "Managing User:",
+                permDesc: "Enabling permissions grants access to specific modules.",
+                modGov: "Governance & Board Portal",
+                modGovSub: "Access Minutes, GA, Resolutions",
+                modFin: "Finance System",
+                modFinSub: "Payroll, Budget, Expenses",
+                modHR: "HR System (Admin)",
+                modHRSub: "Edit Employees, Salaries, Contracts",
+                btnSavePerm: "Save Changes",
+                attToday: "Today's Log (08 Jan 2026)",
+                attPending: "Pending Leave Requests",
+                leaveReqName: "Mohammed (Dev)",
+                leaveReqType: "Annual Leave (5 Days)",
+                vioTitle: "Violations & Penalties Log",
+                btnAddVio: "+ Log Violation",
+                colVioName: "Employee",
+                colVioType: "Violation Type",
+                colVioPen: "Penalty",
+                colVioDate: "Date",
+                colVioStat: "Status",
+                vio1Name: "Alhussain Al-Humaidi",
+                vio1Type: "Unexcused Absence",
+                vio1Pen: "1 Day Deduction",
+                vioArch: "Archived",
+                vio2Name: "Hadi Ahmed",
+                vio2Type: "Frequent Lateness",
+                vio2Pen: "First Written Warning",
+                vioSigned: "Signed",
+                modAddTitle: "Add New Employee / Account",
+                modFName: "First Name",
+                modLName: "Last Name",
+                modEmail: "Email (Username)",
+                modDept: "Department",
+                dHR: "Human Resources",
+                dFin: "Finance",
+                dIT: "Information Technology",
+                dSales: "Sales",
+                modJob: "Job Title",
+                modPerms: "Default System Permissions",
+                modPortal: "Employee Portal (Self Service)",
+                modMail: "Email Access",
+                cancel: "Cancel",
+                btnSave: "Save",
+                // Data
+                e1Name: "Mansour Al-Yami",
+                e1Role: "HR Manager",
+                e1Dept: "Top Management",
+                e2Name: "Ayman Almaghrabi",
+                e2Role: "Governance Manager",
+                e2Dept: "Governance",
+                e3Name: "Mohammed Al-Bukhaiti",
+                e3Role: "CFO",
+                e3Dept: "Finance",
+                e4Name: "Waad Esmat",
+                e4Role: "Medical Supervisor",
+                e4Dept: "Development",
+                e5Name: "Rand Al-Hourani",
+                e5Role: "Development Manager",
+                e5Dept: "Technology"
+            }
+        };
+
         // Mock Data
         const employees = [
-            { id: 1, name: "منصور حسن اليامي", dept: "الإدارة العليا", role: "مدير الموارد البشرية", joinDate: "2020-05-01", salary: 15000, status: "نشط", avatar: "M" },
-            { id: 2, name: "أيمن علي المغربي", dept: "الحوكمة", role: "مدير الحوكمة", joinDate: "2022-01-18", salary: 11500, status: "نشط", avatar: "A" },
-            { id: 3, name: "محمد طاهر البخيتي", dept: "المالية", role: "المدير المالي (CFO)", joinDate: "2020-01-10", salary: 12000, status: "نشط", avatar: "M" },
-            { id: 4, name: "وعد عصمت حسين", dept: "التطوير", role: "مشرفة طبية", joinDate: "2024-06-01", salary: 6000, status: "نشط", avatar: "S" },
-            { id: 5, name: "رند الحوراني", dept: "التقنية", role: "مديرة التطوير", joinDate: "2022-11-20", salary: 9000, status: "إجازة", avatar: "K" }
+            { id: 1, nameAr: "منصور حسن اليامي", nameEn: "Mansour Al-Yami", deptAr: "الإدارة العليا", deptEn: "Top Mgmt", roleAr: "مدير الموارد البشرية", roleEn: "HR Manager", joinDate: "2020-05-01", salary: 15000, status: "active", avatar: "M" },
+            { id: 2, nameAr: "أيمن علي المغربي", nameEn: "Ayman Almaghrabi", deptAr: "الحوكمة", deptEn: "Governance", roleAr: "مدير الحوكمة", roleEn: "Gov Manager", joinDate: "2022-01-18", salary: 11500, status: "active", avatar: "A" },
+            { id: 3, nameAr: "محمد طاهر البخيتي", nameEn: "Mohammed Al-Bukhaiti", deptAr: "المالية", deptEn: "Finance", roleAr: "المدير المالي (CFO)", roleEn: "CFO", joinDate: "2020-01-10", salary: 12000, status: "active", avatar: "M" },
+            { id: 4, nameAr: "وعد عصمت حسين", nameEn: "Waad Esmat", deptAr: "التطوير", deptEn: "Dev", roleAr: "مشرفة طبية", roleEn: "Medical Sup", joinDate: "2024-06-01", salary: 6000, status: "active", avatar: "S" },
+            { id: 5, nameAr: "رند الحوراني", nameEn: "Rand Al-Hourani", deptAr: "التقنية", deptEn: "Tech", roleAr: "مديرة التطوير", roleEn: "Dev Manager", joinDate: "2022-11-20", salary: 9000, status: "leave", avatar: "K" }
         ];
 
         document.addEventListener('DOMContentLoaded', () => {
+            updatePageLanguage();
+        });
+
+        window.updatePageLanguage = function() {
+            const lang = localStorage.getItem('lang') || 'ar';
+            const dict = t[lang];
+            
+            document.documentElement.lang = lang;
+            document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+
+            // Text
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if(dict[key]) el.innerText = dict[key];
+            });
+            // Placeholders
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                if(dict[key]) el.placeholder = dict[key];
+            });
+
             renderEmployees();
             renderPermList();
             renderDailyAttendance();
-        });
+        }
 
         // --- Tab Switching ---
-        function switchTab(target) {
+        window.switchTab = function(target) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             document.querySelectorAll('.tab-btn').forEach(el => {
                 el.classList.remove('bg-white', 'text-brandBlue', 'shadow-sm');
@@ -370,66 +601,111 @@
         }
 
         // --- Render Functions ---
-        function renderEmployees() {
+        window.renderEmployees = function() {
+            const lang = localStorage.getItem('lang') || 'ar';
+            const dict = t[lang];
             const tbody = document.getElementById('employeesTable');
-            tbody.innerHTML = employees.map(e => `
+            const search = document.getElementById('empSearch').value.toLowerCase();
+            
+            const filtered = employees.filter(e => 
+                (lang==='ar' ? e.nameAr : e.nameEn).toLowerCase().includes(search)
+            );
+
+            tbody.innerHTML = filtered.map(e => `
                 <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition border-b border-slate-100 dark:border-slate-700">
                     <td class="p-4">
                         <div class="flex items-center gap-3">
                             <div class="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-600 flex items-center justify-center font-bold text-xs text-slate-500">${e.avatar}</div>
                             <div>
-                                <p class="font-bold text-slate-800 dark:text-white text-xs">${e.name}</p>
-                                <p class="text-[9px] text-slate-400 font-en">ID: ${2000 + e.id}</p>
+                                <p class="font-bold text-slate-800 dark:text-white text-xs text-left rtl:text-right ltr:text-left">${lang==='ar' ? e.nameAr : e.nameEn}</p>
+                                <p class="text-[9px] text-slate-400 font-en text-left rtl:text-right ltr:text-left">ID: ${2000 + e.id}</p>
                             </div>
                         </div>
                     </td>
-                    <td class="p-4 text-xs">
-                        <p class="font-bold">${e.role}</p>
-                        <p class="text-slate-400">${e.dept}</p>
+                    <td class="p-4 text-xs text-left rtl:text-right ltr:text-left">
+                        <p class="font-bold">${lang==='ar' ? e.roleAr : e.roleEn}</p>
+                        <p class="text-slate-400">${lang==='ar' ? e.deptAr : e.deptEn}</p>
                     </td>
-                    <td class="p-4 font-en text-xs text-slate-500">${e.joinDate}</td>
-                    <td class="p-4 font-en text-xs font-bold text-slate-700 dark:text-slate-300">${e.salary.toLocaleString()}</td>
-                    <td class="p-4 text-xs text-yellow-500"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i></td>
+                    <td class="p-4 font-en text-xs text-slate-500 text-left rtl:text-right ltr:text-left">${e.joinDate}</td>
+                    <td class="p-4 font-en text-xs font-bold text-slate-700 dark:text-slate-300 text-left rtl:text-right ltr:text-left">${e.salary.toLocaleString()}</td>
+                    <td class="p-4 text-xs text-yellow-500 text-center"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i></td>
                     <td class="p-4 text-center">
-                        <span class="px-2 py-1 rounded text-[10px] font-bold ${e.status === 'نشط' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'}">${e.status}</span>
+                        <span class="px-2 py-1 rounded text-[10px] font-bold ${e.status === 'active' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'}">
+                            ${e.status === 'active' ? dict.statActive : dict.statLeave}
+                        </span>
                     </td>
                 </tr>
             `).join('');
         }
 
-        function renderPermList() {
+        window.filterEmployees = function() {
+            renderEmployees();
+        }
+
+        window.renderPermList = function() {
+            const lang = localStorage.getItem('lang') || 'ar';
             const list = document.getElementById('permUserList');
             list.innerHTML = employees.map(e => `
-                <div onclick="selectUserForPerm('${e.name}')" class="p-2 hover:bg-blue-50 rounded cursor-pointer flex items-center gap-2 border-b border-slate-50">
-                    <div class="w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center text-[10px]">${e.avatar}</div>
+                <div onclick="selectUserForPerm('${lang==='ar' ? e.nameAr : e.nameEn}')" class="p-2 hover:bg-blue-50 dark:hover:bg-slate-700 rounded cursor-pointer flex items-center gap-2 border-b border-slate-50 dark:border-slate-700">
+                    <div class="w-6 h-6 rounded-full bg-slate-200 dark:bg-slate-600 flex items-center justify-center text-[10px] text-slate-600 dark:text-slate-300">${e.avatar}</div>
                     <div>
-                        <p class="text-xs font-bold">${e.name}</p>
-                        <p class="text-[9px] text-slate-400">${e.role}</p>
+                        <p class="text-xs font-bold dark:text-slate-200">${lang==='ar' ? e.nameAr : e.nameEn}</p>
+                        <p class="text-[9px] text-slate-400">${lang==='ar' ? e.roleAr : e.roleEn}</p>
                     </div>
                 </div>
             `).join('');
         }
 
-        function renderDailyAttendance() {
+        window.renderDailyAttendance = function() {
+            const lang = localStorage.getItem('lang') || 'ar';
             const list = document.getElementById('dailyAttendanceList');
             list.innerHTML = employees.map(e => `
-                <div class="flex items-center justify-between p-2 hover:bg-slate-50 rounded">
+                <div class="flex items-center justify-between p-2 hover:bg-slate-50 dark:hover:bg-slate-700 rounded">
                     <div class="flex items-center gap-2">
-                        <div class="w-2 h-2 rounded-full ${e.status === 'نشط' ? 'bg-green-500' : 'bg-orange-500'}"></div>
-                        <span class="text-xs font-bold">${e.name}</span>
+                        <div class="w-2 h-2 rounded-full ${e.status === 'active' ? 'bg-green-500' : 'bg-orange-500'}"></div>
+                        <span class="text-xs font-bold dark:text-slate-200">${lang==='ar' ? e.nameAr : e.nameEn}</span>
                     </div>
-                    <span class="text-[10px] font-en text-slate-500">${e.status === 'نشط' ? '08:00 AM' : '-'}</span>
+                    <span class="text-[10px] font-en text-slate-500">${e.status === 'active' ? '08:00 AM' : '-'}</span>
                 </div>
             `).join('');
         }
 
         // --- Logic ---
-        function selectUserForPerm(name) {
+        window.selectUserForPerm = function(name) {
             document.getElementById('selectedUserPerm').innerText = name;
         }
 
-        function openAddUserModal() {
+        window.openAddUserModal = function() {
             document.getElementById('addUserModal').classList.remove('hidden');
+        }
+
+        // --- Bot Override for HR Context ---
+        const originalGetAIResponse = window.getAIResponse; 
+        
+        window.getAIResponse = function(query, isArabic) {
+            const q = query.toLowerCase();
+            
+            if (q.includes('count') || q.includes('total') || q.includes('عدد') || q.includes('موظف')) {
+                return isArabic 
+                    ? `إجمالي عدد الموظفين هو <b>45 موظفاً</b>.`
+                    : `Total number of employees is <b>45</b>.`;
+            }
+            
+            if (q.includes('cfo') || q.includes('finance') || q.includes('مالي')) {
+                return isArabic
+                    ? `المدير المالي هو <b>محمد طاهر البخيتي</b>.`
+                    : `The CFO is <b>Mohammed Al-Bukhaiti</b>.`;
+            }
+
+            if (q.includes('hr') || q.includes('human') || q.includes('بشرية')) {
+                return isArabic
+                    ? `مدير الموارد البشرية هو <b>منصور اليامي</b>.`
+                    : `HR Manager is <b>Mansour Al-Yami</b>.`;
+            }
+
+            return isArabic
+                ? `يمكنني إجابتك عن: <b>عدد الموظفين</b>، <b>المدير المالي</b>، أو <b>مدير HR</b>.`
+                : `I can answer about: <b>Total Employees</b>, <b>CFO</b>, or <b>HR Manager</b>.`;
         }
 
     </script>
