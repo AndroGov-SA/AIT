@@ -35,6 +35,19 @@
             .no-print { display: none !important; }
             body { background: white; }
         }
+        
+        body { transition: opacity 0.2s ease-in-out; }
+
+        /* Bot Styles */
+        .chat-window-anim { transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); transform-origin: bottom left; }
+        .chat-bubble { max-width: 85%; padding: 10px 14px; border-radius: 12px; font-size: 0.9rem; line-height: 1.5; word-wrap: break-word; }
+        .chat-bubble.bot { background-color: #f1f5f9; color: #334155; border-bottom-right-radius: 2px; }
+        .dark .chat-bubble.bot { background-color: #334155; color: #f8fafc; }
+        .chat-bubble.user { background-color: #4267B2; color: white; border-bottom-left-radius: 2px; margin-right: auto; }
+        .typing-indicator span { display: inline-block; width: 6px; height: 6px; background-color: #94a3b8; border-radius: 50%; animation: typing 1.4s infinite ease-in-out both; margin: 0 1px; }
+        .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
+        .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes typing { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
     </style>
 </head>
 <body class="bg-brandGray dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300">
@@ -50,17 +63,17 @@
             <div class="flex flex-col md:flex-row justify-between items-center gap-4 bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700">
                 <div>
                     <h2 class="text-2xl font-bold text-slate-800 dark:text-white flex items-center gap-2">
-                        <i class="fa-solid fa-book-open text-brandRed"></i> مكتبة السياسات واللوائح
+                        <i class="fa-solid fa-book-open text-brandRed"></i> <span data-i18n="pageTitle">مكتبة السياسات واللوائح</span>
                     </h2>
-                    <p class="text-xs text-slate-500 mt-1">المرجع الموحد لجميع لوائح وسياسات الشركة وإصداراتها.</p>
+                    <p class="text-xs text-slate-500 mt-1" data-i18n="pageDesc">المرجع الموحد لجميع لوائح وسياسات الشركة وإصداراتها.</p>
                 </div>
                 <div class="flex gap-3 w-full md:w-auto">
                     <div class="relative w-full md:w-64">
-                        <input type="text" id="policySearch" onkeyup="filterPolicies()" placeholder="بحث عن سياسة..." class="w-full pl-10 pr-4 py-2.5 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl text-sm focus:ring-2 focus:ring-brandBlue outline-none transition-all">
+                        <input type="text" id="policySearch" onkeyup="filterPolicies()" placeholder="..." class="w-full pl-10 pr-4 py-2.5 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl text-sm focus:ring-2 focus:ring-brandBlue outline-none transition-all" data-i18n-placeholder="plhSearch">
                         <i class="fa-solid fa-search absolute left-3 top-3 text-slate-400"></i>
                     </div>
                     <button onclick="openUploadModal()" class="px-5 py-2.5 bg-brandBlue text-white rounded-xl text-sm font-bold shadow-lg hover:bg-blue-700 transition flex items-center gap-2 whitespace-nowrap">
-                        <i class="fa-solid fa-cloud-arrow-up"></i> رفع جديد
+                        <i class="fa-solid fa-cloud-arrow-up"></i> <span data-i18n="btnUpload">رفع جديد</span>
                     </button>
                 </div>
             </div>
@@ -69,49 +82,49 @@
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <button onclick="filterCategory('all')" class="p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 hover:border-brandBlue transition text-center group active-category ring-2 ring-brandBlue ring-offset-2 ring-offset-slate-50 dark:ring-offset-slate-900" id="cat-all">
                     <i class="fa-solid fa-layer-group text-2xl text-brandBlue mb-2 group-hover:scale-110 transition-transform"></i>
-                    <h4 class="font-bold text-sm">الكل</h4>
-                    <span class="text-[10px] text-slate-400" id="count-all">0 وثيقة</span>
+                    <h4 class="font-bold text-sm" data-i18n="catAll">الكل</h4>
+                    <span class="text-[10px] text-slate-400" id="count-all">0 <span data-i18n="unitDoc">وثيقة</span></span>
                 </button>
                 <button onclick="filterCategory('governance')" class="p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 hover:border-purple-500 transition text-center group" id="cat-gov">
                     <i class="fa-solid fa-gavel text-2xl text-purple-500 mb-2 group-hover:scale-110 transition-transform"></i>
-                    <h4 class="font-bold text-sm">الحوكمة</h4>
-                    <span class="text-[10px] text-slate-400" id="count-gov">0 وثيقة</span>
+                    <h4 class="font-bold text-sm" data-i18n="catGov">الحوكمة</h4>
+                    <span class="text-[10px] text-slate-400" id="count-gov">0 <span data-i18n="unitDoc">وثيقة</span></span>
                 </button>
                 <button onclick="filterCategory('hr')" class="p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 hover:border-green-500 transition text-center group" id="cat-hr">
                     <i class="fa-solid fa-users text-2xl text-green-500 mb-2 group-hover:scale-110 transition-transform"></i>
-                    <h4 class="font-bold text-sm">الموارد البشرية</h4>
-                    <span class="text-[10px] text-slate-400" id="count-hr">0 وثيقة</span>
+                    <h4 class="font-bold text-sm" data-i18n="catHR">الموارد البشرية</h4>
+                    <span class="text-[10px] text-slate-400" id="count-hr">0 <span data-i18n="unitDoc">وثيقة</span></span>
                 </button>
                 <button onclick="filterCategory('finance')" class="p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 hover:border-yellow-500 transition text-center group" id="cat-fin">
                     <i class="fa-solid fa-money-bill-wave text-2xl text-yellow-500 mb-2 group-hover:scale-110 transition-transform"></i>
-                    <h4 class="font-bold text-sm">المالية</h4>
-                    <span class="text-[10px] text-slate-400" id="count-fin">0 وثيقة</span>
+                    <h4 class="font-bold text-sm" data-i18n="catFin">المالية</h4>
+                    <span class="text-[10px] text-slate-400" id="count-fin">0 <span data-i18n="unitDoc">وثيقة</span></span>
                 </button>
             </div>
 
             <!-- Policies List -->
             <div class="bg-white dark:bg-slate-800 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden">
                 <div class="p-5 border-b border-slate-100 dark:border-slate-700 bg-slate-50/50 flex justify-between items-center">
-                    <h3 class="font-bold text-slate-800 dark:text-white text-sm">قائمة الوثائق</h3>
+                    <h3 class="font-bold text-slate-800 dark:text-white text-sm" data-i18n="listTitle">قائمة الوثائق</h3>
                     <div class="flex gap-2">
-                        <select class="bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs rounded-lg px-3 py-1.5 focus:outline-none">
-                            <option>الأحدث أولاً</option>
-                            <option>الأقدم أولاً</option>
-                            <option>حسب الاسم</option>
+                        <select class="bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs rounded-lg px-3 py-1.5 focus:outline-none dark:text-white">
+                            <option data-i18n="sortNewest">الأحدث أولاً</option>
+                            <option data-i18n="sortOldest">الأقدم أولاً</option>
+                            <option data-i18n="sortName">حسب الاسم</option>
                         </select>
                     </div>
                 </div>
                 
                 <div class="overflow-x-auto">
-                    <table class="w-full text-sm text-right">
+                    <table class="w-full text-sm text-right rtl:text-right ltr:text-left">
                         <thead class="bg-slate-50 dark:bg-slate-700 font-bold text-slate-500 text-xs uppercase">
                             <tr>
-                                <th class="p-4 rounded-r-lg">اسم السياسة</th>
-                                <th class="p-4">التصنيف</th>
-                                <th class="p-4">الإصدار</th>
-                                <th class="p-4">تاريخ التحديث</th>
-                                <th class="p-4">الحالة</th>
-                                <th class="p-4 text-center rounded-l-lg">إجراءات</th>
+                                <th class="p-4 rounded-r-lg" data-i18n="colName">اسم السياسة</th>
+                                <th class="p-4" data-i18n="colCat">التصنيف</th>
+                                <th class="p-4" data-i18n="colVer">الإصدار</th>
+                                <th class="p-4" data-i18n="colDate">تاريخ التحديث</th>
+                                <th class="p-4" data-i18n="colStatus">الحالة</th>
+                                <th class="p-4 text-center rounded-l-lg" data-i18n="colAction">إجراءات</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100 dark:divide-slate-700" id="policiesTable">
@@ -128,28 +141,28 @@
     <div id="uploadModal" class="fixed inset-0 bg-black/60 hidden z-50 flex items-center justify-center backdrop-blur-sm">
         <div class="bg-white dark:bg-slate-800 w-full max-w-lg rounded-2xl shadow-2xl p-6 transform transition-all scale-100">
             <div class="flex justify-between items-center mb-6 border-b pb-4 dark:border-slate-700">
-                <h3 class="font-bold text-lg dark:text-white">رفع وثيقة جديدة</h3>
+                <h3 class="font-bold text-lg dark:text-white" data-i18n="modUploadTitle">رفع وثيقة جديدة</h3>
                 <button onclick="closeModal('uploadModal')" class="text-slate-400 hover:text-red-500"><i class="fa-solid fa-xmark"></i></button>
             </div>
             
             <form onsubmit="handleUpload(event)" class="space-y-4">
                 <div>
-                    <label class="block text-xs font-bold text-slate-500 mb-1">اسم الوثيقة</label>
-                    <input type="text" required class="w-full border dark:border-slate-600 bg-white dark:bg-slate-700 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-brandBlue outline-none dark:text-white" placeholder="مثال: سياسة الأمن السيبراني">
+                    <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="modNameLabel">اسم الوثيقة</label>
+                    <input type="text" required class="w-full border dark:border-slate-600 bg-white dark:bg-slate-700 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-brandBlue outline-none dark:text-white" data-i18n-placeholder="plhModName" placeholder="مثال: سياسة الأمن السيبراني">
                 </div>
                 
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-bold text-slate-500 mb-1">التصنيف</label>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="modCatLabel">التصنيف</label>
                         <select class="w-full border dark:border-slate-600 bg-white dark:bg-slate-700 rounded-lg p-2.5 text-sm dark:text-white">
-                            <option value="governance">حوكمة</option>
-                            <option value="hr">موارد بشرية</option>
-                            <option value="finance">مالية</option>
-                            <option value="ops">تشغيل</option>
+                            <option value="governance" data-i18n="catGov">حوكمة</option>
+                            <option value="hr" data-i18n="catHR">موارد بشرية</option>
+                            <option value="finance" data-i18n="catFin">مالية</option>
+                            <option value="ops" data-i18n="catOps">تشغيل</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-500 mb-1">رقم الإصدار</label>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="modVerLabel">رقم الإصدار</label>
                         <input type="text" class="w-full border dark:border-slate-600 bg-white dark:bg-slate-700 rounded-lg p-2.5 text-sm dark:text-white" placeholder="v1.0">
                     </div>
                 </div>
@@ -157,18 +170,18 @@
                 <div class="border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-xl p-6 text-center hover:bg-slate-50 dark:hover:bg-slate-700/50 transition cursor-pointer relative">
                     <input type="file" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" onchange="fileSelected(this)">
                     <i class="fa-solid fa-cloud-arrow-up text-3xl text-slate-400 mb-2"></i>
-                    <p class="text-sm text-slate-500 font-bold" id="uploadText">اضغط لاختيار ملف PDF</p>
-                    <p class="text-[10px] text-slate-400 mt-1">الحد الأقصى: 10 ميجابايت</p>
+                    <p class="text-sm text-slate-500 font-bold" id="uploadText" data-i18n="modDrag">اضغط لاختيار ملف PDF</p>
+                    <p class="text-[10px] text-slate-400 mt-1" data-i18n="modSize">الحد الأقصى: 10 ميجابايت</p>
                 </div>
 
                 <div class="flex items-center gap-2 mt-2">
                     <input type="checkbox" id="notifyUsers" class="w-4 h-4 rounded text-brandBlue focus:ring-brandBlue bg-slate-100 border-gray-300">
-                    <label for="notifyUsers" class="text-xs text-slate-600 dark:text-slate-400">إشعار الموظفين وطلب الإقرار بالقراءة</label>
+                    <label for="notifyUsers" class="text-xs text-slate-600 dark:text-slate-400" data-i18n="modNotify">إشعار الموظفين وطلب الإقرار بالقراءة</label>
                 </div>
 
                 <div class="mt-6 flex justify-end gap-3 pt-4 border-t dark:border-slate-700">
-                    <button type="button" onclick="closeModal('uploadModal')" class="px-4 py-2 border dark:border-slate-600 rounded-lg text-xs font-bold dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700">إلغاء</button>
-                    <button type="submit" class="px-6 py-2 bg-brandBlue text-white rounded-lg text-xs font-bold hover:bg-blue-700 shadow-md">رفع وحفظ</button>
+                    <button type="button" onclick="closeModal('uploadModal')" class="px-4 py-2 border dark:border-slate-600 rounded-lg text-xs font-bold dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700" data-i18n="cancel">إلغاء</button>
+                    <button type="submit" class="px-6 py-2 bg-brandBlue text-white rounded-lg text-xs font-bold hover:bg-blue-700 shadow-md" data-i18n="btnSave">رفع وحفظ</button>
                 </div>
             </form>
         </div>
@@ -178,7 +191,7 @@
     <div id="historyModal" class="fixed inset-0 bg-black/60 hidden z-50 flex items-center justify-center backdrop-blur-sm">
         <div class="bg-white dark:bg-slate-800 w-full max-w-2xl rounded-2xl shadow-xl p-6">
             <div class="flex justify-between items-center mb-4 border-b pb-2 dark:border-slate-700">
-                <h3 class="font-bold text-lg dark:text-white">سجل الإصدارات</h3>
+                <h3 class="font-bold text-lg dark:text-white" data-i18n="modHistTitle">سجل الإصدارات</h3>
                 <button onclick="closeModal('historyModal')"><i class="fa-solid fa-xmark text-slate-400"></i></button>
             </div>
             <div class="space-y-3" id="historyContent">
@@ -187,50 +200,215 @@
         </div>
     </div>
 
+    <!-- AndroBot Widget (AI Assistant) -->
+    <div id="andro-bot-container" class="fixed bottom-6 left-6 z-50 flex flex-col items-start gap-4 font-sans" dir="rtl">
+        <!-- Chat Window -->
+        <div id="chat-window" class="hidden bg-white dark:bg-slate-800 w-80 md:w-96 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden flex flex-col chat-window-anim" style="height: 500px; max-height: 70vh;">
+            <div class="bg-brandBlue p-4 flex justify-between items-center text-white">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center"><i class="fa-solid fa-robot"></i></div>
+                    <div><h4 class="font-bold text-sm">AndroBot</h4><p class="text-[10px] text-white/80">مساعد الحوكمة الذكي</p></div>
+                </div>
+                <button id="close-chat-btn" class="text-white/80 hover:text-white transition"><i class="fa-solid fa-times"></i></button>
+            </div>
+            <div id="chat-body" class="flex-1 p-4 bg-slate-50 dark:bg-slate-900/50 overflow-y-auto custom-scroll space-y-3 flex flex-col">
+                <div class="chat-bubble bot">مرحباً بك في مكتبة السياسات 👋<br>أنا هنا لمساعدتك. اسألني عن سياسة الإجازات، الانتداب، أو أي لائحة أخرى.</div>
+                <div class="flex flex-wrap gap-2 mt-2" id="suggestions">
+                    <button class="suggestion-btn text-xs bg-white border border-brandBlue/30 text-brandBlue px-3 py-1.5 rounded-full" data-q="كم بدل الانتداب؟">كم بدل الانتداب؟</button>
+                    <button class="suggestion-btn text-xs bg-white border border-brandBlue/30 text-brandBlue px-3 py-1.5 rounded-full" data-q="سياسة الإجازات">سياسة الإجازات</button>
+                </div>
+            </div>
+            <div class="p-3 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 flex gap-2">
+                <input type="text" id="chat-input" placeholder="اكتب استفسارك..." class="flex-1 bg-slate-100 dark:bg-slate-900 border-none rounded-lg text-sm px-4 py-2 focus:ring-2 focus:ring-brandBlue outline-none dark:text-white">
+                <button id="send-btn" class="w-10 h-10 rounded-lg bg-brandBlue text-white hover:bg-blue-700 transition flex items-center justify-center"><i class="fa-solid fa-paper-plane"></i></button>
+            </div>
+        </div>
+        <!-- Floating Button -->
+        <button id="chat-fab" class="w-14 h-14 bg-brandBlue hover:bg-blue-700 text-white rounded-full shadow-lg shadow-blue-600/30 flex items-center justify-center text-2xl transition-all transform hover:scale-110 active:scale-95 animate-bounce-slow">
+            <i class="fa-solid fa-comment-dots"></i>
+            <span class="absolute top-0 right-0 w-4 h-4 bg-brandRed rounded-full border-2 border-white dark:border-slate-900"></span>
+        </button>
+    </div>
+
     <script src="layout.js"></script>
+    <script src="bot.js"></script>
 
     <script>
+        // --- Translation Dictionary ---
+        const t = {
+            ar: {
+                pageTitle: "مكتبة السياسات واللوائح",
+                pageDesc: "المرجع الموحد لجميع لوائح وسياسات الشركة وإصداراتها.",
+                plhSearch: "بحث عن سياسة...",
+                btnUpload: "رفع جديد",
+                catAll: "الكل",
+                catGov: "الحوكمة",
+                catHR: "الموارد البشرية",
+                catFin: "المالية",
+                catOps: "التشغيل",
+                unitDoc: "وثيقة",
+                listTitle: "قائمة الوثائق",
+                sortNewest: "الأحدث أولاً",
+                sortOldest: "الأقدم أولاً",
+                sortName: "حسب الاسم",
+                colName: "اسم السياسة",
+                colCat: "التصنيف",
+                colVer: "الإصدار",
+                colDate: "تاريخ التحديث",
+                colStatus: "الحالة",
+                colAction: "إجراءات",
+                statusActive: "معتمد",
+                statusDraft: "مسودة",
+                statusArchived: "ملغى",
+                by: "بواسطة:",
+                noResults: "لا توجد نتائج مطابقة",
+                modUploadTitle: "رفع وثيقة جديدة",
+                modNameLabel: "اسم الوثيقة",
+                plhModName: "مثال: سياسة الأمن السيبراني",
+                modCatLabel: "التصنيف",
+                modVerLabel: "رقم الإصدار",
+                modDrag: "اضغط لاختيار ملف PDF",
+                modSize: "الحد الأقصى: 10 ميجابايت",
+                modNotify: "إشعار الموظفين وطلب الإقرار بالقراءة",
+                cancel: "إلغاء",
+                btnSave: "رفع وحفظ",
+                modHistTitle: "سجل الإصدارات",
+                currVer: "الإصدار الحالي:",
+                finalApp: "اعتماد نهائي",
+                initVer: "الإصدار الأولي",
+                successUpload: "تم رفع الوثيقة بنجاح! ستظهر كمسودة بانتظار الاعتماد.",
+                confirmApprove: "هل أنت متأكد من اعتماد هذه الوثيقة ونشرها؟",
+                successApprove: "تم الاعتماد بنجاح.",
+                // Data
+                pol1: "النظام الأساس",
+                pol2: "سياسة المكافآت",
+                pol3: "لائحة الموارد البشرية",
+                pol4: "الدليل الداخلي (مسودة)",
+                pol5: "سياسة المشتريات",
+                pol6: "ميثاق لجنة المراجعة"
+            },
+            en: {
+                pageTitle: "Policy Library",
+                pageDesc: "Unified reference for all company bylaws, policies, and versions.",
+                plhSearch: "Search policy...",
+                btnUpload: "Upload New",
+                catAll: "All",
+                catGov: "Governance",
+                catHR: "Human Resources",
+                catFin: "Finance",
+                catOps: "Operations",
+                unitDoc: "Docs",
+                listTitle: "Documents List",
+                sortNewest: "Newest First",
+                sortOldest: "Oldest First",
+                sortName: "By Name",
+                colName: "Policy Name",
+                colCat: "Category",
+                colVer: "Version",
+                colDate: "Update Date",
+                colStatus: "Status",
+                colAction: "Actions",
+                statusActive: "Active",
+                statusDraft: "Draft",
+                statusArchived: "Archived",
+                by: "By:",
+                noResults: "No matching results",
+                modUploadTitle: "Upload New Document",
+                modNameLabel: "Document Name",
+                plhModName: "Ex: Cybersecurity Policy",
+                modCatLabel: "Category",
+                modVerLabel: "Version No",
+                modDrag: "Click to select PDF",
+                modSize: "Max size: 10MB",
+                modNotify: "Notify employees & request acknowledgement",
+                cancel: "Cancel",
+                btnSave: "Upload & Save",
+                modHistTitle: "Version History",
+                currVer: "Current Version:",
+                finalApp: "Final Approval",
+                initVer: "Initial Version",
+                successUpload: "Document uploaded successfully! It will appear as draft pending approval.",
+                confirmApprove: "Are you sure you want to approve and publish this document?",
+                successApprove: "Approved successfully.",
+                // Data
+                pol1: "Company Bylaws",
+                pol2: "Remuneration Policy",
+                pol3: "HR Policy",
+                pol4: "Internal Manual (Draft)",
+                pol5: "Procurement Policy",
+                pol6: "Audit Committee Charter"
+            }
+        };
+
         // --- Mock Data ---
         const policies = [
-            { id: 1, name: "النظام الأساس", cat: "governance", ver: "v3.0", date: "2025-09-21", status: "active", file: "bylaws.pdf" },
-            { id: 2, name: "سياسة المكافآت", cat: "governance", ver: "v2.1", date: "2022-05-19", status: "active", file: "rewards.pdf" },
-            { id: 3, name: "لائحة الموارد البشرية", cat: "hr", ver: "v1.5", date: "2024-01-10", status: "active", file: "hr_policy.pdf" },
-            { id: 4, name: "الدليل الداخلي (مسودة)", cat: "ops", ver: "v0.9", date: "2025-12-30", status: "draft", file: "internal_manual.pdf", author: "Ayman" },
-            { id: 5, name: "سياسة المشتريات", cat: "finance", ver: "v1.0", date: "2023-06-15", status: "active", file: "procurement.pdf" },
-            { id: 6, name: "ميثاق لجنة المراجعة", cat: "governance", ver: "v1.2", date: "2025-12-22", status: "active", file: "audit_charter.pdf" }
+            { id: 1, nameAr: "النظام الأساس", nameEn: "Company Bylaws", cat: "governance", ver: "v3.0", date: "2025-09-21", status: "active", file: "bylaws.pdf" },
+            { id: 2, nameAr: "سياسة المكافآت", nameEn: "Remuneration Policy", cat: "governance", ver: "v2.1", date: "2022-05-19", status: "active", file: "rewards.pdf" },
+            { id: 3, nameAr: "لائحة الموارد البشرية", nameEn: "HR Policy", cat: "hr", ver: "v1.5", date: "2024-01-10", status: "active", file: "hr_policy.pdf" },
+            { id: 4, nameAr: "الدليل الداخلي (مسودة)", nameEn: "Internal Manual (Draft)", cat: "ops", ver: "v0.9", date: "2025-12-30", status: "draft", file: "internal_manual.pdf", author: "Ayman" },
+            { id: 5, nameAr: "سياسة المشتريات", nameEn: "Procurement Policy", cat: "finance", ver: "v1.0", date: "2023-06-15", status: "active", file: "procurement.pdf" },
+            { id: 6, nameAr: "ميثاق لجنة المراجعة", nameEn: "Audit Committee Charter", cat: "governance", ver: "v1.2", date: "2025-12-22", status: "active", file: "audit_charter.pdf" }
         ];
 
         let currentFilter = 'all';
 
         document.addEventListener('DOMContentLoaded', () => {
-            renderPolicies();
-            updateCounts();
+            updatePageLanguage();
         });
 
+        window.updatePageLanguage = function() {
+            const lang = localStorage.getItem('lang') || 'ar';
+            const dict = t[lang];
+            
+            // Document Direction
+            document.documentElement.lang = lang;
+            document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+
+            // Static Text
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if(dict[key]) el.innerText = dict[key];
+            });
+
+            // Placeholders
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                if(dict[key]) el.placeholder = dict[key];
+            });
+            
+            renderPolicies();
+            updateCounts();
+        }
+
         // --- Rendering ---
-        function renderPolicies() {
+        window.renderPolicies = function() {
+            const lang = localStorage.getItem('lang') || 'ar';
+            const dict = t[lang];
             const tbody = document.getElementById('policiesTable');
             tbody.innerHTML = '';
 
             const filtered = policies.filter(p => {
                 const matchCat = currentFilter === 'all' || p.cat === currentFilter;
                 const search = document.getElementById('policySearch').value.toLowerCase();
-                const matchSearch = p.name.toLowerCase().includes(search);
+                const pName = lang === 'ar' ? p.nameAr : p.nameEn;
+                const matchSearch = pName.toLowerCase().includes(search);
                 return matchCat && matchSearch;
             });
 
             if(filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-slate-400 text-sm">لا توجد نتائج مطابقة</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-slate-400 text-sm">${dict.noResults}</td></tr>`;
                 return;
             }
 
             filtered.forEach(p => {
                 let statusBadge = '';
-                if(p.status === 'active') statusBadge = `<span class="bg-green-100 text-green-700 text-[10px] px-2 py-0.5 rounded-full font-bold border border-green-200">معتمد</span>`;
-                else if(p.status === 'draft') statusBadge = `<span class="bg-orange-100 text-orange-700 text-[10px] px-2 py-0.5 rounded-full font-bold border border-orange-200 animate-pulse">مسودة</span>`;
-                else statusBadge = `<span class="bg-gray-100 text-gray-600 text-[10px] px-2 py-0.5 rounded-full">ملغى</span>`;
+                if(p.status === 'active') statusBadge = `<span class="bg-green-100 text-green-700 text-[10px] px-2 py-0.5 rounded-full font-bold border border-green-200">${dict.statusActive}</span>`;
+                else if(p.status === 'draft') statusBadge = `<span class="bg-orange-100 text-orange-700 text-[10px] px-2 py-0.5 rounded-full font-bold border border-orange-200 animate-pulse">${dict.statusDraft}</span>`;
+                else statusBadge = `<span class="bg-gray-100 text-gray-600 text-[10px] px-2 py-0.5 rounded-full">${dict.statusArchived}</span>`;
 
-                const catLabel = { governance: 'حوكمة', hr: 'موارد بشرية', finance: 'مالية', ops: 'تشغيل' }[p.cat] || p.cat;
+                const catKey = p.cat === 'governance' ? 'catGov' : p.cat === 'hr' ? 'catHR' : p.cat === 'finance' ? 'catFin' : 'catOps';
+                const catLabel = dict[catKey] || p.cat;
+                const pName = lang === 'ar' ? p.nameAr : p.nameEn;
 
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition border-b border-slate-100 dark:border-slate-700 group">
@@ -240,8 +418,8 @@
                                     <i class="fa-regular fa-file-pdf"></i>
                                 </div>
                                 <div>
-                                    <p class="font-bold text-slate-800 dark:text-white text-xs">${p.name}</p>
-                                    ${p.status === 'draft' ? `<p class="text-[9px] text-slate-400">بواسطة: ${p.author}</p>` : ''}
+                                    <p class="font-bold text-slate-800 dark:text-white text-xs text-left rtl:text-right ltr:text-left">${pName}</p>
+                                    ${p.status === 'draft' ? `<p class="text-[9px] text-slate-400 text-left rtl:text-right ltr:text-left">${dict.by} ${p.author}</p>` : ''}
                                 </div>
                             </div>
                         </td>
@@ -251,10 +429,10 @@
                         <td class="p-4">${statusBadge}</td>
                         <td class="p-4 text-center">
                             <div class="flex justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <button onclick="window.open('${p.file}')" class="w-7 h-7 rounded bg-blue-50 text-blue-600 hover:bg-blue-100 flex items-center justify-center transition" title="عرض"><i class="fa-solid fa-eye"></i></button>
-                                <button onclick="showHistory(${p.id})" class="w-7 h-7 rounded bg-slate-50 text-slate-600 hover:bg-slate-200 flex items-center justify-center transition" title="السجل"><i class="fa-solid fa-clock-rotate-left"></i></button>
+                                <button onclick="window.open('${p.file}')" class="w-7 h-7 rounded bg-blue-50 text-blue-600 hover:bg-blue-100 flex items-center justify-center transition"><i class="fa-solid fa-eye"></i></button>
+                                <button onclick="showHistory(${p.id})" class="w-7 h-7 rounded bg-slate-50 text-slate-600 hover:bg-slate-200 flex items-center justify-center transition"><i class="fa-solid fa-clock-rotate-left"></i></button>
                                 ${p.status === 'draft' ? 
-                                    `<button onclick="approveDraft(${p.id})" class="w-7 h-7 rounded bg-green-50 text-green-600 hover:bg-green-100 flex items-center justify-center transition" title="اعتماد"><i class="fa-solid fa-check"></i></button>` : ''
+                                    `<button onclick="approveDraft(${p.id})" class="w-7 h-7 rounded bg-green-50 text-green-600 hover:bg-green-100 flex items-center justify-center transition"><i class="fa-solid fa-check"></i></button>` : ''
                                 }
                             </div>
                         </td>
@@ -264,7 +442,7 @@
         }
 
         // --- Filtering ---
-        function filterCategory(cat) {
+        window.filterCategory = function(cat) {
             currentFilter = cat;
             
             // UI Update
@@ -277,27 +455,29 @@
             renderPolicies();
         }
 
-        function filterPolicies() {
+        window.filterPolicies = function() {
             renderPolicies();
         }
 
-        function updateCounts() {
-            document.getElementById('count-all').innerText = policies.length + ' وثيقة';
-            document.getElementById('count-gov').innerText = policies.filter(p => p.cat === 'governance').length + ' وثيقة';
-            document.getElementById('count-hr').innerText = policies.filter(p => p.cat === 'hr').length + ' وثيقة';
-            document.getElementById('count-fin').innerText = policies.filter(p => p.cat === 'finance').length + ' وثيقة';
+        window.updateCounts = function() {
+            const lang = localStorage.getItem('lang') || 'ar';
+            const unit = t[lang].unitDoc;
+            document.getElementById('count-all').innerText = policies.length + ' ' + unit;
+            document.getElementById('count-gov').innerText = policies.filter(p => p.cat === 'governance').length + ' ' + unit;
+            document.getElementById('count-hr').innerText = policies.filter(p => p.cat === 'hr').length + ' ' + unit;
+            document.getElementById('count-fin').innerText = policies.filter(p => p.cat === 'finance').length + ' ' + unit;
         }
 
         // --- Modals ---
-        function openUploadModal() {
+        window.openUploadModal = function() {
             document.getElementById('uploadModal').classList.remove('hidden');
         }
 
-        function closeModal(id) {
+        window.closeModal = function(id) {
             document.getElementById(id).classList.add('hidden');
         }
 
-        function fileSelected(input) {
+        window.fileSelected = function(input) {
             if(input.files && input.files[0]) {
                 const text = document.getElementById('uploadText');
                 text.innerText = input.files[0].name;
@@ -305,48 +485,76 @@
             }
         }
 
-        function handleUpload(e) {
+        window.handleUpload = function(e) {
             e.preventDefault();
-            // Simulation
-            alert('تم رفع الوثيقة بنجاح! ستظهر كمسودة بانتظار الاعتماد.');
+            const lang = localStorage.getItem('lang') || 'ar';
+            alert(t[lang].successUpload);
             closeModal('uploadModal');
-            // In real app, add to array and re-render
         }
 
-        function showHistory(id) {
+        window.showHistory = function(id) {
+            const lang = localStorage.getItem('lang') || 'ar';
+            const dict = t[lang];
             const p = policies.find(x => x.id === id);
+            const pName = lang === 'ar' ? p.nameAr : p.nameEn;
+            
             const modal = document.getElementById('historyModal');
             const content = document.getElementById('historyContent');
             
             content.innerHTML = `
                 <div class="bg-slate-50 dark:bg-slate-700/50 p-3 rounded border dark:border-slate-600 mb-3">
-                    <h4 class="font-bold text-sm dark:text-white">${p.name}</h4>
-                    <p class="text-xs text-slate-500">الإصدار الحالي: ${p.ver}</p>
+                    <h4 class="font-bold text-sm dark:text-white">${pName}</h4>
+                    <p class="text-xs text-slate-500">${dict.currVer} ${p.ver}</p>
                 </div>
-                <div class="relative pl-4 border-r border-slate-200 dark:border-slate-600 space-y-4 mr-2">
+                <div class="relative pl-4 rtl:pl-0 rtl:pr-4 border-l rtl:border-l-0 rtl:border-r border-slate-200 dark:border-slate-600 space-y-4 ml-2 rtl:ml-0 rtl:mr-2">
                     <div class="relative">
-                        <div class="absolute top-1 -right-[21px] w-3 h-3 bg-green-500 rounded-full border-2 border-white dark:border-slate-800"></div>
-                        <p class="text-xs font-bold dark:text-white">الإصدار ${p.ver}</p>
-                        <p class="text-[10px] text-slate-500">${p.date} - اعتماد نهائي</p>
+                        <div class="absolute top-1 -left-[21px] rtl:left-auto rtl:-right-[21px] w-3 h-3 bg-green-500 rounded-full border-2 border-white dark:border-slate-800"></div>
+                        <p class="text-xs font-bold dark:text-white">${p.ver}</p>
+                        <p class="text-[10px] text-slate-500">${p.date} - ${dict.finalApp}</p>
                     </div>
                     ${p.ver !== 'v1.0' ? `
                     <div class="relative opacity-60">
-                        <div class="absolute top-1 -right-[21px] w-3 h-3 bg-slate-300 rounded-full border-2 border-white dark:border-slate-800"></div>
-                        <p class="text-xs font-bold dark:text-white">الإصدار v1.0</p>
-                        <p class="text-[10px] text-slate-500">2020-01-01 - الإصدار الأولي</p>
+                        <div class="absolute top-1 -left-[21px] rtl:left-auto rtl:-right-[21px] w-3 h-3 bg-slate-300 rounded-full border-2 border-white dark:border-slate-800"></div>
+                        <p class="text-xs font-bold dark:text-white">v1.0</p>
+                        <p class="text-[10px] text-slate-500">2020-01-01 - ${dict.initVer}</p>
                     </div>` : ''}
                 </div>
             `;
             modal.classList.remove('hidden');
         }
 
-        function approveDraft(id) {
-            if(confirm('هل أنت متأكد من اعتماد هذه الوثيقة ونشرها؟')) {
+        window.approveDraft = function(id) {
+            const lang = localStorage.getItem('lang') || 'ar';
+            if(confirm(t[lang].confirmApprove)) {
                 const p = policies.find(x => x.id === id);
                 p.status = 'active';
                 renderPolicies();
-                alert('تم الاعتماد بنجاح.');
+                alert(t[lang].successApprove);
             }
+        }
+
+        // --- Bot Override for Policy Context ---
+        const originalGetAIResponse = window.getAIResponse; 
+        
+        window.getAIResponse = function(query, isArabic) {
+            const q = query.toLowerCase();
+            
+            if (q.includes('leave') || q.includes('vacation') || q.includes('إجازة') || q.includes('اجازة')) {
+                return isArabic 
+                    ? `تخضع الإجازات لـ <b>لائحة الموارد البشرية (v1.5)</b>. رصيد الإجازة السنوية هو 30 يوماً.`
+                    : `Leaves are governed by <b>HR Policy (v1.5)</b>. Annual leave balance is 30 days.`;
+            }
+            
+            if (q.includes('per diem') || q.includes('allowance') || q.includes('انتداب') || q.includes('بدل')) {
+                return isArabic
+                    ? `حسب <b>الدليل الداخلي</b>، بدل الانتداب اليومي هو: 500 ريال (داخلي)، و 1000 ريال (خارجي).`
+                    : `According to the <b>Internal Manual</b>, daily per diem is: 500 SAR (Domestic), 1000 SAR (International).`;
+            }
+
+            // Fallback default
+            return isArabic
+                ? `يمكنني إجابتك عن: <b>سياسة الإجازات</b>، <b>بدل الانتداب</b>، أو <b>تاريخ آخر تحديث</b>.`
+                : `I can answer about: <b>Leave Policy</b>, <b>Per Diem</b>, or <b>Last Updates</b>.`;
         }
 
     </script>
