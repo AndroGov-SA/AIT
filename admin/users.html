@@ -11,6 +11,8 @@
     
     <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -70,6 +72,19 @@
             .no-print { display: none !important; }
             body { background: white; }
         }
+
+        body { transition: opacity 0.2s ease-in-out; }
+
+        /* Bot Styles */
+        .chat-window-anim { transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); transform-origin: bottom left; }
+        .chat-bubble { max-width: 85%; padding: 10px 14px; border-radius: 12px; font-size: 0.9rem; line-height: 1.5; word-wrap: break-word; }
+        .chat-bubble.bot { background-color: #f1f5f9; color: #334155; border-bottom-right-radius: 2px; }
+        .dark .chat-bubble.bot { background-color: #334155; color: #f8fafc; }
+        .chat-bubble.user { background-color: #4267B2; color: white; border-bottom-left-radius: 2px; margin-right: auto; }
+        .typing-indicator span { display: inline-block; width: 6px; height: 6px; background-color: #94a3b8; border-radius: 50%; animation: typing 1.4s infinite ease-in-out both; margin: 0 1px; }
+        .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
+        .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes typing { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
     </style>
 </head>
 <body class="bg-brandGray dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300">
@@ -85,31 +100,31 @@
             <div class="grid grid-cols-1 md:grid-cols-4 gap-6 no-print">
                 <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 flex justify-between items-center">
                     <div>
-                        <p class="text-xs text-slate-500 font-bold uppercase">إجمالي الحسابات</p>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase" data-i18n="kpiTotal">إجمالي الحسابات</p>
                         <h3 class="text-2xl font-bold mt-1 font-en text-brandBlue">15</h3>
                     </div>
-                    <div class="w-10 h-10 rounded-xl bg-blue-50 text-brandBlue flex items-center justify-center text-xl"><i class="fa-solid fa-users"></i></div>
+                    <div class="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/30 text-brandBlue flex items-center justify-center text-xl"><i class="fa-solid fa-users"></i></div>
                 </div>
                 <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 flex justify-between items-center">
                     <div>
-                        <p class="text-xs text-slate-500 font-bold uppercase">أدوار النظام (Roles)</p>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase" data-i18n="kpiRoles">أدوار النظام (Roles)</p>
                         <h3 class="text-2xl font-bold mt-1 font-en text-purple-600">6</h3>
                     </div>
-                    <div class="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-xl"><i class="fa-solid fa-user-tag"></i></div>
+                    <div class="w-10 h-10 rounded-xl bg-purple-50 dark:bg-purple-900/30 text-purple-600 flex items-center justify-center text-xl"><i class="fa-solid fa-user-tag"></i></div>
                 </div>
                 <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 flex justify-between items-center">
                     <div>
-                        <p class="text-xs text-slate-500 font-bold uppercase">المستخدمين النشطين</p>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase" data-i18n="kpiActive">المستخدمين النشطين</p>
                         <h3 class="text-2xl font-bold mt-1 font-en text-green-600">12</h3>
                     </div>
-                    <div class="w-10 h-10 rounded-xl bg-green-50 text-green-600 flex items-center justify-center text-xl"><i class="fa-solid fa-signal"></i></div>
+                    <div class="w-10 h-10 rounded-xl bg-green-50 dark:bg-green-900/30 text-green-600 flex items-center justify-center text-xl"><i class="fa-solid fa-signal"></i></div>
                 </div>
                 <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 flex justify-between items-center">
                     <div>
-                        <p class="text-xs text-slate-500 font-bold uppercase">حسابات موقوفة</p>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase" data-i18n="kpiSuspended">حسابات موقوفة</p>
                         <h3 class="text-2xl font-bold mt-1 font-en text-red-500">1</h3>
                     </div>
-                    <div class="w-10 h-10 rounded-xl bg-red-50 text-red-500 flex items-center justify-center text-xl"><i class="fa-solid fa-user-lock"></i></div>
+                    <div class="w-10 h-10 rounded-xl bg-red-50 dark:bg-red-900/30 text-red-500 flex items-center justify-center text-xl"><i class="fa-solid fa-user-lock"></i></div>
                 </div>
             </div>
 
@@ -118,24 +133,24 @@
                 
                 <!-- Toolbar -->
                 <div class="p-6 border-b border-slate-100 dark:border-slate-700 flex flex-col md:flex-row justify-between items-center gap-4">
-                    <div class="flex bg-slate-100 dark:bg-slate-700 p-1 rounded-xl">
-                        <button onclick="switchView('users')" id="btn-users" class="px-5 py-2 text-xs font-bold rounded-lg bg-white text-brandBlue shadow-sm transition-all tab-btn">المستخدمين</button>
-                        <button onclick="switchView('roles')" id="btn-roles" class="px-5 py-2 text-xs font-bold rounded-lg text-slate-500 hover:text-slate-700 transition-all tab-btn">الأدوار والصلاحيات</button>
+                    <div class="flex bg-slate-100 dark:bg-slate-700 p-1 rounded-xl w-full md:w-auto overflow-x-auto">
+                        <button onclick="switchView('users')" id="btn-users" class="px-5 py-2 text-xs font-bold rounded-lg bg-white text-brandBlue shadow-sm transition-all tab-btn" data-i18n="tabUsers">المستخدمين</button>
+                        <button onclick="switchView('roles')" id="btn-roles" class="px-5 py-2 text-xs font-bold rounded-lg text-slate-500 hover:text-slate-700 transition-all tab-btn" data-i18n="tabRoles">الأدوار والصلاحيات</button>
                     </div>
                     
                     <div class="flex gap-3 w-full md:w-auto" id="userToolbar">
                         <div class="relative w-full md:w-64">
-                            <input type="text" id="searchInput" onkeyup="renderUsers()" placeholder="بحث..." class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-brandBlue outline-none">
-                            <i class="fa-solid fa-search absolute left-3 top-2.5 text-slate-400"></i>
+                            <input type="text" id="searchInput" onkeyup="renderUsers()" placeholder="..." class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 dark:border-slate-600 dark:bg-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-brandBlue outline-none dark:text-white" data-i18n-placeholder="plhSearch">
+                            <i class="fa-solid fa-search absolute left-3 top-2.5 text-slate-400 rtl:left-3 ltr:right-3"></i>
                         </div>
                         <button onclick="openUserModal()" class="px-4 py-2 bg-brandBlue text-white rounded-xl text-xs font-bold hover:bg-blue-700 shadow-lg flex items-center gap-2 whitespace-nowrap">
-                            <i class="fa-solid fa-user-plus"></i> مستخدم جديد
+                            <i class="fa-solid fa-user-plus"></i> <span data-i18n="btnAddUser">مستخدم جديد</span>
                         </button>
                     </div>
                     
                     <div class="hidden" id="roleToolbar">
                         <button onclick="openRoleModal()" class="px-4 py-2 bg-purple-600 text-white rounded-xl text-xs font-bold hover:bg-purple-700 shadow-lg flex items-center gap-2 whitespace-nowrap">
-                            <i class="fa-solid fa-shield-plus"></i> دور جديد
+                            <i class="fa-solid fa-shield-plus"></i> <span data-i18n="btnAddRole">دور جديد</span>
                         </button>
                     </div>
                 </div>
@@ -143,15 +158,15 @@
                 <!-- View 1: Users List -->
                 <div id="view-users" class="block flex-1">
                     <div class="overflow-x-auto">
-                        <table class="w-full text-sm text-right">
+                        <table class="w-full text-sm text-right rtl:text-right ltr:text-left">
                             <thead class="bg-slate-50 dark:bg-slate-700 text-xs font-bold text-slate-500 uppercase sticky top-0">
                                 <tr>
-                                    <th class="p-4 w-1/4">المستخدم</th>
-                                    <th class="p-4">الدور (Role)</th>
-                                    <th class="p-4">القسم</th>
-                                    <th class="p-4">البريد الإلكتروني</th>
-                                    <th class="p-4 text-center">الحالة</th>
-                                    <th class="p-4 text-center">أدوات</th>
+                                    <th class="p-4 w-1/4" data-i18n="colUser">المستخدم</th>
+                                    <th class="p-4" data-i18n="colRole">الدور (Role)</th>
+                                    <th class="p-4" data-i18n="colDept">القسم</th>
+                                    <th class="p-4" data-i18n="colEmail">البريد الإلكتروني</th>
+                                    <th class="p-4 text-center" data-i18n="colStatus">الحالة</th>
+                                    <th class="p-4 text-center" data-i18n="colAction">أدوات</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-100 dark:divide-slate-700" id="usersTableBody">
@@ -165,7 +180,7 @@
                 <div id="view-roles" class="hidden p-6">
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                         <!-- Roles List -->
-                        <div class="lg:col-span-1 border-l border-slate-200 pl-4 space-y-3" id="rolesList">
+                        <div class="lg:col-span-1 border-l rtl:border-l ltr:border-r border-slate-200 dark:border-slate-700 pl-4 rtl:pl-4 ltr:pl-0 ltr:pr-4 space-y-3" id="rolesList">
                             <!-- Populated by JS -->
                         </div>
 
@@ -173,24 +188,24 @@
                         <div class="lg:col-span-2 bg-slate-50 dark:bg-slate-700/30 rounded-2xl p-6 border border-slate-200 dark:border-slate-600">
                             <div class="flex justify-between items-center mb-6">
                                 <div>
-                                    <h3 class="font-bold text-lg text-slate-800 dark:text-white">تحرير الصلاحيات: <span id="currentRoleName" class="text-brandBlue">--</span></h3>
-                                    <p class="text-xs text-slate-500">حدد ما يمكن لهذا الدور فعله في النظام.</p>
+                                    <h3 class="font-bold text-lg text-slate-800 dark:text-white"><span data-i18n="editPerm">تحرير الصلاحيات:</span> <span id="currentRoleName" class="text-brandBlue">--</span></h3>
+                                    <p class="text-xs text-slate-500" data-i18n="permHint">حدد ما يمكن لهذا الدور فعله في النظام.</p>
                                 </div>
-                                <button onclick="saveRolePermissions()" class="px-4 py-2 bg-green-600 text-white rounded-lg text-xs font-bold hover:bg-green-700">حفظ التعديلات</button>
+                                <button onclick="saveRolePermissions()" class="px-4 py-2 bg-green-600 text-white rounded-lg text-xs font-bold hover:bg-green-700" data-i18n="btnSavePerm">حفظ التعديلات</button>
                             </div>
 
-                            <table class="w-full text-sm text-right border rounded-xl overflow-hidden bg-white">
-                                <thead class="bg-slate-100 text-xs font-bold text-slate-600">
+                            <table class="w-full text-sm text-right rtl:text-right ltr:text-left border rounded-xl overflow-hidden bg-white dark:bg-slate-800 dark:border-slate-700">
+                                <thead class="bg-slate-100 dark:bg-slate-700 text-xs font-bold text-slate-600 dark:text-slate-300">
                                     <tr>
-                                        <th class="p-3">الوحدة / النظام</th>
-                                        <th class="p-3 text-center">عرض</th>
-                                        <th class="p-3 text-center">إضافة</th>
-                                        <th class="p-3 text-center">تعديل</th>
-                                        <th class="p-3 text-center">حذف</th>
-                                        <th class="p-3 text-center">اعتماد</th>
+                                        <th class="p-3" data-i18n="colModule">الوحدة / النظام</th>
+                                        <th class="p-3 text-center" data-i18n="pView">عرض</th>
+                                        <th class="p-3 text-center" data-i18n="pAdd">إضافة</th>
+                                        <th class="p-3 text-center" data-i18n="pEdit">تعديل</th>
+                                        <th class="p-3 text-center" data-i18n="pDel">حذف</th>
+                                        <th class="p-3 text-center" data-i18n="pApprove">اعتماد</th>
                                     </tr>
                                 </thead>
-                                <tbody class="divide-y" id="permissionsTable">
+                                <tbody class="divide-y dark:divide-slate-700" id="permissionsTable">
                                     <!-- Matrix Rows -->
                                 </tbody>
                             </table>
@@ -207,7 +222,7 @@
     <div id="userModal" class="fixed inset-0 bg-black/60 hidden z-50 flex items-center justify-center backdrop-blur-sm">
         <div class="bg-white dark:bg-slate-800 w-full max-w-lg rounded-2xl shadow-xl p-6 transform transition-all scale-100">
             <div class="flex justify-between items-center mb-6 border-b pb-4 dark:border-slate-700">
-                <h3 class="font-bold text-lg dark:text-white" id="userModalTitle">إضافة مستخدم جديد</h3>
+                <h3 class="font-bold text-lg dark:text-white" id="userModalTitle" data-i18n="modAddTitle">إضافة مستخدم جديد</h3>
                 <button onclick="closeModal('userModal')"><i class="fa-solid fa-xmark text-slate-400 text-xl"></i></button>
             </div>
             
@@ -215,34 +230,34 @@
                 <input type="hidden" id="userId">
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-bold text-slate-500 mb-1">الاسم الأول</label>
-                        <input type="text" id="firstName" class="w-full border dark:border-slate-600 bg-white dark:bg-slate-700 rounded-lg p-2 text-sm focus:ring-2 focus:ring-brandBlue outline-none" required>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="modFName">الاسم الأول</label>
+                        <input type="text" id="firstName" class="w-full border dark:border-slate-600 bg-white dark:bg-slate-700 rounded-lg p-2 text-sm focus:ring-2 focus:ring-brandBlue outline-none dark:text-white" required>
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-500 mb-1">اسم العائلة</label>
-                        <input type="text" id="lastName" class="w-full border dark:border-slate-600 bg-white dark:bg-slate-700 rounded-lg p-2 text-sm focus:ring-2 focus:ring-brandBlue outline-none" required>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="modLName">اسم العائلة</label>
+                        <input type="text" id="lastName" class="w-full border dark:border-slate-600 bg-white dark:bg-slate-700 rounded-lg p-2 text-sm focus:ring-2 focus:ring-brandBlue outline-none dark:text-white" required>
                     </div>
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-500 mb-1">البريد الإلكتروني</label>
-                    <input type="email" id="email" class="w-full border dark:border-slate-600 bg-white dark:bg-slate-700 rounded-lg p-2 text-sm focus:ring-2 focus:ring-brandBlue outline-none" required>
+                    <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="modEmail">البريد الإلكتروني</label>
+                    <input type="email" id="email" class="w-full border dark:border-slate-600 bg-white dark:bg-slate-700 rounded-lg p-2 text-sm focus:ring-2 focus:ring-brandBlue outline-none dark:text-white" required>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-bold text-slate-500 mb-1">الدور (Role)</label>
-                        <select id="roleSelect" class="w-full border dark:border-slate-600 bg-white dark:bg-slate-700 rounded-lg p-2 text-sm focus:ring-2 focus:ring-brandBlue outline-none">
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="modRole">الدور (Role)</label>
+                        <select id="roleSelect" class="w-full border dark:border-slate-600 bg-white dark:bg-slate-700 rounded-lg p-2 text-sm focus:ring-2 focus:ring-brandBlue outline-none dark:text-white">
                             <!-- Populated by JS -->
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-500 mb-1">القسم</label>
-                        <input type="text" id="dept" class="w-full border dark:border-slate-600 bg-white dark:bg-slate-700 rounded-lg p-2 text-sm focus:ring-2 focus:ring-brandBlue outline-none">
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="modDept">القسم</label>
+                        <input type="text" id="dept" class="w-full border dark:border-slate-600 bg-white dark:bg-slate-700 rounded-lg p-2 text-sm focus:ring-2 focus:ring-brandBlue outline-none dark:text-white">
                     </div>
                 </div>
                 
                 <div class="mt-6 flex justify-end gap-3 pt-4 border-t dark:border-slate-700">
-                    <button type="button" onclick="closeModal('userModal')" class="px-4 py-2 border rounded-lg text-xs font-bold hover:bg-slate-50">إلغاء</button>
-                    <button type="submit" class="px-6 py-2 bg-brandBlue text-white rounded-lg text-xs font-bold hover:bg-blue-700 shadow-md">حفظ البيانات</button>
+                    <button type="button" onclick="closeModal('userModal')" class="px-4 py-2 border rounded-lg text-xs font-bold hover:bg-slate-50 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700" data-i18n="cancel">إلغاء</button>
+                    <button type="submit" class="px-6 py-2 bg-brandBlue text-white rounded-lg text-xs font-bold hover:bg-blue-700 shadow-md" data-i18n="btnSave">حفظ البيانات</button>
                 </div>
             </form>
         </div>
@@ -252,104 +267,279 @@
     <div id="roleModal" class="fixed inset-0 bg-black/60 hidden z-50 flex items-center justify-center backdrop-blur-sm">
         <div class="bg-white dark:bg-slate-800 w-full max-w-md rounded-2xl shadow-xl p-6">
             <div class="flex justify-between items-center mb-6 border-b pb-4 dark:border-slate-700">
-                <h3 class="font-bold text-lg dark:text-white">إنشاء دور جديد</h3>
+                <h3 class="font-bold text-lg dark:text-white" data-i18n="modAddRole">إنشاء دور جديد</h3>
                 <button onclick="closeModal('roleModal')"><i class="fa-solid fa-xmark text-slate-400 text-xl"></i></button>
             </div>
             
             <div class="space-y-4">
                 <div>
-                    <label class="block text-xs font-bold text-slate-500 mb-1">اسم الدور</label>
-                    <input type="text" id="newRoleName" class="w-full border dark:border-slate-600 bg-white dark:bg-slate-700 rounded-lg p-2 text-sm focus:ring-2 focus:ring-purple-500 outline-none" placeholder="مثال: مدقق خارجي">
+                    <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="modRoleName">اسم الدور</label>
+                    <input type="text" id="newRoleName" class="w-full border dark:border-slate-600 bg-white dark:bg-slate-700 rounded-lg p-2 text-sm focus:ring-2 focus:ring-purple-500 outline-none dark:text-white" data-i18n-placeholder="plhRoleName" placeholder="مثال: مدقق خارجي">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-500 mb-1">الوصف</label>
-                    <textarea id="newRoleDesc" class="w-full border dark:border-slate-600 bg-white dark:bg-slate-700 rounded-lg p-2 text-sm h-24 resize-none" placeholder="وصف مسؤوليات هذا الدور..."></textarea>
+                    <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="modRoleDesc">الوصف</label>
+                    <textarea id="newRoleDesc" class="w-full border dark:border-slate-600 bg-white dark:bg-slate-700 rounded-lg p-2 text-sm h-24 resize-none dark:text-white" data-i18n-placeholder="plhRoleDesc" placeholder="وصف مسؤوليات هذا الدور..."></textarea>
                 </div>
             </div>
 
             <div class="mt-6 flex justify-end gap-3 pt-4 border-t dark:border-slate-700">
-                <button onclick="closeModal('roleModal')" class="px-4 py-2 border rounded-lg text-xs font-bold hover:bg-slate-50">إلغاء</button>
-                <button onclick="addNewRole()" class="px-6 py-2 bg-purple-600 text-white rounded-lg text-xs font-bold hover:bg-purple-700 shadow-md">إنشاء الدور</button>
+                <button onclick="closeModal('roleModal')" class="px-4 py-2 border rounded-lg text-xs font-bold hover:bg-slate-50 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700" data-i18n="cancel">إلغاء</button>
+                <button onclick="addNewRole()" class="px-6 py-2 bg-purple-600 text-white rounded-lg text-xs font-bold hover:bg-purple-700 shadow-md" data-i18n="btnCreateRole">إنشاء الدور</button>
             </div>
         </div>
     </div>
 
+    <!-- AndroBot Widget (AI Assistant) -->
+    <div id="andro-bot-container" class="fixed bottom-6 left-6 z-50 flex flex-col items-start gap-4 font-sans" dir="rtl">
+        <!-- Chat Window -->
+        <div id="chat-window" class="hidden bg-white dark:bg-slate-800 w-80 md:w-96 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden flex flex-col chat-window-anim" style="height: 500px; max-height: 70vh;">
+            <div class="bg-brandBlue p-4 flex justify-between items-center text-white">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center"><i class="fa-solid fa-robot"></i></div>
+                    <div><h4 class="font-bold text-sm">AndroBot</h4><p class="text-[10px] text-white/80">مساعد الحوكمة الذكي</p></div>
+                </div>
+                <button id="close-chat-btn" class="text-white/80 hover:text-white transition"><i class="fa-solid fa-times"></i></button>
+            </div>
+            <div id="chat-body" class="flex-1 p-4 bg-slate-50 dark:bg-slate-900/50 overflow-y-auto custom-scroll space-y-3 flex flex-col">
+                <div class="chat-bubble bot">مرحباً بك 👋<br>أنا هنا لمساعدتك في الاستعلام عن المستخدمين أو صلاحيات الأدوار.</div>
+                <div class="flex flex-wrap gap-2 mt-2" id="suggestions">
+                    <button class="suggestion-btn text-xs bg-white border border-brandBlue/30 text-brandBlue px-3 py-1.5 rounded-full" data-q="عدد المستخدمين النشطين">عدد المستخدمين النشطين</button>
+                    <button class="suggestion-btn text-xs bg-white border border-brandBlue/30 text-brandBlue px-3 py-1.5 rounded-full" data-q="صلاحيات المدير">صلاحيات المدير</button>
+                </div>
+            </div>
+            <div class="p-3 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 flex gap-2">
+                <input type="text" id="chat-input" placeholder="اكتب استفسارك..." class="flex-1 bg-slate-100 dark:bg-slate-900 border-none rounded-lg text-sm px-4 py-2 focus:ring-2 focus:ring-brandBlue outline-none dark:text-white">
+                <button id="send-btn" class="w-10 h-10 rounded-lg bg-brandBlue text-white hover:bg-blue-700 transition flex items-center justify-center"><i class="fa-solid fa-paper-plane"></i></button>
+            </div>
+        </div>
+        <!-- Floating Button -->
+        <button id="chat-fab" class="w-14 h-14 bg-brandBlue hover:bg-blue-700 text-white rounded-full shadow-lg shadow-blue-600/30 flex items-center justify-center text-2xl transition-all transform hover:scale-110 active:scale-95 animate-bounce-slow">
+            <i class="fa-solid fa-comment-dots"></i>
+            <span class="absolute top-0 right-0 w-4 h-4 bg-brandRed rounded-full border-2 border-white dark:border-slate-900"></span>
+        </button>
+    </div>
+
     <script src="layout.js"></script>
+    <script src="bot.js"></script>
 
     <script>
-        // --- 1. Data Initialization ---
+        // --- Translation Dictionary ---
+        const t = {
+            ar: {
+                pageTitle: "AndroGov | المستخدمين والصلاحيات",
+                kpiTotal: "إجمالي الحسابات",
+                kpiRoles: "أدوار النظام (Roles)",
+                kpiActive: "المستخدمين النشطين",
+                kpiSuspended: "حسابات موقوفة",
+                tabUsers: "المستخدمين",
+                tabRoles: "الأدوار والصلاحيات",
+                plhSearch: "بحث...",
+                btnAddUser: "مستخدم جديد",
+                btnAddRole: "دور جديد",
+                colUser: "المستخدم",
+                colRole: "الدور (Role)",
+                colDept: "القسم",
+                colEmail: "البريد الإلكتروني",
+                colStatus: "الحالة",
+                colAction: "أدوات",
+                editPerm: "تحرير الصلاحيات:",
+                permHint: "حدد ما يمكن لهذا الدور فعله في النظام.",
+                btnSavePerm: "حفظ التعديلات",
+                colModule: "الوحدة / النظام",
+                pView: "عرض",
+                pAdd: "إضافة",
+                pEdit: "تعديل",
+                pDel: "حذف",
+                pApprove: "اعتماد",
+                modAddTitle: "إضافة مستخدم جديد",
+                modEditTitle: "تعديل بيانات المستخدم",
+                modFName: "الاسم الأول",
+                modLName: "اسم العائلة",
+                modEmail: "البريد الإلكتروني",
+                modRole: "الدور (Role)",
+                modDept: "القسم",
+                cancel: "إلغاء",
+                btnSave: "حفظ البيانات",
+                modAddRole: "إنشاء دور جديد",
+                modRoleName: "اسم الدور",
+                plhRoleName: "مثال: مدقق خارجي",
+                modRoleDesc: "الوصف",
+                plhRoleDesc: "وصف مسؤوليات هذا الدور...",
+                btnCreateRole: "إنشاء الدور",
+                rAdmin: "مدير النظام (Super Admin)",
+                rAdminDesc: "وصول كامل لجميع الخصائص",
+                rBoard: "عضو مجلس إدارة",
+                rBoardDesc: "صلاحيات الاطلاع والتصويت",
+                rManager: "مدير إدارة",
+                rManagerDesc: "صلاحيات الاعتماد والإدارة",
+                rEmp: "موظف",
+                rEmpDesc: "صلاحيات الخدمة الذاتية فقط",
+                rShare: "مساهم",
+                rShareDesc: "وصول محدود للجمعيات",
+                mod1: "الحوكمة والمجلس",
+                mod2: "المالية والمحاسبة",
+                mod3: "الموارد البشرية",
+                mod4: "المشتريات والعقود",
+                mod5: "التقنية والأمن"
+            },
+            en: {
+                pageTitle: "AndroGov | Users & Permissions",
+                kpiTotal: "Total Accounts",
+                kpiRoles: "System Roles",
+                kpiActive: "Active Users",
+                kpiSuspended: "Suspended",
+                tabUsers: "Users",
+                tabRoles: "Roles & Permissions",
+                plhSearch: "Search...",
+                btnAddUser: "New User",
+                btnAddRole: "New Role",
+                colUser: "User",
+                colRole: "Role",
+                colDept: "Department",
+                colEmail: "Email",
+                colStatus: "Status",
+                colAction: "Actions",
+                editPerm: "Edit Permissions:",
+                permHint: "Define what this role can do in the system.",
+                btnSavePerm: "Save Changes",
+                colModule: "Module / System",
+                pView: "View",
+                pAdd: "Add",
+                pEdit: "Edit",
+                pDel: "Delete",
+                pApprove: "Approve",
+                modAddTitle: "Add New User",
+                modEditTitle: "Edit User",
+                modFName: "First Name",
+                modLName: "Last Name",
+                modEmail: "Email",
+                modRole: "Role",
+                modDept: "Department",
+                cancel: "Cancel",
+                btnSave: "Save Data",
+                modAddRole: "Create New Role",
+                modRoleName: "Role Name",
+                plhRoleName: "Ex: External Auditor",
+                modRoleDesc: "Description",
+                plhRoleDesc: "Describe role responsibilities...",
+                btnCreateRole: "Create Role",
+                rAdmin: "Super Admin",
+                rAdminDesc: "Full access to all features",
+                rBoard: "Board Member",
+                rBoardDesc: "View & Vote permissions",
+                rManager: "Manager",
+                rManagerDesc: "Approval & Management",
+                rEmp: "Employee",
+                rEmpDesc: "Self-service only",
+                rShare: "Shareholder",
+                rShareDesc: "Limited GA access",
+                mod1: "Governance & Board",
+                mod2: "Finance & Accounting",
+                mod3: "Human Resources",
+                mod4: "Procurement & Contracts",
+                mod5: "IT & Security"
+            }
+        };
+
+        // --- Data Initialization ---
         let users = [
-            { id: 1, first: "أيمن", last: "المغربي", email: "amaghrabi@androomeda.com", role: "Admin", dept: "Governance", status: true },
-            { id: 2, first: "عبدالله", last: "الحواس", email: "abdullah@example.com", role: "Board", dept: "Board", status: true },
-            { id: 3, first: "هشام", last: "السحيباني", email: "hesham@androomeda.com", role: "Board", dept: "Executive", status: true },
-            { id: 4, first: "منصور", last: "اليامي", email: "mansour@androomeda.com", role: "Board", dept: "HR", status: true },
-            { id: 5, first: "محمد", last: "البخيتي", email: "mohammed@androomeda.com", role: "Manager", dept: "Finance", status: true },
-            { id: 6, first: "موظف", last: "سابق", email: "ex@androomeda.com", role: "Employee", dept: "Sales", status: false }
+            { id: 1, firstAr: "أيمن", lastAr: "المغربي", firstEn: "Ayman", lastEn: "Almaghrabi", email: "amaghrabi@androomeda.com", role: "Admin", deptAr: "الحوكمة", deptEn: "Governance", status: true },
+            { id: 2, firstAr: "عبدالله", lastAr: "الحواس", firstEn: "Abdullah", lastEn: "Al-Hawas", email: "abdullah@example.com", role: "Board", deptAr: "المجلس", deptEn: "Board", status: true },
+            { id: 3, firstAr: "هشام", lastAr: "السحيباني", firstEn: "Hesham", lastEn: "Al-Suhaibani", email: "hesham@androomeda.com", role: "Board", deptAr: "التنفيذية", deptEn: "Executive", status: true },
+            { id: 4, firstAr: "منصور", lastAr: "اليامي", firstEn: "Mansour", lastEn: "Al-Yami", email: "mansour@androomeda.com", role: "Board", deptAr: "الموارد البشرية", deptEn: "HR", status: true },
+            { id: 5, firstAr: "محمد", lastAr: "البخيتي", firstEn: "Mohammed", lastEn: "Al-Bukhaiti", email: "mohammed@androomeda.com", role: "Manager", deptAr: "المالية", deptEn: "Finance", status: true },
+            { id: 6, firstAr: "موظف", lastAr: "سابق", firstEn: "Ex", lastEn: "Employee", email: "ex@androomeda.com", role: "Employee", deptAr: "المبيعات", deptEn: "Sales", status: false }
         ];
 
         let roles = [
-            { id: "Admin", name: "مدير النظام (Super Admin)", desc: "وصول كامل لجميع الخصائص", color: "red" },
-            { id: "Board", name: "عضو مجلس إدارة", desc: "صلاحيات الاطلاع والتصويت", color: "purple" },
-            { id: "Manager", name: "مدير إدارة", desc: "صلاحيات الاعتماد والإدارة", color: "blue" },
-            { id: "Employee", name: "موظف", desc: "صلاحيات الخدمة الذاتية فقط", color: "slate" },
-            { id: "Shareholder", name: "مساهم", desc: "وصول محدود للجمعيات", color: "green" }
+            { id: "Admin", nameAr: "مدير النظام (Super Admin)", nameEn: "Super Admin", descAr: "وصول كامل لجميع الخصائص", descEn: "Full access to all features", color: "red" },
+            { id: "Board", nameAr: "عضو مجلس إدارة", nameEn: "Board Member", descAr: "صلاحيات الاطلاع والتصويت", descEn: "View & Vote permissions", color: "purple" },
+            { id: "Manager", nameAr: "مدير إدارة", nameEn: "Manager", descAr: "صلاحيات الاعتماد والإدارة", descEn: "Approval & Management", color: "blue" },
+            { id: "Employee", nameAr: "موظف", nameEn: "Employee", descAr: "صلاحيات الخدمة الذاتية فقط", descEn: "Self-service only", color: "slate" },
+            { id: "Shareholder", nameAr: "مساهم", nameEn: "Shareholder", descAr: "وصول محدود للجمعيات", descEn: "Limited GA access", color: "green" }
         ];
 
         const modules = [
-            { id: 'gov', name: 'الحوكمة والمجلس' },
-            { id: 'fin', name: 'المالية والمحاسبة' },
-            { id: 'hr', name: 'الموارد البشرية' },
-            { id: 'proc', name: 'المشتريات والعقود' },
-            { id: 'it', name: 'التقنية والأمن' }
+            { id: 'gov', nameAr: 'الحوكمة والمجلس', nameEn: 'Governance & Board' },
+            { id: 'fin', nameAr: 'المالية والمحاسبة', nameEn: 'Finance & Accounting' },
+            { id: 'hr', nameAr: 'الموارد البشرية', nameEn: 'Human Resources' },
+            { id: 'proc', nameAr: 'المشتريات والعقود', nameEn: 'Procurement & Contracts' },
+            { id: 'it', nameAr: 'التقنية والأمن', nameEn: 'IT & Security' }
         ];
 
         document.addEventListener('DOMContentLoaded', () => {
-            renderUsers();
-            renderRolesList();
-            renderPermissionsMatrix(roles[0]); // Load first role by default
-            populateRoleSelect();
+            updatePageLanguage();
         });
 
+        window.updatePageLanguage = function() {
+            const lang = localStorage.getItem('lang') || 'ar';
+            const dict = t[lang];
+            
+            document.documentElement.lang = lang;
+            document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+
+            // Text
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if(dict[key]) el.innerText = dict[key];
+            });
+            // Placeholders
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                if(dict[key]) el.placeholder = dict[key];
+            });
+
+            renderUsers();
+            renderRolesList();
+            // Default load first role
+            const firstRole = roles[0];
+            const rName = lang === 'ar' ? firstRole.nameAr : firstRole.nameEn;
+            renderPermissionsMatrix({id: firstRole.id, name: rName});
+            populateRoleSelect();
+        }
+
         // --- Users Logic ---
-        function renderUsers() {
+        window.renderUsers = function() {
+            const lang = localStorage.getItem('lang') || 'ar';
             const tbody = document.getElementById('usersTableBody');
             const search = document.getElementById('searchInput').value.toLowerCase();
             tbody.innerHTML = '';
 
-            const filtered = users.filter(u => 
-                (u.first + ' ' + u.last).toLowerCase().includes(search) || 
-                u.email.toLowerCase().includes(search) ||
-                u.role.toLowerCase().includes(search)
-            );
+            const filtered = users.filter(u => {
+                const fullName = (lang === 'ar' ? u.firstAr + ' ' + u.lastAr : u.firstEn + ' ' + u.lastEn).toLowerCase();
+                return fullName.includes(search) || u.email.toLowerCase().includes(search) || u.role.toLowerCase().includes(search);
+            });
 
             filtered.forEach(u => {
                 let badgeClass = '';
-                // Badge color logic based on role
                 if(u.role === 'Admin') badgeClass = 'bg-red-100 text-red-700 border-red-200';
                 else if(u.role === 'Board') badgeClass = 'bg-purple-100 text-purple-700 border-purple-200';
                 else if(u.role === 'Manager') badgeClass = 'bg-blue-100 text-blue-700 border-blue-200';
                 else badgeClass = 'bg-slate-100 text-slate-600 border-slate-200';
 
+                const name = lang === 'ar' ? `${u.firstAr} ${u.lastAr}` : `${u.firstEn} ${u.lastEn}`;
+                const dept = lang === 'ar' ? u.deptAr : u.deptEn;
+
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition border-b border-slate-100 dark:border-slate-700">
                         <td class="p-4">
                             <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs text-slate-600">
-                                    ${u.first.charAt(0)}
+                                <div class="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-600 flex items-center justify-center font-bold text-xs text-slate-600 dark:text-slate-300">
+                                    ${name.charAt(0)}
                                 </div>
                                 <div>
-                                    <p class="font-bold text-sm text-slate-800 dark:text-white">${u.first} ${u.last}</p>
+                                    <p class="font-bold text-sm text-slate-800 dark:text-white">${name}</p>
                                     <p class="text-[10px] text-slate-400">ID: ${u.id}</p>
                                 </div>
                             </div>
                         </td>
                         <td class="p-4"><span class="px-2 py-0.5 rounded text-[10px] font-bold border ${badgeClass}">${u.role}</span></td>
-                        <td class="p-4 text-xs text-slate-500">${u.dept}</td>
+                        <td class="p-4 text-xs text-slate-500">${dept}</td>
                         <td class="p-4 text-xs font-en text-slate-500">${u.email}</td>
                         <td class="p-4 text-center">
                             <label class="inline-flex items-center cursor-pointer">
                                 <input type="checkbox" class="sr-only peer" ${u.status ? 'checked' : ''} onchange="toggleStatus(${u.id})">
-                                <div class="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-green-500"></div>
+                                <div class="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] rtl:after:right-[2px] rtl:after:left-auto after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-green-500"></div>
                             </label>
                         </td>
                         <td class="p-4 text-center flex justify-center gap-2">
@@ -362,39 +552,45 @@
         }
 
         // --- Roles Logic ---
-        function renderRolesList() {
+        window.renderRolesList = function() {
+            const lang = localStorage.getItem('lang') || 'ar';
             const container = document.getElementById('rolesList');
-            container.innerHTML = roles.map(r => `
-                <div onclick="renderPermissionsMatrix({id:'${r.id}', name:'${r.name}'})" class="p-3 border rounded-xl hover:bg-slate-50 cursor-pointer transition flex items-center justify-between group role-item" id="role-${r.id}">
+            container.innerHTML = roles.map(r => {
+                const name = lang === 'ar' ? r.nameAr : r.nameEn;
+                const desc = lang === 'ar' ? r.descAr : r.descEn;
+                return `
+                <div onclick="renderPermissionsMatrix({id:'${r.id}', name:'${name}'})" class="p-3 border rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700/50 cursor-pointer transition flex items-center justify-between group role-item dark:border-slate-700" id="role-${r.id}">
                     <div class="flex items-center gap-3">
                         <div class="w-8 h-8 rounded-lg bg-${r.color}-50 text-${r.color}-600 flex items-center justify-center font-bold text-xs">
                             ${r.id.charAt(0)}
                         </div>
                         <div>
-                            <h4 class="font-bold text-sm">${r.name}</h4>
-                            <p class="text-[10px] text-slate-400">${r.desc}</p>
+                            <h4 class="font-bold text-sm dark:text-white">${name}</h4>
+                            <p class="text-[10px] text-slate-400">${desc}</p>
                         </div>
                     </div>
-                    <i class="fa-solid fa-chevron-left text-xs text-slate-300 group-hover:text-brandBlue"></i>
+                    <i class="fa-solid fa-chevron-left text-xs text-slate-300 group-hover:text-brandBlue rtl:rotate-0 ltr:rotate-180"></i>
                 </div>
-            `).join('');
+            `}).join('');
         }
 
-        function renderPermissionsMatrix(roleObj) {
-            // Update Active State in List
-            document.querySelectorAll('.role-item').forEach(el => el.classList.remove('border-brandBlue', 'bg-blue-50'));
+        window.renderPermissionsMatrix = function(roleObj) {
+            const lang = localStorage.getItem('lang') || 'ar';
+            // Update Active State
+            document.querySelectorAll('.role-item').forEach(el => el.classList.remove('border-brandBlue', 'bg-blue-50', 'dark:bg-blue-900/20'));
             const activeItem = document.getElementById(`role-${roleObj.id}`);
-            if(activeItem) activeItem.classList.add('border-brandBlue', 'bg-blue-50');
+            if(activeItem) activeItem.classList.add('border-brandBlue', 'bg-blue-50', 'dark:bg-blue-900/20');
 
             document.getElementById('currentRoleName').innerText = roleObj.name;
 
             const tbody = document.getElementById('permissionsTable');
             tbody.innerHTML = modules.map(mod => {
-                const isChecked = roleObj.id === 'Admin' ? 'checked' : ''; // Demo logic
+                const isChecked = roleObj.id === 'Admin' ? 'checked' : ''; 
+                const modName = lang === 'ar' ? mod.nameAr : mod.nameEn;
                 
                 return `
-                <tr class="border-b">
-                    <td class="p-3 font-bold text-xs">${mod.name}</td>
+                <tr class="border-b dark:border-slate-700">
+                    <td class="p-3 font-bold text-xs dark:text-white">${modName}</td>
                     <td class="p-3 text-center"><input type="checkbox" class="accent-brandBlue w-4 h-4" ${isChecked}></td>
                     <td class="p-3 text-center"><input type="checkbox" class="accent-brandBlue w-4 h-4" ${isChecked}></td>
                     <td class="p-3 text-center"><input type="checkbox" class="accent-brandBlue w-4 h-4" ${isChecked}></td>
@@ -404,48 +600,57 @@
             `}).join('');
         }
 
-        function addNewRole() {
+        window.addNewRole = function() {
+            const lang = localStorage.getItem('lang') || 'ar';
             const name = document.getElementById('newRoleName').value;
             const desc = document.getElementById('newRoleDesc').value;
             if(name) {
                 const id = "Role" + (roles.length + 1);
-                roles.push({ id, name, desc, color: "gray" });
+                // For demo simplicity, use same name for both langs
+                roles.push({ id, nameAr: name, nameEn: name, descAr: desc, descEn: desc, color: "gray" });
                 renderRolesList();
                 populateRoleSelect();
                 closeModal('roleModal');
-                alert('تم إنشاء الدور الجديد بنجاح. يمكنك الآن تخصيص صلاحياته.');
+                alert(lang === 'ar' ? 'تم إنشاء الدور الجديد بنجاح.' : 'New role created successfully.');
             }
         }
 
-        function saveRolePermissions() {
-            alert("تم حفظ تحديثات مصفوفة الصلاحيات لهذا الدور.");
+        window.saveRolePermissions = function() {
+            const lang = localStorage.getItem('lang') || 'ar';
+            alert(lang === 'ar' ? "تم حفظ تحديثات مصفوفة الصلاحيات." : "Permissions matrix updated.");
         }
 
         // --- Modals & CRUD ---
-        function openUserModal() {
-            document.getElementById('userModalTitle').innerText = 'إضافة مستخدم جديد';
+        window.openUserModal = function() {
+            const lang = localStorage.getItem('lang') || 'ar';
+            document.getElementById('userModalTitle').innerText = t[lang].modAddTitle;
             document.getElementById('userForm').reset();
             document.getElementById('userId').value = '';
             document.getElementById('userModal').classList.remove('hidden');
         }
         
-        function openRoleModal() {
+        window.openRoleModal = function() {
             document.getElementById('roleModal').classList.remove('hidden');
         }
 
-        function closeModal(id) {
+        window.closeModal = function(id) {
             document.getElementById(id).classList.add('hidden');
         }
 
-        function handleUserSubmit(e) {
+        window.handleUserSubmit = function(e) {
             e.preventDefault();
+            const lang = localStorage.getItem('lang') || 'ar';
             const id = document.getElementById('userId').value;
+            const fName = document.getElementById('firstName').value;
+            const lName = document.getElementById('lastName').value;
+            
             const newUser = {
-                first: document.getElementById('firstName').value,
-                last: document.getElementById('lastName').value,
+                firstAr: fName, lastAr: lName, 
+                firstEn: fName, lastEn: lName, // Simplified for demo
                 email: document.getElementById('email').value,
                 role: document.getElementById('roleSelect').value,
-                dept: document.getElementById('dept').value,
+                deptAr: document.getElementById('dept').value,
+                deptEn: document.getElementById('dept').value,
                 status: true
             };
 
@@ -453,57 +658,57 @@
                 // Edit
                 const idx = users.findIndex(u => u.id == id);
                 users[idx] = { ...users[idx], ...newUser };
-                alert("تم تحديث بيانات المستخدم.");
+                alert(lang === 'ar' ? "تم تحديث البيانات." : "User updated.");
             } else {
                 // Add
                 users.push({ id: Date.now(), ...newUser });
-                alert("تم إضافة المستخدم بنجاح.");
+                alert(lang === 'ar' ? "تم إضافة المستخدم." : "User added.");
             }
             renderUsers();
             closeModal('userModal');
         }
 
-        function editUser(id) {
+        window.editUser = function(id) {
+            const lang = localStorage.getItem('lang') || 'ar';
             const u = users.find(x => x.id === id);
             if(u) {
-                document.getElementById('userModalTitle').innerText = 'تعديل بيانات المستخدم';
+                document.getElementById('userModalTitle').innerText = t[lang].modEditTitle;
                 document.getElementById('userId').value = u.id;
-                document.getElementById('firstName').value = u.first;
-                document.getElementById('lastName').value = u.last;
+                document.getElementById('firstName').value = lang === 'ar' ? u.firstAr : u.firstEn;
+                document.getElementById('lastName').value = lang === 'ar' ? u.lastAr : u.lastEn;
                 document.getElementById('email').value = u.email;
                 document.getElementById('roleSelect').value = u.role;
-                document.getElementById('dept').value = u.dept;
+                document.getElementById('dept').value = lang === 'ar' ? u.deptAr : u.deptEn;
                 document.getElementById('userModal').classList.remove('hidden');
             }
         }
 
-        function deleteUser(id) {
-            if(confirm("حذف المستخدم نهائياً؟")) {
+        window.deleteUser = function(id) {
+            if(confirm("Delete User?")) {
                 users = users.filter(u => u.id !== id);
                 renderUsers();
             }
         }
 
-        function toggleStatus(id) {
+        window.toggleStatus = function(id) {
             const u = users.find(x => x.id === id);
             u.status = !u.status;
-            // Visual update only required as checkbox handles UI state
         }
 
-        function populateRoleSelect() {
+        window.populateRoleSelect = function() {
+            const lang = localStorage.getItem('lang') || 'ar';
             const select = document.getElementById('roleSelect');
-            select.innerHTML = roles.map(r => `<option value="${r.id}">${r.name}</option>`).join('');
+            select.innerHTML = roles.map(r => `<option value="${r.id}">${lang==='ar'?r.nameAr:r.nameEn}</option>`).join('');
         }
 
         // --- View Switching ---
-        function switchView(view) {
+        window.switchView = function(view) {
             if(view === 'users') {
                 document.getElementById('view-users').classList.remove('hidden');
                 document.getElementById('view-roles').classList.add('hidden');
                 document.getElementById('userToolbar').classList.remove('hidden');
                 document.getElementById('roleToolbar').classList.add('hidden');
                 
-                // Active Btn Style
                 document.getElementById('btn-users').classList.add('text-brandBlue', 'bg-white', 'shadow-sm');
                 document.getElementById('btn-users').classList.remove('text-slate-500');
                 document.getElementById('btn-roles').classList.remove('text-brandBlue', 'bg-white', 'shadow-sm');
@@ -514,13 +719,43 @@
                 document.getElementById('userToolbar').classList.add('hidden');
                 document.getElementById('roleToolbar').classList.remove('hidden');
 
-                // Active Btn Style
                 document.getElementById('btn-roles').classList.add('text-brandBlue', 'bg-white', 'shadow-sm');
                 document.getElementById('btn-roles').classList.remove('text-slate-500');
                 document.getElementById('btn-users').classList.remove('text-brandBlue', 'bg-white', 'shadow-sm');
                 document.getElementById('btn-users').classList.add('text-slate-500');
             }
         }
+
+        // --- Bot Override for Users Context ---
+        const originalGetAIResponse = window.getAIResponse; 
+        
+        window.getAIResponse = function(query, isArabic) {
+            const q = query.toLowerCase();
+            
+            if (q.includes('count') || q.includes('how many') || q.includes('عدد') || q.includes('إجمالي')) {
+                return isArabic 
+                    ? `إجمالي الحسابات في النظام هو <b>15</b>، منهم <b>12</b> نشطين.`
+                    : `Total accounts: <b>15</b>, with <b>12</b> active users.`;
+            }
+            
+            if (q.includes('admin') || q.includes('مدير')) {
+                return isArabic
+                    ? `مدير النظام (Super Admin) هو <b>أيمن المغربي</b>.`
+                    : `The Super Admin is <b>Ayman Almaghrabi</b>.`;
+            }
+
+            if (q.includes('role') || q.includes('permission') || q.includes('دور') || q.includes('صلاحي')) {
+                return isArabic
+                    ? `الأدوار المتاحة: <b>مدير النظام، عضو مجلس، مدير إدارة، موظف، مساهم</b>.`
+                    : `Available Roles: <b>Admin, Board, Manager, Employee, Shareholder</b>.`;
+            }
+
+            // Fallback default
+            return isArabic
+                ? `يمكنني إجابتك عن: <b>عدد المستخدمين</b>، <b>من هو المدير</b>، أو <b>الأدوار المتاحة</b>.`
+                : `I can answer about: <b>User Count</b>, <b>Who is Admin</b>, or <b>Available Roles</b>.`;
+        }
+
     </script>
 </body>
 </html>
