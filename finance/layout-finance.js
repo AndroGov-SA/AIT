@@ -178,7 +178,7 @@
 
     window.changeTheme = () => { localStorage.setItem('theme', config.theme === 'dark' ? 'light' : 'dark'); location.reload(); };
     window.changeLang = () => { localStorage.setItem('lang', config.lang === 'ar' ? 'en' : 'ar'); location.reload(); };
-    window.doLogout = () => { if(confirm('Log out?')) window.location.href = 'index.html'; };
+    window.doLogout = () => { if(confirm('Log out?')) window.location.href = 'https://androgov-sa.github.io/AIT/login.html'; };
 
     init();
 })();
