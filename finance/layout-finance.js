@@ -1,15 +1,16 @@
 /**
- * AndroGov CFO Layout Engine (Red Brand Edition)
+ * AndroGov CFO Layout Engine v2.0 (With Notification Center)
  * مخصص لبيئة المدير المالي - محمد البخيتي
  */
 
 (function() {
+    // --- 1. بيانات المستخدم ---
     const currentUser = {
         nameAr: "محمد البخيتي",
         nameEn: "Mohammed Al-Bukhaiti",
         titleAr: "المدير المالي (CFO)",
         titleEn: "Chief Financial Officer",
-        avatar: "https://ui-avatars.com/api/?name=Mohammed+B&background=FB4747&color=fff" // Brand Red
+        avatar: "https://ui-avatars.com/api/?name=Mohammed+B&background=FB4747&color=fff"
     };
 
     const config = {
@@ -17,6 +18,41 @@
         theme: localStorage.getItem('theme') || 'light'
     };
 
+    // --- 2. بيانات الإشعارات (محاكاة) ---
+    const notifications = [
+        { 
+            id: 1, 
+            type: 'alert', 
+            icon: 'fa-triangle-exclamation', 
+            color: 'text-red-500 bg-red-50',
+            msgAr: 'تجاوز ميزانية التسويق بـ 5% (طلب مناقلة)', 
+            msgEn: 'Marketing budget exceeded by 5% (Transfer Req)', 
+            time: '2m', 
+            read: false 
+        },
+        { 
+            id: 2, 
+            type: 'info', 
+            icon: 'fa-file-invoice-dollar', 
+            color: 'text-blue-500 bg-blue-50',
+            msgAr: 'وردت فاتورة جديدة من STC للاعتماد', 
+            msgEn: 'New Invoice from STC pending approval', 
+            time: '1h', 
+            read: false 
+        },
+        { 
+            id: 3, 
+            type: 'success', 
+            icon: 'fa-sack-dollar', 
+            color: 'text-green-500 bg-green-50',
+            msgAr: 'تم إيداع دفعة العميل (وزارة الصحة)', 
+            msgEn: 'Client Payment Received (MOH)', 
+            time: '3h', 
+            read: true 
+        }
+    ];
+
+    // --- 3. هيكلة القائمة ---
     const menuStructure = [
         {
             section: 'main',
@@ -33,17 +69,17 @@
             ]
         },
         {
-            section: 'inventory', // قسم جديد
-            items: [
-                { key: 'stock', icon: 'fa-boxes-stacked', link: 'inv_dashboard.html' }, // لوحة المخزون
-                { key: 'assets', icon: 'fa-laptop-code', link: 'inv_assets.html' }      // العهد والأصول
-            ]
-        },
-        {
             section: 'ap',
             items: [
                 { key: 'vendors', icon: 'fa-truck-fast', link: 'ap_vendors.html' },
                 { key: 'bills', icon: 'fa-file-invoice-dollar', link: 'ap_bills.html' }
+            ]
+        },
+        {
+            section: 'inventory',
+            items: [
+                { key: 'stock', icon: 'fa-boxes-stacked', link: 'inv_dashboard.html' },
+                { key: 'assets', icon: 'fa-laptop-code', link: 'inv_assets.html' }
             ]
         },
         {
@@ -55,40 +91,57 @@
         }
     ];
 
+    // --- 4. القاموس ---
     const t = {
         ar: {
             sysName: "AndroGov",
             deptName: "الإدارة المالية",
             logout: "خروج آمن",
-            sections: { main: "الرئيسية", gl: "الأستاذ العام", ap: "الموردين", reporting: "التقارير" },
+            notifTitle: "الإشعارات",
+            markRead: "تحديد الكل كمقروء",
+            emptyNotif: "لا توجد إشعارات جديدة",
+            sections: { main: "الرئيسية", gl: "الأستاذ العام", ap: "الموردين", inventory: "المخزون والأصول", reporting: "التقارير" },
             menu: {
                 dash: "لوحة القيادة", approvals: "الموافقات",
                 journal: "قيود اليومية", coa: "دليل الحسابات",
                 vendors: "الموردين", bills: "فواتير الشراء",
-                statements: "القوائم المالية", budget: "الموازنة",
-                inventory: "المخزون والأصول", stock: "مراقبة المخزون", assets: "سجل الأصول والعهد"
+                stock: "مراقبة المخزون", assets: "سجل الأصول والعهد",
+                statements: "القوائم المالية", budget: "الموازنة"
             }
         },
         en: {
             sysName: "AndroGov",
             deptName: "Finance Dept",
             logout: "Logout",
-            sections: { main: "Main", gl: "General Ledger", ap: "Payables", reporting: "Reports" },
+            notifTitle: "Notifications",
+            markRead: "Mark all as read",
+            emptyNotif: "No new notifications",
+            sections: { main: "Main", gl: "General Ledger", ap: "Payables", inventory: "Inventory & Assets", reporting: "Reports" },
             menu: {
                 dash: "Dashboard", approvals: "Approvals",
                 journal: "Journal Entries", coa: "Chart of Accounts",
                 vendors: "Vendors", bills: "Vendor Bills",
-                statements: "Financial Stmts", budget: "Budgeting",
-                inventory: "Inventory & Assets", stock: "Stock Control", assets: "Assets Registry"
+                stock: "Stock Control", assets: "Assets Registry",
+                statements: "Financial Stmts", budget: "Budgeting"
             }
         }
     };
 
+    // --- 5. دوال البناء ---
     function init() {
         applySettings();
         renderSidebar();
         renderHeader();
         document.body.style.opacity = '1';
+        
+        // إغلاق قائمة الإشعارات عند النقر خارجها
+        document.addEventListener('click', function(event) {
+            const notifMenu = document.getElementById('notifDropdown');
+            const notifBtn = document.getElementById('notifBtn');
+            if (notifMenu && !notifMenu.contains(event.target) && !notifBtn.contains(event.target)) {
+                notifMenu.classList.add('hidden');
+            }
+        });
     }
 
     function applySettings() {
@@ -117,7 +170,6 @@
             menuHTML += `<div class="px-4 mt-6 mb-2 text-[11px] font-bold text-slate-400 uppercase tracking-wider opacity-80">${dict.sections[group.section]}</div>`;
             group.items.forEach(item => {
                 const isActive = currentPath === item.link;
-                // Brand Red Active State
                 const activeClass = isActive ? "bg-brandRed/10 text-brandRed border-r-4 border-brandRed" : "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-brandRed";
                 
                 menuHTML += `
@@ -160,6 +212,32 @@
         const container = document.getElementById('header-container');
         if (!container) return;
         const dict = t[config.lang];
+        const isRtl = config.lang === 'ar';
+        
+        // Notification Logic
+        const unreadCount = notifications.filter(n => !n.read).length;
+        const notifBadge = unreadCount > 0 
+            ? `<span id="notifBadge" class="absolute top-1.5 right-2 w-2.5 h-2.5 bg-brandRed rounded-full border-2 border-white dark:border-slate-800"></span>` 
+            : '';
+
+        // Generate Notification Items
+        let notifItemsHTML = '';
+        if (notifications.length > 0) {
+            notifications.forEach(n => {
+                notifItemsHTML += `
+                <div class="p-3 border-b border-slate-100 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition cursor-pointer flex gap-3 ${n.read ? 'opacity-60' : ''}">
+                    <div class="w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${n.color}">
+                        <i class="fa-solid ${n.icon} text-xs"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs font-bold text-slate-800 dark:text-white leading-snug">${isRtl ? n.msgAr : n.msgEn}</p>
+                        <p class="text-[10px] text-slate-400 mt-1">${n.time}</p>
+                    </div>
+                </div>`;
+            });
+        } else {
+            notifItemsHTML = `<div class="p-6 text-center text-slate-400 text-xs">${dict.emptyNotif}</div>`;
+        }
         
         container.innerHTML = `
         <header class="h-20 sticky top-0 z-40 flex items-center justify-between px-6 bg-white/80 dark:bg-[#0F172A]/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
@@ -170,7 +248,26 @@
                     <i class="fa-solid fa-search absolute top-2.5 left-3 text-slate-400"></i>
                 </div>
             </div>
+
             <div class="flex items-center gap-3">
+                
+                <div class="relative">
+                    <button id="notifBtn" onclick="window.toggleNotif()" class="w-9 h-9 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-white transition relative">
+                        <i class="fa-regular fa-bell"></i>
+                        ${notifBadge}
+                    </button>
+                    
+                    <div id="notifDropdown" class="hidden absolute top-12 ${isRtl ? 'left-0' : 'right-0'} w-80 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 overflow-hidden z-50 animate-fade-in-down">
+                        <div class="p-3 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-900/50">
+                            <span class="text-xs font-bold dark:text-white">${dict.notifTitle}</span>
+                            <button onclick="window.markRead()" class="text-[10px] text-brandRed hover:underline">${dict.markRead}</button>
+                        </div>
+                        <div class="max-h-64 overflow-y-auto custom-scroll">
+                            ${notifItemsHTML}
+                        </div>
+                    </div>
+                </div>
+
                 <button onclick="window.changeLang()" class="w-9 h-9 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-bold text-slate-600 dark:text-white transition">
                     ${config.lang === 'ar' ? 'EN' : 'عربي'}
                 </button>
@@ -185,9 +282,22 @@
         </header>`;
     }
 
+    // --- 6. الوظائف العامة ---
     window.changeTheme = () => { localStorage.setItem('theme', config.theme === 'dark' ? 'light' : 'dark'); location.reload(); };
     window.changeLang = () => { localStorage.setItem('lang', config.lang === 'ar' ? 'en' : 'ar'); location.reload(); };
     window.doLogout = () => { if(confirm('Log out?')) window.location.href = 'https://androgov-sa.github.io/AIT/login.html'; };
+    
+    // وظائف الإشعارات
+    window.toggleNotif = () => {
+        const dropdown = document.getElementById('notifDropdown');
+        dropdown.classList.toggle('hidden');
+    };
+    
+    window.markRead = () => {
+        const badge = document.getElementById('notifBadge');
+        if(badge) badge.remove();
+        // في الواقع هنا نرسل طلب للسيرفر لتحديث الحالة
+    };
 
     init();
 })();
