@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assets Registry | AndroGov</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { 
+                        brandRed: '#FB4747', 
+                        brandDark: '#0F172A',
+                        moneyGreen: '#10B981',
+                        moneyRed: '#EF4444'
+                    },
+                    fontFamily: { sans: ['Tajawal', 'Inter', 'sans-serif'], en: ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        .num-font { font-family: 'Inter', sans-serif; font-feature-settings: "tnum"; }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300 opacity-0">
+
+    <div id="sidebar-container"></div>
+    
+    <div class="main-content-wrapper md:mr-72 transition-all duration-300 flex flex-col min-h-screen">
+        <div id="header-container"></div>
+
+        <main class="p-6 space-y-6">
+            
+            <div class="flex flex-col md:flex-row justify-between items-end gap-4">
+                <div>
+                    <h1 class="text-2xl font-bold text-slate-900 dark:text-white" data-i18n="pageTitle">سجل الأصول والعهد</h1>
+                    <p class="text-sm text-slate-500 mt-1" data-i18n="pageSub">تتبع الأصول الثابتة، الإهلاك، وعهد الموظفين</p>
+                </div>
+                <div class="flex gap-3">
+                    <button class="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold shadow-sm hover:bg-slate-50 transition flex items-center gap-2">
+                        <i class="fa-solid fa-calculator text-slate-400"></i> <span data-i18n="btnDepr">حساب الإهلاك (Run)</span>
+                    </button>
+                    <button onclick="openAssignModal()" class="px-4 py-2 bg-brandRed text-white rounded-lg text-xs font-bold shadow-lg shadow-red-500/30 hover:bg-red-700 transition flex items-center gap-2">
+                        <i class="fa-solid fa-hand-holding-hand"></i> <span data-i18n="btnAssign">تسليم عهدة لموظف</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-1 h-full bg-moneyGreen"></div>
+                    <div class="flex justify-between items-start mb-2">
+                        <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="kpiNBV">صافي القيمة الدفترية</p>
+                        <i class="fa-solid fa-scale-balanced text-moneyGreen bg-green-50 dark:bg-green-900/20 p-2 rounded-lg"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold num-font text-slate-900 dark:text-white">1,250,000 <span class="text-xs font-normal text-slate-400">SAR</span></h3>
+                    <p class="text-[10px] text-slate-400 mt-2" data-i18n="kpiNBVSub">القيمة بعد خصم مجمع الإهلاك</p>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <div class="flex justify-between items-start mb-2">
+                        <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="kpiTotal">إجمالي الأصول</p>
+                        <i class="fa-solid fa-laptop-file text-brandRed bg-red-50 dark:bg-red-900/20 p-2 rounded-lg"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold num-font text-slate-900 dark:text-white">85 <span class="text-xs font-normal text-slate-400" data-i18n="unitAsset">أصل</span></h3>
+                    <p class="text-[10px] text-slate-400 mt-2">60 مستخدمة | 25 في المخزن</p>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <div class="flex justify-between items-start mb-2">
+                        <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="kpiDepr">مصروف الإهلاك (YTD)</p>
+                        <i class="fa-solid fa-chart-line-down text-slate-400 bg-slate-100 dark:bg-slate-700 p-2 rounded-lg"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold num-font text-slate-900 dark:text-white">125,400 <span class="text-xs font-normal text-slate-400">SAR</span></h3>
+                    <p class="text-[10px] text-slate-400 mt-2" data-i18n="kpiDeprSub">يتم ترحيله للمصروفات شهرياً</p>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <div class="flex justify-between items-start mb-2">
+                        <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="kpiReturn">أصول مستحقة الإرجاع</p>
+                        <i class="fa-solid fa-rotate-left text-brandRed bg-red-50 dark:bg-red-900/20 p-2 rounded-lg"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold num-font text-slate-900 dark:text-white">3 <span class="text-xs font-normal text-slate-400" data-i18n="unitAsset">أصول</span></h3>
+                    <p class="text-[10px] text-brandRed font-bold mt-2">لموظفين غادروا الشركة</p>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 flex flex-wrap gap-4 items-center">
+                <div class="flex-1 min-w-[200px] relative">
+                    <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="بحث برقم الأصل (Tag ID) أو الموظف..." class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg pl-10 pr-4 py-2 text-xs focus:ring-1 focus:ring-brandRed outline-none dark:text-white" data-i18n-ph="searchPh">
+                    <i class="fa-solid fa-search absolute top-2.5 left-3 text-slate-400"></i>
+                </div>
+                <select id="statusFilter" onchange="filterTable()" class="bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-xs dark:text-white outline-none">
+                    <option value="all" data-i18n="fltAll">الكل</option>
+                    <option value="assigned" data-i18n="fltAssigned">عهدة موظف (Assigned)</option>
+                    <option value="stock" data-i18n="fltStock">في المخزن (In Stock)</option>
+                </select>
+            </div>
+
+            <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-right rtl:text-right ltr:text-left">
+                        <thead class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 text-xs uppercase font-bold">
+                            <tr>
+                                <th class="p-4" data-i18n="colTag">رقم الأصل (Tag)</th>
+                                <th class="p-4 w-1/4" data-i18n="colAsset">اسم الأصل</th>
+                                <th class="p-4" data-i18n="colCustody">العهدة (الموظف)</th>
+                                <th class="p-4" data-i18n="colDate">تاريخ الشراء</th>
+                                <th class="p-4" data-i18n="colCost">التكلفة</th>
+                                <th class="p-4" data-i18n="colNBV">القيمة الدفترية</th>
+                                <th class="p-4 text-center" data-i18n="colStatus">الحالة</th>
+                                <th class="p-4 text-center"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="assetsTable" class="divide-y divide-slate-100 dark:divide-slate-700 text-slate-700 dark:text-slate-300">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <div id="assignModal" class="fixed inset-0 bg-black/70 hidden z-50 flex items-center justify-center backdrop-blur-sm p-4">
+        <div class="bg-white dark:bg-slate-800 w-full max-w-lg rounded-2xl shadow-2xl flex flex-col">
+            <div class="p-4 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-900 rounded-t-2xl">
+                <div>
+                    <h3 class="font-bold text-lg dark:text-white" data-i18n="modTitle">تسليم عهدة (Asset Handover)</h3>
+                    <p class="text-[10px] text-slate-500" data-i18n="modSub">سيتم إرسال إشعار استلام للموظف عبر النظام</p>
+                </div>
+                <button onclick="closeAssignModal()" class="w-8 h-8 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 flex items-center justify-center transition"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <div class="p-6 space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="modAsset">اختر الأصل (من المخزن)</label>
+                    <select class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-2 text-xs dark:text-white font-mono">
+                        <option>AST-099 | MacBook Pro 14" (In Stock)</option>
+                        <option>AST-102 | iPad Pro 12.9" (In Stock)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="modEmp">الموظف المستلم</label>
+                    <select class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-2 text-xs dark:text-white">
+                        <option>Mansour Al-Yami (HR Manager)</option>
+                        <option>Ahmed Ali (Software Engineer)</option>
+                    </select>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="modDate">تاريخ التسليم</label>
+                        <input type="date" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-2 text-xs dark:text-white">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="modLoc">الموقع</label>
+                        <select class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-2 text-xs dark:text-white">
+                            <option>المقر الرئيسي - الرياض</option>
+                            <option>العمل عن بعد</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="flex items-start gap-2 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-100 dark:border-blue-800">
+                    <input type="checkbox" id="policyChk" class="mt-1 rounded text-brandRed focus:ring-brandRed">
+                    <label for="policyChk" class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed" data-i18n="modAck">
+                        أقر بأن الحالة الفنية للأصل ممتازة، وأوافق على سياسة استرداد الأصول عند نهاية الخدمة.
+                    </label>
+                </div>
+            </div>
+
+            <div class="p-4 border-t border-slate-100 dark:border-slate-700 flex justify-end gap-3 bg-slate-50 dark:bg-slate-900 rounded-b-2xl">
+                <button onclick="closeAssignModal()" class="px-4 py-2 border border-slate-200 dark:border-slate-600 rounded-lg text-xs font-bold hover:bg-slate-100 dark:hover:bg-slate-700 dark:text-white" data-i18n="btnCancel">إلغاء</button>
+                <button onclick="alert('Asset Assigned Successfully'); closeAssignModal()" class="px-6 py-2 bg-brandRed text-white rounded-lg text-xs font-bold hover:bg-red-700 shadow-md" data-i18n="btnConf">تأكيد التسليم</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="layout-finance.js"></script>
+    <script src="bot-finance.js"></script>
+
+    <script>
+        // --- Mock Assets Data ---
+        const assetsData = [
+            { 
+                tag: "AST-001", nameAr: "لابتوب ماك بوك برو 16", nameEn: "MacBook Pro 16", 
+                empAr: "منصور اليامي", empEn: "Mansour Al-Yami", empImg: "https://ui-avatars.com/api/?name=Mansour+Y&background=f59e0b&color=fff",
+                date: "2024-06-15", cost: 9500, nbv: 6200, status: "assigned"
+            },
+            { 
+                tag: "AST-002", nameAr: "سيرفر Dell PowerEdge", nameEn: "Dell PowerEdge Server", 
+                empAr: "غرفة الخوادم", empEn: "Server Room", empImg: null,
+                date: "2023-01-10", cost: 45000, nbv: 22500, status: "assigned"
+            },
+            { 
+                tag: "AST-099", nameAr: "آيباد برو 12.9", nameEn: "iPad Pro 12.9", 
+                empAr: "--", empEn: "--", empImg: null,
+                date: "2025-11-20", cost: 4200, nbv: 4200, status: "stock"
+            },
+            { 
+                tag: "AST-055", nameAr: "كرسي Herman Miller", nameEn: "Herman Miller Chair", 
+                empAr: "محمد البخيتي", empEn: "Mohammed Al-Bukhaiti", empImg: "https://ui-avatars.com/api/?name=Mohammed+B&background=FB4747&color=fff",
+                date: "2025-01-05", cost: 3500, nbv: 3400, status: "assigned"
+            }
+        ];
+
+        const translations = {
+            ar: {
+                pageTitle: "سجل الأصول والعهد", pageSub: "تتبع الأصول الثابتة، الإهلاك، وعهد الموظفين",
+                btnDepr: "حساب الإهلاك (Run)", btnAssign: "تسليم عهدة لموظف",
+                kpiNBV: "صافي القيمة الدفترية", kpiNBVSub: "القيمة بعد خصم مجمع الإهلاك",
+                kpiTotal: "إجمالي الأصول", unitAsset: "أصل",
+                kpiDepr: "مصروف الإهلاك (YTD)", kpiDeprSub: "يتم ترحيله للمصروفات شهرياً",
+                kpiReturn: "أصول مستحقة الإرجاع",
+                searchPh: "بحث برقم الأصل (Tag ID) أو الموظف...",
+                fltAll: "الكل", fltAssigned: "عهدة موظف (Assigned)", fltStock: "في المخزن (In Stock)",
+                colTag: "رقم الأصل", colAsset: "اسم الأصل", colCustody: "العهدة (الموظف)", colDate: "تاريخ الشراء", colCost: "التكلفة", colNBV: "القيمة الدفترية", colStatus: "الحالة",
+                stAssigned: "مستخدم (Active)", stStock: "مخزون (Stock)",
+                btnReturn: "استرداد",
+                modTitle: "تسليم عهدة (Asset Handover)", modSub: "سيتم إرسال إشعار استلام للموظف عبر النظام",
+                modAsset: "اختر الأصل (من المخزن)", modEmp: "الموظف المستلم", modDate: "تاريخ التسليم", modLoc: "الموقع",
+                modAck: "أقر بأن الحالة الفنية للأصل ممتازة، وأوافق على سياسة استرداد الأصول عند نهاية الخدمة.",
+                btnCancel: "إلغاء", btnConf: "تأكيد التسليم"
+            },
+            en: {
+                pageTitle: "Assets Registry", pageSub: "Track Fixed Assets, Depreciation, and Custody",
+                btnDepr: "Run Depreciation", btnAssign: "Assign Asset",
+                kpiNBV: "Net Book Value (NBV)", kpiNBVSub: "Value after accumulated depreciation",
+                kpiTotal: "Total Assets", unitAsset: "Assets",
+                kpiDepr: "Depreciation Expense (YTD)", kpiDeprSub: "Posted monthly to expenses",
+                kpiReturn: "Assets Due for Return",
+                searchPh: "Search Tag ID or Employee...",
+                fltAll: "All", fltAssigned: "Assigned", fltStock: "In Stock",
+                colTag: "Tag ID", colAsset: "Asset Name", colCustody: "Custodian", colDate: "Purchase Date", colCost: "Cost", colNBV: "Net Book Value", colStatus: "Status",
+                stAssigned: "Active", stStock: "In Stock",
+                btnReturn: "Return",
+                modTitle: "Asset Handover", modSub: "System sends receipt notification to employee",
+                modAsset: "Select Asset (From Stock)", modEmp: "Receiver Employee", modDate: "Handover Date", modLoc: "Location",
+                modAck: "I acknowledge the asset is in good condition and agree to the return policy.",
+                btnCancel: "Cancel", btnConf: "Confirm Handover"
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            applyLanguage();
+            renderTable();
+            window.addEventListener('storage', (e) => { if (e.key === 'lang') location.reload(); });
+        });
+
+        function applyLanguage() {
+            const lang = localStorage.getItem('lang') || 'ar';
+            const dict = translations[lang];
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (dict[key]) el.innerText = dict[key];
+            });
+            document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+                const key = el.getAttribute('data-i18n-ph');
+                if (dict[key]) el.placeholder = dict[key];
+            });
+        }
+
+        function renderTable() {
+            const lang = localStorage.getItem('lang') || 'ar';
+            const t = translations[lang];
+            const tbody = document.getElementById('assetsTable');
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const statusFlt = document.getElementById('statusFilter').value;
+
+            tbody.innerHTML = '';
+
+            const filtered = assetsData.filter(item => {
+                const textMatch = item.tag.toLowerCase().includes(search) || 
+                                  (lang==='ar'?item.empAr:item.empEn).toLowerCase().includes(search);
+                const statusMatch = statusFlt === 'all' || item.status === statusFlt;
+                return textMatch && statusMatch;
+            });
+
+            filtered.forEach(item => {
+                // Custodian UI
+                let custodianHTML = '';
+                if(item.empImg) {
+                    custodianHTML = `
+                        <div class="flex items-center gap-2">
+                            <img src="${item.empImg}" class="w-6 h-6 rounded-full border border-slate-200">
+                            <span class="font-bold text-xs">${lang==='ar'?item.empAr:item.empEn}</span>
+                        </div>`;
+                } else if (item.status === 'stock') {
+                    custodianHTML = `<span class="text-slate-400 italic text-xs">--</span>`;
+                } else {
+                    custodianHTML = `<div class="flex items-center gap-2"><i class="fa-solid fa-server text-slate-400"></i> <span class="font-bold text-xs">${lang==='ar'?item.empAr:item.empEn}</span></div>`;
+                }
+
+                // Status Badge
+                const statusBadge = item.status === 'assigned'
+                    ? `<span class="bg-green-100 text-green-700 px-2 py-0.5 rounded text-[10px] font-bold border border-green-200">${t.stAssigned}</span>`
+                    : `<span class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded text-[10px] font-bold border border-blue-200">${t.stStock}</span>`;
+
+                const row = `
+                <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition border-b border-slate-100 dark:border-slate-700 last:border-0 group">
+                    <td class="p-4 font-mono text-xs text-brandRed font-bold group-hover:underline cursor-pointer">${item.tag}</td>
+                    <td class="p-4 font-bold text-slate-800 dark:text-white">${lang==='ar'?item.nameAr:item.nameEn}</td>
+                    <td class="p-4">${custodianHTML}</td>
+                    <td class="p-4 num-font text-xs text-slate-500">${item.date}</td>
+                    <td class="p-4 num-font text-xs text-slate-500">${item.cost.toLocaleString()}</td>
+                    <td class="p-4 num-font font-bold text-slate-800 dark:text-white">${item.nbv.toLocaleString()}</td>
+                    <td class="p-4 text-center">${statusBadge}</td>
+                    <td class="p-4 text-center">
+                        ${item.status === 'assigned' 
+                            ? `<button class="text-xs text-brandRed font-bold hover:underline" onclick="alert('${lang==='ar'?'طلب استرداد مرسل':'Return Request Sent'}')">${t.btnReturn}</button>` 
+                            : ''}
+                    </td>
+                </tr>`;
+                tbody.innerHTML += row;
+            });
+        }
+
+        // --- Modal Logic ---
+        function openAssignModal() { document.getElementById('assignModal').classList.remove('hidden'); }
+        function closeAssignModal() { document.getElementById('assignModal').classList.add('hidden'); }
+        window.filterTable = renderTable;
+
+    </script>
+</body>
+</html>
