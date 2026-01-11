@@ -1,8 +1,8 @@
 /**
- * AndroGov Layout Engine v4.0 (Refactored & Optimized)
- * - Data-driven menu generation.
- * - Centralized configuration.
- * - Improved English/Arabic layout handling.
+ * AndroGov Layout Engine v4.1 (Red Identity & Admin Profile)
+ * - Converted Theme to Brand Red.
+ * - Added User Profile Link (Self-Service).
+ * - Preserved Logout Link.
  */
 
 (function() {
@@ -21,7 +21,6 @@
     };
 
     // --- 2. Menu Structure Data ---
-    // هذا الهيكل يسهل عليك إضافة صفحات جديدة دون اللعب في كود HTML
     const menuStructure = [
         {
             section: 'main',
@@ -160,13 +159,13 @@
         const userDisplayName = isRtl ? currentUser.nameAr : currentUser.nameEn;
         const userDisplayTitle = isRtl ? currentUser.titleAr : currentUser.titleEn;
 
-        // Helper to check active state
+        // Helper to check active state (Theme Changed to RED)
         const getLinkClass = (link) => {
-            // Check if current page matches link
             const isActive = currentPath === link;
             const baseClass = "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200";
-            const activeClass = "bg-brandBlue text-white shadow-md shadow-blue-500/20";
-            const inactiveClass = "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-brandBlue";
+            // استخدام BrandRed (الأحمر) بدلاً من الأزرق
+            const activeClass = "bg-brandRed text-white shadow-md shadow-red-500/20";
+            const inactiveClass = "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-brandRed";
             return `${baseClass} ${isActive ? activeClass : inactiveClass}`;
         };
 
@@ -185,11 +184,10 @@
 
         const sidebarHTML = `
         <aside class="fixed top-0 ${isRtl ? 'right-0 border-l' : 'left-0 border-r'} z-50 h-screen w-72 flex-col hidden md:flex bg-white dark:bg-[#0F172A] border-slate-200 dark:border-slate-800 transition-all duration-300">
-            <!-- Brand -->
             <div class="h-20 flex items-center px-6 border-b border-slate-100 dark:border-slate-800">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl bg-blue-50 text-brandBlue flex items-center justify-center text-xl">
-                        <i class="fa-solid fa-layer-group"></i>
+                    <div class="w-10 h-10 rounded-xl bg-red-50 text-brandRed flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-coins"></i>
                     </div>
                     <div>
                         <h1 class="font-bold text-lg text-slate-800 dark:text-white font-sans">${dict.sysName}</h1>
@@ -198,23 +196,21 @@
                 </div>
             </div>
 
-            <!-- User -->
             <div class="p-4">
-                <div class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700">
+                <a href="my_profile.html" class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 hover:border-brandRed transition group cursor-pointer">
                     <img src="${currentUser.avatar}" class="w-10 h-10 rounded-full border-2 border-white dark:border-slate-600 object-cover">
-                    <div class="overflow-hidden">
-                        <p class="text-sm font-bold text-slate-800 dark:text-white truncate">${userDisplayName}</p>
-                        <p class="text-[10px] text-brandBlue font-medium truncate">${userDisplayTitle}</p>
+                    <div class="overflow-hidden flex-1">
+                        <p class="text-sm font-bold text-slate-800 dark:text-white truncate group-hover:text-brandRed transition">${userDisplayName}</p>
+                        <p class="text-[10px] text-brandRed font-medium truncate">${userDisplayTitle}</p>
                     </div>
-                </div>
+                    <i class="fa-solid fa-chevron-left text-[10px] text-slate-300 group-hover:text-brandRed mr-auto"></i>
+                </a>
             </div>
 
-            <!-- Menu -->
             <nav class="flex-1 overflow-y-auto px-3 py-2 custom-scroll space-y-0.5">
                 ${menuHTML}
             </nav>
 
-            <!-- Footer -->
             <div class="p-4 text-center text-[10px] text-slate-400 border-t border-slate-100 dark:border-slate-800">
                 &copy; 2026 Andromeda IT
             </div>
@@ -232,7 +228,7 @@
         container.innerHTML = `
         <header class="h-20 sticky top-0 z-40 flex items-center justify-between px-6 bg-white/80 dark:bg-[#0F172A]/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 transition-all">
             <div class="flex items-center gap-4">
-                <button class="md:hidden text-slate-500 dark:text-slate-200 hover:text-brandBlue"><i class="fa-solid fa-bars text-xl"></i></button>
+                <button class="md:hidden text-slate-500 dark:text-slate-200 hover:text-brandRed"><i class="fa-solid fa-bars text-xl"></i></button>
             </div>
 
             <div class="flex items-center gap-3">
@@ -267,7 +263,8 @@
     window.doLogout = function() {
         if (confirm(config.lang === 'ar' ? 'هل أنت متأكد من تسجيل الخروج؟' : 'Are you sure you want to logout?')) {
             localStorage.removeItem('currentUser');
-            window.location.href = 'https://androgov-sa.github.io/AIT/login.html'; // Assuming you have a login page
+            // الحفاظ على الرابط كما طلبت
+            window.location.href = 'https://androgov-sa.github.io/AIT/login.html'; 
         }
     };
 
