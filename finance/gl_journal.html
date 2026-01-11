@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>General Ledger | AndroGov</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { 
+                        brandRed: '#FB4747', 
+                        brandDark: '#0F172A',
+                        moneyGreen: '#10B981',
+                        moneyRed: '#EF4444'
+                    },
+                    fontFamily: { sans: ['Tajawal', 'Inter', 'sans-serif'], en: ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* تنسيق الأرقام المحاسبية */
+        .num-font { font-family: 'Inter', sans-serif; font-feature-settings: "tnum"; }
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300 opacity-0">
+
+    <div id="sidebar-container"></div>
+    
+    <div class="main-content-wrapper md:mr-72 transition-all duration-300 flex flex-col min-h-screen">
+        <div id="header-container"></div>
+
+        <main class="p-6 space-y-6">
+            
+            <div class="flex flex-col md:flex-row justify-between items-end gap-4">
+                <div>
+                    <h1 class="text-2xl font-bold text-slate-900 dark:text-white" data-i18n="pageTitle">دفتر القيود اليومية</h1>
+                    <p class="text-sm text-slate-500 mt-1" data-i18n="pageSub">إدارة وتدقيق العمليات المالية والمحاسبية</p>
+                </div>
+                <div class="flex gap-3">
+                    <button class="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold shadow-sm hover:bg-slate-50 transition flex items-center gap-2">
+                        <i class="fa-solid fa-file-export text-slate-400"></i> <span data-i18n="btnExport">تصدير Excel</span>
+                    </button>
+                    <button onclick="openEntryModal()" class="px-4 py-2 bg-brandRed text-white rounded-lg text-xs font-bold shadow-lg shadow-red-500/30 hover:bg-red-700 transition flex items-center gap-2">
+                        <i class="fa-solid fa-plus"></i> <span data-i18n="btnNew">قيد جديد</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 flex flex-wrap gap-4 items-center">
+                <div class="flex-1 min-w-[200px]">
+                    <div class="relative">
+                        <input type="text" id="searchInput" onkeyup="renderTable()" placeholder="بحث برقم القيد أو الوصف..." class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg pl-10 pr-4 py-2 text-xs focus:ring-1 focus:ring-brandRed outline-none dark:text-white" data-i18n-ph="searchPh">
+                        <i class="fa-solid fa-search absolute top-2.5 left-3 text-slate-400"></i>
+                    </div>
+                </div>
+                <select id="filterStatus" onchange="renderTable()" class="bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-xs dark:text-white outline-none focus:border-brandRed">
+                    <option value="all" data-i18n="filterAllStatus">كل الحالات</option>
+                    <option value="posted" data-i18n="filterPosted">مرحل (Posted)</option>
+                    <option value="draft" data-i18n="filterDraft">مسودة (Draft)</option>
+                </select>
+                <select class="bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-xs dark:text-white outline-none focus:border-brandRed">
+                    <option data-i18n="filterPeriod">السنة المالية 2026</option>
+                    <option>2025</option>
+                </select>
+            </div>
+
+            <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-right rtl:text-right ltr:text-left">
+                        <thead class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 text-xs uppercase font-bold">
+                            <tr>
+                                <th class="p-4" data-i18n="colID">رقم القيد</th>
+                                <th class="p-4" data-i18n="colDate">التاريخ</th>
+                                <th class="p-4 w-1/3" data-i18n="colDesc">البيان / الوصف</th>
+                                <th class="p-4" data-i18n="colCenter">مركز التكلفة</th>
+                                <th class="p-4 text-left rtl:text-left ltr:text-right" data-i18n="colAmount">القيمة</th>
+                                <th class="p-4 text-center" data-i18n="colStatus">الحالة</th>
+                                <th class="p-4"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="journalTableBody" class="divide-y divide-slate-100 dark:divide-slate-700 text-slate-700 dark:text-slate-300">
+                            </tbody>
+                    </table>
+                </div>
+                <div class="p-4 border-t border-slate-100 dark:border-slate-700 flex justify-between items-center text-xs text-slate-500">
+                    <span data-i18n="pagingInfo">عرض 1-10 من 52 قيد</span>
+                    <div class="flex gap-2">
+                        <button class="px-3 py-1 border rounded hover:bg-slate-50 dark:border-slate-600 dark:hover:bg-slate-700" disabled><i class="fa-solid fa-chevron-right"></i></button>
+                        <button class="px-3 py-1 border rounded hover:bg-slate-50 dark:border-slate-600 dark:hover:bg-slate-700"><i class="fa-solid fa-chevron-left"></i></button>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <div id="entryModal" class="fixed inset-0 bg-black/70 hidden z-50 flex items-center justify-center backdrop-blur-sm p-4">
+        <div class="bg-white dark:bg-slate-800 w-full max-w-5xl rounded-2xl shadow-2xl flex flex-col max-h-[90vh]">
+            
+            <div class="p-4 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-900 rounded-t-2xl">
+                <div>
+                    <h3 class="font-bold text-lg dark:text-white" data-i18n="modalTitle">إضافة قيد يومية جديد</h3>
+                    <p class="text-[10px] text-slate-500" data-i18n="modalSub">تأكد من توازن القيد قبل الحفظ</p>
+                </div>
+                <button onclick="closeModal()" class="w-8 h-8 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 flex items-center justify-center transition"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <div class="p-6 overflow-y-auto flex-1 custom-scroll">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="fldRef">رقم المرجع</label>
+                        <input type="text" value="JV-2026-AUTO" readonly class="w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-600 rounded p-2 text-xs font-mono text-slate-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="fldDate">التاريخ</label>
+                        <input type="date" class="w-full bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded p-2 text-xs dark:text-white">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="fldDesc">وصف القيد</label>
+                        <input type="text" placeholder="..." class="w-full bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded p-2 text-xs dark:text-white focus:border-brandRed outline-none">
+                    </div>
+                </div>
+
+                <div class="border border-slate-200 dark:border-slate-600 rounded-lg overflow-hidden mb-2">
+                    <table class="w-full text-xs text-right">
+                        <thead class="bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 font-bold border-b border-slate-200 dark:border-slate-700">
+                            <tr>
+                                <th class="p-3 w-1/3" data-i18n="thAccount">الحساب</th>
+                                <th class="p-3" data-i18n="thCenter">مركز التكلفة</th>
+                                <th class="p-3 w-24" data-i18n="thDebit">مدين</th>
+                                <th class="p-3 w-24" data-i18n="thCredit">دائن</th>
+                                <th class="p-3" data-i18n="thNote">ملاحظات</th>
+                                <th class="p-3 text-center w-10"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="linesContainer" class="bg-white dark:bg-slate-800 dark:text-white">
+                            </tbody>
+                    </table>
+                </div>
+                <button onclick="addLine()" class="text-xs font-bold text-brandRed hover:underline flex items-center gap-1">
+                    <i class="fa-solid fa-plus-circle"></i> <span data-i18n="btnAddLine">إضافة سطر</span>
+                </button>
+            </div>
+
+            <div class="bg-slate-50 dark:bg-slate-900 p-4 border-t border-slate-200 dark:border-slate-700 rounded-b-2xl">
+                <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                    <div class="flex items-center gap-2">
+                        <div id="balanceBadge" class="px-3 py-1 rounded text-xs font-bold bg-green-100 text-green-700 border border-green-200" data-i18n="statusBalanced">متوازن</div>
+                    </div>
+                    <div class="flex gap-6 font-mono font-bold text-sm dark:text-white">
+                        <div class="flex gap-2 text-slate-500 dark:text-slate-400"><span data-i18n="totalDr">إجمالي مدين:</span> <span id="totDr" class="text-slate-800 dark:text-white">0.00</span></div>
+                        <div class="flex gap-2 text-slate-500 dark:text-slate-400"><span data-i18n="totalCr">إجمالي دائن:</span> <span id="totCr" class="text-slate-800 dark:text-white">0.00</span></div>
+                        <div class="flex gap-2 text-slate-500 dark:text-slate-400"><span data-i18n="diff">الفرق:</span> <span id="diffVal" class="text-green-600">0.00</span></div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="closeModal()" class="px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg text-xs font-bold hover:bg-slate-100 dark:hover:bg-slate-700 dark:text-white" data-i18n="btnCancel">إلغاء</button>
+                        <button onclick="alert('Entry Saved!')" class="px-6 py-2 bg-brandRed text-white rounded-lg text-xs font-bold hover:bg-red-700 shadow-md" data-i18n="btnSave">حفظ وترحيل</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="layout-finance.js"></script>
+    <script src="bot-finance.js"></script>
+
+    <script>
+        // --- Mock Data ---
+        const journalEntries = [
+            { id: "JV-26-045", date: "2026-01-12", descAr: "إثبات إيرادات مشروع وزارة الصحة (الدفعة 1)", descEn: "MOH Project Revenue Recognition (Batch 1)", centerAr: "مشاريع حكومية", centerEn: "Gov Projects", amount: 150000, status: "posted" },
+            { id: "JV-26-044", date: "2026-01-11", descAr: "سداد فاتورة كهرباء المقر الرئيسي", descEn: "HQ Electricity Bill Payment", centerAr: "تشغيل - إداري", centerEn: "Ops - Admin", amount: 2450, status: "posted" },
+            { id: "JV-26-043", date: "2026-01-10", descAr: "استحقاق رواتب الموظفين - يناير", descEn: "Staff Payroll Accrual - Jan", centerAr: "الموارد البشرية", centerEn: "HR", amount: 320000, status: "draft" },
+            { id: "JV-26-042", date: "2026-01-08", descAr: "شراء أجهزة حاسب آلي (أصول)", descEn: "IT Assets Purchase (Laptops)", centerAr: "تقنية المعلومات", centerEn: "IT Dept", amount: 45000, status: "posted" },
+            { id: "JV-26-041", date: "2026-01-05", descAr: "تسوية عهدة نقدية - معرض الرياض", descEn: "Petty Cash Settlement - Riyadh Expo", centerAr: "التسويق", centerEn: "Marketing", amount: 1200, status: "draft" }
+        ];
+
+        // --- Translations ---
+        const translations = {
+            ar: {
+                pageTitle: "دفتر القيود اليومية", pageSub: "إدارة وتدقيق العمليات المالية والمحاسبية",
+                btnExport: "تصدير Excel", btnNew: "قيد جديد",
+                searchPh: "بحث برقم القيد أو الوصف...",
+                filterAllStatus: "كل الحالات", filterPosted: "مرحل", filterDraft: "مسودة", filterPeriod: "السنة المالية 2026",
+                colID: "رقم القيد", colDate: "التاريخ", colDesc: "البيان / الوصف", colCenter: "مركز التكلفة", colAmount: "القيمة", colStatus: "الحالة",
+                pagingInfo: `عرض ${journalEntries.length} قيد`,
+                modalTitle: "إضافة قيد يومية جديد", modalSub: "تأكد من توازن القيد قبل الحفظ",
+                fldRef: "رقم المرجع", fldDate: "التاريخ", fldDesc: "وصف القيد",
+                thAccount: "الحساب", thCenter: "مركز التكلفة", thDebit: "مدين", thCredit: "دائن", thNote: "ملاحظات",
+                btnAddLine: "إضافة سطر", statusBalanced: "متوازن", statusUnbalanced: "غير متوازن",
+                totalDr: "إجمالي مدين:", totalCr: "إجمالي دائن:", diff: "الفرق:",
+                btnCancel: "إلغاء", btnSave: "حفظ وترحيل",
+                posted: "مرحل", draft: "مسودة"
+            },
+            en: {
+                pageTitle: "General Ledger Journal", pageSub: "Manage and audit financial entries",
+                btnExport: "Export Excel", btnNew: "New Entry",
+                searchPh: "Search Entry ID or Desc...",
+                filterAllStatus: "All Status", filterPosted: "Posted", filterDraft: "Draft", filterPeriod: "FY 2026",
+                colID: "Entry ID", colDate: "Date", colDesc: "Description", colCenter: "Cost Center", colAmount: "Amount", colStatus: "Status",
+                pagingInfo: `Showing ${journalEntries.length} entries`,
+                modalTitle: "New Journal Entry", modalSub: "Ensure entry balances before saving",
+                fldRef: "Reference No", fldDate: "Date", fldDesc: "Description",
+                thAccount: "Account", thCenter: "Cost Center", thDebit: "Debit", thCredit: "Credit", thNote: "Notes",
+                btnAddLine: "Add Line", statusBalanced: "Balanced", statusUnbalanced: "Unbalanced",
+                totalDr: "Total Dr:", totalCr: "Total Cr:", diff: "Diff:",
+                btnCancel: "Cancel", btnSave: "Save & Post",
+                posted: "Posted", draft: "Draft"
+            }
+        };
+
+        // --- Logic ---
+        document.addEventListener('DOMContentLoaded', () => {
+            applyLanguage();
+            renderTable();
+            addLine(); // Add 2 default lines
+            addLine();
+            
+            window.addEventListener('storage', (e) => {
+                if (e.key === 'lang') location.reload();
+            });
+        });
+
+        function applyLanguage() {
+            const lang = localStorage.getItem('lang') || 'ar';
+            const dict = translations[lang];
+            
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (dict[key]) el.innerText = dict[key];
+            });
+            document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+                const key = el.getAttribute('data-i18n-ph');
+                if (dict[key]) el.placeholder = dict[key];
+            });
+        }
+
+        function renderTable() {
+            const lang = localStorage.getItem('lang') || 'ar';
+            const t = translations[lang];
+            const tbody = document.getElementById('journalTableBody');
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const statusFilter = document.getElementById('filterStatus').value;
+            
+            tbody.innerHTML = '';
+
+            const filtered = journalEntries.filter(e => {
+                const textMatch = e.id.toLowerCase().includes(search) || 
+                                  (lang==='ar' ? e.descAr : e.descEn).toLowerCase().includes(search);
+                const statusMatch = statusFilter === 'all' || e.status === statusFilter;
+                return textMatch && statusMatch;
+            });
+
+            filtered.forEach(item => {
+                const statusBadge = item.status === 'posted' 
+                    ? `<span class="bg-green-100 text-green-700 px-2 py-1 rounded-full text-[10px] border border-green-200 font-bold">${t.posted}</span>`
+                    : `<span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded-full text-[10px] border border-yellow-200 font-bold">${t.draft}</span>`;
+
+                const row = `
+                <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition cursor-pointer group">
+                    <td class="p-4 font-mono text-xs text-brandRed font-bold group-hover:underline">${item.id}</td>
+                    <td class="p-4 num-font text-slate-500 text-xs">${item.date}</td>
+                    <td class="p-4 font-bold text-slate-800 dark:text-white">${lang==='ar'?item.descAr:item.descEn}</td>
+                    <td class="p-4"><span class="bg-slate-100 dark:bg-slate-700 px-2 py-0.5 rounded text-[10px] text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-600">${lang==='ar'?item.centerAr:item.centerEn}</span></td>
+                    <td class="p-4 num-font font-bold text-slate-900 dark:text-white text-left rtl:text-left ltr:text-right">${item.amount.toLocaleString()}</td>
+                    <td class="p-4 text-center">${statusBadge}</td>
+                    <td class="p-4 text-center text-slate-400 hover:text-brandRed"><i class="fa-solid fa-eye"></i></td>
+                </tr>`;
+                tbody.innerHTML += row;
+            });
+        }
+
+        // --- Modal Logic ---
+        function openEntryModal() {
+            document.getElementById('entryModal').classList.remove('hidden');
+        }
+        function closeModal() {
+            document.getElementById('entryModal').classList.add('hidden');
+        }
+
+        function addLine() {
+            const container = document.getElementById('linesContainer');
+            const row = document.createElement('tr');
+            row.className = 'border-b border-slate-100 dark:border-slate-700';
+            row.innerHTML = `
+                <td class="p-2">
+                    <input type="text" class="w-full border-none bg-transparent focus:ring-0 text-xs font-bold dark:text-white" placeholder="1000 - ...">
+                </td>
+                <td class="p-2">
+                    <select class="w-full border-none bg-transparent focus:ring-0 text-xs text-slate-500 dark:text-slate-400">
+                        <option>General</option>
+                        <option>IT Dept</option>
+                        <option>HR Dept</option>
+                    </select>
+                </td>
+                <td class="p-2"><input type="number" class="w-full border border-slate-200 dark:border-slate-600 rounded p-1 text-center bg-slate-50 dark:bg-slate-700 font-mono text-xs dark:text-white dr-input" placeholder="0.00" oninput="calcTotals()"></td>
+                <td class="p-2"><input type="number" class="w-full border border-slate-200 dark:border-slate-600 rounded p-1 text-center bg-slate-50 dark:bg-slate-700 font-mono text-xs dark:text-white cr-input" placeholder="0.00" oninput="calcTotals()"></td>
+                <td class="p-2"><input type="text" class="w-full border-none bg-transparent focus:ring-0 text-xs dark:text-white" placeholder="..."></td>
+                <td class="p-2 text-center"><button onclick="this.closest('tr').remove(); calcTotals()" class="text-slate-400 hover:text-red-500 transition"><i class="fa-solid fa-trash"></i></button></td>
+            `;
+            container.appendChild(row);
+        }
+
+        function calcTotals() {
+            const lang = localStorage.getItem('lang') || 'ar';
+            const t = translations[lang];
+
+            let dr = 0, cr = 0;
+            document.querySelectorAll('.dr-input').forEach(i => dr += Number(i.value));
+            document.querySelectorAll('.cr-input').forEach(i => cr += Number(i.value));
+            
+            const diff = dr - cr;
+            
+            document.getElementById('totDr').innerText = dr.toFixed(2);
+            document.getElementById('totCr').innerText = cr.toFixed(2);
+            
+            const diffEl = document.getElementById('diffVal');
+            const badge = document.getElementById('balanceBadge');
+            
+            diffEl.innerText = diff.toFixed(2);
+            
+            if (Math.abs(diff) < 0.01 && dr > 0) {
+                diffEl.className = "text-green-600";
+                badge.className = "px-3 py-1 rounded text-xs font-bold bg-green-100 text-green-700 border border-green-200";
+                badge.innerText = t.statusBalanced;
+            } else {
+                diffEl.className = "text-red-500";
+                badge.className = "px-3 py-1 rounded text-xs font-bold bg-red-100 text-red-700 border border-red-200";
+                badge.innerText = t.statusUnbalanced;
+            }
+        }
+    </script>
+</body>
+</html>
