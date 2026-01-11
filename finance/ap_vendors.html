@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vendor Management | AndroGov</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { 
+                        brandRed: '#FB4747', 
+                        brandDark: '#0F172A',
+                        moneyGreen: '#10B981',
+                        moneyRed: '#EF4444',
+                        alertOrange: '#F59E0B'
+                    },
+                    fontFamily: { sans: ['Tajawal', 'Inter', 'sans-serif'], en: ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        .num-font { font-family: 'Inter', sans-serif; font-feature-settings: "tnum"; }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300 opacity-0">
+
+    <div id="sidebar-container"></div>
+    
+    <div class="main-content-wrapper md:mr-72 transition-all duration-300 flex flex-col min-h-screen">
+        <div id="header-container"></div>
+
+        <main class="p-6 space-y-6">
+            
+            <div class="flex flex-col md:flex-row justify-between items-end gap-4">
+                <div>
+                    <h1 class="text-2xl font-bold text-slate-900 dark:text-white" data-i18n="pageTitle">سجل الموردين</h1>
+                    <p class="text-sm text-slate-500 mt-1" data-i18n="pageSub">إدارة بيانات الموردين، العقود، والذمم الدائنة</p>
+                </div>
+                <div class="flex gap-3">
+                    <button class="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold shadow-sm hover:bg-slate-50 transition flex items-center gap-2">
+                        <i class="fa-solid fa-file-invoice-dollar text-slate-400"></i> <span data-i18n="btnAging">تقرير تعمير الديون (Aging)</span>
+                    </button>
+                    <button onclick="openVendorModal()" class="px-4 py-2 bg-brandRed text-white rounded-lg text-xs font-bold shadow-lg shadow-red-500/30 hover:bg-red-700 transition flex items-center gap-2">
+                        <i class="fa-solid fa-user-plus"></i> <span data-i18n="btnAdd">مورد جديد</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-1 h-full bg-moneyRed"></div>
+                    <div class="flex justify-between items-start mb-2">
+                        <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="kpiTotal">إجمالي المستحقات (AP)</p>
+                        <i class="fa-solid fa-hand-holding-dollar text-moneyRed bg-red-50 dark:bg-red-900/20 p-2 rounded-lg"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold num-font text-slate-900 dark:text-white">425,800 <span class="text-xs font-normal text-slate-400">SAR</span></h3>
+                    <p class="text-[10px] text-slate-400 mt-2" data-i18n="kpiTotalSub">مستحقة السداد للموردين</p>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <div class="flex justify-between items-start mb-2">
+                        <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="kpiOverdue">مستحقات متأخرة</p>
+                        <i class="fa-solid fa-circle-exclamation text-alertOrange bg-orange-50 dark:bg-orange-900/20 p-2 rounded-lg"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold num-font text-alertOrange">45,000 <span class="text-xs font-normal text-slate-400">SAR</span></h3>
+                    <p class="text-[10px] text-slate-400 mt-2" data-i18n="kpiOverdueSub">تجاوزت فترة الائتمان</p>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <div class="flex justify-between items-start mb-2">
+                        <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="kpiActive">موردين نشطين</p>
+                        <i class="fa-solid fa-store text-slate-400 bg-slate-100 dark:bg-slate-700 p-2 rounded-lg"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold num-font text-slate-900 dark:text-white">18 <span class="text-xs font-normal text-slate-400" data-i18n="unitVendor">مورد</span></h3>
+                    <p class="text-[10px] text-slate-400 mt-2">منهم 3 عقود استراتيجية</p>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <div class="flex justify-between items-start mb-2">
+                        <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="kpiBlocked">موردين محظورين</p>
+                        <i class="fa-solid fa-ban text-brandRed bg-red-50 dark:bg-red-900/20 p-2 rounded-lg"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold num-font text-slate-900 dark:text-white">2</h3>
+                    <p class="text-[10px] text-slate-400 mt-2" data-i18n="kpiBlockedSub">بسبب عدم الامتثال أو الجودة</p>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 flex flex-wrap gap-4 items-center">
+                <div class="flex-1 min-w-[200px] relative">
+                    <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="بحث باسم المورد، الرقم الضريبي..." class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg pl-10 pr-4 py-2 text-xs focus:ring-1 focus:ring-brandRed outline-none dark:text-white" data-i18n-ph="searchPh">
+                    <i class="fa-solid fa-search absolute top-2.5 left-3 text-slate-400"></i>
+                </div>
+                <select id="statusFilter" onchange="filterTable()" class="bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-xs dark:text-white outline-none">
+                    <option value="all" data-i18n="fltAll">الكل</option>
+                    <option value="active" data-i18n="fltActive">نشط (Active)</option>
+                    <option value="blocked" data-i18n="fltBlocked">محظور (Blocked)</option>
+                </select>
+                <select id="catFilter" onchange="filterTable()" class="bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-xs dark:text-white outline-none">
+                    <option value="all" data-i18n="fltCatAll">كل التصنيفات</option>
+                    <option value="tech" data-i18n="fltCatTech">تقنية (Tech)</option>
+                    <option value="services" data-i18n="fltCatServ">خدمات (Services)</option>
+                </select>
+            </div>
+
+            <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-right rtl:text-right ltr:text-left">
+                        <thead class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 text-xs uppercase font-bold">
+                            <tr>
+                                <th class="p-4" data-i18n="colName">اسم المورد</th>
+                                <th class="p-4" data-i18n="colCat">التصنيف</th>
+                                <th class="p-4" data-i18n="colContact">التواصل</th>
+                                <th class="p-4" data-i18n="colBalance">الرصيد القائم</th>
+                                <th class="p-4" data-i18n="colTerms">شروط الدفع</th>
+                                <th class="p-4 text-center" data-i18n="colStatus">الحالة</th>
+                                <th class="p-4 text-center"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="vendorsTable" class="divide-y divide-slate-100 dark:divide-slate-700 text-slate-700 dark:text-slate-300">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <div id="vendorModal" class="fixed inset-0 bg-black/70 hidden z-50 flex items-center justify-center backdrop-blur-sm p-4">
+        <div class="bg-white dark:bg-slate-800 w-full max-w-2xl rounded-2xl shadow-2xl flex flex-col max-h-[90vh]">
+            <div class="p-4 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-900 rounded-t-2xl">
+                <div>
+                    <h3 class="font-bold text-lg dark:text-white" data-i18n="modTitle">تسجيل مورد جديد</h3>
+                    <p class="text-[10px] text-slate-500" data-i18n="modSub">يجب إرفاق السجل التجاري وشهادة الضريبة للاعتماد</p>
+                </div>
+                <button onclick="closeVendorModal()" class="w-8 h-8 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 flex items-center justify-center transition"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <div class="p-6 overflow-y-auto space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="col-span-2">
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="fldName">اسم الشركة / المورد</label>
+                        <input type="text" placeholder="..." class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-2 text-xs dark:text-white">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="fldCR">رقم السجل التجاري</label>
+                        <input type="text" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-2 text-xs dark:text-white num-font">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="fldVAT">الرقم الضريبي (VAT ID)</label>
+                        <input type="text" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-2 text-xs dark:text-white num-font">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="fldCat">تصنيف المورد</label>
+                        <select class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-2 text-xs dark:text-white">
+                            <option>تقنية (Hardware/Software)</option>
+                            <option>خدمات احترافية</option>
+                            <option>مقاولات وصيانة</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="fldTerms">شروط الدفع (Payment Terms)</label>
+                        <select class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-2 text-xs dark:text-white">
+                            <option>مقدم 100% (Advance)</option>
+                            <option>آجل 30 يوم (Net 30)</option>
+                            <option>آجل 60 يوم (Net 60)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="fldBank">المعلومات البنكية</label>
+                    <div class="grid grid-cols-3 gap-2">
+                        <input type="text" placeholder="اسم البنك" class="col-span-1 w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-2 text-xs dark:text-white">
+                        <input type="text" placeholder="SA..." class="col-span-2 w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-2 text-xs dark:text-white num-font">
+                    </div>
+                </div>
+
+                <div class="p-3 bg-slate-50 dark:bg-slate-700/50 rounded-lg border border-slate-200 dark:border-slate-600 border-dashed text-center">
+                    <i class="fa-solid fa-cloud-arrow-up text-slate-400 text-xl mb-2"></i>
+                    <p class="text-xs text-slate-500" data-i18n="dropFile">اسحب ملفات السجل التجاري وشهادة الضريبة هنا</p>
+                </div>
+            </div>
+
+            <div class="p-4 border-t border-slate-100 dark:border-slate-700 flex justify-end gap-3 bg-slate-50 dark:bg-slate-900 rounded-b-2xl">
+                <button onclick="closeVendorModal()" class="px-4 py-2 border border-slate-200 dark:border-slate-600 rounded-lg text-xs font-bold hover:bg-slate-100 dark:hover:bg-slate-700 dark:text-white" data-i18n="btnCancel">إلغاء</button>
+                <button onclick="alert('Vendor Profile Created'); closeVendorModal()" class="px-6 py-2 bg-brandRed text-white rounded-lg text-xs font-bold hover:bg-red-700 shadow-md" data-i18n="btnSave">حفظ واعتماد</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="layout-finance.js"></script>
+    <script src="bot-finance.js"></script>
+
+    <script>
+        // --- Mock Vendors Data ---
+        const vendorsData = [
+            { 
+                id: "V-101", nameAr: "شركة الاتصالات السعودية (STC)", nameEn: "STC Solutions", 
+                cat: "tech", vat: "300012345600003", balance: 145000, 
+                terms: "Net 30", status: "active", phone: "011-4600000"
+            },
+            { 
+                id: "V-102", nameAr: "مكتبة جرير", nameEn: "Jarir Bookstore", 
+                cat: "tech", vat: "300099887700003", balance: 4500, 
+                terms: "Immediate", status: "active", phone: "920000089"
+            },
+            { 
+                id: "V-103", nameAr: "شركة الفوزان للمقاولات", nameEn: "Al-Fawzan Contracting", 
+                cat: "services", vat: "310022334400003", balance: 245000, 
+                terms: "Net 60", status: "active", phone: "011-2002002"
+            },
+            { 
+                id: "V-104", nameAr: "مؤسسة السرعة القصوى", nameEn: "Max Speed Est.", 
+                cat: "services", vat: "--", balance: 0, 
+                terms: "Net 30", status: "blocked", phone: "0505555555"
+            }
+        ];
+
+        const translations = {
+            ar: {
+                pageTitle: "سجل الموردين", pageSub: "إدارة بيانات الموردين، العقود، والذمم الدائنة",
+                btnAging: "تقرير تعمير الديون (Aging)", btnAdd: "مورد جديد",
+                kpiTotal: "إجمالي المستحقات (AP)", kpiTotalSub: "مستحقة السداد للموردين",
+                kpiOverdue: "مستحقات متأخرة", kpiOverdueSub: "تجاوزت فترة الائتمان",
+                kpiActive: "موردين نشطين", unitVendor: "مورد",
+                kpiBlocked: "موردين محظورين", kpiBlockedSub: "بسبب عدم الامتثال أو الجودة",
+                searchPh: "بحث باسم المورد، الرقم الضريبي...",
+                fltAll: "الكل", fltActive: "نشط (Active)", fltBlocked: "محظور (Blocked)",
+                fltCatAll: "كل التصنيفات", fltCatTech: "تقنية (Tech)", fltCatServ: "خدمات (Services)",
+                colName: "اسم المورد", colCat: "التصنيف", colContact: "التواصل", colBalance: "الرصيد القائم", colTerms: "شروط الدفع", colStatus: "الحالة",
+                stActive: "نشط", stBlocked: "محظور",
+                modTitle: "تسجيل مورد جديد", modSub: "يجب إرفاق السجل التجاري وشهادة الضريبة للاعتماد",
+                fldName: "اسم الشركة / المورد", fldCR: "رقم السجل التجاري", fldVAT: "الرقم الضريبي (VAT ID)",
+                fldCat: "تصنيف المورد", fldTerms: "شروط الدفع (Payment Terms)", fldBank: "المعلومات البنكية",
+                dropFile: "اسحب ملفات السجل التجاري وشهادة الضريبة هنا",
+                btnCancel: "إلغاء", btnSave: "حفظ واعتماد"
+            },
+            en: {
+                pageTitle: "Vendor Management", pageSub: "Manage vendor profiles, contracts, and payables",
+                btnAging: "Aging Report", btnAdd: "New Vendor",
+                kpiTotal: "Total Payables (AP)", kpiTotalSub: "Outstanding to vendors",
+                kpiOverdue: "Overdue Payables", kpiOverdueSub: "Exceeded credit terms",
+                kpiActive: "Active Vendors", unitVendor: "Vendors",
+                kpiBlocked: "Blocked Vendors", kpiBlockedSub: "Due to non-compliance",
+                searchPh: "Search Vendor Name, VAT ID...",
+                fltAll: "All", fltActive: "Active", fltBlocked: "Blocked",
+                fltCatAll: "All Categories", fltCatTech: "Tech", fltCatServ: "Services",
+                colName: "Vendor Name", colCat: "Category", colContact: "Contact", colBalance: "Outstanding Balance", colTerms: "Payment Terms", colStatus: "Status",
+                stActive: "Active", stBlocked: "Blocked",
+                modTitle: "Register New Vendor", modSub: "Attach CR and VAT certificate for approval",
+                fldName: "Company / Vendor Name", fldCR: "CR Number", fldVAT: "VAT ID",
+                fldCat: "Category", fldTerms: "Payment Terms", fldBank: "Bank Details",
+                dropFile: "Drag & Drop CR and VAT Certificates Here",
+                btnCancel: "Cancel", btnSave: "Save & Approve"
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            applyLanguage();
+            renderTable();
+            window.addEventListener('storage', (e) => { if (e.key === 'lang') location.reload(); });
+        });
+
+        function applyLanguage() {
+            const lang = localStorage.getItem('lang') || 'ar';
+            const dict = translations[lang];
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (dict[key]) el.innerText = dict[key];
+            });
+            document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+                const key = el.getAttribute('data-i18n-ph');
+                if (dict[key]) el.placeholder = dict[key];
+            });
+        }
+
+        function renderTable() {
+            const lang = localStorage.getItem('lang') || 'ar';
+            const t = translations[lang];
+            const tbody = document.getElementById('vendorsTable');
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const statusFlt = document.getElementById('statusFilter').value;
+            const catFlt = document.getElementById('catFilter').value;
+
+            tbody.innerHTML = '';
+
+            const filtered = vendorsData.filter(item => {
+                const textMatch = (lang==='ar'?item.nameAr:item.nameEn).toLowerCase().includes(search) || item.vat.includes(search);
+                const statusMatch = statusFlt === 'all' || item.status === statusFlt;
+                const catMatch = catFlt === 'all' || item.cat === catFlt;
+                return textMatch && statusMatch && catMatch;
+            });
+
+            filtered.forEach(item => {
+                const statusBadge = item.status === 'active'
+                    ? `<span class="bg-green-100 text-green-700 px-2 py-0.5 rounded text-[10px] font-bold border border-green-200">${t.stActive}</span>`
+                    : `<span class="bg-red-100 text-red-700 px-2 py-0.5 rounded text-[10px] font-bold border border-red-200">${t.stBlocked}</span>`;
+
+                const catLabel = item.cat === 'tech' ? 'Tech' : (item.cat === 'services' ? 'Services' : 'Other');
+
+                const row = `
+                <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition border-b border-slate-100 dark:border-slate-700 last:border-0 group">
+                    <td class="p-4">
+                        <p class="font-bold text-slate-800 dark:text-white group-hover:text-brandRed transition">${lang==='ar'?item.nameAr:item.nameEn}</p>
+                        <p class="text-[10px] text-slate-400 font-mono">VAT: ${item.vat}</p>
+                    </td>
+                    <td class="p-4"><span class="bg-slate-100 dark:bg-slate-700 px-2 py-0.5 rounded text-[10px] text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-600">${catLabel}</span></td>
+                    <td class="p-4 text-xs font-mono text-slate-500">${item.phone}</td>
+                    <td class="p-4 num-font font-bold ${item.balance > 0 ? 'text-moneyRed' : 'text-slate-500'}">${item.balance.toLocaleString()} SAR</td>
+                    <td class="p-4 text-xs font-bold text-slate-500">${item.terms}</td>
+                    <td class="p-4 text-center">${statusBadge}</td>
+                    <td class="p-4 text-center">
+                        <button class="text-slate-400 hover:text-brandRed transition" title="Edit"><i class="fa-solid fa-pen-to-square"></i></button>
+                    </td>
+                </tr>`;
+                tbody.innerHTML += row;
+            });
+        }
+
+        // --- Modal Logic ---
+        function openVendorModal() { document.getElementById('vendorModal').classList.remove('hidden'); }
+        function closeVendorModal() { document.getElementById('vendorModal').classList.add('hidden'); }
+        window.filterTable = renderTable;
+
+    </script>
+</body>
+</html>
