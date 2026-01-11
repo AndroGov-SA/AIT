@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Budget Control | AndroGov</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { 
+                        brandRed: '#FB4747', 
+                        brandDark: '#0F172A',
+                        moneyGreen: '#10B981',
+                        moneyRed: '#EF4444',
+                        alertOrange: '#F59E0B'
+                    },
+                    fontFamily: { sans: ['Tajawal', 'Inter', 'sans-serif'], en: ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        .num-font { font-family: 'Inter', sans-serif; font-feature-settings: "tnum"; }
+        progress::-webkit-progress-bar { background-color: #f1f5f9; border-radius: 99px; }
+        progress::-webkit-progress-value { border-radius: 99px; transition: width 0.5s ease; }
+        .dark progress::-webkit-progress-bar { background-color: #334155; }
+        
+        /* Status Colors for Progress */
+        .prog-green::-webkit-progress-value { background-color: #10B981; }
+        .prog-yellow::-webkit-progress-value { background-color: #F59E0B; }
+        .prog-red::-webkit-progress-value { background-color: #EF4444; }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300 opacity-0">
+
+    <div id="sidebar-container"></div>
+    
+    <div class="main-content-wrapper md:mr-72 transition-all duration-300 flex flex-col min-h-screen">
+        <div id="header-container"></div>
+
+        <main class="p-6 space-y-6">
+            
+            <div class="flex flex-col md:flex-row justify-between items-end gap-4">
+                <div>
+                    <h1 class="text-2xl font-bold text-slate-900 dark:text-white" data-i18n="pageTitle">مراقبة الموازنة التقديرية</h1>
+                    <p class="text-sm text-slate-500 mt-1" data-i18n="pageSub">مقارنة الأداء الفعلي بالمخطط (Actual vs Budget)</p>
+                </div>
+                <div class="flex gap-3">
+                    <select class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg py-2 px-3 text-xs font-bold outline-none dark:text-white">
+                        <option>2026 - Q1</option>
+                        <option>2026 - Annual</option>
+                    </select>
+                    <button class="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold shadow-sm hover:bg-slate-50 transition flex items-center gap-2">
+                        <i class="fa-solid fa-file-excel text-green-600"></i> <span data-i18n="btnExport">تصدير Excel</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <div class="flex justify-between items-start mb-2">
+                        <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="kpiBudget">إجمالي الموازنة (Q1)</p>
+                        <i class="fa-solid fa-scale-balanced text-slate-400 bg-slate-100 dark:bg-slate-700 p-2 rounded-lg"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold num-font text-slate-900 dark:text-white">1,250,000 <span class="text-xs font-normal text-slate-400">SAR</span></h3>
+                    <p class="text-[10px] text-slate-400 mt-2" data-i18n="kpiBudgetSub">معتمدة من مجلس الإدارة</p>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <div class="flex justify-between items-start mb-2">
+                        <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="kpiActual">المنصرف الفعلي</p>
+                        <i class="fa-solid fa-money-bill-wave text-brandRed bg-red-50 dark:bg-red-900/20 p-2 rounded-lg"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold num-font text-brandRed">812,500 <span class="text-xs font-normal text-slate-400">SAR</span></h3>
+                    <p class="text-[10px] text-slate-400 mt-2" data-i18n="kpiActualSub">حتى تاريخه (YTD)</p>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <div class="flex justify-between items-start mb-2">
+                        <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="kpiUtil">نسبة الاستهلاك</p>
+                        <i class="fa-solid fa-chart-pie text-moneyGreen bg-green-50 dark:bg-green-900/20 p-2 rounded-lg"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold num-font text-slate-900 dark:text-white">65%</h3>
+                    <div class="w-full bg-slate-100 dark:bg-slate-700 rounded-full h-1.5 mt-3">
+                        <div class="bg-moneyGreen h-1.5 rounded-full" style="width: 65%"></div>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <div class="flex justify-between items-start mb-2">
+                        <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="kpiRem">المتبقي (وفر)</p>
+                        <i class="fa-solid fa-piggy-bank text-blue-500 bg-blue-50 dark:bg-blue-900/20 p-2 rounded-lg"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold num-font text-blue-500">437,500 <span class="text-xs font-normal text-slate-400">SAR</span></h3>
+                    <p class="text-[10px] text-slate-400 mt-2" data-i18n="kpiRemSub">متاح للصرف</p>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
+                <div class="p-4 border-b border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 flex justify-between items-center">
+                    <h3 class="font-bold text-slate-800 dark:text-white" data-i18n="tblTitle">تفاصيل بنود الموازنة</h3>
+                    <div class="flex gap-2 text-[10px] font-bold">
+                        <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-green-500"></span> <span data-i18n="legSafe">آمن (<80%)</span></span>
+                        <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-yellow-500"></span> <span data-i18n="legWarn">تحذير (80-99%)</span></span>
+                        <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-red-500"></span> <span data-i18n="legDanger">تجاوز (>100%)</span></span>
+                    </div>
+                </div>
+                
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-right rtl:text-right ltr:text-left">
+                        <thead class="bg-white dark:bg-slate-800 text-slate-500 text-xs uppercase font-bold border-b border-slate-200 dark:border-slate-700">
+                            <tr>
+                                <th class="p-4 w-1/3" data-i18n="colCat">البند / الفئة</th>
+                                <th class="p-4" data-i18n="colBudget">المعتمد</th>
+                                <th class="p-4" data-i18n="colActual">الفعلي</th>
+                                <th class="p-4" data-i18n="colVar">المتبقي (Variance)</th>
+                                <th class="p-4 w-1/4" data-i18n="colUtil">نسبة الاستهلاك</th>
+                                <th class="p-4 text-center" data-i18n="colAction">إجراء</th>
+                            </tr>
+                        </thead>
+                        <tbody id="budgetTable" class="divide-y divide-slate-100 dark:divide-slate-700 text-slate-700 dark:text-slate-300">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <div id="transferModal" class="fixed inset-0 bg-black/70 hidden z-50 flex items-center justify-center backdrop-blur-sm p-4">
+        <div class="bg-white dark:bg-slate-800 w-full max-w-lg rounded-2xl shadow-2xl flex flex-col">
+            <div class="p-4 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-900 rounded-t-2xl">
+                <div>
+                    <h3 class="font-bold text-lg dark:text-white" data-i18n="modTitle">طلب مناقلة موازنة (Budget Transfer)</h3>
+                    <p class="text-[10px] text-slate-500" data-i18n="modSub">تغطية العجز في بند من خلال النقل من بند آخر</p>
+                </div>
+                <button onclick="closeTransferModal()" class="w-8 h-8 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 flex items-center justify-center transition"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <div class="p-6 space-y-4">
+                <div class="p-3 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-100 dark:border-red-800 mb-2">
+                    <p class="text-xs text-red-700 dark:text-red-300 font-bold" data-i18n="modAlert">البند المستفيد (عجز): <span id="targetItem" class="underline"></span></p>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="fldSource">النقل من بند (يجب أن يحتوي وفر)</label>
+                    <select class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-2 text-xs dark:text-white">
+                        <option>الرواتب والأجور (وفر: 20,000)</option>
+                        <option>نثريات المكتب (وفر: 5,000)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="fldAmount">المبلغ المطلوب نقله</label>
+                    <input type="number" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-2 text-xs dark:text-white font-mono" placeholder="0.00">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="fldReason">مبررات النقل</label>
+                    <textarea class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-2 text-xs dark:text-white" rows="2"></textarea>
+                </div>
+            </div>
+
+            <div class="p-4 border-t border-slate-100 dark:border-slate-700 flex justify-end gap-3 bg-slate-50 dark:bg-slate-900 rounded-b-2xl">
+                <button onclick="closeTransferModal()" class="px-4 py-2 border border-slate-200 dark:border-slate-600 rounded-lg text-xs font-bold hover:bg-slate-100 dark:hover:bg-slate-700 dark:text-white" data-i18n="btnCancel">إلغاء</button>
+                <button onclick="alert('Transfer Request Approved'); closeTransferModal()" class="px-6 py-2 bg-brandRed text-white rounded-lg text-xs font-bold hover:bg-red-700 shadow-md" data-i18n="btnConfirm">اعتماد المناقلة</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="layout-finance.js"></script>
+    <script src="bot-finance.js"></script>
+
+    <script>
+        // --- Mock Budget Data ---
+        const budgetItems = [
+            // CAPEX
+            { cat: "capex", nameAr: "الأصول الرأسمالية (IT)", nameEn: "IT Assets (CAPEX)", budget: 150000, actual: 45000, type: "main" },
+            
+            // OPEX - HR
+            { cat: "opex", nameAr: "الرواتب والأجور", nameEn: "Salaries & Wages", budget: 600000, actual: 420000, type: "main" },
+            
+            // OPEX - Marketing (Over Budget)
+            { cat: "opex", nameAr: "التسويق والإعلانات", nameEn: "Marketing & Ads", budget: 100000, actual: 105000, type: "main" },
+            
+            // OPEX - Ops
+            { cat: "opex", nameAr: "التشغيل والصيانة", nameEn: "Operations & Maint.", budget: 200000, actual: 180000, type: "main" },
+            
+            // G&A
+            { cat: "admin", nameAr: "مصاريف إدارية", nameEn: "G&A Expenses", budget: 200000, actual: 62500, type: "main" }
+        ];
+
+        const translations = {
+            ar: {
+                pageTitle: "مراقبة الموازنة التقديرية", pageSub: "مقارنة الأداء الفعلي بالمخطط (Actual vs Budget)",
+                btnExport: "تصدير Excel",
+                kpiBudget: "إجمالي الموازنة (Q1)", kpiBudgetSub: "معتمدة من مجلس الإدارة",
+                kpiActual: "المنصرف الفعلي", kpiActualSub: "حتى تاريخه (YTD)",
+                kpiUtil: "نسبة الاستهلاك",
+                kpiRem: "المتبقي (وفر)", kpiRemSub: "متاح للصرف",
+                tblTitle: "تفاصيل بنود الموازنة",
+                legSafe: "آمن (<80%)", legWarn: "تحذير (80-99%)", legDanger: "تجاوز (>100%)",
+                colCat: "البند / الفئة", colBudget: "المعتمد", colActual: "الفعلي", colVar: "المتبقي", colUtil: "نسبة الاستهلاك", colAction: "إجراء",
+                btnTransfer: "طلب مناقلة",
+                modTitle: "طلب مناقلة موازنة", modSub: "تغطية العجز في بند من خلال النقل من بند آخر",
+                modAlert: "البند المستفيد (عجز):", fldSource: "النقل من بند (يجب أن يحتوي وفر)", fldAmount: "المبلغ المطلوب نقله", fldReason: "مبررات النقل",
+                btnCancel: "إلغاء", btnConfirm: "اعتماد المناقلة"
+            },
+            en: {
+                pageTitle: "Budget Control", pageSub: "Actual vs Budget Performance Monitoring",
+                btnExport: "Export Excel",
+                kpiBudget: "Total Budget (Q1)", kpiBudgetSub: "Board Approved",
+                kpiActual: "Actual Spend", kpiActualSub: "Year-to-Date (YTD)",
+                kpiUtil: "Utilization Rate",
+                kpiRem: "Remaining (Savings)", kpiRemSub: "Available to spend",
+                tblTitle: "Budget Line Items",
+                legSafe: "Safe (<80%)", legWarn: "Warning (80-99%)", legDanger: "Over (>100%)",
+                colCat: "Category / Item", colBudget: "Budget", colActual: "Actual", colVar: "Remaining", colUtil: "Utilization", colAction: "Action",
+                btnTransfer: "Transfer Request",
+                modTitle: "Budget Transfer Request", modSub: "Cover deficit by transferring from another line",
+                modAlert: "Beneficiary Item (Deficit):", fldSource: "Source Item (Must have savings)", fldAmount: "Transfer Amount", fldReason: "Justification",
+                btnCancel: "Cancel", btnConfirm: "Approve Transfer"
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            applyLanguage();
+            renderTable();
+            window.addEventListener('storage', (e) => { if (e.key === 'lang') location.reload(); });
+        });
+
+        function applyLanguage() {
+            const lang = localStorage.getItem('lang') || 'ar';
+            const dict = translations[lang];
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (dict[key]) el.innerText = dict[key];
+            });
+        }
+
+        function renderTable() {
+            const lang = localStorage.getItem('lang') || 'ar';
+            const tbody = document.getElementById('budgetTable');
+            tbody.innerHTML = '';
+
+            budgetItems.forEach(item => {
+                const util = (item.actual / item.budget) * 100;
+                const variance = item.budget - item.actual;
+                const isOver = variance < 0;
+
+                // Style Classes based on utilization
+                let barClass = "prog-green";
+                let textClass = "text-green-600";
+                
+                if (util >= 80 && util <= 100) { barClass = "prog-yellow"; textClass = "text-alertOrange"; }
+                if (util > 100) { barClass = "prog-red"; textClass = "text-red-500 font-bold"; }
+
+                const row = `
+                <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition border-b border-slate-100 dark:border-slate-700 last:border-0 group">
+                    <td class="p-4">
+                        <p class="font-bold text-slate-800 dark:text-white">${lang==='ar'?item.nameAr:item.nameEn}</p>
+                        <p class="text-[10px] text-slate-400 uppercase tracking-wide">${item.cat.toUpperCase()}</p>
+                    </td>
+                    <td class="p-4 num-font font-bold text-slate-600 dark:text-slate-300">${item.budget.toLocaleString()}</td>
+                    <td class="p-4 num-font font-bold ${isOver ? 'text-red-500' : 'text-slate-800 dark:text-white'}">${item.actual.toLocaleString()}</td>
+                    <td class="p-4 num-font font-bold ${variance < 0 ? 'text-red-500' : 'text-green-600'}">${variance.toLocaleString()}</td>
+                    <td class="p-4 w-1/4 align-middle">
+                        <div class="flex items-center gap-2">
+                            <progress value="${util > 100 ? 100 : util}" max="100" class="w-full h-2 ${barClass}"></progress>
+                            <span class="text-xs font-bold ${textClass} w-10 text-right">${util.toFixed(0)}%</span>
+                        </div>
+                    </td>
+                    <td class="p-4 text-center">
+                        ${isOver 
+                            ? `<button onclick="openTransferModal('${lang==='ar'?item.nameAr:item.nameEn}')" class="text-xs bg-red-50 dark:bg-red-900/20 text-red-600 border border-red-100 dark:border-red-800 px-2 py-1 rounded hover:bg-red-100 transition shadow-sm">${translations[lang].btnTransfer}</button>`
+                            : `<span class="text-slate-300 text-xs"><i class="fa-solid fa-check"></i></span>`
+                        }
+                    </td>
+                </tr>`;
+                tbody.innerHTML += row;
+            });
+        }
+
+        // --- Modal Logic ---
+        function openTransferModal(itemName) {
+            document.getElementById('targetItem').innerText = itemName;
+            document.getElementById('transferModal').classList.remove('hidden');
+        }
+        function closeTransferModal() {
+            document.getElementById('transferModal').classList.add('hidden');
+        }
+
+    </script>
+</body>
+</html>
