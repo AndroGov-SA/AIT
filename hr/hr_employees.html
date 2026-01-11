@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#FB4747">
+    <title data-i18n="pageTitle">سجل الموظفين | AndroGov</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { brandRed: '#FB4747', brandDark: '#0F172A', moneyGreen: '#10B981', alertOrange: '#F59E0B' },
+                    fontFamily: { sans: ['Tajawal', 'Inter', 'sans-serif'], en: ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <style>.num-font { font-family: 'Inter', sans-serif; font-feature-settings: "tnum"; }</style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300 opacity-0">
+
+    <div id="sidebar-container"></div>
+    
+    <div class="main-content-wrapper transition-all duration-300 flex flex-col min-h-screen">
+        <div id="header-container"></div>
+
+        <main class="p-6 space-y-6">
+            
+            <div class="flex flex-col md:flex-row justify-between items-end gap-4">
+                <div>
+                    <h1 class="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                        <i class="fa-solid fa-users text-brandRed"></i> <span data-i18n="headerTitle">سجل الموظفين</span>
+                    </h1>
+                    <p class="text-sm text-slate-500 mt-1" data-i18n="headerDesc">إدارة ملفات الموظفين، العقود، والبيانات الوظيفية</p>
+                </div>
+                <div class="flex gap-2">
+                    <button class="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold shadow-sm hover:bg-slate-50 transition flex items-center gap-2 text-slate-600 dark:text-white">
+                        <i class="fa-solid fa-file-export"></i> <span data-i18n="btnExport">تصدير Excel</span>
+                    </button>
+                    <button onclick="openAddModal()" class="px-4 py-2 bg-brandRed text-white rounded-lg text-xs font-bold shadow-lg hover:bg-red-700 transition flex items-center gap-2">
+                        <i class="fa-solid fa-user-plus"></i> <span data-i18n="btnAdd">موظف جديد</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-100 dark:border-slate-700 flex flex-col items-center justify-center text-center">
+                    <span class="text-xs text-slate-500 font-bold" data-i18n="statTotal">إجمالي الموظفين</span>
+                    <span class="text-xl font-bold num-font mt-1">45</span>
+                </div>
+                <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-100 dark:border-slate-700 flex flex-col items-center justify-center text-center">
+                    <span class="text-xs text-slate-500 font-bold" data-i18n="statSaudi">سعودي / وافد</span>
+                    <div class="flex items-center gap-2 mt-1">
+                        <span class="text-green-600 font-bold num-font">35</span>
+                        <span class="text-slate-300">/</span>
+                        <span class="text-slate-600 dark:text-slate-400 font-bold num-font">10</span>
+                    </div>
+                </div>
+                <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-100 dark:border-slate-700 flex flex-col items-center justify-center text-center">
+                    <span class="text-xs text-slate-500 font-bold" data-i18n="statActive">على رأس العمل</span>
+                    <span class="text-xl font-bold text-green-600 num-font mt-1">42</span>
+                </div>
+                <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-100 dark:border-slate-700 flex flex-col items-center justify-center text-center">
+                    <span class="text-xs text-slate-500 font-bold" data-i18n="statLeave">في إجازة</span>
+                    <span class="text-xl font-bold text-orange-500 num-font mt-1">3</span>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 flex flex-col md:flex-row gap-4">
+                <div class="flex-1 relative">
+                    <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="..." class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl py-2 px-4 pl-10 text-sm focus:outline-none focus:border-brandRed dark:text-white">
+                    <i class="fa-solid fa-magnifying-glass absolute top-2.5 left-3 text-slate-400"></i>
+                </div>
+                <select class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl py-2 px-4 text-sm text-slate-600 dark:text-white focus:outline-none">
+                    <option data-i18n="filterDeptAll">كل الأقسام</option>
+                    <option data-i18n="filterDeptIT">تقنية المعلومات</option>
+                    <option data-i18n="filterDeptHR">الموارد البشرية</option>
+                    <option data-i18n="filterDeptFin">المالية</option>
+                </select>
+                <select class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl py-2 px-4 text-sm text-slate-600 dark:text-white focus:outline-none">
+                    <option data-i18n="filterStatusAll">كل الحالات</option>
+                    <option data-i18n="filterStatusActive">نشط</option>
+                    <option data-i18n="filterStatusLeave">إجازة</option>
+                </select>
+            </div>
+
+            <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-right rtl:text-right ltr:text-left">
+                        <thead class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 text-xs font-bold uppercase">
+                            <tr>
+                                <th class="p-4" data-i18n="colName">الموظف</th>
+                                <th class="p-4" data-i18n="colJob">المسمى الوظيفي</th>
+                                <th class="p-4" data-i18n="colDept">القسم</th>
+                                <th class="p-4" data-i18n="colNat">الجنسية</th>
+                                <th class="p-4" data-i18n="colJoin">تاريخ الانضمام</th>
+                                <th class="p-4 text-center" data-i18n="colStatus">الحالة</th>
+                                <th class="p-4 text-center" data-i18n="colAction">الإجراء</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 dark:divide-slate-700 dark:text-slate-300" id="empTableBody">
+                            <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
+                                <td class="p-4">
+                                    <div class="flex items-center gap-3">
+                                        <img src="https://ui-avatars.com/api/?name=Khaled+O&background=random" class="w-9 h-9 rounded-full">
+                                        <div>
+                                            <p class="font-bold text-slate-800 dark:text-white">خالد العتيبي</p>
+                                            <p class="text-[10px] text-slate-400 font-mono">ID: 1005</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="p-4">أخصائي دعم فني</td>
+                                <td class="p-4"><span class="bg-blue-50 text-blue-600 px-2 py-0.5 rounded text-[10px] font-bold">IT</span></td>
+                                <td class="p-4"><span class="text-green-600 font-bold text-xs">🇸🇦 سعودي</span></td>
+                                <td class="p-4 font-mono text-xs">2022-03-15</td>
+                                <td class="p-4 text-center"><span class="bg-green-100 text-green-700 px-2 py-1 rounded-full text-[10px] font-bold" data-i18n="statusActive">نشط</span></td>
+                                <td class="p-4 text-center">
+                                    <button onclick="openViewModal('Khaled')" class="text-slate-400 hover:text-brandRed transition"><i class="fa-solid fa-eye"></i></button>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
+                                <td class="p-4">
+                                    <div class="flex items-center gap-3">
+                                        <img src="https://ui-avatars.com/api/?name=Mohammed+K&background=random" class="w-9 h-9 rounded-full">
+                                        <div>
+                                            <p class="font-bold text-slate-800 dark:text-white">محمد خان</p>
+                                            <p class="text-[10px] text-slate-400 font-mono">ID: 2044</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="p-4">محاسب أول</td>
+                                <td class="p-4"><span class="bg-purple-50 text-purple-600 px-2 py-0.5 rounded text-[10px] font-bold">Finance</span></td>
+                                <td class="p-4"><span class="text-slate-500 font-bold text-xs">🇵🇰 باكستاني</span></td>
+                                <td class="p-4 font-mono text-xs">2019-11-01</td>
+                                <td class="p-4 text-center"><span class="bg-green-100 text-green-700 px-2 py-1 rounded-full text-[10px] font-bold" data-i18n="statusActive">نشط</span></td>
+                                <td class="p-4 text-center">
+                                    <button onclick="openViewModal('Mohammed')" class="text-slate-400 hover:text-brandRed transition"><i class="fa-solid fa-eye"></i></button>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
+                                <td class="p-4">
+                                    <div class="flex items-center gap-3">
+                                        <img src="https://ui-avatars.com/api/?name=Sarah+A&background=random" class="w-9 h-9 rounded-full">
+                                        <div>
+                                            <p class="font-bold text-slate-800 dark:text-white">سارة الأحمد</p>
+                                            <p class="text-[10px] text-slate-400 font-mono">ID: 1008</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="p-4">مديرة تسويق</td>
+                                <td class="p-4"><span class="bg-pink-50 text-pink-600 px-2 py-0.5 rounded text-[10px] font-bold">Marketing</span></td>
+                                <td class="p-4"><span class="text-green-600 font-bold text-xs">🇸🇦 سعودي</span></td>
+                                <td class="p-4 font-mono text-xs">2021-05-20</td>
+                                <td class="p-4 text-center"><span class="bg-orange-100 text-orange-700 px-2 py-1 rounded-full text-[10px] font-bold" data-i18n="statusLeave">إجازة</span></td>
+                                <td class="p-4 text-center">
+                                    <button onclick="openViewModal('Sarah')" class="text-slate-400 hover:text-brandRed transition"><i class="fa-solid fa-eye"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="p-4 border-t border-slate-100 dark:border-slate-700 flex justify-between items-center">
+                    <span class="text-xs text-slate-500" data-i18n="paginationInfo">عرض 1-10 من 45 موظف</span>
+                    <div class="flex gap-2">
+                        <button class="px-3 py-1 rounded border border-slate-200 dark:border-slate-600 text-slate-500 text-xs hover:bg-slate-50 dark:hover:bg-slate-700" data-i18n="btnPrev">السابق</button>
+                        <button class="px-3 py-1 rounded border border-slate-200 dark:border-slate-600 text-slate-500 text-xs hover:bg-slate-50 dark:hover:bg-slate-700" data-i18n="btnNext">التالي</button>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <div id="addModal" class="fixed inset-0 bg-black/60 hidden z-50 flex items-center justify-center backdrop-blur-sm p-4">
+        <div class="bg-white dark:bg-slate-800 w-full max-w-2xl rounded-2xl shadow-xl p-6 max-h-[90vh] overflow-y-auto custom-scroll">
+            <div class="flex justify-between items-center mb-6 border-b pb-4 dark:border-slate-700">
+                <h3 class="font-bold text-lg dark:text-white" data-i18n="modAddTitle">إضافة موظف جديد</h3>
+                <button onclick="closeAddModal()"><i class="fa-solid fa-xmark text-slate-400 hover:text-red-500"></i></button>
+            </div>
+            
+            <div class="space-y-4">
+                <h4 class="text-xs font-bold text-brandRed uppercase tracking-wider mb-2" data-i18n="secPersonal">البيانات الشخصية</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblFirstName">الاسم الأول</label>
+                        <input type="text" class="w-full bg-slate-50 dark:bg-slate-700 border dark:border-slate-600 rounded-lg p-2 text-sm dark:text-white">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblLastName">اسم العائلة</label>
+                        <input type="text" class="w-full bg-slate-50 dark:bg-slate-700 border dark:border-slate-600 rounded-lg p-2 text-sm dark:text-white">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblNat">الجنسية</label>
+                        <select class="w-full bg-slate-50 dark:bg-slate-700 border dark:border-slate-600 rounded-lg p-2 text-sm dark:text-white">
+                            <option>سعودي</option>
+                            <option>مصري</option>
+                            <option>هندي</option>
+                            <option>باكستاني</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblID">رقم الهوية / الإقامة</label>
+                        <input type="text" class="w-full bg-slate-50 dark:bg-slate-700 border dark:border-slate-600 rounded-lg p-2 text-sm dark:text-white">
+                    </div>
+                </div>
+
+                <h4 class="text-xs font-bold text-brandRed uppercase tracking-wider mb-2 mt-4" data-i18n="secJob">بيانات الوظيفة</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblTitle">المسمى الوظيفي</label>
+                        <input type="text" class="w-full bg-slate-50 dark:bg-slate-700 border dark:border-slate-600 rounded-lg p-2 text-sm dark:text-white">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblDept">القسم</label>
+                        <select class="w-full bg-slate-50 dark:bg-slate-700 border dark:border-slate-600 rounded-lg p-2 text-sm dark:text-white">
+                            <option>الإدارة العامة</option>
+                            <option>الموارد البشرية</option>
+                            <option>المالية</option>
+                            <option>تقنية المعلومات</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblJoinDate">تاريخ المباشرة</label>
+                        <input type="date" class="w-full bg-slate-50 dark:bg-slate-700 border dark:border-slate-600 rounded-lg p-2 text-sm dark:text-white">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblSalary">الراتب الأساسي</label>
+                        <input type="number" class="w-full bg-slate-50 dark:bg-slate-700 border dark:border-slate-600 rounded-lg p-2 text-sm dark:text-white">
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-6 flex justify-end gap-3 pt-4 border-t dark:border-slate-700">
+                <button onclick="closeAddModal()" class="px-4 py-2 border rounded-lg text-xs font-bold hover:bg-slate-50 dark:text-white" data-i18n="btnCancel">إلغاء</button>
+                <button onclick="alert('تم إضافة الموظف بنجاح'); closeAddModal()" class="px-6 py-2 bg-brandRed text-white rounded-lg text-xs font-bold hover:bg-red-700 shadow-md" data-i18n="btnSave">حفظ البيانات</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="viewModal" class="fixed inset-0 bg-black/60 hidden z-50 flex items-center justify-center backdrop-blur-sm p-4">
+        <div class="bg-white dark:bg-slate-800 w-full max-w-md rounded-2xl shadow-xl p-6 text-center">
+            <div class="w-20 h-20 rounded-full bg-slate-100 mx-auto mb-4 overflow-hidden border-2 border-brandRed p-1">
+                <img src="https://ui-avatars.com/api/?name=User&background=random" id="viewModalImg" class="w-full h-full rounded-full">
+            </div>
+            <h3 class="text-xl font-bold dark:text-white" id="viewModalName">اسم الموظف</h3>
+            <p class="text-sm text-slate-500 mb-6">الوظيفة - القسم</p>
+            
+            <div class="grid grid-cols-2 gap-3 text-sm mb-6">
+                <div class="bg-slate-50 dark:bg-slate-700 p-3 rounded-lg">
+                    <p class="text-xs text-slate-400 mb-1" data-i18n="lblStatus">الحالة</p>
+                    <p class="font-bold text-green-600" data-i18n="statusActive">نشط</p>
+                </div>
+                <div class="bg-slate-50 dark:bg-slate-700 p-3 rounded-lg">
+                    <p class="text-xs text-slate-400 mb-1" data-i18n="lblContract">العقد</p>
+                    <p class="font-bold dark:text-white">ساري (قوى)</p>
+                </div>
+            </div>
+
+            <button onclick="document.getElementById('viewModal').classList.add('hidden')" class="w-full py-2 bg-slate-100 dark:bg-slate-700 rounded-lg text-sm font-bold dark:text-white" data-i18n="btnClose">إغلاق</button>
+        </div>
+    </div>
+
+    <script src="layout-hr.js"></script>
+    <script src="bot.js"></script>
+
+    <script>
+        // --- 1. قاموس الترجمة ---
+        const pageContent = {
+            ar: {
+                pageTitle: "سجل الموظفين | AndroGov",
+                headerTitle: "سجل الموظفين",
+                headerDesc: "إدارة ملفات الموظفين، العقود، والبيانات الوظيفية",
+                btnExport: "تصدير Excel",
+                btnAdd: "موظف جديد",
+                statTotal: "إجمالي الموظفين",
+                statSaudi: "سعودي / وافد",
+                statActive: "على رأس العمل",
+                statLeave: "في إجازة",
+                filterDeptAll: "كل الأقسام",
+                filterDeptIT: "تقنية المعلومات",
+                filterDeptHR: "الموارد البشرية",
+                filterDeptFin: "المالية",
+                filterStatusAll: "كل الحالات",
+                filterStatusActive: "نشط",
+                filterStatusLeave: "إجازة",
+                colName: "الموظف",
+                colJob: "المسمى الوظيفي",
+                colDept: "القسم",
+                colNat: "الجنسية",
+                colJoin: "تاريخ الانضمام",
+                colStatus: "الحالة",
+                colAction: "الإجراء",
+                statusActive: "نشط",
+                statusLeave: "إجازة",
+                paginationInfo: "عرض 1-10 من 45 موظف",
+                btnPrev: "السابق",
+                btnNext: "التالي",
+                modAddTitle: "إضافة موظف جديد",
+                secPersonal: "البيانات الشخصية",
+                lblFirstName: "الاسم الأول",
+                lblLastName: "اسم العائلة",
+                lblNat: "الجنسية",
+                lblID: "رقم الهوية / الإقامة",
+                secJob: "بيانات الوظيفة",
+                lblTitle: "المسمى الوظيفي",
+                lblDept: "القسم",
+                lblJoinDate: "تاريخ المباشرة",
+                lblSalary: "الراتب الأساسي",
+                btnCancel: "إلغاء",
+                btnSave: "حفظ البيانات",
+                lblStatus: "الحالة",
+                lblContract: "العقد",
+                btnClose: "إغلاق"
+            },
+            en: {
+                pageTitle: "Employee Register | AndroGov",
+                headerTitle: "Employee Register",
+                headerDesc: "Manage employee files, contracts, and job data",
+                btnExport: "Export Excel",
+                btnAdd: "New Employee",
+                statTotal: "Total Employees",
+                statSaudi: "Saudi / Expat",
+                statActive: "Active",
+                statLeave: "On Leave",
+                filterDeptAll: "All Departments",
+                filterDeptIT: "IT Dept",
+                filterDeptHR: "HR Dept",
+                filterDeptFin: "Finance",
+                filterStatusAll: "All Statuses",
+                filterStatusActive: "Active",
+                filterStatusLeave: "On Leave",
+                colName: "Employee",
+                colJob: "Job Title",
+                colDept: "Department",
+                colNat: "Nationality",
+                colJoin: "Join Date",
+                colStatus: "Status",
+                colAction: "Action",
+                statusActive: "Active",
+                statusLeave: "On Leave",
+                paginationInfo: "Showing 1-10 of 45",
+                btnPrev: "Prev",
+                btnNext: "Next",
+                modAddTitle: "Add New Employee",
+                secPersonal: "Personal Info",
+                lblFirstName: "First Name",
+                lblLastName: "Last Name",
+                lblNat: "Nationality",
+                lblID: "ID / Iqama Number",
+                secJob: "Job Details",
+                lblTitle: "Job Title",
+                lblDept: "Department",
+                lblJoinDate: "Start Date",
+                lblSalary: "Basic Salary",
+                btnCancel: "Cancel",
+                btnSave: "Save Data",
+                lblStatus: "Status",
+                lblContract: "Contract",
+                btnClose: "Close"
+            }
+        };
+
+        // --- 2. التشغيل ---
+        document.addEventListener('DOMContentLoaded', () => {
+            updatePageLanguage();
+            // وضع الـ Placeholder للبحث بناءً على اللغة
+            const lang = localStorage.getItem('lang') || 'ar';
+            document.getElementById('searchInput').placeholder = lang === 'ar' ? "بحث بالاسم..." : "Search by name...";
+        });
+
+        function updatePageLanguage() {
+            const lang = localStorage.getItem('lang') || 'ar';
+            const dict = pageContent[lang];
+            
+            document.documentElement.lang = lang;
+            document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if(dict[key]) el.innerText = dict[key];
+            });
+        }
+
+        // --- 3. الوظائف ---
+        function openAddModal() {
+            document.getElementById('addModal').classList.remove('hidden');
+        }
+
+        function closeAddModal() {
+            document.getElementById('addModal').classList.add('hidden');
+        }
+
+        function openViewModal(name) {
+            document.getElementById('viewModalName').innerText = name;
+            document.getElementById('viewModalImg').src = `https://ui-avatars.com/api/?name=${name}&background=random`;
+            document.getElementById('viewModal').classList.remove('hidden');
+        }
+
+        function filterTable() {
+            const input = document.getElementById('searchInput');
+            const filter = input.value.toLowerCase();
+            const table = document.getElementById('empTableBody');
+            const tr = table.getElementsByTagName('tr');
+
+            for (let i = 0; i < tr.length; i++) {
+                const td = tr[i].getElementsByTagName('td')[0]; // البحث في عمود الاسم
+                if (td) {
+                    const txtValue = td.textContent || td.innerText;
+                    if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+</html>
