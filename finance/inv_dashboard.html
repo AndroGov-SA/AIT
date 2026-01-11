@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory Management | AndroGov</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { 
+                        brandRed: '#FB4747', 
+                        brandDark: '#0F172A',
+                        moneyGreen: '#10B981',
+                        alertOrange: '#F59E0B'
+                    },
+                    fontFamily: { sans: ['Tajawal', 'Inter', 'sans-serif'], en: ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300 opacity-0">
+
+    <div id="sidebar-container"></div>
+    
+    <div class="main-content-wrapper md:mr-72 transition-all duration-300 flex flex-col min-h-screen">
+        <div id="header-container"></div>
+
+        <main class="p-6 space-y-6">
+            
+            <div class="flex flex-col md:flex-row justify-between items-end gap-4">
+                <div>
+                    <h1 class="text-2xl font-bold text-slate-900 dark:text-white" data-i18n="pageTitle">مراقبة المخزون</h1>
+                    <p class="text-sm text-slate-500 mt-1" data-i18n="pageSub">إدارة الأصول التقنية والمخزون التشغيلي</p>
+                </div>
+                <div class="flex gap-3">
+                    <button class="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold shadow-sm hover:bg-slate-50 transition flex items-center gap-2">
+                        <i class="fa-solid fa-dolly text-slate-400"></i> <span data-i18n="btnReceive">سند إدخال</span>
+                    </button>
+                    <button onclick="openAdjustModal()" class="px-4 py-2 bg-brandRed text-white rounded-lg text-xs font-bold shadow-lg shadow-red-500/30 hover:bg-red-700 transition flex items-center gap-2">
+                        <i class="fa-solid fa-scale-balanced"></i> <span data-i18n="btnAdjust">تسوية جردية</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-1 h-full bg-brandRed"></div>
+                    <div class="flex justify-between items-start mb-2">
+                        <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="kpiValue">إجمالي قيمة المخزون</p>
+                        <i class="fa-solid fa-sack-dollar text-brandRed bg-red-50 dark:bg-red-900/20 p-2 rounded-lg"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold num-font text-slate-900 dark:text-white">845,200 <span class="text-xs font-normal text-slate-400">SAR</span></h3>
+                    <p class="text-[10px] text-slate-400 mt-2" data-i18n="kpiValueSub">يظهر في الميزانية (الأصول المتداولة)</p>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <div class="flex justify-between items-start mb-2">
+                        <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="kpiCount">عدد الأصناف</p>
+                        <i class="fa-solid fa-boxes-stacked text-slate-400 bg-slate-100 dark:bg-slate-700 p-2 rounded-lg"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold num-font text-slate-900 dark:text-white">142 <span class="text-xs font-normal text-slate-400" data-i18n="unitItem">صنف</span></h3>
+                    <p class="text-[10px] text-slate-400 mt-2">منها 12 صنف تقني (أصول)</p>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <div class="flex justify-between items-start mb-2">
+                        <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="kpiLow">تنبيهات انخفاض</p>
+                        <i class="fa-solid fa-triangle-exclamation text-alertOrange bg-orange-50 dark:bg-orange-900/20 p-2 rounded-lg"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold num-font text-slate-900 dark:text-white">5 <span class="text-xs font-normal text-slate-400" data-i18n="unitItem">أصناف</span></h3>
+                    <p class="text-[10px] text-alertOrange font-bold mt-2" data-i18n="kpiLowSub">تتطلب إعادة طلب فوري</p>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <div class="flex justify-between items-start mb-2">
+                        <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="kpiAssigned">أصول مع الموظفين</p>
+                        <i class="fa-solid fa-users-gear text-moneyGreen bg-green-50 dark:bg-green-900/20 p-2 rounded-lg"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold num-font text-slate-900 dark:text-white">65 <span class="text-xs font-normal text-slate-400" data-i18n="unitDevice">جهاز</span></h3>
+                    <p class="text-[10px] text-slate-400 mt-2" data-i18n="kpiAssignedSub">عهدة (لابتوب / جوال / شاشات)</p>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 flex flex-wrap gap-4 items-center">
+                <div class="flex-1 min-w-[200px] relative">
+                    <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="بحث بالاسم، الكود، أو الفئة..." class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg pl-10 pr-4 py-2 text-xs focus:ring-1 focus:ring-brandRed outline-none dark:text-white" data-i18n-ph="searchPh">
+                    <i class="fa-solid fa-search absolute top-2.5 left-3 text-slate-400"></i>
+                </div>
+                <select id="catFilter" onchange="filterTable()" class="bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-xs dark:text-white outline-none">
+                    <option value="all" data-i18n="filterAll">جميع الفئات</option>
+                    <option value="hw" data-i18n="filterHW">أجهزة ومعدات (Hardware)</option>
+                    <option value="sw" data-i18n="filterSW">تراخيص واشتراكات (Software)</option>
+                    <option value="office" data-i18n="filterOffice">أثاث ومكتبيات</option>
+                </select>
+                <button class="px-3 py-2 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 rounded-lg text-slate-500 dark:text-white transition"><i class="fa-solid fa-filter"></i></button>
+            </div>
+
+            <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-right rtl:text-right ltr:text-left">
+                        <thead class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 text-xs uppercase font-bold">
+                            <tr>
+                                <th class="p-4" data-i18n="colCode">الكود (SKU)</th>
+                                <th class="p-4 w-1/3" data-i18n="colItem">اسم الصنف</th>
+                                <th class="p-4" data-i18n="colCat">الفئة</th>
+                                <th class="p-4" data-i18n="colQty">الكمية المتوفرة</th>
+                                <th class="p-4" data-i18n="colCost">متوسط التكلفة</th>
+                                <th class="p-4" data-i18n="colTotal">القيمة الإجمالية</th>
+                                <th class="p-4 text-center" data-i18n="colAction">إجراء</th>
+                            </tr>
+                        </thead>
+                        <tbody id="invTable" class="divide-y divide-slate-100 dark:divide-slate-700 text-slate-700 dark:text-slate-300">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <div id="adjustModal" class="fixed inset-0 bg-black/70 hidden z-50 flex items-center justify-center backdrop-blur-sm p-4">
+        <div class="bg-white dark:bg-slate-800 w-full max-w-lg rounded-2xl shadow-2xl flex flex-col">
+            <div class="p-4 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-900 rounded-t-2xl">
+                <div>
+                    <h3 class="font-bold text-lg dark:text-white" data-i18n="modTitle">تسوية جردية (Stock Adjustment)</h3>
+                    <p class="text-[10px] text-slate-500" data-i18n="modSub">سينشئ النظام قيداً محاسبياً آلياً يتطلب موافقة المدير المالي</p>
+                </div>
+                <button onclick="closeAdjustModal()" class="w-8 h-8 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 flex items-center justify-center transition"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <div class="p-6 space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="modItem">الصنف</label>
+                    <select class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-2 text-xs dark:text-white">
+                        <option>IT-001 | MacBook Pro 16" M3</option>
+                        <option>IT-002 | Dell PowerEdge Server</option>
+                    </select>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="modType">نوع الحركة</label>
+                        <select id="adjType" onchange="updateGLPreview()" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-2 text-xs dark:text-white">
+                            <option value="loss">عجز مخزون (Loss/Damage)</option>
+                            <option value="gain">فائض مخزون (Found)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="modQty">الكمية</label>
+                        <input type="number" id="adjQty" oninput="updateGLPreview()" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-2 text-xs dark:text-white" placeholder="0">
+                    </div>
+                </div>
+                
+                <div class="bg-slate-50 dark:bg-slate-900/50 p-3 rounded-lg border border-slate-200 dark:border-slate-700">
+                    <p class="text-[10px] font-bold text-slate-400 uppercase mb-2" data-i18n="modImpact">الأثر المالي المتوقع (للموافقة)</p>
+                    <div class="flex justify-between text-xs dark:text-slate-300">
+                        <span>من حـ/ <b id="glDr">عجز المخزون (مصروف)</b></span>
+                        <span class="font-mono text-brandRed font-bold" id="glVal">0.00 SAR</span>
+                    </div>
+                    <div class="flex justify-between text-xs dark:text-slate-300 mt-1">
+                        <span>إلى حـ/ <b id="glCr">المخزون (أصول)</b></span>
+                        <span class="font-mono text-brandRed font-bold" id="glVal2">0.00 SAR</span>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="modReason">سبب التسوية</label>
+                    <textarea class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-2 text-xs dark:text-white" rows="2" placeholder="شرح سبب الفارق..."></textarea>
+                </div>
+            </div>
+
+            <div class="p-4 border-t border-slate-100 dark:border-slate-700 flex justify-end gap-3 bg-slate-50 dark:bg-slate-900 rounded-b-2xl">
+                <button onclick="closeAdjustModal()" class="px-4 py-2 border border-slate-200 dark:border-slate-600 rounded-lg text-xs font-bold hover:bg-slate-100 dark:hover:bg-slate-700 dark:text-white" data-i18n="btnCancel">إلغاء</button>
+                <button onclick="alert('Adjustment Request Sent to CFO for Approval'); closeAdjustModal()" class="px-6 py-2 bg-brandRed text-white rounded-lg text-xs font-bold hover:bg-red-700 shadow-md" data-i18n="btnRequest">رفع للاعتماد</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="layout-finance.js"></script>
+    <script src="bot-finance.js"></script>
+
+    <script>
+        // --- Mock Inventory Data ---
+        const inventoryItems = [
+            { code: "IT-HW-001", nameAr: "لابتوب ماك بوك برو 16 (M3)", nameEn: "MacBook Pro 16 Inch (M3)", cat: "hw", qty: 5, cost: 9500 },
+            { code: "IT-HW-002", nameAr: "سيرفر Dell PowerEdge R750", nameEn: "Dell PowerEdge Server R750", cat: "hw", qty: 2, cost: 45000 },
+            { code: "SW-LIC-005", nameAr: "رخصة مايكروسوفت 365 (سنوية)", nameEn: "Microsoft 365 License (Yearly)", cat: "sw", qty: 50, cost: 450 },
+            { code: "OFF-FUR-012", nameAr: "كرسي مكتب مريح (Herman Miller)", nameEn: "Ergonomic Chair (Herman Miller)", cat: "office", qty: 8, cost: 3200 },
+            { code: "IT-NET-003", nameAr: "سويتش شبكة سيسكو 24 منفذ", nameEn: "Cisco Switch 24-Port", cat: "hw", qty: 3, cost: 2800 }
+        ];
+
+        const translations = {
+            ar: {
+                pageTitle: "مراقبة المخزون", pageSub: "إدارة الأصول التقنية والمخزون التشغيلي",
+                btnReceive: "سند إدخال", btnAdjust: "تسوية جردية",
+                kpiValue: "إجمالي قيمة المخزون", kpiValueSub: "يظهر في الميزانية (الأصول المتداولة)",
+                kpiCount: "عدد الأصناف", unitItem: "صنف",
+                kpiLow: "تنبيهات انخفاض", kpiLowSub: "تتطلب إعادة طلب فوري",
+                kpiAssigned: "أصول مع الموظفين", unitDevice: "جهاز", kpiAssignedSub: "عهدة (لابتوب / جوال / شاشات)",
+                searchPh: "بحث بالاسم، الكود، أو الفئة...",
+                filterAll: "جميع الفئات", filterHW: "أجهزة ومعدات (Hardware)", filterSW: "تراخيص واشتراكات (Software)", filterOffice: "أثاث ومكتبيات",
+                colCode: "الكود (SKU)", colItem: "اسم الصنف", colCat: "الفئة", colQty: "الكمية", colCost: "متوسط التكلفة", colTotal: "القيمة الإجمالية", colAction: "إجراء",
+                btnCard: "بطاقة الصنف",
+                modTitle: "تسوية جردية (Stock Adjustment)", modSub: "سينشئ النظام قيداً محاسبياً آلياً يتطلب موافقة المدير المالي",
+                modItem: "الصنف", modType: "نوع الحركة", modQty: "الكمية", modReason: "سبب التسوية", modImpact: "الأثر المالي المتوقع (للموافقة)",
+                btnCancel: "إلغاء", btnRequest: "رفع للاعتماد"
+            },
+            en: {
+                pageTitle: "Inventory Control", pageSub: "Manage Technical Assets & Operational Stock",
+                btnReceive: "Goods Receipt", btnAdjust: "Stock Adjustment",
+                kpiValue: "Total Inventory Value", kpiValueSub: "Reflected in Balance Sheet (Current Assets)",
+                kpiCount: "Total Items", unitItem: "Items",
+                kpiLow: "Low Stock Alerts", kpiLowSub: "Restock required immediately",
+                kpiAssigned: "Assigned Assets", unitDevice: "Devices", kpiAssignedSub: "Custody (Laptop/Mobile/Screens)",
+                searchPh: "Search Name, SKU, or Category...",
+                filterAll: "All Categories", filterHW: "Hardware", filterSW: "Software Licenses", filterOffice: "Furniture & Office",
+                colCode: "Code (SKU)", colItem: "Item Name", colCat: "Category", colQty: "Qty", colCost: "Avg Cost", colTotal: "Total Value", colAction: "Action",
+                btnCard: "Item Card",
+                modTitle: "Stock Adjustment", modSub: "System generates a journal entry requiring CFO approval",
+                modItem: "Item", modType: "Adjustment Type", modQty: "Quantity", modReason: "Reason", modImpact: "Financial Impact (For Approval)",
+                btnCancel: "Cancel", btnRequest: "Submit for Approval"
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            applyLanguage();
+            renderTable();
+            window.addEventListener('storage', (e) => { if (e.key === 'lang') location.reload(); });
+        });
+
+        function applyLanguage() {
+            const lang = localStorage.getItem('lang') || 'ar';
+            const dict = translations[lang];
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (dict[key]) el.innerText = dict[key];
+            });
+            document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+                const key = el.getAttribute('data-i18n-ph');
+                if (dict[key]) el.placeholder = dict[key];
+            });
+        }
+
+        function renderTable() {
+            const lang = localStorage.getItem('lang') || 'ar';
+            const tbody = document.getElementById('invTable');
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const cat = document.getElementById('catFilter').value;
+
+            tbody.innerHTML = '';
+
+            const filtered = inventoryItems.filter(item => {
+                const matchSearch = item.code.toLowerCase().includes(search) || 
+                                    (lang==='ar'?item.nameAr:item.nameEn).toLowerCase().includes(search);
+                const matchCat = cat === 'all' || item.cat === cat;
+                return matchSearch && matchCat;
+            });
+
+            filtered.forEach(item => {
+                let catBadge = '';
+                if(item.cat === 'hw') catBadge = `<span class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded text-[10px] font-bold border border-blue-200">Hardware</span>`;
+                else if(item.cat === 'sw') catBadge = `<span class="bg-purple-100 text-purple-700 px-2 py-0.5 rounded text-[10px] font-bold border border-purple-200">Software</span>`;
+                else catBadge = `<span class="bg-slate-100 text-slate-600 px-2 py-0.5 rounded text-[10px] font-bold border border-slate-200">Office</span>`;
+
+                const totalVal = item.qty * item.cost;
+
+                const row = `
+                <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition border-b border-slate-100 dark:border-slate-700 last:border-0">
+                    <td class="p-4 font-mono text-xs text-brandRed font-bold">${item.code}</td>
+                    <td class="p-4 font-bold text-slate-800 dark:text-white">${lang==='ar'?item.nameAr:item.nameEn}</td>
+                    <td class="p-4">${catBadge}</td>
+                    <td class="p-4 font-bold num-font ${item.qty < 3 ? 'text-red-500' : 'text-slate-600 dark:text-slate-300'}">${item.qty}</td>
+                    <td class="p-4 num-font text-slate-500 text-xs">${item.cost.toLocaleString()}</td>
+                    <td class="p-4 num-font font-bold text-slate-900 dark:text-white">${totalVal.toLocaleString()}</td>
+                    <td class="p-4 text-center">
+                        <button class="text-xs bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 px-2 py-1 rounded hover:text-brandRed transition" data-i18n="btnCard">
+                            <i class="fa-regular fa-id-card"></i>
+                        </button>
+                    </td>
+                </tr>`;
+                tbody.innerHTML += row;
+            });
+            applyLanguage(); // Re-apply for injected buttons
+        }
+
+        // --- Adjustment Modal Logic ---
+        function openAdjustModal() { document.getElementById('adjustModal').classList.remove('hidden'); updateGLPreview(); }
+        function closeAdjustModal() { document.getElementById('adjustModal').classList.add('hidden'); }
+
+        function updateGLPreview() {
+            const lang = localStorage.getItem('lang') || 'ar';
+            const type = document.getElementById('adjType').value;
+            const qty = document.getElementById('adjQty').value || 0;
+            const cost = 9500; // Simulated cost for demo
+            const total = (qty * cost).toLocaleString();
+
+            const glDr = document.getElementById('glDr');
+            const glCr = document.getElementById('glCr');
+
+            if (type === 'loss') {
+                glDr.innerText = lang==='ar' ? 'عجز المخزون (مصروف)' : 'Inventory Loss (Expense)';
+                glCr.innerText = lang==='ar' ? 'المخزون (أصول)' : 'Inventory (Asset)';
+            } else {
+                glDr.innerText = lang==='ar' ? 'المخزون (أصول)' : 'Inventory (Asset)';
+                glCr.innerText = lang==='ar' ? 'أرباح تسوية مخزون (إيراد)' : 'Stock Gain (Revenue)';
+            }
+            
+            document.getElementById('glVal').innerText = `${total} SAR`;
+            document.getElementById('glVal2').innerText = `${total} SAR`;
+        }
+
+        window.filterTable = renderTable;
+    </script>
+</body>
+</html>
