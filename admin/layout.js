@@ -32,17 +32,17 @@
         {
             section: 'gov',
             items: [
-                { key: 'ga', icon: 'fa-users-rectangle', link: 'general-assembly.html' },
-                { key: 'board', icon: 'fa-building-columns', link: 'board-governance.html' },
-                { key: 'committees', icon: 'fa-people-group', link: 'committees-governance.html' },
-                { key: 'shareholders', icon: 'fa-id-card', link: 'shareholders-registry.html' }
+                { key: 'ga', icon: 'fa-users-rectangle', link: 'ga.html' },
+                { key: 'board', icon: 'fa-building-columns', link: 'board.html' },
+                { key: 'committees', icon: 'fa-people-group', link: 'committees.html' },
+                { key: 'shareholders', icon: 'fa-id-card', link: 'shareholders.html' }
             ]
         },
         {
             section: 'ops',
             items: [
-                { key: 'doa', icon: 'fa-sitemap', link: 'doa-matrix.html' },
-                { key: 'policies', icon: 'fa-book-open', link: 'policy-library.html' },
+                { key: 'doa', icon: 'fa-sitemap', link: 'doa.html' },
+                { key: 'policies', icon: 'fa-book-open', link: 'policies.html' },
                 { key: 'compliance', icon: 'fa-scale-balanced', link: 'compliance.html' }
             ]
         },
@@ -267,7 +267,7 @@
     window.doLogout = function() {
         if (confirm(config.lang === 'ar' ? 'هل أنت متأكد من تسجيل الخروج؟' : 'Are you sure you want to logout?')) {
             localStorage.removeItem('currentUser');
-            window.location.href = 'login.html'; // Assuming you have a login page
+            window.location.href = 'https://androgov-sa.github.io/AIT/login.html'; // Assuming you have a login page
         }
     };
 
