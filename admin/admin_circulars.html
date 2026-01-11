@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#FB4747">
+    <title>Circulars & Broadcasts | AndroGov</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: { colors: { brandRed: '#FB4747', brandDark: '#0F172A' }, fontFamily: { sans: ['Tajawal', 'Inter', 'sans-serif'] } }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300 opacity-0">
+
+    <div id="sidebar-container"></div>
+    
+    <div class="main-content-wrapper md:mr-72 transition-all duration-300 flex flex-col min-h-screen">
+        <div id="header-container"></div>
+
+        <main class="p-6 space-y-6">
+            
+            <div class="flex flex-col md:flex-row justify-between items-end gap-4">
+                <div>
+                    <h1 class="text-2xl font-bold text-slate-900 dark:text-white">إدارة التعاميم والرسائل الجماعية</h1>
+                    <p class="text-sm text-slate-500 mt-1">إرسال القرارات الإدارية ومتابعة نسب القراءة والموافقة</p>
+                </div>
+                <button onclick="openCircularModal()" class="px-6 py-2 bg-brandRed text-white rounded-lg text-sm font-bold shadow-lg hover:bg-red-700 transition flex items-center gap-2">
+                    <i class="fa-solid fa-bullhorn"></i> <span>إرسال تعميم جديد</span>
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <div class="flex justify-between items-start mb-2">
+                        <p class="text-xs text-slate-500 font-bold uppercase">التعاميم النشطة</p>
+                        <i class="fa-solid fa-tower-broadcast text-green-500 bg-green-50 p-2 rounded-lg"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-slate-900 dark:text-white">1</h3>
+                    <p class="text-[10px] text-slate-400 mt-1">يظهر حالياً للموظفين</p>
+                </div>
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <div class="flex justify-between items-start mb-2">
+                        <p class="text-xs text-slate-500 font-bold uppercase">نسبة القراءة (Overall)</p>
+                        <i class="fa-solid fa-eye text-blue-500 bg-blue-50 p-2 rounded-lg"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-slate-900 dark:text-white">85%</h3>
+                    <p class="text-[10px] text-slate-400 mt-1">متوسط قراءة الموظفين</p>
+                </div>
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <div class="flex justify-between items-start mb-2">
+                        <p class="text-xs text-slate-500 font-bold uppercase">تاريخ الأرشيف</p>
+                        <i class="fa-solid fa-box-archive text-slate-400 bg-slate-100 p-2 rounded-lg"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-slate-900 dark:text-white">24</h3>
+                    <p class="text-[10px] text-slate-400 mt-1">تعميم سابق</p>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
+                <div class="p-4 border-b border-slate-100 dark:border-slate-700">
+                    <h3 class="font-bold text-slate-800 dark:text-white">سجل التعاميم المرسلة</h3>
+                </div>
+                <table class="w-full text-sm text-right rtl:text-right ltr:text-left">
+                    <thead class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 text-xs font-bold uppercase">
+                        <tr>
+                            <th class="p-4">العنوان</th>
+                            <th class="p-4">التاريخ</th>
+                            <th class="p-4">النوع</th>
+                            <th class="p-4">إلزامية القراءة</th>
+                            <th class="p-4">نسبة القراءة</th>
+                            <th class="p-4 text-center">الحالة</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 dark:divide-slate-700 text-slate-700 dark:text-slate-300">
+                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50">
+                            <td class="p-4 font-bold">سياسة الحضور والانصراف الجديدة</td>
+                            <td class="p-4 text-xs font-mono">2026-01-10</td>
+                            <td class="p-4"><span class="bg-purple-100 text-purple-700 px-2 py-0.5 rounded text-[10px] border border-purple-200">إداري</span></td>
+                            <td class="p-4"><span class="text-red-600 font-bold text-xs"><i class="fa-solid fa-lock"></i> نعم (Force Read)</span></td>
+                            <td class="p-4">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-20 h-1.5 bg-slate-200 rounded-full overflow-hidden"><div class="bg-green-500 h-full w-[45%]"></div></div>
+                                    <span class="text-xs font-bold">45%</span>
+                                </div>
+                            </td>
+                            <td class="p-4 text-center"><span class="bg-green-100 text-green-700 px-2 py-0.5 rounded text-[10px] font-bold">نشط</span></td>
+                        </tr>
+                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 opacity-75">
+                            <td class="p-4 font-bold">تهنئة بمناسبة اليوم الوطني</td>
+                            <td class="p-4 text-xs font-mono">2025-09-23</td>
+                            <td class="p-4"><span class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded text-[10px] border border-blue-200">عام</span></td>
+                            <td class="p-4"><span class="text-slate-400 text-xs">لا (إشعار فقط)</span></td>
+                            <td class="p-4">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-20 h-1.5 bg-slate-200 rounded-full overflow-hidden"><div class="bg-green-500 h-full w-[98%]"></div></div>
+                                    <span class="text-xs font-bold">98%</span>
+                                </div>
+                            </td>
+                            <td class="p-4 text-center"><span class="bg-slate-100 text-slate-500 px-2 py-0.5 rounded text-[10px] font-bold">مؤرشف</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </main>
+    </div>
+
+    <div id="circularModal" class="fixed inset-0 bg-black/70 hidden z-50 flex items-center justify-center backdrop-blur-sm p-4">
+        <div class="bg-white dark:bg-slate-800 w-full max-w-2xl rounded-2xl shadow-2xl flex flex-col max-h-[90vh]">
+            <div class="p-4 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-900 rounded-t-2xl">
+                <h3 class="font-bold text-lg dark:text-white">إنشاء تعميم جديد</h3>
+                <button onclick="document.getElementById('circularModal').classList.add('hidden')" class="w-8 h-8 rounded-full hover:bg-slate-200 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <div class="p-6 space-y-4 overflow-y-auto">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1">عنوان التعميم</label>
+                    <input type="text" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-2 text-sm focus:ring-2 focus:ring-brandRed outline-none dark:text-white" placeholder="مثلاً: تحديث سياسة...">
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1">نوع التعميم</label>
+                        <select class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-2 text-sm outline-none dark:text-white">
+                            <option>قرار إداري</option>
+                            <option>تحديث سياسات</option>
+                            <option>خبر عام</option>
+                            <option>تنبيه عاجل</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1">موجه إلى</label>
+                        <select class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-2 text-sm outline-none dark:text-white">
+                            <option>جميع الموظفين</option>
+                            <option>مدراء الإدارات فقط</option>
+                            <option>القسم المالي</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1">نص التعميم</label>
+                    <textarea class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-3 text-sm h-32 outline-none dark:text-white" placeholder="اكتب التفاصيل هنا..."></textarea>
+                </div>
+
+                <div class="p-4 bg-red-50 dark:bg-red-900/10 rounded-xl border border-red-100 dark:border-red-900/30">
+                    <h4 class="text-xs font-bold text-brandRed mb-3">ضوابط الحوكمة والقراءة</h4>
+                    
+                    <div class="flex items-center gap-3 mb-2">
+                        <input type="checkbox" id="forceRead" class="w-4 h-4 text-brandRed rounded focus:ring-brandRed" checked>
+                        <label for="forceRead" class="text-sm text-slate-700 dark:text-slate-300 font-bold">إلزامية القراءة والموافقة (Force Read)</label>
+                    </div>
+                    <p class="text-[10px] text-slate-500 mr-7">لن يتمكن الموظف من استخدام النظام حتى يفتح هذا التعميم ويضغط "موافق".</p>
+                </div>
+            </div>
+
+            <div class="p-4 border-t border-slate-100 dark:border-slate-700 flex justify-end gap-3 bg-slate-50 dark:bg-slate-900 rounded-b-2xl">
+                <button onclick="document.getElementById('circularModal').classList.add('hidden')" class="px-4 py-2 border rounded-lg text-xs font-bold hover:bg-slate-100 dark:text-white">إلغاء</button>
+                <button onclick="alert('تم إرسال التعميم وتفعيله على جميع الحسابات'); document.getElementById('circularModal').classList.add('hidden')" class="px-6 py-2 bg-brandRed text-white rounded-lg text-xs font-bold hover:bg-red-700 shadow-md">نشر وإرسال</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="layout.js"></script>
+    <script src="bot.js"></script>
+    <script>
+        function openCircularModal() {
+            document.getElementById('circularModal').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
