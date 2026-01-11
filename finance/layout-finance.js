@@ -46,14 +46,14 @@
         `
     };
 
-    // --- 3. هيكلة القائمة (تم التأكد من وجود internal_chat.html) ---
+    // --- 3. هيكلة القائمة 
     const menuStructure = [
         {
             section: 'main',
             items: [
                 { key: 'dash', icon: 'fa-chart-pie', link: 'cfo_dashboard.html' },
                 { key: 'approvals', icon: 'fa-stamp', link: 'approvals.html' },
-                { key: 'chat', icon: 'fa-comments', link: 'internal_chat.html' } // ✅ موجود هنا
+                { key: 'chat', icon: 'fa-comments', link: 'internal_chat.html' }
             ]
         },
         {
