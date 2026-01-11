@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Receipt Vouchers | AndroGov</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { 
+                        brandRed: '#FB4747', 
+                        brandDark: '#0F172A',
+                        moneyGreen: '#10B981',
+                        moneyRed: '#EF4444',
+                        alertOrange: '#F59E0B'
+                    },
+                    fontFamily: { sans: ['Tajawal', 'Inter', 'sans-serif'], en: ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        .num-font { font-family: 'Inter', sans-serif; font-feature-settings: "tnum"; }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300 opacity-0">
+
+    <div id="sidebar-container"></div>
+    
+    <div class="main-content-wrapper md:mr-72 transition-all duration-300 flex flex-col min-h-screen">
+        <div id="header-container"></div>
+
+        <main class="p-6 space-y-6">
+            
+            <div class="flex flex-col md:flex-row justify-between items-end gap-4">
+                <div>
+                    <h1 class="text-2xl font-bold text-slate-900 dark:text-white" data-i18n="pageTitle">سندات القبض (Receipts)</h1>
+                    <p class="text-sm text-slate-500 mt-1" data-i18n="pageSub">تسجيل التحصيلات النقدية والبنكية من العملاء</p>
+                </div>
+                <div class="flex gap-3">
+                    <button class="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold shadow-sm hover:bg-slate-50 transition flex items-center gap-2">
+                        <i class="fa-solid fa-file-export text-slate-400"></i> <span data-i18n="btnStatement">كشف التحصيل</span>
+                    </button>
+                    <button onclick="openReceiptModal()" class="px-4 py-2 bg-brandRed text-white rounded-lg text-xs font-bold shadow-lg shadow-red-500/30 hover:bg-red-700 transition flex items-center gap-2">
+                        <i class="fa-solid fa-hand-holding-dollar"></i> <span data-i18n="btnNew">سند قبض جديد</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-1 h-full bg-moneyGreen"></div>
+                    <div class="flex justify-between items-start mb-2">
+                        <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="kpiColl">المحصل (هذا الشهر)</p>
+                        <i class="fa-solid fa-sack-dollar text-moneyGreen bg-green-50 dark:bg-green-900/20 p-2 rounded-lg"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold num-font text-slate-900 dark:text-white">450,000 <span class="text-xs font-normal text-slate-400">SAR</span></h3>
+                    <p class="text-[10px] text-moneyGreen font-bold mt-2 flex items-center gap-1">
+                        <i class="fa-solid fa-arrow-trend-up"></i> +15% عن الشهر السابق
+                    </p>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <div class="flex justify-between items-start mb-2">
+                        <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="kpiToday">تحصيلات اليوم</p>
+                        <i class="fa-solid fa-calendar-day text-brandBlue bg-blue-50 dark:bg-blue-900/20 p-2 rounded-lg"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold num-font text-slate-900 dark:text-white">12,500 <span class="text-xs font-normal text-slate-400">SAR</span></h3>
+                    <p class="text-[10px] text-slate-400 mt-2" data-i18n="kpiTodaySub">3 عمليات</p>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <div class="flex justify-between items-start mb-2">
+                        <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="kpiUnalloc">مبالغ غير مخصصة</p>
+                        <i class="fa-solid fa-circle-question text-alertOrange bg-orange-50 dark:bg-orange-900/20 p-2 rounded-lg"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold num-font text-alertOrange">5,000 <span class="text-xs font-normal text-slate-400">SAR</span></h3>
+                    <p class="text-[10px] text-slate-400 mt-2" data-i18n="kpiUnallocSub">تحتاج ربط بفواتير</p>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <div class="flex justify-between items-start mb-2">
+                        <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="kpiChecks">شيكات تحت التحصيل</p>
+                        <i class="fa-solid fa-money-check-dollar text-slate-400 bg-slate-100 dark:bg-slate-700 p-2 rounded-lg"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold num-font text-slate-900 dark:text-white">25,000 <span class="text-xs font-normal text-slate-400">SAR</span></h3>
+                    <p class="text-[10px] text-slate-400 mt-2" data-i18n="kpiChecksSub">تستحق خلال أسبوع</p>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 flex flex-wrap gap-4 items-center">
+                <div class="flex-1 min-w-[200px] relative">
+                    <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="بحث برقم السند، العميل، أو المرجع..." class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg pl-10 pr-4 py-2 text-xs focus:ring-1 focus:ring-brandRed outline-none dark:text-white" data-i18n-ph="searchPh">
+                    <i class="fa-solid fa-search absolute top-2.5 left-3 text-slate-400"></i>
+                </div>
+                <select id="methodFilter" onchange="filterTable()" class="bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-xs dark:text-white outline-none">
+                    <option value="all" data-i18n="fltAll">كل الطرق</option>
+                    <option value="wire" data-i18n="fltWire">حوالة بنكية</option>
+                    <option value="check" data-i18n="fltCheck">شيك</option>
+                    <option value="cash" data-i18n="fltCash">نقد</option>
+                </select>
+                <input type="date" class="bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-xs dark:text-white outline-none">
+            </div>
+
+            <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-right rtl:text-right ltr:text-left">
+                        <thead class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 text-xs uppercase font-bold">
+                            <tr>
+                                <th class="p-4" data-i18n="colID">رقم السند</th>
+                                <th class="p-4 w-1/4" data-i18n="colClient">العميل</th>
+                                <th class="p-4" data-i18n="colDate">التاريخ</th>
+                                <th class="p-4" data-i18n="colMethod">طريقة القبض</th>
+                                <th class="p-4" data-i18n="colRef">المرجع</th>
+                                <th class="p-4" data-i18n="colAmount">المبلغ</th>
+                                <th class="p-4 text-center" data-i18n="colStatus">الحالة</th>
+                                <th class="p-4 text-center"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="receiptsTable" class="divide-y divide-slate-100 dark:divide-slate-700 text-slate-700 dark:text-slate-300">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <div id="receiptModal" class="fixed inset-0 bg-black/70 hidden z-50 flex items-center justify-center backdrop-blur-sm p-4">
+        <div class="bg-white dark:bg-slate-800 w-full max-w-2xl rounded-2xl shadow-2xl flex flex-col max-h-[90vh]">
+            <div class="p-4 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-900 rounded-t-2xl">
+                <div>
+                    <h3 class="font-bold text-lg dark:text-white" data-i18n="modTitle">تسجيل سند قبض (Receipt Entry)</h3>
+                    <p class="text-[10px] text-slate-500" data-i18n="modSub">إثبات استلام نقدية وربطها بحساب العميل</p>
+                </div>
+                <button onclick="closeReceiptModal()" class="w-8 h-8 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 flex items-center justify-center transition"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <div class="p-6 overflow-y-auto space-y-4 flex-1 custom-scroll">
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="col-span-1">
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="fldClient">العميل</label>
+                        <select class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-2 text-xs dark:text-white font-bold">
+                            <option>وزارة الصحة (MOH)</option>
+                            <option>مستشفى الحبيب</option>
+                            <option>شركة المراعي</option>
+                        </select>
+                    </div>
+                    <div class="col-span-1">
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="fldDate">تاريخ القبض</label>
+                        <input type="date" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-2 text-xs dark:text-white" value="2026-03-31">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="fldBank">إيداع في حساب</label>
+                        <select class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-2 text-xs dark:text-white">
+                            <option>البنك الأهلي - الرئيسي (SAR)</option>
+                            <option>الصندوق الرئيسي (نقد)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="fldMethod">طريقة القبض</label>
+                        <select class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-2 text-xs dark:text-white">
+                            <option>حوالة بنكية (Wire)</option>
+                            <option>شيك (Check)</option>
+                            <option>نقدي (Cash)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="fldAmount">المبلغ المستلم</label>
+                        <input type="number" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-2 text-xs dark:text-white font-mono font-bold text-moneyGreen" placeholder="0.00">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="fldRef">المرجع (رقم الحوالة/الشيك)</label>
+                        <input type="text" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-2 text-xs dark:text-white font-mono" placeholder="...">
+                    </div>
+                </div>
+
+                <div class="border border-slate-200 dark:border-slate-600 rounded-lg overflow-hidden mt-2">
+                    <div class="bg-slate-100 dark:bg-slate-900 p-2 text-xs font-bold text-slate-600 dark:text-slate-400 border-b border-slate-200 dark:border-slate-700" data-i18n="lblAlloc">تخصيص المبلغ (فواتير العميل المفتوحة)</div>
+                    <table class="w-full text-xs text-right">
+                        <thead class="bg-white dark:bg-slate-800 text-slate-500 font-bold border-b border-slate-100 dark:border-slate-700">
+                            <tr>
+                                <th class="p-2 w-8 text-center"><input type="checkbox"></th>
+                                <th class="p-2" data-i18n="thInv">رقم الفاتورة</th>
+                                <th class="p-2" data-i18n="thDue">المبلغ المتبقي</th>
+                                <th class="p-2 w-24" data-i18n="thAlloc">تخصيص</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white dark:bg-slate-800 dark:text-white">
+                            <tr class="border-b border-slate-100 dark:border-slate-700">
+                                <td class="p-2 text-center"><input type="checkbox"></td>
+                                <td class="p-2">INV-2026-001 (05 Jan)</td>
+                                <td class="p-2 font-mono">150,000</td>
+                                <td class="p-2"><input type="text" value="0" class="w-full border border-slate-200 dark:border-slate-600 rounded p-1 text-center bg-slate-50 dark:bg-slate-700 font-mono text-xs"></td>
+                            </tr>
+                            <tr>
+                                <td class="p-2 text-center"><input type="checkbox"></td>
+                                <td class="p-2">INV-2026-002 (10 Jan)</td>
+                                <td class="p-2 font-mono">57,500</td>
+                                <td class="p-2"><input type="text" value="0" class="w-full border border-slate-200 dark:border-slate-600 rounded p-1 text-center bg-slate-50 dark:bg-slate-700 font-mono text-xs"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="p-4 border-t border-slate-100 dark:border-slate-700 flex justify-end gap-3 bg-slate-50 dark:bg-slate-900 rounded-b-2xl">
+                <button onclick="closeReceiptModal()" class="px-4 py-2 border border-slate-200 dark:border-slate-600 rounded-lg text-xs font-bold hover:bg-slate-100 dark:hover:bg-slate-700 dark:text-white" data-i18n="btnCancel">إلغاء</button>
+                <button onclick="alert('Receipt Saved & Posted'); closeReceiptModal()" class="px-6 py-2 bg-brandRed text-white rounded-lg text-xs font-bold hover:bg-red-700 shadow-md" data-i18n="btnSave">حفظ وترحيل</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="layout-finance.js"></script>
+    <script src="bot-finance.js"></script>
+
+    <script>
+        // --- Mock Receipts Data ---
+        const receiptsData = [
+            { 
+                id: "RV-26-101", clientAr: "وزارة الصحة", clientEn: "Ministry of Health", 
+                date: "2026-01-15", method: "wire", ref: "MOH-TRX-99", amount: 150000, status: "posted"
+            },
+            { 
+                id: "RV-26-102", clientAr: "مستشفى الحبيب", clientEn: "Al-Habib Hospital", 
+                date: "2026-01-14", method: "check", ref: "CHK-5544", amount: 50000, status: "posted"
+            },
+            { 
+                id: "RV-26-103", clientAr: "شركة المراعي", clientEn: "Almarai Co.", 
+                date: "2026-01-12", method: "wire", ref: "Unknown", amount: 5000, status: "draft" // Unallocated
+            }
+        ];
+
+        const translations = {
+            ar: {
+                pageTitle: "سندات القبض (Receipts)", pageSub: "تسجيل التحصيلات النقدية والبنكية من العملاء",
+                btnStatement: "كشف التحصيل", btnNew: "سند قبض جديد",
+                kpiColl: "المحصل (هذا الشهر)", kpiToday: "تحصيلات اليوم", kpiTodaySub: "3 عمليات",
+                kpiUnalloc: "مبالغ غير مخصصة", kpiUnallocSub: "تحتاج ربط بفواتير",
+                kpiChecks: "شيكات تحت التحصيل", kpiChecksSub: "تستحق خلال أسبوع",
+                searchPh: "بحث برقم السند، العميل، أو المرجع...",
+                fltAll: "كل الطرق", fltWire: "حوالة بنكية", fltCheck: "شيك", fltCash: "نقد",
+                colID: "رقم السند", colClient: "العميل", colDate: "التاريخ", colMethod: "طريقة القبض", colRef: "المرجع", colAmount: "المبلغ", colStatus: "الحالة",
+                stPosted: "مرحل", stDraft: "مسودة",
+                mWire: "حوالة بنكية", mCheck: "شيك",
+                modTitle: "تسجيل سند قبض", modSub: "إثبات استلام نقدية وربطها بحساب العميل",
+                fldClient: "العميل", fldDate: "تاريخ القبض", fldBank: "إيداع في حساب", fldMethod: "طريقة القبض", fldAmount: "المبلغ المستلم", fldRef: "المرجع",
+                lblAlloc: "تخصيص المبلغ (فواتير العميل المفتوحة)", thInv: "رقم الفاتورة", thDue: "المبلغ المتبقي", thAlloc: "تخصيص",
+                btnCancel: "إلغاء", btnSave: "حفظ وترحيل"
+            },
+            en: {
+                pageTitle: "Receipt Vouchers", pageSub: "Record incoming payments from customers",
+                btnStatement: "Collection Statement", btnNew: "New Receipt",
+                kpiColl: "Total Collected (Month)", kpiToday: "Today's Collection", kpiTodaySub: "3 Transactions",
+                kpiUnalloc: "Unallocated Receipts", kpiUnallocSub: "Needs allocation",
+                kpiChecks: "Checks under collection", kpiChecksSub: "Due within a week",
+                searchPh: "Search Receipt #, Client...",
+                fltAll: "All Methods", fltWire: "Wire Transfer", fltCheck: "Check", fltCash: "Cash",
+                colID: "Receipt #", colClient: "Customer", colDate: "Date", colMethod: "Method", colRef: "Reference", colAmount: "Amount", colStatus: "Status",
+                stPosted: "Posted", stDraft: "Draft",
+                mWire: "Wire Transfer", mCheck: "Check",
+                modTitle: "Receipt Voucher Entry", modSub: "Record payment and link to customer account",
+                fldClient: "Customer", fldDate: "Receipt Date", fldBank: "Deposit To", fldMethod: "Method", fldAmount: "Received Amount", fldRef: "Reference",
+                lblAlloc: "Allocation (Open Invoices)", thInv: "Invoice #", thDue: "Remaining", thAlloc: "Allocate",
+                btnCancel: "Cancel", btnSave: "Save & Post"
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            applyLanguage();
+            renderTable();
+            window.addEventListener('storage', (e) => { if (e.key === 'lang') location.reload(); });
+        });
+
+        function applyLanguage() {
+            const lang = localStorage.getItem('lang') || 'ar';
+            const dict = translations[lang];
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (dict[key]) el.innerText = dict[key];
+            });
+            document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+                const key = el.getAttribute('data-i18n-ph');
+                if (dict[key]) el.placeholder = dict[key];
+            });
+        }
+
+        function renderTable() {
+            const lang = localStorage.getItem('lang') || 'ar';
+            const t = translations[lang];
+            const tbody = document.getElementById('receiptsTable');
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const methodFlt = document.getElementById('methodFilter').value;
+
+            tbody.innerHTML = '';
+
+            const filtered = receiptsData.filter(item => {
+                const textMatch = item.id.toLowerCase().includes(search) || 
+                                  (lang==='ar'?item.clientAr:item.clientEn).toLowerCase().includes(search);
+                const methodMatch = methodFlt === 'all' || item.method === methodFlt;
+                return textMatch && methodMatch;
+            });
+
+            filtered.forEach(item => {
+                let statusBadge = item.status === 'posted'
+                    ? `<span class="bg-green-100 text-green-700 px-2 py-0.5 rounded text-[10px] font-bold border border-green-200">${t.stPosted}</span>`
+                    : `<span class="bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded text-[10px] font-bold border border-yellow-200">${t.stDraft}</span>`;
+
+                const methodLabel = item.method === 'wire' ? t.mWire : t.mCheck;
+                const methodIcon = item.method === 'wire' ? '<i class="fa-solid fa-globe"></i>' : '<i class="fa-solid fa-money-check"></i>';
+
+                const row = `
+                <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition border-b border-slate-100 dark:border-slate-700 last:border-0 group">
+                    <td class="p-4 font-mono font-bold text-xs text-brandRed group-hover:underline cursor-pointer">${item.id}</td>
+                    <td class="p-4 font-bold text-slate-800 dark:text-white">${lang==='ar'?item.clientAr:item.clientEn}</td>
+                    <td class="p-4 num-font text-xs text-slate-500">${item.date}</td>
+                    <td class="p-4 text-xs text-slate-500 flex items-center gap-2">${methodIcon} ${methodLabel}</td>
+                    <td class="p-4 font-mono text-xs text-slate-600 dark:text-slate-400">${item.ref}</td>
+                    <td class="p-4 num-font font-bold text-moneyGreen">${item.amount.toLocaleString()}</td>
+                    <td class="p-4 text-center">${statusBadge}</td>
+                    <td class="p-4 text-center">
+                        <button class="text-slate-400 hover:text-brandRed transition"><i class="fa-solid fa-print"></i></button>
+                    </td>
+                </tr>`;
+                tbody.innerHTML += row;
+            });
+        }
+
+        // --- Modal Logic ---
+        function openReceiptModal() { document.getElementById('receiptModal').classList.remove('hidden'); }
+        function closeReceiptModal() { document.getElementById('receiptModal').classList.add('hidden'); }
+        window.filterTable = renderTable;
+
+    </script>
+</body>
+</html>
