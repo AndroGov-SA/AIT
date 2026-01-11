@@ -26,7 +26,7 @@
         {
             section: 'main',
             items: [
-                { key: 'dash', icon: 'fa-gauge-high', link: 'index.html' } // Updated to index.html assuming it's the main dashboard
+                { key: 'dash', icon: 'fa-gauge-high', link: 'admin.html' } // Updated to index.html assuming it's the main dashboard
             ]
         },
         {
