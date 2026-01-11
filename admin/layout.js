@@ -1,8 +1,7 @@
 /**
- * AndroGov Layout Engine v4.1 (Red Identity & Admin Profile)
- * - Converted Theme to Brand Red.
- * - Added User Profile Link (Self-Service).
- * - Preserved Logout Link.
+ * AndroGov Layout Engine v4.2 (Added Communication Module)
+ * - Added 'admin_chat.html' & 'admin_circulars.html' links.
+ * - Preserved Red Theme & User Profile.
  */
 
 (function() {
@@ -20,12 +19,19 @@
         avatar: "https://ui-avatars.com/api/?name=Ayman+Almaghrabi&background=FB4747&color=fff"
     };
 
-    // --- 2. Menu Structure Data ---
+    // --- 2. Menu Structure Data (تم إضافة قسم التواصل) ---
     const menuStructure = [
         {
             section: 'main',
             items: [
                 { key: 'dash', icon: 'fa-gauge-high', link: 'admin.html' }
+            ]
+        },
+        {
+            section: 'comm', // القسم الجديد
+            items: [
+                { key: 'chat', icon: 'fa-comments', link: 'admin_chat.html' },
+                { key: 'circulars', icon: 'fa-bullhorn', link: 'admin_circulars.html' }
             ]
         },
         {
@@ -71,6 +77,7 @@
             logout: "تسجيل خروج",
             sections: {
                 main: "الرئيسية",
+                comm: "التواصل المؤسسي", // جديد
                 gov: "الحوكمة المؤسسية",
                 ops: "الحوكمة التشغيلية",
                 dept: "الإدارات والخدمات",
@@ -78,6 +85,8 @@
             },
             menu: {
                 dash: "لوحة القيادة",
+                chat: "الدردشة الداخلية", // جديد
+                circulars: "إدارة التعاميم", // جديد
                 ga: "الجمعيات العمومية",
                 board: "مجلس الإدارة",
                 committees: "اللجان المنبثقة",
@@ -99,6 +108,7 @@
             logout: "Logout",
             sections: {
                 main: "Main",
+                comm: "Communication", // New
                 gov: "Corporate Governance",
                 ops: "Operating Governance",
                 dept: "Departments",
@@ -106,6 +116,8 @@
             },
             menu: {
                 dash: "Dashboard",
+                chat: "Internal Chat", // New
+                circulars: "Circulars Mgmt", // New
                 ga: "General Assembly",
                 board: "Board of Directors",
                 committees: "Committees",
@@ -140,7 +152,6 @@
         if (config.theme === 'dark') html.classList.add('dark');
         else html.classList.remove('dark');
 
-        // Fix Layout Margins for RTL/LTR
         const main = document.querySelector('.main-content-wrapper');
         if (main) {
             main.classList.remove('md:mr-72', 'md:ml-72');
@@ -159,11 +170,9 @@
         const userDisplayName = isRtl ? currentUser.nameAr : currentUser.nameEn;
         const userDisplayTitle = isRtl ? currentUser.titleAr : currentUser.titleEn;
 
-        // Helper to check active state (Theme Changed to RED)
         const getLinkClass = (link) => {
             const isActive = currentPath === link;
             const baseClass = "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200";
-            // استخدام BrandRed (الأحمر) بدلاً من الأزرق
             const activeClass = "bg-brandRed text-white shadow-md shadow-red-500/20";
             const inactiveClass = "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-brandRed";
             return `${baseClass} ${isActive ? activeClass : inactiveClass}`;
@@ -246,8 +255,6 @@
         </header>`;
     }
 
-    // --- 5. Global Functions (Exposed) ---
-    
     window.changeTheme = function() {
         const newTheme = config.theme === 'dark' ? 'light' : 'dark';
         localStorage.setItem('theme', newTheme);
@@ -263,12 +270,9 @@
     window.doLogout = function() {
         if (confirm(config.lang === 'ar' ? 'هل أنت متأكد من تسجيل الخروج؟' : 'Are you sure you want to logout?')) {
             localStorage.removeItem('currentUser');
-            // الحفاظ على الرابط كما طلبت
             window.location.href = 'https://androgov-sa.github.io/AIT/login.html'; 
         }
     };
 
-    // Run Init
     init();
-
 })();
