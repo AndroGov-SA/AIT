@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CFO Dashboard | AndroGov</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { brandGreen: '#10B981', brandDark: '#0F172A', brandBlue: '#3B82F6' },
+                    fontFamily: { sans: ['Tajawal', 'Inter', 'sans-serif'], en: ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300 opacity-0">
+
+    <div id="sidebar-container"></div>
+    
+    <div class="main-content-wrapper md:mr-72 transition-all duration-300 flex flex-col min-h-screen">
+        <div id="header-container"></div>
+
+        <main class="p-6 space-y-6">
+            
+            <div class="flex flex-col md:flex-row justify-between items-end gap-4 mb-2">
+                <div>
+                    <h1 class="text-2xl font-bold text-slate-900 dark:text-white">لوحة القيادة المالية</h1>
+                    <p class="text-sm text-slate-500 mt-1">نظرة عامة على الوضع المالي - الربع الأول 2026</p>
+                </div>
+                <div class="flex gap-3">
+                    <button class="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold shadow-sm hover:bg-slate-50 transition">
+                        <i class="fa-solid fa-download mr-1"></i> تقرير السيولة
+                    </button>
+                    <button onclick="window.location.href='gl_journal.html'" class="px-4 py-2 bg-brandGreen text-white rounded-lg text-xs font-bold shadow-lg shadow-green-500/30 hover:bg-green-700 transition">
+                        <i class="fa-solid fa-plus mr-1"></i> قيد جديد
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="p-2 bg-green-50 dark:bg-green-900/20 rounded-lg text-brandGreen"><i class="fa-solid fa-wallet text-xl"></i></div>
+                        <span class="text-[10px] bg-green-100 text-green-700 px-2 py-1 rounded-full font-bold">+12%</span>
+                    </div>
+                    <h3 class="text-3xl font-bold text-slate-900 dark:text-white font-en mb-1">2.45M</h3>
+                    <p class="text-xs text-slate-500 font-bold uppercase">السيولة النقدية (SAR)</p>
+                </div>
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="p-2 bg-red-50 dark:bg-red-900/20 rounded-lg text-red-500"><i class="fa-solid fa-arrow-trend-down text-xl"></i></div>
+                        <span class="text-[10px] bg-green-100 text-green-700 px-2 py-1 rounded-full font-bold">-5% (وفر)</span>
+                    </div>
+                    <h3 class="text-3xl font-bold text-slate-900 dark:text-white font-en mb-1">320k</h3>
+                    <p class="text-xs text-slate-500 font-bold uppercase">مصروفات يناير</p>
+                </div>
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="p-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg text-brandBlue"><i class="fa-solid fa-chart-pie text-xl"></i></div>
+                        <span class="text-[10px] bg-slate-100 text-slate-500 px-2 py-1 rounded-full font-bold">YTD</span>
+                    </div>
+                    <h3 class="text-3xl font-bold text-slate-900 dark:text-white font-en mb-1">1.1M</h3>
+                    <p class="text-xs text-slate-500 font-bold uppercase">صافي الربح</p>
+                </div>
+                <div class="bg-brandGreen text-white p-6 rounded-2xl shadow-lg shadow-green-500/20 relative overflow-hidden group cursor-pointer hover:bg-green-700 transition" onclick="window.location.href='approvals.html'">
+                    <div class="absolute -right-6 -bottom-6 text-9xl opacity-10 rotate-12"><i class="fa-solid fa-stamp"></i></div>
+                    <div class="relative z-10">
+                        <div class="text-4xl font-bold mb-2">3</div>
+                        <p class="text-sm font-bold opacity-90">موافقات معلقة</p>
+                        <p class="text-[10px] mt-4 opacity-75">تتطلب اعتمادك المالي (مشتريات، صرف)</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="lg:col-span-2 bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <h3 class="font-bold text-slate-800 dark:text-white mb-6">التدفقات النقدية (Cash Flow)</h3>
+                    <canvas id="cashFlowChart" height="120"></canvas>
+                </div>
+                <div class="lg:col-span-1 bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <h3 class="font-bold text-slate-800 dark:text-white mb-6">استهلاك الموازنة</h3>
+                    <div class="relative h-48 w-48 mx-auto">
+                        <canvas id="budgetChart"></canvas>
+                        <div class="absolute inset-0 flex items-center justify-center flex-col pointer-events-none">
+                            <span class="text-3xl font-bold text-slate-800 dark:text-white font-en">65%</span>
+                            <span class="text-[10px] text-slate-400">مستخدم</span>
+                        </div>
+                    </div>
+                    <div class="mt-6 space-y-2">
+                        <div class="flex justify-between text-xs">
+                            <span class="text-slate-500">الرواتب (HR)</span>
+                            <span class="font-bold text-slate-800 dark:text-white">70%</span>
+                        </div>
+                        <div class="w-full bg-slate-100 rounded-full h-1.5"><div class="bg-blue-500 h-1.5 rounded-full" style="width: 70%"></div></div>
+                        
+                        <div class="flex justify-between text-xs pt-2">
+                            <span class="text-slate-500">التشغيل (Ops)</span>
+                            <span class="font-bold text-red-500">95%</span>
+                        </div>
+                        <div class="w-full bg-slate-100 rounded-full h-1.5"><div class="bg-red-500 h-1.5 rounded-full" style="width: 95%"></div></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden">
+                <div class="p-6 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center">
+                    <h3 class="font-bold text-slate-800 dark:text-white">آخر الحركات المالية</h3>
+                    <a href="gl_journal.html" class="text-xs text-brandGreen font-bold hover:underline">عرض الكل</a>
+                </div>
+                <table class="w-full text-sm text-right">
+                    <thead class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 text-xs uppercase">
+                        <tr>
+                            <th class="p-4">رقم القيد</th>
+                            <th class="p-4">البيان</th>
+                            <th class="p-4">المبلغ</th>
+                            <th class="p-4">الحالة</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 dark:divide-slate-700 text-slate-700 dark:text-slate-300">
+                        <tr>
+                            <td class="p-4 font-mono text-xs text-brandBlue">JV-2026-008</td>
+                            <td class="p-4 font-bold">سداد فاتورة كهرباء المقر الرئيسي</td>
+                            <td class="p-4 font-mono font-bold">4,500 SAR</td>
+                            <td class="p-4"><span class="bg-green-100 text-green-700 px-2 py-1 rounded text-[10px] border border-green-200">مرحل</span></td>
+                        </tr>
+                        <tr>
+                            <td class="p-4 font-mono text-xs text-brandBlue">JV-2026-009</td>
+                            <td class="p-4 font-bold">شراء أجهزة لابتوب (أصول)</td>
+                            <td class="p-4 font-mono font-bold">12,400 SAR</td>
+                            <td class="p-4"><span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded text-[10px] border border-yellow-200">مسودة</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </main>
+    </div>
+
+    <script src="layout-finance.js"></script>
+    <script src="bot-finance.js"></script>
+    <script>
+        // Initialize Charts
+        document.addEventListener('DOMContentLoaded', () => {
+            // Cash Flow Chart
+            new Chart(document.getElementById('cashFlowChart'), {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [{
+                        label: 'التدفقات الداخلة',
+                        data: [120, 190, 300, 500, 200, 300],
+                        borderColor: '#10B981',
+                        tension: 0.4
+                    }, {
+                        label: 'التدفقات الخارجة',
+                        data: [100, 120, 150, 180, 150, 170],
+                        borderColor: '#EF4444',
+                        tension: 0.4
+                    }]
+                },
+                options: { responsive: true, plugins: { legend: { position: 'top', align: 'end' } } }
+            });
+
+            // Budget Chart
+            new Chart(document.getElementById('budgetChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['مستخدم', 'متبقي'],
+                    datasets: [{
+                        data: [65, 35],
+                        backgroundColor: ['#10B981', '#E2E8F0'],
+                        borderWidth: 0
+                    }]
+                },
+                options: { cutout: '75%', plugins: { legend: { display: false } } }
+            });
+        });
+    </script>
+</body>
+</html>
