@@ -1,5 +1,7 @@
 /**
- * AndroGov CFO Layout Engine v5.0 (With Chat & Mandatory Circulars)
+ * AndroGov CFO Layout Engine v5.1 (Fixed Chat Link & Circulars)
+ * - Includes 'internal_chat.html' in the menu.
+ * - Forces Circular Modal to appear (New ID).
  */
 
 (function() {
@@ -17,35 +19,41 @@
         theme: localStorage.getItem('theme') || 'light'
     };
 
-    // --- 2. محاكاة التعميم الإلزامي (Governance) ---
-    // في الواقع، هذا يأتي من قاعدة البيانات
+    // --- 2. التعميم الإلزامي (تم تغيير الـ ID ليظهر لك الآن) ---
     const pendingCircular = {
-        id: "CIR-2026-001",
-        titleAr: "تعميم إداري هام: تحديث سياسة الصرف النقدي",
-        titleEn: "Urgent Circular: Update to Petty Cash Policy",
+        id: "CIR-URGENT-999", // تغيير الـ ID يجبر النافذة على الظهور مجدداً
+        titleAr: "تعميم هام: سياسة الحضور والانصراف الجديدة",
+        titleEn: "Urgent: New Attendance Policy",
         contentAr: `
-            <p class="mb-2">السادة مدراء الإدارات،</p>
-            <p class="mb-2">بناءً على توجيهات مجلس الإدارة، تم إيقاف الصرف النقدي المباشر من الصندوق للمبالغ التي تزيد عن <b>500 ريال</b>.</p>
-            <p class="mb-4">يجب استخدام التحويل البنكي أو بطاقات المشتريات لجميع العمليات التي تتجاوز هذا الحد.</p>
-            <p class="text-red-600 font-bold text-sm">يسري هذا القرار اعتباراً من صباح يوم الأحد 15 يناير 2026.</p>
+            <div class="space-y-3">
+                <p><b>السادة مدراء الإدارات،</b></p>
+                <p>نود إفادتكم بأنه تم تفعيل نظام البصمة الجديد ابتداءً من يوم الأحد القادم.</p>
+                <p>يرجى التنبيه على جميع الموظفين بضرورة تسجيل البصمة (دخول وخروج) لتجنب الخصومات الآلية.</p>
+                <div class="p-3 bg-red-50 text-red-700 rounded border border-red-100 font-bold text-xs">
+                    <i class="fa-solid fa-circle-exclamation"></i> لن يتم قبول تسجيل الحضور اليدوي بعد هذا التاريخ.
+                </div>
+            </div>
         `,
         contentEn: `
-            <p class="mb-2">Dear Dept Managers,</p>
-            <p class="mb-2">Per Board directives, direct cash disbursement for amounts exceeding <b>500 SAR</b> is suspended.</p>
-            <p class="mb-4">Please use bank transfers or corporate cards for transactions above this limit.</p>
-            <p class="text-red-600 font-bold text-sm">Effective from Sunday, Jan 15, 2026.</p>
-        `,
-        required: true // هل القراءة إلزامية لمنع العمل؟
+            <div class="space-y-3">
+                <p><b>Dear Managers,</b></p>
+                <p>The new biometric attendance system goes live next Sunday.</p>
+                <p>Please ensure all staff register their fingerprint (Check-in/Out) to avoid auto-deductions.</p>
+                <div class="p-3 bg-red-50 text-red-700 rounded border border-red-100 font-bold text-xs">
+                    <i class="fa-solid fa-circle-exclamation"></i> Manual attendance will not be accepted.
+                </div>
+            </div>
+        `
     };
 
-    // --- 3. هيكلة القائمة (تمت إضافة التواصل) ---
+    // --- 3. هيكلة القائمة (تم التأكد من وجود internal_chat.html) ---
     const menuStructure = [
         {
             section: 'main',
             items: [
                 { key: 'dash', icon: 'fa-chart-pie', link: 'cfo_dashboard.html' },
                 { key: 'approvals', icon: 'fa-stamp', link: 'approvals.html' },
-                { key: 'chat', icon: 'fa-comments', link: 'internal_chat.html' } // جديد
+                { key: 'chat', icon: 'fa-comments', link: 'internal_chat.html' } // ✅ موجود هنا
             ]
         },
         {
@@ -98,9 +106,13 @@
     const t = {
         ar: {
             sysName: "AndroGov", deptName: "الإدارة المالية", logout: "خروج آمن",
-            sections: { main: "الرئيسية", gl: "الأستاذ العام", ap: "الموردين", ar: "العملاء", inventory: "الأصول", reporting: "التقارير", config: "الإعدادات" },
+            notifTitle: "الإشعارات", markRead: "تحديد الكل كمقروء", emptyNotif: "لا توجد إشعارات جديدة",
+            sections: { 
+                main: "الرئيسية", gl: "الأستاذ العام", ap: "الموردين", ar: "العملاء", 
+                inventory: "المخزون والأصول", reporting: "التقارير", config: "الإعدادات" 
+            },
             menu: {
-                dash: "لوحة القيادة", approvals: "الموافقات", chat: "التواصل الداخلي",
+                dash: "لوحة القيادة", approvals: "الموافقات", chat: "التواصل الداخلي", // ✅ الترجمة موجودة
                 journal: "قيود اليومية", coa: "دليل الحسابات", costCenters: "مراكز التكلفة",
                 vendors: "سجل الموردين", bills: "فواتير الشراء", payments: "سندات الصرف",
                 salesInv: "فواتير المبيعات", receipts: "سندات القبض",
@@ -112,9 +124,10 @@
         },
         en: {
             sysName: "AndroGov", deptName: "Finance Dept", logout: "Logout",
-            sections: { main: "Main", gl: "GL", ap: "AP", ar: "AR", inventory: "Inventory", reporting: "Reports", config: "Config" },
+            notifTitle: "Notifications", markRead: "Mark Read", emptyNotif: "No notifications",
+            sections: { main: "Main", gl: "GL", ap: "AP", ar: "AR", inventory: "Inv", reporting: "Reports", config: "Config" },
             menu: {
-                dash: "Dashboard", approvals: "Approvals", chat: "Internal Chat",
+                dash: "Dashboard", approvals: "Approvals", chat: "Internal Chat", // ✅ Translation Added
                 journal: "Journal Entries", coa: "Chart of Accounts", costCenters: "Cost Centers",
                 vendors: "Vendors", bills: "Vendor Bills", payments: "Payments",
                 salesInv: "Sales Invoices", receipts: "Receipts",
@@ -126,72 +139,68 @@
         }
     };
 
+    // --- 5. التشغيل ---
     function init() {
         applySettings();
         renderSidebar();
         renderHeader();
-        checkMandatoryCirculars(); // فحص التعاميم
+        
+        // التحقق من التعميم قبل إظهار المحتوى
+        setTimeout(checkMandatoryCirculars, 500); 
+        
         document.body.style.opacity = '1';
     }
 
-    // --- Logic for Mandatory Circulars ---
     function checkMandatoryCirculars() {
-        // Check if user already acknowledged this specific circular ID
         const ackKey = `ack_${pendingCircular.id}`;
-        if (localStorage.getItem(ackKey)) return; // Already read
+        
+        // إذا كان المستخدم قد وافق سابقاً، لا تظهر النافذة
+        if (localStorage.getItem(ackKey)) return;
 
         const dict = t[config.lang];
         const isRtl = config.lang === 'ar';
 
-        // Create Modal HTML
         const modalHTML = `
-        <div id="circularModal" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-md p-4 transition-all duration-300">
-            <div class="bg-white dark:bg-slate-800 w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden transform scale-100 animate-fade-in-up border-t-8 border-brandRed">
-                
+        <div id="circularModal" class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/90 backdrop-blur-sm p-4 transition-opacity duration-300">
+            <div class="bg-white dark:bg-slate-800 w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden border-t-8 border-brandRed animate-bounce-slow">
                 <div class="p-6 border-b border-slate-100 dark:border-slate-700 flex items-center gap-4">
                     <div class="w-12 h-12 rounded-full bg-red-50 text-brandRed flex items-center justify-center text-2xl animate-pulse">
-                        <i class="fa-solid fa-bullhorn"></i>
+                        <i class="fa-solid fa-bell"></i>
                     </div>
                     <div>
                         <h2 class="text-xl font-bold text-slate-900 dark:text-white">${config.lang === 'ar' ? pendingCircular.titleAr : pendingCircular.titleEn}</h2>
                         <p class="text-xs text-slate-500 font-bold uppercase tracking-widest mt-1">${dict.circ.title}</p>
                     </div>
                 </div>
-
-                <div class="p-8 text-sm leading-relaxed text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-900/50 border-y border-slate-100 dark:border-slate-700 max-h-[60vh] overflow-y-auto">
+                <div class="p-8 text-sm leading-relaxed text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-900/50">
                     ${config.lang === 'ar' ? pendingCircular.contentAr : pendingCircular.contentEn}
                 </div>
-
                 <div class="p-6 bg-white dark:bg-slate-800 flex justify-end">
-                    <button onclick="acknowledgeCircular('${pendingCircular.id}')" class="w-full sm:w-auto px-8 py-3 bg-brandRed hover:bg-red-700 text-white rounded-xl font-bold shadow-lg shadow-red-500/30 transition flex items-center justify-center gap-2">
-                        <i class="fa-regular fa-circle-check"></i>
-                        <span>${dict.circ.btn}</span>
+                    <button onclick="acknowledgeCircular('${pendingCircular.id}')" class="w-full bg-brandRed hover:bg-red-700 text-white py-3 rounded-xl font-bold shadow-lg transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-check"></i> <span>${dict.circ.btn}</span>
                     </button>
                 </div>
             </div>
         </div>`;
 
         document.body.insertAdjacentHTML('beforeend', modalHTML);
-        
-        // Disable scrolling on body
-        document.body.style.overflow = 'hidden';
+        document.body.style.overflow = 'hidden'; // منع التمرير
     }
 
-    // Exposed function to acknowledge
     window.acknowledgeCircular = function(id) {
-        localStorage.setItem(`ack_${id}`, 'true'); // Save to local storage
+        localStorage.setItem(`ack_${id}`, 'true'); // حفظ الموافقة
         const modal = document.getElementById('circularModal');
         if(modal) {
+            modal.style.transition = "opacity 0.3s";
             modal.style.opacity = '0';
             setTimeout(() => {
                 modal.remove();
-                document.body.style.overflow = ''; // Re-enable scrolling
+                document.body.style.overflow = ''; 
             }, 300);
         }
     };
 
-    // ... (بقية دوال applySettings, renderSidebar, renderHeader كما هي في النسخة السابقة تماماً) ...
-    
+    // --- بقية الدوال (بدون تغيير) ---
     function applySettings() {
         const html = document.documentElement;
         html.lang = config.lang;
@@ -208,7 +217,6 @@
         const container = document.getElementById('sidebar-container');
         if (!container) return;
         const dict = t[config.lang];
-        const isRtl = config.lang === 'ar';
         const currentPath = window.location.pathname.split('/').pop() || 'cfo_dashboard.html';
 
         let menuHTML = '';
@@ -222,7 +230,7 @@
         });
 
         container.innerHTML = `
-        <aside class="fixed top-0 ${isRtl ? 'right-0 border-l' : 'left-0 border-r'} z-50 h-screen w-72 flex-col hidden md:flex bg-white dark:bg-[#0F172A] border-slate-200 dark:border-slate-800">
+        <aside class="fixed top-0 ${config.lang === 'ar' ? 'right-0 border-l' : 'left-0 border-r'} z-50 h-screen w-72 flex-col hidden md:flex bg-white dark:bg-[#0F172A] border-slate-200 dark:border-slate-800">
             <div class="h-20 flex items-center px-6 border-b border-slate-100 dark:border-slate-800">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 rounded-xl bg-red-50 text-brandRed flex items-center justify-center text-xl shadow-sm"><i class="fa-solid fa-coins"></i></div>
@@ -243,15 +251,25 @@
     function renderHeader() {
         const container = document.getElementById('header-container');
         if (!container) return;
-        container.innerHTML = `<header class="h-20 sticky top-0 z-40 flex items-center justify-between px-6 bg-white/80 dark:bg-[#0F172A]/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
+        const dict = t[config.lang];
+        
+        container.innerHTML = `
+        <header class="h-20 sticky top-0 z-40 flex items-center justify-between px-6 bg-white/80 dark:bg-[#0F172A]/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
             <div class="flex items-center gap-4">
                 <button class="md:hidden text-slate-500 hover:text-brandRed"><i class="fa-solid fa-bars text-xl"></i></button>
+                <div class="hidden md:flex relative w-64">
+                    <input type="text" placeholder="${config.lang === 'ar' ? 'بحث...' : 'Search...'}" class="w-full bg-slate-100 dark:bg-slate-800 border-none rounded-lg pl-10 pr-4 py-2 text-xs focus:ring-2 focus:ring-brandRed/20 outline-none dark:text-white">
+                    <i class="fa-solid fa-search absolute top-2.5 left-3 text-slate-400"></i>
+                </div>
             </div>
             <div class="flex items-center gap-3">
+                <button class="w-9 h-9 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-white transition relative">
+                    <i class="fa-regular fa-bell"></i><span class="absolute top-1.5 right-2 w-2.5 h-2.5 bg-brandRed rounded-full border-2 border-white dark:border-slate-800"></span>
+                </button>
                 <button onclick="window.changeLang()" class="w-9 h-9 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-bold text-slate-600 dark:text-white transition">${config.lang === 'ar' ? 'EN' : 'عربي'}</button>
                 <button onclick="window.changeTheme()" class="w-9 h-9 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-yellow-400 transition"><i class="fa-solid ${config.theme === 'dark' ? 'fa-sun' : 'fa-moon'}"></i></button>
                 <div class="h-6 w-px bg-slate-200 dark:bg-slate-700 mx-1"></div>
-                <button onclick="window.doLogout()" class="text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-2"><i class="fa-solid fa-power-off"></i> <span>${t[config.lang].logout}</span></button>
+                <button onclick="window.doLogout()" class="text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-2"><i class="fa-solid fa-power-off"></i> <span>${dict.logout}</span></button>
             </div>
         </header>`;
     }
