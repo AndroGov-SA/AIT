@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Invoices | AndroGov</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { 
+                        brandRed: '#FB4747', 
+                        brandDark: '#0F172A',
+                        moneyGreen: '#10B981',
+                        moneyRed: '#EF4444',
+                        alertOrange: '#F59E0B'
+                    },
+                    fontFamily: { sans: ['Tajawal', 'Inter', 'sans-serif'], en: ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        .num-font { font-family: 'Inter', sans-serif; font-feature-settings: "tnum"; }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300 opacity-0">
+
+    <div id="sidebar-container"></div>
+    
+    <div class="main-content-wrapper md:mr-72 transition-all duration-300 flex flex-col min-h-screen">
+        <div id="header-container"></div>
+
+        <main class="p-6 space-y-6">
+            
+            <div class="flex flex-col md:flex-row justify-between items-end gap-4">
+                <div>
+                    <h1 class="text-2xl font-bold text-slate-900 dark:text-white" data-i18n="pageTitle">فواتير المبيعات (AR)</h1>
+                    <div class="flex items-center gap-2 mt-1">
+                        <span class="px-2 py-0.5 rounded bg-green-100 text-green-700 text-[10px] font-bold border border-green-200" data-i18n="zatcaStatus">متصل مع هيئة الزكاة (ZATCA Phase 2)</span>
+                        <p class="text-sm text-slate-500" data-i18n="pageSub">إصدار وإدارة الفواتير الضريبية</p>
+                    </div>
+                </div>
+                <div class="flex gap-3">
+                    <button class="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold shadow-sm hover:bg-slate-50 transition flex items-center gap-2">
+                        <i class="fa-solid fa-file-export text-slate-400"></i> <span data-i18n="btnStatement">كشف حساب عميل</span>
+                    </button>
+                    <button onclick="openInvModal()" class="px-4 py-2 bg-brandRed text-white rounded-lg text-xs font-bold shadow-lg shadow-red-500/30 hover:bg-red-700 transition flex items-center gap-2">
+                        <i class="fa-solid fa-plus"></i> <span data-i18n="btnNew">فاتورة جديدة</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-1 h-full bg-moneyGreen"></div>
+                    <div class="flex justify-between items-start mb-2">
+                        <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="kpiSales">إجمالي المبيعات (YTD)</p>
+                        <i class="fa-solid fa-chart-line text-moneyGreen bg-green-50 dark:bg-green-900/20 p-2 rounded-lg"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold num-font text-slate-900 dark:text-white">1,500,000 <span class="text-xs font-normal text-slate-400">SAR</span></h3>
+                    <p class="text-[10px] text-slate-400 mt-2" data-i18n="kpiSalesSub">شامل ضريبة القيمة المضافة</p>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <div class="flex justify-between items-start mb-2">
+                        <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="kpiOut">مستحقات غير محصلة</p>
+                        <i class="fa-solid fa-hand-holding-dollar text-brandBlue bg-blue-50 dark:bg-blue-900/20 p-2 rounded-lg"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold num-font text-brandBlue">850,000 <span class="text-xs font-normal text-slate-400">SAR</span></h3>
+                    <p class="text-[10px] text-slate-400 mt-2" data-i18n="kpiOutSub">عند العملاء (ذمم مدينة)</p>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <div class="flex justify-between items-start mb-2">
+                        <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="kpiOver">متأخرة السداد</p>
+                        <i class="fa-solid fa-clock-rotate-left text-moneyRed bg-red-50 dark:bg-red-900/20 p-2 rounded-lg"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold num-font text-moneyRed">120,000 <span class="text-xs font-normal text-slate-400">SAR</span></h3>
+                    <p class="text-[10px] text-slate-400 mt-2" data-i18n="kpiOverSub">+90 يوم (مخصص ديون)</p>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <div class="flex justify-between items-start mb-2">
+                        <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="kpiComp">الامتثال الضريبي</p>
+                        <i class="fa-solid fa-check-double text-brandRed bg-red-50 dark:bg-red-900/20 p-2 rounded-lg"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold num-font text-slate-900 dark:text-white">100%</h3>
+                    <p class="text-[10px] text-moneyGreen font-bold mt-2" data-i18n="kpiCompSub">جميع الفواتير مرفوعة للزكاة</p>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 flex flex-wrap gap-4 items-center">
+                <div class="flex-1 min-w-[200px] relative">
+                    <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="بحث برقم الفاتورة أو العميل..." class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg pl-10 pr-4 py-2 text-xs focus:ring-1 focus:ring-brandRed outline-none dark:text-white" data-i18n-ph="searchPh">
+                    <i class="fa-solid fa-search absolute top-2.5 left-3 text-slate-400"></i>
+                </div>
+                <select id="statusFilter" onchange="filterTable()" class="bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-xs dark:text-white outline-none">
+                    <option value="all" data-i18n="fltAll">كل الحالات</option>
+                    <option value="paid" data-i18n="fltPaid">مدفوعة (Paid)</option>
+                    <option value="unpaid" data-i18n="fltUnpaid">غير مدفوعة (Unpaid)</option>
+                    <option value="draft" data-i18n="fltDraft">مسودة (Draft)</option>
+                </select>
+                <select id="zatcaFilter" onchange="filterTable()" class="bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-xs dark:text-white outline-none">
+                    <option value="all" data-i18n="fltZatca">حالة الزكاة (الكل)</option>
+                    <option value="reported" data-i18n="fltReported">مبلغة (Reported)</option>
+                    <option value="pending" data-i18n="fltPending">معلقة (Pending)</option>
+                </select>
+            </div>
+
+            <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-right rtl:text-right ltr:text-left">
+                        <thead class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 text-xs uppercase font-bold">
+                            <tr>
+                                <th class="p-4" data-i18n="colInv">رقم الفاتورة</th>
+                                <th class="p-4 w-1/4" data-i18n="colClient">العميل</th>
+                                <th class="p-4" data-i18n="colDate">التاريخ</th>
+                                <th class="p-4" data-i18n="colTotal">الإجمالي</th>
+                                <th class="p-4 text-center" data-i18n="colZatca">حالة الزكاة (ZATCA)</th>
+                                <th class="p-4 text-center" data-i18n="colStatus">حالة السداد</th>
+                                <th class="p-4 text-center"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="invTable" class="divide-y divide-slate-100 dark:divide-slate-700 text-slate-700 dark:text-slate-300">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <div id="invModal" class="fixed inset-0 bg-black/70 hidden z-50 flex items-center justify-center backdrop-blur-sm p-4">
+        <div class="bg-white dark:bg-slate-800 w-full max-w-4xl rounded-2xl shadow-2xl flex flex-col max-h-[90vh]">
+            <div class="p-4 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-900 rounded-t-2xl">
+                <div>
+                    <h3 class="font-bold text-lg dark:text-white" data-i18n="modTitle">فاتورة ضريبية جديدة</h3>
+                    <p class="text-[10px] text-slate-500" data-i18n="modSub">سيتم توليد QR Code وإرسالها لمنصة فاتورة تلقائياً</p>
+                </div>
+                <button onclick="closeInvModal()" class="w-8 h-8 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 flex items-center justify-center transition"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <div class="p-6 overflow-y-auto flex-1 custom-scroll">
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="fldClient">العميل</label>
+                        <select class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-2 text-xs dark:text-white font-bold">
+                            <option>وزارة الصحة (MOH)</option>
+                            <option>مستشفى الحبيب</option>
+                            <option>شركة المراعي</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="fldDate">تاريخ الإصدار</label>
+                        <input type="date" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-2 text-xs dark:text-white" value="2026-03-31">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="fldDue">تاريخ الاستحقاق</label>
+                        <input type="date" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-2 text-xs dark:text-white" value="2026-04-30">
+                    </div>
+                </div>
+
+                <div class="border border-slate-200 dark:border-slate-600 rounded-lg overflow-hidden mb-4">
+                    <table class="w-full text-xs text-right">
+                        <thead class="bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 font-bold">
+                            <tr>
+                                <th class="p-3 w-1/2" data-i18n="thItem">الصنف / الخدمة</th>
+                                <th class="p-3 w-20" data-i18n="thQty">الكمية</th>
+                                <th class="p-3" data-i18n="thPrice">السعر</th>
+                                <th class="p-3" data-i18n="thVAT">الضريبة (15%)</th>
+                                <th class="p-3" data-i18n="thTotal">الإجمالي</th>
+                                <th class="p-3 w-8"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="invLines" class="bg-white dark:bg-slate-800 dark:text-white">
+                            <tr class="border-b border-slate-100 dark:border-slate-700">
+                                <td class="p-2"><input type="text" value="ترخيص نظام أندروميدا الطبي" class="w-full border-none bg-transparent focus:ring-0 text-xs font-bold"></td>
+                                <td class="p-2"><input type="number" value="1" class="w-full border border-slate-200 dark:border-slate-600 rounded p-1 text-center bg-slate-50 dark:bg-slate-700"></td>
+                                <td class="p-2"><input type="number" value="50000" class="w-full border border-slate-200 dark:border-slate-600 rounded p-1 text-center bg-slate-50 dark:bg-slate-700"></td>
+                                <td class="p-2 text-slate-500">7,500</td>
+                                <td class="p-2 font-bold text-slate-800 dark:text-white">57,500</td>
+                                <td class="p-2 text-center"><i class="fa-solid fa-trash text-slate-300 hover:text-red-500 cursor-pointer"></i></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="p-2 bg-slate-50 dark:bg-slate-700 text-center">
+                        <button class="text-xs text-brandRed font-bold hover:underline" data-i18n="btnAddLine">+ إضافة بند</button>
+                    </div>
+                </div>
+
+                <div class="flex flex-col md:flex-row justify-between items-start gap-6">
+                    <div class="w-full md:w-1/2">
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="fldNotes">ملاحظات / شروط الدفع</label>
+                        <textarea class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-2 text-xs dark:text-white" rows="3"></textarea>
+                    </div>
+                    <div class="w-full md:w-1/3 space-y-2 text-sm">
+                        <div class="flex justify-between text-slate-600 dark:text-slate-400">
+                            <span data-i18n="lblSub">المجموع الفرعي:</span>
+                            <span>50,000.00</span>
+                        </div>
+                        <div class="flex justify-between text-slate-600 dark:text-slate-400">
+                            <span data-i18n="lblVAT">ضريبة القيمة المضافة (15%):</span>
+                            <span>7,500.00</span>
+                        </div>
+                        <div class="flex justify-between font-bold text-lg text-brandRed pt-2 border-t border-slate-200 dark:border-slate-600">
+                            <span data-i18n="lblTotal">الإجمالي النهائي:</span>
+                            <span class="num-font">57,500.00 SAR</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-4 border-t border-slate-100 dark:border-slate-700 flex justify-end gap-3 bg-slate-50 dark:bg-slate-900 rounded-b-2xl">
+                <button onclick="closeInvModal()" class="px-4 py-2 border border-slate-200 dark:border-slate-600 rounded-lg text-xs font-bold hover:bg-slate-100 dark:hover:bg-slate-700 dark:text-white" data-i18n="btnCancel">إلغاء</button>
+                <button onclick="alert('Invoice Issued & Reported to ZATCA'); closeInvModal()" class="px-6 py-2 bg-brandRed text-white rounded-lg text-xs font-bold hover:bg-red-700 shadow-md" data-i18n="btnIssue">إصدار وترحيل</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="qrModal" class="fixed inset-0 bg-black/80 hidden z-50 flex items-center justify-center backdrop-blur-sm" onclick="this.classList.add('hidden')">
+        <div class="bg-white p-6 rounded-2xl text-center shadow-2xl animate-fade-in-up" onclick="event.stopPropagation()">
+            <h3 class="font-bold text-lg mb-4 text-slate-800">ZATCA QR Code</h3>
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=SellersName:Andromeda;VatNo:3000123456;Time:2026-01-11;Total:57500;Vat:7500" class="mx-auto border p-2 rounded-lg">
+            <p class="text-xs text-green-600 font-bold mt-4 flex items-center justify-center gap-2">
+                <i class="fa-solid fa-circle-check"></i> Valid / متوافق
+            </p>
+        </div>
+    </div>
+
+    <script src="layout-finance.js"></script>
+    <script src="bot-finance.js"></script>
+
+    <script>
+        // --- Mock Invoices Data ---
+        const invoicesData = [
+            { 
+                id: "INV-2026-001", clientAr: "وزارة الصحة", clientEn: "Ministry of Health", 
+                date: "2026-01-05", total: 150000, zatca: "reported", status: "paid"
+            },
+            { 
+                id: "INV-2026-002", clientAr: "مستشفى الحبيب", clientEn: "Al-Habib Hospital", 
+                date: "2026-01-10", total: 57500, zatca: "reported", status: "unpaid"
+            },
+            { 
+                id: "INV-2026-003", clientAr: "شركة المراعي", clientEn: "Almarai Co.", 
+                date: "2026-01-12", total: 12500, zatca: "pending", status: "draft"
+            }
+        ];
+
+        const translations = {
+            ar: {
+                pageTitle: "فواتير المبيعات (AR)", pageSub: "إصدار وإدارة الفواتير الضريبية",
+                zatcaStatus: "متصل مع هيئة الزكاة (ZATCA Phase 2)",
+                btnStatement: "كشف حساب عميل", btnNew: "فاتورة جديدة",
+                kpiSales: "إجمالي المبيعات (YTD)", kpiSalesSub: "شامل ضريبة القيمة المضافة",
+                kpiOut: "مستحقات غير محصلة", kpiOutSub: "عند العملاء (ذمم مدينة)",
+                kpiOver: "متأخرة السداد", kpiOverSub: "+90 يوم (مخصص ديون)",
+                kpiComp: "الامتثال الضريبي", kpiCompSub: "جميع الفواتير مرفوعة للزكاة",
+                searchPh: "بحث برقم الفاتورة أو العميل...",
+                fltAll: "كل الحالات", fltPaid: "مدفوعة", fltUnpaid: "غير مدفوعة", fltDraft: "مسودة",
+                fltZatca: "حالة الزكاة (الكل)", fltReported: "مبلغة (Reported)", fltPending: "معلقة (Pending)",
+                colInv: "رقم الفاتورة", colClient: "العميل", colDate: "التاريخ", colTotal: "الإجمالي", colZatca: "حالة الزكاة", colStatus: "حالة السداد",
+                stPaid: "مدفوعة", stUnpaid: "غير مدفوعة", stDraft: "مسودة",
+                ztReported: "مبلغة", ztPending: "معلقة",
+                modTitle: "فاتورة ضريبية جديدة", modSub: "سيتم توليد QR Code وإرسالها لمنصة فاتورة تلقائياً",
+                fldClient: "العميل", fldDate: "تاريخ الإصدار", fldDue: "تاريخ الاستحقاق",
+                thItem: "الصنف / الخدمة", thQty: "الكمية", thPrice: "السعر", thVAT: "الضريبة (15%)", thTotal: "الإجمالي",
+                btnAddLine: "+ إضافة بند", fldNotes: "ملاحظات / شروط الدفع",
+                lblSub: "المجموع الفرعي:", lblVAT: "ضريبة القيمة المضافة (15%):", lblTotal: "الإجمالي النهائي:",
+                btnCancel: "إلغاء", btnIssue: "إصدار وترحيل"
+            },
+            en: {
+                pageTitle: "Sales Invoices (AR)", pageSub: "Manage Tax Invoices & Billing",
+                zatcaStatus: "ZATCA Integration Active (Phase 2)",
+                btnStatement: "Customer Statement", btnNew: "New Invoice",
+                kpiSales: "Total Sales (YTD)", kpiSalesSub: "Including VAT",
+                kpiOut: "Outstanding Receivables", kpiOutSub: "Customer Debt",
+                kpiOver: "Overdue Invoices", kpiOverSub: "+90 Days (Bad Debt Risk)",
+                kpiComp: "Tax Compliance", kpiCompSub: "All invoices reported",
+                searchPh: "Search Invoice # or Client...",
+                fltAll: "All Status", fltPaid: "Paid", fltUnpaid: "Unpaid", fltDraft: "Draft",
+                fltZatca: "ZATCA Status", fltReported: "Reported", fltPending: "Pending",
+                colInv: "Invoice #", colClient: "Customer", colDate: "Date", colTotal: "Total", colZatca: "ZATCA Status", colStatus: "Payment Status",
+                stPaid: "Paid", stUnpaid: "Unpaid", stDraft: "Draft",
+                ztReported: "Reported", ztPending: "Pending",
+                modTitle: "New Tax Invoice", modSub: "Auto QR generation & Fatoora submission",
+                fldClient: "Customer", fldDate: "Issue Date", fldDue: "Due Date",
+                thItem: "Item / Service", thQty: "Qty", thPrice: "Price", thVAT: "VAT (15%)", thTotal: "Total",
+                btnAddLine: "+ Add Line", fldNotes: "Notes / Payment Terms",
+                lblSub: "Subtotal:", lblVAT: "VAT (15%):", lblTotal: "Grand Total:",
+                btnCancel: "Cancel", btnIssue: "Issue & Post"
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            applyLanguage();
+            renderTable();
+            window.addEventListener('storage', (e) => { if (e.key === 'lang') location.reload(); });
+        });
+
+        function applyLanguage() {
+            const lang = localStorage.getItem('lang') || 'ar';
+            const dict = translations[lang];
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (dict[key]) el.innerText = dict[key];
+            });
+            document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+                const key = el.getAttribute('data-i18n-ph');
+                if (dict[key]) el.placeholder = dict[key];
+            });
+        }
+
+        function renderTable() {
+            const lang = localStorage.getItem('lang') || 'ar';
+            const t = translations[lang];
+            const tbody = document.getElementById('invTable');
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const statusFlt = document.getElementById('statusFilter').value;
+            const zatcaFlt = document.getElementById('zatcaFilter').value;
+
+            tbody.innerHTML = '';
+
+            const filtered = invoicesData.filter(item => {
+                const textMatch = item.id.toLowerCase().includes(search) || 
+                                  (lang==='ar'?item.clientAr:item.clientEn).toLowerCase().includes(search);
+                const statusMatch = statusFlt === 'all' || item.status === statusFlt;
+                const zatcaMatch = zatcaFlt === 'all' || item.zatca === zatcaFlt;
+                return textMatch && statusMatch && zatcaMatch;
+            });
+
+            filtered.forEach(item => {
+                // Payment Status Badge
+                let statusBadge = '';
+                if(item.status === 'paid') statusBadge = `<span class="bg-green-100 text-green-700 px-2 py-0.5 rounded text-[10px] font-bold border border-green-200">${t.stPaid}</span>`;
+                else if(item.status === 'unpaid') statusBadge = `<span class="bg-red-100 text-red-700 px-2 py-0.5 rounded text-[10px] font-bold border border-red-200">${t.stUnpaid}</span>`;
+                else statusBadge = `<span class="bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded text-[10px] font-bold border border-yellow-200">${t.stDraft}</span>`;
+
+                // ZATCA Badge (With QR action)
+                let zatcaBadge = '';
+                if(item.zatca === 'reported') zatcaBadge = `<button onclick="showQR()" class="text-green-600 hover:text-green-800 text-xs font-bold flex items-center justify-center gap-1 mx-auto"><i class="fa-solid fa-qrcode"></i> ${t.ztReported}</button>`;
+                else zatcaBadge = `<span class="text-slate-400 text-xs flex items-center justify-center gap-1"><i class="fa-regular fa-clock"></i> ${t.ztPending}</span>`;
+
+                const row = `
+                <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition border-b border-slate-100 dark:border-slate-700 last:border-0 group">
+                    <td class="p-4 font-mono font-bold text-xs text-brandRed group-hover:underline cursor-pointer">${item.id}</td>
+                    <td class="p-4 font-bold text-slate-800 dark:text-white">${lang==='ar'?item.clientAr:item.clientEn}</td>
+                    <td class="p-4 num-font text-xs text-slate-500">${item.date}</td>
+                    <td class="p-4 num-font font-bold text-slate-900 dark:text-white">${item.total.toLocaleString()} SAR</td>
+                    <td class="p-4 text-center">${zatcaBadge}</td>
+                    <td class="p-4 text-center">${statusBadge}</td>
+                    <td class="p-4 text-center">
+                        <button class="text-slate-400 hover:text-brandRed transition"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                    </td>
+                </tr>`;
+                tbody.innerHTML += row;
+            });
+        }
+
+        // --- Modals Logic ---
+        function openInvModal() { document.getElementById('invModal').classList.remove('hidden'); }
+        function closeInvModal() { document.getElementById('invModal').classList.add('hidden'); }
+        function showQR() { document.getElementById('qrModal').classList.remove('hidden'); }
+        window.filterTable = renderTable;
+
+    </script>
+</body>
+</html>
