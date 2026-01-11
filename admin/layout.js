@@ -1,7 +1,6 @@
 /**
- * AndroGov Layout Engine v4.2 (Added Communication Module)
- * - Added 'admin_chat.html' & 'admin_circulars.html' links.
- * - Preserved Red Theme & User Profile.
+ * AndroGov Layout Engine v4.3 (Added System Settings)
+ * - Added 'admin_settings.html' to Admin Menu.
  */
 
 (function() {
@@ -19,7 +18,7 @@
         avatar: "https://ui-avatars.com/api/?name=Ayman+Almaghrabi&background=FB4747&color=fff"
     };
 
-    // --- 2. Menu Structure Data (تم إضافة قسم التواصل) ---
+    // --- 2. Menu Structure Data ---
     const menuStructure = [
         {
             section: 'main',
@@ -28,7 +27,7 @@
             ]
         },
         {
-            section: 'comm', // القسم الجديد
+            section: 'comm',
             items: [
                 { key: 'chat', icon: 'fa-comments', link: 'admin_chat.html' },
                 { key: 'circulars', icon: 'fa-bullhorn', link: 'admin_circulars.html' }
@@ -64,7 +63,8 @@
             section: 'admin',
             items: [
                 { key: 'users', icon: 'fa-users-gear', link: 'users.html' },
-                { key: 'audit', icon: 'fa-list-ul', link: 'audit.html' }
+                { key: 'audit', icon: 'fa-list-ul', link: 'audit.html' },
+                { key: 'settings', icon: 'fa-sliders', link: 'admin_settings.html' } // ✅ تمت الإضافة هنا
             ]
         }
     ];
@@ -77,7 +77,7 @@
             logout: "تسجيل خروج",
             sections: {
                 main: "الرئيسية",
-                comm: "التواصل المؤسسي", // جديد
+                comm: "التواصل المؤسسي",
                 gov: "الحوكمة المؤسسية",
                 ops: "الحوكمة التشغيلية",
                 dept: "الإدارات والخدمات",
@@ -85,8 +85,8 @@
             },
             menu: {
                 dash: "لوحة القيادة",
-                chat: "الدردشة الداخلية", // جديد
-                circulars: "إدارة التعاميم", // جديد
+                chat: "الدردشة الداخلية",
+                circulars: "إدارة التعاميم",
                 ga: "الجمعيات العمومية",
                 board: "مجلس الإدارة",
                 committees: "اللجان المنبثقة",
@@ -99,7 +99,8 @@
                 procurement: "المشتريات والعقود",
                 it: "التقنية والأمن",
                 users: "المستخدمين والصلاحيات",
-                audit: "سجل التدقيق"
+                audit: "سجل التدقيق",
+                settings: "إعدادات النظام" // ✅ الترجمة العربية
             }
         },
         en: {
@@ -108,7 +109,7 @@
             logout: "Logout",
             sections: {
                 main: "Main",
-                comm: "Communication", // New
+                comm: "Communication",
                 gov: "Corporate Governance",
                 ops: "Operating Governance",
                 dept: "Departments",
@@ -116,8 +117,8 @@
             },
             menu: {
                 dash: "Dashboard",
-                chat: "Internal Chat", // New
-                circulars: "Circulars Mgmt", // New
+                chat: "Internal Chat",
+                circulars: "Circulars Mgmt",
                 ga: "General Assembly",
                 board: "Board of Directors",
                 committees: "Committees",
@@ -130,7 +131,8 @@
                 procurement: "Procurement",
                 it: "IT & Security",
                 users: "Users & Roles",
-                audit: "Audit Logs"
+                audit: "Audit Logs",
+                settings: "System Settings" // ✅ English Translation
             }
         }
     };
