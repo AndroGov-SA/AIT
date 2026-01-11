@@ -33,6 +33,13 @@
             ]
         },
         {
+            section: 'inventory', // قسم جديد
+            items: [
+                { key: 'stock', icon: 'fa-boxes-stacked', link: 'inv_dashboard.html' }, // لوحة المخزون
+                { key: 'assets', icon: 'fa-laptop-code', link: 'inv_assets.html' }      // العهد والأصول
+            ]
+        },
+        {
             section: 'ap',
             items: [
                 { key: 'vendors', icon: 'fa-truck-fast', link: 'ap_vendors.html' },
@@ -58,7 +65,8 @@
                 dash: "لوحة القيادة", approvals: "الموافقات",
                 journal: "قيود اليومية", coa: "دليل الحسابات",
                 vendors: "الموردين", bills: "فواتير الشراء",
-                statements: "القوائم المالية", budget: "الموازنة"
+                statements: "القوائم المالية", budget: "الموازنة",
+                inventory: "المخزون والأصول", stock: "مراقبة المخزون", assets: "سجل الأصول والعهد"
             }
         },
         en: {
@@ -70,7 +78,8 @@
                 dash: "Dashboard", approvals: "Approvals",
                 journal: "Journal Entries", coa: "Chart of Accounts",
                 vendors: "Vendors", bills: "Vendor Bills",
-                statements: "Financial Stmts", budget: "Budgeting"
+                statements: "Financial Stmts", budget: "Budgeting",
+                inventory: "Inventory & Assets", stock: "Stock Control", assets: "Assets Registry"
             }
         }
     };
