@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Approval Center | AndroGov</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { 
+                        brandRed: '#FB4747', 
+                        brandDark: '#0F172A',
+                        moneyGreen: '#10B981',
+                        moneyRed: '#EF4444'
+                    },
+                    fontFamily: { sans: ['Tajawal', 'Inter', 'sans-serif'], en: ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300 opacity-0">
+
+    <div id="sidebar-container"></div>
+    
+    <div class="main-content-wrapper md:mr-72 transition-all duration-300 flex flex-col min-h-screen">
+        <div id="header-container"></div>
+
+        <main class="p-6 space-y-6">
+            
+            <div class="flex flex-col md:flex-row justify-between items-end gap-4">
+                <div>
+                    <h1 class="text-2xl font-bold text-slate-900 dark:text-white" data-i18n="pageTitle">مركز الموافقات</h1>
+                    <p class="text-sm text-slate-500 mt-1" data-i18n="pageSub">مراجعة واعتماد الطلبات المالية المعلقة</p>
+                </div>
+                <div class="flex gap-3">
+                    <div class="bg-white dark:bg-slate-800 px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-full bg-brandRed/10 text-brandRed flex items-center justify-center font-bold text-sm">3</div>
+                        <div>
+                            <p class="text-[10px] text-slate-400 uppercase font-bold" data-i18n="totalPending">إجمالي المعلق</p>
+                            <p class="text-sm font-bold num-font">185,400 SAR</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap gap-2 border-b border-slate-200 dark:border-slate-700 pb-1">
+                <button onclick="filterItems('all')" id="tab-all" class="px-4 py-2 text-sm font-bold text-brandRed border-b-2 border-brandRed transition bg-red-50 dark:bg-slate-800 rounded-t-lg" data-i18n="tabAll">الكل (3)</button>
+                <button onclick="filterItems('po')" id="tab-po" class="px-4 py-2 text-sm font-bold text-slate-500 hover:text-slate-700 dark:text-slate-400 transition" data-i18n="tabPO">أوامر الشراء</button>
+                <button onclick="filterItems('payment')" id="tab-payment" class="px-4 py-2 text-sm font-bold text-slate-500 hover:text-slate-700 dark:text-slate-400 transition" data-i18n="tabPay">سندات الصرف</button>
+                <button onclick="filterItems('gl')" id="tab-gl" class="px-4 py-2 text-sm font-bold text-slate-500 hover:text-slate-700 dark:text-slate-400 transition" data-i18n="tabGL">القيود اليومية</button>
+            </div>
+
+            <div id="approvals-list" class="space-y-4">
+                </div>
+
+        </main>
+    </div>
+
+    <div id="detailModal" class="fixed inset-0 bg-black/70 hidden z-50 flex items-center justify-center backdrop-blur-sm p-4">
+        <div class="bg-white dark:bg-slate-800 w-full max-w-2xl rounded-2xl shadow-2xl flex flex-col max-h-[90vh]">
+            <div class="p-4 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center">
+                <h3 class="font-bold text-lg dark:text-white" id="modalTitle">تفاصيل الطلب</h3>
+                <button onclick="closeModal()" class="w-8 h-8 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 flex items-center justify-center transition"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="p-6 overflow-y-auto" id="modalContent">
+                </div>
+            <div class="p-4 border-t border-slate-100 dark:border-slate-700 flex justify-end gap-3 bg-slate-50 dark:bg-slate-900 rounded-b-2xl">
+                <button onclick="performAction('reject')" class="px-5 py-2 bg-white border border-moneyRed text-moneyRed rounded-lg text-sm font-bold hover:bg-red-50 transition" data-i18n="btnReject">رفض</button>
+                <button onclick="performAction('approve')" class="px-6 py-2 bg-moneyGreen text-white rounded-lg text-sm font-bold hover:bg-green-700 shadow-lg shadow-green-500/30 transition" data-i18n="btnApprove">اعتماد</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="layout-finance.js"></script>
+    <script src="bot-finance.js"></script>
+    
+    <script>
+        // --- Mock Data: طلبات بانتظار الموافقة ---
+        const approvalItems = [
+            {
+                id: "PO-2026-089",
+                type: "po", // Purchase Order
+                titleAr: "شراء خوادم (Servers) جديدة لمركز البيانات",
+                titleEn: "New Data Center Servers Purchase",
+                requesterAr: "إدارة تقنية المعلومات",
+                requesterEn: "IT Department",
+                amount: 145000,
+                date: "2026-01-10",
+                status: "warning", // Warning due to budget
+                warningAr: "تجاوز الميزانية المرصودة بـ 5%",
+                warningEn: "Exceeds allocated budget by 5%",
+                details: {
+                    vendor: "Solutions by STC",
+                    items: ["Dell PowerEdge R750 x2", "Rack Mounting Kit"],
+                    budgetCode: "CAPEX-IT-HW"
+                }
+            },
+            {
+                id: "PAY-2026-112",
+                type: "payment", // Payment Voucher
+                titleAr: "دفعة مستحقة - شركة الصيانة والتشغيل",
+                titleEn: "Due Payment - O&M Contractor",
+                requesterAr: "إدارة المرافق",
+                requesterEn: "Facility Management",
+                amount: 28400,
+                date: "2026-01-11",
+                status: "success", // Compliant
+                warningAr: "مطابق للعقد وشروط الدفع",
+                warningEn: "Compliant with contract terms",
+                details: {
+                    vendor: "Al-Fawzan Contracting",
+                    invoiceRef: "INV-9921",
+                    contractRef: "CNT-2025-004"
+                }
+            },
+            {
+                id: "JV-2026-009",
+                type: "gl", // Journal Entry
+                titleAr: "تسوية عهدة نقدية - معرض الرياض",
+                titleEn: "Petty Cash Settlement - Riyadh Expo",
+                requesterAr: "إدارة التسويق",
+                requesterEn: "Marketing Dept",
+                amount: 12000,
+                date: "2026-01-12",
+                status: "neutral",
+                warningAr: "مراجعة اعتيادية",
+                warningEn: "Routine Review",
+                details: {
+                    account: "1105 - Petty Cash",
+                    entries: "Debit: Expense / Credit: Cash"
+                }
+            }
+        ];
+
+        let currentModalId = null;
+
+        // --- Translations ---
+        const translations = {
+            ar: {
+                pageTitle: "مركز الموافقات",
+                pageSub: "مراجعة واعتماد الطلبات المالية المعلقة",
+                totalPending: "إجمالي المعلق",
+                tabAll: `الكل (${approvalItems.length})`, tabPO: "أوامر الشراء", tabPay: "سندات الصرف", tabGL: "القيود اليومية",
+                btnReject: "رفض مع سبب", btnApprove: "اعتماد نهائي",
+                modalDetails: "تفاصيل:", vendor: "المورد:", budgetCode: "بند الميزانية:", ref: "المرجع:",
+                msgApproved: "تم اعتماد الطلب بنجاح وترحيله للنظام.",
+                msgRejected: "تم رفض الطلب وإعادته للمنشئ للتصحيح."
+            },
+            en: {
+                pageTitle: "Approval Center",
+                pageSub: "Review and approve pending financial requests",
+                totalPending: "Total Pending",
+                tabAll: `All (${approvalItems.length})`, tabPO: "Purchase Orders", tabPay: "Payments", tabGL: "Journal Entries",
+                btnReject: "Reject w/ Reason", btnApprove: "Final Approve",
+                modalDetails: "Details:", vendor: "Vendor:", budgetCode: "Budget Code:", ref: "Reference:",
+                msgApproved: "Request approved and posted successfully.",
+                msgRejected: "Request rejected and returned to initiator."
+            }
+        };
+
+        // --- Init ---
+        document.addEventListener('DOMContentLoaded', () => {
+            applyLanguage();
+            renderList('all');
+            
+            window.addEventListener('storage', (e) => {
+                if (e.key === 'lang') location.reload();
+            });
+        });
+
+        function applyLanguage() {
+            const lang = localStorage.getItem('lang') || 'ar';
+            const dict = translations[lang];
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (dict[key]) el.innerText = dict[key];
+            });
+        }
+
+        // --- Core Functions ---
+        window.filterItems = function(type) {
+            // Update Tabs UI
+            document.querySelectorAll('[id^="tab-"]').forEach(el => {
+                el.className = "px-4 py-2 text-sm font-bold text-slate-500 hover:text-slate-700 dark:text-slate-400 transition";
+            });
+            const activeTab = document.getElementById(`tab-${type}`);
+            activeTab.className = "px-4 py-2 text-sm font-bold text-brandRed border-b-2 border-brandRed transition bg-red-50 dark:bg-slate-800 rounded-t-lg";
+            
+            renderList(type);
+        };
+
+        function renderList(filterType) {
+            const lang = localStorage.getItem('lang') || 'ar';
+            const container = document.getElementById('approvals-list');
+            container.innerHTML = '';
+
+            const filtered = filterType === 'all' ? approvalItems : approvalItems.filter(i => i.type === filterType);
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<div class="text-center py-10 text-slate-400">No items found</div>`;
+                return;
+            }
+
+            filtered.forEach(item => {
+                // Determine Icon & Colors based on type
+                let icon, typeLabel;
+                if(item.type === 'po') { icon = 'fa-cart-shopping'; typeLabel = lang === 'ar' ? 'أمر شراء' : 'Purchase Order'; }
+                else if(item.type === 'payment') { icon = 'fa-money-bill-wave'; typeLabel = lang === 'ar' ? 'سند صرف' : 'Payment Voucher'; }
+                else { icon = 'fa-book'; typeLabel = lang === 'ar' ? 'قيد يومية' : 'Journal Entry'; }
+
+                // Governance Status Color
+                let statusBadge = '';
+                if(item.status === 'warning') {
+                    statusBadge = `<div class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-orange-50 dark:bg-orange-900/20 text-orange-600 text-[10px] font-bold border border-orange-100 dark:border-orange-800">
+                        <i class="fa-solid fa-triangle-exclamation"></i> ${lang === 'ar' ? item.warningAr : item.warningEn}
+                    </div>`;
+                } else if (item.status === 'success') {
+                    statusBadge = `<div class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-green-50 dark:bg-green-900/20 text-green-600 text-[10px] font-bold border border-green-100 dark:border-green-800">
+                        <i class="fa-solid fa-shield-check"></i> ${lang === 'ar' ? item.warningAr : item.warningEn}
+                    </div>`;
+                }
+
+                const html = `
+                <div onclick="openModal('${item.id}')" class="group bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 hover:shadow-md hover:border-brandRed/30 transition-all cursor-pointer relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-1 h-full bg-slate-200 group-hover:bg-brandRed transition-colors"></div>
+                    
+                    <div class="flex flex-col md:flex-row justify-between items-start gap-4">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-slate-50 dark:bg-slate-700 flex items-center justify-center text-slate-400 group-hover:text-brandRed transition-colors">
+                                <i class="fa-solid ${icon} text-xl"></i>
+                            </div>
+                            <div>
+                                <div class="flex items-center gap-2 mb-1">
+                                    <span class="text-[10px] font-mono text-brandRed font-bold bg-red-50 dark:bg-red-900/10 px-2 rounded">${item.id}</span>
+                                    <span class="text-[10px] text-slate-400 uppercase tracking-wide font-bold">${typeLabel}</span>
+                                </div>
+                                <h3 class="font-bold text-slate-800 dark:text-white text-lg mb-1">${lang === 'ar' ? item.titleAr : item.titleEn}</h3>
+                                <p class="text-xs text-slate-500 mb-3"><i class="fa-regular fa-user ml-1"></i> ${lang === 'ar' ? item.requesterAr : item.requesterEn}</p>
+                                ${statusBadge}
+                            </div>
+                        </div>
+                        
+                        <div class="text-left rtl:text-left ltr:text-right min-w-[120px]">
+                            <p class="text-2xl font-bold font-en text-slate-900 dark:text-white">${item.amount.toLocaleString()} <span class="text-xs text-slate-400">SAR</span></p>
+                            <p class="text-[10px] text-slate-400 mt-1">${item.date}</p>
+                            <button class="mt-3 w-full py-1.5 rounded-lg bg-slate-100 dark:bg-slate-700 text-xs font-bold text-slate-600 dark:text-slate-300 group-hover:bg-brandRed group-hover:text-white transition">
+                                ${lang === 'ar' ? 'مراجعة' : 'Review'}
+                            </button>
+                        </div>
+                    </div>
+                </div>`;
+                container.innerHTML += html;
+            });
+        }
+
+        // --- Modal Logic ---
+        window.openModal = function(id) {
+            const lang = localStorage.getItem('lang') || 'ar';
+            const item = approvalItems.find(i => i.id === id);
+            if(!item) return;
+
+            currentModalId = id;
+            document.getElementById('modalTitle').innerText = `${lang==='ar'? 'تفاصيل الطلب': 'Request Details'} #${id}`;
+            
+            let content = '';
+            const t = translations[lang];
+
+            // Common Details
+            content += `<div class="grid grid-cols-2 gap-4 mb-6 text-sm">
+                <div><span class="text-slate-500 block text-xs font-bold mb-1">${lang==='ar'?'الطالب':'Requester'}</span><span class="dark:text-white font-bold">${lang==='ar'?item.requesterAr:item.requesterEn}</span></div>
+                <div><span class="text-slate-500 block text-xs font-bold mb-1">${lang==='ar'?'المبلغ':'Amount'}</span><span class="font-bold font-en text-lg text-brandRed">${item.amount.toLocaleString()} SAR</span></div>
+            </div>`;
+
+            // Specific Details
+            content += `<div class="bg-slate-50 dark:bg-slate-700/50 p-4 rounded-xl border border-slate-100 dark:border-slate-600 mb-4">
+                <h4 class="font-bold text-xs text-slate-500 uppercase mb-3 border-b border-slate-200 pb-2">${t.modalDetails}</h4>
+                <ul class="space-y-2 text-sm dark:text-slate-300">`;
+            
+            if(item.type === 'po' || item.type === 'payment') {
+                content += `<li><span class="font-bold text-slate-700 dark:text-white w-24 inline-block">${t.vendor}</span> ${item.details.vendor}</li>`;
+            }
+            if(item.details.budgetCode) {
+                content += `<li><span class="font-bold text-slate-700 dark:text-white w-24 inline-block">${t.budgetCode}</span> <span class="font-mono bg-white dark:bg-slate-600 px-1 rounded border">${item.details.budgetCode}</span></li>`;
+            }
+            if(item.details.invoiceRef) {
+                content += `<li><span class="font-bold text-slate-700 dark:text-white w-24 inline-block">${t.ref}</span> ${item.details.invoiceRef}</li>`;
+            }
+            
+            content += `</ul></div>`;
+
+            // Budget Check Visualization (Fake Logic)
+            if(item.status === 'warning') {
+                content += `<div class="p-3 bg-orange-50 border border-orange-200 rounded-lg text-xs text-orange-700 flex items-start gap-2">
+                    <i class="fa-solid fa-triangle-exclamation mt-0.5"></i>
+                    <div>
+                        <p class="font-bold">${lang==='ar'?'تنبيه تجاوز ميزانية':'Budget Overrun Alert'}</p>
+                        <p class="opacity-80">${lang==='ar'?item.warningAr:item.warningEn}</p>
+                        <div class="mt-2 w-full bg-orange-200 h-1.5 rounded-full overflow-hidden"><div class="bg-orange-500 h-1.5" style="width: 105%"></div></div>
+                    </div>
+                </div>`;
+            }
+
+            document.getElementById('modalContent').innerHTML = content;
+            document.getElementById('detailModal').classList.remove('hidden');
+        };
+
+        window.closeModal = function() {
+            document.getElementById('detailModal').classList.add('hidden');
+        };
+
+        window.performAction = function(action) {
+            const lang = localStorage.getItem('lang') || 'ar';
+            const t = translations[lang];
+            
+            if(action === 'approve') {
+                if(confirm(lang==='ar'?'هل أنت متأكد من اعتماد هذا المبلغ؟':'Confirm approval?')) {
+                    alert(t.msgApproved);
+                    closeModal();
+                    // In real app, remove item from array
+                }
+            } else {
+                const reason = prompt(lang==='ar'?'سبب الرفض:':'Reason for rejection:');
+                if(reason) {
+                    alert(t.msgRejected);
+                    closeModal();
+                }
+            }
+        };
+
+    </script>
+</body>
+</html>
