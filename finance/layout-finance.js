@@ -1,6 +1,6 @@
 /**
- * AndroGov CFO Layout Engine v2.0 (With Notification Center)
- * مخصص لبيئة المدير المالي - محمد البخيتي
+ * AndroGov CFO Layout Engine v3.0 (Full Menu + Notifications)
+ * النسخة النهائية الشاملة لكافة روابط النظام المالي
  */
 
 (function() {
@@ -21,38 +21,26 @@
     // --- 2. بيانات الإشعارات (محاكاة) ---
     const notifications = [
         { 
-            id: 1, 
-            type: 'alert', 
-            icon: 'fa-triangle-exclamation', 
-            color: 'text-red-500 bg-red-50',
+            id: 1, type: 'alert', icon: 'fa-triangle-exclamation', color: 'text-red-500 bg-red-50',
             msgAr: 'تجاوز ميزانية التسويق بـ 5% (طلب مناقلة)', 
             msgEn: 'Marketing budget exceeded by 5% (Transfer Req)', 
-            time: '2m', 
-            read: false 
+            time: '2m', read: false 
         },
         { 
-            id: 2, 
-            type: 'info', 
-            icon: 'fa-file-invoice-dollar', 
-            color: 'text-blue-500 bg-blue-50',
+            id: 2, type: 'info', icon: 'fa-file-invoice-dollar', color: 'text-blue-500 bg-blue-50',
             msgAr: 'وردت فاتورة جديدة من STC للاعتماد', 
             msgEn: 'New Invoice from STC pending approval', 
-            time: '1h', 
-            read: false 
+            time: '1h', read: false 
         },
         { 
-            id: 3, 
-            type: 'success', 
-            icon: 'fa-sack-dollar', 
-            color: 'text-green-500 bg-green-50',
+            id: 3, type: 'success', icon: 'fa-sack-dollar', color: 'text-green-500 bg-green-50',
             msgAr: 'تم إيداع دفعة العميل (وزارة الصحة)', 
             msgEn: 'Client Payment Received (MOH)', 
-            time: '3h', 
-            read: true 
+            time: '3h', read: true 
         }
     ];
 
-    // --- 3. هيكلة القائمة ---
+    // --- 3. هيكلة القائمة (تمت إضافة كل الصفحات الناقصة) ---
     const menuStructure = [
         {
             section: 'main',
@@ -62,17 +50,26 @@
             ]
         },
         {
-            section: 'gl',
+            section: 'gl', // الأستاذ العام
             items: [
                 { key: 'journal', icon: 'fa-book', link: 'gl_journal.html' },
-                { key: 'coa', icon: 'fa-sitemap', link: 'gl_coa.html' }
+                { key: 'coa', icon: 'fa-sitemap', link: 'gl_coa.html' },
+                { key: 'costCenters', icon: 'fa-layer-group', link: 'gl_cost_centers.html' } // تمت الإضافة
             ]
         },
         {
-            section: 'ap',
+            section: 'ap', // الموردين (دائن)
             items: [
-                { key: 'vendors', icon: 'fa-truck-fast', link: 'ap_vendors.html' },
-                { key: 'bills', icon: 'fa-file-invoice-dollar', link: 'ap_bills.html' }
+                { key: 'vendors', icon: 'fa-store', link: 'ap_vendors.html' },
+                { key: 'bills', icon: 'fa-file-invoice-dollar', link: 'ap_bills.html' },
+                { key: 'payments', icon: 'fa-money-bill-transfer', link: 'ap_payments.html' } // تمت الإضافة
+            ]
+        },
+        {
+            section: 'ar', // العملاء (مدين) - قسم جديد
+            items: [
+                { key: 'salesInv', icon: 'fa-file-invoice', link: 'ar_invoices.html' }, // تمت الإضافة
+                { key: 'receipts', icon: 'fa-hand-holding-dollar', link: 'ar_receipts.html' } // تمت الإضافة
             ]
         },
         {
@@ -86,12 +83,13 @@
             section: 'reporting',
             items: [
                 { key: 'statements', icon: 'fa-file-pdf', link: 'rep_statements.html' },
-                { key: 'budget', icon: 'fa-scale-balanced', link: 'rep_budget.html' }
+                { key: 'budget', icon: 'fa-scale-balanced', link: 'rep_budget.html' },
+                { key: 'tax', icon: 'fa-building-columns', link: 'rep_tax.html' } // تمت الإضافة
             ]
         }
     ];
 
-    // --- 4. القاموس ---
+    // --- 4. القاموس (تم تحديث الترجمات) ---
     const t = {
         ar: {
             sysName: "AndroGov",
@@ -100,13 +98,21 @@
             notifTitle: "الإشعارات",
             markRead: "تحديد الكل كمقروء",
             emptyNotif: "لا توجد إشعارات جديدة",
-            sections: { main: "الرئيسية", gl: "الأستاذ العام", ap: "الموردين", inventory: "المخزون والأصول", reporting: "التقارير" },
+            sections: { 
+                main: "الرئيسية", 
+                gl: "الأستاذ العام", 
+                ap: "الموردين والمشتريات", 
+                ar: "العملاء والمبيعات", // جديد
+                inventory: "المخزون والأصول", 
+                reporting: "التقارير والزكاة" 
+            },
             menu: {
                 dash: "لوحة القيادة", approvals: "الموافقات",
-                journal: "قيود اليومية", coa: "دليل الحسابات",
-                vendors: "الموردين", bills: "فواتير الشراء",
+                journal: "قيود اليومية", coa: "دليل الحسابات", costCenters: "مراكز التكلفة",
+                vendors: "سجل الموردين", bills: "فواتير الشراء", payments: "سندات الصرف",
+                salesInv: "فواتير المبيعات", receipts: "سندات القبض",
                 stock: "مراقبة المخزون", assets: "سجل الأصول والعهد",
-                statements: "القوائم المالية", budget: "الموازنة"
+                statements: "القوائم المالية", budget: "الموازنة", tax: "الإقرار الضريبي"
             }
         },
         en: {
@@ -116,13 +122,21 @@
             notifTitle: "Notifications",
             markRead: "Mark all as read",
             emptyNotif: "No new notifications",
-            sections: { main: "Main", gl: "General Ledger", ap: "Payables", inventory: "Inventory & Assets", reporting: "Reports" },
+            sections: { 
+                main: "Main", 
+                gl: "General Ledger", 
+                ap: "Accounts Payable", 
+                ar: "Accounts Receivable", 
+                inventory: "Assets & Inv", 
+                reporting: "Reports & Tax" 
+            },
             menu: {
                 dash: "Dashboard", approvals: "Approvals",
-                journal: "Journal Entries", coa: "Chart of Accounts",
-                vendors: "Vendors", bills: "Vendor Bills",
-                stock: "Stock Control", assets: "Assets Registry",
-                statements: "Financial Stmts", budget: "Budgeting"
+                journal: "Journal Entries", coa: "Chart of Accounts", costCenters: "Cost Centers",
+                vendors: "Vendors", bills: "Vendor Bills", payments: "Payments",
+                salesInv: "Sales Invoices", receipts: "Receipts",
+                stock: "Inventory", assets: "Fixed Assets",
+                statements: "Financial Stmts", budget: "Budgeting", tax: "Tax & Zakat"
             }
         }
     };
@@ -220,7 +234,6 @@
             ? `<span id="notifBadge" class="absolute top-1.5 right-2 w-2.5 h-2.5 bg-brandRed rounded-full border-2 border-white dark:border-slate-800"></span>` 
             : '';
 
-        // Generate Notification Items
         let notifItemsHTML = '';
         if (notifications.length > 0) {
             notifications.forEach(n => {
@@ -257,7 +270,7 @@
                         ${notifBadge}
                     </button>
                     
-                    <div id="notifDropdown" class="hidden absolute top-12 ${isRtl ? 'left-0' : 'right-0'} w-80 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 overflow-hidden z-50 animate-fade-in-down">
+                    <div id="notifDropdown" class="hidden absolute top-12 ${isRtl ? 'left-0' : 'right-0'} w-80 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 overflow-hidden z-50">
                         <div class="p-3 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-900/50">
                             <span class="text-xs font-bold dark:text-white">${dict.notifTitle}</span>
                             <button onclick="window.markRead()" class="text-[10px] text-brandRed hover:underline">${dict.markRead}</button>
@@ -287,7 +300,6 @@
     window.changeLang = () => { localStorage.setItem('lang', config.lang === 'ar' ? 'en' : 'ar'); location.reload(); };
     window.doLogout = () => { if(confirm('Log out?')) window.location.href = 'https://androgov-sa.github.io/AIT/login.html'; };
     
-    // وظائف الإشعارات
     window.toggleNotif = () => {
         const dropdown = document.getElementById('notifDropdown');
         dropdown.classList.toggle('hidden');
@@ -296,7 +308,6 @@
     window.markRead = () => {
         const badge = document.getElementById('notifBadge');
         if(badge) badge.remove();
-        // في الواقع هنا نرسل طلب للسيرفر لتحديث الحالة
     };
 
     init();
