@@ -3,16 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#FB4747">
-<link rel="manifest" href="manifest.json">
-
-    <title data-i18n="pageTitle">AndroGov | الشؤون المالية</title>
+    <meta name="theme-color" content="#FB4747">
+    <title>Finance Dashboard | AndroGov</title>
     
-    <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Libraries -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -25,7 +21,9 @@
                         brandRed: '#FB4747',
                         brandBlue: '#4267B2',
                         brandDark: '#1E293B',
-                        brandGray: '#F8FAFC'
+                        brandGray: '#F8FAFC',
+                        moneyGreen: '#10B981',
+                        alertOrange: '#F59E0B'
                     },
                     fontFamily: {
                         sans: ['Tajawal', 'Inter', 'sans-serif'],
@@ -36,26 +34,13 @@
         }
     </script>
     <style>
-        @media print {
-            .no-print { display: none !important; }
-            body { background: white; }
-        }
-        /* Custom Ledger Lines */
-        .ledger-row:nth-child(even) { background-color: #f8fafc; }
-        .dark .ledger-row:nth-child(even) { background-color: #1e293b; }
+        .num-font { font-family: 'Inter', sans-serif; font-feature-settings: "tnum"; }
+        .glass-panel { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(8px); }
+        .dark .glass-panel { background: rgba(30, 41, 59, 0.9); }
         
-        body { transition: opacity 0.2s ease-in-out; }
-
-        /* Bot Styles */
-        .chat-window-anim { transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); transform-origin: bottom left; }
-        .chat-bubble { max-width: 85%; padding: 10px 14px; border-radius: 12px; font-size: 0.9rem; line-height: 1.5; word-wrap: break-word; }
-        .chat-bubble.bot { background-color: #f1f5f9; color: #334155; border-bottom-right-radius: 2px; }
-        .dark .chat-bubble.bot { background-color: #334155; color: #f8fafc; }
-        .chat-bubble.user { background-color: #4267B2; color: white; border-bottom-left-radius: 2px; margin-right: auto; }
-        .typing-indicator span { display: inline-block; width: 6px; height: 6px; background-color: #94a3b8; border-radius: 50%; animation: typing 1.4s infinite ease-in-out both; margin: 0 1px; }
-        .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
-        .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
-        @keyframes typing { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
+        /* تأثيرات البطاقات */
+        .module-card { transition: all 0.3s ease; }
+        .module-card:hover { transform: translateY(-3px); box-shadow: 0 10px 15px -3px rgba(251, 71, 71, 0.1); border-color: #FB4747; }
     </style>
 </head>
 <body class="bg-brandGray dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300">
@@ -67,255 +52,202 @@
 
         <main class="p-6 space-y-6">
             
-            <!-- 1. Financial Dashboard Stats -->
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 no-print">
-                <!-- Cash Balance -->
-                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase" data-i18n="kpiCash">السيولة النقدية (الكاش)</p>
-                            <h3 class="text-2xl font-bold mt-1 font-en text-green-600">2,450,000 <span class="text-xs text-slate-400" data-i18n="curr">SAR</span></h3>
-                        </div>
-                        <div class="w-10 h-10 bg-green-50 dark:bg-green-900/30 text-green-600 rounded-xl flex items-center justify-center text-xl"><i class="fa-solid fa-wallet"></i></div>
+            <div class="flex flex-col md:flex-row justify-between items-end gap-4">
+                <div>
+                    <h1 class="text-2xl font-bold text-slate-900 dark:text-white">الإدارة المالية (CFO Dashboard)</h1>
+                    <div class="flex items-center gap-3 mt-1">
+                        <span class="px-2 py-0.5 rounded bg-green-100 text-green-700 text-[10px] font-bold border border-green-200 flex items-center gap-1">
+                            <i class="fa-solid fa-wifi"></i> متصل مع هيئة الزكاة (ZATCA)
+                        </span>
+                        <p class="text-sm text-slate-500">العام المالي: 2026 (الربع الأول)</p>
                     </div>
-                    <p class="text-[10px] text-slate-400 mt-2" data-i18n="kpiCashSub">تغطية تشغيلية: 6 أشهر</p>
                 </div>
-
-                <!-- Monthly Expenses -->
-                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase" data-i18n="kpiExp">مصروفات الشهر (يناير)</p>
-                            <h3 class="text-2xl font-bold mt-1 font-en text-red-500">320,000 <span class="text-xs text-slate-400" data-i18n="curr">SAR</span></h3>
-                        </div>
-                        <div class="w-10 h-10 bg-red-50 dark:bg-red-900/30 text-red-500 rounded-xl flex items-center justify-center text-xl"><i class="fa-solid fa-money-bill-transfer"></i></div>
-                    </div>
-                    <p class="text-[10px] text-slate-400 mt-2" data-i18n="kpiExpSub">مقارنة بالموازنة: <span class="text-green-500 font-bold">-5%</span> (توفير)</p>
-                </div>
-
-                <!-- Receivables -->
-                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase" data-i18n="kpiRec">مستحقات (تحت التحصيل)</p>
-                            <h3 class="text-2xl font-bold mt-1 font-en text-blue-600">850,000 <span class="text-xs text-slate-400" data-i18n="curr">SAR</span></h3>
-                        </div>
-                        <div class="w-10 h-10 bg-blue-50 dark:bg-blue-900/30 text-blue-600 rounded-xl flex items-center justify-center text-xl"><i class="fa-solid fa-hand-holding-dollar"></i></div>
-                    </div>
-                    <p class="text-[10px] text-slate-400 mt-2" data-i18n="kpiRecSub">3 فواتير مستحقة السداد</p>
-                </div>
-
-                <!-- Net Profit (YTD) -->
-                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase" data-i18n="kpiProfit">صافي الربح (YTD)</p>
-                            <h3 class="text-2xl font-bold mt-1 font-en text-purple-600">1,100,000 <span class="text-xs text-slate-400" data-i18n="curr">SAR</span></h3>
-                        </div>
-                        <div class="w-10 h-10 bg-purple-50 dark:bg-purple-900/30 text-purple-600 rounded-xl flex items-center justify-center text-xl"><i class="fa-solid fa-chart-line"></i></div>
-                    </div>
-                    <p class="text-[10px] text-slate-400 mt-2" data-i18n="kpiProfitSub">هامش الربح: 18%</p>
+                <div class="flex gap-3">
+                    <button onclick="window.location.href='internal_chat.html'" class="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold shadow-sm hover:bg-slate-50 transition flex items-center gap-2">
+                        <i class="fa-solid fa-comments text-brandRed"></i> <span>التواصل الداخلي</span>
+                    </button>
+                    <button onclick="window.location.href='rep_statements.html'" class="px-4 py-2 bg-brandRed text-white rounded-lg text-xs font-bold shadow-lg shadow-red-500/30 hover:bg-red-700 transition flex items-center gap-2">
+                        <i class="fa-solid fa-file-contract"></i> <span>القوائم المالية</span>
+                    </button>
                 </div>
             </div>
 
-            <!-- 2. Financial Workspace -->
-            <div class="bg-white dark:bg-slate-800 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 min-h-[600px] flex flex-col">
-                
-                <!-- Toolbar -->
-                <div class="p-6 border-b border-slate-100 dark:border-slate-700 flex flex-col md:flex-row justify-between items-center gap-4">
-                    <div class="flex bg-slate-100 dark:bg-slate-700 p-1 rounded-xl w-full md:w-auto overflow-x-auto">
-                        <button onclick="switchTab('journal')" id="btn-journal" class="px-5 py-2 text-xs font-bold rounded-lg bg-white text-brandBlue shadow-sm transition-all tab-btn" data-i18n="tabJournal">دفتر القيود اليومية</button>
-                        <button onclick="switchTab('payroll')" id="btn-payroll" class="px-5 py-2 text-xs font-bold rounded-lg text-slate-500 hover:text-slate-700 transition-all tab-btn" data-i18n="tabPayroll">الرواتب والمكافآت</button>
-                        <button onclick="switchTab('budget')" id="btn-budget" class="px-5 py-2 text-xs font-bold rounded-lg text-slate-500 hover:text-slate-700 transition-all tab-btn" data-i18n="tabBudget">الموازنة التقديرية</button>
-                        <button onclick="switchTab('reports')" id="btn-reports" class="px-5 py-2 text-xs font-bold rounded-lg text-slate-500 hover:text-slate-700 transition-all tab-btn" data-i18n="tabReports">التقارير المالية</button>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-1 h-full bg-brandRed"></div>
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-xs text-slate-500 font-bold uppercase">السيولة النقدية</p>
+                            <h3 class="text-2xl font-bold mt-1 num-font text-slate-800 dark:text-white">2,450,000 <span class="text-xs font-normal text-slate-400">SAR</span></h3>
+                        </div>
+                        <div class="w-10 h-10 bg-red-50 dark:bg-red-900/20 text-brandRed rounded-xl flex items-center justify-center text-xl"><i class="fa-solid fa-wallet"></i></div>
                     </div>
-                    <div class="flex gap-2">
-                        <button onclick="openEntryModal()" class="px-4 py-2 bg-brandBlue text-white rounded-xl text-xs font-bold hover:bg-blue-700 transition flex items-center gap-2 shadow-lg">
-                            <i class="fa-solid fa-plus"></i> <span data-i18n="btnNewEntry">قيد جديد</span>
-                        </button>
-                        <button onclick="openInvoiceModal()" class="px-4 py-2 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-xl text-xs font-bold hover:bg-slate-200 transition flex items-center gap-2">
-                            <i class="fa-solid fa-file-invoice"></i> <span data-i18n="btnNewInv">فاتورة</span>
-                        </button>
-                    </div>
+                    <p class="text-[10px] text-moneyGreen font-bold mt-2 flex items-center gap-1"><i class="fa-solid fa-arrow-trend-up"></i> تغطي 6 أشهر تشغيل</p>
                 </div>
 
-                <!-- Tab 1: General Journal (القيود اليومية) -->
-                <div id="tab-journal" class="tab-content block p-6">
-                    <div class="flex justify-between mb-4">
-                        <div class="relative w-64">
-                            <input type="text" data-i18n-placeholder="plhSearch" placeholder="بحث برقم القيد أو الوصف..." class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 dark:border-slate-600 dark:bg-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-brandBlue outline-none dark:text-white">
-                            <i class="fa-solid fa-search absolute left-3 top-2.5 text-slate-400 rtl:left-3 ltr:right-3"></i>
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-xs text-slate-500 font-bold uppercase">صافي الربح (YTD)</p>
+                            <h3 class="text-2xl font-bold mt-1 num-font text-moneyGreen">1,100,000 <span class="text-xs font-normal text-slate-400">SAR</span></h3>
                         </div>
-                        <select class="bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-1.5 text-xs focus:outline-none dark:text-white">
-                            <option data-i18n="fy26">السنة المالية 2026</option>
-                            <option data-i18n="fy25">السنة المالية 2025</option>
-                        </select>
+                        <div class="w-10 h-10 bg-green-50 dark:bg-green-900/20 text-moneyGreen rounded-xl flex items-center justify-center text-xl"><i class="fa-solid fa-chart-line"></i></div>
                     </div>
+                    <p class="text-[10px] text-slate-400 mt-2">هامش الربح التشغيلي: 18%</p>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-xs text-slate-500 font-bold uppercase">مخصص الزكاة</p>
+                            <h3 class="text-2xl font-bold mt-1 num-font text-alertOrange">85,000 <span class="text-xs font-normal text-slate-400">SAR</span></h3>
+                        </div>
+                        <div class="w-10 h-10 bg-orange-50 dark:bg-orange-900/20 text-alertOrange rounded-xl flex items-center justify-center text-xl"><i class="fa-solid fa-hand-holding-dollar"></i></div>
+                    </div>
+                    <p class="text-[10px] text-slate-400 mt-2">تستحق السداد: 30 أبريل</p>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-xs text-slate-500 font-bold uppercase">تحصيلات متأخرة</p>
+                            <h3 class="text-2xl font-bold mt-1 num-font text-brandRed">120,000 <span class="text-xs font-normal text-slate-400">SAR</span></h3>
+                        </div>
+                        <div class="w-10 h-10 bg-slate-100 dark:bg-slate-700 text-brandRed rounded-xl flex items-center justify-center text-xl"><i class="fa-solid fa-clock-rotate-left"></i></div>
+                    </div>
+                    <p class="text-[10px] text-slate-400 mt-2">لدى 3 عملاء (مخاطر عالية)</p>
+                </div>
+            </div>
+
+            <div>
+                <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-4">العمليات والأنظمة الفرعية</h3>
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
                     
-                    <div class="overflow-x-auto border border-slate-200 dark:border-slate-600 rounded-xl">
-                        <table class="w-full text-sm text-right rtl:text-right ltr:text-left">
-                            <thead class="bg-slate-50 dark:bg-slate-700 text-xs font-bold text-slate-500 uppercase">
-                                <tr>
-                                    <th class="p-4" data-i18n="colID">رقم القيد</th>
-                                    <th class="p-4" data-i18n="colDate">التاريخ</th>
-                                    <th class="p-4 w-1/3" data-i18n="colDesc">الوصف / البيان</th>
-                                    <th class="p-4" data-i18n="colDr">مدين (Debit)</th>
-                                    <th class="p-4" data-i18n="colCr">دائن (Credit)</th>
-                                    <th class="p-4 text-center" data-i18n="colStatus">الحالة</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-slate-100 dark:divide-slate-700" id="journalTable">
-                                <!-- Generated Rows -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- Tab 2: Payroll & Governance Fees (الرواتب والمكافآت) -->
-                <div id="tab-payroll" class="tab-content hidden p-6">
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        
-                        <!-- Employees Payroll -->
-                        <div class="bg-slate-50 dark:bg-slate-700/30 p-5 rounded-2xl border border-slate-200 dark:border-slate-600">
-                            <div class="flex justify-between items-center mb-4">
-                                <h3 class="font-bold text-sm text-slate-700 dark:text-white flex items-center gap-2">
-                                    <i class="fa-solid fa-users text-blue-500"></i> <span data-i18n="payEmpTitle">مسير رواتب الموظفين (يناير 2026)</span>
-                                </h3>
-                                <button class="text-xs bg-brandBlue text-white px-3 py-1 rounded hover:bg-blue-600" data-i18n="btnPayApprove">اعتماد وصرف</button>
-                            </div>
-                            <div class="space-y-3 max-h-80 overflow-y-auto pr-2">
-                                <div class="flex justify-between items-center bg-white dark:bg-slate-700 p-3 rounded-lg border border-slate-100 dark:border-slate-600 shadow-sm">
-                                    <div>
-                                        <p class="text-xs font-bold dark:text-white" data-i18n="emp1Name">منصور اليامي</p>
-                                        <p class="text-[10px] text-slate-400" data-i18n="emp1Role">مدير موارد بشرية</p>
-                                    </div>
-                                    <span class="font-mono font-bold text-sm dark:text-slate-200">35,000 SAR</span>
-                                </div>
-                                <div class="flex justify-between items-center bg-white dark:bg-slate-700 p-3 rounded-lg border border-slate-100 dark:border-slate-600 shadow-sm">
-                                    <div>
-                                        <p class="text-xs font-bold dark:text-white" data-i18n="emp2Name">محمد البخيتي</p>
-                                        <p class="text-[10px] text-slate-400" data-i18n="emp2Role">مدير مالي</p>
-                                    </div>
-                                    <span class="font-mono font-bold text-sm dark:text-slate-200">32,000 SAR</span>
-                                </div>
-                                <div class="flex justify-between items-center bg-white dark:bg-slate-700 p-3 rounded-lg border border-slate-100 dark:border-slate-600 shadow-sm">
-                                    <div>
-                                        <p class="text-xs font-bold dark:text-white" data-i18n="emp3Name">أيمن المغربي</p>
-                                        <p class="text-[10px] text-slate-400" data-i18n="emp3Role">مدير حوكمة</p>
-                                    </div>
-                                    <span class="font-mono font-bold text-sm dark:text-slate-200">28,000 SAR</span>
-                                </div>
-                            </div>
-                            <div class="mt-4 pt-3 border-t flex justify-between font-bold text-sm dark:text-white">
-                                <span data-i18n="payTotal">الإجمالي المستحق</span>
-                                <span class="font-en text-blue-600">95,000 SAR</span>
-                            </div>
+                    <a href="gl_journal.html" class="module-card p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 text-center group cursor-pointer">
+                        <div class="w-12 h-12 mx-auto bg-blue-50 dark:bg-blue-900/20 text-blue-600 rounded-full flex items-center justify-center text-xl mb-3 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                            <i class="fa-solid fa-book"></i>
                         </div>
+                        <h4 class="font-bold text-sm text-slate-800 dark:text-white">القيود اليومية</h4>
+                        <p class="text-[10px] text-slate-400 mt-1">General Ledger</p>
+                    </a>
 
-                        <!-- Board & Committees Fees (Policy Based) -->
-                        <div class="bg-slate-50 dark:bg-slate-700/30 p-5 rounded-2xl border border-slate-200 dark:border-slate-600">
-                            <div class="flex justify-between items-center mb-4">
-                                <h3 class="font-bold text-sm text-slate-700 dark:text-white flex items-center gap-2">
-                                    <i class="fa-solid fa-crown text-yellow-500"></i> <span data-i18n="payGovTitle">مكافآت المجلس واللجان (مستحق)</span>
-                                </h3>
-                                <button class="text-xs bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 px-3 py-1 rounded hover:bg-slate-100 dark:hover:bg-slate-600 dark:text-slate-300" data-i18n="btnSync">تحديث من المحاضر</button>
-                            </div>
-                            <div class="space-y-3">
-                                <div class="bg-white dark:bg-slate-700 p-3 rounded-lg border border-slate-100 dark:border-slate-600 text-xs">
-                                    <div class="flex justify-between mb-1">
-                                        <span class="font-bold text-slate-600 dark:text-slate-200" data-i18n="gov1Name">عبدالله الحواس (رئيس)</span>
-                                        <span class="font-mono font-bold dark:text-slate-200">2,000 SAR</span>
-                                    </div>
-                                    <p class="text-[9px] text-slate-400" data-i18n="gov1Desc">بدل حضور اجتماع مجلس إدارة (رقم 1)</p>
-                                </div>
-                                <div class="bg-white dark:bg-slate-700 p-3 rounded-lg border border-slate-100 dark:border-slate-600 text-xs">
-                                    <div class="flex justify-between mb-1">
-                                        <span class="font-bold text-slate-600 dark:text-slate-200" data-i18n="gov2Name">هشام السحيباني (نائب)</span>
-                                        <span class="font-mono font-bold dark:text-slate-200">2,000 SAR</span>
-                                    </div>
-                                    <p class="text-[9px] text-slate-400" data-i18n="gov2Desc">بدل حضور اجتماع مجلس إدارة (رقم 1)</p>
-                                </div>
-                                <div class="bg-white dark:bg-slate-700 p-3 rounded-lg border border-slate-100 dark:border-slate-600 text-xs border-l-4 border-l-yellow-400">
-                                    <div class="flex justify-between mb-1">
-                                        <span class="font-bold text-slate-600 dark:text-slate-200" data-i18n="gov3Name">أيمن المغربي (أمين سر)</span>
-                                        <span class="font-mono font-bold dark:text-slate-200">1,000 SAR</span>
-                                    </div>
-                                    <p class="text-[9px] text-slate-400" data-i18n="gov3Desc">بدل أمانة سر (اجتماع مجلس)</p>
-                                </div>
-                            </div>
+                    <a href="ap_vendors.html" class="module-card p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 text-center group cursor-pointer">
+                        <div class="w-12 h-12 mx-auto bg-red-50 dark:bg-red-900/20 text-brandRed rounded-full flex items-center justify-center text-xl mb-3 group-hover:bg-brandRed group-hover:text-white transition-colors">
+                            <i class="fa-solid fa-truck-fast"></i>
                         </div>
+                        <h4 class="font-bold text-sm text-slate-800 dark:text-white">الموردين (AP)</h4>
+                        <p class="text-[10px] text-slate-400 mt-1">Payables</p>
+                    </a>
 
-                    </div>
+                    <a href="ar_invoices.html" class="module-card p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 text-center group cursor-pointer">
+                        <div class="w-12 h-12 mx-auto bg-green-50 dark:bg-green-900/20 text-moneyGreen rounded-full flex items-center justify-center text-xl mb-3 group-hover:bg-moneyGreen group-hover:text-white transition-colors">
+                            <i class="fa-solid fa-qrcode"></i>
+                        </div>
+                        <h4 class="font-bold text-sm text-slate-800 dark:text-white">الفوترة (ZATCA)</h4>
+                        <p class="text-[10px] text-slate-400 mt-1">Receivables</p>
+                    </a>
+
+                    <a href="inv_assets.html" class="module-card p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 text-center group cursor-pointer">
+                        <div class="w-12 h-12 mx-auto bg-purple-50 dark:bg-purple-900/20 text-purple-600 rounded-full flex items-center justify-center text-xl mb-3 group-hover:bg-purple-600 group-hover:text-white transition-colors">
+                            <i class="fa-solid fa-laptop-code"></i>
+                        </div>
+                        <h4 class="font-bold text-sm text-slate-800 dark:text-white">الأصول والعهد</h4>
+                        <p class="text-[10px] text-slate-400 mt-1">Fixed Assets</p>
+                    </a>
+
+                    <a href="rep_tax.html" class="module-card p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 text-center group cursor-pointer">
+                        <div class="w-12 h-12 mx-auto bg-orange-50 dark:bg-orange-900/20 text-alertOrange rounded-full flex items-center justify-center text-xl mb-3 group-hover:bg-alertOrange group-hover:text-white transition-colors">
+                            <i class="fa-solid fa-scale-balanced"></i>
+                        </div>
+                        <h4 class="font-bold text-sm text-slate-800 dark:text-white">الزكاة والضريبة</h4>
+                        <p class="text-[10px] text-slate-400 mt-1">Tax Returns</p>
+                    </a>
+
+                    <a href="gl_cost_centers.html" class="module-card p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 text-center group cursor-pointer">
+                        <div class="w-12 h-12 mx-auto bg-slate-100 dark:bg-slate-700 text-slate-600 rounded-full flex items-center justify-center text-xl mb-3 group-hover:bg-slate-600 group-hover:text-white transition-colors">
+                            <i class="fa-solid fa-layer-group"></i>
+                        </div>
+                        <h4 class="font-bold text-sm text-slate-800 dark:text-white">مراكز التكلفة</h4>
+                        <p class="text-[10px] text-slate-400 mt-1">Cost Analysis</p>
+                    </a>
+
                 </div>
+            </div>
 
-                <!-- Tab 3: Budget (الموازنة التقديرية) -->
-                <div id="tab-budget" class="tab-content hidden p-6">
-                    <div class="mb-6 flex justify-between items-center">
-                        <h3 class="font-bold text-lg dark:text-white" data-i18n="budTitle">مراقبة الموازنة (2026)</h3>
-                        <div class="text-xs text-slate-500" data-i18n="budRef">تم اعتماد الموازنة بقرار مجلس الإدارة رقم 251215</div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                
+                <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="font-bold text-slate-800 dark:text-white">ملخص أداء الموازنة (Q1)</h3>
+                        <a href="rep_budget.html" class="text-xs text-brandRed font-bold hover:underline">التفاصيل والمناقلات</a>
                     </div>
                     
                     <div class="space-y-6">
-                        <!-- Item 1 -->
                         <div>
                             <div class="flex justify-between text-xs mb-1 dark:text-slate-300">
-                                <span class="font-bold" data-i18n="budItem1">الرواتب والأجور</span>
-                                <span><span class="font-bold text-slate-700 dark:text-white">95,000</span> / 450,000 (<span data-i18n="quarterly">ربع سنوي</span>)</span>
+                                <span class="font-bold">الرواتب والأجور</span>
+                                <span class="num-font text-blue-600">21%</span>
                             </div>
-                            <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2.5 overflow-hidden">
-                                <div class="bg-blue-600 h-2.5 rounded-full" style="width: 21%"></div>
+                            <div class="w-full bg-slate-100 dark:bg-slate-700 rounded-full h-2">
+                                <div class="bg-blue-600 h-2 rounded-full" style="width: 21%"></div>
                             </div>
-                            <p class="text-[10px] text-slate-400 mt-1 text-left rtl:text-left ltr:text-right font-en">21% Used</p>
                         </div>
-
-                        <!-- Item 2 -->
                         <div>
                             <div class="flex justify-between text-xs mb-1 dark:text-slate-300">
-                                <span class="font-bold" data-i18n="budItem2">مصاريف التشغيل والمكاتب</span>
-                                <span><span class="font-bold text-slate-700 dark:text-white">45,000</span> / 100,000</span>
+                                <span class="font-bold">التسويق والإعلان</span>
+                                <span class="num-font text-red-500 font-bold">105% (تجاوز)</span>
                             </div>
-                            <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2.5 overflow-hidden">
-                                <div class="bg-yellow-500 h-2.5 rounded-full" style="width: 45%"></div>
+                            <div class="w-full bg-slate-100 dark:bg-slate-700 rounded-full h-2">
+                                <div class="bg-red-500 h-2 rounded-full" style="width: 100%"></div>
                             </div>
-                            <p class="text-[10px] text-slate-400 mt-1 text-left rtl:text-left ltr:text-right font-en">45% Used</p>
                         </div>
-
-                        <!-- Item 3 -->
                         <div>
                             <div class="flex justify-between text-xs mb-1 dark:text-slate-300">
-                                <span class="font-bold" data-i18n="budItem3">مكافآت الحوكمة (مجلس ولجان)</span>
-                                <span><span class="font-bold text-slate-700 dark:text-white">12,500</span> / 150,000 (<span data-i18n="annual">سنوي</span>)</span>
+                                <span class="font-bold">التشغيل والصيانة</span>
+                                <span class="num-font text-alertOrange">85% (تحذير)</span>
                             </div>
-                            <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2.5 overflow-hidden">
-                                <div class="bg-green-500 h-2.5 rounded-full" style="width: 8%"></div>
+                            <div class="w-full bg-slate-100 dark:bg-slate-700 rounded-full h-2">
+                                <div class="bg-alertOrange h-2 rounded-full" style="width: 85%"></div>
                             </div>
-                            <p class="text-[10px] text-slate-400 mt-1 text-left rtl:text-left ltr:text-right font-en">8% Used</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- Tab 4: Reports (التقارير) -->
-                <div id="tab-reports" class="tab-content hidden p-6">
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div class="p-6 border border-slate-200 dark:border-slate-700 rounded-2xl hover:border-brandBlue transition cursor-pointer text-center group bg-slate-50 dark:bg-slate-700/30">
-                            <i class="fa-solid fa-file-invoice-dollar text-4xl text-slate-400 group-hover:text-brandBlue mb-4"></i>
-                            <h4 class="font-bold text-sm mb-2 dark:text-white" data-i18n="rep1">قائمة المركز المالي</h4>
-                            <p class="text-xs text-slate-500 mb-4">Balance Sheet</p>
-                            <button class="text-xs bg-white dark:bg-slate-600 dark:text-white border border-slate-200 dark:border-slate-500 px-3 py-1 rounded shadow-sm" data-i18n="btnPDF">عرض PDF</button>
-                        </div>
-                        <div class="p-6 border border-slate-200 dark:border-slate-700 rounded-2xl hover:border-brandBlue transition cursor-pointer text-center group bg-slate-50 dark:bg-slate-700/30">
-                            <i class="fa-solid fa-chart-pie text-4xl text-slate-400 group-hover:text-brandBlue mb-4"></i>
-                            <h4 class="font-bold text-sm mb-2 dark:text-white" data-i18n="rep2">قائمة الدخل</h4>
-                            <p class="text-xs text-slate-500 mb-4">Income Statement</p>
-                            <button class="text-xs bg-white dark:bg-slate-600 dark:text-white border border-slate-200 dark:border-slate-500 px-3 py-1 rounded shadow-sm" data-i18n="btnPDF">عرض PDF</button>
-                        </div>
-                        <div class="p-6 border border-slate-200 dark:border-slate-700 rounded-2xl hover:border-brandBlue transition cursor-pointer text-center group bg-slate-50 dark:bg-slate-700/30">
-                            <i class="fa-solid fa-money-bill-trend-up text-4xl text-slate-400 group-hover:text-brandBlue mb-4"></i>
-                            <h4 class="font-bold text-sm mb-2 dark:text-white" data-i18n="rep3">التدفقات النقدية</h4>
-                            <p class="text-xs text-slate-500 mb-4">Cash Flow</p>
-                            <button class="text-xs bg-white dark:bg-slate-600 dark:text-white border border-slate-200 dark:border-slate-500 px-3 py-1 rounded shadow-sm" data-i18n="btnPDF">عرض PDF</button>
-                        </div>
+                <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
+                    <div class="p-4 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center">
+                        <h3 class="font-bold text-slate-800 dark:text-white">آخر الحركات (Live)</h3>
+                        <span class="text-[10px] text-green-600 animate-pulse font-bold">● متصل</span>
                     </div>
+                    <table class="w-full text-sm text-right">
+                        <thead class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 text-xs font-bold">
+                            <tr>
+                                <th class="p-3">المرجع</th>
+                                <th class="p-3 w-1/2">البيان</th>
+                                <th class="p-3">المبلغ</th>
+                                <th class="p-3 text-center">الحالة</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 dark:divide-slate-700 dark:text-slate-300">
+                            <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50">
+                                <td class="p-3 font-mono text-xs text-brandRed">INV-26-001</td>
+                                <td class="p-3 font-bold text-xs">فاتورة مبيعات (وزارة الصحة)</td>
+                                <td class="p-3 num-font text-moneyGreen font-bold">+150,000</td>
+                                <td class="p-3 text-center"><span class="bg-green-100 text-green-700 px-2 py-0.5 rounded text-[10px] font-bold">ZATCA OK</span></td>
+                            </tr>
+                            <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50">
+                                <td class="p-3 font-mono text-xs text-brandRed">PV-26-040</td>
+                                <td class="p-3 font-bold text-xs">سداد مورد (الفوزان)</td>
+                                <td class="p-3 num-font text-slate-600 font-bold">(24,500)</td>
+                                <td class="p-3 text-center"><span class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded text-[10px] font-bold">مرحل</span></td>
+                            </tr>
+                            <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50">
+                                <td class="p-3 font-mono text-xs text-brandRed">JV-0045</td>
+                                <td class="p-3 font-bold text-xs">إهلاك شهري (يناير)</td>
+                                <td class="p-3 num-font text-slate-400">12,500</td>
+                                <td class="p-3 text-center"><span class="bg-slate-100 text-slate-600 px-2 py-0.5 rounded text-[10px] font-bold">آلي</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
 
             </div>
@@ -323,360 +255,15 @@
         </main>
     </div>
 
-    <!-- New Journal Entry Modal -->
-    <div id="entryModal" class="fixed inset-0 bg-black/60 hidden z-50 flex items-center justify-center backdrop-blur-sm">
-        <div class="bg-white dark:bg-slate-800 w-full max-w-2xl rounded-2xl shadow-xl p-6">
-            <div class="flex justify-between items-center mb-4 border-b pb-2 dark:border-slate-700">
-                <h3 class="font-bold text-lg dark:text-white" data-i18n="modEntryTitle">إضافة قيد يومية جديد</h3>
-                <button onclick="document.getElementById('entryModal').classList.add('hidden')"><i class="fa-solid fa-xmark text-slate-400"></i></button>
-            </div>
-            
-            <div class="space-y-4">
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="modDate">التاريخ</label>
-                        <input type="date" class="w-full border dark:border-slate-600 rounded p-2 text-sm bg-slate-50 dark:bg-slate-700 dark:text-white">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="modRef">رقم المرجع</label>
-                        <input type="text" class="w-full border dark:border-slate-600 rounded p-2 text-sm bg-slate-50 dark:bg-slate-700 dark:text-white" value="JV-2026-0045">
-                    </div>
-                </div>
-                
-                <div class="border dark:border-slate-600 rounded-xl overflow-hidden">
-                    <table class="w-full text-xs text-right rtl:text-right ltr:text-left">
-                        <thead class="bg-slate-100 dark:bg-slate-700">
-                            <tr>
-                                <th class="p-2 w-1/2" data-i18n="modAcc">الحساب</th>
-                                <th class="p-2" data-i18n="colDr">مدين</th>
-                                <th class="p-2" data-i18n="colCr">دائن</th>
-                                <th class="p-2 text-center">x</th>
-                            </tr>
-                        </thead>
-                        <tbody id="entryLines" class="dark:text-white">
-                            <tr>
-                                <td class="p-2"><input type="text" class="w-full border dark:border-slate-600 rounded p-1 dark:bg-slate-700" placeholder="..."></td>
-                                <td class="p-2"><input type="number" class="w-full border dark:border-slate-600 rounded p-1 text-center dark:bg-slate-700" placeholder="0.00"></td>
-                                <td class="p-2"><input type="number" class="w-full border dark:border-slate-600 rounded p-1 text-center dark:bg-slate-700" placeholder="0.00"></td>
-                                <td class="p-2 text-center text-red-500 cursor-pointer"><i class="fa-solid fa-trash"></i></td>
-                            </tr>
-                            <tr>
-                                <td class="p-2"><input type="text" class="w-full border dark:border-slate-600 rounded p-1 dark:bg-slate-700" placeholder="..."></td>
-                                <td class="p-2"><input type="number" class="w-full border dark:border-slate-600 rounded p-1 text-center dark:bg-slate-700" placeholder="0.00"></td>
-                                <td class="p-2"><input type="number" class="w-full border dark:border-slate-600 rounded p-1 text-center dark:bg-slate-700" placeholder="0.00"></td>
-                                <td class="p-2 text-center text-red-500 cursor-pointer"><i class="fa-solid fa-trash"></i></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <div class="p-2 bg-slate-50 dark:bg-slate-700 text-center">
-                        <button class="text-xs text-brandBlue font-bold" data-i18n="btnAddLine">+ إضافة سطر</button>
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="modDesc">شرح القيد</label>
-                    <textarea class="w-full border dark:border-slate-600 rounded p-2 text-sm h-16 dark:bg-slate-700 dark:text-white" placeholder="..."></textarea>
-                </div>
-            </div>
-
-            <div class="mt-6 flex justify-end gap-3">
-                <button onclick="document.getElementById('entryModal').classList.add('hidden')" class="px-4 py-2 border dark:border-slate-600 rounded-lg text-xs font-bold hover:bg-slate-50 dark:hover:bg-slate-700 dark:text-white" data-i18n="cancel">إلغاء</button>
-                <button onclick="alert('Saved'); document.getElementById('entryModal').classList.add('hidden')" class="px-6 py-2 bg-brandBlue text-white rounded-lg text-xs font-bold hover:bg-blue-700" data-i18n="btnPost">حفظ وترحيل</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- AndroBot Widget (AI Assistant) -->
-    <div id="andro-bot-container" class="fixed bottom-6 left-6 z-50 flex flex-col items-start gap-4 font-sans" dir="rtl">
-        <!-- Chat Window -->
-        <div id="chat-window" class="hidden bg-white dark:bg-slate-800 w-80 md:w-96 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden flex flex-col chat-window-anim" style="height: 500px; max-height: 70vh;">
-            <div class="bg-brandBlue p-4 flex justify-between items-center text-white">
-                <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center"><i class="fa-solid fa-robot"></i></div>
-                    <div><h4 class="font-bold text-sm">AndroBot</h4><p class="text-[10px] text-white/80">مساعد الحوكمة الذكي</p></div>
-                </div>
-                <button id="close-chat-btn" class="text-white/80 hover:text-white transition"><i class="fa-solid fa-times"></i></button>
-            </div>
-            <div id="chat-body" class="flex-1 p-4 bg-slate-50 dark:bg-slate-900/50 overflow-y-auto custom-scroll space-y-3 flex flex-col">
-                <div class="chat-bubble bot">مرحباً بك في الشؤون المالية 👋<br>أنا هنا لمساعدتك في استفسارات السيولة، المصروفات، أو القيود.</div>
-                <div class="flex flex-wrap gap-2 mt-2" id="suggestions">
-                    <button class="suggestion-btn text-xs bg-white border border-brandBlue/30 text-brandBlue px-3 py-1.5 rounded-full" data-q="كم الكاش المتوفر؟">كم الكاش المتوفر؟</button>
-                    <button class="suggestion-btn text-xs bg-white border border-brandBlue/30 text-brandBlue px-3 py-1.5 rounded-full" data-q="مصروفات الشهر">مصروفات الشهر</button>
-                </div>
-            </div>
-            <div class="p-3 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 flex gap-2">
-                <input type="text" id="chat-input" placeholder="اكتب استفسارك..." class="flex-1 bg-slate-100 dark:bg-slate-900 border-none rounded-lg text-sm px-4 py-2 focus:ring-2 focus:ring-brandBlue outline-none dark:text-white">
-                <button id="send-btn" class="w-10 h-10 rounded-lg bg-brandBlue text-white hover:bg-blue-700 transition flex items-center justify-center"><i class="fa-solid fa-paper-plane"></i></button>
-            </div>
-        </div>
-        <!-- Floating Button -->
-        <button id="chat-fab" class="w-14 h-14 bg-brandBlue hover:bg-blue-700 text-white rounded-full shadow-lg shadow-blue-600/30 flex items-center justify-center text-2xl transition-all transform hover:scale-110 active:scale-95 animate-bounce-slow">
-            <i class="fa-solid fa-comment-dots"></i>
-            <span class="absolute top-0 right-0 w-4 h-4 bg-brandRed rounded-full border-2 border-white dark:border-slate-900"></span>
-        </button>
-    </div>
-
     <script src="layout.js"></script>
     <script src="bot.js"></script>
-
+    
     <script>
-        // --- Translation Dictionary ---
-        const t = {
-            ar: {
-                pageTitle: "AndroGov | الشؤون المالية",
-                kpiCash: "السيولة النقدية (الكاش)",
-                curr: "SAR",
-                kpiCashSub: "تغطية تشغيلية: 6 أشهر",
-                kpiExp: "مصروفات الشهر (يناير)",
-                kpiExpSub: "مقارنة بالموازنة: -5% (توفير)",
-                kpiRec: "مستحقات (تحت التحصيل)",
-                kpiRecSub: "3 فواتير مستحقة السداد",
-                kpiProfit: "صافي الربح (YTD)",
-                kpiProfitSub: "هامش الربح: 18%",
-                tabJournal: "دفتر القيود اليومية",
-                tabPayroll: "الرواتب والمكافآت",
-                tabBudget: "الموازنة التقديرية",
-                tabReports: "التقارير المالية",
-                btnNewEntry: "قيد جديد",
-                btnNewInv: "فاتورة",
-                plhSearch: "بحث برقم القيد أو الوصف...",
-                fy26: "السنة المالية 2026",
-                fy25: "السنة المالية 2025",
-                colID: "رقم القيد",
-                colDate: "التاريخ",
-                colDesc: "الوصف / البيان",
-                colDr: "مدين (Debit)",
-                colCr: "دائن (Credit)",
-                colStatus: "الحالة",
-                posted: "مرحل",
-                payEmpTitle: "مسير رواتب الموظفين (يناير 2026)",
-                btnPayApprove: "اعتماد وصرف",
-                emp1Name: "منصور اليامي",
-                emp1Role: "مدير موارد بشرية",
-                emp2Name: "محمد البخيتي",
-                emp2Role: "مدير مالي",
-                emp3Name: "أيمن المغربي",
-                emp3Role: "مدير حوكمة",
-                payTotal: "الإجمالي المستحق",
-                payGovTitle: "مكافآت المجلس واللجان (مستحق)",
-                btnSync: "تحديث من المحاضر",
-                gov1Name: "عبدالله الحواس (رئيس)",
-                gov1Desc: "بدل حضور اجتماع مجلس إدارة (رقم 1)",
-                gov2Name: "هشام السحيباني (نائب)",
-                gov2Desc: "بدل حضور اجتماع مجلس إدارة (رقم 1)",
-                gov3Name: "أيمن المغربي (أمين سر)",
-                gov3Desc: "بدل أمانة سر (اجتماع مجلس)",
-                budTitle: "مراقبة الموازنة (2026)",
-                budRef: "تم اعتماد الموازنة بقرار مجلس الإدارة رقم 251215",
-                budItem1: "الرواتب والأجور",
-                quarterly: "ربع سنوي",
-                budItem2: "مصاريف التشغيل والمكاتب",
-                budItem3: "مكافآت الحوكمة (مجلس ولجان)",
-                annual: "سنوي",
-                rep1: "قائمة المركز المالي",
-                btnPDF: "عرض PDF",
-                rep2: "قائمة الدخل",
-                rep3: "التدفقات النقدية",
-                modEntryTitle: "إضافة قيد يومية جديد",
-                modDate: "التاريخ",
-                modRef: "رقم المرجع",
-                modAcc: "الحساب",
-                btnAddLine: "+ إضافة سطر",
-                modDesc: "شرح القيد",
-                cancel: "إلغاء",
-                btnPost: "حفظ وترحيل",
-                j1Desc: "سداد فاتورة كهرباء المقر الرئيسي",
-                j2Desc: "شراء أجهزة حاسب آلي (أصول)",
-                j3Desc: "إثبات رواتب شهر ديسمبر 2025",
-                j4Desc: "تحصيل دفعة مشروع وزارة الصحة"
-            },
-            en: {
-                pageTitle: "AndroGov | Finance",
-                kpiCash: "Cash Balance",
-                curr: "SAR",
-                kpiCashSub: "Operational Coverage: 6 Months",
-                kpiExp: "Monthly Expenses (Jan)",
-                kpiExpSub: "Vs Budget: -5% (Saving)",
-                kpiRec: "Receivables (AR)",
-                kpiRecSub: "3 Invoices Due",
-                kpiProfit: "Net Profit (YTD)",
-                kpiProfitSub: "Profit Margin: 18%",
-                tabJournal: "General Journal",
-                tabPayroll: "Payroll & Rewards",
-                tabBudget: "Budgeting",
-                tabReports: "Financial Reports",
-                btnNewEntry: "New Entry",
-                btnNewInv: "Invoice",
-                plhSearch: "Search Entry ID or Desc...",
-                fy26: "Fiscal Year 2026",
-                fy25: "Fiscal Year 2025",
-                colID: "Entry #",
-                colDate: "Date",
-                colDesc: "Description",
-                colDr: "Debit",
-                colCr: "Credit",
-                colStatus: "Status",
-                posted: "Posted",
-                payEmpTitle: "Employee Payroll (Jan 2026)",
-                btnPayApprove: "Approve & Pay",
-                emp1Name: "Mansour Al-Yami",
-                emp1Role: "HR Manager",
-                emp2Name: "Mohammed Al-Bukhaiti",
-                emp2Role: "CFO",
-                emp3Name: "Ayman Almaghrabi",
-                emp3Role: "Governance Manager",
-                payTotal: "Total Due",
-                payGovTitle: "Board & Committee Fees (Due)",
-                btnSync: "Sync from Minutes",
-                gov1Name: "Abdullah Al-Hawas (Chair)",
-                gov1Desc: "Board Meeting Allowance (#1)",
-                gov2Name: "Hesham Al-Suhaibani (Vice)",
-                gov2Desc: "Board Meeting Allowance (#1)",
-                gov3Name: "Ayman Almaghrabi (Sec)",
-                gov3Desc: "Secretary Fee (Board Mtg)",
-                budTitle: "Budget Monitoring (2026)",
-                budRef: "Budget Approved by Board Res. 251215",
-                budItem1: "Salaries & Wages",
-                quarterly: "Quarterly",
-                budItem2: "Opex & Office Expenses",
-                budItem3: "Governance Fees (Board/Comm)",
-                annual: "Annual",
-                rep1: "Balance Sheet",
-                btnPDF: "View PDF",
-                rep2: "Income Statement",
-                rep3: "Cash Flow",
-                modEntryTitle: "New Journal Entry",
-                modDate: "Date",
-                modRef: "Reference No",
-                modAcc: "Account",
-                btnAddLine: "+ Add Line",
-                modDesc: "Entry Description",
-                cancel: "Cancel",
-                btnPost: "Save & Post",
-                j1Desc: "HQ Electricity Bill Payment",
-                j2Desc: "IT Assets Purchase (CAPEX)",
-                j3Desc: "Dec 2025 Salaries Accrual",
-                j4Desc: "MOH Project Payment Collection"
-            }
-        };
-
-        // Mock Journal Data
-        const journalEntries = [
-            { id: "JV-0044", date: "2026-01-08", debit: 4500, credit: 4500 },
-            { id: "JV-0043", date: "2026-01-07", debit: 12500, credit: 12500 },
-            { id: "JV-0042", date: "2026-01-05", debit: 95000, credit: 95000 },
-            { id: "JV-0041", date: "2026-01-01", debit: 150000, credit: 150000 }
-        ];
-
-        document.addEventListener('DOMContentLoaded', () => {
-            updatePageLanguage();
-        });
-
-        window.updatePageLanguage = function() {
-            const lang = localStorage.getItem('lang') || 'ar';
-            const dict = t[lang];
-            
-            document.documentElement.lang = lang;
-            document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
-
-            // Update Text
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                const key = el.getAttribute('data-i18n');
-                if(dict[key]) el.innerText = dict[key];
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function () {
+                navigator.serviceWorker.register('service-worker.js').catch(console.warn);
             });
-            // Placeholders
-            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
-                const key = el.getAttribute('data-i18n-placeholder');
-                if(dict[key]) el.placeholder = dict[key];
-            });
-
-            renderJournal();
         }
-
-        // --- Tab Switching ---
-        window.switchTab = function(target) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            document.querySelectorAll('.tab-btn').forEach(el => {
-                el.classList.remove('bg-white', 'text-brandBlue', 'shadow-sm');
-                el.classList.add('text-slate-500');
-            });
-            document.getElementById(`tab-${target}`).classList.remove('hidden');
-            document.getElementById(`btn-${target}`).classList.add('bg-white', 'text-brandBlue', 'shadow-sm');
-            document.getElementById(`btn-${target}`).classList.remove('text-slate-500', 'border-transparent');
-        }
-
-        // --- Render Functions ---
-        window.renderJournal = function() {
-            const lang = localStorage.getItem('lang') || 'ar';
-            const dict = t[lang];
-            const tbody = document.getElementById('journalTable');
-            
-            // Map descriptions based on index (simulated)
-            const descs = [dict.j1Desc, dict.j2Desc, dict.j3Desc, dict.j4Desc];
-
-            tbody.innerHTML = journalEntries.map((e, i) => `
-                <tr class="ledger-row hover:bg-slate-100 dark:hover:bg-slate-700/50 transition">
-                    <td class="p-4 font-mono text-xs font-bold text-brandBlue">${e.id}</td>
-                    <td class="p-4 font-en text-xs text-slate-500">${e.date}</td>
-                    <td class="p-4 font-bold text-xs text-slate-700 dark:text-slate-200 text-left rtl:text-right ltr:text-left">${descs[i]}</td>
-                    <td class="p-4 font-mono text-xs font-bold text-slate-600 dark:text-slate-300 text-left rtl:text-left ltr:text-right">${e.debit.toLocaleString()}</td>
-                    <td class="p-4 font-mono text-xs font-bold text-slate-600 dark:text-slate-300 text-left rtl:text-left ltr:text-right">${e.credit.toLocaleString()}</td>
-                    <td class="p-4 text-center"><span class="bg-green-100 text-green-700 px-2 py-0.5 rounded text-[10px] font-bold border border-green-200">${dict.posted}</span></td>
-                </tr>
-            `).join('');
-        }
-
-        // --- Modals ---
-        window.openEntryModal = function() {
-            document.getElementById('entryModal').classList.remove('hidden');
-        }
-        window.openInvoiceModal = function() {
-            const lang = localStorage.getItem('lang') || 'ar';
-            alert(lang === 'ar' ? 'سيتم فتح نموذج إنشاء فاتورة' : 'Opening Invoice Generator...');
-        }
-
-        // --- Bot Override for Finance Context ---
-        const originalGetAIResponse = window.getAIResponse; 
-        
-        window.getAIResponse = function(query, isArabic) {
-            const q = query.toLowerCase();
-            
-            if (q.includes('cash') || q.includes('balance') || q.includes('كاش') || q.includes('سيولة')) {
-                return isArabic 
-                    ? `رصيد السيولة الحالي هو <b>2,450,000 ريال</b> (يغطي 6 أشهر تشغيل).`
-                    : `Current Cash Balance is <b>2,450,000 SAR</b> (6 months runway).`;
-            }
-            
-            if (q.includes('expense') || q.includes('spending') || q.includes('مصروفات') || q.includes('صرف')) {
-                return isArabic
-                    ? `مصروفات يناير: <b>320,000 ريال</b> (أقل من الموازنة بـ 5%).`
-                    : `Jan Expenses: <b>320,000 SAR</b> (5% below budget).`;
-            }
-
-            if (q.includes('profit') || q.includes('net') || q.includes('ربح') || q.includes('ارباح')) {
-                return isArabic
-                    ? `صافي الربح حتى تاريخه: <b>1,100,000 ريال</b> (هامش 18%).`
-                    : `YTD Net Profit: <b>1,100,000 SAR</b> (18% Margin).`;
-            }
-
-            // Fallback default
-            return isArabic
-                ? `يمكنني إجابتك عن: <b>السيولة</b>، <b>المصروفات</b>، أو <b>الأرباح</b>.`
-                : `I can answer about: <b>Cash Balance</b>, <b>Expenses</b>, or <b>Profits</b>.`;
-        }
-
     </script>
-      
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', function () {
-      navigator.serviceWorker
-        .register('service-worker.js')
-        .catch(function (err) {
-          console.warn('Service worker registration failed:', err);
-        });
-    });
-  }
-</script>
 </body>
 </html>
