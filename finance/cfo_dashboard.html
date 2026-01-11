@@ -14,7 +14,12 @@
             darkMode: 'class',
             theme: {
                 extend: {
-                    colors: { brandRed: '#FB4747', brandDark: '#0F172A', brandBlue: '#4267B2' },
+                    colors: { 
+                        brandRed: '#FB4747',  // هوية الشركة (أحمر)
+                        moneyGreen: '#10B981', // للأرباح والتدفقات الداخلة (أخضر)
+                        moneyRed: '#EF4444',   // للخسائر والمصروفات (أحمر خطر)
+                        brandDark: '#0F172A' 
+                    },
                     fontFamily: { sans: ['Tajawal', 'Inter', 'sans-serif'], en: ['Inter', 'sans-serif'] }
                 }
             }
@@ -48,31 +53,33 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 relative overflow-hidden">
-                    <div class="absolute top-0 right-0 w-1 h-full bg-brandRed opacity-20"></div>
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
                     <div class="flex justify-between items-start mb-4">
-                        <div class="p-2 bg-red-50 dark:bg-red-900/20 rounded-lg text-brandRed"><i class="fa-solid fa-wallet text-xl"></i></div>
+                        <div class="p-2 bg-green-50 dark:bg-green-900/20 rounded-lg text-moneyGreen"><i class="fa-solid fa-wallet text-xl"></i></div>
                         <span class="text-[10px] bg-green-100 text-green-700 px-2 py-1 rounded-full font-bold" dir="ltr">+12%</span>
                     </div>
                     <h3 class="text-3xl font-bold text-slate-900 dark:text-white font-en mb-1">2.45M</h3>
                     <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="kpiCash">السيولة النقدية (SAR)</p>
                 </div>
+
                 <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
                     <div class="flex justify-between items-start mb-4">
-                        <div class="p-2 bg-slate-100 dark:bg-slate-700 rounded-lg text-slate-500"><i class="fa-solid fa-arrow-trend-down text-xl"></i></div>
+                        <div class="p-2 bg-red-50 dark:bg-red-900/20 rounded-lg text-moneyRed"><i class="fa-solid fa-arrow-trend-down text-xl"></i></div>
                         <span class="text-[10px] bg-green-100 text-green-700 px-2 py-1 rounded-full font-bold" dir="ltr">-5%</span>
                     </div>
                     <h3 class="text-3xl font-bold text-slate-900 dark:text-white font-en mb-1">320k</h3>
                     <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="kpiExp">مصروفات يناير</p>
                 </div>
+
                 <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
                     <div class="flex justify-between items-start mb-4">
-                        <div class="p-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg text-brandBlue"><i class="fa-solid fa-chart-pie text-xl"></i></div>
+                        <div class="p-2 bg-green-50 dark:bg-green-900/20 rounded-lg text-moneyGreen"><i class="fa-solid fa-chart-pie text-xl"></i></div>
                         <span class="text-[10px] bg-slate-100 text-slate-500 px-2 py-1 rounded-full font-bold">YTD</span>
                     </div>
-                    <h3 class="text-3xl font-bold text-slate-900 dark:text-white font-en mb-1">1.1M</h3>
+                    <h3 class="text-3xl font-bold text-moneyGreen font-en mb-1">1.1M</h3>
                     <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="kpiProfit">صافي الربح</p>
                 </div>
+
                 <div onclick="window.location.href='approvals.html'" class="bg-brandRed text-white p-6 rounded-2xl shadow-lg shadow-red-500/30 relative overflow-hidden group cursor-pointer hover:bg-red-700 transition">
                     <div class="absolute -right-6 -bottom-6 text-9xl opacity-10 rotate-12"><i class="fa-solid fa-stamp"></i></div>
                     <div class="relative z-10">
@@ -130,13 +137,13 @@
                         </thead>
                         <tbody class="divide-y divide-slate-100 dark:divide-slate-700 text-slate-700 dark:text-slate-300">
                             <tr>
-                                <td class="p-4 font-mono text-xs text-brandBlue">JV-2026-008</td>
+                                <td class="p-4 font-mono text-xs text-brandRed">JV-2026-008</td>
                                 <td class="p-4 font-bold" data-i18n="tr1">سداد فاتورة كهرباء المقر الرئيسي</td>
                                 <td class="p-4 font-mono font-bold">4,500 SAR</td>
                                 <td class="p-4"><span class="bg-green-100 text-green-700 px-2 py-1 rounded text-[10px] border border-green-200" data-i18n="posted">مرحل</span></td>
                             </tr>
                             <tr>
-                                <td class="p-4 font-mono text-xs text-brandBlue">JV-2026-009</td>
+                                <td class="p-4 font-mono text-xs text-brandRed">JV-2026-009</td>
                                 <td class="p-4 font-bold" data-i18n="tr2">شراء أجهزة لابتوب (أصول)</td>
                                 <td class="p-4 font-mono font-bold">12,400 SAR</td>
                                 <td class="p-4"><span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded text-[10px] border border-yellow-200" data-i18n="draft">مسودة</span></td>
@@ -206,10 +213,10 @@
 
         // --- 2. تهيئة الصفحة ---
         document.addEventListener('DOMContentLoaded', () => {
-            applyLanguage(); // تطبيق اللغة فور التحميل
+            applyLanguage();
             initCharts();
             
-            // مراقبة تغيير اللغة من layout.js
+            // مراقبة تغيير اللغة
             window.addEventListener('storage', (e) => {
                 if (e.key === 'lang') location.reload(); 
             });
@@ -231,7 +238,6 @@
             const btn = document.querySelector('button[onclick="downloadReport()"]');
             const originalText = btn.innerHTML;
             
-            // محاكاة التحميل
             btn.disabled = true;
             btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin text-brandRed"></i> <span class="text-xs ml-2">${translations[lang].dlMsg}</span>`;
             
@@ -242,7 +248,7 @@
             }, 1500);
         };
 
-        // --- 4. الرسوم البيانية ---
+        // --- 4. الرسوم البيانية (Charts) ---
         function initCharts() {
             const lang = localStorage.getItem('lang') || 'ar';
             
@@ -254,13 +260,15 @@
                     datasets: [{
                         label: lang === 'ar' ? 'داخل' : 'Inflow',
                         data: [120, 190, 300, 500, 200, 300],
-                        borderColor: '#FB4747', // Brand Red
-                        backgroundColor: '#FB4747',
+                        // الأخضر للدخل (إيجابي)
+                        borderColor: '#10B981', 
+                        backgroundColor: '#10B981',
                         tension: 0.4
                     }, {
                         label: lang === 'ar' ? 'خارج' : 'Outflow',
                         data: [100, 120, 150, 180, 150, 170],
-                        borderColor: '#94a3b8',
+                        // الأحمر للمصروفات (سلبي)
+                        borderColor: '#EF4444', 
                         tension: 0.4,
                         borderDash: [5, 5]
                     }]
@@ -275,7 +283,8 @@
                     labels: ['Used', 'Remaining'],
                     datasets: [{
                         data: [65, 35],
-                        backgroundColor: ['#FB4747', '#E2E8F0'], // Brand Red
+                        // المستخدم (أحمر لأنه مصروف)، المتبقي (رمادي)
+                        backgroundColor: ['#FB4747', '#E2E8F0'], 
                         borderWidth: 0
                     }]
                 },
