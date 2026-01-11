@@ -1,7 +1,6 @@
 /**
- * AndroGov HR & Admin Layout Engine v2.0 (Full Features)
- * - User: Mansour Al-Yami (CAO).
- * - Features: Notifications, Mandatory Circulars, Merged Menu.
+ * AndroGov HR Layout Engine v2.1 (Perfect Layout Fix)
+ * - Fixes the margin gap issue when switching languages.
  */
 
 (function() {
@@ -19,7 +18,7 @@
         theme: localStorage.getItem('theme') || 'light'
     };
 
-    // --- 2. التنبيهات (Notifications Data) ---
+    // --- 2. التنبيهات ---
     const notifications = [
         {
             titleAr: "تنبيه مقيم", titleEn: "Muqeem Alert",
@@ -38,44 +37,14 @@
         }
     ];
 
-    // --- 3. التعميم الإلزامي (Mandatory Circular) ---
-    // هذا يظهر تلقائياً لمنصور عند الدخول
-    const pendingCircular = {
-        id: "CIR-HR-005", 
-        titleAr: "تفعيل نظام البصمة الجديد",
-        titleEn: "New Biometric Attendance System",
-        contentAr: `
-            <div class="space-y-3">
-                <p><b>إلى جميع مدراء الإدارات والموظفين،</b></p>
-                <p>إشارة إلى اللائحة الداخلية، نود إفادتكم بأنه سيتم اعتماد <b>البصمة</b> كوسيلة وحيدة لإثبات الحضور والانصراف ابتداءً من الأحد القادم.</p>
-                <ul class="list-disc list-inside text-xs text-slate-600">
-                    <li>التأخير أكثر من 15 دقيقة سيتم خصمه آلياً.</li>
-                    <li>عدم تسجيل الخروج يعتبر غياباً لليوم كاملاً.</li>
-                </ul>
-                <div class="p-3 bg-red-50 text-red-700 rounded border border-red-100 font-bold text-xs mt-2">
-                    <i class="fa-solid fa-circle-exclamation"></i> يرجى التأكد من تسجيل بصمتك لدى IT قبل نهاية الأسبوع.
-                </div>
-            </div>
-        `,
-        contentEn: `
-            <div class="space-y-3">
-                <p><b>To All Staff,</b></p>
-                <p>Biometric fingerprinting will be the only method for attendance starting next Sunday.</p>
-                <div class="p-3 bg-red-50 text-red-700 rounded border border-red-100 font-bold text-xs mt-2">
-                    <i class="fa-solid fa-circle-exclamation"></i> Please register your fingerprint with IT by Thursday.
-                </div>
-            </div>
-        `
-    };
-
-    // --- 4. هيكلة القائمة المدمجة ---
+    // --- 3. هيكلة القائمة ---
     const menuStructure = [
         {
             section: 'main',
             items: [
                 { key: 'dash', icon: 'fa-chart-pie', link: 'hr_dashboard.html' },
                 { key: 'approvals', icon: 'fa-inbox', link: 'hr_approvals.html' },
-                { key: 'chat', icon: 'fa-comments', link: 'internal_chat.html' } // ✅ تمت إضافة الشات
+                { key: 'chat', icon: 'fa-comments', link: 'internal_chat.html' }
             ]
         },
         {
@@ -113,7 +82,6 @@
         }
     ];
 
-    // --- 5. القاموس ---
     const t = {
         ar: {
             sysName: "AndroGov", deptName: "الموارد البشرية والإدارية", logout: "خروج",
@@ -128,8 +96,7 @@
                 attendance: "الحضور والجزاءات", leaves: "الإجازات", payroll: "مسير الرواتب", trips: "الانتدابات",
                 assets: "سجل العهد", logistics: "الخدمات والصيانة", purchases: "المشتريات التشغيلية", partners: "الشركاء والعلاقات",
                 govt: "المنصة الحكومية", recruitment: "التوظيف"
-            },
-            circ: { title: "تعميم إداري هام", btn: "اطلعت وسألتزم" }
+            }
         },
         en: {
             sysName: "AndroGov", deptName: "HR & Admin Dept", logout: "Logout",
@@ -141,23 +108,16 @@
                 attendance: "Attendance", leaves: "Leaves", payroll: "Payroll", trips: "Business Trips",
                 assets: "Assets", logistics: "Logistics", purchases: "Purchases", partners: "Partnerships",
                 govt: "Govt Portal", recruitment: "Recruitment"
-            },
-            circ: { title: "Important Circular", btn: "I Acknowledge" }
+            }
         }
     };
 
-    // --- 6. التشغيل (Init) ---
     function init() {
         applySettings();
         renderSidebar();
         renderHeader();
-        
-        // التحقق من التعميم
-        setTimeout(checkMandatoryCirculars, 800);
-        
         document.body.style.opacity = '1';
         
-        // إغلاق القوائم عند النقر خارجها
         document.addEventListener('click', function(event) {
             const dropdown = document.getElementById('notifDropdown');
             const btn = document.getElementById('notifBtn');
@@ -167,13 +127,23 @@
         });
     }
 
+    // --- الوظيفة المصححة لإصلاح الهوامش ---
     function applySettings() {
         const html = document.documentElement;
         html.lang = config.lang;
         html.dir = config.lang === 'ar' ? 'rtl' : 'ltr';
         if (config.theme === 'dark') html.classList.add('dark');
+        
+        // هنا التصحيح: إزالة الهوامش القديمة تماماً وإضافة الجديد بناءً على اللغة
         const main = document.querySelector('.main-content-wrapper');
-        if (main) main.classList.add(config.lang === 'ar' ? 'md:mr-72' : 'md:ml-72');
+        if (main) {
+            main.classList.remove('md:mr-72', 'md:ml-72'); // تنظيف
+            if (config.lang === 'ar') {
+                main.classList.add('md:mr-72'); // هامش يمين للعربي
+            } else {
+                main.classList.add('md:ml-72'); // هامش يسار للإنجليزي
+            }
+        }
     }
 
     function renderSidebar() {
@@ -193,8 +163,11 @@
             });
         });
 
+        // تصحيح مكان القائمة بناءً على اللغة
+        const sidePos = isRtl ? 'right-0 border-l' : 'left-0 border-r';
+
         container.innerHTML = `
-        <aside class="fixed top-0 ${isRtl ? 'right-0 border-l' : 'left-0 border-r'} z-50 h-screen w-72 flex-col hidden md:flex bg-white dark:bg-[#0F172A] border-slate-200 dark:border-slate-800">
+        <aside class="fixed top-0 ${sidePos} z-50 h-screen w-72 flex-col hidden md:flex bg-white dark:bg-[#0F172A] border-slate-200 dark:border-slate-800 transition-all duration-300">
             <div class="h-20 flex items-center px-6 border-b border-slate-100 dark:border-slate-800">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 rounded-xl bg-red-50 text-brandRed flex items-center justify-center text-xl shadow-sm"><i class="fa-solid fa-user-tie"></i></div>
@@ -235,7 +208,6 @@
                     <div id="notifDropdown" class="hidden absolute top-12 ${isRtl ? 'left-0' : 'right-0'} w-80 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 overflow-hidden z-50 transform origin-top transition-all duration-200">
                         <div class="p-3 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-900/50"><span class="text-xs font-bold text-slate-800 dark:text-white">${dict.notifTitle}</span><button class="text-[10px] text-brandRed hover:underline font-bold">${dict.markRead}</button></div>
                         <div class="max-h-64 overflow-y-auto custom-scroll">${notifItems}</div>
-                        <div class="p-2 text-center border-t border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50"><a href="#" class="text-[10px] text-slate-500 hover:text-brandRed">عرض الكل</a></div>
                     </div>
                 </div>
                 <button onclick="window.changeLang()" class="w-9 h-9 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-bold text-slate-600 dark:text-white transition">${config.lang === 'ar' ? 'EN' : 'عربي'}</button>
@@ -246,59 +218,10 @@
         </header>`;
     }
 
-    // --- 7. دوال النظام ---
-    window.toggleNotif = function() { 
-        const d = document.getElementById('notifDropdown');
-        if(d) d.classList.toggle('hidden'); 
-    };
-    
+    window.toggleNotif = function() { document.getElementById('notifDropdown').classList.toggle('hidden'); };
     window.changeTheme = () => { localStorage.setItem('theme', config.theme === 'dark' ? 'light' : 'dark'); location.reload(); };
     window.changeLang = () => { localStorage.setItem('lang', config.lang === 'ar' ? 'en' : 'ar'); location.reload(); };
     window.doLogout = () => { if(confirm('Log out?')) window.location.href = 'https://androgov-sa.github.io/AIT/login.html'; };
-
-    window.checkMandatoryCirculars = function() {
-        const ackKey = `ack_${pendingCircular.id}`;
-        if (localStorage.getItem(ackKey)) return;
-
-        const dict = t[config.lang];
-        const modalHTML = `
-        <div id="circularModal" class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/90 backdrop-blur-sm p-4 transition-opacity duration-300">
-            <div class="bg-white dark:bg-slate-800 w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden border-t-8 border-brandRed animate-bounce-slow">
-                <div class="p-6 border-b border-slate-100 dark:border-slate-700 flex items-center gap-4">
-                    <div class="w-12 h-12 rounded-full bg-red-50 text-brandRed flex items-center justify-center text-2xl animate-pulse">
-                        <i class="fa-solid fa-bell"></i>
-                    </div>
-                    <div>
-                        <h2 class="text-xl font-bold text-slate-900 dark:text-white">${config.lang === 'ar' ? pendingCircular.titleAr : pendingCircular.titleEn}</h2>
-                        <p class="text-xs text-slate-500 font-bold uppercase tracking-widest mt-1">${dict.circ.title}</p>
-                    </div>
-                </div>
-                <div class="p-8 text-sm leading-relaxed text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-900/50">
-                    ${config.lang === 'ar' ? pendingCircular.contentAr : pendingCircular.contentEn}
-                </div>
-                <div class="p-6 bg-white dark:bg-slate-800 flex justify-end">
-                    <button onclick="acknowledgeCircular('${pendingCircular.id}')" class="w-full bg-brandRed hover:bg-red-700 text-white py-3 rounded-xl font-bold shadow-lg transition flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-check"></i> <span>${dict.circ.btn}</span>
-                    </button>
-                </div>
-            </div>
-        </div>`;
-        document.body.insertAdjacentHTML('beforeend', modalHTML);
-        document.body.style.overflow = 'hidden';
-    }
-
-    window.acknowledgeCircular = function(id) {
-        localStorage.setItem(`ack_${id}`, 'true');
-        const modal = document.getElementById('circularModal');
-        if(modal) {
-            modal.style.transition = "opacity 0.3s";
-            modal.style.opacity = '0';
-            setTimeout(() => {
-                modal.remove();
-                document.body.style.overflow = '';
-            }, 300);
-        }
-    };
 
     init();
 })();
