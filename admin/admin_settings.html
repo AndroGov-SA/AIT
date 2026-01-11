@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#FB4747">
+    <link rel="manifest" href="manifest.json">
+
+    <title data-i18n="pageTitle">AndroGov | إعدادات النظام</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brandRed: '#FB4747',
+                        brandBlue: '#4267B2',
+                        brandDark: '#1E293B',
+                        brandGray: '#F8FAFC'
+                    },
+                    fontFamily: {
+                        sans: ['Tajawal', 'Inter', 'sans-serif'],
+                        en: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-brandGray dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300 opacity-0">
+
+    <div id="sidebar-container"></div>
+    
+    <div class="main-content-wrapper md:mr-72 transition-all duration-300 flex flex-col min-h-screen">
+        <div id="header-container"></div>
+
+        <main class="p-6 space-y-6">
+            
+            <div class="flex justify-between items-center">
+                <div>
+                    <h1 class="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                        <i class="fa-solid fa-sliders text-brandRed"></i> إعدادات النظام العامة
+                    </h1>
+                    <p class="text-sm text-slate-500 mt-1">تخصيص الهوية، اللغة الافتراضية، وخيارات الصيانة</p>
+                </div>
+                <button onclick="saveSettings()" class="px-6 py-2 bg-brandRed text-white rounded-lg text-sm font-bold shadow-lg hover:bg-red-700 transition flex items-center gap-2">
+                    <i class="fa-solid fa-floppy-disk"></i> <span>حفظ التغييرات</span>
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                
+                <div class="lg:col-span-2 space-y-6">
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                        <h3 class="font-bold text-slate-800 dark:text-white mb-6 border-b pb-2 dark:border-slate-700">بيانات الشركة والهوية</h3>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 mb-1">اسم النظام (عربي)</label>
+                                <input type="text" id="sysNameAr" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-2.5 text-sm dark:text-white focus:ring-2 focus:ring-brandRed" value="AndroGov">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 mb-1">System Name (English)</label>
+                                <input type="text" id="sysNameEn" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-2.5 text-sm dark:text-white focus:ring-2 focus:ring-brandRed" value="AndroGov">
+                            </div>
+                            <div class="col-span-1 md:col-span-2">
+                                <label class="block text-xs font-bold text-slate-500 mb-1">وصف النظام (يظهر في صفحة الدخول)</label>
+                                <input type="text" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-2.5 text-sm dark:text-white" value="نظام إدارة العمليات الموحد لشركة أندروميدا">
+                            </div>
+                        </div>
+
+                        <div class="mt-6 pt-6 border-t border-slate-100 dark:border-slate-700">
+                            <label class="block text-xs font-bold text-slate-500 mb-3">شعار النظام (Logo)</label>
+                            <div class="flex items-center gap-4">
+                                <div class="w-20 h-20 bg-slate-100 dark:bg-slate-700 rounded-xl flex items-center justify-center border-2 border-dashed border-slate-300 dark:border-slate-600 overflow-hidden relative group">
+                                    <img id="logoPreview" src="https://ait.sa/wp-content/uploads/2024/03/cropped-Square-Logo.png" class="w-12 h-12 object-contain">
+                                    <div class="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+                                        <i class="fa-solid fa-pen text-white"></i>
+                                    </div>
+                                    <input type="file" id="logoInput" class="absolute inset-0 opacity-0 cursor-pointer" onchange="previewLogo(this)">
+                                </div>
+                                <div class="flex-1">
+                                    <p class="text-xs text-slate-500 mb-2">يرجى رفع صورة بخلفية شفافة (PNG) بحجم لا يتجاوز 2MB.</p>
+                                    <button class="text-xs text-brandRed font-bold hover:underline" onclick="document.getElementById('logoInput').click()">تغيير الشعار</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                        <h3 class="font-bold text-slate-800 dark:text-white mb-6 border-b pb-2 dark:border-slate-700">الإعدادات الإقليمية</h3>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 mb-1">اللغة الافتراضية</label>
+                                <select class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-2.5 text-sm dark:text-white">
+                                    <option value="ar" selected>العربية (Arabic)</option>
+                                    <option value="en">الإنجليزية (English)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 mb-1">المنطقة الزمنية</label>
+                                <select class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-2.5 text-sm dark:text-white">
+                                    <option value="Riyadh" selected>Asia/Riyadh (GMT+3)</option>
+                                    <option value="Dubai">Asia/Dubai (GMT+4)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 mb-1">التقويم الافتراضي</label>
+                                <div class="flex gap-4 mt-2">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="radio" name="cal" checked class="text-brandRed focus:ring-brandRed">
+                                        <span class="text-sm dark:text-white">ميلادي (Gregorian)</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="radio" name="cal" class="text-brandRed focus:ring-brandRed">
+                                        <span class="text-sm dark:text-white">هجري (Hijri)</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-1 space-y-6">
+                    
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                        <h3 class="font-bold text-slate-800 dark:text-white mb-4">تخصيص المظهر</h3>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 mb-1">لون الهوية الأساسي (Brand Color)</label>
+                                <div class="flex items-center gap-2">
+                                    <input type="color" id="brandColor" value="#FB4747" class="w-10 h-10 rounded cursor-pointer border-none">
+                                    <input type="text" value="#FB4747" class="flex-1 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-2 text-sm font-mono dark:text-white uppercase" readonly>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 mb-2">الوضع الافتراضي</label>
+                                <select class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-2.5 text-sm dark:text-white">
+                                    <option value="light">فاتح (Light)</option>
+                                    <option value="dark">داكن (Dark)</option>
+                                    <option value="system">حسب النظام</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                        <h3 class="font-bold text-slate-800 dark:text-white mb-4">صيانة النظام</h3>
+                        
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between p-3 bg-red-50 dark:bg-red-900/10 rounded-lg border border-red-100 dark:border-red-900/30">
+                                <div>
+                                    <p class="text-sm font-bold text-red-700 dark:text-red-400">وضع الصيانة</p>
+                                    <p class="text-[10px] text-red-600/70">منع دخول المستخدمين</p>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" class="sr-only peer">
+                                    <div class="w-9 h-5 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-red-600"></div>
+                                </label>
+                            </div>
+
+                            <button onclick="clearCache()" class="w-full py-2 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-lg text-xs font-bold hover:bg-slate-200 dark:hover:bg-slate-600 transition flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-broom"></i> تنظيف الذاكرة المؤقتة (Cache)
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script src="layout.js"></script>
+    <script src="bot.js"></script>
+
+    <script>
+        function previewLogo(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('logoPreview').src = e.target.result;
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function saveSettings() {
+            // محاكاة عملية الحفظ
+            const btn = document.querySelector('button[onclick="saveSettings()"]');
+            const originalContent = btn.innerHTML;
+            
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري الحفظ...';
+            
+            setTimeout(() => {
+                alert('تم حفظ إعدادات النظام بنجاح وتحديث الهوية.');
+                btn.innerHTML = originalContent;
+                btn.disabled = false;
+                
+                // هنا يمكننا حفظ القيم في localStorage لتبدو واقعية
+                const newBrandColor = document.getElementById('brandColor').value;
+                localStorage.setItem('customBrandColor', newBrandColor);
+            }, 1000);
+        }
+
+        function clearCache() {
+            if(confirm('هل أنت متأكد من مسح الذاكرة المؤقتة؟ سيتم تسجيل خروجك.')) {
+                localStorage.clear();
+                window.location.href = 'https://androgov-sa.github.io/AIT/login.html';
+            }
+        }
+    </script>
+</body>
+</html>
