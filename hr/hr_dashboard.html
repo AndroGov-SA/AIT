@@ -4,11 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#FB4747">
-    <title data-i18n="pageTitle">Approval Center | AndroGov</title>
+    <title data-i18n="pageTitle">مركز الاعتمادات | AndroGov</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <script src="https://cdn.tailwindcss.com"></script>
 
     <script>
@@ -28,7 +27,7 @@
 
     <div id="sidebar-container"></div>
     
-    <div class="main-content-wrapper md:mr-72 transition-all duration-300 flex flex-col min-h-screen">
+    <div class="main-content-wrapper transition-all duration-300 flex flex-col min-h-screen">
         <div id="header-container"></div>
 
         <main class="p-6 space-y-6">
@@ -41,7 +40,7 @@
                     <p class="text-sm text-slate-500 mt-1" data-i18n="headerDesc">إدارة الموافقات الإدارية وطلبات الموظفين</p>
                 </div>
                 <div class="flex gap-2">
-                    <span class="bg-orange-100 text-orange-700 px-3 py-1 rounded-lg text-xs font-bold border border-orange-200">
+                    <span class="bg-orange-100 text-orange-700 px-3 py-1 rounded-lg text-xs font-bold border border-orange-200 flex items-center gap-2">
                         <i class="fa-regular fa-clock"></i> <span data-i18n="pendingBadge">5 طلبات معلقة</span>
                     </span>
                 </div>
@@ -74,10 +73,10 @@
             <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 min-h-[500px] flex flex-col">
                 
                 <div class="p-4 border-b border-slate-100 dark:border-slate-700 flex gap-4 overflow-x-auto">
-                    <button onclick="switchTab('hr')" id="tab-hr" class="px-4 py-2 rounded-xl text-xs font-bold bg-brandRed text-white shadow-md transition tab-btn">
+                    <button onclick="switchTab('hr')" id="tab-hr" class="px-4 py-2 rounded-xl text-xs font-bold bg-brandRed text-white shadow-md transition tab-btn flex items-center gap-2">
                         <i class="fa-solid fa-users"></i> <span data-i18n="tabHR">طلبات الموظفين (HR)</span>
                     </button>
-                    <button onclick="switchTab('admin')" id="tab-admin" class="px-4 py-2 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 transition tab-btn">
+                    <button onclick="switchTab('admin')" id="tab-admin" class="px-4 py-2 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 transition tab-btn flex items-center gap-2">
                         <i class="fa-solid fa-building-user"></i> <span data-i18n="tabAdmin">المشتريات والخدمات (Admin)</span>
                     </button>
                 </div>
@@ -90,7 +89,7 @@
                                 <h4 class="text-sm font-bold dark:text-white" data-i18n="emp1Name">خالد العتيبي</h4>
                                 <div class="flex items-center gap-2 mt-1">
                                     <span class="bg-blue-100 text-blue-700 text-[10px] px-2 py-0.5 rounded font-bold" data-i18n="reqTypeVac">إجازة سنوية</span>
-                                    <span class="text-[10px] text-slate-500"><i class="fa-regular fa-clock"></i> <span data-i18n="time1">منذ ساعتين</span></span>
+                                    <span class="text-[10px] text-slate-500 flex items-center gap-1"><i class="fa-regular fa-clock"></i> <span data-i18n="time1">منذ ساعتين</span></span>
                                 </div>
                             </div>
                         </div>
@@ -110,7 +109,7 @@
                                 <h4 class="text-sm font-bold dark:text-white" data-i18n="emp2Name">سارة الأحمد</h4>
                                 <div class="flex items-center gap-2 mt-1">
                                     <span class="bg-purple-100 text-purple-700 text-[10px] px-2 py-0.5 rounded font-bold" data-i18n="reqTypeSalary">تعريف راتب</span>
-                                    <span class="text-[10px] text-slate-500"><i class="fa-regular fa-clock"></i> <span data-i18n="time2">أمس</span></span>
+                                    <span class="text-[10px] text-slate-500 flex items-center gap-1"><i class="fa-regular fa-clock"></i> <span data-i18n="time2">أمس</span></span>
                                 </div>
                             </div>
                         </div>
@@ -184,7 +183,7 @@
     <script src="bot.js"></script>
 
     <script>
-        // --- 1. Translation Data ---
+        // --- 1. قاموس الترجمة (Translation Data) ---
         const pageContent = {
             ar: {
                 pageTitle: "مركز الاعتمادات | AndroGov",
@@ -258,7 +257,7 @@
             }
         };
 
-        // --- 2. Core Functions ---
+        // --- 2. دوال التشغيل ---
         document.addEventListener('DOMContentLoaded', () => {
             updatePageLanguage();
         });
@@ -270,14 +269,16 @@
             document.documentElement.lang = lang;
             document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
 
+            // تبديل النصوص تلقائياً
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
                 if(dict[key]) el.innerText = dict[key];
             });
         }
 
+        // --- 3. وظائف الصفحة ---
         function switchTab(tab) {
-            // UI Update
+            // تحديث الأزرار
             document.querySelectorAll('.tab-btn').forEach(b => {
                 b.classList.remove('bg-brandRed', 'text-white', 'shadow-md');
                 b.classList.add('bg-slate-100', 'dark:bg-slate-700', 'text-slate-600', 'dark:text-slate-300');
@@ -286,7 +287,7 @@
             activeBtn.classList.remove('bg-slate-100', 'dark:bg-slate-700', 'text-slate-600', 'dark:text-slate-300');
             activeBtn.classList.add('bg-brandRed', 'text-white', 'shadow-md');
 
-            // Content Toggle
+            // تبديل المحتوى
             document.getElementById('content-hr').classList.add('hidden');
             document.getElementById('content-admin').classList.add('hidden');
             document.getElementById('content-' + tab).classList.remove('hidden');
