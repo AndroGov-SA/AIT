@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#FB4747">
+    <title data-i18n="pageTitle">الإجازات والمغادرات | AndroGov</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { brandRed: '#FB4747', brandDark: '#0F172A', moneyGreen: '#10B981', alertOrange: '#F59E0B' },
+                    fontFamily: { sans: ['Tajawal', 'Inter', 'sans-serif'], en: ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <style>.num-font { font-family: 'Inter', sans-serif; font-feature-settings: "tnum"; }</style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300 opacity-0">
+
+    <div id="sidebar-container"></div>
+    
+    <div class="main-content-wrapper transition-all duration-300 flex flex-col min-h-screen">
+        <div id="header-container"></div>
+
+        <main class="p-6 space-y-6">
+            
+            <div class="flex flex-col md:flex-row justify-between items-end gap-4">
+                <div>
+                    <h1 class="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                        <i class="fa-solid fa-umbrella-beach text-brandRed"></i> <span data-i18n="headerTitle">إدارة الإجازات</span>
+                    </h1>
+                    <p class="text-sm text-slate-500 mt-1" data-i18n="headerDesc">متابعة أرصدة الموظفين، الطلبات المعلقة، وسجل المغادرات</p>
+                </div>
+                <div class="flex gap-2">
+                    <button class="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold shadow-sm hover:bg-slate-50 transition flex items-center gap-2 text-slate-600 dark:text-white">
+                        <i class="fa-solid fa-calendar-days"></i> <span data-i18n="btnCalendar">تقويم الإجازات</span>
+                    </button>
+                    <button onclick="document.getElementById('leaveModal').classList.remove('hidden')" class="px-4 py-2 bg-brandRed text-white rounded-lg text-xs font-bold shadow-lg hover:bg-red-700 transition flex items-center gap-2">
+                        <i class="fa-solid fa-plus"></i> <span data-i18n="btnNewLeave">تسجيل إجازة</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-100 dark:border-slate-700 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="statOnLeave">في إجازة حالياً</p>
+                        <h3 class="text-2xl font-bold num-font mt-1 text-blue-600">3</h3>
+                    </div>
+                    <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center"><i class="fa-solid fa-plane"></i></div>
+                </div>
+                
+                <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-100 dark:border-slate-700 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="statPending">طلبات معلقة</p>
+                        <h3 class="text-2xl font-bold num-font mt-1 text-orange-500">5</h3>
+                    </div>
+                    <div class="w-10 h-10 rounded-full bg-orange-50 text-orange-500 flex items-center justify-center"><i class="fa-solid fa-hourglass-half"></i></div>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-100 dark:border-slate-700 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="statReturning">يعودون هذا الأسبوع</p>
+                        <h3 class="text-2xl font-bold num-font mt-1 text-green-600">1</h3>
+                    </div>
+                    <div class="w-10 h-10 rounded-full bg-green-50 text-green-600 flex items-center justify-center"><i class="fa-solid fa-right-to-bracket"></i></div>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-100 dark:border-slate-700 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="statSick">إجازات مرضية (شهر)</p>
+                        <h3 class="text-2xl font-bold num-font mt-1 text-red-500">2</h3>
+                    </div>
+                    <div class="w-10 h-10 rounded-full bg-red-50 text-red-500 flex items-center justify-center"><i class="fa-solid fa-notes-medical"></i></div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                
+                <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-5">
+                    <h3 class="font-bold text-slate-800 dark:text-white mb-4" data-i18n="titleWhoAway">غائبون اليوم</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-3">
+                            <img src="https://ui-avatars.com/api/?name=Ali+H&background=random" class="w-10 h-10 rounded-full border-2 border-white dark:border-slate-600 shadow-sm">
+                            <div class="flex-1">
+                                <p class="text-sm font-bold text-slate-800 dark:text-white">علي حسن</p>
+                                <p class="text-[10px] text-slate-400">Sales - إجازة سنوية</p>
+                            </div>
+                            <span class="text-[10px] bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded text-slate-500 num-font">Day 3/10</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <img src="https://ui-avatars.com/api/?name=Mona+S&background=random" class="w-10 h-10 rounded-full border-2 border-white dark:border-slate-600 shadow-sm">
+                            <div class="flex-1">
+                                <p class="text-sm font-bold text-slate-800 dark:text-white">منى السعيد</p>
+                                <p class="text-[10px] text-slate-400">HR - مرضي</p>
+                            </div>
+                            <span class="text-[10px] bg-red-50 text-red-600 px-2 py-1 rounded num-font">Day 1/2</span>
+                        </div>
+                        <div class="flex items-center gap-3 opacity-60">
+                            <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-400"><i class="fa-solid fa-user"></i></div>
+                            <div class="flex-1">
+                                <p class="text-sm font-bold text-slate-800 dark:text-white">أحمد كمال</p>
+                                <p class="text-[10px] text-slate-400">IT - اضطراري</p>
+                            </div>
+                            <span class="text-[10px] bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded text-slate-500">اليوم فقط</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-2 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden">
+                    <div class="p-5 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center">
+                        <h3 class="font-bold text-slate-800 dark:text-white" data-i18n="titleRequests">سجل الطلبات الأخير</h3>
+                        <select class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-600 rounded-lg text-xs py-1 px-2 focus:outline-none dark:text-white">
+                            <option>جميع الأقسام</option>
+                            <option>IT</option>
+                            <option>Finance</option>
+                        </select>
+                    </div>
+                    <table class="w-full text-sm text-right rtl:text-right ltr:text-left">
+                        <thead class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 text-xs font-bold uppercase">
+                            <tr>
+                                <th class="p-4" data-i18n="colEmp">الموظف</th>
+                                <th class="p-4" data-i18n="colType">نوع الإجازة</th>
+                                <th class="p-4" data-i18n="colDuration">المدة</th>
+                                <th class="p-4" data-i18n="colDates">التواريخ</th>
+                                <th class="p-4 text-center" data-i18n="colStatus">الحالة</th>
+                                <th class="p-4 text-center" data-i18n="colAction">الإجراء</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 dark:divide-slate-700 dark:text-slate-300">
+                            
+                            <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
+                                <td class="p-4 font-bold">خالد العتيبي</td>
+                                <td class="p-4"><span class="bg-blue-100 text-blue-700 px-2 py-1 rounded text-[10px] font-bold">سنوية</span></td>
+                                <td class="p-4 num-font text-xs">5 Days</td>
+                                <td class="p-4 num-font text-xs text-slate-500">20/03 - 25/03</td>
+                                <td class="p-4 text-center"><span class="bg-orange-100 text-orange-700 px-2 py-1 rounded text-[10px] font-bold" data-i18n="statusPending">معلق</span></td>
+                                <td class="p-4 text-center">
+                                    <button class="text-green-600 hover:bg-green-50 p-1 rounded transition"><i class="fa-solid fa-check"></i></button>
+                                    <button class="text-red-600 hover:bg-red-50 p-1 rounded transition"><i class="fa-solid fa-xmark"></i></button>
+                                </td>
+                            </tr>
+
+                            <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
+                                <td class="p-4 font-bold">سارة الأحمد</td>
+                                <td class="p-4"><span class="bg-purple-100 text-purple-700 px-2 py-1 rounded text-[10px] font-bold">زواج</span></td>
+                                <td class="p-4 num-font text-xs">5 Days</td>
+                                <td class="p-4 num-font text-xs text-slate-500">01/04 - 05/04</td>
+                                <td class="p-4 text-center"><span class="bg-green-100 text-green-700 px-2 py-1 rounded text-[10px] font-bold" data-i18n="statusApproved">مقبول</span></td>
+                                <td class="p-4 text-center text-slate-300"><i class="fa-solid fa-check-double"></i></td>
+                            </tr>
+
+                            <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition opacity-60">
+                                <td class="p-4 font-bold">محمد خان</td>
+                                <td class="p-4"><span class="bg-slate-100 text-slate-600 px-2 py-1 rounded text-[10px] font-bold">بلا راتب</span></td>
+                                <td class="p-4 num-font text-xs">30 Days</td>
+                                <td class="p-4 num-font text-xs text-slate-500">--</td>
+                                <td class="p-4 text-center"><span class="bg-red-100 text-red-700 px-2 py-1 rounded text-[10px] font-bold" data-i18n="statusRejected">مرفوض</span></td>
+                                <td class="p-4 text-center text-slate-300"><i class="fa-solid fa-ban"></i></td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <div id="leaveModal" class="fixed inset-0 bg-black/60 hidden z-50 flex items-center justify-center backdrop-blur-sm p-4">
+        <div class="bg-white dark:bg-slate-800 w-full max-w-lg rounded-2xl shadow-xl p-6">
+            <div class="flex justify-between items-center mb-6 border-b pb-4 dark:border-slate-700">
+                <h3 class="font-bold text-lg dark:text-white" data-i18n="modTitle">تسجيل إجازة جديدة</h3>
+                <button onclick="document.getElementById('leaveModal').classList.add('hidden')"><i class="fa-solid fa-xmark text-slate-400"></i></button>
+            </div>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblEmployee">الموظف</label>
+                    <select class="w-full bg-slate-50 dark:bg-slate-700 border dark:border-slate-600 rounded-lg p-2 text-sm dark:text-white">
+                        <option>اختر موظفاً...</option>
+                        <option>خالد العتيبي</option>
+                        <option>سارة الأحمد</option>
+                    </select>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblType">نوع الإجازة</label>
+                        <select class="w-full bg-slate-50 dark:bg-slate-700 border dark:border-slate-600 rounded-lg p-2 text-sm dark:text-white">
+                            <option>سنوية (21/30 يوم)</option>
+                            <option>اضطرارية (3 أيام)</option>
+                            <option>مرضية (مدفوعة/جزئي)</option>
+                            <option>زواج (5 أيام)</option>
+                            <option>وفاة (5/3 أيام)</option>
+                            <option>أبوة (3 أيام)</option>
+                            <option>بدون راتب</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblBalance">الرصيد المتوفر</label>
+                        <input type="text" value="24 يوم" disabled class="w-full bg-slate-100 dark:bg-slate-600 border dark:border-slate-500 rounded-lg p-2 text-sm text-slate-500 dark:text-slate-300">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblStart">تاريخ البدء</label>
+                        <input type="date" class="w-full bg-slate-50 dark:bg-slate-700 border dark:border-slate-600 rounded-lg p-2 text-sm dark:text-white">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblEnd">تاريخ النهاية</label>
+                        <input type="date" class="w-full bg-slate-50 dark:bg-slate-700 border dark:border-slate-600 rounded-lg p-2 text-sm dark:text-white">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblAttach">مرفقات (تقرير طبي/شهادة)</label>
+                    <input type="file" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-brandRed file:text-white hover:file:bg-red-700">
+                </div>
+            </div>
+
+            <div class="mt-6 flex justify-end gap-3 pt-4 border-t dark:border-slate-700">
+                <button onclick="document.getElementById('leaveModal').classList.add('hidden')" class="px-4 py-2 text-slate-500 text-xs font-bold hover:bg-slate-50 rounded-lg dark:hover:bg-slate-700" data-i18n="btnCancel">إلغاء</button>
+                <button onclick="alert('تم تسجيل الطلب بنجاح'); document.getElementById('leaveModal').classList.add('hidden')" class="px-6 py-2 bg-brandRed text-white rounded-lg text-xs font-bold hover:bg-red-700 shadow-md" data-i18n="btnSubmit">اعتماد الطلب</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="layout-hr.js"></script>
+    <script src="bot.js"></script>
+
+    <script>
+        // --- 1. الترجمة ---
+        const pageContent = {
+            ar: {
+                pageTitle: "الإجازات والمغادرات | AndroGov",
+                headerTitle: "إدارة الإجازات",
+                headerDesc: "متابعة أرصدة الموظفين، الطلبات المعلقة، وسجل المغادرات",
+                btnCalendar: "تقويم الإجازات",
+                btnNewLeave: "تسجيل إجازة",
+                statOnLeave: "في إجازة حالياً",
+                statPending: "طلبات معلقة",
+                statReturning: "يعودون هذا الأسبوع",
+                statSick: "إجازات مرضية (شهر)",
+                titleWhoAway: "غائبون اليوم",
+                titleRequests: "سجل الطلبات الأخير",
+                colEmp: "الموظف",
+                colType: "نوع الإجازة",
+                colDuration: "المدة",
+                colDates: "التواريخ",
+                colStatus: "الحالة",
+                colAction: "الإجراء",
+                statusPending: "معلق",
+                statusApproved: "مقبول",
+                statusRejected: "مرفوض",
+                modTitle: "تسجيل إجازة جديدة",
+                lblEmployee: "الموظف",
+                lblType: "نوع الإجازة",
+                lblBalance: "الرصيد المتوفر",
+                lblStart: "تاريخ البدء",
+                lblEnd: "تاريخ النهاية",
+                lblAttach: "مرفقات",
+                btnCancel: "إلغاء",
+                btnSubmit: "اعتماد الطلب"
+            },
+            en: {
+                pageTitle: "Leaves Management | AndroGov",
+                headerTitle: "Leaves Management",
+                headerDesc: "Track balances, pending requests, and employee leaves",
+                btnCalendar: "Leave Calendar",
+                btnNewLeave: "New Leave",
+                statOnLeave: "On Leave Now",
+                statPending: "Pending Requests",
+                statReturning: "Returning This Week",
+                statSick: "Sick Leaves (Month)",
+                titleWhoAway: "Who is Away",
+                titleRequests: "Recent Requests",
+                colEmp: "Employee",
+                colType: "Leave Type",
+                colDuration: "Duration",
+                colDates: "Dates",
+                colStatus: "Status",
+                colAction: "Action",
+                statusPending: "Pending",
+                statusApproved: "Approved",
+                statusRejected: "Rejected",
+                modTitle: "Register New Leave",
+                lblEmployee: "Employee",
+                lblType: "Leave Type",
+                lblBalance: "Available Balance",
+                lblStart: "Start Date",
+                lblEnd: "End Date",
+                lblAttach: "Attachments",
+                btnCancel: "Cancel",
+                btnSubmit: "Submit Request"
+            }
+        };
+
+        // --- 2. التشغيل ---
+        document.addEventListener('DOMContentLoaded', () => {
+            updatePageLanguage();
+        });
+
+        function updatePageLanguage() {
+            const lang = localStorage.getItem('lang') || 'ar';
+            const dict = pageContent[lang];
+            
+            document.documentElement.lang = lang;
+            document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if(dict[key]) el.innerText = dict[key];
+            });
+        }
+    </script>
+</body>
+</html>
