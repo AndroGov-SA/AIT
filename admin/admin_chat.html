@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#FB4747">
+    <title>Internal Chat | AndroGov</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: { colors: { brandRed: '#FB4747', brandDark: '#0F172A' }, fontFamily: { sans: ['Tajawal', 'Inter', 'sans-serif'] } }
+            }
+        }
+    </script>
+    <style>
+        .custom-scroll::-webkit-scrollbar { width: 4px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 4px; }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300 opacity-0 overflow-hidden">
+
+    <div id="sidebar-container"></div>
+    
+    <div class="main-content-wrapper md:mr-72 transition-all duration-300 flex flex-col h-screen">
+        <div id="header-container"></div>
+
+        <main class="flex-1 flex overflow-hidden p-4 gap-4">
+            
+            <div class="w-80 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 flex flex-col">
+                <div class="p-4 border-b border-slate-100 dark:border-slate-700">
+                    <div class="relative">
+                        <input type="text" placeholder="بحث موظف / مجموعة..." class="w-full bg-slate-50 dark:bg-slate-900 border-none rounded-lg pl-10 pr-4 py-2 text-xs focus:ring-1 focus:ring-brandRed outline-none dark:text-white">
+                        <i class="fa-solid fa-search absolute top-2.5 left-3 text-slate-400"></i>
+                    </div>
+                </div>
+
+                <div class="flex-1 overflow-y-auto custom-scroll p-2 space-y-1">
+                    <div class="text-[10px] font-bold text-slate-400 px-3 py-2 uppercase">غرف العمليات (Groups)</div>
+                    
+                    <button class="w-full flex items-center gap-3 p-3 rounded-xl bg-red-50 dark:bg-red-900/20 text-brandRed font-bold transition">
+                        <span class="w-2 h-2 rounded-full bg-brandRed"></span>
+                        <span class="flex-1 text-right">لجنة الحوكمة (Governance)</span>
+                        <span class="text-[10px] bg-red-200 text-red-700 px-1.5 rounded-full">2</span>
+                    </button>
+                    
+                    <button class="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition">
+                        <span class="w-2 h-2 rounded-full bg-slate-300"></span>
+                        <span class="flex-1 text-right text-slate-600 dark:text-slate-300">الاجتماع التنفيذي</span>
+                    </button>
+
+                    <div class="text-[10px] font-bold text-slate-400 px-3 py-2 uppercase mt-4">مدراء الإدارات (Direct)</div>
+
+                    <button class="w-full flex items-center gap-3 p-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition group" onclick="loadChat('Mohammed')">
+                        <div class="relative">
+                            <img src="https://ui-avatars.com/api/?name=Mohammed+B&background=8b5cf6&color=fff" class="w-10 h-10 rounded-full">
+                            <span class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span>
+                        </div>
+                        <div class="text-right flex-1">
+                            <p class="text-sm font-bold dark:text-white">محمد البخيتي (CFO)</p>
+                            <p class="text-[10px] text-slate-400 truncate">تم رفع تقرير الربع الأول...</p>
+                        </div>
+                        <span class="text-[10px] text-slate-400">10:30</span>
+                    </button>
+
+                    <button class="w-full flex items-center gap-3 p-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition group" onclick="loadChat('Mansour')">
+                        <div class="relative">
+                            <img src="https://ui-avatars.com/api/?name=Mansour+Y&background=f59e0b&color=fff" class="w-10 h-10 rounded-full">
+                            <span class="absolute bottom-0 right-0 w-3 h-3 bg-yellow-500 border-2 border-white rounded-full"></span>
+                        </div>
+                        <div class="text-right flex-1">
+                            <p class="text-sm font-bold dark:text-white">منصور اليامي (HR)</p>
+                            <p class="text-[10px] text-slate-400 truncate">بخصوص التوظيف الجديد...</p>
+                        </div>
+                        <span class="text-[10px] text-slate-400">أمس</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex-1 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 flex flex-col">
+                
+                <div class="p-4 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-lg bg-red-50 text-brandRed flex items-center justify-center font-bold text-lg"><i class="fa-solid fa-users-gear"></i></div>
+                        <div>
+                            <h3 class="font-bold text-slate-800 dark:text-white">لجنة الحوكمة (Governance)</h3>
+                            <p class="text-xs text-slate-500">4 أعضاء • نشطة الآن</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-2 text-slate-400">
+                        <button class="hover:text-brandRed transition"><i class="fa-solid fa-video"></i></button>
+                        <button class="hover:text-brandRed transition"><i class="fa-solid fa-circle-info"></i></button>
+                    </div>
+                </div>
+
+                <div class="flex-1 overflow-y-auto custom-scroll p-6 space-y-6 bg-slate-50/50 dark:bg-slate-900/50" id="chatMessages">
+                    
+                    <div class="flex justify-center"><span class="text-[10px] bg-slate-200 dark:bg-slate-700 px-3 py-1 rounded-full text-slate-500">اليوم</span></div>
+
+                    <div class="flex gap-4">
+                        <img src="https://ui-avatars.com/api/?name=Hesham+S&background=0F172A&color=fff" class="w-10 h-10 rounded-full mt-1">
+                        <div class="max-w-[70%]">
+                            <div class="flex items-baseline gap-2 mb-1">
+                                <span class="font-bold text-sm dark:text-white">هشام السحيباني (CEO)</span>
+                                <span class="text-[10px] text-slate-400">09:00 AM</span>
+                            </div>
+                            <div class="bg-white dark:bg-slate-700 p-3 rounded-2xl rounded-tr-none shadow-sm text-sm text-slate-700 dark:text-slate-200 border border-slate-100 dark:border-slate-600">
+                                صباح الخير أيمن، هل تم تعميم سياسة الحضور الجديدة على جميع الموظفين؟
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-4 flex-row-reverse">
+                        <img src="https://ui-avatars.com/api/?name=Ayman+M&background=FB4747&color=fff" class="w-10 h-10 rounded-full mt-1">
+                        <div class="max-w-[70%]">
+                            <div class="bg-brandRed text-white p-3 rounded-2xl rounded-tl-none shadow-md text-sm">
+                                أهلاً أستاذ هشام. نعم، جاري إرسالها الآن كتعميم إلزامي عبر النظام. لن يستطيع أحد دخول النظام قبل قراءتها.
+                            </div>
+                            <div class="text-[10px] text-slate-400 text-left mt-1 flex items-center gap-1 justify-end">
+                                <i class="fa-solid fa-check-double text-brandRed"></i> 09:05 AM
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-4 bg-white dark:bg-slate-800 border-t border-slate-100 dark:border-slate-700">
+                    <div class="flex items-center gap-3 bg-slate-50 dark:bg-slate-900 p-2 rounded-xl border border-slate-200 dark:border-slate-700 focus-within:ring-1 focus-within:ring-brandRed transition">
+                        <button class="text-slate-400 hover:text-brandRed p-2"><i class="fa-solid fa-paperclip"></i></button>
+                        <input type="text" id="msgInput" placeholder="اكتب رسالتك..." class="flex-1 bg-transparent border-none outline-none text-sm dark:text-white" onkeypress="handleEnter(event)">
+                        <button onclick="sendMsg()" class="bg-brandRed text-white w-10 h-10 rounded-lg flex items-center justify-center hover:bg-red-700 transition shadow-lg shadow-red-500/20">
+                            <i class="fa-solid fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+        </main>
+    </div>
+
+    <script src="layout.js"></script>
+    <script src="bot.js"></script>
+    <script>
+        function sendMsg() {
+            const input = document.getElementById('msgInput');
+            const txt = input.value.trim();
+            if(!txt) return;
+
+            const container = document.getElementById('chatMessages');
+            const html = `
+            <div class="flex gap-4 flex-row-reverse animate-fade-in-up">
+                <img src="https://ui-avatars.com/api/?name=Ayman+M&background=FB4747&color=fff" class="w-10 h-10 rounded-full mt-1">
+                <div class="max-w-[70%]">
+                    <div class="bg-brandRed text-white p-3 rounded-2xl rounded-tl-none shadow-md text-sm">${txt}</div>
+                    <div class="text-[10px] text-slate-400 text-left mt-1">الآن</div>
+                </div>
+            </div>`;
+            container.insertAdjacentHTML('beforeend', html);
+            input.value = '';
+            container.scrollTop = container.scrollHeight;
+        }
+        function handleEnter(e) { if(e.key === 'Enter') sendMsg(); }
+    </script>
+</body>
+</html>
