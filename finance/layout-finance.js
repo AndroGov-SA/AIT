@@ -1,18 +1,15 @@
 /**
- * AndroGov CFO Layout Engine
+ * AndroGov CFO Layout Engine (Red Brand Edition)
  * مخصص لبيئة المدير المالي - محمد البخيتي
  */
 
 (function() {
-    // --- 1. إعدادات المستخدم (CFO Persona) ---
-    // تم تثبيت المستخدم هنا لمحاكاة بيئة المدير المالي محمد البخيتي
     const currentUser = {
         nameAr: "محمد البخيتي",
         nameEn: "Mohammed Al-Bukhaiti",
         titleAr: "المدير المالي (CFO)",
         titleEn: "Chief Financial Officer",
-        // صورة افتراضية
-        avatar: "https://ui-avatars.com/api/?name=Mohammed+B&background=10B981&color=fff" 
+        avatar: "https://ui-avatars.com/api/?name=Mohammed+B&background=FB4747&color=fff" // Brand Red
     };
 
     const config = {
@@ -20,106 +17,64 @@
         theme: localStorage.getItem('theme') || 'light'
     };
 
-    // --- 2. هيكلة القائمة المالية (Financial Menu Structure) ---
-    // هذه القائمة تعكس الأقسام التي اتفقنا عليها في وثيقة الهيكلة
     const menuStructure = [
         {
-            section: 'main', // لوحة القيادة
+            section: 'main',
             items: [
                 { key: 'dash', icon: 'fa-chart-pie', link: 'cfo_dashboard.html' },
-                { key: 'approvals', icon: 'fa-stamp', link: 'approvals.html' } // مركز الموافقات
+                { key: 'approvals', icon: 'fa-stamp', link: 'approvals.html' }
             ]
         },
         {
-            section: 'gl', // الأستاذ العام
+            section: 'gl',
             items: [
                 { key: 'journal', icon: 'fa-book', link: 'gl_journal.html' },
-                { key: 'coa', icon: 'fa-sitemap', link: 'gl_coa.html' },
-                { key: 'centers', icon: 'fa-layer-group', link: 'gl_cost_centers.html' }
+                { key: 'coa', icon: 'fa-sitemap', link: 'gl_coa.html' }
             ]
         },
         {
-            section: 'ap', // الموردين والمشتريات
+            section: 'ap',
             items: [
                 { key: 'vendors', icon: 'fa-truck-fast', link: 'ap_vendors.html' },
-                { key: 'bills', icon: 'fa-file-invoice-dollar', link: 'ap_bills.html' },
-                { key: 'payments', icon: 'fa-money-check-dollar', link: 'ap_payments.html' }
+                { key: 'bills', icon: 'fa-file-invoice-dollar', link: 'ap_bills.html' }
             ]
         },
         {
-            section: 'ar', // العملاء والإيرادات
+            section: 'reporting',
             items: [
-                { key: 'invoices', icon: 'fa-file-invoice', link: 'ar_invoices.html' },
-                { key: 'receipts', icon: 'fa-hand-holding-dollar', link: 'ar_receipts.html' }
-            ]
-        },
-        {
-            section: 'reporting', // التقارير والقوائم
-            items: [
-                { key: 'statements', icon: 'fa-file-pdf', link: 'rep_statements.html' }, // قوائم مالية
-                { key: 'budget', icon: 'fa-scale-balanced', link: 'rep_budget.html' }, // مراقبة الموازنة
-                { key: 'tax', icon: 'fa-building-columns', link: 'rep_tax.html' } // الزكاة والضريبة
+                { key: 'statements', icon: 'fa-file-pdf', link: 'rep_statements.html' },
+                { key: 'budget', icon: 'fa-scale-balanced', link: 'rep_budget.html' }
             ]
         }
     ];
 
-    // --- 3. القاموس (Translations) ---
     const t = {
         ar: {
-            sysName: "AndroGov | Finance",
+            sysName: "AndroGov",
+            deptName: "الإدارة المالية",
             logout: "خروج آمن",
-            sections: {
-                main: "الرقابة والتحكم",
-                gl: "الأستاذ العام (GL)",
-                ap: "الموردين (AP)",
-                ar: "العملاء (AR)",
-                reporting: "التقارير والامتثال"
-            },
+            sections: { main: "الرئيسية", gl: "الأستاذ العام", ap: "الموردين", reporting: "التقارير" },
             menu: {
-                dash: "لوحة المدير المالي",
-                approvals: "مركز الموافقات",
-                journal: "قيود اليومية",
-                coa: "دليل الحسابات",
-                centers: "مراكز التكلفة",
-                vendors: "سجل الموردين",
-                bills: "فواتير المشتريات",
-                payments: "سندات الصرف",
-                invoices: "إصدار الفواتير",
-                receipts: "سندات القبض",
-                statements: "القوائم المالية",
-                budget: "مراقبة الموازنة",
-                tax: "الإقرار الضريبي"
+                dash: "لوحة القيادة", approvals: "الموافقات",
+                journal: "قيود اليومية", coa: "دليل الحسابات",
+                vendors: "الموردين", bills: "فواتير الشراء",
+                statements: "القوائم المالية", budget: "الموازنة"
             }
         },
         en: {
-            sysName: "AndroGov | Finance",
-            logout: "Secure Logout",
-            sections: {
-                main: "Control & Dashboard",
-                gl: "General Ledger",
-                ap: "Payables (AP)",
-                ar: "Receivables (AR)",
-                reporting: "Reports & Compliance"
-            },
+            sysName: "AndroGov",
+            deptName: "Finance Dept",
+            logout: "Logout",
+            sections: { main: "Main", gl: "General Ledger", ap: "Payables", reporting: "Reports" },
             menu: {
-                dash: "CFO Dashboard",
-                approvals: "Approval Center",
-                journal: "Journal Entries",
-                coa: "Chart of Accounts",
-                centers: "Cost Centers",
-                vendors: "Vendors",
-                bills: "Vendor Bills",
-                payments: "Payments",
-                invoices: "Invoicing",
-                receipts: "Receipts",
-                statements: "Financial Statements",
-                budget: "Budget Control",
-                tax: "VAT Return"
+                dash: "Dashboard", approvals: "Approvals",
+                journal: "Journal Entries", coa: "Chart of Accounts",
+                vendors: "Vendors", bills: "Vendor Bills",
+                statements: "Financial Stmts", budget: "Budgeting"
             }
         }
     };
 
-    // --- 4. Render Functions (نفس المنطق السابق مع تعديلات التصميم) ---
     function init() {
         applySettings();
         renderSidebar();
@@ -133,7 +88,6 @@
         html.dir = config.lang === 'ar' ? 'rtl' : 'ltr';
         if (config.theme === 'dark') html.classList.add('dark');
         
-        // تعديل الهوامش حسب اللغة
         const main = document.querySelector('.main-content-wrapper');
         if (main) {
             main.classList.remove('md:mr-72', 'md:ml-72');
@@ -154,7 +108,8 @@
             menuHTML += `<div class="px-4 mt-6 mb-2 text-[11px] font-bold text-slate-400 uppercase tracking-wider opacity-80">${dict.sections[group.section]}</div>`;
             group.items.forEach(item => {
                 const isActive = currentPath === item.link;
-                const activeClass = isActive ? "bg-brandGreen/10 text-brandGreen border-r-4 border-brandGreen" : "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800";
+                // Brand Red Active State
+                const activeClass = isActive ? "bg-brandRed/10 text-brandRed border-r-4 border-brandRed" : "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-brandRed";
                 
                 menuHTML += `
                 <a href="${item.link}" class="flex items-center gap-3 px-4 py-3 text-sm font-medium transition-all duration-200 ${activeClass} ${isActive ? '' : 'border-r-4 border-transparent'}">
@@ -168,12 +123,12 @@
         <aside class="fixed top-0 ${isRtl ? 'right-0 border-l' : 'left-0 border-r'} z-50 h-screen w-72 flex-col hidden md:flex bg-white dark:bg-[#0F172A] border-slate-200 dark:border-slate-800">
             <div class="h-20 flex items-center px-6 border-b border-slate-100 dark:border-slate-800">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl bg-green-50 text-brandGreen flex items-center justify-center text-xl shadow-sm">
+                    <div class="w-10 h-10 rounded-xl bg-red-50 text-brandRed flex items-center justify-center text-xl shadow-sm">
                         <i class="fa-solid fa-coins"></i>
                     </div>
                     <div>
-                        <h1 class="font-bold text-lg text-slate-800 dark:text-white font-sans tracking-tight">AndroGov</h1>
-                        <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">المالية</p>
+                        <h1 class="font-bold text-lg text-slate-800 dark:text-white font-sans tracking-tight">${dict.sysName}</h1>
+                        <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">${dict.deptName}</p>
                     </div>
                 </div>
             </div>
@@ -182,7 +137,7 @@
                     <img src="${currentUser.avatar}" class="w-10 h-10 rounded-full border border-white shadow-sm">
                     <div class="overflow-hidden">
                         <p class="text-sm font-bold text-slate-800 dark:text-white truncate">${config.lang === 'ar' ? currentUser.nameAr : currentUser.nameEn}</p>
-                        <p class="text-[10px] text-brandGreen font-bold truncate">${config.lang === 'ar' ? currentUser.titleAr : currentUser.titleEn}</p>
+                        <p class="text-[10px] text-brandRed font-bold truncate">${config.lang === 'ar' ? currentUser.titleAr : currentUser.titleEn}</p>
                     </div>
                 </div>
             </div>
@@ -200,9 +155,9 @@
         container.innerHTML = `
         <header class="h-20 sticky top-0 z-40 flex items-center justify-between px-6 bg-white/80 dark:bg-[#0F172A]/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
             <div class="flex items-center gap-4">
-                <button class="md:hidden text-slate-500 hover:text-brandGreen"><i class="fa-solid fa-bars text-xl"></i></button>
+                <button class="md:hidden text-slate-500 hover:text-brandRed"><i class="fa-solid fa-bars text-xl"></i></button>
                 <div class="hidden md:flex relative w-64">
-                    <input type="text" placeholder="${config.lang === 'ar' ? 'بحث في القيود، الفواتير...' : 'Search GL, Invoices...'}" class="w-full bg-slate-100 dark:bg-slate-800 border-none rounded-lg pl-10 pr-4 py-2 text-xs focus:ring-2 focus:ring-brandGreen/20 outline-none dark:text-white">
+                    <input type="text" placeholder="${config.lang === 'ar' ? 'بحث...' : 'Search...'}" class="w-full bg-slate-100 dark:bg-slate-800 border-none rounded-lg pl-10 pr-4 py-2 text-xs focus:ring-2 focus:ring-brandRed/20 outline-none dark:text-white">
                     <i class="fa-solid fa-search absolute top-2.5 left-3 text-slate-400"></i>
                 </div>
             </div>
@@ -221,10 +176,9 @@
         </header>`;
     }
 
-    // Exposed Functions
     window.changeTheme = () => { localStorage.setItem('theme', config.theme === 'dark' ? 'light' : 'dark'); location.reload(); };
     window.changeLang = () => { localStorage.setItem('lang', config.lang === 'ar' ? 'en' : 'ar'); location.reload(); };
-    window.doLogout = () => { if(confirm('Log out?')) window.location.href = 'https://androgov-sa.github.io/AIT/login.html'; };
+    window.doLogout = () => { if(confirm('Log out?')) window.location.href = 'index.html'; };
 
     init();
 })();
