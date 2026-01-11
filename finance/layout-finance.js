@@ -1,10 +1,13 @@
 /**
- * AndroGov CFO Layout Engine v3.0 (Full Menu + Notifications)
- * النسخة النهائية الشاملة لكافة روابط النظام المالي
+ * AndroGov CFO Layout Engine v4.0 (Final Release)
+ * - Full Menu Structure (GL, AP, AR, Inv, Rep, Config)
+ * - Interactive Notification Center
+ * - Clickable User Profile
+ * - Red Brand Identity
  */
 
 (function() {
-    // --- 1. بيانات المستخدم ---
+    // --- 1. بيانات المستخدم (CFO) ---
     const currentUser = {
         nameAr: "محمد البخيتي",
         nameEn: "Mohammed Al-Bukhaiti",
@@ -40,7 +43,7 @@
         }
     ];
 
-    // --- 3. هيكلة القائمة (تمت إضافة كل الصفحات الناقصة) ---
+    // --- 3. هيكلة القائمة الجانبية ---
     const menuStructure = [
         {
             section: 'main',
@@ -54,42 +57,48 @@
             items: [
                 { key: 'journal', icon: 'fa-book', link: 'gl_journal.html' },
                 { key: 'coa', icon: 'fa-sitemap', link: 'gl_coa.html' },
-                { key: 'costCenters', icon: 'fa-layer-group', link: 'gl_cost_centers.html' } // تمت الإضافة
+                { key: 'costCenters', icon: 'fa-layer-group', link: 'gl_cost_centers.html' }
             ]
         },
         {
-            section: 'ap', // الموردين (دائن)
+            section: 'ap', // المشتريات
             items: [
                 { key: 'vendors', icon: 'fa-store', link: 'ap_vendors.html' },
                 { key: 'bills', icon: 'fa-file-invoice-dollar', link: 'ap_bills.html' },
-                { key: 'payments', icon: 'fa-money-bill-transfer', link: 'ap_payments.html' } // تمت الإضافة
+                { key: 'payments', icon: 'fa-money-bill-transfer', link: 'ap_payments.html' }
             ]
         },
         {
-            section: 'ar', // العملاء (مدين) - قسم جديد
+            section: 'ar', // المبيعات
             items: [
-                { key: 'salesInv', icon: 'fa-file-invoice', link: 'ar_invoices.html' }, // تمت الإضافة
-                { key: 'receipts', icon: 'fa-hand-holding-dollar', link: 'ar_receipts.html' } // تمت الإضافة
+                { key: 'salesInv', icon: 'fa-file-invoice', link: 'ar_invoices.html' },
+                { key: 'receipts', icon: 'fa-hand-holding-dollar', link: 'ar_receipts.html' }
             ]
         },
         {
-            section: 'inventory',
+            section: 'inventory', // المخزون
             items: [
                 { key: 'stock', icon: 'fa-boxes-stacked', link: 'inv_dashboard.html' },
                 { key: 'assets', icon: 'fa-laptop-code', link: 'inv_assets.html' }
             ]
         },
         {
-            section: 'reporting',
+            section: 'reporting', // التقارير
             items: [
                 { key: 'statements', icon: 'fa-file-pdf', link: 'rep_statements.html' },
                 { key: 'budget', icon: 'fa-scale-balanced', link: 'rep_budget.html' },
-                { key: 'tax', icon: 'fa-building-columns', link: 'rep_tax.html' } // تمت الإضافة
+                { key: 'tax', icon: 'fa-building-columns', link: 'rep_tax.html' }
+            ]
+        },
+        {
+            section: 'config', // الإعدادات
+            items: [
+                { key: 'settings', icon: 'fa-gears', link: 'fin_settings.html' }
             ]
         }
     ];
 
-    // --- 4. القاموس (تم تحديث الترجمات) ---
+    // --- 4. قاموس الترجمة ---
     const t = {
         ar: {
             sysName: "AndroGov",
@@ -102,9 +111,10 @@
                 main: "الرئيسية", 
                 gl: "الأستاذ العام", 
                 ap: "الموردين والمشتريات", 
-                ar: "العملاء والمبيعات", // جديد
+                ar: "العملاء والمبيعات", 
                 inventory: "المخزون والأصول", 
-                reporting: "التقارير والزكاة" 
+                reporting: "التقارير والزكاة",
+                config: "الإعدادات"
             },
             menu: {
                 dash: "لوحة القيادة", approvals: "الموافقات",
@@ -112,7 +122,8 @@
                 vendors: "سجل الموردين", bills: "فواتير الشراء", payments: "سندات الصرف",
                 salesInv: "فواتير المبيعات", receipts: "سندات القبض",
                 stock: "مراقبة المخزون", assets: "سجل الأصول والعهد",
-                statements: "القوائم المالية", budget: "الموازنة", tax: "الإقرار الضريبي"
+                statements: "القوائم المالية", budget: "الموازنة", tax: "الإقرار الضريبي",
+                settings: "إعدادات النظام"
             }
         },
         en: {
@@ -128,7 +139,8 @@
                 ap: "Accounts Payable", 
                 ar: "Accounts Receivable", 
                 inventory: "Assets & Inv", 
-                reporting: "Reports & Tax" 
+                reporting: "Reports & Tax",
+                config: "Configuration"
             },
             menu: {
                 dash: "Dashboard", approvals: "Approvals",
@@ -136,12 +148,13 @@
                 vendors: "Vendors", bills: "Vendor Bills", payments: "Payments",
                 salesInv: "Sales Invoices", receipts: "Receipts",
                 stock: "Inventory", assets: "Fixed Assets",
-                statements: "Financial Stmts", budget: "Budgeting", tax: "Tax & Zakat"
+                statements: "Financial Stmts", budget: "Budgeting", tax: "Tax & Zakat",
+                settings: "Financial Settings"
             }
         }
     };
 
-    // --- 5. دوال البناء ---
+    // --- 5. دوال البناء والتهيئة ---
     function init() {
         applySettings();
         renderSidebar();
@@ -184,6 +197,7 @@
             menuHTML += `<div class="px-4 mt-6 mb-2 text-[11px] font-bold text-slate-400 uppercase tracking-wider opacity-80">${dict.sections[group.section]}</div>`;
             group.items.forEach(item => {
                 const isActive = currentPath === item.link;
+                // BRAND RED: Active State
                 const activeClass = isActive ? "bg-brandRed/10 text-brandRed border-r-4 border-brandRed" : "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-brandRed";
                 
                 menuHTML += `
@@ -207,15 +221,18 @@
                     </div>
                 </div>
             </div>
+            
             <div class="p-6 pb-2">
-                <div class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700">
+                <a href="my_profile.html" class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 hover:border-brandRed transition group">
                     <img src="${currentUser.avatar}" class="w-10 h-10 rounded-full border border-white shadow-sm">
                     <div class="overflow-hidden">
-                        <p class="text-sm font-bold text-slate-800 dark:text-white truncate">${config.lang === 'ar' ? currentUser.nameAr : currentUser.nameEn}</p>
+                        <p class="text-sm font-bold text-slate-800 dark:text-white truncate group-hover:text-brandRed transition">${config.lang === 'ar' ? currentUser.nameAr : currentUser.nameEn}</p>
                         <p class="text-[10px] text-brandRed font-bold truncate">${config.lang === 'ar' ? currentUser.titleAr : currentUser.titleEn}</p>
                     </div>
-                </div>
+                    <i class="fa-solid fa-chevron-left text-[10px] text-slate-300 group-hover:text-brandRed mr-auto"></i>
+                </a>
             </div>
+
             <nav class="flex-1 overflow-y-auto custom-scroll pb-10">
                 ${menuHTML}
             </nav>
@@ -228,12 +245,13 @@
         const dict = t[config.lang];
         const isRtl = config.lang === 'ar';
         
-        // Notification Logic
+        // Notification Badge Logic
         const unreadCount = notifications.filter(n => !n.read).length;
         const notifBadge = unreadCount > 0 
             ? `<span id="notifBadge" class="absolute top-1.5 right-2 w-2.5 h-2.5 bg-brandRed rounded-full border-2 border-white dark:border-slate-800"></span>` 
             : '';
 
+        // Build Notification Items
         let notifItemsHTML = '';
         if (notifications.length > 0) {
             notifications.forEach(n => {
@@ -284,10 +302,13 @@
                 <button onclick="window.changeLang()" class="w-9 h-9 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-bold text-slate-600 dark:text-white transition">
                     ${config.lang === 'ar' ? 'EN' : 'عربي'}
                 </button>
+                
                 <button onclick="window.changeTheme()" class="w-9 h-9 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-yellow-400 transition">
                     <i class="fa-solid ${config.theme === 'dark' ? 'fa-sun' : 'fa-moon'}"></i>
                 </button>
+                
                 <div class="h-6 w-px bg-slate-200 dark:bg-slate-700 mx-1"></div>
+                
                 <button onclick="window.doLogout()" class="text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-2">
                     <i class="fa-solid fa-power-off"></i> <span>${dict.logout}</span>
                 </button>
@@ -295,11 +316,12 @@
         </header>`;
     }
 
-    // --- 6. الوظائف العامة ---
+    // --- 6. الوظائف العامة (Global Functions) ---
     window.changeTheme = () => { localStorage.setItem('theme', config.theme === 'dark' ? 'light' : 'dark'); location.reload(); };
     window.changeLang = () => { localStorage.setItem('lang', config.lang === 'ar' ? 'en' : 'ar'); location.reload(); };
     window.doLogout = () => { if(confirm('Log out?')) window.location.href = 'https://androgov-sa.github.io/AIT/login.html'; };
     
+    // وظائف الإشعارات
     window.toggleNotif = () => {
         const dropdown = document.getElementById('notifDropdown');
         dropdown.classList.toggle('hidden');
@@ -308,7 +330,9 @@
     window.markRead = () => {
         const badge = document.getElementById('notifBadge');
         if(badge) badge.remove();
+        // Here you would normally send a request to mark all as read
     };
 
+    // تشغيل النظام
     init();
 })();
