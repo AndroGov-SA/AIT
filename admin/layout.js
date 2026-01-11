@@ -1,6 +1,7 @@
 /**
- * AndroGov Layout Engine v4.3 (Added System Settings)
- * - Added 'admin_settings.html' to Admin Menu.
+ * AndroGov Layout Engine v4.4 (Admin Notifications Added)
+ * - Added Notification Bell to Header.
+ * - Admin-Specific Content (Security, Policy, HR Alerts).
  */
 
 (function() {
@@ -18,7 +19,29 @@
         avatar: "https://ui-avatars.com/api/?name=Ayman+Almaghrabi&background=FB4747&color=fff"
     };
 
-    // --- 2. Menu Structure Data ---
+    // --- 2. Admin Notifications Data (New) ---
+    const notifications = [
+        {
+            id: 1, type: 'critical', icon: 'fa-shield-virus', color: 'text-red-500 bg-red-50',
+            titleAr: 'تنبيه أمني عاجل', titleEn: 'Security Alert',
+            msgAr: 'تم رصد 3 محاولات دخول فاشلة من IP غريب.', msgEn: '3 Failed login attempts from unknown IP.',
+            time: '2m'
+        },
+        {
+            id: 2, type: 'warning', icon: 'fa-file-signature', color: 'text-orange-500 bg-orange-50',
+            titleAr: 'طلب تعديل سياسة', titleEn: 'Policy Change Request',
+            msgAr: 'المدير المالي يطلب رفع سقف المشتريات.', msgEn: 'CFO requests raising PO limit.',
+            time: '1h'
+        },
+        {
+            id: 3, type: 'info', icon: 'fa-passport', color: 'text-blue-500 bg-blue-50',
+            titleAr: 'تنبيهات الموارد البشرية', titleEn: 'HR Alert',
+            msgAr: 'إقامة الموظف (محمد علي) تنتهي خلال 5 أيام.', msgEn: 'Residency expiring for Mohammed Ali in 5 days.',
+            time: '3h'
+        }
+    ];
+
+    // --- 3. Menu Structure Data ---
     const menuStructure = [
         {
             section: 'main',
@@ -64,17 +87,20 @@
             items: [
                 { key: 'users', icon: 'fa-users-gear', link: 'users.html' },
                 { key: 'audit', icon: 'fa-list-ul', link: 'audit.html' },
-                { key: 'settings', icon: 'fa-sliders', link: 'admin_settings.html' } // ✅ تمت الإضافة هنا
+                { key: 'settings', icon: 'fa-sliders', link: 'admin_settings.html' }
             ]
         }
     ];
 
-    // --- 3. Translations Dictionary ---
+    // --- 4. Translations Dictionary ---
     const t = {
         ar: {
             sysName: "AndroGov",
             sysVer: "Enterprise v4.0",
             logout: "تسجيل خروج",
+            notifTitle: "الإشعارات والتنبيهات",
+            markRead: "تحديد الكل كمقروء",
+            emptyNotif: "لا توجد إشعارات جديدة",
             sections: {
                 main: "الرئيسية",
                 comm: "التواصل المؤسسي",
@@ -100,13 +126,16 @@
                 it: "التقنية والأمن",
                 users: "المستخدمين والصلاحيات",
                 audit: "سجل التدقيق",
-                settings: "إعدادات النظام" // ✅ الترجمة العربية
+                settings: "إعدادات النظام"
             }
         },
         en: {
             sysName: "AndroGov",
             sysVer: "Enterprise v4.0",
             logout: "Logout",
+            notifTitle: "Notifications",
+            markRead: "Mark all as read",
+            emptyNotif: "No new notifications",
             sections: {
                 main: "Main",
                 comm: "Communication",
@@ -132,18 +161,27 @@
                 it: "IT & Security",
                 users: "Users & Roles",
                 audit: "Audit Logs",
-                settings: "System Settings" // ✅ English Translation
+                settings: "System Settings"
             }
         }
     };
 
-    // --- 4. Core Logic ---
+    // --- 5. Core Logic ---
 
     function init() {
         applySettings();
         renderSidebar();
         renderHeader();
         document.body.style.opacity = '1';
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const notifMenu = document.getElementById('notifDropdown');
+            const notifBtn = document.getElementById('notifBtn');
+            if (notifMenu && !notifMenu.contains(event.target) && !notifBtn.contains(event.target)) {
+                notifMenu.classList.add('hidden');
+            }
+        });
     }
 
     function applySettings() {
@@ -235,6 +273,27 @@
         if (!container) return;
         
         const dict = t[config.lang];
+        const isRtl = config.lang === 'ar';
+
+        // Build Notification Items
+        let notifListHTML = '';
+        if(notifications.length > 0) {
+            notifications.forEach(n => {
+                notifListHTML += `
+                <div class="p-3 border-b border-slate-100 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition cursor-pointer flex gap-3">
+                    <div class="w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${n.color}">
+                        <i class="fa-solid ${n.icon} text-xs"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs font-bold text-slate-800 dark:text-white">${isRtl ? n.titleAr : n.titleEn}</p>
+                        <p class="text-[10px] text-slate-500 mt-0.5 leading-snug">${isRtl ? n.msgAr : n.msgEn}</p>
+                        <p class="text-[9px] text-slate-400 mt-1">${n.time}</p>
+                    </div>
+                </div>`;
+            });
+        } else {
+            notifListHTML = `<div class="p-6 text-center text-slate-400 text-xs">${dict.emptyNotif}</div>`;
+        }
         
         container.innerHTML = `
         <header class="h-20 sticky top-0 z-40 flex items-center justify-between px-6 bg-white/80 dark:bg-[#0F172A]/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 transition-all">
@@ -243,6 +302,24 @@
             </div>
 
             <div class="flex items-center gap-3">
+                
+                <div class="relative">
+                    <button id="notifBtn" onclick="window.toggleNotif()" class="w-9 h-9 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-white transition relative flex items-center justify-center">
+                        <i class="fa-regular fa-bell"></i>
+                        <span class="absolute top-2 right-2.5 w-2 h-2 bg-brandRed rounded-full border border-white dark:border-slate-800"></span>
+                    </button>
+                    
+                    <div id="notifDropdown" class="hidden absolute top-12 ${isRtl ? 'left-0' : 'right-0'} w-80 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 overflow-hidden z-50">
+                        <div class="p-3 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-900/50">
+                            <span class="text-xs font-bold dark:text-white">${dict.notifTitle}</span>
+                            <button class="text-[10px] text-brandRed hover:underline">${dict.markRead}</button>
+                        </div>
+                        <div class="max-h-64 overflow-y-auto custom-scroll">
+                            ${notifListHTML}
+                        </div>
+                    </div>
+                </div>
+
                 <button onclick="window.changeLang()" class="h-9 px-3 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-xs font-bold text-slate-600 dark:text-white transition">
                     ${config.lang === 'ar' ? 'English' : 'عربي'}
                 </button>
@@ -256,6 +333,13 @@
             </div>
         </header>`;
     }
+
+    // --- 6. Global Functions (Exposed) ---
+    
+    window.toggleNotif = function() {
+        const d = document.getElementById('notifDropdown');
+        d.classList.toggle('hidden');
+    };
 
     window.changeTheme = function() {
         const newTheme = config.theme === 'dark' ? 'light' : 'dark';
