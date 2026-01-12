@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="pageTitle">سجل المكالمات | AndroGov</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { 
+                        brandRed: '#FB4747', 
+                        techDark: '#0F172A', 
+                        cyberGreen: '#10B981', 
+                        alertOrange: '#F59E0B' 
+                    },
+                    fontFamily: { 
+                        sans: ['Tajawal', 'sans-serif'], 
+                        mono: ['IBM Plex Mono', 'monospace'] 
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .font-mono { font-family: 'IBM Plex Mono', monospace; }
+        .num-font { font-family: 'IBM Plex Mono', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-200 font-sans transition-colors duration-300 opacity-0">
+
+    <div id="sidebar-container"></div>
+    
+    <div class="main-content-wrapper transition-all duration-300 flex flex-col min-h-screen">
+        <div id="header-container"></div>
+
+        <main class="p-6 space-y-6">
+            
+            <div class="flex flex-col md:flex-row justify-between items-end gap-6 bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-500 to-brandRed"></div>
+                
+                <div class="relative z-10">
+                    <h1 class="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2 mb-2">
+                        <i class="fa-solid fa-list-ol text-brandRed"></i> <span data-i18n="headerTitle">سجل المكالمات (Call Logs)</span>
+                    </h1>
+                    <p class="text-sm text-slate-500 mt-1 max-w-2xl" data-i18n="headerDesc">استعراض وتحليل سجلات الاتصالات، التسجيلات الصوتية، وحالة الخطوط.</p>
+                </div>
+                
+                <div class="flex gap-3 relative z-10">
+                    <div class="flex items-center bg-slate-100 dark:bg-slate-800 rounded-lg p-1 border border-slate-200 dark:border-slate-700">
+                        <button class="px-3 py-1.5 bg-white dark:bg-slate-700 shadow-sm rounded-md text-xs font-bold text-slate-800 dark:text-white transition" data-i18n="filterToday">اليوم</button>
+                        <button class="px-3 py-1.5 text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-brandRed transition" data-i18n="filterWeek">أسبوع</button>
+                        <button class="px-3 py-1.5 text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-brandRed transition" data-i18n="filterMonth">شهر</button>
+                    </div>
+                    <button class="px-5 py-2.5 bg-brandRed text-white rounded-xl text-xs font-bold shadow-lg shadow-red-500/30 hover:bg-red-700 transition flex items-center gap-2">
+                        <i class="fa-solid fa-file-export"></i> <span data-i18n="btnExport">تصدير التقرير</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-xs text-slate-500 uppercase font-bold" data-i18n="statTotal">إجمالي المكالمات</p>
+                            <h3 class="text-2xl font-bold font-mono text-slate-900 dark:text-white mt-1">1,450</h3>
+                        </div>
+                        <div class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500"><i class="fa-solid fa-phone"></i></div>
+                    </div>
+                </div>
+                <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-xs text-slate-500 uppercase font-bold" data-i18n="statIn">واردة (Inbound)</p>
+                            <h3 class="text-2xl font-bold font-mono text-green-600 mt-1">850</h3>
+                        </div>
+                        <div class="w-10 h-10 rounded-full bg-green-50 dark:bg-green-900/20 flex items-center justify-center text-green-600"><i class="fa-solid fa-arrow-down-long"></i></div>
+                    </div>
+                </div>
+                <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-xs text-slate-500 uppercase font-bold" data-i18n="statOut">صادرة (Outbound)</p>
+                            <h3 class="text-2xl font-bold font-mono text-blue-600 mt-1">550</h3>
+                        </div>
+                        <div class="w-10 h-10 rounded-full bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-600"><i class="fa-solid fa-arrow-up-long"></i></div>
+                    </div>
+                </div>
+                <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-xs text-slate-500 uppercase font-bold" data-i18n="statMissed">فائتة (Missed)</p>
+                            <h3 class="text-2xl font-bold font-mono text-red-500 mt-1">50</h3>
+                        </div>
+                        <div class="w-10 h-10 rounded-full bg-red-50 dark:bg-red-900/20 flex items-center justify-center text-red-500"><i class="fa-solid fa-phone-slash"></i></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 flex flex-col md:flex-row gap-4 items-center">
+                <div class="relative w-full md:w-64">
+                    <input type="text" placeholder="..." class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:ring-2 focus:ring-brandRed outline-none dark:text-white transition" data-i18n="phSearch">
+                    <i class="fa-solid fa-search absolute top-3.5 left-3 text-slate-400"></i>
+                </div>
+                
+                <div class="flex flex-1 gap-2 w-full overflow-x-auto">
+                    <select class="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2.5 text-sm font-bold text-slate-600 dark:text-slate-300 focus:ring-2 focus:ring-brandRed outline-none min-w-[120px]">
+                        <option data-i18n="optAllType">جميع الأنواع</option>
+                        <option>Inbound</option>
+                        <option>Outbound</option>
+                        <option>Missed</option>
+                    </select>
+                    <select class="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2.5 text-sm font-bold text-slate-600 dark:text-slate-300 focus:ring-2 focus:ring-brandRed outline-none min-w-[120px]">
+                        <option data-i18n="optAllStatus">كل الحالات</option>
+                        <option>Answered</option>
+                        <option>Busy</option>
+                        <option>Failed</option>
+                    </select>
+                    <input type="date" class="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2.5 text-sm font-bold text-slate-600 dark:text-slate-300 focus:ring-2 focus:ring-brandRed outline-none">
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <span class="text-xs text-slate-400 font-bold" data-i18n="lblAutoRefresh">تحديث تلقائي</span>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" class="sr-only peer" checked>
+                        <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brandRed"></div>
+                    </label>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-right rtl:text-right ltr:text-left">
+                        <thead class="bg-slate-50 dark:bg-slate-800/50 text-slate-500 text-xs font-bold uppercase">
+                            <tr>
+                                <th class="p-4 w-10"></th>
+                                <th class="p-4" data-i18n="colFrom">من (Caller)</th>
+                                <th class="p-4" data-i18n="colTo">إلى (Dest)</th>
+                                <th class="p-4" data-i18n="colDate">التاريخ والوقت</th>
+                                <th class="p-4" data-i18n="colDuration">المدة</th>
+                                <th class="p-4 text-center" data-i18n="colStatus">الحالة</th>
+                                <th class="p-4 text-center" data-i18n="colRec">التسجيل</th>
+                                <th class="p-4 w-10"></th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 dark:divide-slate-800 dark:text-slate-300 font-mono text-xs">
+                            
+                            <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition group">
+                                <td class="p-4 text-center text-green-500"><i class="fa-solid fa-arrow-down-long transform rotate-45"></i></td>
+                                <td class="p-4 font-bold text-slate-800 dark:text-white">0551234567</td>
+                                <td class="p-4"><span class="bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded text-[10px]">Ext 101</span></td>
+                                <td class="p-4">2026-03-15 10:42:05</td>
+                                <td class="p-4 font-bold">04:12</td>
+                                <td class="p-4 text-center"><span class="bg-green-100 text-green-700 px-2 py-0.5 rounded text-[10px] font-sans font-bold" data-i18n="stAnswered">مكالمة ناجحة</span></td>
+                                <td class="p-4 text-center">
+                                    <button onclick="playAudio('call1')" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-brandRed hover:text-white text-slate-500 transition flex items-center justify-center">
+                                        <i class="fa-solid fa-play text-xs"></i>
+                                    </button>
+                                </td>
+                                <td class="p-4 text-center"><button class="text-slate-400 hover:text-brandRed"><i class="fa-solid fa-ellipsis-vertical"></i></button></td>
+                            </tr>
+
+                            <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition group">
+                                <td class="p-4 text-center text-blue-500"><i class="fa-solid fa-arrow-up-long transform rotate-45"></i></td>
+                                <td class="p-4 font-bold text-slate-800 dark:text-white">Ext 205</td>
+                                <td class="p-4">0112345678</td>
+                                <td class="p-4">2026-03-15 10:35:10</td>
+                                <td class="p-4 font-bold">01:30</td>
+                                <td class="p-4 text-center"><span class="bg-green-100 text-green-700 px-2 py-0.5 rounded text-[10px] font-sans font-bold" data-i18n="stAnswered">مكالمة ناجحة</span></td>
+                                <td class="p-4 text-center">
+                                    <button class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-brandRed hover:text-white text-slate-500 transition flex items-center justify-center">
+                                        <i class="fa-solid fa-play text-xs"></i>
+                                    </button>
+                                </td>
+                                <td class="p-4 text-center"><button class="text-slate-400 hover:text-brandRed"><i class="fa-solid fa-ellipsis-vertical"></i></button></td>
+                            </tr>
+
+                            <tr class="hover:bg-red-50/30 dark:hover:bg-red-900/10 transition group">
+                                <td class="p-4 text-center text-red-500"><i class="fa-solid fa-phone-slash"></i></td>
+                                <td class="p-4 font-bold text-slate-800 dark:text-white">0509988776</td>
+                                <td class="p-4"><span class="bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded text-[10px]">Ext 205</span></td>
+                                <td class="p-4">2026-03-15 09:15:00</td>
+                                <td class="p-4 font-bold text-red-500">00:00</td>
+                                <td class="p-4 text-center"><span class="bg-red-100 text-red-700 px-2 py-0.5 rounded text-[10px] font-sans font-bold" data-i18n="stMissed">مكالمة فائتة</span></td>
+                                <td class="p-4 text-center text-slate-300 text-xs">-</td>
+                                <td class="p-4 text-center"><button class="text-slate-400 hover:text-brandRed"><i class="fa-solid fa-ellipsis-vertical"></i></button></td>
+                            </tr>
+                            
+                            <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition group">
+                                <td class="p-4 text-center text-green-500"><i class="fa-solid fa-arrow-down-long transform rotate-45"></i></td>
+                                <td class="p-4 font-bold text-slate-800 dark:text-white">0543322110</td>
+                                <td class="p-4"><span class="bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded text-[10px]">Ext 301</span></td>
+                                <td class="p-4">2026-03-15 08:45:22</td>
+                                <td class="p-4 font-bold">10:15</td>
+                                <td class="p-4 text-center"><span class="bg-green-100 text-green-700 px-2 py-0.5 rounded text-[10px] font-sans font-bold" data-i18n="stAnswered">مكالمة ناجحة</span></td>
+                                <td class="p-4 text-center">
+                                    <button class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-brandRed hover:text-white text-slate-500 transition flex items-center justify-center">
+                                        <i class="fa-solid fa-play text-xs"></i>
+                                    </button>
+                                </td>
+                                <td class="p-4 text-center"><button class="text-slate-400 hover:text-brandRed"><i class="fa-solid fa-ellipsis-vertical"></i></button></td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="p-4 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center text-xs text-slate-500 font-sans">
+                    <span data-i18n="lblShowing">عرض 1-4 من 1450</span>
+                    <div class="flex gap-2">
+                        <button class="px-3 py-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded hover:bg-slate-50 transition"><i class="fa-solid fa-chevron-right rtl:rotate-180"></i></button>
+                        <button class="px-3 py-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded hover:bg-slate-50 transition"><i class="fa-solid fa-chevron-left rtl:rotate-180"></i></button>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <div id="audioModal" class="fixed inset-0 bg-black/60 hidden z-50 flex items-center justify-center backdrop-blur-sm p-4">
+        <div class="bg-white dark:bg-slate-900 w-full max-w-md rounded-3xl shadow-2xl p-6 border-t-4 border-brandRed animate-fade-in-up">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="font-bold text-lg dark:text-white flex items-center gap-2">
+                    <i class="fa-solid fa-headphones text-brandRed"></i> <span data-i18n="modPlayer">تشغيل التسجيل</span>
+                </h3>
+                <button onclick="document.getElementById('audioModal').classList.add('hidden')"><i class="fa-solid fa-xmark text-slate-400 hover:text-red-500"></i></button>
+            </div>
+            
+            <div class="bg-slate-100 dark:bg-slate-800 p-4 rounded-xl mb-4 flex items-center justify-center">
+                <div class="flex items-center gap-1 h-8">
+                    <div class="w-1 bg-brandRed h-3 animate-pulse"></div>
+                    <div class="w-1 bg-brandRed h-5 animate-pulse" style="animation-delay: 0.1s"></div>
+                    <div class="w-1 bg-brandRed h-8 animate-pulse" style="animation-delay: 0.2s"></div>
+                    <div class="w-1 bg-brandRed h-4 animate-pulse" style="animation-delay: 0.3s"></div>
+                    <div class="w-1 bg-brandRed h-6 animate-pulse" style="animation-delay: 0.1s"></div>
+                    <div class="w-1 bg-brandRed h-3 animate-pulse" style="animation-delay: 0.4s"></div>
+                    <div class="w-1 bg-brandRed h-7 animate-pulse" style="animation-delay: 0.2s"></div>
+                    <div class="w-1 bg-brandRed h-4 animate-pulse" style="animation-delay: 0.3s"></div>
+                    <div class="w-1 bg-brandRed h-2 animate-pulse" style="animation-delay: 0.1s"></div>
+                    <div class="w-1 bg-brandRed h-5 animate-pulse" style="animation-delay: 0.4s"></div>
+                    <div class="w-1 bg-brandRed h-8 animate-pulse" style="animation-delay: 0.2s"></div>
+                    <div class="w-1 bg-brandRed h-3 animate-pulse" style="animation-delay: 0.3s"></div>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center text-xs text-slate-500 font-mono mb-4">
+                <span>00:12</span>
+                <span>04:12</span>
+            </div>
+
+            <div class="flex justify-center gap-4">
+                <button class="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-white flex items-center justify-center hover:bg-slate-300 dark:hover:bg-slate-600 transition"><i class="fa-solid fa-backward"></i></button>
+                <button class="w-12 h-12 rounded-full bg-brandRed text-white flex items-center justify-center hover:bg-red-700 transition shadow-lg"><i class="fa-solid fa-pause"></i></button>
+                <button class="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-white flex items-center justify-center hover:bg-slate-300 dark:hover:bg-slate-600 transition"><i class="fa-solid fa-forward"></i></button>
+            </div>
+            
+            <div class="mt-6 text-center">
+                <button class="text-xs text-brandRed hover:underline font-bold flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-download"></i> <span data-i18n="btnDownloadRec">تحميل الملف الصوتي (MP3)</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="layout-cto.js"></script>
+    <script src="bot.js"></script>
+
+    <script>
+        const pageContent = {
+            ar: {
+                pageTitle: "سجل المكالمات | AndroGov",
+                headerTitle: "سجل المكالمات (Call Logs)",
+                headerDesc: "استعراض وتحليل سجلات الاتصالات، التسجيلات الصوتية، وحالة الخطوط.",
+                filterToday: "اليوم",
+                filterWeek: "أسبوع",
+                filterMonth: "شهر",
+                btnExport: "تصدير التقرير",
+                statTotal: "إجمالي المكالمات",
+                statIn: "واردة (Inbound)",
+                statOut: "صادرة (Outbound)",
+                statMissed: "فائتة (Missed)",
+                phSearch: "بحث برقم الهاتف أو التحويلة...",
+                optAllType: "جميع الأنواع",
+                optAllStatus: "كل الحالات",
+                lblAutoRefresh: "تحديث تلقائي",
+                colFrom: "من (Caller)",
+                colTo: "إلى (Dest)",
+                colDate: "التاريخ والوقت",
+                colDuration: "المدة",
+                colStatus: "الحالة",
+                colRec: "التسجيل",
+                stAnswered: "مكالمة ناجحة",
+                stMissed: "مكالمة فائتة",
+                lblShowing: "عرض 1-4 من 1450",
+                modPlayer: "تشغيل التسجيل",
+                btnDownloadRec: "تحميل الملف الصوتي (MP3)"
+            },
+            en: {
+                pageTitle: "Call Logs | AndroGov",
+                headerTitle: "Call Logs & Records",
+                headerDesc: "Review and analyze call history, audio recordings, and trunk status.",
+                filterToday: "Today",
+                filterWeek: "Week",
+                filterMonth: "Month",
+                btnExport: "Export Report",
+                statTotal: "Total Calls",
+                statIn: "Inbound",
+                statOut: "Outbound",
+                statMissed: "Missed",
+                phSearch: "Search by Number or Ext...",
+                optAllType: "All Types",
+                optAllStatus: "All Status",
+                lblAutoRefresh: "Auto Refresh",
+                colFrom: "From",
+                colTo: "To",
+                colDate: "Date & Time",
+                colDuration: "Duration",
+                colStatus: "Status",
+                colRec: "Recording",
+                stAnswered: "Answered",
+                stMissed: "Missed Call",
+                lblShowing: "Showing 1-4 of 1450",
+                modPlayer: "Audio Player",
+                btnDownloadRec: "Download Audio (MP3)"
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const lang = localStorage.getItem('lang') || 'ar';
+            const dict = pageContent[lang];
+            
+            document.documentElement.lang = lang;
+            document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if(dict[key]) {
+                    if(el.tagName === 'INPUT') el.placeholder = dict[key];
+                    else el.innerText = dict[key];
+                }
+            });
+        });
+
+        function playAudio(id) {
+            document.getElementById('audioModal').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
