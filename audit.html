@@ -134,20 +134,26 @@
       </button>
     </nav>
 
-    <div class="p-4 border-t border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition shrink-0" onclick="logout()">
-      <div class="flex items-center gap-3">
+    <div class="p-4 border-t border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 transition shrink-0">
+    <div class="flex items-center gap-3">
+        
         <div class="relative">
-          <div class="w-10 h-10 rounded-full bg-brandRed text-white flex items-center justify-center font-bold text-sm shadow-sm border-2 border-white dark:border-slate-700">IA</div>
-          <span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white dark:border-slate-700 rounded-full"></span>
+            <div class="w-10 h-10 rounded-full bg-brandRed text-white flex items-center justify-center font-bold text-sm shadow-sm border-2 border-white dark:border-slate-700">IA</div>
+            <span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white dark:border-slate-700 rounded-full"></span>
         </div>
+        
         <div class="flex-1 min-w-0">
-          <p class="text-sm font-bold truncate text-slate-800 dark:text-white" data-i18n="user_name">علي الغامدي</p>
-          <p class="text-[10px] text-slate-500 truncate" data-i18n="user_role">Internal Auditor</p>
+            <p class="text-sm font-bold truncate text-slate-800 dark:text-white" data-i18n="user_name">علي الغامدي</p>
+            <p class="text-[10px] text-slate-500 truncate" data-i18n="user_role">Internal Auditor</p>
         </div>
-        <i class="fa-solid fa-right-from-bracket text-red-500 text-sm" title="Logout"></i>
-      </div>
+        
+        <a href="login.html" class="cursor-pointer hover:opacity-70 transition-opacity" title="تسجيل خروج">
+            <i class="fa-solid fa-right-from-bracket text-red-500 text-sm"></i>
+        </a>
+
     </div>
-  </aside>
+</div>
+</aside>
 
   <!-- Main -->
   <main class="flex-1 flex flex-col h-full relative overflow-hidden bg-white dark:bg-slate-900">
