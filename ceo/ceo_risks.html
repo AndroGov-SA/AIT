@@ -126,15 +126,15 @@
                     </h3>
                     <div class="flex gap-2">
                         <select class="bg-slate-50 dark:bg-slate-700 border-none rounded-lg text-xs py-2 px-3 text-slate-600 dark:text-slate-300 focus:ring-2 focus:ring-brandRed">
-                            <option>جميع الفئات</option>
-                            <option>مالية</option>
-                            <option>تشغيلية</option>
-                            <option>تقنية</option>
+                            <option data-i18n="optAllCat">جميع الفئات</option>
+                            <option data-i18n="optFin">مالية</option>
+                            <option data-i18n="optOps">تشغيلية</option>
+                            <option data-i18n="optTech">تقنية</option>
                         </select>
                         <select class="bg-slate-50 dark:bg-slate-700 border-none rounded-lg text-xs py-2 px-3 text-slate-600 dark:text-slate-300 focus:ring-2 focus:ring-brandRed">
-                            <option>جميع المستويات</option>
-                            <option class="text-red-600 font-bold">عالي (High)</option>
-                            <option>متوسط (Medium)</option>
+                            <option data-i18n="optAllLvl">جميع المستويات</option>
+                            <option class="text-red-600 font-bold" data-i18n="optHigh">عالي (High)</option>
+                            <option data-i18n="optMed">متوسط (Medium)</option>
                         </select>
                     </div>
                 </div>
@@ -155,8 +155,8 @@
                             
                             <tr class="hover:bg-red-50/50 dark:hover:bg-red-900/10 transition group">
                                 <td class="p-4">
-                                    <p class="font-bold text-slate-800 dark:text-white text-xs">نقص السيولة النقدية (Q2)</p>
-                                    <p class="text-[10px] text-slate-400 mt-1">بسبب تأخر دفعات العقود الحكومية</p>
+                                    <p class="font-bold text-slate-800 dark:text-white text-xs" data-i18n="risk1Title">نقص السيولة النقدية (Q2)</p>
+                                    <p class="text-[10px] text-slate-400 mt-1" data-i18n="risk1Desc">بسبب تأخر دفعات العقود الحكومية</p>
                                 </td>
                                 <td class="p-4"><span class="bg-slate-100 dark:bg-slate-700 text-slate-500 px-2 py-1 rounded text-[10px]" data-i18n="catFin">مالي</span></td>
                                 <td class="p-4 text-center">
@@ -172,7 +172,7 @@
                                     <div class="w-full bg-slate-100 dark:bg-slate-700 h-1.5 rounded-full mb-1">
                                         <div class="bg-orange-500 h-full" style="width: 40%"></div>
                                     </div>
-                                    <span class="text-[10px] text-orange-500 font-bold">جاري التفاوض مع البنك</span>
+                                    <span class="text-[10px] text-orange-500 font-bold" data-i18n="statusNeg">جاري التفاوض مع البنك</span>
                                 </td>
                                 <td class="p-4 text-center">
                                     <button class="text-slate-400 hover:text-brandRed transition"><i class="fa-solid fa-angle-left rtl:rotate-0 ltr:rotate-180"></i></button>
@@ -181,8 +181,8 @@
 
                             <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition group">
                                 <td class="p-4">
-                                    <p class="font-bold text-slate-800 dark:text-white text-xs">عدم الامتثال لمعايير NCA</p>
-                                    <p class="text-[10px] text-slate-400 mt-1">تحديث سياسات الأمن السيبراني</p>
+                                    <p class="font-bold text-slate-800 dark:text-white text-xs" data-i18n="risk2Title">عدم الامتثال لمعايير NCA</p>
+                                    <p class="text-[10px] text-slate-400 mt-1" data-i18n="risk2Desc">تحديث سياسات الأمن السيبراني</p>
                                 </td>
                                 <td class="p-4"><span class="bg-slate-100 dark:bg-slate-700 text-slate-500 px-2 py-1 rounded text-[10px]" data-i18n="catTech">تقني</span></td>
                                 <td class="p-4 text-center">
@@ -198,7 +198,7 @@
                                     <div class="w-full bg-slate-100 dark:bg-slate-700 h-1.5 rounded-full mb-1">
                                         <div class="bg-green-500 h-full" style="width: 80%"></div>
                                     </div>
-                                    <span class="text-[10px] text-green-500 font-bold">مرحلة التدقيق النهائي</span>
+                                    <span class="text-[10px] text-green-500 font-bold" data-i18n="statusAudit">مرحلة التدقيق النهائي</span>
                                 </td>
                                 <td class="p-4 text-center">
                                     <button class="text-slate-400 hover:text-brandRed transition"><i class="fa-solid fa-angle-left rtl:rotate-0 ltr:rotate-180"></i></button>
@@ -207,8 +207,8 @@
 
                             <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition group">
                                 <td class="p-4">
-                                    <p class="font-bold text-slate-800 dark:text-white text-xs">تسرب الكفاءات (Turnover)</p>
-                                    <p class="text-[10px] text-slate-400 mt-1">ارتفاع معدل الاستقالات في قسم المبيعات</p>
+                                    <p class="font-bold text-slate-800 dark:text-white text-xs" data-i18n="risk3Title">تسرب الكفاءات (Turnover)</p>
+                                    <p class="text-[10px] text-slate-400 mt-1" data-i18n="risk3Desc">ارتفاع معدل الاستقالات في قسم المبيعات</p>
                                 </td>
                                 <td class="p-4"><span class="bg-slate-100 dark:bg-slate-700 text-slate-500 px-2 py-1 rounded text-[10px]" data-i18n="catOps">تشغيلي</span></td>
                                 <td class="p-4 text-center">
@@ -224,7 +224,7 @@
                                     <div class="w-full bg-slate-100 dark:bg-slate-700 h-1.5 rounded-full mb-1">
                                         <div class="bg-blue-500 h-full" style="width: 20%"></div>
                                     </div>
-                                    <span class="text-[10px] text-blue-500 font-bold">دراسة الرواتب المعيارية</span>
+                                    <span class="text-[10px] text-blue-500 font-bold" data-i18n="statusReview">دراسة الرواتب المعيارية</span>
                                 </td>
                                 <td class="p-4 text-center">
                                     <button class="text-slate-400 hover:text-brandRed transition"><i class="fa-solid fa-angle-left rtl:rotate-0 ltr:rotate-180"></i></button>
@@ -251,18 +251,18 @@
             <div class="space-y-4">
                 <div>
                     <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblRiskName">وصف الخطر</label>
-                    <input type="text" class="w-full bg-slate-50 dark:bg-slate-700 border dark:border-slate-600 rounded-xl p-3 text-sm dark:text-white focus:ring-2 focus:ring-brandRed focus:border-brandRed outline-none transition" placeholder="اكتب وصفاً موجزاً للخطر...">
+                    <input type="text" class="w-full bg-slate-50 dark:bg-slate-700 border dark:border-slate-600 rounded-xl p-3 text-sm dark:text-white focus:ring-2 focus:ring-brandRed focus:border-brandRed outline-none transition" placeholder="...">
                 </div>
                 
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblCategory">الفئة</label>
                         <select class="w-full bg-slate-50 dark:bg-slate-700 border dark:border-slate-600 rounded-xl p-3 text-sm dark:text-white focus:ring-2 focus:ring-brandRed outline-none">
-                            <option>مالي</option>
-                            <option>تشغيلي</option>
-                            <option>استراتيجي</option>
-                            <option>تقني/سيبراني</option>
-                            <option>قانوني</option>
+                            <option data-i18n="optFin">مالي</option>
+                            <option data-i18n="optOps">تشغيلي</option>
+                            <option data-i18n="optStrat">استراتيجي</option>
+                            <option data-i18n="optTech">تقني/سيبراني</option>
+                            <option data-i18n="optLegal">قانوني</option>
                         </select>
                     </div>
                     <div>
@@ -295,7 +295,7 @@
 
             <div class="mt-6 flex justify-end gap-3 pt-4 border-t dark:border-slate-700">
                 <button onclick="document.getElementById('riskModal').classList.add('hidden')" class="px-5 py-2.5 text-slate-500 text-xs font-bold hover:bg-slate-50 rounded-xl dark:hover:bg-slate-700" data-i18n="btnCancel">إلغاء</button>
-                <button onclick="alert('تم تسجيل الخطر بنجاح'); document.getElementById('riskModal').classList.add('hidden')" class="px-6 py-2.5 bg-brandRed text-white rounded-xl text-xs font-bold hover:bg-red-700 shadow-lg shadow-red-500/30 flex items-center gap-2">
+                <button onclick="alert('Risk Saved'); document.getElementById('riskModal').classList.add('hidden')" class="px-6 py-2.5 bg-brandRed text-white rounded-xl text-xs font-bold hover:bg-red-700 shadow-lg shadow-red-500/30 flex items-center gap-2">
                     <i class="fa-solid fa-save"></i> <span data-i18n="btnSave">حفظ في السجل</span>
                 </button>
             </div>
@@ -340,7 +340,25 @@
                 lblImpact: "الأثر (1-5)",
                 lblPlan: "خطة المعالجة المبدئية",
                 btnCancel: "إلغاء",
-                btnSave: "حفظ في السجل"
+                btnSave: "حفظ في السجل",
+                optAllCat: "جميع الفئات",
+                optFin: "مالي",
+                optOps: "تشغيلية",
+                optTech: "تقني/سيبراني",
+                optAllLvl: "جميع المستويات",
+                optHigh: "عالي (High)",
+                optMed: "متوسط (Medium)",
+                optStrat: "استراتيجي",
+                optLegal: "قانوني",
+                risk1Title: "نقص السيولة النقدية (Q2)",
+                risk1Desc: "بسبب تأخر دفعات العقود الحكومية",
+                statusNeg: "جاري التفاوض مع البنك",
+                risk2Title: "عدم الامتثال لمعايير NCA",
+                risk2Desc: "تحديث سياسات الأمن السيبراني",
+                statusAudit: "مرحلة التدقيق النهائي",
+                risk3Title: "تسرب الكفاءات (Turnover)",
+                risk3Desc: "ارتفاع معدل الاستقالات في قسم المبيعات",
+                statusReview: "دراسة الرواتب المعيارية"
             },
             en: {
                 pageTitle: "Risk Register | AndroGov",
@@ -375,7 +393,25 @@
                 lblImpact: "Impact (1-5)",
                 lblPlan: "Initial Mitigation Plan",
                 btnCancel: "Cancel",
-                btnSave: "Save Risk"
+                btnSave: "Save Risk",
+                optAllCat: "All Categories",
+                optFin: "Financial",
+                optOps: "Operational",
+                optTech: "Technical/Cyber",
+                optAllLvl: "All Levels",
+                optHigh: "High",
+                optMed: "Medium",
+                optStrat: "Strategic",
+                optLegal: "Legal",
+                risk1Title: "Cash Flow Shortage (Q2)",
+                risk1Desc: "Due to delayed payments from gov contracts",
+                statusNeg: "Negotiating with Bank",
+                risk2Title: "Non-Compliance with NCA",
+                risk2Desc: "Update cybersecurity policies",
+                statusAudit: "Final Audit Phase",
+                risk3Title: "Talent Turnover",
+                risk3Desc: "High resignation rate in Sales Dept",
+                statusReview: "Benchmarking Salaries"
             }
         };
 
@@ -388,7 +424,10 @@
 
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
-                if(dict[key]) el.innerText = dict[key];
+                if(dict[key]) {
+                    if(el.tagName === 'OPTION') el.innerText = dict[key];
+                    else el.innerText = dict[key];
+                }
             });
 
             initCharts();
