@@ -1,171 +1,239 @@
 /**
- * AndroGov - CEO Layout Manager
- * يدير القائمة الجانبية، الهيدر، الإشعارات، والتحويل اللغوي لحساب الرئيس التنفيذي
+ * AndroGov - Executive AI Assistant (bot.js)
+ * المساعد الذكي الخاص بالرئيس التنفيذي - يجيب عن الأداء، المبيعات، والمخاطر
  */
 
-const ceoUser = {
-    name: "هشام السحيباني",
-    nameEn: "Hisham Al-Suhaibani",
-    role: "الرئيس التنفيذي (CEO)",
-    roleEn: "Chief Executive Officer",
-    avatar: "https://ui-avatars.com/api/?name=Hisham+S&background=0F172A&color=fff&size=128"
-};
-
-const ceoSidebarItems = [
-    { icon: "fa-solid fa-chart-pie", textAr: "لوحة القيادة", textEn: "Dashboard", link: "ceo_dashboard.html", active: true },
-    { icon: "fa-solid fa-chess", textAr: "الاستراتيجية والأهداف", textEn: "Strategy & OKRs", link: "ceo_strategy.html" },
-    { icon: "fa-solid fa-chart-line", textAr: "المالية والاستثمار", textEn: "Finance & Invest", link: "ceo_finance.html" },
-    { icon: "fa-solid fa-scale-balanced", textAr: "الحوكمة والمخاطر", textEn: "GRC & Board", link: "ceo_governance.html" },
-    { type: "divider" },
-    { icon: "fa-solid fa-bullhorn", textAr: "التعاميم والتوجيهات", textEn: "Announcements", link: "ceo_broadcast.html" },
-    { icon: "fa-solid fa-comments", textAr: "التواصل الداخلي", textEn: "Internal Chat", link: "ceo_communication.html" },
-    { icon: "fa-solid fa-inbox", textAr: "صندوق الشكاوي", textEn: "Complaints Box", link: "ceo_feedback.html", badge: "2" },
-    { type: "divider" },
-    { icon: "fa-solid fa-user-tie", textAr: "ملفي الشخصي", textEn: "My Profile", link: "ceo_profile.html" },
-];
-
 document.addEventListener('DOMContentLoaded', () => {
-    renderCeoLayout();
-    updateCeoLanguage();
+    initBot();
 });
 
-function renderCeoLayout() {
-    const lang = localStorage.getItem('lang') || 'ar';
-    const isRtl = lang === 'ar';
-    const sidebarContainer = document.getElementById('sidebar-container');
-    const headerContainer = document.getElementById('header-container');
+function initBot() {
+    const isRTL = document.documentElement.dir === 'rtl';
+    const lang = document.documentElement.lang || 'ar';
 
-    // 1. Sidebar HTML (فخامة أكثر - لون داكن)
-    if (sidebarContainer) {
-        sidebarContainer.innerHTML = `
-            <aside class="fixed top-0 ${isRtl ? 'right-0' : 'left-0'} z-50 w-72 h-screen bg-slate-900 text-white transition-transform duration-300 shadow-2xl flex flex-col">
-                <div class="h-20 flex items-center justify-center border-b border-slate-800">
-                    <h1 class="text-2xl font-bold tracking-wider flex items-center gap-2">
-                        <i class="fa-solid fa-layer-group text-brandRed"></i> 
-                        <span>Andro<span class="text-brandRed">Gov</span></span>
-                    </h1>
-                </div>
+    // نصوص الواجهة (Executive Persona)
+    const uiText = {
+        ar: {
+            title: "المستشار الذكي",
+            subtitle: "تحليل البيانات ودعم القرار",
+            placeholder: "اسأل عن الأداء، المبيعات، أو المخاطر...",
+            welcome: "أهلاً بك أستاذ هشام 👔\nأنا جاهز لتزويدك بملخصات فورية عن أداء الشركة.\nجرب سؤالي عن: 'صافي الربح'، 'حالة المشاريع'، أو 'المخاطر الحالية'.",
+            send: "إرسال"
+        },
+        en: {
+            title: "AI Advisor",
+            subtitle: "Data Analysis & Decision Support",
+            placeholder: "Ask about Performance, Sales, Risks...",
+            welcome: "Welcome Mr. Hisham 👔\nI am ready to provide instant insights on company performance.\nTry asking about: 'Net Profit', 'Project Status', or 'Current Risks'.",
+            send: "Send"
+        }
+    };
 
-                <div class="p-6 text-center border-b border-slate-800 bg-slate-800/50">
-                    <div class="relative w-20 h-20 mx-auto mb-3">
-                        <img src="${ceoUser.avatar}" class="w-full h-full rounded-full border-4 border-slate-700 shadow-lg">
-                        <span class="absolute bottom-1 right-1 w-4 h-4 bg-green-500 border-2 border-slate-800 rounded-full" title="Online"></span>
-                    </div>
-                    <h3 class="font-bold text-lg text-white">${lang === 'ar' ? ceoUser.name : ceoUser.nameEn}</h3>
-                    <p class="text-xs text-slate-400 uppercase tracking-wide mt-1">${lang === 'ar' ? ceoUser.role : ceoUser.roleEn}</p>
-                </div>
+    const t = uiText[lang];
+    const positionClass = isRTL ? 'left-6' : 'right-6'; 
 
-                <nav class="flex-1 overflow-y-auto py-6 px-4 space-y-2 custom-scroll">
-                    ${ceoSidebarItems.map(item => {
-                        if (item.type === 'divider') return `<hr class="border-slate-800 my-4">`;
-                        
-                        const isActive = window.location.pathname.includes(item.link) ? 'bg-brandRed text-white shadow-lg shadow-red-900/50' : 'text-slate-400 hover:bg-slate-800 hover:text-white';
-                        const label = lang === 'ar' ? item.textAr : item.textEn;
-                        
-                        return `
-                            <a href="${item.link}" class="flex items-center gap-4 px-4 py-3.5 rounded-xl transition-all duration-200 group ${isActive}">
-                                <i class="${item.icon} w-6 text-center text-lg group-hover:scale-110 transition-transform"></i>
-                                <span class="font-medium text-sm flex-1">${label}</span>
-                                ${item.badge ? `<span class="bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">${item.badge}</span>` : ''}
-                            </a>
-                        `;
-                    }).join('')}
-                </nav>
-
-                <div class="p-4 border-t border-slate-800">
-                    <button onclick="logout()" class="flex items-center gap-3 px-4 py-3 w-full text-slate-400 hover:bg-slate-800 hover:text-red-400 rounded-xl transition">
-                        <i class="fa-solid fa-power-off"></i>
-                        <span class="font-medium text-sm">${lang === 'ar' ? 'تسجيل الخروج' : 'Logout'}</span>
-                    </button>
-                </div>
-            </aside>
-        `;
-    }
-
-    // 2. Header HTML (بسيط وأنيق)
-    if (headerContainer) {
-        headerContainer.innerHTML = `
-            <header class="bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-100 dark:border-slate-800 h-20 flex items-center justify-between px-8 sticky top-0 z-40 transition-all duration-300 ${isRtl ? 'md:mr-72' : 'md:ml-72'}">
+    const botHTML = `
+        <div id="ai-widget" class="fixed bottom-6 ${positionClass} z-50 font-sans flex flex-col items-end gap-4">
+            
+            <div id="chat-window" class="hidden w-80 md:w-96 bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-slate-100 dark:border-slate-700 overflow-hidden flex flex-col transition-all duration-300 origin-bottom transform scale-95 opacity-0" style="height: 500px; max-height: 80vh;">
                 
-                <div id="page-header-title" class="hidden md:block">
-                    </div>
-
-                <div class="flex items-center gap-4 mr-auto w-full md:w-auto justify-end">
-                    
-                    <button onclick="toggleCeoLanguage()" class="w-10 h-10 rounded-full bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition flex items-center justify-center font-bold text-xs border border-slate-200 dark:border-slate-700">
-                        ${lang === 'ar' ? 'EN' : 'عربي'}
-                    </button>
-
-                    <div class="relative">
-                        <button onclick="toggleNotifications()" class="w-10 h-10 rounded-full bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition flex items-center justify-center border border-slate-200 dark:border-slate-700 relative">
-                            <i class="fa-regular fa-bell text-lg"></i>
-                            <span class="absolute top-2 right-2 w-2.5 h-2.5 bg-red-500 border-2 border-white dark:border-slate-800 rounded-full animate-pulse"></span>
-                        </button>
-                        
-                        <div id="notif-panel" class="hidden absolute top-12 ${isRtl ? 'left-0' : 'right-0'} w-80 bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-slate-100 dark:border-slate-700 overflow-hidden z-50 transform origin-top transition-all">
-                            <div class="p-4 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center">
-                                <h4 class="font-bold text-sm dark:text-white">${lang === 'ar' ? 'الإشعارات' : 'Notifications'}</h4>
-                                <button class="text-xs text-brandRed hover:underline">${lang === 'ar' ? 'تحديد الكل كمقروء' : 'Mark all read'}</button>
-                            </div>
-                            <div class="max-h-64 overflow-y-auto custom-scroll">
-                                <div class="p-3 border-b border-slate-50 dark:border-slate-700/50 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition cursor-pointer flex gap-3 items-start">
-                                    <div class="w-8 h-8 rounded-full bg-red-50 text-red-500 flex items-center justify-center mt-1"><i class="fa-solid fa-triangle-exclamation text-xs"></i></div>
-                                    <div>
-                                        <p class="text-xs font-bold text-slate-800 dark:text-white">انخفاض في السيولة النقدية</p>
-                                        <p class="text-[10px] text-slate-500">تقرير المالية يشير إلى انخفاض 10%...</p>
-                                        <span class="text-[9px] text-slate-400 mt-1 block">منذ 2 ساعة</span>
-                                    </div>
-                                </div>
-                                <div class="p-3 border-b border-slate-50 dark:border-slate-700/50 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition cursor-pointer flex gap-3 items-start">
-                                    <div class="w-8 h-8 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center mt-1"><i class="fa-solid fa-file-signature text-xs"></i></div>
-                                    <div>
-                                        <p class="text-xs font-bold text-slate-800 dark:text-white">عقد شراكة بانتظار التوقيع</p>
-                                        <p class="text-[10px] text-slate-500">شركة الحلول الرقمية - العقد النهائي...</p>
-                                        <span class="text-[9px] text-slate-400 mt-1 block">منذ 5 ساعات</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="p-2 bg-slate-50 dark:bg-slate-700/30 text-center">
-                                <a href="ceo_notifications.html" class="text-xs font-bold text-brandRed hover:underline">${lang === 'ar' ? 'عرض كل الإشعارات' : 'View All'}</a>
-                            </div>
+                <div class="bg-slate-900 p-4 flex items-center justify-between text-white">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-brandRed to-red-600 flex items-center justify-center shadow-lg border border-white/10">
+                            <i class="fa-solid fa-brain text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-sm">${t.title}</h3>
+                            <p class="text-[10px] text-slate-300 flex items-center gap-1">
+                                <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span> ${t.subtitle}
+                            </p>
                         </div>
                     </div>
-
-                    <button onclick="toggleTheme()" class="w-10 h-10 rounded-full bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition flex items-center justify-center border border-slate-200 dark:border-slate-700">
-                        <i class="fa-regular fa-moon dark:hidden"></i>
-                        <i class="fa-regular fa-sun hidden dark:block"></i>
-                    </button>
-
+                    <button onclick="toggleChat()" class="text-white/70 hover:text-white transition"><i class="fa-solid fa-xmark"></i></button>
                 </div>
-            </header>
+
+                <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50 dark:bg-slate-900/50 custom-scroll">
+                    <div class="flex items-start gap-2.5">
+                        <div class="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-slate-500"><i class="fa-solid fa-robot"></i></div>
+                        <div class="bg-white dark:bg-slate-700 p-3 rounded-2xl rounded-tr-none shadow-sm text-sm text-slate-700 dark:text-slate-200 border border-slate-100 dark:border-slate-600 whitespace-pre-line">
+                            ${t.welcome}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-3 bg-white dark:bg-slate-800 border-t border-slate-100 dark:border-slate-700">
+                    <form onsubmit="handleUserMessage(event)" class="relative">
+                        <input type="text" id="chat-input" placeholder="${t.placeholder}" class="w-full bg-slate-100 dark:bg-slate-900 border-0 rounded-xl pl-4 pr-12 py-3 text-sm focus:ring-2 focus:ring-brandRed dark:text-white placeholder-slate-400" autocomplete="off">
+                        <button type="submit" class="absolute top-1/2 ${isRTL ? 'left-2' : 'right-2'} -translate-y-1/2 w-8 h-8 bg-brandRed text-white rounded-lg flex items-center justify-center hover:bg-red-700 transition shadow-sm">
+                            <i class="fa-solid fa-paper-plane text-xs ${isRTL ? 'rotate-180' : ''}"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <button onclick="toggleChat()" id="chat-fab" class="w-14 h-14 bg-slate-900 text-white rounded-full shadow-xl shadow-slate-900/40 flex items-center justify-center text-2xl hover:scale-110 transition duration-300 group border-2 border-slate-700">
+                <i class="fa-solid fa-sparkles text-brandRed group-hover:hidden"></i>
+                <i class="fa-solid fa-chevron-down hidden group-hover:block"></i>
+            </button>
+
+        </div>
+    `;
+
+    document.body.insertAdjacentHTML('beforeend', botHTML);
+}
+
+function toggleChat() {
+    const window = document.getElementById('chat-window');
+    if (window.classList.contains('hidden')) {
+        window.classList.remove('hidden');
+        setTimeout(() => {
+            window.classList.remove('scale-95', 'opacity-0');
+            window.classList.add('scale-100', 'opacity-100');
+        }, 10);
+        document.getElementById('chat-input').focus();
+    } else {
+        window.classList.remove('scale-100', 'opacity-100');
+        window.classList.add('scale-95', 'opacity-0');
+        setTimeout(() => {
+            window.classList.add('hidden');
+        }, 300);
+    }
+}
+
+function handleUserMessage(e) {
+    e.preventDefault();
+    const input = document.getElementById('chat-input');
+    const message = input.value.trim();
+    if (!message) return;
+
+    addMessage(message, 'user');
+    input.value = '';
+    showTypingIndicator();
+    
+    setTimeout(() => {
+        removeTypingIndicator();
+        const response = generateCeoResponse(message);
+        addMessage(response, 'bot');
+    }, 1000);
+}
+
+function addMessage(text, sender) {
+    const container = document.getElementById('chat-messages');
+    const isUser = sender === 'user';
+    let html = '';
+    
+    if (isUser) {
+        html = `
+            <div class="flex items-end justify-end gap-2 animate-fade-in-up">
+                <div class="bg-brandRed text-white p-3 rounded-2xl rounded-br-none shadow-md text-sm max-w-[80%]">
+                    ${text}
+                </div>
+            </div>
+        `;
+    } else {
+        html = `
+            <div class="flex items-start gap-2.5 animate-fade-in-up">
+                <div class="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-slate-500"><i class="fa-solid fa-robot"></i></div>
+                <div class="bg-white dark:bg-slate-700 p-3 rounded-2xl rounded-tr-none shadow-sm text-sm text-slate-700 dark:text-slate-200 border border-slate-100 dark:border-slate-600">
+                    ${text}
+                </div>
+            </div>
         `;
     }
-    
-    // Apply Margins
-    const mainContent = document.querySelector('.main-content-wrapper');
-    if(mainContent) {
-        mainContent.className = `main-content-wrapper transition-all duration-300 flex flex-col min-h-screen pt-0 ${isRtl ? 'md:mr-72' : 'md:ml-72'}`;
+    container.insertAdjacentHTML('beforeend', html);
+    container.scrollTop = container.scrollHeight;
+}
+
+function showTypingIndicator() {
+    const container = document.getElementById('chat-messages');
+    const html = `
+        <div id="typing-indicator" class="flex items-start gap-2.5 animate-fade-in-up">
+            <div class="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-slate-500"><i class="fa-solid fa-robot"></i></div>
+            <div class="bg-white dark:bg-slate-700 p-4 rounded-2xl rounded-tr-none shadow-sm border border-slate-100 dark:border-slate-600 flex gap-1">
+                <span class="w-2 h-2 bg-slate-400 rounded-full animate-bounce"></span>
+                <span class="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style="animation-delay: 0.1s"></span>
+                <span class="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></span>
+            </div>
+        </div>
+    `;
+    container.insertAdjacentHTML('beforeend', html);
+    container.scrollTop = container.scrollHeight;
+}
+
+function removeTypingIndicator() {
+    const el = document.getElementById('typing-indicator');
+    if (el) el.remove();
+}
+
+// --- قاعدة المعرفة التنفيذية (The Executive Brain) ---
+function generateCeoResponse(input) {
+    const text = input.toLowerCase();
+    const lang = document.documentElement.lang || 'ar';
+
+    // ردود استراتيجية (أرقام وحقائق)
+    const knowledgeBase = {
+        ar: [
+            { 
+                keywords: ['ربح', 'أرباح', 'صافي', 'profit', 'net'], 
+                response: "صافي الربح حتى اليوم هو **2.4 مليون ريال**، بهامش ربح قدره **57%**. نحن أعلى من المستهدف بنسبة 5%." 
+            },
+            { 
+                keywords: ['مبيعات', 'ايرادات', 'دخل', 'sales', 'revenue'], 
+                response: "إجمالي الإيرادات (YTD) بلغ **4.2 مليون ريال**. \nأفضل المنتجات أداءً: الخدمات السحابية." 
+            },
+            { 
+                keywords: ['مخاطر', 'خطر', 'قضية', 'risk', 'issues'], 
+                response: "⚠️ **تنبيه:** يوجد خطر تشغيلي واحد يتعلق بانتهاء رخصة بلدية الفرع الشمالي خلال 15 يوماً. المدير الإداري يعمل على ذلك." 
+            },
+            { 
+                keywords: ['موظفين', 'توطين', 'نطاقات', 'employees', 'saudization'], 
+                response: "عدد الموظفين الحالي: **45**. \nنسبة التوطين: **78%** (نطاق بلاتيني). \nهناك خطة لتوظيف 5 مهندسين الشهر القادم." 
+            },
+            { 
+                keywords: ['نقد', 'سيولة', 'كاش', 'cash', 'liquidity'], 
+                response: "السيولة النقدية الحالية تغطي المصاريف التشغيلية لمدة **6 أشهر**. الوضع المالي مستقر جداً." 
+            },
+            { 
+                keywords: ['مرحبا', 'هلا', 'سلام', 'hi', 'hello'], 
+                response: "أهلاً أستاذ هشام. يسرني مساعدتك في اتخاذ القرارات اليوم. ما هو المؤشر الذي تود معرفته؟" 
+            }
+        ],
+        en: [
+            { 
+                keywords: ['profit', 'net', 'income'], 
+                response: "Net profit YTD is **2.4M SAR**, with a margin of **57%**. We are 5% above target." 
+            },
+            { 
+                keywords: ['sales', 'revenue'], 
+                response: "Total Revenue (YTD): **4.2M SAR**. \nTop performing segment: Cloud Services." 
+            },
+            { 
+                keywords: ['risk', 'issue', 'alert'], 
+                response: "⚠️ **Alert:** One operational risk detected regarding North Branch license expiry in 15 days. CAO is handling it." 
+            },
+            { 
+                keywords: ['employees', 'staff', 'saudization'], 
+                response: "Total Headcount: **45**. \nSaudization: **78%** (Platinum). \nHiring plan active for 5 engineers next month." 
+            },
+            { 
+                keywords: ['cash', 'liquidity', 'runway'], 
+                response: "Current cash runway covers **6 months** of OpEx. Financial position is very stable." 
+            },
+            { 
+                keywords: ['hi', 'hello', 'welcome'], 
+                response: "Hello Mr. Hisham. I'm here to support your decisions. Which metric would you like to review?" 
+            }
+        ]
+    };
+
+    const rules = knowledgeBase[lang];
+    for (const rule of rules) {
+        if (rule.keywords.some(k => text.includes(k))) {
+            return rule.response;
+        }
     }
-}
 
-function updateCeoLanguage() {
-    const lang = localStorage.getItem('lang') || 'ar';
-    document.documentElement.lang = lang;
-    document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
-    renderCeoLayout(); // Re-render to update texts and direction
-}
-
-function toggleCeoLanguage() {
-    const current = localStorage.getItem('lang') || 'ar';
-    localStorage.setItem('lang', current === 'ar' ? 'en' : 'ar');
-    location.reload(); 
-}
-
-function toggleNotifications() {
-    const panel = document.getElementById('notif-panel');
-    panel.classList.toggle('hidden');
-}
-
-function logout() {
-    if(confirm('Log out?')) window.location.href = 'login.html';
+    return lang === 'ar' 
+        ? "عذراً، بصلاحياتي الحالية لا أملك إجابة دقيقة لهذا السؤال. هل تريد مني تحويل الاستفسار للمدير المالي أو الإداري؟"
+        : "I don't have the exact data for this query with my current access. Should I forward this to the CFO or CAO?";
 }
