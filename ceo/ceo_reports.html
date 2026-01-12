@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#FB4747">
+    <title data-i18n="pageTitle">التقارير التنفيذية | AndroGov</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { brandRed: '#FB4747', brandDark: '#0F172A', moneyGreen: '#10B981', alertOrange: '#F59E0B' },
+                    fontFamily: { sans: ['Tajawal', 'Inter', 'sans-serif'], en: ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <style>.num-font { font-family: 'Inter', sans-serif; font-feature-settings: "tnum"; }</style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300 opacity-0">
+
+    <div id="sidebar-container"></div>
+    
+    <div class="main-content-wrapper transition-all duration-300 flex flex-col min-h-screen">
+        <div id="header-container"></div>
+
+        <main class="p-8 space-y-8">
+            
+            <div class="flex flex-col md:flex-row justify-between items-end gap-4">
+                <div>
+                    <h1 class="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                        <i class="fa-solid fa-file-invoice-dollar text-brandRed"></i> <span data-i18n="headerTitle">التقارير التنفيذية</span>
+                    </h1>
+                    <p class="text-sm text-slate-500 mt-1" data-i18n="headerDesc">مركز البيانات والتقارير الدورية (المالية، التشغيلية، والاستراتيجية)</p>
+                </div>
+                <div class="flex gap-2">
+                    <div class="flex items-center bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 shadow-sm">
+                        <i class="fa-regular fa-calendar text-slate-400 text-xs ml-2"></i>
+                        <span class="text-xs font-bold text-slate-600 dark:text-slate-300 num-font">Q1 2026</span>
+                    </div>
+                    <button onclick="document.getElementById('reportModal').classList.remove('hidden')" class="px-4 py-2 bg-brandRed text-white rounded-lg text-xs font-bold shadow-lg hover:bg-red-700 transition flex items-center gap-2">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> <span data-i18n="btnGenerate">توليد تقرير مخصص</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 relative overflow-hidden group">
+                    <div class="absolute -left-4 -top-4 w-20 h-20 bg-green-50 dark:bg-green-900/10 rounded-full group-hover:scale-110 transition"></div>
+                    <h3 class="text-sm font-bold text-slate-500 uppercase z-10 relative" data-i18n="cardFin">الأداء المالي</h3>
+                    <div class="mt-4 relative z-10">
+                        <p class="text-xs text-slate-400">الإيرادات</p>
+                        <p class="text-xl font-bold num-font text-slate-800 dark:text-white">4.2M SAR</p>
+                        <div class="w-full bg-slate-100 dark:bg-slate-700 h-1.5 rounded-full mt-2">
+                            <div class="bg-green-500 h-full" style="width: 85%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 relative overflow-hidden group">
+                    <div class="absolute -left-4 -top-4 w-20 h-20 bg-blue-50 dark:bg-blue-900/10 rounded-full group-hover:scale-110 transition"></div>
+                    <h3 class="text-sm font-bold text-slate-500 uppercase z-10 relative" data-i18n="cardHR">رأس المال البشري</h3>
+                    <div class="mt-4 relative z-10">
+                        <p class="text-xs text-slate-400">عدد الموظفين</p>
+                        <p class="text-xl font-bold num-font text-slate-800 dark:text-white">45 <span class="text-xs font-normal text-green-500">(+3 New)</span></p>
+                        <div class="w-full bg-slate-100 dark:bg-slate-700 h-1.5 rounded-full mt-2">
+                            <div class="bg-blue-500 h-full" style="width: 60%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 relative overflow-hidden group">
+                    <div class="absolute -left-4 -top-4 w-20 h-20 bg-orange-50 dark:bg-orange-900/10 rounded-full group-hover:scale-110 transition"></div>
+                    <h3 class="text-sm font-bold text-slate-500 uppercase z-10 relative" data-i18n="cardProj">المشاريع</h3>
+                    <div class="mt-4 relative z-10">
+                        <p class="text-xs text-slate-400">نسبة الإنجاز العام</p>
+                        <p class="text-xl font-bold num-font text-slate-800 dark:text-white">72%</p>
+                        <div class="w-full bg-slate-100 dark:bg-slate-700 h-1.5 rounded-full mt-2">
+                            <div class="bg-orange-500 h-full" style="width: 72%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <h3 class="font-bold text-sm text-slate-800 dark:text-white mb-4" data-i18n="chartDist">توزيع الإيرادات (Q1)</h3>
+                    <div class="h-64 flex justify-center">
+                        <canvas id="revenuePieChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <h3 class="font-bold text-sm text-slate-800 dark:text-white mb-4" data-i18n="chartTrend">النمو الشهري</h3>
+                    <div class="h-64 w-full">
+                        <canvas id="growthBarChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden">
+                <div class="p-5 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center">
+                    <h3 class="font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                        <i class="fa-solid fa-list text-slate-400"></i> <span data-i18n="tableTitle">أرشيف التقارير الحديثة</span>
+                    </h3>
+                    <div class="flex gap-2">
+                        <button class="text-xs text-slate-500 hover:text-brandRed font-bold" data-i18n="filterAll">الكل</button>
+                        <button class="text-xs text-slate-400 hover:text-brandRed" data-i18n="filterFin">مالية</button>
+                        <button class="text-xs text-slate-400 hover:text-brandRed" data-i18n="filterOps">تشغيلية</button>
+                    </div>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-right rtl:text-right ltr:text-left">
+                        <thead class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 text-xs font-bold uppercase">
+                            <tr>
+                                <th class="p-4" data-i18n="colName">اسم التقرير</th>
+                                <th class="p-4" data-i18n="colType">النوع</th>
+                                <th class="p-4" data-i18n="colDate">تاريخ الإصدار</th>
+                                <th class="p-4" data-i18n="colAuthor">تم بواسطة</th>
+                                <th class="p-4 text-center" data-i18n="colAction">تحميل</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 dark:divide-slate-700 dark:text-slate-300">
+                            <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition group">
+                                <td class="p-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 rounded bg-red-50 text-red-600 flex items-center justify-center"><i class="fa-solid fa-file-pdf"></i></div>
+                                        <span class="font-bold text-slate-800 dark:text-white group-hover:text-brandRed transition">القوائم المالية (يناير 2026)</span>
+                                    </div>
+                                </td>
+                                <td class="p-4"><span class="bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-1 rounded text-[10px]" data-i18n="typeFin">مالي</span></td>
+                                <td class="p-4 num-font text-xs text-slate-500">2026-02-05</td>
+                                <td class="p-4 text-xs">CFO</td>
+                                <td class="p-4 text-center">
+                                    <button class="text-slate-400 hover:text-brandRed transition"><i class="fa-solid fa-download"></i></button>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition group">
+                                <td class="p-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 rounded bg-green-50 text-green-600 flex items-center justify-center"><i class="fa-solid fa-file-excel"></i></div>
+                                        <span class="font-bold text-slate-800 dark:text-white group-hover:text-brandRed transition">تقرير أداء الموارد البشرية Q4</span>
+                                    </div>
+                                </td>
+                                <td class="p-4"><span class="bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-1 rounded text-[10px]" data-i18n="typeHR">HR</span></td>
+                                <td class="p-4 num-font text-xs text-slate-500">2026-01-15</td>
+                                <td class="p-4 text-xs">CAO</td>
+                                <td class="p-4 text-center">
+                                    <button class="text-slate-400 hover:text-brandRed transition"><i class="fa-solid fa-download"></i></button>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition group">
+                                <td class="p-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 rounded bg-blue-50 text-blue-600 flex items-center justify-center"><i class="fa-solid fa-file-powerpoint"></i></div>
+                                        <span class="font-bold text-slate-800 dark:text-white group-hover:text-brandRed transition">عرض مجلس الإدارة (الاستراتيجية)</span>
+                                    </div>
+                                </td>
+                                <td class="p-4"><span class="bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-1 rounded text-[10px]" data-i18n="typeStrat">استراتيجي</span></td>
+                                <td class="p-4 num-font text-xs text-slate-500">2026-01-10</td>
+                                <td class="p-4 text-xs">CEO Office</td>
+                                <td class="p-4 text-center">
+                                    <button class="text-slate-400 hover:text-brandRed transition"><i class="fa-solid fa-download"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <div id="reportModal" class="fixed inset-0 bg-black/60 hidden z-50 flex items-center justify-center backdrop-blur-sm p-4">
+        <div class="bg-white dark:bg-slate-800 w-full max-w-lg rounded-2xl shadow-xl p-6">
+            <div class="flex justify-between items-center mb-6 border-b pb-4 dark:border-slate-700">
+                <h3 class="font-bold text-lg dark:text-white" data-i18n="modTitle">توليد تقرير جديد</h3>
+                <button onclick="document.getElementById('reportModal').classList.add('hidden')"><i class="fa-solid fa-xmark text-slate-400"></i></button>
+            </div>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblType">نوع التقرير</label>
+                    <select class="w-full bg-slate-50 dark:bg-slate-700 border dark:border-slate-600 rounded-lg p-2 text-sm dark:text-white">
+                        <option>التقرير المالي الشامل (P&L)</option>
+                        <option>تقرير التدفقات النقدية</option>
+                        <option>أداء الموارد البشرية</option>
+                        <option>تقرير المبيعات والعملاء</option>
+                    </select>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblFrom">من تاريخ</label>
+                        <input type="date" class="w-full bg-slate-50 dark:bg-slate-700 border dark:border-slate-600 rounded-lg p-2 text-sm dark:text-white">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblTo">إلى تاريخ</label>
+                        <input type="date" class="w-full bg-slate-50 dark:bg-slate-700 border dark:border-slate-600 rounded-lg p-2 text-sm dark:text-white">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblFormat">الصيغة</label>
+                    <div class="flex gap-4">
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="radio" name="format" class="text-brandRed focus:ring-brandRed" checked>
+                            <span class="text-sm dark:text-white"><i class="fa-solid fa-file-pdf text-red-500"></i> PDF (للعرض)</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="radio" name="format" class="text-brandRed focus:ring-brandRed">
+                            <span class="text-sm dark:text-white"><i class="fa-solid fa-file-excel text-green-500"></i> Excel (للتحليل)</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-6 flex justify-end gap-3 pt-4 border-t dark:border-slate-700">
+                <button onclick="document.getElementById('reportModal').classList.add('hidden')" class="px-4 py-2 text-slate-500 text-xs font-bold hover:bg-slate-50 rounded-lg dark:hover:bg-slate-700" data-i18n="btnCancel">إلغاء</button>
+                <button onclick="generateReport()" class="px-6 py-2 bg-brandRed text-white rounded-lg text-xs font-bold hover:bg-red-700 shadow-md flex items-center gap-2">
+                    <i class="fa-solid fa-gear"></i> <span data-i18n="btnCreate">توليد الآن</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="layout-ceo.js"></script>
+    <script src="bot.js"></script>
+
+    <script>
+        const pageContent = {
+            ar: {
+                pageTitle: "التقارير | AndroGov",
+                headerTitle: "التقارير التنفيذية",
+                headerDesc: "مركز البيانات والتقارير الدورية (المالية، التشغيلية، والاستراتيجية)",
+                btnGenerate: "توليد تقرير مخصص",
+                cardFin: "الأداء المالي",
+                cardHR: "رأس المال البشري",
+                cardProj: "المشاريع",
+                chartDist: "توزيع الإيرادات (Q1)",
+                chartTrend: "النمو الشهري",
+                tableTitle: "أرشيف التقارير الحديثة",
+                filterAll: "الكل",
+                filterFin: "مالية",
+                filterOps: "تشغيلية",
+                colName: "اسم التقرير",
+                colType: "النوع",
+                colDate: "تاريخ الإصدار",
+                colAuthor: "تم بواسطة",
+                colAction: "تحميل",
+                typeFin: "مالي",
+                typeHR: "HR",
+                typeStrat: "استراتيجي",
+                modTitle: "توليد تقرير جديد",
+                lblType: "نوع التقرير",
+                lblFrom: "من تاريخ",
+                lblTo: "إلى تاريخ",
+                lblFormat: "الصيغة",
+                btnCancel: "إلغاء",
+                btnCreate: "توليد الآن"
+            },
+            en: {
+                pageTitle: "Reports | AndroGov",
+                headerTitle: "Executive Reports",
+                headerDesc: "Central hub for financial, operational, and strategic reports",
+                btnGenerate: "Generate Custom Report",
+                cardFin: "Financial Performance",
+                cardHR: "Human Capital",
+                cardProj: "Projects",
+                chartDist: "Revenue Distribution (Q1)",
+                chartTrend: "Monthly Growth",
+                tableTitle: "Recent Reports Archive",
+                filterAll: "All",
+                filterFin: "Finance",
+                filterOps: "Operations",
+                colName: "Report Name",
+                colType: "Type",
+                colDate: "Issue Date",
+                colAuthor: "Author",
+                colAction: "Download",
+                typeFin: "Finance",
+                typeHR: "HR",
+                typeStrat: "Strategy",
+                modTitle: "Generate New Report",
+                lblType: "Report Type",
+                lblFrom: "Date From",
+                lblTo: "Date To",
+                lblFormat: "Format",
+                btnCancel: "Cancel",
+                btnCreate: "Generate Now"
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const lang = localStorage.getItem('lang') || 'ar';
+            const dict = pageContent[lang];
+            
+            document.documentElement.lang = lang;
+            document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if(dict[key]) el.innerText = dict[key];
+            });
+
+            initCharts();
+        });
+
+        function generateReport() {
+            const btn = document.querySelector('button[onclick="generateReport()"]');
+            const originalContent = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> جاري المعالجة...`;
+            
+            setTimeout(() => {
+                alert("تم توليد التقرير بنجاح وسيتم تحميله الآن.");
+                document.getElementById('reportModal').classList.add('hidden');
+                btn.innerHTML = originalContent;
+                btn.disabled = false;
+            }, 1500);
+        }
+
+        function initCharts() {
+            // Pie Chart
+            const ctx1 = document.getElementById('revenuePieChart').getContext('2d');
+            new Chart(ctx1, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Gov Projects', 'Private Sector', 'Subscriptions'],
+                    datasets: [{
+                        data: [55, 30, 15],
+                        backgroundColor: ['#FB4747', '#10B981', '#3B82F6'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '70%',
+                    plugins: { legend: { position: 'bottom' } }
+                }
+            });
+
+            // Bar Chart
+            const ctx2 = document.getElementById('growthBarChart').getContext('2d');
+            new Chart(ctx2, {
+                type: 'bar',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar'],
+                    datasets: [{
+                        label: 'Revenue',
+                        data: [1.2, 1.4, 1.6],
+                        backgroundColor: '#FB4747',
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { grid: { display: true, color: '#f1f5f9' } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
