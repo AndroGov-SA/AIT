@@ -47,10 +47,10 @@
                         <span class="px-3 py-1 bg-red-50 dark:bg-red-900/20 text-brandRed text-[10px] font-bold rounded-full border border-red-100 dark:border-red-900 flex items-center gap-2">
                             <span class="w-1.5 h-1.5 rounded-full bg-brandRed animate-pulse"></span> <span data-i18n="badgeLive">مباشر</span>
                         </span>
-                        <span class="text-xs text-slate-400 font-mono num-font">14 Jan 2026 | 09:41 AM</span>
+                        <span class="text-xs text-slate-400 font-mono num-font" data-i18n="dateToday">14 Jan 2026 | 09:41 AM</span>
                     </div>
                     <h1 class="text-3xl font-bold text-slate-900 dark:text-white">
-                        <span data-i18n="welcome">مرحباً، أستاذ</span> <span class="gradient-text">هشام</span> 👋
+                        <span data-i18n="welcome">مرحباً، أستاذ</span> <span class="gradient-text" data-i18n="userName">هشام</span> 👋
                     </h1>
                     <p class="text-slate-500 mt-2 text-sm max-w-xl leading-relaxed" data-i18n="welcomeSub">
                         إليك ملخص الأداء الاستراتيجي لشركة <b class="text-slate-800 dark:text-white">Andromeda</b>. المؤشرات المالية والتشغيلية ضمن النطاق المستهدف لهذا الربع.
@@ -87,7 +87,7 @@
                     <div class="w-full bg-slate-100 dark:bg-slate-700 h-1.5 rounded-full mt-4 overflow-hidden">
                         <div class="bg-green-500 h-full w-[85%] rounded-full animate-pulse-slow"></div>
                     </div>
-                    <p class="text-[10px] text-slate-400 mt-2 text-right num-font">Target: 5.0M</p>
+                    <p class="text-[10px] text-slate-400 mt-2 text-right num-font" data-i18n="kpiRevTarget">Target: 5.0M</p>
                 </div>
 
                 <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 group hover:shadow-md hover:border-brandRed/30 transition-all duration-300 relative overflow-hidden">
@@ -98,14 +98,14 @@
                         <div class="w-12 h-12 rounded-2xl bg-red-50 dark:bg-red-900/20 text-brandRed flex items-center justify-center text-xl shadow-sm group-hover:scale-110 transition-transform duration-300">
                             <i class="fa-solid fa-file-invoice-dollar"></i>
                         </div>
-                        <span class="text-[10px] font-bold bg-green-100 text-green-700 px-2 py-1 rounded-lg border border-green-200 num-font">-5% (Saving)</span>
+                        <span class="text-[10px] font-bold bg-green-100 text-green-700 px-2 py-1 rounded-lg border border-green-200 num-font" data-i18n="kpiExpSaving">-5% (Saving)</span>
                     </div>
                     <p class="text-xs text-slate-500 font-bold uppercase tracking-wider mb-1" data-i18n="kpiExp">المصروفات التشغيلية</p>
                     <h3 class="text-3xl font-bold text-slate-900 dark:text-white num-font tracking-tight">1.8M <span class="text-sm font-normal text-slate-400">SAR</span></h3>
                     <div class="w-full bg-slate-100 dark:bg-slate-700 h-1.5 rounded-full mt-4 overflow-hidden">
                         <div class="bg-brandRed h-full w-[60%] rounded-full"></div>
                     </div>
-                    <p class="text-[10px] text-slate-400 mt-2 text-right num-font">Budget: 3.0M</p>
+                    <p class="text-[10px] text-slate-400 mt-2 text-right num-font" data-i18n="kpiExpBudget">Budget: 3.0M</p>
                 </div>
 
                 <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-lg border border-brandRed/20 dark:border-brandRed/40 group hover:-translate-y-1 transition-all duration-300 relative overflow-hidden">
@@ -118,13 +118,13 @@
                             <div class="w-12 h-12 rounded-2xl bg-white dark:bg-slate-700 text-brandRed flex items-center justify-center text-xl shadow-sm border border-brandRed/10">
                                 <i class="fa-solid fa-coins"></i>
                             </div>
-                            <span class="text-[10px] font-bold bg-brandRed/10 text-brandRed px-2 py-1 rounded-lg border border-brandRed/20">High Margin</span>
+                            <span class="text-[10px] font-bold bg-brandRed/10 text-brandRed px-2 py-1 rounded-lg border border-brandRed/20" data-i18n="kpiMarginStatus">High Margin</span>
                         </div>
                         <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider mb-1" data-i18n="kpiProfit">صافي الأرباح</p>
                         <h3 class="text-3xl font-bold num-font tracking-tight text-brandRed">2.4M <span class="text-sm font-normal text-slate-400">SAR</span></h3>
                         <div class="mt-4 flex items-center gap-2">
                             <span class="text-2xl font-bold text-green-600 num-font">57%</span>
-                            <span class="text-[10px] text-slate-400 uppercase tracking-widest">Net Margin</span>
+                            <span class="text-[10px] text-slate-400 uppercase tracking-widest" data-i18n="kpiMargin">Net Margin</span>
                         </div>
                     </div>
                 </div>
@@ -137,15 +137,15 @@
                         <div class="flex justify-between items-start mb-2">
                             <p class="text-xs text-slate-500 font-bold uppercase tracking-wider relative z-10" data-i18n="kpiProj">المشاريع النشطة</p>
                         </div>
-                        <h3 class="text-3xl font-bold text-slate-900 dark:text-white num-font tracking-tight mb-4 relative z-10">8 <span class="text-sm font-normal text-slate-400">Projects</span></h3>
+                        <h3 class="text-3xl font-bold text-slate-900 dark:text-white num-font tracking-tight mb-4 relative z-10">8 <span class="text-sm font-normal text-slate-400" data-i18n="kpiProjCount">Projects</span></h3>
                     </div>
                     
                     <div class="space-y-3 relative z-10">
                         <div class="flex items-center gap-3 p-2 rounded-xl bg-red-50 dark:bg-red-900/10 border border-red-100 dark:border-red-900/30">
                             <div class="w-8 h-8 rounded-lg bg-red-100 text-red-600 flex items-center justify-center shrink-0"><i class="fa-solid fa-triangle-exclamation text-xs"></i></div>
                             <div>
-                                <p class="text-[10px] font-bold text-red-700 dark:text-red-400">مشروع واحد متأخر</p>
-                                <p class="text-[9px] text-red-500">تطوير منصة التجارة الإلكترونية</p>
+                                <p class="text-[10px] font-bold text-red-700 dark:text-red-400" data-i18n="alertProjTitle">مشروع واحد متأخر</p>
+                                <p class="text-[9px] text-red-500" data-i18n="alertProjName">تطوير منصة التجارة الإلكترونية</p>
                             </div>
                         </div>
                     </div>
@@ -160,11 +160,11 @@
                             <h3 class="font-bold text-lg text-slate-900 dark:text-white flex items-center gap-2">
                                 <i class="fa-solid fa-chart-area text-brandRed"></i> <span data-i18n="chartTitle">تحليل الأداء المالي</span>
                             </h3>
-                            <p class="text-xs text-slate-400 mt-1">مقارنة الإيرادات بالمصروفات (الربع الأول 2026)</p>
+                            <p class="text-xs text-slate-400 mt-1" data-i18n="chartSub">مقارنة الإيرادات بالمصروفات (الربع الأول 2026)</p>
                         </div>
                         <div class="flex bg-slate-100 dark:bg-slate-700 rounded-lg p-1">
-                            <button class="px-3 py-1 rounded-md text-xs font-bold bg-white dark:bg-slate-600 shadow-sm text-slate-800 dark:text-white transition">Monthly</button>
-                            <button class="px-3 py-1 rounded-md text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-slate-800 transition">Quarterly</button>
+                            <button class="px-3 py-1 rounded-md text-xs font-bold bg-white dark:bg-slate-600 shadow-sm text-slate-800 dark:text-white transition" data-i18n="filterMonthly">Monthly</button>
+                            <button class="px-3 py-1 rounded-md text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-slate-800 transition" data-i18n="filterQuarterly">Quarterly</button>
                         </div>
                     </div>
                     
@@ -178,7 +178,7 @@
                         <h3 class="font-bold text-lg text-slate-900 dark:text-white flex items-center gap-2">
                             <span class="w-2 h-6 bg-brandRed rounded-full"></span> <span data-i18n="actionTitle">مركز القرارات</span>
                         </h3>
-                        <span class="bg-brandRed text-white text-[10px] font-bold px-2 py-1 rounded-lg shadow-lg shadow-red-500/30">2 Pending</span>
+                        <span class="bg-brandRed text-white text-[10px] font-bold px-2 py-1 rounded-lg shadow-lg shadow-red-500/30" data-i18n="actionPending">2 Pending</span>
                     </div>
 
                     <div class="flex-1 space-y-4 overflow-y-auto custom-scroll pr-1">
@@ -188,11 +188,11 @@
                                 <i class="fa-solid fa-thumbtack text-brandRed rotate-45"></i>
                             </div>
                             <div class="flex justify-between items-start mb-3">
-                                <span class="px-2 py-1 bg-blue-100 text-blue-700 text-[9px] font-bold rounded-md uppercase tracking-wider">Approval</span>
+                                <span class="px-2 py-1 bg-blue-100 text-blue-700 text-[9px] font-bold rounded-md uppercase tracking-wider" data-i18n="tagApproval">Approval</span>
                                 <span class="text-[10px] text-slate-400 num-font">09:30 AM</span>
                             </div>
-                            <h4 class="font-bold text-sm text-slate-800 dark:text-white mb-1">شراء خوادم جديدة (CFO)</h4>
-                            <p class="text-xs text-slate-500 mb-4 line-clamp-2">طلب اعتماد شراء خوادم Dell PowerEdge لمركز البيانات...</p>
+                            <h4 class="font-bold text-sm text-slate-800 dark:text-white mb-1" data-i18n="dec1Title">شراء خوادم جديدة (CFO)</h4>
+                            <p class="text-xs text-slate-500 mb-4 line-clamp-2" data-i18n="dec1Desc">طلب اعتماد شراء خوادم Dell PowerEdge لمركز البيانات لزيادة السعة...</p>
                             
                             <div class="flex items-center justify-between mt-2 pt-2 border-t border-slate-200 dark:border-slate-600">
                                 <span class="font-bold text-slate-900 dark:text-white num-font">150,000 SAR</span>
@@ -205,15 +205,15 @@
 
                         <div class="group relative bg-slate-50 dark:bg-slate-700/30 p-4 rounded-2xl border border-slate-100 dark:border-slate-600 hover:border-brandRed dark:hover:border-brandRed transition-all duration-300">
                             <div class="flex justify-between items-start mb-3">
-                                <span class="px-2 py-1 bg-purple-100 text-purple-700 text-[9px] font-bold rounded-md uppercase tracking-wider">Contract</span>
-                                <span class="text-[10px] text-slate-400 num-font">Yesterday</span>
+                                <span class="px-2 py-1 bg-purple-100 text-purple-700 text-[9px] font-bold rounded-md uppercase tracking-wider" data-i18n="tagContract">Contract</span>
+                                <span class="text-[10px] text-slate-400 num-font" data-i18n="lblYesterday">Yesterday</span>
                             </div>
-                            <h4 class="font-bold text-sm text-slate-800 dark:text-white mb-1">شراكة استراتيجية (Microsoft)</h4>
-                            <p class="text-xs text-slate-500 mb-4">توقيع مذكرة التفاهم النهائية للتحول الرقمي.</p>
+                            <h4 class="font-bold text-sm text-slate-800 dark:text-white mb-1" data-i18n="dec2Title">شراكة استراتيجية (Microsoft)</h4>
+                            <p class="text-xs text-slate-500 mb-4" data-i18n="dec2Desc">توقيع مذكرة التفاهم النهائية للتحول الرقمي.</p>
                             
                             <div class="flex items-center justify-between mt-2 pt-2 border-t border-slate-200 dark:border-slate-600">
                                 <span class="text-[10px] text-slate-400"><i class="fa-solid fa-file-pdf text-brandRed"></i> MoU_Final_v2.pdf</span>
-                                <button onclick="signContract(this)" class="px-3 py-1.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-xs font-bold rounded-lg hover:shadow-lg transition">توقيع رقمي</button>
+                                <button onclick="signContract(this)" class="px-3 py-1.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-xs font-bold rounded-lg hover:shadow-lg transition" data-i18n="btnSign">توقيع رقمي</button>
                             </div>
                         </div>
 
@@ -228,7 +228,7 @@
                     </div>
                     <div>
                         <h4 class="font-bold text-sm text-slate-900 dark:text-white" data-i18n="deptSales">المبيعات والتسويق</h4>
-                        <p class="text-xs text-slate-500 mt-1">Target: 8M SAR</p>
+                        <p class="text-xs text-slate-500 mt-1" data-i18n="deptTarget">Target: 8M SAR</p>
                     </div>
                     <i class="fa-solid fa-arrow-trend-up text-green-500 mr-auto opacity-50 group-hover:opacity-100 transition"></i>
                 </div>
@@ -239,7 +239,7 @@
                     </div>
                     <div>
                         <h4 class="font-bold text-sm text-slate-900 dark:text-white" data-i18n="deptTech">المنتجات والتقنية</h4>
-                        <p class="text-xs text-slate-500 mt-1">Roadmap Status</p>
+                        <p class="text-xs text-slate-500 mt-1" data-i18n="deptStatus">Roadmap Status</p>
                     </div>
                     <i class="fa-solid fa-code text-blue-500 mr-auto opacity-50 group-hover:opacity-100 transition"></i>
                 </div>
@@ -250,7 +250,7 @@
                     </div>
                     <div>
                         <h4 class="font-bold text-sm text-slate-900 dark:text-white" data-i18n="deptHR">الموارد البشرية</h4>
-                        <p class="text-xs text-slate-500 mt-1">Hiring Plan</p>
+                        <p class="text-xs text-slate-500 mt-1" data-i18n="deptPlan">Hiring Plan</p>
                     </div>
                     <i class="fa-solid fa-users text-orange-500 mr-auto opacity-50 group-hover:opacity-100 transition"></i>
                 </div>
@@ -268,36 +268,90 @@
             ar: {
                 pageTitle: "لوحة القيادة التنفيذية | AndroGov",
                 badgeLive: "مباشر",
+                dateToday: "14 Jan 2026 | 09:41 AM",
                 welcome: "مرحباً، أستاذ",
+                userName: "هشام",
                 welcomeSub: "إليك ملخص الأداء الاستراتيجي لشركة Andromeda. المؤشرات المالية والتشغيلية ضمن النطاق المستهدف لهذا الربع.",
                 marketStatus: "حالة السوق",
                 btnInsight: "تحليل الذكاء الاصطناعي",
                 kpiRev: "الإيرادات (YTD)",
+                kpiRevTarget: "المستهدف: 5.0 مليون",
                 kpiExp: "المصروفات التشغيلية",
+                kpiExpSaving: "-5% (توفير)",
+                kpiExpBudget: "الموازنة: 3.0 مليون",
                 kpiProfit: "صافي الأرباح",
+                kpiMarginStatus: "هامش مرتفع",
+                kpiMargin: "هامش الربح",
                 kpiProj: "المشاريع النشطة",
+                kpiProjCount: "مشروع",
+                alertProjTitle: "مشروع واحد متأخر",
+                alertProjName: "تطوير منصة التجارة الإلكترونية",
                 chartTitle: "تحليل الأداء المالي",
+                chartSub: "مقارنة الإيرادات بالمصروفات (الربع الأول 2026)",
+                filterMonthly: "شهري",
+                filterQuarterly: "ربع سنوي",
                 actionTitle: "مركز القرارات",
+                actionPending: "2 معلقة",
+                tagApproval: "اعتماد",
+                dec1Title: "شراء خوادم جديدة (CFO)",
+                dec1Desc: "طلب اعتماد شراء خوادم Dell PowerEdge لمركز البيانات لزيادة السعة...",
+                tagContract: "عقود",
+                lblYesterday: "أمس",
+                dec2Title: "شراكة استراتيجية (Microsoft)",
+                dec2Desc: "توقيع مذكرة التفاهم النهائية للتحول الرقمي.",
+                btnSign: "توقيع رقمي",
                 deptSales: "المبيعات والتسويق",
+                deptTarget: "المستهدف: 8 مليون",
                 deptTech: "المنتجات والتقنية",
-                deptHR: "الموارد البشرية"
+                deptStatus: "حالة خارطة الطريق",
+                deptHR: "الموارد البشرية",
+                deptPlan: "خطة التوظيف",
+                actionApproved: "تم الاعتماد بنجاح",
+                actionSigned: "تم التوقيع رقمياً"
             },
             en: {
                 pageTitle: "CEO Dashboard | AndroGov",
                 badgeLive: "LIVE",
+                dateToday: "Jan 14, 2026 | 09:41 AM",
                 welcome: "Welcome, Mr.",
-                welcomeSub: "Here is the strategic performance summary for Andromeda. Financial and operational KPIs are within target range for this quarter.",
+                userName: "Hisham",
+                welcomeSub: "Executive Summary of Andromeda's strategic performance. Financial and operational KPIs are within the target range for this quarter.",
                 marketStatus: "Market Status",
                 btnInsight: "AI Insights",
                 kpiRev: "Revenue (YTD)",
-                kpiExp: "Operating Expenses",
+                kpiRevTarget: "Target: 5.0M",
+                kpiExp: "OpEx (Operating Expenses)",
+                kpiExpSaving: "-5% (Saving)",
+                kpiExpBudget: "Budget: 3.0M",
                 kpiProfit: "Net Profit",
+                kpiMarginStatus: "High Margin",
+                kpiMargin: "Net Margin",
                 kpiProj: "Active Projects",
+                kpiProjCount: "Projects",
+                alertProjTitle: "1 Delayed Project",
+                alertProjName: "E-Commerce Platform Dev",
                 chartTitle: "Financial Performance Analysis",
+                chartSub: "Revenue vs Expenses Comparison (Q1 2026)",
+                filterMonthly: "Monthly",
+                filterQuarterly: "Quarterly",
                 actionTitle: "Decision Center",
+                actionPending: "2 Pending",
+                tagApproval: "Approval",
+                dec1Title: "New Servers Purchase (CFO)",
+                dec1Desc: "Request to approve purchase of Dell PowerEdge servers for Data Center capacity...",
+                tagContract: "Contract",
+                lblYesterday: "Yesterday",
+                dec2Title: "Strategic Partnership (Microsoft)",
+                dec2Desc: "Signing the final MoU for digital transformation initiative.",
+                btnSign: "Digital Sign",
                 deptSales: "Sales & Marketing",
+                deptTarget: "Target: 8M SAR",
                 deptTech: "Product & Tech",
-                deptHR: "Human Resources"
+                deptStatus: "Roadmap Status",
+                deptHR: "Human Resources",
+                deptPlan: "Hiring Plan",
+                actionApproved: "Approved Successfully",
+                actionSigned: "Signed Digitally"
             }
         };
 
@@ -305,6 +359,9 @@
             const lang = localStorage.getItem('lang') || 'ar';
             const dict = pageContent[lang];
             
+            document.documentElement.lang = lang;
+            document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
                 if(dict[key]) el.innerText = dict[key];
@@ -316,10 +373,13 @@
         // --- Functions ---
         function approveAction(btn) {
             const card = btn.closest('.group');
+            const lang = localStorage.getItem('lang') || 'ar';
+            const msg = pageContent[lang].actionApproved;
+            
             card.innerHTML = `
                 <div class="h-full flex flex-col items-center justify-center text-green-600 animate-pulse">
                     <i class="fa-solid fa-circle-check text-4xl mb-2"></i>
-                    <span class="text-sm font-bold">تم الاعتماد بنجاح</span>
+                    <span class="text-sm font-bold">${msg}</span>
                 </div>
             `;
             setTimeout(() => card.remove(), 1500);
@@ -327,10 +387,13 @@
 
         function signContract(btn) {
             const card = btn.closest('.group');
+            const lang = localStorage.getItem('lang') || 'ar';
+            const msg = pageContent[lang].actionSigned;
+
             card.innerHTML = `
                 <div class="h-full flex flex-col items-center justify-center text-brandRed animate-pulse">
                     <i class="fa-solid fa-file-signature text-4xl mb-2"></i>
-                    <span class="text-sm font-bold">تم التوقيع رقمياً</span>
+                    <span class="text-sm font-bold">${msg}</span>
                 </div>
             `;
             setTimeout(() => card.remove(), 1500);
@@ -343,6 +406,7 @@
         // --- Charts ---
         function initChart() {
             const ctx = document.getElementById('financeChart').getContext('2d');
+            const lang = localStorage.getItem('lang') || 'ar';
             
             // Gradient Fill
             let gradient = ctx.createLinearGradient(0, 0, 0, 400);
@@ -355,7 +419,7 @@
                     labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
                     datasets: [
                         {
-                            label: 'Revenue',
+                            label: lang === 'ar' ? 'الإيرادات' : 'Revenue',
                             data: [3.2, 3.5, 3.8, 4.0, 4.2, 4.5],
                             borderColor: '#10B981',
                             backgroundColor: 'transparent',
@@ -367,7 +431,7 @@
                             tension: 0.4
                         },
                         {
-                            label: 'Expenses',
+                            label: lang === 'ar' ? 'المصروفات' : 'Expenses',
                             data: [1.5, 1.6, 1.7, 1.6, 1.8, 1.9],
                             borderColor: '#FB4747',
                             backgroundColor: gradient,
