@@ -13,11 +13,11 @@
     };
 
     const currentUser = {
-        nameAr: "فيصل التقني",
-        nameEn: "Faisal Al-Tech",
-        titleAr: "الرئيس التقني (CTO)",
+        nameAr: "Mashael Alhadyan",
+        nameEn: "Mashael Alhadyan",
+        titleAr: "المسؤول التقني (CTO)",
         titleEn: "Chief Technology Officer",
-        avatar: "https://ui-avatars.com/api/?name=Faisal+Tech&background=0F172A&color=fff&size=128"
+        avatar: "https://ui-avatars.com/api/?name=Mashael+Alhadyan&background=7E3DBE&color=fff&size=128"
     };
 
     // --- 2. CTO Notifications (Tech Focused) ---
