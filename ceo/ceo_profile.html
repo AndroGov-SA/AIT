@@ -15,13 +15,16 @@
             darkMode: 'class',
             theme: {
                 extend: {
-                    colors: { brandRed: '#FB4747', brandDark: '#0F172A' },
+                    colors: { brandRed: '#FB4747', brandDark: '#0F172A', moneyGreen: '#10B981', alertOrange: '#F59E0B' },
                     fontFamily: { sans: ['Tajawal', 'Inter', 'sans-serif'], en: ['Inter', 'sans-serif'] }
                 }
             }
         }
     </script>
-    <style>.num-font { font-family: 'Inter', sans-serif; font-feature-settings: "tnum"; }</style>
+    <style>
+        .num-font { font-family: 'Inter', sans-serif; font-feature-settings: "tnum"; }
+        .glass-header { background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%); }
+    </style>
 </head>
 <body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300 opacity-0">
 
@@ -30,31 +33,63 @@
     <div class="main-content-wrapper transition-all duration-300 flex flex-col min-h-screen">
         <div id="header-container"></div>
 
-        <main class="p-6 space-y-6">
+        <main class="p-8 space-y-8">
             
-            <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden relative">
-                <div class="h-40 bg-slate-900">
-                    <div class="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
-                </div>
-                <div class="px-8 pb-8 flex flex-col md:flex-row items-end -mt-16 gap-6 relative z-10">
-                    <div class="w-32 h-32 rounded-2xl border-4 border-white dark:border-slate-700 overflow-hidden bg-slate-900 shadow-xl">
-                        <img src="https://ui-avatars.com/api/?name=Hisham+S&background=0F172A&color=fff&size=256" class="w-full h-full object-cover">
-                    </div>
-                    <div class="flex-1 mb-2">
-                        <h1 class="text-3xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                            <span data-i18n="name">هشام السحيباني</span>
-                            <i class="fa-solid fa-circle-check text-blue-500 text-sm" title="Verified CEO"></i>
-                        </h1>
-                        <p class="text-slate-500 font-medium text-lg" data-i18n="role">الرئيس التنفيذي (CEO)</p>
-                        <div class="flex gap-6 mt-3 text-sm text-slate-400 font-mono">
-                            <span><i class="fa-solid fa-hashtag text-brandRed"></i> ID: 1001</span>
-                            <span><i class="fa-regular fa-envelope text-brandRed"></i> ceo@androomeda.com</span>
+            <div class="bg-white dark:bg-slate-800 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden relative group">
+                <div class="h-48 glass-header relative">
+                    <div class="absolute inset-0 opacity-30 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
+                    <div class="absolute bottom-4 left-8 flex gap-4">
+                        <div class="px-3 py-1 bg-white/10 backdrop-blur-sm rounded-lg text-white text-xs border border-white/20">
+                            <i class="fa-solid fa-building-columns"></i> المقر الرئيسي - الرياض
                         </div>
                     </div>
-                    <div class="flex gap-3">
-                        <button class="px-5 py-2.5 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-xl text-sm font-bold hover:bg-slate-200 transition">
-                            <i class="fa-solid fa-key"></i> <span data-i18n="btnPass">تغيير كلمة المرور</span>
+                </div>
+
+                <div class="px-8 pb-8 flex flex-col lg:flex-row items-end -mt-20 gap-8 relative z-10">
+                    <div class="relative">
+                        <div class="w-40 h-40 rounded-3xl border-4 border-white dark:border-slate-800 overflow-hidden bg-slate-900 shadow-2xl relative group-hover:scale-105 transition-transform duration-300">
+                            <img src="https://ui-avatars.com/api/?name=Hisham+S&background=0F172A&color=fff&size=256" class="w-full h-full object-cover">
+                        </div>
+                        <button class="absolute bottom-2 right-2 w-8 h-8 bg-brandRed text-white rounded-full flex items-center justify-center shadow-lg hover:bg-red-700 transition" title="Change Photo">
+                            <i class="fa-solid fa-camera text-xs"></i>
                         </button>
+                    </div>
+
+                    <div class="flex-1 mb-2">
+                        <div class="flex items-center gap-3 mb-1">
+                            <h1 class="text-3xl font-bold text-slate-900 dark:text-white" data-i18n="name">هشام السحيباني</h1>
+                            <i class="fa-solid fa-circle-check text-blue-500 text-lg" title="Verified CEO"></i>
+                            <span class="px-2 py-0.5 bg-brandRed/10 text-brandRed text-[10px] font-bold rounded border border-brandRed/20">Executive</span>
+                        </div>
+                        <p class="text-slate-500 text-lg font-medium" data-i18n="role">الرئيس التنفيذي (CEO)</p>
+                        
+                        <div class="flex flex-wrap gap-4 mt-4 text-sm text-slate-500">
+                            <span class="flex items-center gap-2 bg-slate-50 dark:bg-slate-700/50 px-3 py-1.5 rounded-lg border border-slate-100 dark:border-slate-600">
+                                <i class="fa-regular fa-envelope text-brandRed"></i> ceo@androomeda.com
+                            </span>
+                            <span class="flex items-center gap-2 bg-slate-50 dark:bg-slate-700/50 px-3 py-1.5 rounded-lg border border-slate-100 dark:border-slate-600">
+                                <i class="fa-solid fa-phone text-brandRed"></i> +966 55 123 4567
+                            </span>
+                            <span class="flex items-center gap-2 bg-slate-50 dark:bg-slate-700/50 px-3 py-1.5 rounded-lg border border-slate-100 dark:border-slate-600">
+                                <i class="fa-solid fa-hashtag text-brandRed"></i> ID: 1001
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col gap-3 items-end w-full lg:w-auto">
+                        <div class="flex items-center gap-2 bg-green-50 dark:bg-green-900/20 px-3 py-1.5 rounded-lg border border-green-200 dark:border-green-900 cursor-pointer hover:bg-green-100 transition" onclick="toggleStatus()">
+                            <span class="w-2.5 h-2.5 bg-green-500 rounded-full animate-pulse"></span>
+                            <span class="text-xs font-bold text-green-700 dark:text-green-400" id="userStatus">متاح للعمل</span>
+                            <i class="fa-solid fa-chevron-down text-[10px] text-green-600"></i>
+                        </div>
+                        <div class="flex gap-3 w-full">
+                            <button class="flex-1 px-5 py-2.5 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-200 rounded-xl text-sm font-bold hover:bg-slate-50 transition shadow-sm">
+                                <i class="fa-solid fa-key"></i> <span data-i18n="btnPass">كلمة المرور</span>
+                            </button>
+                            <button class="flex-1 px-5 py-2.5 bg-brandRed text-white rounded-xl text-sm font-bold shadow-lg shadow-red-500/30 hover:bg-red-700 transition">
+                                <i class="fa-solid fa-pen-to-square"></i> <span data-i18n="btnEdit">تعديل</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -62,65 +97,132 @@
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 
                 <div class="space-y-6">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 text-center">
+                            <div class="w-10 h-10 mx-auto bg-blue-50 dark:bg-blue-900/20 rounded-full flex items-center justify-center text-blue-600 mb-2"><i class="fa-solid fa-file-signature"></i></div>
+                            <h3 class="text-2xl font-bold num-font text-slate-800 dark:text-white">128</h3>
+                            <p class="text-xs text-slate-400" data-i18n="statDecisions">قرار معتمد</p>
+                        </div>
+                        <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 text-center">
+                            <div class="w-10 h-10 mx-auto bg-purple-50 dark:bg-purple-900/20 rounded-full flex items-center justify-center text-purple-600 mb-2"><i class="fa-solid fa-handshake"></i></div>
+                            <h3 class="text-2xl font-bold num-font text-slate-800 dark:text-white">15</h3>
+                            <p class="text-xs text-slate-400" data-i18n="statMeetings">اجتماع مجلس</p>
+                        </div>
+                    </div>
+
                     <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-                        <h3 class="font-bold text-sm mb-4 flex items-center gap-2 border-b pb-2 dark:border-slate-700">
-                            <i class="fa-solid fa-file-contract text-brandRed"></i> <span data-i18n="secContract">بيانات العقد</span>
+                        <h3 class="font-bold text-sm mb-4 flex items-center gap-2 border-b border-slate-100 dark:border-slate-700 pb-3">
+                            <i class="fa-solid fa-file-contract text-brandRed"></i> <span data-i18n="secContract">بيانات العقد الوظيفي</span>
                         </h3>
                         <ul class="space-y-4 text-sm">
-                            <li class="flex justify-between">
+                            <li class="flex justify-between items-center">
                                 <span class="text-slate-500" data-i18n="lblType">نوع العقد</span>
-                                <span class="font-bold dark:text-white">عقد تنفيذي (Executive)</span>
+                                <span class="font-bold dark:text-white bg-slate-100 dark:bg-slate-700 px-2 py-0.5 rounded text-xs">Executive Contract</span>
                             </li>
-                            <li class="flex justify-between">
+                            <li class="flex justify-between items-center">
                                 <span class="text-slate-500" data-i18n="lblStart">تاريخ المباشرة</span>
-                                <span class="font-bold num-font dark:text-white">2020-01-01</span>
+                                <span class="font-bold num-font dark:text-white">01 Jan 2020</span>
                             </li>
-                            <li class="flex justify-between">
-                                <span class="text-slate-500" data-i18n="lblDirect">المدير المباشر</span>
+                            <li class="flex justify-between items-center">
+                                <span class="text-slate-500" data-i18n="lblDuration">مدة العقد</span>
+                                <span class="font-bold text-green-600 text-xs flex items-center gap-1"><i class="fa-solid fa-rotate"></i> يجدد تلقائياً</span>
+                            </li>
+                            <li class="flex justify-between items-center">
+                                <span class="text-slate-500" data-i18n="lblDirect">المرجع المباشر</span>
                                 <span class="font-bold dark:text-white">رئيس مجلس الإدارة</span>
                             </li>
                         </ul>
                     </div>
                 </div>
 
-                <div class="lg:col-span-2 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-6">
-                    <div class="flex justify-between items-center mb-6">
-                        <h3 class="font-bold text-lg dark:text-white flex items-center gap-2">
-                            <i class="fa-solid fa-users-gear text-orange-500"></i> <span data-i18n="titleDelegation">سجل التفويض (Acting For)</span>
+                <div class="lg:col-span-2 space-y-6">
+                    
+                    <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <div>
+                                <h3 class="font-bold text-lg dark:text-white flex items-center gap-2">
+                                    <i class="fa-solid fa-users-gear text-orange-500"></i> <span data-i18n="titleDelegation">سجل التفويض (Acting For)</span>
+                                </h3>
+                                <p class="text-xs text-slate-400 mt-1">إدارة الصلاحيات الممنوحة للنواب والمدراء</p>
+                            </div>
+                            <button class="text-xs bg-brandRed text-white px-4 py-2 rounded-lg hover:bg-red-700 transition font-bold shadow-md shadow-red-500/20" onclick="alert('فتح نموذج تفويض جديد')">
+                                <i class="fa-solid fa-plus"></i> <span data-i18n="btnAddDelegate">إضافة تفويض</span>
+                            </button>
+                        </div>
+
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm text-right rtl:text-right ltr:text-left">
+                                <thead class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 text-xs font-bold uppercase">
+                                    <tr>
+                                        <th class="p-4 rounded-r-lg" data-i18n="colPerson">المفوض له</th>
+                                        <th class="p-4" data-i18n="colScope">نطاق الصلاحية</th>
+                                        <th class="p-4" data-i18n="colPeriod">الفترة</th>
+                                        <th class="p-4 rounded-l-lg text-center" data-i18n="colStatus">الحالة</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-100 dark:divide-slate-700 dark:text-slate-300">
+                                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
+                                        <td class="p-4">
+                                            <div class="flex items-center gap-3">
+                                                <img src="https://ui-avatars.com/api/?name=Mansour+Y&background=random" class="w-8 h-8 rounded-full">
+                                                <div>
+                                                    <p class="font-bold text-xs">منصور اليامي</p>
+                                                    <p class="text-[9px] text-slate-400">CAO</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="p-4 text-xs">التوقيع على الإجازات والرواتب</td>
+                                        <td class="p-4 text-xs font-mono bg-slate-50 dark:bg-slate-800 rounded px-2">دائم (Standing)</td>
+                                        <td class="p-4 text-center"><span class="bg-green-100 text-green-700 px-2 py-1 rounded text-[10px] font-bold border border-green-200">نشط</span></td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
+                                        <td class="p-4">
+                                            <div class="flex items-center gap-3">
+                                                <img src="https://ui-avatars.com/api/?name=Mohammed+B&background=random" class="w-8 h-8 rounded-full">
+                                                <div>
+                                                    <p class="font-bold text-xs">محمد البخيتي</p>
+                                                    <p class="text-[9px] text-slate-400">CFO</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="p-4 text-xs">الموافقة على أوامر الشراء < 50k</td>
+                                        <td class="p-4 text-xs font-mono bg-slate-50 dark:bg-slate-800 rounded px-2">دائم</td>
+                                        <td class="p-4 text-center"><span class="bg-green-100 text-green-700 px-2 py-1 rounded text-[10px] font-bold border border-green-200">نشط</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-6">
+                        <h3 class="font-bold text-lg mb-4 dark:text-white flex items-center gap-2">
+                            <i class="fa-solid fa-clock-rotate-left text-slate-400"></i> <span data-i18n="titleActivity">النشاط الأخير</span>
                         </h3>
-                        <button class="text-xs bg-slate-100 dark:bg-slate-700 px-3 py-1.5 rounded-lg hover:bg-slate-200 transition font-bold" onclick="alert('فتح نموذج تفويض جديد')">
-                            <i class="fa-solid fa-plus"></i> <span data-i18n="btnAddDelegate">إضافة تفويض</span>
-                        </button>
+                        <div class="space-y-4">
+                            <div class="flex gap-3">
+                                <div class="w-8 flex flex-col items-center">
+                                    <div class="w-2 h-2 bg-brandRed rounded-full"></div>
+                                    <div class="h-full w-px bg-slate-100 dark:bg-slate-700 my-1"></div>
+                                </div>
+                                <div class="pb-4">
+                                    <p class="text-sm font-bold dark:text-white">اعتماد الميزانية السنوية 2026</p>
+                                    <p class="text-xs text-slate-500 mt-1">تم التوقيع الرقمي وإرسال النسخة للمالية.</p>
+                                    <span class="text-[10px] text-slate-400 mt-1 block">منذ ساعتين</span>
+                                </div>
+                            </div>
+                            <div class="flex gap-3">
+                                <div class="w-8 flex flex-col items-center">
+                                    <div class="w-2 h-2 bg-slate-300 rounded-full"></div>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-bold dark:text-white">تسجيل الدخول للنظام</p>
+                                    <span class="text-[10px] text-slate-400 mt-1 block">اليوم 08:30 ص</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-sm text-right rtl:text-right ltr:text-left">
-                            <thead class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 text-xs font-bold uppercase">
-                                <tr>
-                                    <th class="p-3" data-i18n="colPerson">المفوض له</th>
-                                    <th class="p-3" data-i18n="colScope">نطاق الصلاحية</th>
-                                    <th class="p-3" data-i18n="colPeriod">الفترة</th>
-                                    <th class="p-3 text-center" data-i18n="colStatus">الحالة</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-slate-100 dark:divide-slate-700 dark:text-slate-300">
-                                <tr>
-                                    <td class="p-3 font-bold">منصور اليامي (CAO)</td>
-                                    <td class="p-3 text-xs">التوقيع على الإجازات والرواتب</td>
-                                    <td class="p-3 text-xs font-mono">دائم (Standing)</td>
-                                    <td class="p-3 text-center"><span class="bg-green-100 text-green-700 px-2 py-1 rounded text-[10px] font-bold">نشط</span></td>
-                                </tr>
-                                <tr>
-                                    <td class="p-3 font-bold">محمد البخيتي (CFO)</td>
-                                    <td class="p-3 text-xs">الموافقة على أوامر الشراء < 50k</td>
-                                    <td class="p-3 text-xs font-mono">دائم</td>
-                                    <td class="p-3 text-center"><span class="bg-green-100 text-green-700 px-2 py-1 rounded text-[10px] font-bold">نشط</span></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
                 </div>
-
             </div>
 
         </main>
@@ -136,32 +238,42 @@
                 name: "هشام السحيباني",
                 role: "الرئيس التنفيذي (CEO)",
                 btnPass: "تغيير كلمة المرور",
-                secContract: "بيانات العقد",
+                btnEdit: "تعديل البيانات",
+                statDecisions: "قرار معتمد",
+                statMeetings: "اجتماع مجلس",
+                secContract: "بيانات العقد الوظيفي",
                 lblType: "نوع العقد",
                 lblStart: "تاريخ المباشرة",
-                lblDirect: "المدير المباشر",
+                lblDuration: "مدة العقد",
+                lblDirect: "المرجع المباشر",
                 titleDelegation: "سجل التفويض (Acting For)",
                 btnAddDelegate: "إضافة تفويض",
                 colPerson: "المفوض له",
                 colScope: "نطاق الصلاحية",
                 colPeriod: "الفترة",
-                colStatus: "الحالة"
+                colStatus: "الحالة",
+                titleActivity: "النشاط الأخير"
             },
             en: {
                 pageTitle: "My Profile | AndroGov",
                 name: "Hisham Al-Suhaibani",
                 role: "Chief Executive Officer (CEO)",
                 btnPass: "Change Password",
+                btnEdit: "Edit Profile",
+                statDecisions: "Decisions",
+                statMeetings: "Board Meetings",
                 secContract: "Contract Details",
                 lblType: "Contract Type",
                 lblStart: "Joining Date",
+                lblDuration: "Duration",
                 lblDirect: "Direct Manager",
                 titleDelegation: "Delegation Log",
                 btnAddDelegate: "Add Delegate",
                 colPerson: "Delegate To",
                 colScope: "Scope",
                 colPeriod: "Period",
-                colStatus: "Status"
+                colStatus: "Status",
+                titleActivity: "Recent Activity"
             }
         };
 
@@ -177,6 +289,22 @@
                 if(dict[key]) el.innerText = dict[key];
             });
         });
+
+        function toggleStatus() {
+            const statusEl = document.getElementById('userStatus');
+            const current = statusEl.innerText;
+            if (current.includes('متاح')) {
+                statusEl.innerText = "مشغول (Busy)";
+                statusEl.className = "text-xs font-bold text-red-700 dark:text-red-400";
+                statusEl.parentElement.className = "flex items-center gap-2 bg-red-50 dark:bg-red-900/20 px-3 py-1.5 rounded-lg border border-red-200 dark:border-red-900 cursor-pointer hover:bg-red-100 transition";
+                statusEl.previousElementSibling.className = "w-2.5 h-2.5 bg-red-500 rounded-full";
+            } else {
+                statusEl.innerText = "متاح للعمل";
+                statusEl.className = "text-xs font-bold text-green-700 dark:text-green-400";
+                statusEl.parentElement.className = "flex items-center gap-2 bg-green-50 dark:bg-green-900/20 px-3 py-1.5 rounded-lg border border-green-200 dark:border-green-900 cursor-pointer hover:bg-green-100 transition";
+                statusEl.previousElementSibling.className = "w-2.5 h-2.5 bg-green-500 rounded-full animate-pulse";
+            }
+        }
     </script>
 </body>
 </html>
