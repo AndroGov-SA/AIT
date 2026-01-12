@@ -43,7 +43,7 @@
                 <div class="flex gap-2">
                     <div class="flex items-center bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 shadow-sm">
                         <i class="fa-regular fa-calendar text-slate-400 text-xs ml-2"></i>
-                        <span class="text-xs font-bold text-slate-600 dark:text-slate-300 num-font">Q1 2026</span>
+                        <span class="text-xs font-bold text-slate-600 dark:text-slate-300 num-font" data-i18n="lblQ1">Q1 2026</span>
                     </div>
                     <button onclick="document.getElementById('reportModal').classList.remove('hidden')" class="px-4 py-2 bg-brandRed text-white rounded-lg text-xs font-bold shadow-lg hover:bg-red-700 transition flex items-center gap-2">
                         <i class="fa-solid fa-wand-magic-sparkles"></i> <span data-i18n="btnGenerate">توليد تقرير مخصص</span>
@@ -56,7 +56,7 @@
                     <div class="absolute -left-4 -top-4 w-20 h-20 bg-green-50 dark:bg-green-900/10 rounded-full group-hover:scale-110 transition"></div>
                     <h3 class="text-sm font-bold text-slate-500 uppercase z-10 relative" data-i18n="cardFin">الأداء المالي</h3>
                     <div class="mt-4 relative z-10">
-                        <p class="text-xs text-slate-400">الإيرادات</p>
+                        <p class="text-xs text-slate-400" data-i18n="lblRevenue">الإيرادات</p>
                         <p class="text-xl font-bold num-font text-slate-800 dark:text-white">4.2M SAR</p>
                         <div class="w-full bg-slate-100 dark:bg-slate-700 h-1.5 rounded-full mt-2">
                             <div class="bg-green-500 h-full" style="width: 85%"></div>
@@ -68,7 +68,7 @@
                     <div class="absolute -left-4 -top-4 w-20 h-20 bg-blue-50 dark:bg-blue-900/10 rounded-full group-hover:scale-110 transition"></div>
                     <h3 class="text-sm font-bold text-slate-500 uppercase z-10 relative" data-i18n="cardHR">رأس المال البشري</h3>
                     <div class="mt-4 relative z-10">
-                        <p class="text-xs text-slate-400">عدد الموظفين</p>
+                        <p class="text-xs text-slate-400" data-i18n="lblEmpCount">عدد الموظفين</p>
                         <p class="text-xl font-bold num-font text-slate-800 dark:text-white">45 <span class="text-xs font-normal text-green-500">(+3 New)</span></p>
                         <div class="w-full bg-slate-100 dark:bg-slate-700 h-1.5 rounded-full mt-2">
                             <div class="bg-blue-500 h-full" style="width: 60%"></div>
@@ -80,7 +80,7 @@
                     <div class="absolute -left-4 -top-4 w-20 h-20 bg-orange-50 dark:bg-orange-900/10 rounded-full group-hover:scale-110 transition"></div>
                     <h3 class="text-sm font-bold text-slate-500 uppercase z-10 relative" data-i18n="cardProj">المشاريع</h3>
                     <div class="mt-4 relative z-10">
-                        <p class="text-xs text-slate-400">نسبة الإنجاز العام</p>
+                        <p class="text-xs text-slate-400" data-i18n="lblProgress">نسبة الإنجاز العام</p>
                         <p class="text-xl font-bold num-font text-slate-800 dark:text-white">72%</p>
                         <div class="w-full bg-slate-100 dark:bg-slate-700 h-1.5 rounded-full mt-2">
                             <div class="bg-orange-500 h-full" style="width: 72%"></div>
@@ -132,7 +132,7 @@
                                 <td class="p-4">
                                     <div class="flex items-center gap-3">
                                         <div class="w-8 h-8 rounded bg-red-50 text-red-600 flex items-center justify-center"><i class="fa-solid fa-file-pdf"></i></div>
-                                        <span class="font-bold text-slate-800 dark:text-white group-hover:text-brandRed transition">القوائم المالية (يناير 2026)</span>
+                                        <span class="font-bold text-slate-800 dark:text-white group-hover:text-brandRed transition" data-i18n="rep1Name">القوائم المالية (يناير 2026)</span>
                                     </div>
                                 </td>
                                 <td class="p-4"><span class="bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-1 rounded text-[10px]" data-i18n="typeFin">مالي</span></td>
@@ -146,7 +146,7 @@
                                 <td class="p-4">
                                     <div class="flex items-center gap-3">
                                         <div class="w-8 h-8 rounded bg-green-50 text-green-600 flex items-center justify-center"><i class="fa-solid fa-file-excel"></i></div>
-                                        <span class="font-bold text-slate-800 dark:text-white group-hover:text-brandRed transition">تقرير أداء الموارد البشرية Q4</span>
+                                        <span class="font-bold text-slate-800 dark:text-white group-hover:text-brandRed transition" data-i18n="rep2Name">تقرير أداء الموارد البشرية Q4</span>
                                     </div>
                                 </td>
                                 <td class="p-4"><span class="bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-1 rounded text-[10px]" data-i18n="typeHR">HR</span></td>
@@ -160,7 +160,7 @@
                                 <td class="p-4">
                                     <div class="flex items-center gap-3">
                                         <div class="w-8 h-8 rounded bg-blue-50 text-blue-600 flex items-center justify-center"><i class="fa-solid fa-file-powerpoint"></i></div>
-                                        <span class="font-bold text-slate-800 dark:text-white group-hover:text-brandRed transition">عرض مجلس الإدارة (الاستراتيجية)</span>
+                                        <span class="font-bold text-slate-800 dark:text-white group-hover:text-brandRed transition" data-i18n="rep3Name">عرض مجلس الإدارة (الاستراتيجية)</span>
                                     </div>
                                 </td>
                                 <td class="p-4"><span class="bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-1 rounded text-[10px]" data-i18n="typeStrat">استراتيجي</span></td>
@@ -189,10 +189,10 @@
                 <div>
                     <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblType">نوع التقرير</label>
                     <select class="w-full bg-slate-50 dark:bg-slate-700 border dark:border-slate-600 rounded-lg p-2 text-sm dark:text-white">
-                        <option>التقرير المالي الشامل (P&L)</option>
-                        <option>تقرير التدفقات النقدية</option>
-                        <option>أداء الموارد البشرية</option>
-                        <option>تقرير المبيعات والعملاء</option>
+                        <option data-i18n="opt1">التقرير المالي الشامل (P&L)</option>
+                        <option data-i18n="opt2">تقرير التدفقات النقدية</option>
+                        <option data-i18n="opt3">أداء الموارد البشرية</option>
+                        <option data-i18n="opt4">تقرير المبيعات والعملاء</option>
                     </select>
                 </div>
                 
@@ -212,11 +212,11 @@
                     <div class="flex gap-4">
                         <label class="flex items-center gap-2 cursor-pointer">
                             <input type="radio" name="format" class="text-brandRed focus:ring-brandRed" checked>
-                            <span class="text-sm dark:text-white"><i class="fa-solid fa-file-pdf text-red-500"></i> PDF (للعرض)</span>
+                            <span class="text-sm dark:text-white"><i class="fa-solid fa-file-pdf text-red-500"></i> <span data-i18n="fmtPDF">PDF (للعرض)</span></span>
                         </label>
                         <label class="flex items-center gap-2 cursor-pointer">
                             <input type="radio" name="format" class="text-brandRed focus:ring-brandRed">
-                            <span class="text-sm dark:text-white"><i class="fa-solid fa-file-excel text-green-500"></i> Excel (للتحليل)</span>
+                            <span class="text-sm dark:text-white"><i class="fa-solid fa-file-excel text-green-500"></i> <span data-i18n="fmtExcel">Excel (للتحليل)</span></span>
                         </label>
                     </div>
                 </div>
@@ -241,9 +241,13 @@
                 headerTitle: "التقارير التنفيذية",
                 headerDesc: "مركز البيانات والتقارير الدورية (المالية، التشغيلية، والاستراتيجية)",
                 btnGenerate: "توليد تقرير مخصص",
+                lblQ1: "الربع الأول 2026",
                 cardFin: "الأداء المالي",
+                lblRevenue: "الإيرادات",
                 cardHR: "رأس المال البشري",
+                lblEmpCount: "عدد الموظفين",
                 cardProj: "المشاريع",
+                lblProgress: "نسبة الإنجاز العام",
                 chartDist: "توزيع الإيرادات (Q1)",
                 chartTrend: "النمو الشهري",
                 tableTitle: "أرشيف التقارير الحديثة",
@@ -255,25 +259,41 @@
                 colDate: "تاريخ الإصدار",
                 colAuthor: "تم بواسطة",
                 colAction: "تحميل",
+                rep1Name: "القوائم المالية (يناير 2026)",
                 typeFin: "مالي",
+                rep2Name: "تقرير أداء الموارد البشرية Q4",
                 typeHR: "HR",
+                rep3Name: "عرض مجلس الإدارة (الاستراتيجية)",
                 typeStrat: "استراتيجي",
                 modTitle: "توليد تقرير جديد",
                 lblType: "نوع التقرير",
+                opt1: "التقرير المالي الشامل (P&L)",
+                opt2: "تقرير التدفقات النقدية",
+                opt3: "أداء الموارد البشرية",
+                opt4: "تقرير المبيعات والعملاء",
                 lblFrom: "من تاريخ",
                 lblTo: "إلى تاريخ",
                 lblFormat: "الصيغة",
+                fmtPDF: "PDF (للعرض)",
+                fmtExcel: "Excel (للتحليل)",
                 btnCancel: "إلغاء",
-                btnCreate: "توليد الآن"
+                btnCreate: "توليد الآن",
+                chartLabelGov: "مشاريع حكومية",
+                chartLabelPvt: "قطاع خاص",
+                chartLabelSub: "اشتراكات"
             },
             en: {
                 pageTitle: "Reports | AndroGov",
                 headerTitle: "Executive Reports",
-                headerDesc: "Central hub for financial, operational, and strategic reports",
+                headerDesc: "Central hub for financial, operational, and strategic reports.",
                 btnGenerate: "Generate Custom Report",
+                lblQ1: "Q1 2026",
                 cardFin: "Financial Performance",
+                lblRevenue: "Revenue",
                 cardHR: "Human Capital",
+                lblEmpCount: "Headcount",
                 cardProj: "Projects",
+                lblProgress: "Overall Progress",
                 chartDist: "Revenue Distribution (Q1)",
                 chartTrend: "Monthly Growth",
                 tableTitle: "Recent Reports Archive",
@@ -285,16 +305,28 @@
                 colDate: "Issue Date",
                 colAuthor: "Author",
                 colAction: "Download",
+                rep1Name: "Financial Statements (Jan 2026)",
                 typeFin: "Finance",
+                rep2Name: "HR Performance Report Q4",
                 typeHR: "HR",
+                rep3Name: "Board Strategy Presentation",
                 typeStrat: "Strategy",
                 modTitle: "Generate New Report",
                 lblType: "Report Type",
+                opt1: "Comprehensive P&L Statement",
+                opt2: "Cash Flow Report",
+                opt3: "HR Performance",
+                opt4: "Sales & Clients Report",
                 lblFrom: "Date From",
                 lblTo: "Date To",
                 lblFormat: "Format",
+                fmtPDF: "PDF (View)",
+                fmtExcel: "Excel (Analyze)",
                 btnCancel: "Cancel",
-                btnCreate: "Generate Now"
+                btnCreate: "Generate Now",
+                chartLabelGov: "Gov Projects",
+                chartLabelPvt: "Private Sector",
+                chartLabelSub: "Subscriptions"
             }
         };
 
@@ -307,7 +339,23 @@
 
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
-                if(dict[key]) el.innerText = dict[key];
+                if(dict[key]) {
+                    if(el.tagName === 'OPTION') {
+                        el.innerText = dict[key];
+                    } else {
+                        // Preserve icons if present
+                        if (el.children.length > 0) {
+                            const icon = el.innerHTML.match(/<i.*><\/i>/);
+                            if (icon) {
+                                el.innerHTML = icon[0] + ' ' + dict[key];
+                            } else {
+                                el.innerText = dict[key];
+                            }
+                        } else {
+                            el.innerText = dict[key];
+                        }
+                    }
+                }
             });
 
             initCharts();
@@ -317,10 +365,10 @@
             const btn = document.querySelector('button[onclick="generateReport()"]');
             const originalContent = btn.innerHTML;
             btn.disabled = true;
-            btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> جاري المعالجة...`;
+            btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> Processing...`;
             
             setTimeout(() => {
-                alert("تم توليد التقرير بنجاح وسيتم تحميله الآن.");
+                alert("Report generated successfully. Downloading now...");
                 document.getElementById('reportModal').classList.add('hidden');
                 btn.innerHTML = originalContent;
                 btn.disabled = false;
@@ -328,12 +376,15 @@
         }
 
         function initCharts() {
+            const lang = localStorage.getItem('lang') || 'ar';
+            const dict = pageContent[lang];
+
             // Pie Chart
             const ctx1 = document.getElementById('revenuePieChart').getContext('2d');
             new Chart(ctx1, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Gov Projects', 'Private Sector', 'Subscriptions'],
+                    labels: [dict.chartLabelGov, dict.chartLabelPvt, dict.chartLabelSub],
                     datasets: [{
                         data: [55, 30, 15],
                         backgroundColor: ['#FB4747', '#10B981', '#3B82F6'],
@@ -355,7 +406,7 @@
                 data: {
                     labels: ['Jan', 'Feb', 'Mar'],
                     datasets: [{
-                        label: 'Revenue',
+                        label: dict.lblRevenue,
                         data: [1.2, 1.4, 1.6],
                         backgroundColor: '#FB4747',
                         borderRadius: 4
@@ -367,7 +418,8 @@
                     scales: {
                         y: { grid: { display: true, color: '#f1f5f9' } },
                         x: { grid: { display: false } }
-                    }
+                    },
+                    plugins: { legend: { display: false } }
                 }
             });
         }
