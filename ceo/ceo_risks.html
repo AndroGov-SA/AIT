@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#FB4747">
+    <title data-i18n="pageTitle">سجل المخاطر | AndroGov</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { brandRed: '#FB4747', brandDark: '#0F172A', moneyGreen: '#10B981', alertOrange: '#F59E0B' },
+                    fontFamily: { sans: ['Tajawal', 'Inter', 'sans-serif'], en: ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <style>.num-font { font-family: 'Inter', sans-serif; font-feature-settings: "tnum"; }</style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300 opacity-0">
+
+    <div id="sidebar-container"></div>
+    
+    <div class="main-content-wrapper transition-all duration-300 flex flex-col min-h-screen">
+        <div id="header-container"></div>
+
+        <main class="p-8 space-y-8">
+            
+            <div class="flex flex-col md:flex-row justify-between items-end gap-6 bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-500 to-brandRed"></div>
+                <div class="absolute -right-6 -top-6 w-24 h-24 bg-brandRed/5 rounded-full blur-2xl"></div>
+
+                <div class="relative z-10">
+                    <h1 class="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2 mb-2">
+                        <i class="fa-solid fa-triangle-exclamation text-brandRed"></i> <span data-i18n="headerTitle">سجل المخاطر المؤسسية</span>
+                    </h1>
+                    <p class="text-sm text-slate-500 mt-1 max-w-2xl" data-i18n="headerDesc">مراقبة وتحليل المخاطر الاستراتيجية والتشغيلية وخطط المعالجة القائمة.</p>
+                </div>
+                
+                <div class="flex gap-3 relative z-10">
+                    <button class="px-5 py-2.5 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl text-xs font-bold shadow-sm hover:bg-slate-50 transition flex items-center gap-2 text-slate-600 dark:text-white">
+                        <i class="fa-solid fa-print"></i> <span data-i18n="btnPrint">طباعة التقرير</span>
+                    </button>
+                    <button onclick="document.getElementById('riskModal').classList.remove('hidden')" class="px-5 py-2.5 bg-brandRed text-white rounded-xl text-xs font-bold shadow-lg shadow-red-500/30 hover:bg-red-700 transition flex items-center gap-2">
+                        <i class="fa-solid fa-plus"></i> <span data-i18n="btnAddRisk">تسجيل خطر جديد</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 group hover:border-brandRed/30 transition duration-300">
+                    <div class="flex justify-between items-start mb-2">
+                        <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="kpiTotal">إجمالي المخاطر</p>
+                        <i class="fa-solid fa-list-ul text-slate-300 group-hover:text-brandRed transition"></i>
+                    </div>
+                    <h3 class="text-3xl font-bold num-font text-slate-900 dark:text-white">24</h3>
+                    <p class="text-[10px] text-slate-400 mt-2" data-i18n="kpiTotalSub">نشطة ومراقبة</p>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 group hover:border-red-500 transition duration-300 relative overflow-hidden">
+                    <div class="absolute inset-0 bg-red-50 dark:bg-red-900/10 opacity-0 group-hover:opacity-100 transition duration-500"></div>
+                    <div class="relative z-10">
+                        <div class="flex justify-between items-start mb-2">
+                            <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="kpiCritical">مخاطر حرجة (Critical)</p>
+                            <i class="fa-solid fa-fire text-red-500 animate-pulse"></i>
+                        </div>
+                        <h3 class="text-3xl font-bold num-font text-red-600">3</h3>
+                        <p class="text-[10px] text-red-400 mt-2 font-bold" data-i18n="kpiCriticalSub">تتطلب إجراء فوري</p>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 group hover:border-green-500 transition duration-300">
+                    <div class="flex justify-between items-start mb-2">
+                        <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="kpiMitigation">نسبة المعالجة</p>
+                        <i class="fa-solid fa-shield-halved text-green-500"></i>
+                    </div>
+                    <h3 class="text-3xl font-bold num-font text-slate-900 dark:text-white">85%</h3>
+                    <div class="w-full bg-slate-100 dark:bg-slate-700 h-1.5 rounded-full mt-3 overflow-hidden">
+                        <div class="bg-green-500 h-full" style="width: 85%"></div>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 group hover:border-brandRed/30 transition duration-300">
+                    <div class="flex justify-between items-start mb-2">
+                        <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="kpiNew">مخاطر مستجدة</p>
+                        <i class="fa-solid fa-bolt text-yellow-500"></i>
+                    </div>
+                    <h3 class="text-3xl font-bold num-font text-slate-900 dark:text-white">2</h3>
+                    <p class="text-[10px] text-slate-400 mt-2" data-i18n="kpiNewSub">تم رصدها هذا الشهر</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <h3 class="font-bold text-sm text-slate-800 dark:text-white mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-chart-radar text-brandRed"></i> <span data-i18n="chartCat">توزيع فئات المخاطر</span>
+                    </h3>
+                    <div class="h-72 w-full flex justify-center">
+                        <canvas id="riskRadarChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <h3 class="font-bold text-sm text-slate-800 dark:text-white mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-chart-column text-brandRed"></i> <span data-i18n="chartImpact">تحليل الأثر المالي المتوقع</span>
+                    </h3>
+                    <div class="h-72 w-full">
+                        <canvas id="riskImpactChart"></canvas>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="bg-white dark:bg-slate-800 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden">
+                <div class="p-5 border-b border-slate-100 dark:border-slate-700 flex flex-col md:flex-row justify-between items-center gap-4">
+                    <h3 class="font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                        <i class="fa-solid fa-table-list text-slate-400"></i> <span data-i18n="tableTitle">سجل المخاطر التفصيلي</span>
+                    </h3>
+                    <div class="flex gap-2">
+                        <select class="bg-slate-50 dark:bg-slate-700 border-none rounded-lg text-xs py-2 px-3 text-slate-600 dark:text-slate-300 focus:ring-2 focus:ring-brandRed">
+                            <option>جميع الفئات</option>
+                            <option>مالية</option>
+                            <option>تشغيلية</option>
+                            <option>تقنية</option>
+                        </select>
+                        <select class="bg-slate-50 dark:bg-slate-700 border-none rounded-lg text-xs py-2 px-3 text-slate-600 dark:text-slate-300 focus:ring-2 focus:ring-brandRed">
+                            <option>جميع المستويات</option>
+                            <option class="text-red-600 font-bold">عالي (High)</option>
+                            <option>متوسط (Medium)</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-right rtl:text-right ltr:text-left">
+                        <thead class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 text-xs font-bold uppercase">
+                            <tr>
+                                <th class="p-4" data-i18n="colRisk">وصف الخطر</th>
+                                <th class="p-4" data-i18n="colCat">الفئة</th>
+                                <th class="p-4 text-center" data-i18n="colRating">التصنيف</th>
+                                <th class="p-4" data-i18n="colOwner">المالك</th>
+                                <th class="p-4" data-i18n="colPlan">حالة المعالجة</th>
+                                <th class="p-4 text-center" data-i18n="colAction">تفاصيل</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 dark:divide-slate-700 dark:text-slate-300">
+                            
+                            <tr class="hover:bg-red-50/50 dark:hover:bg-red-900/10 transition group">
+                                <td class="p-4">
+                                    <p class="font-bold text-slate-800 dark:text-white text-xs">نقص السيولة النقدية (Q2)</p>
+                                    <p class="text-[10px] text-slate-400 mt-1">بسبب تأخر دفعات العقود الحكومية</p>
+                                </td>
+                                <td class="p-4"><span class="bg-slate-100 dark:bg-slate-700 text-slate-500 px-2 py-1 rounded text-[10px]" data-i18n="catFin">مالي</span></td>
+                                <td class="p-4 text-center">
+                                    <span class="bg-red-100 text-red-700 border border-red-200 px-2 py-1 rounded text-[10px] font-bold">Critical</span>
+                                </td>
+                                <td class="p-4">
+                                    <div class="flex items-center gap-2">
+                                        <img src="https://ui-avatars.com/api/?name=Mohammed+B&background=random" class="w-6 h-6 rounded-full">
+                                        <span class="text-xs">CFO</span>
+                                    </div>
+                                </td>
+                                <td class="p-4">
+                                    <div class="w-full bg-slate-100 dark:bg-slate-700 h-1.5 rounded-full mb-1">
+                                        <div class="bg-orange-500 h-full" style="width: 40%"></div>
+                                    </div>
+                                    <span class="text-[10px] text-orange-500 font-bold">جاري التفاوض مع البنك</span>
+                                </td>
+                                <td class="p-4 text-center">
+                                    <button class="text-slate-400 hover:text-brandRed transition"><i class="fa-solid fa-angle-left rtl:rotate-0 ltr:rotate-180"></i></button>
+                                </td>
+                            </tr>
+
+                            <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition group">
+                                <td class="p-4">
+                                    <p class="font-bold text-slate-800 dark:text-white text-xs">عدم الامتثال لمعايير NCA</p>
+                                    <p class="text-[10px] text-slate-400 mt-1">تحديث سياسات الأمن السيبراني</p>
+                                </td>
+                                <td class="p-4"><span class="bg-slate-100 dark:bg-slate-700 text-slate-500 px-2 py-1 rounded text-[10px]" data-i18n="catTech">تقني</span></td>
+                                <td class="p-4 text-center">
+                                    <span class="bg-orange-100 text-orange-700 border border-orange-200 px-2 py-1 rounded text-[10px] font-bold">High</span>
+                                </td>
+                                <td class="p-4">
+                                    <div class="flex items-center gap-2">
+                                        <img src="https://ui-avatars.com/api/?name=IT+Manager&background=random" class="w-6 h-6 rounded-full">
+                                        <span class="text-xs">CTO</span>
+                                    </div>
+                                </td>
+                                <td class="p-4">
+                                    <div class="w-full bg-slate-100 dark:bg-slate-700 h-1.5 rounded-full mb-1">
+                                        <div class="bg-green-500 h-full" style="width: 80%"></div>
+                                    </div>
+                                    <span class="text-[10px] text-green-500 font-bold">مرحلة التدقيق النهائي</span>
+                                </td>
+                                <td class="p-4 text-center">
+                                    <button class="text-slate-400 hover:text-brandRed transition"><i class="fa-solid fa-angle-left rtl:rotate-0 ltr:rotate-180"></i></button>
+                                </td>
+                            </tr>
+
+                            <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition group">
+                                <td class="p-4">
+                                    <p class="font-bold text-slate-800 dark:text-white text-xs">تسرب الكفاءات (Turnover)</p>
+                                    <p class="text-[10px] text-slate-400 mt-1">ارتفاع معدل الاستقالات في قسم المبيعات</p>
+                                </td>
+                                <td class="p-4"><span class="bg-slate-100 dark:bg-slate-700 text-slate-500 px-2 py-1 rounded text-[10px]" data-i18n="catOps">تشغيلي</span></td>
+                                <td class="p-4 text-center">
+                                    <span class="bg-yellow-100 text-yellow-700 border border-yellow-200 px-2 py-1 rounded text-[10px] font-bold">Medium</span>
+                                </td>
+                                <td class="p-4">
+                                    <div class="flex items-center gap-2">
+                                        <img src="https://ui-avatars.com/api/?name=HR+M&background=random" class="w-6 h-6 rounded-full">
+                                        <span class="text-xs">HR Manager</span>
+                                    </div>
+                                </td>
+                                <td class="p-4">
+                                    <div class="w-full bg-slate-100 dark:bg-slate-700 h-1.5 rounded-full mb-1">
+                                        <div class="bg-blue-500 h-full" style="width: 20%"></div>
+                                    </div>
+                                    <span class="text-[10px] text-blue-500 font-bold">دراسة الرواتب المعيارية</span>
+                                </td>
+                                <td class="p-4 text-center">
+                                    <button class="text-slate-400 hover:text-brandRed transition"><i class="fa-solid fa-angle-left rtl:rotate-0 ltr:rotate-180"></i></button>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <div id="riskModal" class="fixed inset-0 bg-black/60 hidden z-50 flex items-center justify-center backdrop-blur-sm p-4">
+        <div class="bg-white dark:bg-slate-800 w-full max-w-lg rounded-3xl shadow-2xl p-6 border-t-4 border-brandRed animate-fade-in-up">
+            <div class="flex justify-between items-center mb-6 border-b pb-4 dark:border-slate-700">
+                <h3 class="font-bold text-lg dark:text-white flex items-center gap-2">
+                    <i class="fa-solid fa-triangle-exclamation text-brandRed"></i> <span data-i18n="modTitle">تسجيل خطر جديد</span>
+                </h3>
+                <button onclick="document.getElementById('riskModal').classList.add('hidden')"><i class="fa-solid fa-xmark text-slate-400 hover:text-red-500"></i></button>
+            </div>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblRiskName">وصف الخطر</label>
+                    <input type="text" class="w-full bg-slate-50 dark:bg-slate-700 border dark:border-slate-600 rounded-xl p-3 text-sm dark:text-white focus:ring-2 focus:ring-brandRed focus:border-brandRed outline-none transition" placeholder="اكتب وصفاً موجزاً للخطر...">
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblCategory">الفئة</label>
+                        <select class="w-full bg-slate-50 dark:bg-slate-700 border dark:border-slate-600 rounded-xl p-3 text-sm dark:text-white focus:ring-2 focus:ring-brandRed outline-none">
+                            <option>مالي</option>
+                            <option>تشغيلي</option>
+                            <option>استراتيجي</option>
+                            <option>تقني/سيبراني</option>
+                            <option>قانوني</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblOwner">المالك المسؤول</label>
+                        <select class="w-full bg-slate-50 dark:bg-slate-700 border dark:border-slate-600 rounded-xl p-3 text-sm dark:text-white focus:ring-2 focus:ring-brandRed outline-none">
+                            <option>CFO</option>
+                            <option>COO</option>
+                            <option>CTO</option>
+                            <option>HR Manager</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblProb">الاحتمالية (1-5)</label>
+                        <input type="number" min="1" max="5" class="w-full bg-slate-50 dark:bg-slate-700 border dark:border-slate-600 rounded-xl p-3 text-sm dark:text-white focus:ring-2 focus:ring-brandRed outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblImpact">الأثر (1-5)</label>
+                        <input type="number" min="1" max="5" class="w-full bg-slate-50 dark:bg-slate-700 border dark:border-slate-600 rounded-xl p-3 text-sm dark:text-white focus:ring-2 focus:ring-brandRed outline-none">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblPlan">خطة المعالجة المبدئية</label>
+                    <textarea class="w-full bg-slate-50 dark:bg-slate-700 border dark:border-slate-600 rounded-xl p-3 text-sm dark:text-white h-24 focus:ring-2 focus:ring-brandRed outline-none resize-none"></textarea>
+                </div>
+            </div>
+
+            <div class="mt-6 flex justify-end gap-3 pt-4 border-t dark:border-slate-700">
+                <button onclick="document.getElementById('riskModal').classList.add('hidden')" class="px-5 py-2.5 text-slate-500 text-xs font-bold hover:bg-slate-50 rounded-xl dark:hover:bg-slate-700" data-i18n="btnCancel">إلغاء</button>
+                <button onclick="alert('تم تسجيل الخطر بنجاح'); document.getElementById('riskModal').classList.add('hidden')" class="px-6 py-2.5 bg-brandRed text-white rounded-xl text-xs font-bold hover:bg-red-700 shadow-lg shadow-red-500/30 flex items-center gap-2">
+                    <i class="fa-solid fa-save"></i> <span data-i18n="btnSave">حفظ في السجل</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="layout-ceo.js"></script>
+    <script src="bot.js"></script>
+
+    <script>
+        const pageContent = {
+            ar: {
+                pageTitle: "سجل المخاطر | AndroGov",
+                headerTitle: "سجل المخاطر المؤسسية",
+                headerDesc: "مراقبة وتحليل المخاطر الاستراتيجية والتشغيلية وخطط المعالجة القائمة.",
+                btnPrint: "طباعة التقرير",
+                btnAddRisk: "تسجيل خطر جديد",
+                kpiTotal: "إجمالي المخاطر",
+                kpiTotalSub: "نشطة ومراقبة",
+                kpiCritical: "مخاطر حرجة (Critical)",
+                kpiCriticalSub: "تتطلب إجراء فوري",
+                kpiMitigation: "نسبة المعالجة",
+                kpiNew: "مخاطر مستجدة",
+                kpiNewSub: "تم رصدها هذا الشهر",
+                chartCat: "توزيع فئات المخاطر",
+                chartImpact: "تحليل الأثر المالي المتوقع",
+                tableTitle: "سجل المخاطر التفصيلي",
+                colRisk: "وصف الخطر",
+                colCat: "الفئة",
+                colRating: "التصنيف",
+                colOwner: "المالك",
+                colPlan: "حالة المعالجة",
+                colAction: "تفاصيل",
+                catFin: "مالي",
+                catTech: "تقني",
+                catOps: "تشغيلي",
+                modTitle: "تسجيل خطر جديد",
+                lblRiskName: "وصف الخطر",
+                lblCategory: "الفئة",
+                lblOwner: "المالك المسؤول",
+                lblProb: "الاحتمالية (1-5)",
+                lblImpact: "الأثر (1-5)",
+                lblPlan: "خطة المعالجة المبدئية",
+                btnCancel: "إلغاء",
+                btnSave: "حفظ في السجل"
+            },
+            en: {
+                pageTitle: "Risk Register | AndroGov",
+                headerTitle: "Enterprise Risk Register",
+                headerDesc: "Monitor and analyze strategic & operational risks and mitigation plans.",
+                btnPrint: "Print Report",
+                btnAddRisk: "Add New Risk",
+                kpiTotal: "Total Risks",
+                kpiTotalSub: "Active & Monitored",
+                kpiCritical: "Critical Risks",
+                kpiCriticalSub: "Immediate Action Req.",
+                kpiMitigation: "Mitigation Rate",
+                kpiNew: "Emerging Risks",
+                kpiNewSub: "Detected this month",
+                chartCat: "Risk Categories Distribution",
+                chartImpact: "Financial Impact Analysis",
+                tableTitle: "Detailed Risk Register",
+                colRisk: "Risk Description",
+                colCat: "Category",
+                colRating: "Rating",
+                colOwner: "Owner",
+                colPlan: "Mitigation Status",
+                colAction: "Details",
+                catFin: "Financial",
+                catTech: "Technical",
+                catOps: "Operational",
+                modTitle: "Register New Risk",
+                lblRiskName: "Risk Description",
+                lblCategory: "Category",
+                lblOwner: "Risk Owner",
+                lblProb: "Likelihood (1-5)",
+                lblImpact: "Impact (1-5)",
+                lblPlan: "Initial Mitigation Plan",
+                btnCancel: "Cancel",
+                btnSave: "Save Risk"
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const lang = localStorage.getItem('lang') || 'ar';
+            const dict = pageContent[lang];
+            
+            document.documentElement.lang = lang;
+            document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if(dict[key]) el.innerText = dict[key];
+            });
+
+            initCharts();
+        });
+
+        function initCharts() {
+            // Radar Chart (Risk Categories)
+            const ctx1 = document.getElementById('riskRadarChart').getContext('2d');
+            new Chart(ctx1, {
+                type: 'radar',
+                data: {
+                    labels: ['Financial', 'Operational', 'Strategic', 'Compliance', 'Cybersecurity', 'Reputational'],
+                    datasets: [{
+                        label: 'Risk Exposure',
+                        data: [8, 5, 4, 2, 7, 3],
+                        backgroundColor: 'rgba(251, 71, 71, 0.2)',
+                        borderColor: '#FB4747',
+                        pointBackgroundColor: '#FB4747',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: { color: '#e2e8f0' },
+                            grid: { color: '#e2e8f0' },
+                            pointLabels: { font: { size: 11, family: 'Inter' } }
+                        }
+                    },
+                    plugins: { legend: { display: false } }
+                }
+            });
+
+            // Bar Chart (Impact Analysis)
+            const ctx2 = document.getElementById('riskImpactChart').getContext('2d');
+            new Chart(ctx2, {
+                type: 'bar',
+                data: {
+                    labels: ['Liquidity', 'Cyber Attack', 'Reg. Fine', 'Staff Turnover'],
+                    datasets: [{
+                        label: 'Potential Loss (SAR)',
+                        data: [300000, 150000, 50000, 80000],
+                        backgroundColor: ['#EF4444', '#F97316', '#EAB308', '#3B82F6'],
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { grid: { display: true, color: '#f1f5f9' }, beginAtZero: true },
+                        x: { grid: { display: false } }
+                    },
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
