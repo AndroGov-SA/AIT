@@ -23,147 +23,68 @@
             }
         }
     </script>
-    <style>.num-font { font-family: 'Inter', sans-serif; font-feature-settings: "tnum"; }</style>
+    <style>
+        .num-font { font-family: 'Inter', sans-serif; font-feature-settings: "tnum"; }
+        .custom-scroll::-webkit-scrollbar { width: 6px; }
+        .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+        .custom-scroll::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 20px; }
+        .dark .custom-scroll::-webkit-scrollbar-thumb { background-color: #334155; }
+    </style>
 </head>
-<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300 opacity-0">
-
-    <div id="sidebar-container"></div>
+<body class="opacity-0"> <div id="sidebar-container"></div>
     
-    <div class="main-content-wrapper transition-all duration-300 flex flex-col min-h-screen">
-        <div id="header-container"></div>
+    <div class="main-content-wrapper"> <div id="header-container"></div>
 
         <main class="p-8 space-y-8">
             
             <div class="flex flex-col md:flex-row justify-between items-end gap-4">
                 <div>
                     <h1 class="text-3xl font-bold text-slate-900 dark:text-white" data-i18n="welcome">مرحباً، أستاذ هشام</h1>
-                    <p class="text-slate-500 mt-2 text-lg" data-i18n="welcomeSub">إليك نظرة عامة على أداء الشركة لهذا اليوم</p>
+                    <p class="text-slate-500 mt-2 text-lg" data-i18n="welcomeSub">نظرة عامة على الأداء الاستراتيجي</p>
                 </div>
                 <div class="flex gap-3">
-                    <span class="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-bold flex items-center gap-2 shadow-sm">
-                        <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                        <span data-i18n="sysStatus">النظام مستقر</span>
-                    </span>
-                    <button class="px-4 py-2 bg-brandRed text-white rounded-xl text-sm font-bold shadow-lg shadow-red-500/30 hover:bg-red-700 transition flex items-center gap-2">
+                    <button class="px-5 py-2.5 bg-brandRed text-white rounded-xl text-sm font-bold shadow-lg shadow-red-500/30 hover:bg-red-700 transition flex items-center gap-2">
                         <i class="fa-solid fa-file-pdf"></i> <span data-i18n="btnReport">التقرير الشهري</span>
                     </button>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 relative overflow-hidden group">
-                    <div class="absolute -right-4 -top-4 w-24 h-24 bg-green-50 dark:bg-green-900/10 rounded-full opacity-50 group-hover:scale-110 transition"></div>
-                    <p class="text-sm text-slate-500 font-bold uppercase relative z-10" data-i18n="kpiRev">الإيرادات (YTD)</p>
-                    <h3 class="text-4xl font-bold num-font mt-2 text-slate-900 dark:text-white relative z-10">4.2M</h3>
-                    <p class="text-xs text-green-600 mt-2 font-bold flex items-center gap-1 relative z-10">
-                        <i class="fa-solid fa-arrow-trend-up"></i> 12% <span class="text-slate-400 font-normal" data-i18n="vsTarget">vs Target</span>
-                    </p>
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 relative overflow-hidden group hover:border-brandRed transition duration-300">
+                    <p class="text-xs text-slate-500 font-bold uppercase z-10 relative" data-i18n="kpiRev">الإيرادات (YTD)</p>
+                    <h3 class="text-4xl font-bold num-font mt-2 text-slate-900 dark:text-white z-10 relative">4.2M</h3>
+                    <p class="text-xs text-green-600 mt-2 font-bold z-10 relative"><i class="fa-solid fa-arrow-up"></i> 12% vs Target</p>
+                    <div class="absolute -right-4 -top-4 text-9xl text-slate-50 dark:text-slate-700/20 opacity-50 z-0 group-hover:scale-110 transition"><i class="fa-solid fa-chart-line"></i></div>
                 </div>
 
-                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 relative overflow-hidden group">
-                    <div class="absolute -right-4 -top-4 w-24 h-24 bg-red-50 dark:bg-red-900/10 rounded-full opacity-50 group-hover:scale-110 transition"></div>
-                    <p class="text-sm text-slate-500 font-bold uppercase relative z-10" data-i18n="kpiExp">المصروفات</p>
-                    <h3 class="text-4xl font-bold num-font mt-2 text-slate-900 dark:text-white relative z-10">1.8M</h3>
-                    <p class="text-xs text-green-600 mt-2 font-bold flex items-center gap-1 relative z-10">
-                        <i class="fa-solid fa-arrow-down"></i> 5% <span class="text-slate-400 font-normal" data-i18n="saving">Under Budget</span>
-                    </p>
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 relative overflow-hidden group hover:border-brandRed transition duration-300">
+                    <p class="text-xs text-slate-500 font-bold uppercase z-10 relative" data-i18n="kpiExp">المصروفات</p>
+                    <h3 class="text-4xl font-bold num-font mt-2 text-slate-900 dark:text-white z-10 relative">1.8M</h3>
+                    <p class="text-xs text-green-600 mt-2 font-bold z-10 relative"><i class="fa-solid fa-arrow-down"></i> 5% Saving</p>
+                    <div class="absolute -right-4 -top-4 text-9xl text-slate-50 dark:text-slate-700/20 opacity-50 z-0 group-hover:scale-110 transition"><i class="fa-solid fa-wallet"></i></div>
                 </div>
 
-                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 relative overflow-hidden group">
-                    <div class="absolute -right-4 -top-4 w-24 h-24 bg-blue-50 dark:bg-blue-900/10 rounded-full opacity-50 group-hover:scale-110 transition"></div>
-                    <p class="text-sm text-slate-500 font-bold uppercase relative z-10" data-i18n="kpiProfit">صافي الربح</p>
-                    <h3 class="text-4xl font-bold num-font mt-2 text-blue-600 relative z-10">2.4M</h3>
-                    <p class="text-xs text-slate-400 mt-2 relative z-10" data-i18n="margin">Margin: 57%</p>
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 relative overflow-hidden group hover:border-brandRed transition duration-300">
+                    <p class="text-xs text-slate-500 font-bold uppercase z-10 relative" data-i18n="kpiProfit">صافي الربح</p>
+                    <h3 class="text-4xl font-bold num-font mt-2 text-blue-600 z-10 relative">2.4M</h3>
+                    <p class="text-xs text-slate-400 mt-2 z-10 relative">Margin: 57%</p>
+                    <div class="absolute -right-4 -top-4 text-9xl text-slate-50 dark:text-slate-700/20 opacity-50 z-0 group-hover:scale-110 transition"><i class="fa-solid fa-sack-dollar"></i></div>
                 </div>
 
-                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 relative overflow-hidden group">
-                    <div class="absolute -right-4 -top-4 w-24 h-24 bg-purple-50 dark:bg-purple-900/10 rounded-full opacity-50 group-hover:scale-110 transition"></div>
-                    <p class="text-sm text-slate-500 font-bold uppercase relative z-10" data-i18n="kpiProj">المشاريع النشطة</p>
-                    <h3 class="text-4xl font-bold num-font mt-2 text-slate-900 dark:text-white relative z-10">8</h3>
-                    <p class="text-xs text-orange-500 mt-2 font-bold relative z-10" data-i18n="delayed">1 متأخر</p>
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 relative overflow-hidden group hover:border-brandRed transition duration-300">
+                    <p class="text-xs text-slate-500 font-bold uppercase z-10 relative" data-i18n="kpiRisk">المخاطر النشطة</p>
+                    <h3 class="text-4xl font-bold num-font mt-2 text-slate-900 dark:text-white z-10 relative">5</h3>
+                    <p class="text-xs text-red-500 mt-2 font-bold z-10 relative">1 Critical</p>
+                    <div class="absolute -right-4 -top-4 text-9xl text-slate-50 dark:text-slate-700/20 opacity-50 z-0 group-hover:scale-110 transition"><i class="fa-solid fa-triangle-exclamation"></i></div>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div class="lg:col-span-2 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-6">
-                    <div class="flex justify-between items-center mb-6">
-                        <h3 class="font-bold text-lg text-slate-900 dark:text-white" data-i18n="chartFinTitle">الأداء المالي (2026)</h3>
-                        <select class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-600 rounded-lg text-xs py-1 px-2 focus:outline-none dark:text-white">
-                            <option>Monthly</option>
-                            <option>Quarterly</option>
-                        </select>
-                    </div>
-                    <div class="h-64 relative w-full">
-                        <canvas id="financeChart"></canvas>
-                    </div>
+            <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="font-bold text-lg text-slate-900 dark:text-white" data-i18n="chartTitle">الأداء المالي (2026)</h3>
                 </div>
-
-                <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-6 flex flex-col">
-                    <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-4 flex items-center gap-2">
-                        <i class="fa-solid fa-gavel text-brandRed"></i> <span data-i18n="actionTitle">مركز القرارات</span>
-                    </h3>
-                    <div class="flex-1 space-y-4 overflow-y-auto custom-scroll pr-1">
-                        
-                        <div class="p-4 bg-slate-50 dark:bg-slate-700/50 rounded-xl border border-slate-200 dark:border-slate-600 group hover:border-brandRed transition">
-                            <div class="flex justify-between items-start mb-2">
-                                <span class="bg-blue-100 text-blue-700 text-[10px] font-bold px-2 py-0.5 rounded">اعتماد مالي</span>
-                                <span class="text-[10px] text-slate-400">اليوم</span>
-                            </div>
-                            <p class="text-sm font-bold dark:text-white mb-1">شراء خوادم جديدة (CFO)</p>
-                            <p class="text-xs text-slate-500 mb-3">القيمة: 150,000 SAR</p>
-                            <div class="flex gap-2">
-                                <button onclick="approveAction(this)" class="flex-1 py-1.5 bg-green-600 text-white rounded text-xs font-bold hover:bg-green-700 transition">اعتماد</button>
-                                <button class="flex-1 py-1.5 bg-white border border-slate-300 text-slate-600 rounded text-xs font-bold hover:bg-slate-50 transition">تفاصيل</button>
-                            </div>
-                        </div>
-
-                        <div class="p-4 bg-slate-50 dark:bg-slate-700/50 rounded-xl border border-slate-200 dark:border-slate-600 group hover:border-brandRed transition">
-                            <div class="flex justify-between items-start mb-2">
-                                <span class="bg-purple-100 text-purple-700 text-[10px] font-bold px-2 py-0.5 rounded">عقد</span>
-                                <span class="text-[10px] text-slate-400">أمس</span>
-                            </div>
-                            <p class="text-sm font-bold dark:text-white mb-1">اتفاقية شراكة (Microsoft)</p>
-                            <p class="text-xs text-slate-500 mb-3">مذكرة تفاهم استراتيجية</p>
-                            <div class="flex gap-2">
-                                <button onclick="signContract(this)" class="flex-1 py-1.5 bg-brandRed text-white rounded text-xs font-bold hover:bg-red-700 transition">توقيع</button>
-                                <button class="flex-1 py-1.5 bg-white border border-slate-300 text-slate-600 rounded text-xs font-bold hover:bg-slate-50 transition">مراجعة</button>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-                    <div class="flex justify-between mb-4">
-                        <h4 class="font-bold text-sm dark:text-white" data-i18n="deptSales">المبيعات</h4>
-                        <span class="text-green-500 text-xs font-bold">+8%</span>
-                    </div>
-                    <div class="w-full bg-slate-100 dark:bg-slate-700 h-2 rounded-full overflow-hidden mb-2">
-                        <div class="bg-green-500 h-full" style="width: 75%"></div>
-                    </div>
-                    <p class="text-xs text-slate-400">Target Achieved: 75%</p>
-                </div>
-                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-                    <div class="flex justify-between mb-4">
-                        <h4 class="font-bold text-sm dark:text-white" data-i18n="deptTech">تطوير المنتجات</h4>
-                        <span class="text-blue-500 text-xs font-bold">On Track</span>
-                    </div>
-                    <div class="w-full bg-slate-100 dark:bg-slate-700 h-2 rounded-full overflow-hidden mb-2">
-                        <div class="bg-blue-500 h-full" style="width: 60%"></div>
-                    </div>
-                    <p class="text-xs text-slate-400">Roadmap Progress: 60%</p>
-                </div>
-                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-                    <div class="flex justify-between mb-4">
-                        <h4 class="font-bold text-sm dark:text-white" data-i18n="deptHR">الموارد البشرية</h4>
-                        <span class="text-orange-500 text-xs font-bold">Hiring...</span>
-                    </div>
-                    <div class="w-full bg-slate-100 dark:bg-slate-700 h-2 rounded-full overflow-hidden mb-2">
-                        <div class="bg-orange-500 h-full" style="width: 90%"></div>
-                    </div>
-                    <p class="text-xs text-slate-400">Headcount Plan: 90%</p>
+                <div class="h-80 w-full">
+                    <canvas id="financeChart"></canvas>
                 </div>
             </div>
 
@@ -174,85 +95,40 @@
     <script src="bot.js"></script>
 
     <script>
-        // --- 1. الترجمة ---
         const pageContent = {
             ar: {
-                pageTitle: "لوحة القيادة التنفيذية | AndroGov",
+                pageTitle: "لوحة القيادة | AndroGov",
                 welcome: "مرحباً، أستاذ هشام",
-                welcomeSub: "إليك نظرة عامة على أداء الشركة لهذا اليوم",
-                sysStatus: "النظام مستقر",
+                welcomeSub: "نظرة عامة على الأداء الاستراتيجي",
                 btnReport: "التقرير الشهري",
                 kpiRev: "الإيرادات (YTD)",
-                vsTarget: "مقارنة بالهدف",
                 kpiExp: "المصروفات",
-                saving: "وفر في الميزانية",
                 kpiProfit: "صافي الربح",
-                margin: "هامش الربح: 57%",
-                kpiProj: "المشاريع النشطة",
-                delayed: "1 متأخر",
-                chartFinTitle: "الأداء المالي (2026)",
-                actionTitle: "مركز القرارات",
-                deptSales: "المبيعات",
-                deptTech: "تطوير المنتجات",
-                deptHR: "الموارد البشرية"
+                kpiRisk: "المخاطر النشطة",
+                chartTitle: "الأداء المالي (2026)"
             },
             en: {
-                pageTitle: "CEO Dashboard | AndroGov",
+                pageTitle: "Dashboard | AndroGov",
                 welcome: "Welcome, Mr. Hisham",
-                welcomeSub: "Here is an overview of company performance today",
-                sysStatus: "System Stable",
+                welcomeSub: "Strategic Performance Overview",
                 btnReport: "Monthly Report",
                 kpiRev: "Revenue (YTD)",
-                vsTarget: "vs Target",
                 kpiExp: "Expenses",
-                saving: "Under Budget",
                 kpiProfit: "Net Profit",
-                margin: "Margin: 57%",
-                kpiProj: "Active Projects",
-                delayed: "1 Delayed",
-                chartFinTitle: "Financial Performance (2026)",
-                actionTitle: "Decision Center",
-                deptSales: "Sales",
-                deptTech: "Product Dev",
-                deptHR: "Human Resources"
+                kpiRisk: "Active Risks",
+                chartTitle: "Financial Performance (2026)"
             }
         };
 
-        // --- 2. التشغيل ---
         document.addEventListener('DOMContentLoaded', () => {
-            updatePageLanguage();
-            initChart();
-        });
-
-        function updatePageLanguage() {
             const lang = localStorage.getItem('lang') || 'ar';
             const dict = pageContent[lang];
-            
-            document.documentElement.lang = lang;
-            document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
-
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
                 if(dict[key]) el.innerText = dict[key];
             });
-        }
-
-        // --- 3. الوظائف ---
-        function approveAction(btn) {
-            if(confirm("هل أنت متأكد من اعتماد هذا الطلب؟")) {
-                const card = btn.closest('.p-4');
-                card.innerHTML = `<div class="text-center text-green-600 font-bold py-4"><i class="fa-solid fa-circle-check"></i> تم الاعتماد بنجاح</div>`;
-                setTimeout(() => card.remove(), 1500);
-            }
-        }
-
-        function signContract(btn) {
-            if(confirm("هل تريد توقيع هذا العقد رقمياً؟")) {
-                const card = btn.closest('.p-4');
-                card.innerHTML = `<div class="text-center text-brandRed font-bold py-4"><i class="fa-solid fa-file-signature"></i> تم التوقيع وإرسال النسخة</div>`;
-                setTimeout(() => card.remove(), 1500);
-            }
-        }
+            initChart();
+        });
 
         function initChart() {
             const ctx = document.getElementById('financeChart').getContext('2d');
@@ -279,13 +155,8 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: {
-                        legend: { position: 'top' }
-                    },
-                    scales: {
-                        y: { grid: { display: true, color: '#f1f5f9' } },
-                        x: { grid: { display: false } }
-                    }
+                    plugins: { legend: { position: 'top' } },
+                    scales: { y: { grid: { display: true, color: '#f1f5f9' } }, x: { grid: { display: false } } }
                 }
             });
         }
