@@ -5,12 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#FB4747">
     <title data-i18n="pageTitle">الهيكل التنظيمي | AndroGov</title>
-
-    <!-- Fonts & Icons -->
+    
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
 
     <script>
@@ -24,245 +21,132 @@
             }
         }
     </script>
-
     <style>
-        .num-font { font-family: 'Inter', sans-serif; }
-
-        /* === TREE FIXED FULL VIEW === */
-        .tree {
-            white-space: nowrap;
-            overflow: auto !important; /* أهم شيء */
-            padding: 20px;
-            min-height: 600px;
-            min-width: 1000px; /* يمنع تكسير أو ضغط الشجرة */
-            text-align: center;
+        .org-container {
+            cursor: grab;
+            overflow: auto;
         }
-
-        .tree ul {
-            padding-top: 20px;
-            position: relative;
-            display: inline-flex;
-            gap: 20px;
+        .org-container:active {
+            cursor: grabbing;
         }
-
-        .tree li {
-            list-style-type: none;
-            text-align: center;
-            position: relative;
-            padding: 20px 10px;
-        }
-
-        /* Connectors */
-        .tree li::before, .tree li::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            right: 50%;
-            border-top: 2px solid #ccc;
-            width: 50%;
-            height: 20px;
-        }
-
-        .tree li::after {
-            right: auto;
-            left: 50%;
-            border-left: 2px solid #ccc;
-        }
-
-        .tree li:only-child::before,
-        .tree li:only-child::after {
-            display: none;
-        }
-
-        .tree li:first-child::before { border: none; }
-        .tree li:last-child::after { border: none; }
-
-        .tree ul ul::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 50%;
-            border-left: 2px solid #ccc;
-            height: 20px;
-        }
-
-        /* Node Card */
-        .node {
-            display: inline-block;
-            padding: 10px 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            cursor: pointer;
-            min-width: 140px;
-            max-width: 190px;
-            white-space: normal;
-            transition: 0.3s;
-        }
-
-        .node:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 6px 18px rgba(0,0,0,0.15);
-        }
-
-        /* Colors */
-        .node-black { background: #1e293b; color: #fff; border: 2px solid #0f172a; }
-        .node-gray { background: #f1f5f9; color: #334155; border: 2px dashed #94a3b8; }
-        .node-blue { background: #eff6ff; color: #1e40af; border: 2px solid #3b82f6; }
-        .node-purple { background: #f5f3ff; color: #5b21b6; border: 2px solid #8b5cf6; }
-        .node-red { background: #fef2f2; color: #991b1b; border: 2px solid #ef4444; }
-        .node-sub { background: #ffffff; color: #475569; border: 1px solid #cbd5e1; font-size: 0.75rem; }
     </style>
 </head>
-
-<body class="bg-slate-50 dark:bg-slate-900">
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300 opacity-0">
 
     <div id="sidebar-container"></div>
-
-    <div class="main-content-wrapper flex flex-col min-h-screen">
+    
+    <div class="main-content-wrapper transition-all duration-300 flex flex-col min-h-screen">
         <div id="header-container"></div>
 
-        <main class="p-6 flex-1">
-
-            <div class="flex justify-between items-end mb-4">
+        <main class="p-6 space-y-6 flex-1 flex flex-col">
+            
+            <div class="flex flex-col md:flex-row justify-between items-end gap-4">
                 <div>
-                    <h1 class="text-2xl font-bold">
-                        <i class="fa-solid fa-sitemap text-brandRed"></i>
-                        الهيكل التنظيمي
+                    <h1 class="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                        <i class="fa-solid fa-sitemap text-brandRed"></i> <span data-i18n="headerTitle">الهيكل التنظيمي</span>
                     </h1>
-                    <p class="text-sm text-slate-500">التسلسل الإداري والوظيفي حسب أحدث تحديث</p>
+                    <p class="text-sm text-slate-500 mt-1" data-i18n="headerDesc">استعراض الهيكل الإداري والوظيفي للشركة (صورة)</p>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="zoomOut()" class="w-10 h-10 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-sm hover:bg-slate-50 flex items-center justify-center text-slate-600 dark:text-white transition">
+                        <i class="fa-solid fa-magnifying-glass-minus"></i>
+                    </button>
+                    <button onclick="zoomIn()" class="w-10 h-10 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-sm hover:bg-slate-50 flex items-center justify-center text-slate-600 dark:text-white transition">
+                        <i class="fa-solid fa-magnifying-glass-plus"></i>
+                    </button>
+                    <button class="px-4 py-2 bg-brandRed text-white rounded-lg text-xs font-bold shadow-lg hover:bg-red-700 transition flex items-center gap-2">
+                        <i class="fa-solid fa-download"></i> <span data-i18n="btnDownload">تحميل الصورة</span>
+                    </button>
                 </div>
             </div>
 
-            <!-- === FIXED HERE: overflow-auto === -->
-            <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 overflow-auto p-6">
-
-                <!-- TREE -->
-                <div class="tree">
-
-                    <ul>
-                        <li>
-
-                            <!-- الجمعية العمومية -->
-                            <div class="node node-black">الجمعية العمومية للمساهمين</div>
-
-                            <ul>
-                                <li>
-
-                                    <!-- مجلس الإدارة -->
-                                    <div class="node node-black">مجلس الإدارة</div>
-
-                                    <ul>
-
-                                        <!-- لجنة المراجعة + المراجع الداخلي -->
-                                        <li>
-                                            <div class="node node-gray">لجنة المراجعة</div>
-                                            <ul>
-                                                <li><div class="node node-gray">المراجع الداخلي</div></li>
-                                            </ul>
-                                        </li>
-
-                                        <!-- أمانة السر -->
-                                        <li><div class="node node-gray">أمانة سر المجلس</div></li>
-
-                                        <!-- الرئيس التنفيذي -->
-                                        <li>
-                                            <div class="node node-black">الرئيس التنفيذي (CEO)</div>
-
-                                            <ul>
-
-                                                <!-- المدير المالي -->
-                                                <li>
-                                                    <div class="node node-blue">المدير المالي (CFO)</div>
-                                                    <ul>
-                                                        <li><div class="node node-sub">منسق المشتريات والخدمات الأمنية (PSSC)</div></li>
-                                                        <li><div class="node node-sub">دعم المكاتب (OS)</div></li>
-                                                    </ul>
-                                                </li>
-
-                                                <!-- المدير الإداري -->
-                                                <li>
-                                                    <div class="node node-blue">المدير الإداري (CAO)</div>
-
-                                                    <ul>
-
-                                                        <!-- الفريق التقني -->
-                                                        <li>
-                                                            <div class="node node-purple">قائد الفريق التقني</div>
-                                                            <ul>
-                                                                <li><div class="node node-sub">Frontend Developer (React)</div></li>
-                                                                <li><div class="node node-sub">Software Web Developer</div></li>
-                                                                <li><div class="node node-sub">Mobile Developer</div></li>
-                                                                <li><div class="node node-sub">Quality Assurance Engineer</div></li>
-                                                            </ul>
-                                                        </li>
-
-                                                        <!-- مدير التطوير -->
-                                                        <li>
-                                                            <div class="node node-purple">مدير التطوير</div>
-                                                            <ul>
-                                                                <li><div class="node node-sub">Business Analyst</div></li>
-                                                                <li><div class="node node-sub">Junior Business Analyst</div></li>
-                                                                <li><div class="node node-sub">Software Developer</div></li>
-                                                                <li><div class="node node-sub">Flutter Developer</div></li>
-                                                                <li><div class="node node-sub">QA Engineer</div></li>
-                                                            </ul>
-                                                        </li>
-
-                                                        <!-- المشرف الطبي -->
-                                                        <li>
-                                                            <div class="node node-red">المشرف الطبي (MS)</div>
-                                                            <ul>
-                                                                <li><div class="node node-sub">Customer Accounts Manager (CAM)</div></li>
-                                                                <li><div class="node node-sub">Operational & Technical Support (OSTS)</div></li>
-                                                            </ul>
-                                                        </li>
-
-                                                    </ul>
-                                                </li>
-
-                                                <!-- GRCO -->
-                                                <li>
-                                                    <div class="node node-blue">الحوكمة والمخاطر والالتزام (GRCO)</div>
-                                                </li>
-
-                                                <!-- NCSO + Sales -->
-                                                <li>
-                                                    <div class="node node-blue">أمن المعلومات والشبكات (NCSO)</div>
-
-                                                    <ul>
-                                                        <li>
-                                                            <div class="node node-red">مدير المبيعات</div>
-                                                            <ul>
-                                                                <li><div class="node node-sub">Pre-sales Engineer</div></li>
-                                                                <li><div class="node node-sub">Sales Specialist</div></li>
-                                                                <li><div class="node node-sub">Digital Marketing Specialist</div></li>
-                                                            </ul>
-                                                        </li>
-                                                    </ul>
-
-                                                </li>
-
-                                            </ul>
-
-                                        </li>
-
-                                    </ul>
-
-                                </li>
-                            </ul>
-
-                        </li>
-                    </ul>
-
+            <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 flex-1 relative overflow-hidden flex flex-col">
+                <div class="absolute top-4 right-4 z-10 bg-black/50 backdrop-blur text-white text-[10px] px-3 py-1 rounded-full pointer-events-none">
+                    <span id="zoomLevel">100%</span>
                 </div>
 
+                <div class="org-container flex-1 flex justify-center items-start p-10 custom-scroll bg-slate-50/50 dark:bg-slate-900/50">
+                    <img id="orgImage" src="org.png" alt="Organizational Chart" class="max-w-none shadow-2xl rounded-lg border-4 border-white dark:border-slate-700 transition-transform duration-200 ease-out origin-top-center">
+                </div>
+                
+                <div id="imgError" class="hidden absolute inset-0 flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-800 text-slate-400">
+                    <i class="fa-regular fa-image text-4xl mb-3"></i>
+                    <p class="text-sm">لم يتم العثور على الصورة (org.png)</p>
+                    <p class="text-xs opacity-70">يرجى التأكد من وجود الملف في المجلد الرئيسي</p>
+                </div>
             </div>
+
         </main>
     </div>
 
+    <script src="layout-hr.js"></script>
+    <script src="bot.js"></script>
 
-<script src="layout-hr.js"></script>
-<script src="bot.js"></script>
+    <script>
+        // --- 1. الترجمة ---
+        const pageContent = {
+            ar: {
+                pageTitle: "الهيكل التنظيمي | AndroGov",
+                headerTitle: "الهيكل التنظيمي",
+                headerDesc: "استعراض الهيكل الإداري والوظيفي للشركة",
+                btnDownload: "تحميل الصورة"
+            },
+            en: {
+                pageTitle: "Org Chart | AndroGov",
+                headerTitle: "Organizational Chart",
+                headerDesc: "Administrative and Functional Hierarchy View",
+                btnDownload: "Download Image"
+            }
+        };
 
+        // --- 2. التحكم بالصورة (Zoom) ---
+        let currentZoom = 1;
+        const img = document.getElementById('orgImage');
+        const zoomLabel = document.getElementById('zoomLevel');
+
+        function updateZoom() {
+            img.style.transform = `scale(${currentZoom})`;
+            zoomLabel.innerText = `${Math.round(currentZoom * 100)}%`;
+        }
+
+        function zoomIn() {
+            if (currentZoom < 3) {
+                currentZoom += 0.1;
+                updateZoom();
+            }
+        }
+
+        function zoomOut() {
+            if (currentZoom > 0.3) {
+                currentZoom -= 0.1;
+                updateZoom();
+            }
+        }
+
+        // --- 3. التشغيل ---
+        document.addEventListener('DOMContentLoaded', () => {
+            updatePageLanguage();
+            
+            // التحقق من وجود الصورة
+            img.onerror = function() {
+                img.style.display = 'none';
+                document.getElementById('imgError').classList.remove('hidden');
+                document.getElementById('imgError').classList.add('flex');
+            };
+        });
+
+        function updatePageLanguage() {
+            const lang = localStorage.getItem('lang') || 'ar';
+            const dict = pageContent[lang];
+            
+            document.documentElement.lang = lang;
+            document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if(dict[key]) el.innerText = dict[key];
+            });
+        }
+    </script>
 </body>
 </html>
