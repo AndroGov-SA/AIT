@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="pageTitle">إدارة السيرفرات | AndroGov</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { 
+                        brandRed: '#FB4747', 
+                        techDark: '#0F172A', 
+                        cyberGreen: '#10B981', 
+                        alertOrange: '#F59E0B' 
+                    },
+                    fontFamily: { 
+                        sans: ['Tajawal', 'sans-serif'], 
+                        mono: ['IBM Plex Mono', 'monospace'] 
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .font-mono { font-family: 'IBM Plex Mono', monospace; }
+        .num-font { font-family: 'IBM Plex Mono', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-200 font-sans transition-colors duration-300 opacity-0">
+
+    <div id="sidebar-container"></div>
+    
+    <div class="main-content-wrapper transition-all duration-300 flex flex-col min-h-screen">
+        <div id="header-container"></div>
+
+        <main class="p-6 space-y-6">
+            
+            <div class="flex flex-col md:flex-row justify-between items-end gap-6 bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-500 to-brandRed"></div>
+                
+                <div class="relative z-10">
+                    <h1 class="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2 mb-2">
+                        <i class="fa-solid fa-server text-brandRed"></i> <span data-i18n="headerTitle">إدارة السيرفرات والشبكات</span>
+                    </h1>
+                    <p class="text-sm text-slate-500 mt-1 max-w-2xl" data-i18n="headerDesc">مراقبة الأداء، إدارة الموارد، والوصول عن بعد للخوادم.</p>
+                </div>
+                
+                <div class="flex gap-3 relative z-10">
+                    <button class="px-5 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-bold shadow-sm hover:bg-slate-50 transition flex items-center gap-2 text-slate-600 dark:text-white">
+                        <i class="fa-solid fa-network-wired"></i> <span data-i18n="btnNetwork">مخطط الشبكة</span>
+                    </button>
+                    <button onclick="document.getElementById('serverModal').classList.remove('hidden')" class="px-5 py-2.5 bg-brandRed text-white rounded-xl text-xs font-bold shadow-lg shadow-red-500/30 hover:bg-red-700 transition flex items-center gap-2">
+                        <i class="fa-solid fa-plus"></i> <span data-i18n="btnAdd">خادم جديد</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-xs text-slate-500 uppercase font-bold" data-i18n="statTotal">إجمالي السيرفرات</p>
+                            <h3 class="text-2xl font-bold font-mono text-slate-900 dark:text-white mt-1">18</h3>
+                        </div>
+                        <div class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500"><i class="fa-solid fa-layer-group"></i></div>
+                    </div>
+                </div>
+                <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 border-l-4 border-l-green-500">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-xs text-slate-500 uppercase font-bold" data-i18n="statOnline">متصل (Online)</p>
+                            <h3 class="text-2xl font-bold font-mono text-green-600 mt-1">16</h3>
+                        </div>
+                        <div class="w-10 h-10 rounded-full bg-green-50 dark:bg-green-900/20 flex items-center justify-center text-green-600"><i class="fa-solid fa-power-off"></i></div>
+                    </div>
+                </div>
+                <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 border-l-4 border-l-red-500">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-xs text-slate-500 uppercase font-bold" data-i18n="statOffline">غير متصل (Offline)</p>
+                            <h3 class="text-2xl font-bold font-mono text-red-500 mt-1">2</h3>
+                        </div>
+                        <div class="w-10 h-10 rounded-full bg-red-50 dark:bg-red-900/20 flex items-center justify-center text-red-500 animate-pulse"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                    </div>
+                </div>
+                <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 border-l-4 border-l-blue-500">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-xs text-slate-500 uppercase font-bold" data-i18n="statLoad">متوسط الحمل</p>
+                            <h3 class="text-2xl font-bold font-mono text-blue-600 mt-1">42%</h3>
+                        </div>
+                        <div class="w-10 h-10 rounded-full bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-600"><i class="fa-solid fa-microchip"></i></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                
+                <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden group hover:border-green-500/50 transition">
+                    <div class="p-5 border-b border-slate-100 dark:border-slate-800 flex justify-between items-start bg-slate-50 dark:bg-slate-800/50">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-lg bg-white dark:bg-slate-700 flex items-center justify-center shadow-sm">
+                                <img src="https://img.icons8.com/color/48/linux--v1.png" class="w-6 h-6">
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-sm text-slate-900 dark:text-white">APP-SRV-01</h3>
+                                <p class="text-xs text-slate-500 font-mono">10.0.1.15 • Ubuntu 22.04</p>
+                            </div>
+                        </div>
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-green-100 text-green-700 text-[10px] font-bold border border-green-200">
+                            <span class="w-1.5 h-1.5 rounded-full bg-green-600 animate-pulse"></span> Running
+                        </span>
+                    </div>
+                    <div class="p-5 space-y-4">
+                        <div>
+                            <div class="flex justify-between text-xs mb-1 font-mono text-slate-500 dark:text-slate-400">
+                                <span>CPU (4 Cores)</span>
+                                <span>35%</span>
+                            </div>
+                            <div class="w-full bg-slate-100 dark:bg-slate-700 h-1.5 rounded-full overflow-hidden">
+                                <div class="bg-blue-500 h-full rounded-full" style="width: 35%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-xs mb-1 font-mono text-slate-500 dark:text-slate-400">
+                                <span>RAM (16 GB)</span>
+                                <span>6.4 GB</span>
+                            </div>
+                            <div class="w-full bg-slate-100 dark:bg-slate-700 h-1.5 rounded-full overflow-hidden">
+                                <div class="bg-purple-500 h-full rounded-full" style="width: 40%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-4 bg-slate-50 dark:bg-slate-800/30 border-t border-slate-100 dark:border-slate-800 flex justify-between">
+                        <button onclick="openTerminal('APP-SRV-01')" class="text-xs font-bold text-slate-600 dark:text-slate-300 hover:text-brandRed flex items-center gap-2"><i class="fa-solid fa-terminal"></i> <span data-i18n="actTerminal">Terminal</span></button>
+                        <div class="flex gap-3">
+                            <button class="text-slate-400 hover:text-brandRed" title="Restart"><i class="fa-solid fa-rotate-right"></i></button>
+                            <button class="text-slate-400 hover:text-brandRed" title="Settings"><i class="fa-solid fa-gear"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden group hover:border-brandRed transition">
+                    <div class="p-5 border-b border-slate-100 dark:border-slate-800 flex justify-between items-start bg-slate-50 dark:bg-slate-800/50">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-lg bg-white dark:bg-slate-700 flex items-center justify-center shadow-sm">
+                                <img src="https://img.icons8.com/color/48/windows-10.png" class="w-6 h-6">
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-sm text-slate-900 dark:text-white">DB-SQL-M1</h3>
+                                <p class="text-xs text-slate-500 font-mono">10.0.3.10 • Win Server 2022</p>
+                            </div>
+                        </div>
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-orange-100 text-orange-700 text-[10px] font-bold border border-orange-200">
+                            <span class="w-1.5 h-1.5 rounded-full bg-orange-600 animate-ping"></span> High Load
+                        </span>
+                    </div>
+                    <div class="p-5 space-y-4">
+                        <div>
+                            <div class="flex justify-between text-xs mb-1 font-mono text-slate-500 dark:text-slate-400">
+                                <span>CPU (8 Cores)</span>
+                                <span class="text-brandRed font-bold">92%</span>
+                            </div>
+                            <div class="w-full bg-slate-100 dark:bg-slate-700 h-1.5 rounded-full overflow-hidden">
+                                <div class="bg-brandRed h-full rounded-full" style="width: 92%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-xs mb-1 font-mono text-slate-500 dark:text-slate-400">
+                                <span>RAM (32 GB)</span>
+                                <span>28.1 GB</span>
+                            </div>
+                            <div class="w-full bg-slate-100 dark:bg-slate-700 h-1.5 rounded-full overflow-hidden">
+                                <div class="bg-purple-500 h-full rounded-full" style="width: 88%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-4 bg-slate-50 dark:bg-slate-800/30 border-t border-slate-100 dark:border-slate-800 flex justify-between">
+                        <button onclick="openTerminal('DB-SQL-M1')" class="text-xs font-bold text-slate-600 dark:text-slate-300 hover:text-brandRed flex items-center gap-2"><i class="fa-solid fa-desktop"></i> <span data-i18n="actRDP">RDP Access</span></button>
+                        <div class="flex gap-3">
+                            <button class="text-slate-400 hover:text-brandRed" title="Restart"><i class="fa-solid fa-rotate-right"></i></button>
+                            <button class="text-slate-400 hover:text-brandRed" title="Settings"><i class="fa-solid fa-gear"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden opacity-75 grayscale hover:grayscale-0 transition group">
+                    <div class="p-5 border-b border-slate-100 dark:border-slate-800 flex justify-between items-start bg-slate-50 dark:bg-slate-800/50">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-lg bg-white dark:bg-slate-700 flex items-center justify-center shadow-sm">
+                                <i class="fa-solid fa-server text-slate-400"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-sm text-slate-900 dark:text-white">BACKUP-04</h3>
+                                <p class="text-xs text-slate-500 font-mono">192.168.5.20 • Linux</p>
+                            </div>
+                        </div>
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-200 text-slate-600 text-[10px] font-bold border border-slate-300">
+                            <span class="w-1.5 h-1.5 rounded-full bg-slate-500"></span> Offline
+                        </span>
+                    </div>
+                    <div class="p-5 space-y-4">
+                        <div class="h-24 flex flex-col items-center justify-center text-slate-400">
+                            <i class="fa-solid fa-triangle-exclamation text-2xl mb-2"></i>
+                            <span class="text-xs">Connection Lost</span>
+                            <span class="text-[9px] font-mono">Last seen: 2h ago</span>
+                        </div>
+                    </div>
+                    <div class="p-4 bg-slate-50 dark:bg-slate-800/30 border-t border-slate-100 dark:border-slate-800 flex justify-between">
+                        <button class="text-xs font-bold text-slate-400 cursor-not-allowed flex items-center gap-2"><i class="fa-solid fa-terminal"></i> Terminal</button>
+                        <div class="flex gap-3">
+                            <button class="text-brandRed hover:text-red-700 animate-pulse" title="Force Start"><i class="fa-solid fa-power-off"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </main>
+    </div>
+
+    <div id="terminalModal" class="fixed inset-0 bg-black/80 hidden z-50 flex items-center justify-center backdrop-blur-sm p-4">
+        <div class="bg-[#1e1e1e] w-full max-w-3xl rounded-xl shadow-2xl overflow-hidden border border-slate-700 font-mono text-sm">
+            <div class="bg-[#2d2d2d] px-4 py-2 flex justify-between items-center border-b border-black">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-terminal text-green-500"></i>
+                    <span class="text-gray-300 text-xs" id="termTitle">root@APP-SRV-01:~</span>
+                </div>
+                <button onclick="document.getElementById('terminalModal').classList.add('hidden')" class="text-gray-500 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="p-4 h-80 overflow-y-auto text-green-400 space-y-1" id="termContent">
+                <p>Connecting to 10.0.1.15...</p>
+                <p>Authenticating...</p>
+                <p>Welcome to Ubuntu 22.04 LTS (GNU/Linux 5.15.0-76-generic x86_64)</p>
+                <p class="text-gray-500 mt-2">* Documentation:  https://help.ubuntu.com</p>
+                <p class="text-gray-500">* Management:     https://landscape.canonical.com</p>
+                <p class="text-gray-500">* Support:        https://ubuntu.com/advantage</p>
+                <br>
+                <p>System load:  0.35               Processes:             142</p>
+                <p>Usage of /:   42.1% of 50.00GB   Users logged in:       1</p>
+                <p>Memory usage: 35%                IPv4 address for eth0: 10.0.1.15</p>
+                <br>
+                <div class="flex gap-2">
+                    <span class="text-blue-400">root@APP-SRV-01:~#</span>
+                    <span class="animate-pulse">_</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="serverModal" class="fixed inset-0 bg-black/60 hidden z-50 flex items-center justify-center backdrop-blur-sm p-4">
+        <div class="bg-white dark:bg-slate-900 w-full max-w-lg rounded-3xl shadow-2xl p-6 border-t-4 border-brandRed animate-fade-in-up">
+            <div class="flex justify-between items-center mb-6 border-b pb-4 dark:border-slate-800">
+                <h3 class="font-bold text-lg dark:text-white flex items-center gap-2">
+                    <i class="fa-solid fa-server text-brandRed"></i> <span data-i18n="modTitle">إضافة خادم جديد</span>
+                </h3>
+                <button onclick="document.getElementById('serverModal').classList.add('hidden')"><i class="fa-solid fa-xmark text-slate-400 hover:text-red-500"></i></button>
+            </div>
+            
+            <div class="space-y-4 font-sans">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblHost">اسم الخادم (Hostname)</label>
+                    <input type="text" class="w-full bg-slate-50 dark:bg-slate-800 border dark:border-slate-700 rounded-xl p-3 text-sm font-mono dark:text-white focus:ring-2 focus:ring-brandRed outline-none" placeholder="SRV-NEW-01">
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblIP">عنوان IP</label>
+                        <input type="text" class="w-full bg-slate-50 dark:bg-slate-800 border dark:border-slate-700 rounded-xl p-3 text-sm font-mono dark:text-white focus:ring-2 focus:ring-brandRed outline-none" placeholder="192.168.x.x">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblOS">نظام التشغيل</label>
+                        <select class="w-full bg-slate-50 dark:bg-slate-800 border dark:border-slate-700 rounded-xl p-3 text-sm dark:text-white focus:ring-2 focus:ring-brandRed outline-none">
+                            <option>Ubuntu 22.04</option>
+                            <option>Windows Server 2022</option>
+                            <option>CentOS 8</option>
+                            <option>Debian 11</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1">CPU Cores</label>
+                        <input type="number" class="w-full bg-slate-50 dark:bg-slate-800 border dark:border-slate-700 rounded-xl p-3 text-sm dark:text-white focus:ring-2 focus:ring-brandRed outline-none" value="4">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1">RAM (GB)</label>
+                        <input type="number" class="w-full bg-slate-50 dark:bg-slate-800 border dark:border-slate-700 rounded-xl p-3 text-sm dark:text-white focus:ring-2 focus:ring-brandRed outline-none" value="8">
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-6 flex justify-end gap-3 pt-4 border-t dark:border-slate-800">
+                <button onclick="document.getElementById('serverModal').classList.add('hidden')" class="px-5 py-2.5 text-slate-500 text-xs font-bold hover:bg-slate-50 rounded-xl dark:hover:bg-slate-800 transition" data-i18n="btnCancel">إلغاء</button>
+                <button onclick="alert('Server Provisioned'); document.getElementById('serverModal').classList.add('hidden')" class="px-6 py-2.5 bg-brandRed text-white rounded-xl text-xs font-bold hover:bg-red-700 shadow-lg shadow-red-500/30 flex items-center gap-2">
+                    <i class="fa-solid fa-save"></i> <span data-i18n="btnSave">حفظ وتشغيل</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="layout-cto.js"></script>
+    <script src="bot.js"></script>
+
+    <script>
+        const pageContent = {
+            ar: {
+                pageTitle: "إدارة السيرفرات | AndroGov",
+                headerTitle: "إدارة السيرفرات والشبكات",
+                headerDesc: "مراقبة الأداء، إدارة الموارد، والوصول عن بعد للخوادم.",
+                btnNetwork: "مخطط الشبكة",
+                btnAdd: "خادم جديد",
+                statTotal: "إجمالي السيرفرات",
+                statOnline: "متصل (Online)",
+                statOffline: "غير متصل (Offline)",
+                statLoad: "متوسط الحمل",
+                actTerminal: "طرفية (SSH)",
+                actRDP: "اتصال عن بعد (RDP)",
+                modTitle: "إضافة خادم جديد",
+                lblHost: "اسم الخادم (Hostname)",
+                lblIP: "عنوان IP",
+                lblOS: "نظام التشغيل",
+                btnCancel: "إلغاء",
+                btnSave: "حفظ وتشغيل"
+            },
+            en: {
+                pageTitle: "Servers Mgmt | AndroGov",
+                headerTitle: "Servers & Network Mgmt",
+                headerDesc: "Monitor performance, resource management, and remote access.",
+                btnNetwork: "Network Topology",
+                btnAdd: "Add Server",
+                statTotal: "Total Servers",
+                statOnline: "Online",
+                statOffline: "Offline",
+                statLoad: "Average Load",
+                actTerminal: "Terminal",
+                actRDP: "RDP Access",
+                modTitle: "Provision New Server",
+                lblHost: "Hostname",
+                lblIP: "IP Address",
+                lblOS: "Operating System",
+                btnCancel: "Cancel",
+                btnSave: "Save & Boot"
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const lang = localStorage.getItem('lang') || 'ar';
+            const dict = pageContent[lang];
+            
+            document.documentElement.lang = lang;
+            document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if(dict[key]) {
+                    if(el.tagName === 'INPUT') el.placeholder = dict[key];
+                    else el.innerText = dict[key];
+                }
+            });
+        });
+
+        function openTerminal(host) {
+            document.getElementById('termTitle').innerText = `root@${host}:~`;
+            document.getElementById('terminalModal').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
