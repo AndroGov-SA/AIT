@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#FB4747">
+    <title data-i18n="pageTitle">سجل العهد والأصول | AndroGov</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { brandRed: '#FB4747', brandDark: '#0F172A', moneyGreen: '#10B981', alertOrange: '#F59E0B' },
+                    fontFamily: { sans: ['Tajawal', 'Inter', 'sans-serif'], en: ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <style>.num-font { font-family: 'Inter', sans-serif; font-feature-settings: "tnum"; }</style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300 opacity-0">
+
+    <div id="sidebar-container"></div>
+    
+    <div class="main-content-wrapper transition-all duration-300 flex flex-col min-h-screen">
+        <div id="header-container"></div>
+
+        <main class="p-6 space-y-6">
+            
+            <div class="flex flex-col md:flex-row justify-between items-end gap-4">
+                <div>
+                    <h1 class="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                        <i class="fa-solid fa-boxes-packing text-brandRed"></i> <span data-i18n="headerTitle">سجل العهد والأصول</span>
+                    </h1>
+                    <p class="text-sm text-slate-500 mt-1" data-i18n="headerDesc">إدارة أصول الشركة، تسليم العهد للموظفين، ومتابعة المخزون</p>
+                </div>
+                <div class="flex gap-2">
+                    <button class="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold shadow-sm hover:bg-slate-50 transition flex items-center gap-2 text-slate-600 dark:text-white">
+                        <i class="fa-solid fa-file-csv"></i> <span data-i18n="btnExport">جرد الأصول</span>
+                    </button>
+                    <button onclick="document.getElementById('assignModal').classList.remove('hidden')" class="px-4 py-2 bg-brandRed text-white rounded-lg text-xs font-bold shadow-lg hover:bg-red-700 transition flex items-center gap-2">
+                        <i class="fa-solid fa-hand-holding-box"></i> <span data-i18n="btnAssign">تسليم عهدة</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-100 dark:border-slate-700 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="statTotal">إجمالي الأصول</p>
+                        <h3 class="text-2xl font-bold num-font mt-1">120</h3>
+                    </div>
+                    <div class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-500 flex items-center justify-center"><i class="fa-solid fa-cubes"></i></div>
+                </div>
+                
+                <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-100 dark:border-slate-700 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="statAssigned">عهدة مسلمة</p>
+                        <h3 class="text-2xl font-bold num-font mt-1 text-blue-600">85</h3>
+                        <p class="text-[10px] text-slate-400" data-i18n="statAssignedSub">مع الموظفين</p>
+                    </div>
+                    <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center"><i class="fa-solid fa-user-tag"></i></div>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-100 dark:border-slate-700 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="statStock">في المخزن</p>
+                        <h3 class="text-2xl font-bold num-font mt-1 text-green-600">30</h3>
+                        <p class="text-[10px] text-slate-400" data-i18n="statStockSub">متاح للتسليم</p>
+                    </div>
+                    <div class="w-10 h-10 rounded-full bg-green-50 text-green-600 flex items-center justify-center"><i class="fa-solid fa-warehouse"></i></div>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-100 dark:border-slate-700 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="statMaint">في الصيانة</p>
+                        <h3 class="text-2xl font-bold num-font mt-1 text-orange-500">5</h3>
+                    </div>
+                    <div class="w-10 h-10 rounded-full bg-orange-50 text-orange-500 flex items-center justify-center"><i class="fa-solid fa-screwdriver-wrench"></i></div>
+                </div>
+            </div>
+
+            <div class="flex flex-col md:flex-row gap-4 bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700">
+                <div class="relative flex-1">
+                    <input type="text" data-i18n-placeholder="searchPlace" placeholder="بحث برقم الأصل، الموظف، أو السيريال..." class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-600 rounded-lg py-2 px-4 pl-10 text-sm focus:outline-none focus:border-brandRed dark:text-white">
+                    <i class="fa-solid fa-magnifying-glass absolute top-2.5 left-3 text-slate-400"></i>
+                </div>
+                <select class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-600 rounded-lg py-2 px-4 text-sm text-slate-600 dark:text-white focus:outline-none">
+                    <option data-i18n="filterCatAll">كل الفئات</option>
+                    <option data-i18n="filterCatElec">أجهزة إلكترونية</option>
+                    <option data-i18n="filterCatCar">سيارات</option>
+                    <option data-i18n="filterCatFurn">أثاث مكتبي</option>
+                </select>
+                <select class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-600 rounded-lg py-2 px-4 text-sm text-slate-600 dark:text-white focus:outline-none">
+                    <option data-i18n="filterStatAll">كل الحالات</option>
+                    <option data-i18n="filterStatAssigned">مسلمة لموظف</option>
+                    <option data-i18n="filterStatStock">في المخزن</option>
+                    <option data-i18n="filterStatMaint">صيانة</option>
+                </select>
+            </div>
+
+            <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-right rtl:text-right ltr:text-left">
+                        <thead class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 text-xs font-bold uppercase">
+                            <tr>
+                                <th class="p-4" data-i18n="colAsset">الأصل / الرقم التسلسلي</th>
+                                <th class="p-4" data-i18n="colCat">الفئة</th>
+                                <th class="p-4" data-i18n="colCust">العهدة لدى</th>
+                                <th class="p-4" data-i18n="colDate">تاريخ التسليم</th>
+                                <th class="p-4 text-center" data-i18n="colStatus">الحالة</th>
+                                <th class="p-4 text-center" data-i18n="colAction">الإجراء</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 dark:divide-slate-700 dark:text-slate-300">
+                            
+                            <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
+                                <td class="p-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 rounded bg-slate-100 flex items-center justify-center text-slate-500"><i class="fa-solid fa-laptop"></i></div>
+                                        <div>
+                                            <p class="font-bold text-slate-800 dark:text-white">MacBook Pro M3</p>
+                                            <p class="text-[10px] text-slate-400 font-mono">TAG: AST-001 | SN: X1Y2Z3</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="p-4" data-i18n="catElectronics">إلكترونيات</td>
+                                <td class="p-4">
+                                    <div class="flex items-center gap-2">
+                                        <img src="https://ui-avatars.com/api/?name=Khaled+O&background=random" class="w-6 h-6 rounded-full">
+                                        <span class="text-xs">خالد العتيبي</span>
+                                    </div>
+                                </td>
+                                <td class="p-4 font-mono text-xs text-slate-500">2026-01-15</td>
+                                <td class="p-4 text-center">
+                                    <span class="bg-blue-100 text-blue-700 px-2 py-1 rounded text-[10px] font-bold" data-i18n="statusAssigned">عهدة</span>
+                                </td>
+                                <td class="p-4 text-center">
+                                    <button onclick="confirmReturn()" class="text-orange-500 hover:text-orange-700 text-xs font-bold underline" data-i18n="btnReturn">استلام</button>
+                                </td>
+                            </tr>
+
+                            <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
+                                <td class="p-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 rounded bg-slate-100 flex items-center justify-center text-slate-500"><i class="fa-solid fa-desktop"></i></div>
+                                        <div>
+                                            <p class="font-bold text-slate-800 dark:text-white">LG Monitor 27"</p>
+                                            <p class="text-[10px] text-slate-400 font-mono">TAG: AST-045 | SN: LG-9988</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="p-4" data-i18n="catElectronics">إلكترونيات</td>
+                                <td class="p-4 text-slate-400">--</td>
+                                <td class="p-4 font-mono text-xs text-slate-500">--</td>
+                                <td class="p-4 text-center">
+                                    <span class="bg-green-100 text-green-700 px-2 py-1 rounded text-[10px] font-bold" data-i18n="statusStock">متاح</span>
+                                </td>
+                                <td class="p-4 text-center">
+                                    <button class="text-slate-400 hover:text-brandRed transition"><i class="fa-solid fa-pen-to-square"></i></button>
+                                </td>
+                            </tr>
+
+                            <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
+                                <td class="p-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 rounded bg-slate-100 flex items-center justify-center text-slate-500"><i class="fa-solid fa-car"></i></div>
+                                        <div>
+                                            <p class="font-bold text-slate-800 dark:text-white">Ford Taurus 2024</p>
+                                            <p class="text-[10px] text-slate-400 font-mono">Plate: ABC-1234</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="p-4" data-i18n="catVehicle">سيارات</td>
+                                <td class="p-4 text-slate-400">--</td>
+                                <td class="p-4 font-mono text-xs text-slate-500">--</td>
+                                <td class="p-4 text-center">
+                                    <span class="bg-orange-100 text-orange-700 px-2 py-1 rounded text-[10px] font-bold" data-i18n="statusMaint">صيانة</span>
+                                </td>
+                                <td class="p-4 text-center">
+                                    <button class="text-slate-400 hover:text-brandRed transition"><i class="fa-solid fa-file-lines"></i></button>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <div id="assignModal" class="fixed inset-0 bg-black/60 hidden z-50 flex items-center justify-center backdrop-blur-sm p-4">
+        <div class="bg-white dark:bg-slate-800 w-full max-w-lg rounded-2xl shadow-xl p-6">
+            <div class="flex justify-between items-center mb-6 border-b pb-4 dark:border-slate-700">
+                <h3 class="font-bold text-lg dark:text-white" data-i18n="modAssignTitle">تسليم عهدة جديدة</h3>
+                <button onclick="document.getElementById('assignModal').classList.add('hidden')"><i class="fa-solid fa-xmark text-slate-400"></i></button>
+            </div>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblEmployee">الموظف المستلم</label>
+                    <select class="w-full bg-slate-50 dark:bg-slate-700 border dark:border-slate-600 rounded-lg p-2 text-sm dark:text-white">
+                        <option>اختر موظفاً...</option>
+                        <option>خالد العتيبي</option>
+                        <option>سارة الأحمد</option>
+                        <option>محمد خان</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblAsset">الأصل (من المخزون المتاح)</label>
+                    <select class="w-full bg-slate-50 dark:bg-slate-700 border dark:border-slate-600 rounded-lg p-2 text-sm dark:text-white">
+                        <option>LG Monitor 27" (AST-045)</option>
+                        <option>Office Chair - High Back (AST-099)</option>
+                        <option>iPhone 15 Pro (AST-102)</option>
+                    </select>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblDate">تاريخ التسليم</label>
+                        <input type="date" class="w-full bg-slate-50 dark:bg-slate-700 border dark:border-slate-600 rounded-lg p-2 text-sm dark:text-white">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblCondition">حالة الأصل</label>
+                        <select class="w-full bg-slate-50 dark:bg-slate-700 border dark:border-slate-600 rounded-lg p-2 text-sm dark:text-white">
+                            <option>جديد (New)</option>
+                            <option>مستعمل بحالة ممتازة</option>
+                            <option>مستعمل (Used)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblNotes">ملاحظات</label>
+                    <textarea class="w-full bg-slate-50 dark:bg-slate-700 border dark:border-slate-600 rounded-lg p-2 text-sm dark:text-white h-20"></textarea>
+                </div>
+            </div>
+
+            <div class="mt-6 flex justify-end gap-3 pt-4 border-t dark:border-slate-700">
+                <button onclick="document.getElementById('assignModal').classList.add('hidden')" class="px-4 py-2 text-slate-500 text-xs font-bold hover:bg-slate-50 rounded-lg dark:hover:bg-slate-700" data-i18n="btnCancel">إلغاء</button>
+                <button onclick="alert('تم تسليم العهدة بنجاح'); document.getElementById('assignModal').classList.add('hidden')" class="px-6 py-2 bg-brandRed text-white rounded-lg text-xs font-bold hover:bg-red-700 shadow-md" data-i18n="btnConfirmAssign">تأكيد التسليم</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="layout-hr.js"></script>
+    <script src="bot.js"></script>
+
+    <script>
+        // --- 1. الترجمة ---
+        const pageContent = {
+            ar: {
+                pageTitle: "سجل العهد والأصول | AndroGov",
+                headerTitle: "سجل العهد والأصول",
+                headerDesc: "إدارة أصول الشركة، تسليم العهد للموظفين، ومتابعة المخزون",
+                btnExport: "جرد الأصول (Excel)",
+                btnAssign: "تسليم عهدة",
+                statTotal: "إجمالي الأصول",
+                statAssigned: "عهدة مسلمة",
+                statAssignedSub: "مع الموظفين",
+                statStock: "في المخزن",
+                statStockSub: "متاح للتسليم",
+                statMaint: "في الصيانة",
+                searchPlace: "بحث برقم الأصل، الموظف، أو السيريال...",
+                filterCatAll: "كل الفئات",
+                filterCatElec: "أجهزة إلكترونية",
+                filterCatCar: "سيارات",
+                filterCatFurn: "أثاث مكتبي",
+                filterStatAll: "كل الحالات",
+                filterStatAssigned: "مسلمة لموظف",
+                filterStatStock: "في المخزن",
+                filterStatMaint: "صيانة",
+                colAsset: "الأصل / الرقم التسلسلي",
+                colCat: "الفئة",
+                colCust: "العهدة لدى",
+                colDate: "تاريخ التسليم",
+                colStatus: "الحالة",
+                colAction: "الإجراء",
+                catElectronics: "إلكترونيات",
+                catVehicle: "سيارات",
+                statusAssigned: "عهدة",
+                statusStock: "متاح",
+                statusMaint: "صيانة",
+                btnReturn: "استلام",
+                modAssignTitle: "تسليم عهدة جديدة",
+                lblEmployee: "الموظف المستلم",
+                lblAsset: "الأصل (من المخزون المتاح)",
+                lblDate: "تاريخ التسليم",
+                lblCondition: "حالة الأصل",
+                lblNotes: "ملاحظات",
+                btnCancel: "إلغاء",
+                btnConfirmAssign: "تأكيد التسليم"
+            },
+            en: {
+                pageTitle: "Assets & Custody | AndroGov",
+                headerTitle: "Assets & Custody",
+                headerDesc: "Manage company assets, employee custody, and inventory tracking",
+                btnExport: "Export Inventory",
+                btnAssign: "Assign Asset",
+                statTotal: "Total Assets",
+                statAssigned: "Assigned",
+                statAssignedSub: "With Employees",
+                statStock: "In Stock",
+                statStockSub: "Available",
+                statMaint: "Maintenance",
+                searchPlace: "Search by Asset Tag, Employee, or Serial...",
+                filterCatAll: "All Categories",
+                filterCatElec: "Electronics",
+                filterCatCar: "Vehicles",
+                filterCatFurn: "Furniture",
+                filterStatAll: "All Statuses",
+                filterStatAssigned: "Assigned",
+                filterStatStock: "In Stock",
+                filterStatMaint: "Maintenance",
+                colAsset: "Asset / Serial No.",
+                colCat: "Category",
+                colCust: "Custodian",
+                colDate: "Assigned Date",
+                colStatus: "Status",
+                colAction: "Action",
+                catElectronics: "Electronics",
+                catVehicle: "Vehicles",
+                statusAssigned: "Assigned",
+                statusStock: "Available",
+                statusMaint: "Maintenance",
+                btnReturn: "Return",
+                modAssignTitle: "Assign New Asset",
+                lblEmployee: "Employee",
+                lblAsset: "Asset (From Stock)",
+                lblDate: "Assign Date",
+                lblCondition: "Condition",
+                lblNotes: "Notes",
+                btnCancel: "Cancel",
+                btnConfirmAssign: "Confirm Assignment"
+            }
+        };
+
+        // --- 2. التشغيل ---
+        document.addEventListener('DOMContentLoaded', () => {
+            updatePageLanguage();
+        });
+
+        function updatePageLanguage() {
+            const lang = localStorage.getItem('lang') || 'ar';
+            const dict = pageContent[lang];
+            
+            document.documentElement.lang = lang;
+            document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if(dict[key]) el.innerText = dict[key];
+            });
+            
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                if(dict[key]) el.placeholder = dict[key];
+            });
+        }
+
+        // --- 3. الوظائف ---
+        function confirmReturn() {
+            const lang = localStorage.getItem('lang') || 'ar';
+            const msg = lang === 'ar' ? "هل أنت متأكد من استلام هذه العهدة من الموظف وإعادتها للمخزن؟" : "Are you sure you want to return this asset to stock?";
+            if(confirm(msg)) {
+                alert(lang === 'ar' ? "تم تحديث حالة الأصل إلى 'متاح'" : "Asset status updated to 'Available'");
+            }
+        }
+    </script>
+</body>
+</html>
