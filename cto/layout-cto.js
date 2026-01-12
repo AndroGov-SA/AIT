@@ -1,8 +1,8 @@
 /**
- * AndroGov CTO Layout Engine v2.0 (Standardized)
- * - Exact replica of Admin/HR layout structure.
- * - Branding: AndroGov (Red Identity).
- * - Content: Technical Operations.
+ * AndroGov CTO Layout Engine v3.0 (Fixed Sidebar Color)
+ * - Sidebar is now WHITE in light mode (matching Admin/HR).
+ * - Dark mode compliant.
+ * - Brand Red identity enforced.
  */
 
 (function() {
@@ -44,8 +44,8 @@
         {
             section: 'main',
             items: [
-                { key: 'dash', icon: 'fa-chart-pie', link: 'cto_dashboard.html' }, // لوحة القيادة
-                { key: 'monitor', icon: 'fa-desktop', link: 'cto_monitoring.html' } // المراقبة الحية
+                { key: 'dash', icon: 'fa-chart-pie', link: 'cto_dashboard.html' },
+                { key: 'monitor', icon: 'fa-desktop', link: 'cto_monitoring.html' }
             ]
         },
         {
@@ -117,7 +117,6 @@
         renderHeader();
         document.body.style.opacity = '1';
         
-        // إغلاق القائمة عند النقر خارجها
         document.addEventListener('click', function(event) {
             const dropdown = document.getElementById('notifDropdown');
             const btn = document.getElementById('notifBtn');
@@ -127,7 +126,7 @@
         });
     }
 
-    // --- 6. دوال العرض (مطابقة تماماً لـ Admin/HR) ---
+    // --- 6. دوال العرض ---
     function applySettings() {
         const html = document.documentElement;
         html.lang = config.lang;
@@ -157,7 +156,7 @@
             menuHTML += `<div class="px-4 mt-6 mb-2 text-[11px] font-bold text-slate-400 uppercase tracking-wider opacity-80">${dict.sections[group.section]}</div>`;
             group.items.forEach(item => {
                 const isActive = currentPath === item.link;
-                // نفس ستايل القائمة الموحد (أحمر جانبي عند التفعيل)
+                // تصحيح: استخدام ألوان النص الرمادية (slate-600) للخلفية البيضاء، وليس الأبيض
                 const activeClass = isActive ? "bg-brandRed/10 text-brandRed border-r-4 border-brandRed" : "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-brandRed";
                 menuHTML += `<a href="${item.link}" class="flex items-center gap-3 px-4 py-3 text-sm font-medium transition-all duration-200 ${activeClass}"><div class="w-5 text-center"><i class="fa-solid ${item.icon}"></i></div><span class="flex-1">${dict.menu[item.key]}</span></a>`;
             });
@@ -165,6 +164,7 @@
 
         const sidePos = isRtl ? 'right-0 border-l' : 'left-0 border-r';
 
+        // تصحيح: الخلفية الآن bg-white بشكل افتراضي، وتتحول لداكنة فقط في الـ dark mode
         container.innerHTML = `
         <aside class="fixed top-0 ${sidePos} z-50 h-screen w-72 flex-col hidden md:flex bg-white dark:bg-[#0F172A] border-slate-200 dark:border-slate-800 transition-all duration-300">
             <div class="h-20 flex items-center px-6 border-b border-slate-100 dark:border-slate-800">
@@ -173,6 +173,7 @@
                     <div><h1 class="font-bold text-lg text-slate-800 dark:text-white font-sans tracking-tight">${dict.sysName}</h1><p class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">${dict.deptName}</p></div>
                 </div>
             </div>
+            
             <div class="p-6 pb-2">
                 <a href="cto_profile.html" class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 hover:border-brandRed transition group">
                     <img src="${currentUser.avatar}" class="w-10 h-10 rounded-full border border-white shadow-sm">
@@ -180,7 +181,9 @@
                     <i class="fa-solid fa-chevron-left text-[10px] text-slate-300 group-hover:text-brandRed mr-auto"></i>
                 </a>
             </div>
+
             <nav class="flex-1 overflow-y-auto custom-scroll pb-10">${menuHTML}</nav>
+
             <div class="p-4 text-center text-[10px] text-slate-400 border-t border-slate-100 dark:border-slate-800">
                 &copy; 2026 Andromeda IT
             </div>
@@ -220,10 +223,11 @@
         </header>`;
     }
 
+    // --- 6. Global Functions ---
     window.toggleNotif = function() { document.getElementById('notifDropdown').classList.toggle('hidden'); };
     window.changeTheme = () => { localStorage.setItem('theme', config.theme === 'dark' ? 'light' : 'dark'); location.reload(); };
     window.changeLang = () => { localStorage.setItem('lang', config.lang === 'ar' ? 'en' : 'ar'); location.reload(); };
-    window.doLogout = () => { if(confirm('Log out?')) window.location.href = 'https://androgov-sa.github.io/AIT/login.html'; };
+    window.doLogout = () => { if(confirm('Logout?')) window.location.href = 'https://androgov-sa.github.io/AIT/login.html'; };
 
     init();
 })();
