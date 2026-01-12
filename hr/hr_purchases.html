@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#FB4747">
+    <title data-i18n="pageTitle">المشتريات التشغيلية | AndroGov</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { brandRed: '#FB4747', brandDark: '#0F172A', moneyGreen: '#10B981', alertOrange: '#F59E0B' },
+                    fontFamily: { sans: ['Tajawal', 'Inter', 'sans-serif'], en: ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <style>.num-font { font-family: 'Inter', sans-serif; font-feature-settings: "tnum"; }</style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300 opacity-0">
+
+    <div id="sidebar-container"></div>
+    
+    <div class="main-content-wrapper transition-all duration-300 flex flex-col min-h-screen">
+        <div id="header-container"></div>
+
+        <main class="p-6 space-y-6">
+            
+            <div class="flex flex-col md:flex-row justify-between items-end gap-4">
+                <div>
+                    <h1 class="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                        <i class="fa-solid fa-cart-shopping text-brandRed"></i> <span data-i18n="headerTitle">المشتريات التشغيلية</span>
+                    </h1>
+                    <p class="text-sm text-slate-500 mt-1" data-i18n="headerDesc">إدارة طلبات الشراء اليومية، القرطاسية، والاحتياجات المكتبية</p>
+                </div>
+                <div class="flex gap-2">
+                    <button class="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold shadow-sm hover:bg-slate-50 transition flex items-center gap-2 text-slate-600 dark:text-white">
+                        <i class="fa-solid fa-file-invoice-dollar"></i> <span data-i18n="btnReports">تقرير المصروفات</span>
+                    </button>
+                    <button onclick="document.getElementById('purchaseModal').classList.remove('hidden')" class="px-4 py-2 bg-brandRed text-white rounded-lg text-xs font-bold shadow-lg hover:bg-red-700 transition flex items-center gap-2">
+                        <i class="fa-solid fa-plus"></i> <span data-i18n="btnNewReq">طلب شراء جديد</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-100 dark:border-slate-700 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="statSpend">مصروفات مارس</p>
+                        <h3 class="text-2xl font-bold num-font mt-1 text-slate-800 dark:text-white">8,450 <span class="text-xs text-slate-400 font-normal">SAR</span></h3>
+                    </div>
+                    <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center"><i class="fa-solid fa-wallet"></i></div>
+                </div>
+                
+                <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-100 dark:border-slate-700 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="statPending">تحت الاعتماد</p>
+                        <h3 class="text-2xl font-bold num-font mt-1 text-orange-500">1,200 <span class="text-xs text-slate-400 font-normal">SAR</span></h3>
+                        <p class="text-[10px] text-slate-400" data-i18n="statPendingCount">3 طلبات</p>
+                    </div>
+                    <div class="w-10 h-10 rounded-full bg-orange-50 text-orange-500 flex items-center justify-center"><i class="fa-solid fa-clock"></i></div>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-100 dark:border-slate-700 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="statBudget">حالة الميزانية</p>
+                        <h3 class="text-2xl font-bold num-font mt-1 text-green-600">65%</h3>
+                        <p class="text-[10px] text-slate-400" data-i18n="statBudgetSub">متبقي من الربع الأول</p>
+                    </div>
+                    <div class="w-10 h-10 rounded-full bg-green-50 text-green-600 flex items-center justify-center"><i class="fa-solid fa-chart-pie"></i></div>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-100 dark:border-slate-700 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="statPetty">صندوق النثرية</p>
+                        <h3 class="text-2xl font-bold num-font mt-1 text-slate-800 dark:text-white">5,000 <span class="text-xs text-slate-400 font-normal">SAR</span></h3>
+                        <p class="text-[10px] text-slate-400" data-i18n="statPettySub">رصيد متاح</p>
+                    </div>
+                    <div class="w-10 h-10 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center"><i class="fa-solid fa-sack-dollar"></i></div>
+                </div>
+            </div>
+
+            <div class="flex flex-col md:flex-row gap-4 bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700">
+                <div class="relative flex-1">
+                    <input type="text" data-i18n-placeholder="searchPlace" placeholder="بحث بالبند، الموظف، أو الرقم المرجعي..." class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-600 rounded-lg py-2 px-4 pl-10 text-sm focus:outline-none focus:border-brandRed dark:text-white">
+                    <i class="fa-solid fa-magnifying-glass absolute top-2.5 left-3 text-slate-400"></i>
+                </div>
+                <select class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-600 rounded-lg py-2 px-4 text-sm text-slate-600 dark:text-white focus:outline-none">
+                    <option data-i18n="filterCatAll">كل الفئات</option>
+                    <option data-i18n="filterCatOffice">قرطاسية</option>
+                    <option data-i18n="filterCatKitchen">ضيافة ومطبخ</option>
+                    <option data-i18n="filterCatIT">ملحقات تقنية</option>
+                    <option data-i18n="filterCatMaint">قطع غيار صيانة</option>
+                </select>
+                <select class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-600 rounded-lg py-2 px-4 text-sm text-slate-600 dark:text-white focus:outline-none">
+                    <option data-i18n="filterStatAll">كل الحالات</option>
+                    <option data-i18n="filterStatPending">بانتظار الاعتماد</option>
+                    <option data-i18n="filterStatApproved">معتمد</option>
+                    <option data-i18n="filterStatRejected">مرفوض</option>
+                </select>
+            </div>
+
+            <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-right rtl:text-right ltr:text-left">
+                        <thead class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 text-xs font-bold uppercase">
+                            <tr>
+                                <th class="p-4" data-i18n="colItem">البند / التفاصيل</th>
+                                <th class="p-4" data-i18n="colCategory">الفئة</th>
+                                <th class="p-4" data-i18n="colRequester">الطالب</th>
+                                <th class="p-4" data-i18n="colAmount">المبلغ (تقديري)</th>
+                                <th class="p-4" data-i18n="colDate">التاريخ</th>
+                                <th class="p-4 text-center" data-i18n="colStatus">الحالة</th>
+                                <th class="p-4 text-center" data-i18n="colAction">الإجراء</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 dark:divide-slate-700 dark:text-slate-300">
+                            
+                            <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
+                                <td class="p-4">
+                                    <span class="font-bold block dark:text-white">أحبار طابعات HP</span>
+                                    <span class="text-[10px] text-slate-400">Qty: 4 | Ref: PO-9901</span>
+                                </td>
+                                <td class="p-4"><span class="bg-purple-50 text-purple-600 px-2 py-0.5 rounded text-[10px] font-bold" data-i18n="catOffice">قرطاسية</span></td>
+                                <td class="p-4 text-xs font-bold">سارة الأحمد</td>
+                                <td class="p-4 num-font font-bold">850 SAR</td>
+                                <td class="p-4 font-mono text-xs text-slate-500">2026-03-22</td>
+                                <td class="p-4 text-center">
+                                    <span class="bg-orange-100 text-orange-700 px-2 py-1 rounded text-[10px] font-bold" data-i18n="statPending">معلق</span>
+                                </td>
+                                <td class="p-4 text-center flex justify-center gap-2">
+                                    <button class="w-6 h-6 rounded bg-green-100 text-green-600 hover:bg-green-200 transition"><i class="fa-solid fa-check"></i></button>
+                                    <button class="w-6 h-6 rounded bg-red-100 text-red-600 hover:bg-red-200 transition"><i class="fa-solid fa-xmark"></i></button>
+                                </td>
+                            </tr>
+
+                            <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
+                                <td class="p-4">
+                                    <span class="font-bold block dark:text-white">ماكينة قهوة للمكتب</span>
+                                    <span class="text-[10px] text-slate-400">Qty: 1 | Nespresso</span>
+                                </td>
+                                <td class="p-4"><span class="bg-orange-50 text-orange-600 px-2 py-0.5 rounded text-[10px] font-bold" data-i18n="catKitchen">ضيافة</span></td>
+                                <td class="p-4 text-xs font-bold">خالد العتيبي</td>
+                                <td class="p-4 num-font font-bold">1,200 SAR</td>
+                                <td class="p-4 font-mono text-xs text-slate-500">2026-03-21</td>
+                                <td class="p-4 text-center">
+                                    <span class="bg-green-100 text-green-700 px-2 py-1 rounded text-[10px] font-bold" data-i18n="statApproved">معتمد</span>
+                                </td>
+                                <td class="p-4 text-center text-slate-300">
+                                    <i class="fa-solid fa-lock"></i>
+                                </td>
+                            </tr>
+
+                            <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
+                                <td class="p-4">
+                                    <span class="font-bold block dark:text-white">كيابل شبكة + فأرات</span>
+                                    <span class="text-[10px] text-slate-400">Qty: 10 | Logitech</span>
+                                </td>
+                                <td class="p-4"><span class="bg-blue-50 text-blue-600 px-2 py-0.5 rounded text-[10px] font-bold" data-i18n="catIT">تقنية</span></td>
+                                <td class="p-4 text-xs font-bold">IT Support</td>
+                                <td class="p-4 num-font font-bold">450 SAR</td>
+                                <td class="p-4 font-mono text-xs text-slate-500">2026-03-20</td>
+                                <td class="p-4 text-center">
+                                    <span class="bg-green-100 text-green-700 px-2 py-1 rounded text-[10px] font-bold" data-i18n="statApproved">معتمد</span>
+                                </td>
+                                <td class="p-4 text-center text-slate-300">
+                                    <i class="fa-solid fa-lock"></i>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <div id="purchaseModal" class="fixed inset-0 bg-black/60 hidden z-50 flex items-center justify-center backdrop-blur-sm p-4">
+        <div class="bg-white dark:bg-slate-800 w-full max-w-lg rounded-2xl shadow-xl p-6">
+            <div class="flex justify-between items-center mb-6 border-b pb-4 dark:border-slate-700">
+                <h3 class="font-bold text-lg dark:text-white" data-i18n="modTitle">طلب شراء جديد</h3>
+                <button onclick="document.getElementById('purchaseModal').classList.add('hidden')"><i class="fa-solid fa-xmark text-slate-400"></i></button>
+            </div>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblItem">اسم البند / المنتج</label>
+                    <input type="text" class="w-full bg-slate-50 dark:bg-slate-700 border dark:border-slate-600 rounded-lg p-2 text-sm dark:text-white" placeholder="مثال: ورق A4، أحبار...">
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblCategory">الفئة</label>
+                        <select class="w-full bg-slate-50 dark:bg-slate-700 border dark:border-slate-600 rounded-lg p-2 text-sm dark:text-white">
+                            <option>قرطاسية</option>
+                            <option>ضيافة ومطبخ</option>
+                            <option>ملحقات تقنية</option>
+                            <option>أثاث</option>
+                            <option>صيانة</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblQuantity">الكمية</label>
+                        <input type="number" class="w-full bg-slate-50 dark:bg-slate-700 border dark:border-slate-600 rounded-lg p-2 text-sm dark:text-white">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblPrice">السعر التقديري (إجمالي)</label>
+                        <input type="number" class="w-full bg-slate-50 dark:bg-slate-700 border dark:border-slate-600 rounded-lg p-2 text-sm dark:text-white">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblVendor">المورد (اختياري)</label>
+                        <input type="text" class="w-full bg-slate-50 dark:bg-slate-700 border dark:border-slate-600 rounded-lg p-2 text-sm dark:text-white" placeholder="جرير، إكسترا...">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblReason">سبب الشراء</label>
+                    <textarea class="w-full bg-slate-50 dark:bg-slate-700 border dark:border-slate-600 rounded-lg p-2 text-sm dark:text-white h-20"></textarea>
+                </div>
+
+                <div class="p-3 bg-blue-50 text-blue-700 text-xs rounded border border-blue-100">
+                    <i class="fa-solid fa-info-circle"></i> <span data-i18n="modNote">المشتريات أقل من 5000 ريال يتم صرفها من بند المصروفات النثرية أو العهدة المستديمة.</span>
+                </div>
+            </div>
+
+            <div class="mt-6 flex justify-end gap-3 pt-4 border-t dark:border-slate-700">
+                <button onclick="document.getElementById('purchaseModal').classList.add('hidden')" class="px-4 py-2 text-slate-500 text-xs font-bold hover:bg-slate-50 rounded-lg dark:hover:bg-slate-700" data-i18n="btnCancel">إلغاء</button>
+                <button onclick="alert('تم رفع طلب الشراء بنجاح'); document.getElementById('purchaseModal').classList.add('hidden')" class="px-6 py-2 bg-brandRed text-white rounded-lg text-xs font-bold hover:bg-red-700 shadow-md" data-i18n="btnSubmit">إرسال الطلب</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="layout-hr.js"></script>
+    <script src="bot.js"></script>
+
+    <script>
+        // --- 1. الترجمة ---
+        const pageContent = {
+            ar: {
+                pageTitle: "المشتريات التشغيلية | AndroGov",
+                headerTitle: "المشتريات التشغيلية",
+                headerDesc: "إدارة طلبات الشراء اليومية، القرطاسية، والاحتياجات المكتبية",
+                btnReports: "تقرير المصروفات",
+                btnNewReq: "طلب شراء جديد",
+                statSpend: "مصروفات مارس",
+                statPending: "تحت الاعتماد",
+                statPendingCount: "3 طلبات",
+                statBudget: "حالة الميزانية",
+                statBudgetSub: "متبقي من الربع الأول",
+                statPetty: "صندوق النثرية",
+                statPettySub: "رصيد متاح",
+                searchPlace: "بحث بالبند، الموظف، أو الرقم المرجعي...",
+                filterCatAll: "كل الفئات",
+                filterCatOffice: "قرطاسية",
+                filterCatKitchen: "ضيافة ومطبخ",
+                filterCatIT: "ملحقات تقنية",
+                filterCatMaint: "قطع غيار صيانة",
+                filterStatAll: "كل الحالات",
+                filterStatPending: "بانتظار الاعتماد",
+                filterStatApproved: "معتمد",
+                filterStatRejected: "مرفوض",
+                colItem: "البند / التفاصيل",
+                colCategory: "الفئة",
+                colRequester: "الطالب",
+                colAmount: "المبلغ (تقديري)",
+                colDate: "التاريخ",
+                colStatus: "الحالة",
+                colAction: "الإجراء",
+                catOffice: "قرطاسية",
+                catKitchen: "ضيافة",
+                catIT: "تقنية",
+                statPending: "معلق",
+                statApproved: "معتمد",
+                modTitle: "طلب شراء جديد",
+                lblItem: "اسم البند / المنتج",
+                lblCategory: "الفئة",
+                lblQuantity: "الكمية",
+                lblPrice: "السعر التقديري (إجمالي)",
+                lblVendor: "المورد (اختياري)",
+                lblReason: "سبب الشراء",
+                modNote: "المشتريات أقل من 5000 ريال يتم صرفها من بند المصروفات النثرية أو العهدة المستديمة.",
+                btnCancel: "إلغاء",
+                btnSubmit: "إرسال الطلب"
+            },
+            en: {
+                pageTitle: "OpEx Purchases | AndroGov",
+                headerTitle: "Operational Purchases",
+                headerDesc: "Manage daily purchase requests, stationery, and office supplies",
+                btnReports: "Expense Report",
+                btnNewReq: "New Request",
+                statSpend: "March Spend",
+                statPending: "Pending Approval",
+                statPendingCount: "3 Requests",
+                statBudget: "Budget Status",
+                statBudgetSub: "Remaining Q1",
+                statPetty: "Petty Cash",
+                statPettySub: "Available Balance",
+                searchPlace: "Search by Item, Requester, or Ref...",
+                filterCatAll: "All Categories",
+                filterCatOffice: "Stationery",
+                filterCatKitchen: "Pantry & Kitchen",
+                filterCatIT: "IT Peripherals",
+                filterCatMaint: "Maintenance Parts",
+                filterStatAll: "All Statuses",
+                filterStatPending: "Pending",
+                filterStatApproved: "Approved",
+                filterStatRejected: "Rejected",
+                colItem: "Item / Details",
+                colCategory: "Category",
+                colRequester: "Requester",
+                colAmount: "Amount (Est.)",
+                colDate: "Date",
+                colStatus: "Status",
+                colAction: "Action",
+                catOffice: "Stationery",
+                catKitchen: "Pantry",
+                catIT: "Tech",
+                statPending: "Pending",
+                statApproved: "Approved",
+                modTitle: "New Purchase Request",
+                lblItem: "Item Name",
+                lblCategory: "Category",
+                lblQuantity: "Quantity",
+                lblPrice: "Est. Price (Total)",
+                lblVendor: "Vendor (Optional)",
+                lblReason: "Reason for Purchase",
+                modNote: "Purchases under 5000 SAR are processed via Petty Cash or Standing Advance.",
+                btnCancel: "Cancel",
+                btnSubmit: "Submit Request"
+            }
+        };
+
+        // --- 2. التشغيل ---
+        document.addEventListener('DOMContentLoaded', () => {
+            updatePageLanguage();
+        });
+
+        function updatePageLanguage() {
+            const lang = localStorage.getItem('lang') || 'ar';
+            const dict = pageContent[lang];
+            
+            document.documentElement.lang = lang;
+            document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if(dict[key]) el.innerText = dict[key];
+            });
+            
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                if(dict[key]) el.placeholder = dict[key];
+            });
+        }
+    </script>
+</body>
+</html>
