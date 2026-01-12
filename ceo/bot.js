@@ -1,6 +1,6 @@
 /**
- * AndroGov - Executive AI Assistant
- * المساعد الذكي الخاص بالرئيس التنفيذي - نسخة تنفيذية
+ * AndroGov - Executive AI Assistant (bot.js)
+ * المساعد الذكي الخاص بالرئيس التنفيذي - يجيب عن الأداء، المبيعات، والمخاطر
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -11,7 +11,7 @@ function initBot() {
     const isRTL = document.documentElement.dir === 'rtl';
     const lang = document.documentElement.lang || 'ar';
 
-    // نصوص الواجهة (مخصصة للرئيس التنفيذي)
+    // نصوص الواجهة (Executive Persona)
     const uiText = {
         ar: {
             title: "المستشار الذكي",
@@ -74,6 +74,8 @@ function initBot() {
             <button onclick="toggleChat()" id="chat-fab" class="w-14 h-14 bg-slate-900 text-white rounded-full shadow-xl shadow-slate-900/40 flex items-center justify-center text-2xl hover:scale-110 transition duration-300 group border-2 border-slate-700">
                 <i class="fa-solid fa-sparkles text-brandRed group-hover:hidden"></i>
                 <i class="fa-solid fa-chevron-down hidden group-hover:block"></i>
+                
+                <span class="absolute top-0 right-0 w-4 h-4 bg-green-500 border-2 border-white rounded-full"></span>
             </button>
 
         </div>
