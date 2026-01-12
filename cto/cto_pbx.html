@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-i18n="pageTitle">لوحة السنترال | AndroTech</title>
+    <title data-i18n="pageTitle">لوحة السنترال | AndroGov</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -16,10 +16,10 @@
             theme: {
                 extend: {
                     colors: { 
-                        techBlue: '#3B82F6', 
+                        brandRed: '#FB4747', 
                         techDark: '#0F172A', 
                         cyberGreen: '#10B981', 
-                        alertRed: '#EF4444' 
+                        alertOrange: '#F59E0B' 
                     },
                     fontFamily: { 
                         sans: ['Tajawal', 'sans-serif'], 
@@ -46,22 +46,24 @@
 
         <main class="p-6 space-y-6">
             
-            <div class="flex flex-col md:flex-row justify-between items-end gap-6 bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
-                <div>
-                    <h1 class="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                        <i class="fa-solid fa-phone-volume text-techBlue"></i> <span data-i18n="headerTitle">لوحة السنترال السحابي (Cloud PBX)</span>
+            <div class="flex flex-col md:flex-row justify-between items-end gap-6 bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-500 to-brandRed"></div>
+                
+                <div class="relative z-10">
+                    <h1 class="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2 mb-2">
+                        <i class="fa-solid fa-phone-volume text-brandRed"></i> <span data-i18n="headerTitle">لوحة السنترال السحابي (Cloud PBX)</span>
                     </h1>
-                    <div class="flex items-center gap-4 mt-2 text-sm text-slate-500">
+                    <div class="flex items-center gap-4 text-sm text-slate-500">
                         <span class="flex items-center gap-1"><i class="fa-solid fa-circle text-green-500 text-[8px] animate-pulse"></i> <span data-i18n="statusSystem">System Online</span></span>
                         <span class="flex items-center gap-1"><i class="fa-solid fa-server text-slate-400 text-xs"></i> <span data-i18n="statusTrunk">SIP Trunk: STC (Active)</span></span>
                     </div>
                 </div>
                 
-                <div class="flex gap-2">
+                <div class="flex gap-2 relative z-10">
                     <button class="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 px-4 py-2 rounded-lg text-xs font-bold hover:bg-slate-200 dark:hover:bg-slate-700 transition flex items-center gap-2">
                         <i class="fa-solid fa-gear"></i> <span data-i18n="btnSettings">إعدادات IVR</span>
                     </button>
-                    <button class="bg-techBlue text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-blue-700 transition flex items-center gap-2 shadow-lg shadow-blue-500/20">
+                    <button class="bg-brandRed text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-red-700 transition flex items-center gap-2 shadow-lg shadow-red-500/20">
                         <i class="fa-solid fa-plus"></i> <span data-i18n="btnAddExt">إضافة تحويلة</span>
                     </button>
                 </div>
@@ -164,7 +166,7 @@
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 
                 <div class="bg-slate-900 text-white rounded-3xl shadow-xl p-6 relative overflow-hidden">
-                    <div class="absolute top-0 right-0 w-40 h-40 bg-techBlue/20 rounded-full blur-3xl"></div>
+                    <div class="absolute top-0 right-0 w-40 h-40 bg-brandRed/10 rounded-full blur-3xl"></div>
                     
                     <div class="relative z-10 flex flex-col items-center">
                         <h3 class="text-sm font-bold mb-6 tracking-widest uppercase">Web Softphone</h3>
@@ -198,7 +200,7 @@
                 <div class="lg:col-span-2 bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 p-6">
                     <div class="flex justify-between items-center mb-6">
                         <h3 class="font-bold text-lg text-slate-900 dark:text-white flex items-center gap-2">
-                            <i class="fa-solid fa-chart-simple text-techBlue"></i> <span data-i18n="chartVolume">حجم المكالمات (أسبوعي)</span>
+                            <i class="fa-solid fa-chart-simple text-brandRed"></i> <span data-i18n="chartVolume">حجم المكالمات (أسبوعي)</span>
                         </h3>
                     </div>
                     <div class="h-64 w-full">
@@ -217,7 +219,7 @@
     <script>
         const pageContent = {
             ar: {
-                pageTitle: "لوحة السنترال | AndroTech",
+                pageTitle: "لوحة السنترال | AndroGov",
                 headerTitle: "لوحة السنترال السحابي (Cloud PBX)",
                 statusSystem: "النظام متصل",
                 statusTrunk: "SIP Trunk: STC (نشط)",
@@ -228,7 +230,7 @@
                 chartVolume: "حجم المكالمات (أسبوعي)"
             },
             en: {
-                pageTitle: "PBX Dashboard | AndroTech",
+                pageTitle: "PBX Dashboard | AndroGov",
                 headerTitle: "Cloud PBX Dashboard",
                 statusSystem: "System Online",
                 statusTrunk: "SIP Trunk: STC (Active)",
@@ -285,7 +287,7 @@
                         {
                             label: 'Outgoing',
                             data: [80, 90, 110, 85, 95],
-                            backgroundColor: '#3B82F6',
+                            backgroundColor: '#FB4747',
                             borderRadius: 4
                         },
                         {
