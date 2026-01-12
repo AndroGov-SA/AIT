@@ -56,16 +56,19 @@
                     <h3 class="text-3xl font-bold num-font mt-2 text-green-600">1.8M <span class="text-sm text-slate-400 font-normal">SAR</span></h3>
                     <p class="text-[10px] text-green-500 font-bold mt-1"><i class="fa-solid fa-arrow-up"></i> 8.5% YoY</p>
                 </div>
+                
                 <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
                     <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="kpiCash">النقد المتوفر (Cash)</p>
                     <h3 class="text-3xl font-bold num-font mt-2 text-slate-900 dark:text-white">5.2M <span class="text-sm text-slate-400 font-normal">SAR</span></h3>
-                    <p class="text-[10px] text-slate-400 mt-1" data-i18n="kpiRunway">Runway: 8 Months</p>
+                    <p class="text-[10px] text-slate-400 mt-1" data-i18n="kpiRunway">تغطية: 8 أشهر</p>
                 </div>
+                
                 <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
                     <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="kpiOpex">التكاليف التشغيلية</p>
-                    <h3 class="text-3xl font-bold num-font mt-2 text-red-500">650K <span class="text-sm text-slate-400 font-normal">/ Month</span></h3>
+                    <h3 class="text-3xl font-bold num-font mt-2 text-red-500">650K <span class="text-sm text-slate-400 font-normal" data-i18n="kpiOpexUnit">/ شهر</span></h3>
                     <p class="text-[10px] text-green-500 font-bold mt-1" data-i18n="kpiOpexSub">ضمن الميزانية</p>
                 </div>
+                
                 <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
                     <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="kpiInvest">عائد الاستثمار (ROI)</p>
                     <h3 class="text-3xl font-bold num-font mt-2 text-purple-600">12%</h3>
@@ -140,18 +143,18 @@
                     </thead>
                     <tbody class="divide-y divide-slate-100 dark:divide-slate-700 dark:text-slate-300">
                         <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
-                            <td class="p-4 font-bold">صكوك حكومية (2030)</td>
-                            <td class="p-4 text-xs">أدوات دين</td>
+                            <td class="p-4 font-bold" data-i18n="asset1Name">صكوك حكومية (2030)</td>
+                            <td class="p-4 text-xs" data-i18n="asset1Type">أدوات دين</td>
                             <td class="p-4 num-font">5,000,000 SAR</td>
                             <td class="p-4 text-center text-green-600 font-bold num-font">4.5%</td>
-                            <td class="p-4 text-center"><span class="bg-green-100 text-green-700 px-2 py-1 rounded text-[10px] font-bold">منخفض</span></td>
+                            <td class="p-4 text-center"><span class="bg-green-100 text-green-700 px-2 py-1 rounded text-[10px] font-bold" data-i18n="riskLow">منخفض</span></td>
                         </tr>
                         <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
-                            <td class="p-4 font-bold">محفظة أسهم نمو</td>
-                            <td class="p-4 text-xs">أسهم (Equity)</td>
+                            <td class="p-4 font-bold" data-i18n="asset2Name">محفظة أسهم نمو</td>
+                            <td class="p-4 text-xs" data-i18n="asset2Type">أسهم (Equity)</td>
                             <td class="p-4 num-font">2,500,000 SAR</td>
                             <td class="p-4 text-center text-green-600 font-bold num-font">15.2%</td>
-                            <td class="p-4 text-center"><span class="bg-red-100 text-red-700 px-2 py-1 rounded text-[10px] font-bold">عالي</span></td>
+                            <td class="p-4 text-center"><span class="bg-red-100 text-red-700 px-2 py-1 rounded text-[10px] font-bold" data-i18n="riskHigh">عالي</span></td>
                         </tr>
                     </tbody>
                 </table>
@@ -175,6 +178,7 @@
                 kpiCash: "النقد المتوفر (Cash)",
                 kpiRunway: "تغطية: 8 أشهر",
                 kpiOpex: "التكاليف التشغيلية",
+                kpiOpexUnit: "/ شهر",
                 kpiOpexSub: "ضمن الميزانية",
                 kpiInvest: "عائد الاستثمار (ROI)",
                 kpiInvestSub: "المحفظة العقارية",
@@ -188,22 +192,31 @@
                 colType: "النوع",
                 colValue: "القيمة الحالية",
                 colReturn: "العائد السنوي",
-                colRisk: "المخاطر"
+                colRisk: "المخاطر",
+                asset1Name: "صكوك حكومية (2030)",
+                asset1Type: "أدوات دين",
+                asset2Name: "محفظة أسهم نمو",
+                asset2Type: "أسهم (Equity)",
+                riskLow: "منخفض",
+                riskHigh: "عالي",
+                chartLabelIn: "تدفقات داخلة",
+                chartLabelOut: "تدفقات خارجة"
             },
             en: {
                 pageTitle: "Finance & Invest | AndroGov",
                 headerTitle: "Finance & Investment",
-                headerDesc: "Budget control, Cash flow management, and Portfolios",
+                headerDesc: "Budget control, Cash flow management, and Investment Portfolios",
                 btnReports: "Financial Statements",
                 btnApproveBudget: "Approve Budget",
                 kpiEbitda: "EBITDA (Q1)",
                 kpiCash: "Cash on Hand",
                 kpiRunway: "Runway: 8 Months",
-                kpiOpex: "Operating Expenses",
+                kpiOpex: "OpEx (Operating Expenses)",
+                kpiOpexUnit: "/ Month",
                 kpiOpexSub: "Within Budget",
                 kpiInvest: "Investment ROI",
                 kpiInvestSub: "Real Estate Portfolio",
-                chartCash: "Cash Flow",
+                chartCash: "Cash Flow Analysis",
                 chartBudget: "Budget vs Actual (2026)",
                 deptTech: "Tech & Dev",
                 deptSales: "Sales & Marketing",
@@ -213,7 +226,15 @@
                 colType: "Type",
                 colValue: "Current Value",
                 colReturn: "Annual Return",
-                colRisk: "Risk Level"
+                colRisk: "Risk Level",
+                asset1Name: "Gov. Sukuk (2030)",
+                asset1Type: "Debt Instruments",
+                asset2Name: "Growth Equity Fund",
+                asset2Type: "Equity",
+                riskLow: "Low",
+                riskHigh: "High",
+                chartLabelIn: "Inflow",
+                chartLabelOut: "Outflow"
             }
         };
 
@@ -234,19 +255,22 @@
 
         function initChart() {
             const ctx = document.getElementById('cashFlowChart').getContext('2d');
+            const lang = localStorage.getItem('lang') || 'ar';
+            const dict = pageContent[lang];
+
             new Chart(ctx, {
                 type: 'bar',
                 data: {
                     labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
                     datasets: [
                         {
-                            label: 'Inflow',
+                            label: dict.chartLabelIn,
                             data: [600, 800, 950, 1100, 1400, 1600],
                             backgroundColor: '#10B981',
                             borderRadius: 4
                         },
                         {
-                            label: 'Outflow',
+                            label: dict.chartLabelOut,
                             data: [400, 450, 500, 550, 600, 650],
                             backgroundColor: '#EF4444',
                             borderRadius: 4
@@ -259,7 +283,8 @@
                     scales: {
                         y: { grid: { display: true, color: '#f1f5f9' } },
                         x: { grid: { display: false } }
-                    }
+                    },
+                    plugins: { legend: { position: 'top', align: 'end' } }
                 }
             });
         }
