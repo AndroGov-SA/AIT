@@ -1,6 +1,6 @@
 /**
- * AndroGov - Executive AI Assistant (bot.js)
- * المساعد الذكي الخاص بالرئيس التنفيذي - يجيب عن الأداء، المبيعات، والمخاطر
+ * AndroGov - Executive AI Assistant (Red Brand Theme)
+ * المساعد الذكي - نسخة متوافقة مع الهوية البصرية الحمراء
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -11,7 +11,6 @@ function initBot() {
     const isRTL = document.documentElement.dir === 'rtl';
     const lang = document.documentElement.lang || 'ar';
 
-    // نصوص الواجهة (Executive Persona)
     const uiText = {
         ar: {
             title: "المستشار الذكي",
@@ -37,19 +36,19 @@ function initBot() {
             
             <div id="chat-window" class="hidden w-80 md:w-96 bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-slate-100 dark:border-slate-700 overflow-hidden flex flex-col transition-all duration-300 origin-bottom transform scale-95 opacity-0" style="height: 500px; max-height: 80vh;">
                 
-                <div class="bg-slate-900 p-4 flex items-center justify-between text-white">
+                <div class="bg-brandRed p-4 flex items-center justify-between text-white shadow-md">
                     <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-brandRed to-red-600 flex items-center justify-center shadow-lg border border-white/10">
-                            <i class="fa-solid fa-brain text-xl"></i>
+                        <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center shadow-inner border border-white/10">
+                            <i class="fa-solid fa-brain text-xl text-white"></i>
                         </div>
                         <div>
                             <h3 class="font-bold text-sm">${t.title}</h3>
-                            <p class="text-[10px] text-slate-300 flex items-center gap-1">
+                            <p class="text-[10px] text-red-100 flex items-center gap-1">
                                 <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span> ${t.subtitle}
                             </p>
                         </div>
                     </div>
-                    <button onclick="toggleChat()" class="text-white/70 hover:text-white transition"><i class="fa-solid fa-xmark"></i></button>
+                    <button onclick="toggleChat()" class="text-white/80 hover:text-white transition"><i class="fa-solid fa-xmark"></i></button>
                 </div>
 
                 <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50 dark:bg-slate-900/50 custom-scroll">
@@ -71,8 +70,8 @@ function initBot() {
                 </div>
             </div>
 
-            <button onclick="toggleChat()" id="chat-fab" class="w-14 h-14 bg-slate-900 text-white rounded-full shadow-xl shadow-slate-900/40 flex items-center justify-center text-2xl hover:scale-110 transition duration-300 group border-2 border-slate-700">
-                <i class="fa-solid fa-sparkles text-brandRed group-hover:hidden"></i>
+            <button onclick="toggleChat()" id="chat-fab" class="w-14 h-14 bg-brandRed text-white rounded-full shadow-lg shadow-red-500/40 flex items-center justify-center text-2xl hover:scale-110 hover:bg-red-700 transition duration-300 group border-2 border-white/20">
+                <i class="fa-solid fa-sparkles text-white group-hover:hidden"></i>
                 <i class="fa-solid fa-chevron-down hidden group-hover:block"></i>
                 
                 <span class="absolute top-0 right-0 w-4 h-4 bg-green-500 border-2 border-white rounded-full"></span>
@@ -83,6 +82,8 @@ function initBot() {
 
     document.body.insertAdjacentHTML('beforeend', botHTML);
 }
+
+// ... (باقي الدوال: toggleChat, handleUserMessage, addMessage... تبقى كما هي) ...
 
 function toggleChat() {
     const window = document.getElementById('chat-window');
@@ -167,64 +168,27 @@ function removeTypingIndicator() {
     if (el) el.remove();
 }
 
-// --- قاعدة المعرفة التنفيذية (The Executive Brain) ---
+// --- قاعدة المعرفة (نفس النسخة السابقة) ---
 function generateCeoResponse(input) {
     const text = input.toLowerCase();
     const lang = document.documentElement.lang || 'ar';
 
-    // ردود استراتيجية (أرقام وحقائق)
     const knowledgeBase = {
         ar: [
-            { 
-                keywords: ['ربح', 'أرباح', 'صافي', 'profit', 'net'], 
-                response: "صافي الربح حتى اليوم هو **2.4 مليون ريال**، بهامش ربح قدره **57%**. نحن أعلى من المستهدف بنسبة 5%." 
-            },
-            { 
-                keywords: ['مبيعات', 'ايرادات', 'دخل', 'sales', 'revenue'], 
-                response: "إجمالي الإيرادات (YTD) بلغ **4.2 مليون ريال**. \nأفضل المنتجات أداءً: الخدمات السحابية." 
-            },
-            { 
-                keywords: ['مخاطر', 'خطر', 'قضية', 'risk', 'issues'], 
-                response: "⚠️ **تنبيه:** يوجد خطر تشغيلي واحد يتعلق بانتهاء رخصة بلدية الفرع الشمالي خلال 15 يوماً. المدير الإداري يعمل على ذلك." 
-            },
-            { 
-                keywords: ['موظفين', 'توطين', 'نطاقات', 'employees', 'saudization'], 
-                response: "عدد الموظفين الحالي: **45**. \nنسبة التوطين: **78%** (نطاق بلاتيني). \nهناك خطة لتوظيف 5 مهندسين الشهر القادم." 
-            },
-            { 
-                keywords: ['نقد', 'سيولة', 'كاش', 'cash', 'liquidity'], 
-                response: "السيولة النقدية الحالية تغطي المصاريف التشغيلية لمدة **6 أشهر**. الوضع المالي مستقر جداً." 
-            },
-            { 
-                keywords: ['مرحبا', 'هلا', 'سلام', 'hi', 'hello'], 
-                response: "أهلاً أستاذ هشام. يسرني مساعدتك في اتخاذ القرارات اليوم. ما هو المؤشر الذي تود معرفته؟" 
-            }
+            { keywords: ['ربح', 'أرباح', 'صافي'], response: "صافي الربح حتى اليوم هو **2.4 مليون ريال**، بهامش ربح قدره **57%**. نحن أعلى من المستهدف بنسبة 5%." },
+            { keywords: ['مبيعات', 'ايرادات'], response: "إجمالي الإيرادات (YTD) بلغ **4.2 مليون ريال**. \nأفضل المنتجات أداءً: الخدمات السحابية." },
+            { keywords: ['مخاطر', 'خطر'], response: "⚠️ **تنبيه:** يوجد خطر تشغيلي واحد يتعلق بانتهاء رخصة بلدية الفرع الشمالي خلال 15 يوماً. المدير الإداري يعمل على ذلك." },
+            { keywords: ['موظفين', 'توطين'], response: "عدد الموظفين الحالي: **45**. \nنسبة التوطين: **78%** (نطاق بلاتيني)." },
+            { keywords: ['نقد', 'سيولة'], response: "السيولة النقدية الحالية تغطي المصاريف التشغيلية لمدة **6 أشهر**. الوضع المالي مستقر جداً." },
+            { keywords: ['مرحبا', 'هلا'], response: "أهلاً أستاذ هشام. يسرني مساعدتك في اتخاذ القرارات اليوم. ما هو المؤشر الذي تود معرفته؟" }
         ],
         en: [
-            { 
-                keywords: ['profit', 'net', 'income'], 
-                response: "Net profit YTD is **2.4M SAR**, with a margin of **57%**. We are 5% above target." 
-            },
-            { 
-                keywords: ['sales', 'revenue'], 
-                response: "Total Revenue (YTD): **4.2M SAR**. \nTop performing segment: Cloud Services." 
-            },
-            { 
-                keywords: ['risk', 'issue', 'alert'], 
-                response: "⚠️ **Alert:** One operational risk detected regarding North Branch license expiry in 15 days. CAO is handling it." 
-            },
-            { 
-                keywords: ['employees', 'staff', 'saudization'], 
-                response: "Total Headcount: **45**. \nSaudization: **78%** (Platinum). \nHiring plan active for 5 engineers next month." 
-            },
-            { 
-                keywords: ['cash', 'liquidity', 'runway'], 
-                response: "Current cash runway covers **6 months** of OpEx. Financial position is very stable." 
-            },
-            { 
-                keywords: ['hi', 'hello', 'welcome'], 
-                response: "Hello Mr. Hisham. I'm here to support your decisions. Which metric would you like to review?" 
-            }
+            { keywords: ['profit', 'net'], response: "Net profit YTD is **2.4M SAR**, with a margin of **57%**. We are 5% above target." },
+            { keywords: ['sales', 'revenue'], response: "Total Revenue (YTD): **4.2M SAR**. \nTop performing segment: Cloud Services." },
+            { keywords: ['risk', 'alert'], response: "⚠️ **Alert:** One operational risk detected regarding North Branch license expiry in 15 days." },
+            { keywords: ['employees', 'staff'], response: "Total Headcount: **45**. \nSaudization: **78%** (Platinum)." },
+            { keywords: ['cash', 'liquidity'], response: "Current cash runway covers **6 months** of OpEx. Financial position is very stable." },
+            { keywords: ['hi', 'hello'], response: "Hello Mr. Hisham. I'm here to support your decisions. Which metric would you like to review?" }
         ]
     };
 
@@ -237,5 +201,5 @@ function generateCeoResponse(input) {
 
     return lang === 'ar' 
         ? "عذراً، بصلاحياتي الحالية لا أملك إجابة دقيقة لهذا السؤال. هل تريد مني تحويل الاستفسار للمدير المالي أو الإداري؟"
-        : "I don't have the exact data for this query with my current access. Should I forward this to the CFO or CAO?";
+        : "I don't have the exact data for this query. Should I forward this to the CFO or CAO?";
 }
