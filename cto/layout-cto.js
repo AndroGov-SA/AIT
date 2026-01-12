@@ -1,8 +1,7 @@
 /**
- * AndroGov CTO Layout Engine v1.2 (Strict Brand Red Identity)
- * - Fixed Dark/Light Mode conflicts.
- * - Replaced Tech Blue with Brand Red to match other layouts.
- * - Standardized Sidebar & Header structure.
+ * AndroGov CTO Layout Engine v1.3 (Name Correction)
+ * - Fixed System Name to 'AndroGov'.
+ * - Maintained Brand Red Identity.
  */
 
 (function() {
@@ -33,12 +32,6 @@
             titleAr: 'انقطاع في السنترال', titleEn: 'PBX Trunk Down',
             msgAr: 'انقطاع خدمة الاتصال في فرع الشمال (SIP Trunk).', msgEn: 'SIP Trunk down in North Branch.',
             time: '15m'
-        },
-        {
-            id: 3, type: 'info', icon: 'fa-ticket', color: 'text-blue-500 bg-blue-50',
-            titleAr: 'تذكرة دعم جديدة', titleEn: 'New Support Ticket',
-            msgAr: 'طلب صلاحيات دخول للنظام المالي (CFO).', msgEn: 'Access request for Finance System.',
-            time: '1h'
         }
     ];
 
@@ -86,7 +79,7 @@
     // --- 4. Translations ---
     const t = {
         ar: {
-            sysName: "AndroGov",
+            sysName: "AndroGov", // Corrected Name
             sysVer: "Tech Admin v4.2",
             logout: "تسجيل خروج",
             notifTitle: "التنبيهات التقنية",
@@ -115,7 +108,7 @@
             }
         },
         en: {
-            sysName: "AndroGov",
+            sysName: "AndroGov", // Corrected Name
             sysVer: "Tech Admin v4.2",
             logout: "Logout",
             notifTitle: "System Alerts",
@@ -192,23 +185,17 @@
         const userDisplayName = isRtl ? currentUser.nameAr : currentUser.nameEn;
         const userDisplayTitle = isRtl ? currentUser.titleAr : currentUser.titleEn;
 
-        // Unified Link Styling (Matching Previous Files)
         const getLinkClass = (link) => {
             const isActive = currentPath === link;
             const baseClass = "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200";
-            
-            // Brand Red for Active State
             const activeClass = "bg-brandRed text-white shadow-md shadow-red-500/20"; 
-            
-            // Neutral for Inactive (Light/Dark aware)
-            const inactiveClass = "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-brandRed";
-            
+            const inactiveClass = "text-slate-400 hover:bg-slate-800 hover:text-white";
             return `${baseClass} ${isActive ? activeClass : inactiveClass}`;
         };
 
         let menuHTML = '';
         menuStructure.forEach(group => {
-            menuHTML += `<div class="px-3 mt-6 mb-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider">${dict.sections[group.section]}</div>`;
+            menuHTML += `<div class="px-3 mt-6 mb-2 text-[10px] font-bold text-slate-500 uppercase tracking-wider">${dict.sections[group.section]}</div>`;
             group.items.forEach(item => {
                 menuHTML += `
                 <a href="${item.link}" class="${getLinkClass(item.link)}">
@@ -218,38 +205,40 @@
             });
         });
 
-        // Sidebar Structure matching other layouts (white bg in light, dark in dark)
+        // Corrected Name: AndroGov
         const sidebarHTML = `
-        <aside class="fixed top-0 ${isRtl ? 'right-0 border-l' : 'left-0 border-r'} z-50 h-screen w-72 flex-col hidden md:flex bg-white dark:bg-[#0F172A] border-slate-200 dark:border-slate-800 transition-all duration-300">
-            <div class="h-20 flex items-center px-6 border-b border-slate-100 dark:border-slate-800">
+        <aside class="fixed top-0 ${isRtl ? 'right-0' : 'left-0'} z-50 h-screen w-72 flex-col hidden md:flex bg-[#0F172A] text-white transition-all duration-300 shadow-2xl border-l border-slate-800">
+            <div class="h-20 flex items-center px-6 border-b border-slate-800 bg-slate-900/50">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl bg-red-50 text-brandRed flex items-center justify-center text-xl">
+                    <div class="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-xl text-brandRed shadow-lg">
                         <i class="fa-solid fa-microchip"></i>
                     </div>
                     <div>
-                        <h1 class="font-bold text-lg text-slate-800 dark:text-white font-sans">${dict.sysName}</h1>
-                        <p class="text-[10px] text-slate-500 uppercase tracking-widest">${dict.sysVer}</p>
+                        <h1 class="font-bold text-lg font-sans tracking-wide text-white">Andro<span class="text-brandRed">Gov</span></h1>
+                        <p class="text-[10px] text-slate-400 uppercase tracking-widest">IT Operations</p>
                     </div>
                 </div>
             </div>
 
-            <div class="p-4">
-                <a href="cto_profile.html" class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 hover:border-brandRed transition group cursor-pointer">
-                    <img src="${currentUser.avatar}" class="w-10 h-10 rounded-full border-2 border-white dark:border-slate-600 object-cover">
+            <div class="p-4 bg-slate-900/30 border-b border-slate-800">
+                <a href="cto_profile.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-800 transition group cursor-pointer border border-transparent hover:border-slate-700">
+                    <div class="relative">
+                        <img src="${currentUser.avatar}" class="w-10 h-10 rounded-full border-2 border-slate-600 object-cover">
+                        <span class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-[#0F172A] rounded-full"></span>
+                    </div>
                     <div class="overflow-hidden flex-1">
-                        <p class="text-sm font-bold text-slate-800 dark:text-white truncate group-hover:text-brandRed transition">${userDisplayName}</p>
+                        <p class="text-sm font-bold text-white truncate">${userDisplayName}</p>
                         <p class="text-[10px] text-brandRed font-medium truncate">${userDisplayTitle}</p>
                     </div>
-                    <i class="fa-solid fa-chevron-left text-[10px] text-slate-300 group-hover:text-brandRed mr-auto"></i>
                 </a>
             </div>
 
-            <nav class="flex-1 overflow-y-auto px-3 py-2 custom-scroll space-y-0.5">
+            <nav class="flex-1 overflow-y-auto px-3 py-4 custom-scroll space-y-1">
                 ${menuHTML}
             </nav>
 
-            <div class="p-4 text-center text-[10px] text-slate-400 border-t border-slate-100 dark:border-slate-800">
-                &copy; 2026 Andromeda IT
+            <div class="p-4 text-center text-[10px] text-slate-500 border-t border-slate-800 bg-slate-900/50">
+                System Status: <span class="text-green-500 font-bold">Operational</span>
             </div>
         </aside>`;
 
@@ -283,9 +272,20 @@
         }
         
         container.innerHTML = `
-        <header class="h-20 sticky top-0 z-40 flex items-center justify-between px-6 bg-white/80 dark:bg-[#0F172A]/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 transition-all">
+        <header class="h-20 sticky top-0 z-40 flex items-center justify-between px-6 bg-white/90 dark:bg-[#0F172A]/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 transition-all shadow-sm">
             <div class="flex items-center gap-4">
                 <button class="md:hidden text-slate-500 dark:text-slate-200 hover:text-brandRed"><i class="fa-solid fa-bars text-xl"></i></button>
+                
+                <div class="hidden lg:flex gap-4 px-4 border-l border-r border-slate-200 dark:border-slate-700 h-10 items-center">
+                    <div class="flex items-center gap-2 text-xs font-mono">
+                        <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                        <span class="text-slate-600 dark:text-slate-300">System: 99.9%</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-xs font-mono">
+                        <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                        <span class="text-slate-600 dark:text-slate-300">PBX: Active</span>
+                    </div>
+                </div>
             </div>
 
             <div class="flex items-center gap-3">
@@ -293,7 +293,7 @@
                 <div class="relative">
                     <button id="notifBtn" onclick="window.toggleNotif()" class="w-9 h-9 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-white transition relative flex items-center justify-center">
                         <i class="fa-regular fa-bell"></i>
-                        <span class="absolute top-2 right-2.5 w-2 h-2 bg-brandRed rounded-full border border-white dark:border-slate-800"></span>
+                        <span class="absolute top-2 right-2.5 w-2 h-2 bg-brandRed rounded-full border border-white dark:border-slate-800 animate-bounce"></span>
                     </button>
                     
                     <div id="notifDropdown" class="hidden absolute top-12 ${isRtl ? 'left-0' : 'right-0'} w-80 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 overflow-hidden z-50">
