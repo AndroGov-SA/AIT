@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="pageTitle">مركز الأمن السيبراني | AndroGov</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { 
+                        brandRed: '#FB4747', 
+                        techDark: '#0F172A', 
+                        cyberGreen: '#10B981', 
+                        alertOrange: '#F59E0B' 
+                    },
+                    fontFamily: { 
+                        sans: ['Tajawal', 'sans-serif'], 
+                        mono: ['IBM Plex Mono', 'monospace'] 
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .font-mono { font-family: 'IBM Plex Mono', monospace; }
+        .num-font { font-family: 'IBM Plex Mono', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-200 font-sans transition-colors duration-300 opacity-0">
+
+    <div id="sidebar-container"></div>
+    
+    <div class="main-content-wrapper transition-all duration-300 flex flex-col min-h-screen">
+        <div id="header-container"></div>
+
+        <main class="p-6 space-y-6">
+            
+            <div class="flex flex-col md:flex-row justify-between items-end gap-6 bg-slate-900 text-white p-6 rounded-2xl shadow-lg border border-slate-800 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-64 h-64 bg-brandRed/10 rounded-full blur-3xl -mr-16 -mt-16"></div>
+                
+                <div class="relative z-10">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="flex h-3 w-3 relative">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-3 w-3 bg-brandRed"></span>
+                        </span>
+                        <span class="text-xs font-mono text-brandRed uppercase tracking-widest" data-i18n="statusLive">Threat Monitoring Active</span>
+                    </div>
+                    <h1 class="text-2xl font-bold flex items-center gap-2">
+                        <i class="fa-solid fa-shield-halved text-brandRed"></i> <span data-i18n="headerTitle">مركز العمليات الأمنية (SOC)</span>
+                    </h1>
+                    <p class="text-sm text-slate-400 mt-1 max-w-2xl" data-i18n="headerDesc">المراقبة الحية للتهديدات، الحوادث الأمنية، وحالة الامتثال للضوابط (NCA).</p>
+                </div>
+                
+                <div class="flex gap-3 relative z-10">
+                    <button class="px-5 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-xs font-bold shadow-sm hover:bg-slate-700 transition flex items-center gap-2 text-white">
+                        <i class="fa-solid fa-file-shield"></i> <span data-i18n="btnReport">تقرير الحوادث</span>
+                    </button>
+                    <button class="px-5 py-2.5 bg-brandRed text-white rounded-xl text-xs font-bold shadow-lg shadow-red-500/30 hover:bg-red-700 transition flex items-center gap-2">
+                        <i class="fa-solid fa-bug"></i> <span data-i18n="btnIncident">إبلاغ عن حادث</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 border-l-4 border-l-brandRed">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-xs text-slate-500 uppercase font-bold" data-i18n="statThreats">تهديدات محظورة</p>
+                            <h3 class="text-2xl font-bold font-mono text-slate-900 dark:text-white mt-1">1,420</h3>
+                            <p class="text-[10px] text-red-500 mt-1 font-bold">Last 24h</p>
+                        </div>
+                        <div class="w-10 h-10 rounded-full bg-red-50 dark:bg-red-900/20 flex items-center justify-center text-brandRed animate-pulse"><i class="fa-solid fa-ban"></i></div>
+                    </div>
+                </div>
+                
+                <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-xs text-slate-500 uppercase font-bold" data-i18n="statIncidents">حوادث نشطة</p>
+                            <h3 class="text-2xl font-bold font-mono text-slate-900 dark:text-white mt-1">2</h3>
+                            <p class="text-[10px] text-slate-400 mt-1" data-i18n="statInvestigating">تحت التحقيق</p>
+                        </div>
+                        <div class="w-10 h-10 rounded-full bg-orange-50 dark:bg-orange-900/20 flex items-center justify-center text-orange-500"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-xs text-slate-500 uppercase font-bold" data-i18n="statCompliance">الامتثال (NCA)</p>
+                            <h3 class="text-2xl font-bold font-mono text-green-600 mt-1">94%</h3>
+                            <p class="text-[10px] text-green-500 mt-1" data-i18n="statCompliant">متوافق</p>
+                        </div>
+                        <div class="w-10 h-10 rounded-full bg-green-50 dark:bg-green-900/20 flex items-center justify-center text-green-600"><i class="fa-solid fa-check-double"></i></div>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-xs text-slate-500 uppercase font-bold" data-i18n="statResponse">زمن الاستجابة</p>
+                            <h3 class="text-2xl font-bold font-mono text-blue-600 mt-1">12m</h3>
+                            <p class="text-[10px] text-slate-400 mt-1">Avg Response Time</p>
+                        </div>
+                        <div class="w-10 h-10 rounded-full bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-600"><i class="fa-solid fa-stopwatch"></i></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                
+                <div class="lg:col-span-2 bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-bold text-sm text-slate-800 dark:text-white flex items-center gap-2">
+                            <i class="fa-solid fa-globe text-brandRed"></i> <span data-i18n="chartAttacks">تحليل مصادر الهجمات (Geo-IP)</span>
+                        </h3>
+                        <span class="text-xs font-mono text-red-500 animate-pulse">Live Feed</span>
+                    </div>
+                    <div class="h-72 w-full">
+                        <canvas id="attacksChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
+                    <h3 class="font-bold text-sm text-slate-800 dark:text-white mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-chart-pie text-orange-500"></i> <span data-i18n="chartVectors">أنواع التهديدات</span>
+                    </h3>
+                    <div class="h-64 flex justify-center">
+                        <canvas id="vectorsChart"></canvas>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden">
+                <div class="p-5 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
+                    <h3 class="font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                        <i class="fa-solid fa-bell text-slate-400"></i> <span data-i18n="tableTitle">سجل التنبيهات الأمنية</span>
+                    </h3>
+                    <div class="flex gap-2">
+                        <span class="text-xs bg-red-100 text-red-700 px-2 py-1 rounded font-bold">Critical: 1</span>
+                        <span class="text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded font-bold">High: 3</span>
+                    </div>
+                </div>
+                
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-right rtl:text-right ltr:text-left">
+                        <thead class="bg-slate-50 dark:bg-slate-800/50 text-slate-500 text-xs font-bold uppercase">
+                            <tr>
+                                <th class="p-4" data-i18n="colTime">الوقت</th>
+                                <th class="p-4" data-i18n="colSeverity">الخطورة</th>
+                                <th class="p-4" data-i18n="colEvent">الحدث</th>
+                                <th class="p-4" data-i18n="colSource">المصدر</th>
+                                <th class="p-4 text-center" data-i18n="colStatus">الحالة</th>
+                                <th class="p-4 text-center" data-i18n="colAction">إجراء</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 dark:divide-slate-800 dark:text-slate-300 font-mono text-xs">
+                            
+                            <tr class="hover:bg-red-50/20 dark:hover:bg-red-900/10 transition border-l-4 border-l-red-500">
+                                <td class="p-4">10:45:22</td>
+                                <td class="p-4"><span class="bg-red-100 text-red-700 px-2 py-1 rounded text-[10px] font-sans font-bold">Critical</span></td>
+                                <td class="p-4 font-sans font-bold text-slate-800 dark:text-white">Ransomware Behavior Detected</td>
+                                <td class="p-4">Endpoint: HR-PC-05</td>
+                                <td class="p-4 text-center"><span class="text-orange-500 font-bold font-sans" data-i18n="stInvestigating">تحقيق</span></td>
+                                <td class="p-4 text-center"><button class="text-slate-400 hover:text-brandRed"><i class="fa-solid fa-eye"></i></button></td>
+                            </tr>
+
+                            <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition border-l-4 border-l-orange-500">
+                                <td class="p-4">09:12:05</td>
+                                <td class="p-4"><span class="bg-orange-100 text-orange-700 px-2 py-1 rounded text-[10px] font-sans font-bold">High</span></td>
+                                <td class="p-4 font-sans text-slate-800 dark:text-white">Multiple Failed Logins (Brute Force)</td>
+                                <td class="p-4">IP: 192.168.1.55</td>
+                                <td class="p-4 text-center"><span class="text-green-500 font-bold font-sans" data-i18n="stBlocked">تم الحظر</span></td>
+                                <td class="p-4 text-center"><button class="text-slate-400 hover:text-brandRed"><i class="fa-solid fa-eye"></i></button></td>
+                            </tr>
+
+                            <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition border-l-4 border-l-yellow-500">
+                                <td class="p-4">08:30:00</td>
+                                <td class="p-4"><span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded text-[10px] font-sans font-bold">Medium</span></td>
+                                <td class="p-4 font-sans text-slate-800 dark:text-white">Suspicious Port Scan</td>
+                                <td class="p-4">Firewall-External</td>
+                                <td class="p-4 text-center"><span class="text-green-500 font-bold font-sans" data-i18n="stResolved">معالج</span></td>
+                                <td class="p-4 text-center"><button class="text-slate-400 hover:text-brandRed"><i class="fa-solid fa-eye"></i></button></td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script src="layout-cto.js"></script>
+    <script src="bot.js"></script>
+
+    <script>
+        const pageContent = {
+            ar: {
+                pageTitle: "مركز الأمن السيبراني | AndroGov",
+                headerTitle: "مركز العمليات الأمنية (SOC)",
+                headerDesc: "المراقبة الحية للتهديدات، الحوادث الأمنية، وحالة الامتثال للضوابط (NCA).",
+                statusLive: "المراقبة نشطة",
+                btnReport: "تقرير الحوادث",
+                btnIncident: "إبلاغ عن حادث",
+                statThreats: "تهديدات محظورة",
+                statIncidents: "حوادث نشطة",
+                statInvestigating: "تحت التحقيق",
+                statCompliance: "الامتثال (NCA)",
+                statCompliant: "متوافق",
+                statResponse: "زمن الاستجابة",
+                chartAttacks: "تحليل مصادر الهجمات (Geo-IP)",
+                chartVectors: "أنواع التهديدات",
+                tableTitle: "سجل التنبيهات الأمنية",
+                colTime: "الوقت",
+                colSeverity: "الخطورة",
+                colEvent: "الحدث",
+                colSource: "المصدر",
+                colStatus: "الحالة",
+                colAction: "إجراء",
+                stInvestigating: "جاري التحقيق",
+                stBlocked: "تم الحظر",
+                stResolved: "تمت المعالجة"
+            },
+            en: {
+                pageTitle: "SOC Dashboard | AndroGov",
+                headerTitle: "Security Operations Center (SOC)",
+                headerDesc: "Real-time threat monitoring, incident response, and NCA compliance status.",
+                statusLive: "Threat Monitoring Active",
+                btnReport: "Incident Report",
+                btnIncident: "Report Incident",
+                statThreats: "Threats Blocked",
+                statIncidents: "Active Incidents",
+                statInvestigating: "Under Investigation",
+                statCompliance: "NCA Compliance",
+                statCompliant: "Compliant",
+                statResponse: "Response Time",
+                chartAttacks: "Attack Source Analysis (Geo-IP)",
+                chartVectors: "Threat Vectors",
+                tableTitle: "Security Alerts Log",
+                colTime: "Time",
+                colSeverity: "Severity",
+                colEvent: "Event",
+                colSource: "Source",
+                colStatus: "Status",
+                colAction: "Action",
+                stInvestigating: "Investigating",
+                stBlocked: "Blocked",
+                stResolved: "Resolved"
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const lang = localStorage.getItem('lang') || 'ar';
+            const dict = pageContent[lang];
+            
+            document.documentElement.lang = lang;
+            document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if(dict[key]) el.innerText = dict[key];
+            });
+
+            initSocCharts();
+        });
+
+        function initSocCharts() {
+            // Attacks Bar Chart
+            const ctx1 = document.getElementById('attacksChart').getContext('2d');
+            new Chart(ctx1, {
+                type: 'line',
+                data: {
+                    labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00'],
+                    datasets: [{
+                        label: 'Attack Attempts',
+                        data: [12, 5, 8, 45, 120, 30],
+                        borderColor: '#FB4747',
+                        backgroundColor: 'rgba(251, 71, 71, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: '#1e293b' } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+
+            // Vectors Doughnut Chart
+            const ctx2 = document.getElementById('vectorsChart').getContext('2d');
+            new Chart(ctx2, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Malware', 'Phishing', 'DDoS', 'Brute Force'],
+                    datasets: [{
+                        data: [40, 25, 15, 20],
+                        backgroundColor: ['#FB4747', '#F59E0B', '#3B82F6', '#A855F7'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '70%',
+                    plugins: { legend: { position: 'bottom', labels: { color: '#94a3b8' } } }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
