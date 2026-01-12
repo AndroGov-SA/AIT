@@ -61,7 +61,7 @@
                     
                     <div class="flex justify-between items-center mb-4">
                         <h3 class="text-sm font-bold text-slate-500 uppercase" data-i18n="kpiComp">مؤشر الامتثال العام</h3>
-                        <span class="bg-green-100 text-green-700 text-[10px] px-2 py-1 rounded-lg font-bold">Excellent</span>
+                        <span class="bg-green-100 text-green-700 text-[10px] px-2 py-1 rounded-lg font-bold" data-i18n="tagExcellent">ممتاز</span>
                     </div>
                     
                     <div class="flex items-center gap-4">
@@ -83,7 +83,7 @@
                     
                     <div class="flex justify-between items-center mb-6">
                         <h3 class="text-sm font-bold text-slate-500 uppercase" data-i18n="kpiRisk">المخاطر النشطة</h3>
-                        <span class="bg-orange-100 text-orange-700 text-[10px] px-2 py-1 rounded-lg font-bold">Action Req.</span>
+                        <span class="bg-orange-100 text-orange-700 text-[10px] px-2 py-1 rounded-lg font-bold" data-i18n="tagActionReq">إجراء مطلوب</span>
                     </div>
                     
                     <div class="flex items-end gap-3">
@@ -124,7 +124,7 @@
                         <h3 class="font-bold text-lg text-slate-900 dark:text-white flex items-center gap-2">
                             <i class="fa-solid fa-fire-flame-curved text-brandRed"></i> <span data-i18n="titleRisks">أبرز المخاطر التشغيلية</span>
                         </h3>
-                        <button class="text-xs text-brandRed font-bold hover:underline" onclick="alert('عرض سجل المخاطر الكامل')">عرض السجل</button>
+                        <button class="text-xs text-brandRed font-bold hover:underline" onclick="alert('عرض سجل المخاطر الكامل')" data-i18n="viewRiskReg">عرض السجل</button>
                     </div>
                     
                     <div class="space-y-4">
@@ -134,15 +134,15 @@
                                     <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
                                     <h4 class="font-bold text-sm text-slate-800 dark:text-white" data-i18n="risk1Title">السيولة النقدية (Cash Flow)</h4>
                                 </div>
-                                <span class="bg-red-100 text-red-700 text-[9px] px-2 py-0.5 rounded font-bold uppercase">High Impact</span>
+                                <span class="bg-red-100 text-red-700 text-[9px] px-2 py-0.5 rounded font-bold uppercase" data-i18n="tagHigh">High Impact</span>
                             </div>
                             <p class="text-xs text-slate-500 dark:text-slate-300 leading-relaxed mb-3" data-i18n="risk1Desc">تأخر تحصيل مستحقات مشروع وزارة الصحة (3M SAR) مما قد يؤثر على الالتزامات قصيرة الأجل.</p>
                             <div class="flex justify-between items-center pt-2 border-t border-slate-50 dark:border-slate-600/50">
                                 <div class="flex items-center gap-2">
                                     <img src="https://ui-avatars.com/api/?name=Mohammed+B&background=random" class="w-5 h-5 rounded-full">
-                                    <span class="text-[10px] text-slate-400">Owner: CFO</span>
+                                    <span class="text-[10px] text-slate-400" data-i18n="ownerCFO">Owner: CFO</span>
                                 </div>
-                                <span class="text-[10px] text-slate-400">Due: 30 Days</span>
+                                <span class="text-[10px] text-slate-400" data-i18n="due30">Due: 30 Days</span>
                             </div>
                         </div>
 
@@ -152,15 +152,15 @@
                                     <span class="w-2 h-2 rounded-full bg-orange-500"></span>
                                     <h4 class="font-bold text-sm text-slate-800 dark:text-white" data-i18n="risk2Title">أمن المعلومات (Cybersecurity)</h4>
                                 </div>
-                                <span class="bg-orange-100 text-orange-700 text-[9px] px-2 py-0.5 rounded font-bold uppercase">Medium</span>
+                                <span class="bg-orange-100 text-orange-700 text-[9px] px-2 py-0.5 rounded font-bold uppercase" data-i18n="tagMedium">Medium</span>
                             </div>
                             <p class="text-xs text-slate-500 dark:text-slate-300 leading-relaxed mb-3" data-i18n="risk2Desc">الحاجة لتحديث سياسات الوصول عن بعد (VPN) لتتوافق مع معايير NCA الجديدة.</p>
                             <div class="flex justify-between items-center pt-2 border-t border-slate-50 dark:border-slate-600/50">
                                 <div class="flex items-center gap-2">
                                     <img src="https://ui-avatars.com/api/?name=GRC+O&background=random" class="w-5 h-5 rounded-full">
-                                    <span class="text-[10px] text-slate-400">Owner: GRC Officer</span>
+                                    <span class="text-[10px] text-slate-400" data-i18n="ownerGRC">Owner: GRC Officer</span>
                                 </div>
-                                <span class="text-[10px] text-slate-400">Due: 15 Days</span>
+                                <span class="text-[10px] text-slate-400" data-i18n="due15">Due: 15 Days</span>
                             </div>
                         </div>
                     </div>
@@ -179,10 +179,10 @@
                                 <div class="w-10 h-10 rounded-full bg-green-100 text-green-600 flex items-center justify-center shadow-sm"><i class="fa-solid fa-shield-halved"></i></div>
                                 <div>
                                     <p class="text-sm font-bold text-slate-800 dark:text-white" data-i18n="comp1">الأمن السيبراني (NCA)</p>
-                                    <p class="text-[10px] text-slate-400">التزام بالضوابط الأساسية ECC</p>
+                                    <p class="text-[10px] text-slate-400" data-i18n="comp1Sub">التزام بالضوابط الأساسية ECC</p>
                                 </div>
                             </div>
-                            <span class="text-green-600 text-xs font-bold bg-white dark:bg-slate-800 px-3 py-1 rounded-lg shadow-sm border border-green-100 dark:border-green-900"><i class="fa-solid fa-check"></i> Compliant</span>
+                            <span class="text-green-600 text-xs font-bold bg-white dark:bg-slate-800 px-3 py-1 rounded-lg shadow-sm border border-green-100 dark:border-green-900 flex items-center gap-1"><i class="fa-solid fa-check"></i> <span data-i18n="statusCompliant">ملتزم</span></span>
                         </div>
 
                         <div class="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-700/30 hover:bg-slate-100 dark:hover:bg-slate-700 transition">
@@ -190,10 +190,10 @@
                                 <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center shadow-sm"><i class="fa-solid fa-file-invoice-dollar"></i></div>
                                 <div>
                                     <p class="text-sm font-bold text-slate-800 dark:text-white" data-i18n="comp2">الزكاة والضريبة (ZATCA)</p>
-                                    <p class="text-[10px] text-slate-400">إقرارات الربع الأول 2026</p>
+                                    <p class="text-[10px] text-slate-400" data-i18n="comp2Sub">إقرارات الربع الأول 2026</p>
                                 </div>
                             </div>
-                            <span class="text-blue-600 text-xs font-bold bg-white dark:bg-slate-800 px-3 py-1 rounded-lg shadow-sm border border-blue-100 dark:border-blue-900"><i class="fa-solid fa-paper-plane"></i> Submitted</span>
+                            <span class="text-blue-600 text-xs font-bold bg-white dark:bg-slate-800 px-3 py-1 rounded-lg shadow-sm border border-blue-100 dark:border-blue-900 flex items-center gap-1"><i class="fa-solid fa-paper-plane"></i> <span data-i18n="statusSubmitted">تم الرفع</span></span>
                         </div>
 
                         <div class="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-700/30 hover:bg-slate-100 dark:hover:bg-slate-700 transition">
@@ -201,7 +201,7 @@
                                 <div class="w-10 h-10 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center shadow-sm"><i class="fa-solid fa-database"></i></div>
                                 <div>
                                     <p class="text-sm font-bold text-slate-800 dark:text-white" data-i18n="comp3">حماية البيانات (NDMO)</p>
-                                    <p class="text-[10px] text-slate-400">تصنيف البيانات السحابية</p>
+                                    <p class="text-[10px] text-slate-400" data-i18n="comp3Sub">تصنيف البيانات السحابية</p>
                                 </div>
                             </div>
                             <div class="flex items-center gap-2">
@@ -231,46 +231,74 @@
                 btnAudit: "تقرير التدقيق الداخلي",
                 btnBoardFiles: "ملفات المجلس",
                 kpiComp: "مؤشر الامتثال العام",
+                tagExcellent: "ممتاز",
                 kpiCompSub: "التزام مرتفع بالأنظمة",
                 kpiRisk: "المخاطر النشطة",
+                tagActionReq: "إجراء مطلوب",
                 kpiRiskHigh: "1 حرج (Critical)",
                 kpiRiskSub: "تمت معالجة 12 هذا الربع",
                 kpiMeeting: "اجتماع المجلس القادم",
                 kpiMeetingSub: "تبقى 24 يوماً",
                 btnAgenda: "الأجندة",
                 titleRisks: "أبرز المخاطر التشغيلية",
+                viewRiskReg: "عرض السجل",
                 risk1Title: "السيولة النقدية (Cash Flow)",
+                tagHigh: "عالي التأثير",
                 risk1Desc: "تأخر تحصيل مستحقات مشروع وزارة الصحة (3M SAR) مما قد يؤثر على الالتزامات قصيرة الأجل.",
+                ownerCFO: "المالك: المدير المالي",
+                due30: "الاستحقاق: 30 يوم",
                 risk2Title: "أمن المعلومات (Cybersecurity)",
+                tagMedium: "متوسط",
                 risk2Desc: "الحاجة لتحديث سياسات الوصول عن بعد (VPN) لتتوافق مع معايير NCA الجديدة.",
+                ownerGRC: "المالك: مسؤول الالتزام",
+                due15: "الاستحقاق: 15 يوم",
                 titleCompliance: "حالة الامتثال التنظيمي",
                 comp1: "الأمن السيبراني (NCA)",
+                comp1Sub: "التزام بالضوابط الأساسية ECC",
+                statusCompliant: "ملتزم",
                 comp2: "الزكاة والضريبة (ZATCA)",
-                comp3: "حماية البيانات (NDMO)"
+                comp2Sub: "إقرارات الربع الأول 2026",
+                statusSubmitted: "تم الرفع",
+                comp3: "حماية البيانات (NDMO)",
+                comp3Sub: "تصنيف البيانات السحابية"
             },
             en: {
                 pageTitle: "Governance | AndroGov",
                 headerTitle: "Governance, Risk & Compliance (GRC)",
-                headerDesc: "Central dashboard for Board decisions, Enterprise Risk Management, and Regulatory Compliance.",
+                headerDesc: "Central dashboard for Board decisions, Enterprise Risk Management (ERM), and Regulatory Compliance.",
                 btnAudit: "Internal Audit Report",
                 btnBoardFiles: "Board Files",
                 kpiComp: "Overall Compliance Score",
-                kpiCompSub: "High Compliance",
+                tagExcellent: "Excellent",
+                kpiCompSub: "High Regulatory Adherence",
                 kpiRisk: "Active Risks",
+                tagActionReq: "Action Required",
                 kpiRiskHigh: "1 Critical",
                 kpiRiskSub: "12 Mitigated this Quarter",
                 kpiMeeting: "Next Board Meeting",
                 kpiMeetingSub: "24 Days left",
                 btnAgenda: "Agenda",
                 titleRisks: "Top Operational Risks",
+                viewRiskReg: "View Register",
                 risk1Title: "Cash Flow Liquidity",
+                tagHigh: "High Impact",
                 risk1Desc: "Delayed receivables from MOH project (3M SAR) impacting short-term obligations.",
+                ownerCFO: "Owner: CFO",
+                due30: "Due: 30 Days",
                 risk2Title: "Information Security",
+                tagMedium: "Medium",
                 risk2Desc: "Need to update remote access policies (VPN) to align with new NCA standards.",
-                titleCompliance: "Regulatory Compliance",
+                ownerGRC: "Owner: GRC Officer",
+                due15: "Due: 15 Days",
+                titleCompliance: "Regulatory Compliance Status",
                 comp1: "Cybersecurity (NCA)",
+                comp1Sub: "ECC Essential Controls Adherence",
+                statusCompliant: "Compliant",
                 comp2: "Zakat & Tax (ZATCA)",
-                comp3: "Data Protection (NDMO)"
+                comp2Sub: "Q1 2026 Declarations",
+                statusSubmitted: "Submitted",
+                comp3: "Data Protection (NDMO)",
+                comp3Sub: "Cloud Data Classification"
             }
         };
 
