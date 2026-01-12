@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#FB4747">
+    <title data-i18n="pageTitle">الحوكمة والمخاطر | AndroGov</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { brandRed: '#FB4747', brandDark: '#0F172A', moneyGreen: '#10B981', alertOrange: '#F59E0B' },
+                    fontFamily: { sans: ['Tajawal', 'Inter', 'sans-serif'], en: ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <style>.num-font { font-family: 'Inter', sans-serif; font-feature-settings: "tnum"; }</style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300 opacity-0">
+
+    <div id="sidebar-container"></div>
+    
+    <div class="main-content-wrapper transition-all duration-300 flex flex-col min-h-screen">
+        <div id="header-container"></div>
+
+        <main class="p-8 space-y-8">
+            
+            <div class="flex flex-col md:flex-row justify-between items-end gap-6 bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-brandRed to-orange-500"></div>
+                
+                <div class="relative z-10">
+                    <h1 class="text-2xl font-bold text-brandRed dark:text-white flex items-center gap-2 mb-2">
+                        <i class="fa-solid fa-scale-balanced"></i> <span data-i18n="headerTitle">الحوكمة، المخاطر، والالتزام (GRC)</span>
+                    </h1>
+                    <p class="text-sm text-slate-500 mt-1 max-w-2xl" data-i18n="headerDesc">لوحة التحكم المركزية لمتابعة قرارات مجلس الإدارة، إدارة المخاطر المؤسسية، والامتثال للأنظمة.</p>
+                </div>
+                
+                <div class="flex gap-3 relative z-10">
+                    <button class="px-5 py-2.5 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl text-xs font-bold shadow-sm hover:bg-slate-50 transition flex items-center gap-2 text-slate-600 dark:text-white">
+                        <i class="fa-solid fa-file-shield text-blue-500"></i> <span data-i18n="btnAudit">تقرير التدقيق الداخلي</span>
+                    </button>
+                    <button class="px-5 py-2.5 bg-brandRed text-white rounded-xl text-xs font-bold shadow-lg shadow-red-500/30 hover:bg-red-700 transition flex items-center gap-2">
+                        <i class="fa-solid fa-folder-open"></i> <span data-i18n="btnBoardFiles">ملفات المجلس</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 relative overflow-hidden group hover:shadow-md transition">
+                    <div class="absolute right-0 top-0 p-5 opacity-5 group-hover:opacity-10 transition">
+                        <i class="fa-solid fa-check-to-slot text-6xl text-brandRed dark:text-white"></i>
+                    </div>
+                    
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-sm font-bold text-slate-500 uppercase" data-i18n="kpiComp">مؤشر الامتثال العام</h3>
+                        <span class="bg-green-100 text-green-700 text-[10px] px-2 py-1 rounded-lg font-bold">Excellent</span>
+                    </div>
+                    
+                    <div class="flex items-center gap-4">
+                        <div class="relative w-20 h-20">
+                            <canvas id="complianceChart"></canvas>
+                            <div class="absolute inset-0 flex items-center justify-center font-bold text-sm text-green-600 num-font">94%</div>
+                        </div>
+                        <div>
+                            <p class="text-2xl font-bold text-slate-900 dark:text-white num-font">94/100</p>
+                            <p class="text-xs text-slate-400 mt-1" data-i18n="kpiCompSub">التزام مرتفع بالأنظمة</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 relative overflow-hidden group hover:shadow-md transition">
+                    <div class="absolute right-0 top-0 p-5 opacity-5 group-hover:opacity-10 transition">
+                        <i class="fa-solid fa-triangle-exclamation text-6xl text-brandRed dark:text-white"></i>
+                    </div>
+                    
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-sm font-bold text-slate-500 uppercase" data-i18n="kpiRisk">المخاطر النشطة</h3>
+                        <span class="bg-orange-100 text-orange-700 text-[10px] px-2 py-1 rounded-lg font-bold">Action Req.</span>
+                    </div>
+                    
+                    <div class="flex items-end gap-3">
+                        <h3 class="text-4xl font-bold num-font text-slate-900 dark:text-white">5</h3>
+                        <span class="text-sm text-red-500 font-bold mb-1 bg-red-50 dark:bg-red-900/20 px-2 rounded border border-red-100 dark:border-red-900" data-i18n="kpiRiskHigh">1 حرج (Critical)</span>
+                    </div>
+                    <div class="w-full bg-slate-100 dark:bg-slate-700 h-1.5 rounded-full mt-4 overflow-hidden">
+                        <div class="bg-orange-500 h-full" style="width: 20%"></div>
+                    </div>
+                    <p class="text-[10px] text-slate-400 mt-2 text-left" data-i18n="kpiRiskSub">تمت معالجة 12 هذا الربع</p>
+                </div>
+
+                <div class="bg-slate-900 text-white p-6 rounded-3xl shadow-xl border border-slate-800 relative overflow-hidden group hover:-translate-y-1 transition duration-300">
+                    <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-brandRed rounded-full blur-3xl opacity-20 group-hover:opacity-30 transition"></div>
+                    
+                    <div class="flex justify-between items-start mb-4 relative z-10">
+                        <div>
+                            <p class="text-xs text-slate-400 font-bold uppercase tracking-widest" data-i18n="kpiMeeting">اجتماع المجلس القادم</p>
+                            <h3 class="text-3xl font-bold num-font mt-2 text-white">15 Apr</h3>
+                            <p class="text-sm text-slate-300 num-font">2026</p>
+                        </div>
+                        <div class="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center text-xl border border-white/10 backdrop-blur-md">
+                            <i class="fa-solid fa-calendar-check text-brandRed"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="relative z-10 mt-6 pt-4 border-t border-white/10 flex justify-between items-center">
+                        <span class="text-xs text-slate-300 flex items-center gap-2"><i class="fa-regular fa-clock"></i> <span data-i18n="kpiMeetingSub">تبقى 24 يوماً</span></span>
+                        <button class="text-[10px] bg-brandRed hover:bg-red-600 px-3 py-1.5 rounded-lg text-white font-bold transition shadow-lg" data-i18n="btnAgenda">الأجندة</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                
+                <div class="bg-white dark:bg-slate-800 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 p-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="font-bold text-lg text-slate-900 dark:text-white flex items-center gap-2">
+                            <i class="fa-solid fa-fire-flame-curved text-brandRed"></i> <span data-i18n="titleRisks">أبرز المخاطر التشغيلية</span>
+                        </h3>
+                        <button class="text-xs text-brandRed font-bold hover:underline" onclick="alert('عرض سجل المخاطر الكامل')">عرض السجل</button>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div class="group p-4 bg-white dark:bg-slate-700/30 border border-slate-100 dark:border-slate-600 rounded-2xl hover:border-red-200 dark:hover:border-red-900 transition-all shadow-sm">
+                            <div class="flex justify-between items-start mb-2">
+                                <div class="flex items-center gap-3">
+                                    <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+                                    <h4 class="font-bold text-sm text-slate-800 dark:text-white" data-i18n="risk1Title">السيولة النقدية (Cash Flow)</h4>
+                                </div>
+                                <span class="bg-red-100 text-red-700 text-[9px] px-2 py-0.5 rounded font-bold uppercase">High Impact</span>
+                            </div>
+                            <p class="text-xs text-slate-500 dark:text-slate-300 leading-relaxed mb-3" data-i18n="risk1Desc">تأخر تحصيل مستحقات مشروع وزارة الصحة (3M SAR) مما قد يؤثر على الالتزامات قصيرة الأجل.</p>
+                            <div class="flex justify-between items-center pt-2 border-t border-slate-50 dark:border-slate-600/50">
+                                <div class="flex items-center gap-2">
+                                    <img src="https://ui-avatars.com/api/?name=Mohammed+B&background=random" class="w-5 h-5 rounded-full">
+                                    <span class="text-[10px] text-slate-400">Owner: CFO</span>
+                                </div>
+                                <span class="text-[10px] text-slate-400">Due: 30 Days</span>
+                            </div>
+                        </div>
+
+                        <div class="group p-4 bg-white dark:bg-slate-700/30 border border-slate-100 dark:border-slate-600 rounded-2xl hover:border-orange-200 dark:hover:border-orange-900 transition-all shadow-sm">
+                            <div class="flex justify-between items-start mb-2">
+                                <div class="flex items-center gap-3">
+                                    <span class="w-2 h-2 rounded-full bg-orange-500"></span>
+                                    <h4 class="font-bold text-sm text-slate-800 dark:text-white" data-i18n="risk2Title">أمن المعلومات (Cybersecurity)</h4>
+                                </div>
+                                <span class="bg-orange-100 text-orange-700 text-[9px] px-2 py-0.5 rounded font-bold uppercase">Medium</span>
+                            </div>
+                            <p class="text-xs text-slate-500 dark:text-slate-300 leading-relaxed mb-3" data-i18n="risk2Desc">الحاجة لتحديث سياسات الوصول عن بعد (VPN) لتتوافق مع معايير NCA الجديدة.</p>
+                            <div class="flex justify-between items-center pt-2 border-t border-slate-50 dark:border-slate-600/50">
+                                <div class="flex items-center gap-2">
+                                    <img src="https://ui-avatars.com/api/?name=GRC+O&background=random" class="w-5 h-5 rounded-full">
+                                    <span class="text-[10px] text-slate-400">Owner: GRC Officer</span>
+                                </div>
+                                <span class="text-[10px] text-slate-400">Due: 15 Days</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 p-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="font-bold text-lg text-slate-900 dark:text-white flex items-center gap-2">
+                            <i class="fa-solid fa-clipboard-check text-blue-500"></i> <span data-i18n="titleCompliance">حالة الامتثال التنظيمي</span>
+                        </h3>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-700/30 hover:bg-slate-100 dark:hover:bg-slate-700 transition">
+                            <div class="flex items-center gap-4">
+                                <div class="w-10 h-10 rounded-full bg-green-100 text-green-600 flex items-center justify-center shadow-sm"><i class="fa-solid fa-shield-halved"></i></div>
+                                <div>
+                                    <p class="text-sm font-bold text-slate-800 dark:text-white" data-i18n="comp1">الأمن السيبراني (NCA)</p>
+                                    <p class="text-[10px] text-slate-400">التزام بالضوابط الأساسية ECC</p>
+                                </div>
+                            </div>
+                            <span class="text-green-600 text-xs font-bold bg-white dark:bg-slate-800 px-3 py-1 rounded-lg shadow-sm border border-green-100 dark:border-green-900"><i class="fa-solid fa-check"></i> Compliant</span>
+                        </div>
+
+                        <div class="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-700/30 hover:bg-slate-100 dark:hover:bg-slate-700 transition">
+                            <div class="flex items-center gap-4">
+                                <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center shadow-sm"><i class="fa-solid fa-file-invoice-dollar"></i></div>
+                                <div>
+                                    <p class="text-sm font-bold text-slate-800 dark:text-white" data-i18n="comp2">الزكاة والضريبة (ZATCA)</p>
+                                    <p class="text-[10px] text-slate-400">إقرارات الربع الأول 2026</p>
+                                </div>
+                            </div>
+                            <span class="text-blue-600 text-xs font-bold bg-white dark:bg-slate-800 px-3 py-1 rounded-lg shadow-sm border border-blue-100 dark:border-blue-900"><i class="fa-solid fa-paper-plane"></i> Submitted</span>
+                        </div>
+
+                        <div class="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-700/30 hover:bg-slate-100 dark:hover:bg-slate-700 transition">
+                            <div class="flex items-center gap-4">
+                                <div class="w-10 h-10 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center shadow-sm"><i class="fa-solid fa-database"></i></div>
+                                <div>
+                                    <p class="text-sm font-bold text-slate-800 dark:text-white" data-i18n="comp3">حماية البيانات (NDMO)</p>
+                                    <p class="text-[10px] text-slate-400">تصنيف البيانات السحابية</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-orange-500 text-xs font-bold">80%</span>
+                                <div class="w-12 h-1.5 bg-slate-200 dark:bg-slate-600 rounded-full overflow-hidden">
+                                    <div class="bg-orange-500 h-full w-[80%]"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </main>
+    </div>
+
+    <script src="layout-ceo.js"></script>
+    <script src="bot.js"></script>
+
+    <script>
+        const pageContent = {
+            ar: {
+                pageTitle: "الحوكمة | AndroGov",
+                headerTitle: "الحوكمة، المخاطر، والالتزام (GRC)",
+                headerDesc: "لوحة التحكم المركزية لمتابعة قرارات مجلس الإدارة، إدارة المخاطر المؤسسية، والامتثال للأنظمة.",
+                btnAudit: "تقرير التدقيق الداخلي",
+                btnBoardFiles: "ملفات المجلس",
+                kpiComp: "مؤشر الامتثال العام",
+                kpiCompSub: "التزام مرتفع بالأنظمة",
+                kpiRisk: "المخاطر النشطة",
+                kpiRiskHigh: "1 حرج (Critical)",
+                kpiRiskSub: "تمت معالجة 12 هذا الربع",
+                kpiMeeting: "اجتماع المجلس القادم",
+                kpiMeetingSub: "تبقى 24 يوماً",
+                btnAgenda: "الأجندة",
+                titleRisks: "أبرز المخاطر التشغيلية",
+                risk1Title: "السيولة النقدية (Cash Flow)",
+                risk1Desc: "تأخر تحصيل مستحقات مشروع وزارة الصحة (3M SAR) مما قد يؤثر على الالتزامات قصيرة الأجل.",
+                risk2Title: "أمن المعلومات (Cybersecurity)",
+                risk2Desc: "الحاجة لتحديث سياسات الوصول عن بعد (VPN) لتتوافق مع معايير NCA الجديدة.",
+                titleCompliance: "حالة الامتثال التنظيمي",
+                comp1: "الأمن السيبراني (NCA)",
+                comp2: "الزكاة والضريبة (ZATCA)",
+                comp3: "حماية البيانات (NDMO)"
+            },
+            en: {
+                pageTitle: "Governance | AndroGov",
+                headerTitle: "Governance, Risk & Compliance (GRC)",
+                headerDesc: "Central dashboard for Board decisions, Enterprise Risk Management, and Regulatory Compliance.",
+                btnAudit: "Internal Audit Report",
+                btnBoardFiles: "Board Files",
+                kpiComp: "Overall Compliance Score",
+                kpiCompSub: "High Compliance",
+                kpiRisk: "Active Risks",
+                kpiRiskHigh: "1 Critical",
+                kpiRiskSub: "12 Mitigated this Quarter",
+                kpiMeeting: "Next Board Meeting",
+                kpiMeetingSub: "24 Days left",
+                btnAgenda: "Agenda",
+                titleRisks: "Top Operational Risks",
+                risk1Title: "Cash Flow Liquidity",
+                risk1Desc: "Delayed receivables from MOH project (3M SAR) impacting short-term obligations.",
+                risk2Title: "Information Security",
+                risk2Desc: "Need to update remote access policies (VPN) to align with new NCA standards.",
+                titleCompliance: "Regulatory Compliance",
+                comp1: "Cybersecurity (NCA)",
+                comp2: "Zakat & Tax (ZATCA)",
+                comp3: "Data Protection (NDMO)"
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const lang = localStorage.getItem('lang') || 'ar';
+            const dict = pageContent[lang];
+            
+            document.documentElement.lang = lang;
+            document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if(dict[key]) el.innerText = dict[key];
+            });
+
+            initComplianceChart();
+        });
+
+        function initComplianceChart() {
+            const ctx = document.getElementById('complianceChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Compliant', 'Non-Compliant'],
+                    datasets: [{
+                        data: [94, 6],
+                        backgroundColor: ['#10B981', '#E2E8F0'],
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    cutout: '80%',
+                    plugins: { legend: { display: false }, tooltip: { enabled: false } }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
