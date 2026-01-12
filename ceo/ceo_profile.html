@@ -40,7 +40,7 @@
                     <div class="absolute inset-0 opacity-30 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
                     <div class="absolute bottom-4 left-8 flex gap-4">
                         <div class="px-3 py-1 bg-white/10 backdrop-blur-sm rounded-lg text-white text-xs border border-white/20">
-                            <i class="fa-solid fa-building-columns"></i> المقر الرئيسي - الرياض
+                            <i class="fa-solid fa-building-columns"></i> <span data-i18n="lblLocation">المقر الرئيسي - الرياض</span>
                         </div>
                     </div>
                 </div>
@@ -79,7 +79,7 @@
                     <div class="flex flex-col gap-3 items-end w-full lg:w-auto">
                         <div class="flex items-center gap-2 bg-green-50 dark:bg-green-900/20 px-3 py-1.5 rounded-lg border border-green-200 dark:border-green-900 cursor-pointer hover:bg-green-100 transition" onclick="toggleStatus()">
                             <span class="w-2.5 h-2.5 bg-green-500 rounded-full animate-pulse"></span>
-                            <span class="text-xs font-bold text-green-700 dark:text-green-400" id="userStatus">متاح للعمل</span>
+                            <span class="text-xs font-bold text-green-700 dark:text-green-400" id="userStatus" data-i18n="statusAvailable">متاح للعمل</span>
                             <i class="fa-solid fa-chevron-down text-[10px] text-green-600"></i>
                         </div>
                         <div class="flex gap-3 w-full">
@@ -117,7 +117,7 @@
                         <ul class="space-y-4 text-sm">
                             <li class="flex justify-between items-center">
                                 <span class="text-slate-500" data-i18n="lblType">نوع العقد</span>
-                                <span class="font-bold dark:text-white bg-slate-100 dark:bg-slate-700 px-2 py-0.5 rounded text-xs">Executive Contract</span>
+                                <span class="font-bold dark:text-white bg-slate-100 dark:bg-slate-700 px-2 py-0.5 rounded text-xs" data-i18n="valContractType">Executive Contract</span>
                             </li>
                             <li class="flex justify-between items-center">
                                 <span class="text-slate-500" data-i18n="lblStart">تاريخ المباشرة</span>
@@ -125,11 +125,11 @@
                             </li>
                             <li class="flex justify-between items-center">
                                 <span class="text-slate-500" data-i18n="lblDuration">مدة العقد</span>
-                                <span class="font-bold text-green-600 text-xs flex items-center gap-1"><i class="fa-solid fa-rotate"></i> يجدد تلقائياً</span>
+                                <span class="font-bold text-green-600 text-xs flex items-center gap-1"><i class="fa-solid fa-rotate"></i> <span data-i18n="valRenew">يجدد تلقائياً</span></span>
                             </li>
                             <li class="flex justify-between items-center">
                                 <span class="text-slate-500" data-i18n="lblDirect">المرجع المباشر</span>
-                                <span class="font-bold dark:text-white">رئيس مجلس الإدارة</span>
+                                <span class="font-bold dark:text-white" data-i18n="valManager">رئيس مجلس الإدارة</span>
                             </li>
                         </ul>
                     </div>
@@ -143,7 +143,7 @@
                                 <h3 class="font-bold text-lg dark:text-white flex items-center gap-2">
                                     <i class="fa-solid fa-users-gear text-orange-500"></i> <span data-i18n="titleDelegation">سجل التفويض (Acting For)</span>
                                 </h3>
-                                <p class="text-xs text-slate-400 mt-1">إدارة الصلاحيات الممنوحة للنواب والمدراء</p>
+                                <p class="text-xs text-slate-400 mt-1" data-i18n="descDelegation">إدارة الصلاحيات الممنوحة للنواب والمدراء</p>
                             </div>
                             <button class="text-xs bg-brandRed text-white px-4 py-2 rounded-lg hover:bg-red-700 transition font-bold shadow-md shadow-red-500/20" onclick="alert('فتح نموذج تفويض جديد')">
                                 <i class="fa-solid fa-plus"></i> <span data-i18n="btnAddDelegate">إضافة تفويض</span>
@@ -166,28 +166,28 @@
                                             <div class="flex items-center gap-3">
                                                 <img src="https://ui-avatars.com/api/?name=Mansour+Y&background=random" class="w-8 h-8 rounded-full">
                                                 <div>
-                                                    <p class="font-bold text-xs">منصور اليامي</p>
+                                                    <p class="font-bold text-xs" data-i18n="nameCAO">منصور اليامي</p>
                                                     <p class="text-[9px] text-slate-400">CAO</p>
                                                 </div>
                                             </div>
                                         </td>
-                                        <td class="p-4 text-xs">التوقيع على الإجازات والرواتب</td>
-                                        <td class="p-4 text-xs font-mono bg-slate-50 dark:bg-slate-800 rounded px-2">دائم (Standing)</td>
-                                        <td class="p-4 text-center"><span class="bg-green-100 text-green-700 px-2 py-1 rounded text-[10px] font-bold border border-green-200">نشط</span></td>
+                                        <td class="p-4 text-xs" data-i18n="scopeCAO">التوقيع على الإجازات والرواتب</td>
+                                        <td class="p-4 text-xs font-mono bg-slate-50 dark:bg-slate-800 rounded px-2" data-i18n="periodStanding">دائم (Standing)</td>
+                                        <td class="p-4 text-center"><span class="bg-green-100 text-green-700 px-2 py-1 rounded text-[10px] font-bold border border-green-200" data-i18n="statusActive">نشط</span></td>
                                     </tr>
                                     <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
                                         <td class="p-4">
                                             <div class="flex items-center gap-3">
                                                 <img src="https://ui-avatars.com/api/?name=Mohammed+B&background=random" class="w-8 h-8 rounded-full">
                                                 <div>
-                                                    <p class="font-bold text-xs">محمد البخيتي</p>
+                                                    <p class="font-bold text-xs" data-i18n="nameCFO">محمد البخيتي</p>
                                                     <p class="text-[9px] text-slate-400">CFO</p>
                                                 </div>
                                             </div>
                                         </td>
-                                        <td class="p-4 text-xs">الموافقة على أوامر الشراء < 50k</td>
-                                        <td class="p-4 text-xs font-mono bg-slate-50 dark:bg-slate-800 rounded px-2">دائم</td>
-                                        <td class="p-4 text-center"><span class="bg-green-100 text-green-700 px-2 py-1 rounded text-[10px] font-bold border border-green-200">نشط</span></td>
+                                        <td class="p-4 text-xs" data-i18n="scopeCFO">الموافقة على أوامر الشراء < 50k</td>
+                                        <td class="p-4 text-xs font-mono bg-slate-50 dark:bg-slate-800 rounded px-2" data-i18n="periodStanding">دائم</td>
+                                        <td class="p-4 text-center"><span class="bg-green-100 text-green-700 px-2 py-1 rounded text-[10px] font-bold border border-green-200" data-i18n="statusActive">نشط</span></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -205,9 +205,9 @@
                                     <div class="h-full w-px bg-slate-100 dark:bg-slate-700 my-1"></div>
                                 </div>
                                 <div class="pb-4">
-                                    <p class="text-sm font-bold dark:text-white">اعتماد الميزانية السنوية 2026</p>
-                                    <p class="text-xs text-slate-500 mt-1">تم التوقيع الرقمي وإرسال النسخة للمالية.</p>
-                                    <span class="text-[10px] text-slate-400 mt-1 block">منذ ساعتين</span>
+                                    <p class="text-sm font-bold dark:text-white" data-i18n="act1Title">اعتماد الميزانية السنوية 2026</p>
+                                    <p class="text-xs text-slate-500 mt-1" data-i18n="act1Desc">تم التوقيع الرقمي وإرسال النسخة للمالية.</p>
+                                    <span class="text-[10px] text-slate-400 mt-1 block" data-i18n="time2h">منذ ساعتين</span>
                                 </div>
                             </div>
                             <div class="flex gap-3">
@@ -215,8 +215,8 @@
                                     <div class="w-2 h-2 bg-slate-300 rounded-full"></div>
                                 </div>
                                 <div>
-                                    <p class="text-sm font-bold dark:text-white">تسجيل الدخول للنظام</p>
-                                    <span class="text-[10px] text-slate-400 mt-1 block">اليوم 08:30 ص</span>
+                                    <p class="text-sm font-bold dark:text-white" data-i18n="act2Title">تسجيل الدخول للنظام</p>
+                                    <span class="text-[10px] text-slate-400 mt-1 block" data-i18n="timeToday">اليوم 08:30 ص</span>
                                 </div>
                             </div>
                         </div>
@@ -235,45 +235,81 @@
         const pageContent = {
             ar: {
                 pageTitle: "ملفي الشخصي | AndroGov",
+                lblLocation: "المقر الرئيسي - الرياض",
                 name: "هشام السحيباني",
-                role: "الرئيس التنفيذي (CEO)",
+                role: "نائب رئيس مجلس الإدارة والرئيس التنفيذي",
+                statusAvailable: "متاح للعمل",
+                statusBusy: "مشغول (Busy)",
                 btnPass: "تغيير كلمة المرور",
                 btnEdit: "تعديل البيانات",
                 statDecisions: "قرار معتمد",
                 statMeetings: "اجتماع مجلس",
                 secContract: "بيانات العقد الوظيفي",
                 lblType: "نوع العقد",
+                valContractType: "عقد تنفيذي (Executive)",
                 lblStart: "تاريخ المباشرة",
                 lblDuration: "مدة العقد",
+                valRenew: "يجدد تلقائياً",
                 lblDirect: "المرجع المباشر",
+                valManager: "رئيس مجلس الإدارة",
                 titleDelegation: "سجل التفويض (Acting For)",
+                descDelegation: "إدارة الصلاحيات الممنوحة للنواب والمدراء",
                 btnAddDelegate: "إضافة تفويض",
                 colPerson: "المفوض له",
                 colScope: "نطاق الصلاحية",
                 colPeriod: "الفترة",
                 colStatus: "الحالة",
-                titleActivity: "النشاط الأخير"
+                nameCAO: "منصور اليامي",
+                scopeCAO: "التوقيع على الإجازات والرواتب",
+                periodStanding: "دائم (Standing)",
+                statusActive: "نشط",
+                nameCFO: "محمد البخيتي",
+                scopeCFO: "الموافقة على أوامر الشراء < 50k",
+                titleActivity: "النشاط الأخير",
+                act1Title: "اعتماد الميزانية السنوية 2026",
+                act1Desc: "تم التوقيع الرقمي وإرسال النسخة للمالية.",
+                time2h: "منذ ساعتين",
+                act2Title: "تسجيل الدخول للنظام",
+                timeToday: "اليوم 08:30 ص"
             },
             en: {
                 pageTitle: "My Profile | AndroGov",
+                lblLocation: "HQ - Riyadh",
                 name: "Hisham Al-Suhaibani",
-                role: "Chief Executive Officer (CEO)",
+                role: "Vice Chairman & CEO",
+                statusAvailable: "Available",
+                statusBusy: "Busy",
                 btnPass: "Change Password",
                 btnEdit: "Edit Profile",
                 statDecisions: "Decisions",
                 statMeetings: "Board Meetings",
                 secContract: "Contract Details",
                 lblType: "Contract Type",
+                valContractType: "Executive Contract",
                 lblStart: "Joining Date",
                 lblDuration: "Duration",
+                valRenew: "Auto-renew",
                 lblDirect: "Direct Manager",
+                valManager: "Chairman of the Board",
                 titleDelegation: "Delegation Log",
+                descDelegation: "Manage powers delegated to deputies",
                 btnAddDelegate: "Add Delegate",
                 colPerson: "Delegate To",
                 colScope: "Scope",
                 colPeriod: "Period",
                 colStatus: "Status",
-                titleActivity: "Recent Activity"
+                nameCAO: "Mansour Al-Yami",
+                scopeCAO: "Sign Leaves & Payroll",
+                periodStanding: "Standing",
+                statusActive: "Active",
+                nameCFO: "Mohammed Al-Bukhaiti",
+                scopeCFO: "Approve POs < 50k",
+                titleActivity: "Recent Activity",
+                act1Title: "Approved 2026 Annual Budget",
+                act1Desc: "Digitally signed and sent to Finance.",
+                time2h: "2 hours ago",
+                act2Title: "System Login",
+                timeToday: "Today 08:30 AM"
             }
         };
 
@@ -292,14 +328,17 @@
 
         function toggleStatus() {
             const statusEl = document.getElementById('userStatus');
+            const lang = localStorage.getItem('lang') || 'ar';
+            const dict = pageContent[lang];
             const current = statusEl.innerText;
-            if (current.includes('متاح')) {
-                statusEl.innerText = "مشغول (Busy)";
+            
+            if (current === dict.statusAvailable) {
+                statusEl.innerText = dict.statusBusy;
                 statusEl.className = "text-xs font-bold text-red-700 dark:text-red-400";
                 statusEl.parentElement.className = "flex items-center gap-2 bg-red-50 dark:bg-red-900/20 px-3 py-1.5 rounded-lg border border-red-200 dark:border-red-900 cursor-pointer hover:bg-red-100 transition";
                 statusEl.previousElementSibling.className = "w-2.5 h-2.5 bg-red-500 rounded-full";
             } else {
-                statusEl.innerText = "متاح للعمل";
+                statusEl.innerText = dict.statusAvailable;
                 statusEl.className = "text-xs font-bold text-green-700 dark:text-green-400";
                 statusEl.parentElement.className = "flex items-center gap-2 bg-green-50 dark:bg-green-900/20 px-3 py-1.5 rounded-lg border border-green-200 dark:border-green-900 cursor-pointer hover:bg-green-100 transition";
                 statusEl.previousElementSibling.className = "w-2.5 h-2.5 bg-green-500 rounded-full animate-pulse";
