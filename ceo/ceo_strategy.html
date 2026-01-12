@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#FB4747">
+    <title data-i18n="pageTitle">الاستراتيجية والأهداف | AndroGov</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { brandRed: '#FB4747', brandDark: '#0F172A', moneyGreen: '#10B981', alertOrange: '#F59E0B' },
+                    fontFamily: { sans: ['Tajawal', 'Inter', 'sans-serif'], en: ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <style>.num-font { font-family: 'Inter', sans-serif; font-feature-settings: "tnum"; }</style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300 opacity-0">
+
+    <div id="sidebar-container"></div>
+    
+    <div class="main-content-wrapper transition-all duration-300 flex flex-col min-h-screen">
+        <div id="header-container"></div>
+
+        <main class="p-8 space-y-8">
+            
+            <div class="flex flex-col md:flex-row justify-between items-end gap-4">
+                <div>
+                    <h1 class="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                        <i class="fa-solid fa-chess text-brandRed"></i> <span data-i18n="headerTitle">الاستراتيجية والأهداف (OKRs)</span>
+                    </h1>
+                    <p class="text-sm text-slate-500 mt-1" data-i18n="headerDesc">متابعة تنفيذ الخطة الاستراتيجية 2026 ومؤشرات الأداء الرئيسية</p>
+                </div>
+                <div class="flex gap-2">
+                    <button class="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold shadow-sm hover:bg-slate-50 transition flex items-center gap-2 text-slate-600 dark:text-white">
+                        <i class="fa-solid fa-presentation-screen"></i> <span data-i18n="btnPresentation">عرض للمجلس</span>
+                    </button>
+                    <button class="px-4 py-2 bg-brandRed text-white rounded-lg text-xs font-bold shadow-lg hover:bg-red-700 transition flex items-center gap-2">
+                        <i class="fa-solid fa-bullseye"></i> <span data-i18n="btnAddGoal">هدف جديد</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-gradient-to-r from-slate-900 to-slate-800 rounded-2xl p-6 text-white shadow-lg relative overflow-hidden">
+                <div class="absolute right-0 top-0 h-full w-1/3 bg-white/5 skew-x-12"></div>
+                <div class="relative z-10">
+                    <span class="bg-white/20 px-2 py-1 rounded text-[10px] font-bold uppercase tracking-widest mb-2 inline-block" data-i18n="lblVision">رؤية 2030</span>
+                    <h2 class="text-xl font-bold italic mb-1">"الريادة في الحلول التقنية الحكومية المبتكرة"</h2>
+                    <p class="text-xs text-slate-300">نسبة تحقيق الرؤية (المرحلة الثانية): <span class="text-green-400 font-bold">65%</span></p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <span class="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded">الركيزة الأولى</span>
+                            <h3 class="font-bold text-lg mt-1 dark:text-white" data-i18n="pillar1">النمو المالي</h3>
+                        </div>
+                        <div class="radial-progress text-blue-600 text-xs font-bold" style="--value:70; --size:3rem;">70%</div>
+                    </div>
+                    <ul class="space-y-3 text-sm">
+                        <li class="flex items-center justify-between">
+                            <span class="text-slate-500" data-i18n="kpi1">زيادة الإيرادات 20%</span>
+                            <span class="text-green-600 font-bold text-xs"><i class="fa-solid fa-arrow-up"></i> 15%</span>
+                        </li>
+                        <div class="w-full bg-slate-100 dark:bg-slate-700 h-1.5 rounded-full overflow-hidden">
+                            <div class="bg-blue-500 h-full" style="width: 75%"></div>
+                        </div>
+                    </ul>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <span class="text-[10px] font-bold text-purple-600 bg-purple-50 px-2 py-1 rounded">الركيزة الثانية</span>
+                            <h3 class="font-bold text-lg mt-1 dark:text-white" data-i18n="pillar2">التميز التشغيلي</h3>
+                        </div>
+                        <div class="radial-progress text-purple-600 text-xs font-bold" style="--value:85; --size:3rem;">85%</div>
+                    </div>
+                    <ul class="space-y-3 text-sm">
+                        <li class="flex items-center justify-between">
+                            <span class="text-slate-500" data-i18n="kpi2">أتمتة الخدمات</span>
+                            <span class="text-green-600 font-bold text-xs"><i class="fa-solid fa-check"></i> Done</span>
+                        </li>
+                        <div class="w-full bg-slate-100 dark:bg-slate-700 h-1.5 rounded-full overflow-hidden">
+                            <div class="bg-purple-500 h-full" style="width: 90%"></div>
+                        </div>
+                    </ul>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <span class="text-[10px] font-bold text-orange-600 bg-orange-50 px-2 py-1 rounded">الركيزة الثالثة</span>
+                            <h3 class="font-bold text-lg mt-1 dark:text-white" data-i18n="pillar3">تطوير المواهب</h3>
+                        </div>
+                        <div class="radial-progress text-orange-600 text-xs font-bold" style="--value:45; --size:3rem;">45%</div>
+                    </div>
+                    <ul class="space-y-3 text-sm">
+                        <li class="flex items-center justify-between">
+                            <span class="text-slate-500" data-i18n="kpi3">استقطاب الكفاءات</span>
+                            <span class="text-orange-500 font-bold text-xs">Delayed</span>
+                        </li>
+                        <div class="w-full bg-slate-100 dark:bg-slate-700 h-1.5 rounded-full overflow-hidden">
+                            <div class="bg-orange-500 h-full" style="width: 45%"></div>
+                        </div>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden">
+                <div class="p-5 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center">
+                    <h3 class="font-bold text-slate-900 dark:text-white" data-i18n="secInitiatives">المبادرات الاستراتيجية (Q1-2026)</h3>
+                    <span class="text-xs bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded text-slate-500">تحديث: اليوم 09:00 ص</span>
+                </div>
+                <table class="w-full text-sm text-right rtl:text-right ltr:text-left">
+                    <thead class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 text-xs font-bold uppercase">
+                        <tr>
+                            <th class="p-4" data-i18n="colInit">المبادرة</th>
+                            <th class="p-4" data-i18n="colOwner">المالك</th>
+                            <th class="p-4" data-i18n="colProgress">الإنجاز</th>
+                            <th class="p-4" data-i18n="colDeadline">الموعد النهائي</th>
+                            <th class="p-4 text-center" data-i18n="colStatus">الحالة</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 dark:divide-slate-700 dark:text-slate-300">
+                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
+                            <td class="p-4 font-bold">إطلاق المنصة الطبية V2</td>
+                            <td class="p-4 flex items-center gap-2">
+                                <img src="https://ui-avatars.com/api/?name=Director+Dev&background=random" class="w-6 h-6 rounded-full">
+                                <span class="text-xs">مدير التطوير</span>
+                            </td>
+                            <td class="p-4">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-24 bg-slate-100 dark:bg-slate-700 h-1.5 rounded-full overflow-hidden">
+                                        <div class="bg-green-500 h-full" style="width: 80%"></div>
+                                    </div>
+                                    <span class="text-xs font-bold">80%</span>
+                                </div>
+                            </td>
+                            <td class="p-4 num-font text-xs">2026-04-01</td>
+                            <td class="p-4 text-center"><span class="bg-green-100 text-green-700 px-2 py-1 rounded text-[10px] font-bold" data-i18n="statTrack">على المسار</span></td>
+                        </tr>
+                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
+                            <td class="p-4 font-bold">الحصول على شهادة ISO 27001</td>
+                            <td class="p-4 flex items-center gap-2">
+                                <img src="https://ui-avatars.com/api/?name=GRCO&background=random" class="w-6 h-6 rounded-full">
+                                <span class="text-xs">GRCO</span>
+                            </td>
+                            <td class="p-4">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-24 bg-slate-100 dark:bg-slate-700 h-1.5 rounded-full overflow-hidden">
+                                        <div class="bg-orange-500 h-full" style="width: 40%"></div>
+                                    </div>
+                                    <span class="text-xs font-bold">40%</span>
+                                </div>
+                            </td>
+                            <td class="p-4 num-font text-xs">2026-06-30</td>
+                            <td class="p-4 text-center"><span class="bg-orange-100 text-orange-700 px-2 py-1 rounded text-[10px] font-bold" data-i18n="statRisk">خطر تأخير</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </main>
+    </div>
+
+    <script src="layout-ceo.js"></script>
+    <script src="bot.js"></script>
+
+    <script>
+        const pageContent = {
+            ar: {
+                pageTitle: "الاستراتيجية | AndroGov",
+                headerTitle: "الاستراتيجية والأهداف (OKRs)",
+                headerDesc: "متابعة تنفيذ الخطة الاستراتيجية 2026 ومؤشرات الأداء الرئيسية",
+                btnPresentation: "عرض للمجلس",
+                btnAddGoal: "هدف جديد",
+                lblVision: "رؤية 2030",
+                pillar1: "النمو المالي",
+                kpi1: "زيادة الإيرادات 20%",
+                pillar2: "التميز التشغيلي",
+                kpi2: "أتمتة الخدمات",
+                pillar3: "تطوير المواهب",
+                kpi3: "استقطاب الكفاءات",
+                secInitiatives: "المبادرات الاستراتيجية (Q1-2026)",
+                colInit: "المبادرة",
+                colOwner: "المالك",
+                colProgress: "الإنجاز",
+                colDeadline: "الموعد النهائي",
+                colStatus: "الحالة",
+                statTrack: "على المسار",
+                statRisk: "خطر تأخير"
+            },
+            en: {
+                pageTitle: "Strategy | AndroGov",
+                headerTitle: "Strategy & OKRs",
+                headerDesc: "Tracking 2026 Strategic Plan Execution and KPIs",
+                btnPresentation: "Board Pres.",
+                btnAddGoal: "New Goal",
+                lblVision: "Vision 2030",
+                pillar1: "Financial Growth",
+                kpi1: "Revenue Growth 20%",
+                pillar2: "Operational Excellence",
+                kpi2: "Service Automation",
+                pillar3: "Talent Development",
+                kpi3: "Talent Acquisition",
+                secInitiatives: "Strategic Initiatives (Q1-2026)",
+                colInit: "Initiative",
+                colOwner: "Owner",
+                colProgress: "Progress",
+                colDeadline: "Deadline",
+                colStatus: "Status",
+                statTrack: "On Track",
+                statRisk: "At Risk"
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const lang = localStorage.getItem('lang') || 'ar';
+            const dict = pageContent[lang];
+            
+            document.documentElement.lang = lang;
+            document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if(dict[key]) el.innerText = dict[key];
+            });
+        });
+    </script>
+</body>
+</html>
