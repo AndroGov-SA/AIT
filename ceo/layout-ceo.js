@@ -1,7 +1,8 @@
 /**
- * AndroGov CEO Layout Engine v6.0 (Matches Original System)
- * - Based strictly on layout (1).js structure.
- * - CEO Specific Content.
+ * AndroGov CEO Layout Engine v6.1 (Fully Updated)
+ * - Includes Board Affairs Page.
+ * - Matches Original System Structure.
+ * - CEO Specific Notifications.
  */
 
 (function() {
@@ -32,6 +33,12 @@
             titleAr: 'عقد جديد', titleEn: 'New Contract',
             msgAr: 'عقد شراكة Microsoft بانتظار التوقيع.', msgEn: 'Microsoft partnership contract pending.',
             time: '5h'
+        },
+        {
+            id: 3, type: 'warning', icon: 'fa-gavel', color: 'text-orange-500 bg-orange-50',
+            titleAr: 'قرار بالتمرير', titleEn: 'Circular Resolution',
+            msgAr: 'تصويت عاجل: اعتماد القوائم المالية.', msgEn: 'Urgent Vote: Approve Financials.',
+            time: '1d'
         }
     ];
 
@@ -41,6 +48,7 @@
             section: 'main',
             items: [
                 { key: 'dash', icon: 'fa-chart-pie', link: 'ceo_dashboard.html' },
+                { key: 'board', icon: 'fa-gavel', link: 'ceo_board.html' }, // New Board Page
                 { key: 'strategy', icon: 'fa-chess', link: 'ceo_strategy.html' }
             ]
         },
@@ -48,14 +56,14 @@
             section: 'finance',
             items: [
                 { key: 'finance', icon: 'fa-chart-line', link: 'ceo_finance.html' },
-                { key: 'reports', icon: 'fa-file-invoice-dollar', link: 'ceo_reports.html' } // صفحة مستقبلية
+                { key: 'reports', icon: 'fa-file-invoice-dollar', link: 'ceo_reports.html' }
             ]
         },
         {
             section: 'governance',
             items: [
                 { key: 'gov', icon: 'fa-scale-balanced', link: 'ceo_governance.html' },
-                { key: 'risks', icon: 'fa-triangle-exclamation', link: 'ceo_risks.html' } // صفحة مستقبلية
+                { key: 'risks', icon: 'fa-triangle-exclamation', link: 'ceo_risks.html' }
             ]
         },
         {
@@ -92,6 +100,7 @@
             },
             menu: {
                 dash: "لوحة القيادة",
+                board: "شؤون المجلس",
                 strategy: "الاستراتيجية والأهداف",
                 finance: "المؤشرات المالية",
                 reports: "التقارير التنفيذية",
@@ -119,6 +128,7 @@
             },
             menu: {
                 dash: "Dashboard",
+                board: "Board Affairs",
                 strategy: "Strategy & OKRs",
                 finance: "Financial KPIs",
                 reports: "Executive Reports",
@@ -132,7 +142,7 @@
         }
     };
 
-    // --- 5. Core Logic (Matches Original System) ---
+    // --- 5. Core Logic ---
 
     function init() {
         applySettings();
@@ -181,7 +191,6 @@
         const userDisplayName = isRtl ? currentUser.nameAr : currentUser.nameEn;
         const userDisplayTitle = isRtl ? currentUser.titleAr : currentUser.titleEn;
 
-        // Same link class logic as original
         const getLinkClass = (link) => {
             const isActive = currentPath === link;
             const baseClass = "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200";
@@ -203,7 +212,6 @@
             });
         });
 
-        // Sidebar HTML Structure (Identical to Admin/HR)
         const sidebarHTML = `
         <aside class="fixed top-0 ${isRtl ? 'right-0 border-l' : 'left-0 border-r'} z-50 h-screen w-72 flex-col hidden md:flex bg-white dark:bg-[#0F172A] border-slate-200 dark:border-slate-800 transition-all duration-300">
             <div class="h-20 flex items-center px-6 border-b border-slate-100 dark:border-slate-800">
