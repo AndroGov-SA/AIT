@@ -26,8 +26,6 @@
     </script>
     <style>
         .num-font { font-family: 'Inter', sans-serif; font-feature-settings: "tnum"; }
-        .glass-effect { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
-        .dark .glass-effect { background: rgba(15, 23, 42, 0.95); }
         .gradient-text { background-clip: text; -webkit-background-clip: text; color: transparent; background-image: linear-gradient(to right, #FB4747, #DC2626); }
     </style>
 </head>
@@ -66,17 +64,17 @@
                             <i class="fa-solid fa-arrow-trend-up"></i> +1.2%
                         </p>
                     </div>
-                    <button onclick="downloadReport()" class="h-12 px-6 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-2xl text-sm font-bold shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 flex items-center gap-3">
-                        <i class="fa-solid fa-wand-magic-sparkles text-brandRed"></i> <span data-i18n="btnInsight">تحليل الذكاء الاصطناعي</span>
+                    <button onclick="downloadReport()" class="h-12 px-6 bg-brandRed hover:bg-red-700 text-white rounded-2xl text-sm font-bold shadow-lg shadow-red-500/20 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex items-center gap-3">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> <span data-i18n="btnInsight">تحليل الذكاء الاصطناعي</span>
                     </button>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
                 
-                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 group hover:shadow-md transition-all duration-300 relative overflow-hidden">
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 group hover:shadow-md hover:border-brandRed/30 transition-all duration-300 relative overflow-hidden">
                     <div class="absolute right-0 top-0 p-5 opacity-5 group-hover:opacity-10 transition-opacity duration-500">
-                        <i class="fa-solid fa-sack-dollar text-6xl text-slate-900 dark:text-white"></i>
+                        <i class="fa-solid fa-sack-dollar text-6xl text-brandRed dark:text-white"></i>
                     </div>
                     <div class="flex justify-between items-start mb-4">
                         <div class="w-12 h-12 rounded-2xl bg-green-50 dark:bg-green-900/20 text-green-600 flex items-center justify-center text-xl shadow-sm group-hover:scale-110 transition-transform duration-300">
@@ -92,9 +90,9 @@
                     <p class="text-[10px] text-slate-400 mt-2 text-right num-font">Target: 5.0M</p>
                 </div>
 
-                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 group hover:shadow-md transition-all duration-300 relative overflow-hidden">
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 group hover:shadow-md hover:border-brandRed/30 transition-all duration-300 relative overflow-hidden">
                     <div class="absolute right-0 top-0 p-5 opacity-5 group-hover:opacity-10 transition-opacity duration-500">
-                        <i class="fa-solid fa-wallet text-6xl text-slate-900 dark:text-white"></i>
+                        <i class="fa-solid fa-wallet text-6xl text-brandRed dark:text-white"></i>
                     </div>
                     <div class="flex justify-between items-start mb-4">
                         <div class="w-12 h-12 rounded-2xl bg-red-50 dark:bg-red-900/20 text-brandRed flex items-center justify-center text-xl shadow-sm group-hover:scale-110 transition-transform duration-300">
@@ -110,49 +108,44 @@
                     <p class="text-[10px] text-slate-400 mt-2 text-right num-font">Budget: 3.0M</p>
                 </div>
 
-                <div class="bg-slate-900 text-white p-6 rounded-3xl shadow-xl shadow-slate-900/20 group hover:-translate-y-1 transition-all duration-300 relative overflow-hidden">
-                    <div class="absolute inset-0 bg-gradient-to-br from-slate-800 to-slate-900"></div>
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-lg border border-brandRed/20 dark:border-brandRed/40 group hover:-translate-y-1 transition-all duration-300 relative overflow-hidden">
+                    <div class="absolute inset-0 bg-brandRed/5 dark:bg-brandRed/10"></div>
                     <div class="absolute right-0 top-0 p-5 opacity-10 group-hover:opacity-20 transition-opacity duration-500">
-                        <i class="fa-solid fa-trophy text-6xl text-white"></i>
+                        <i class="fa-solid fa-trophy text-6xl text-brandRed"></i>
                     </div>
                     <div class="relative z-10">
                         <div class="flex justify-between items-start mb-4">
-                            <div class="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center text-xl border border-white/10 backdrop-blur-sm">
-                                <i class="fa-solid fa-coins text-yellow-400"></i>
+                            <div class="w-12 h-12 rounded-2xl bg-white dark:bg-slate-700 text-brandRed flex items-center justify-center text-xl shadow-sm border border-brandRed/10">
+                                <i class="fa-solid fa-coins"></i>
                             </div>
-                            <span class="text-[10px] font-bold bg-white/10 text-white px-2 py-1 rounded-lg border border-white/10">High Margin</span>
+                            <span class="text-[10px] font-bold bg-brandRed/10 text-brandRed px-2 py-1 rounded-lg border border-brandRed/20">High Margin</span>
                         </div>
-                        <p class="text-xs text-slate-400 font-bold uppercase tracking-wider mb-1" data-i18n="kpiProfit">صافي الأرباح</p>
-                        <h3 class="text-3xl font-bold num-font tracking-tight text-white">2.4M <span class="text-sm font-normal text-slate-400">SAR</span></h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider mb-1" data-i18n="kpiProfit">صافي الأرباح</p>
+                        <h3 class="text-3xl font-bold num-font tracking-tight text-brandRed">2.4M <span class="text-sm font-normal text-slate-400">SAR</span></h3>
                         <div class="mt-4 flex items-center gap-2">
-                            <span class="text-2xl font-bold text-green-400 num-font">57%</span>
+                            <span class="text-2xl font-bold text-green-600 num-font">57%</span>
                             <span class="text-[10px] text-slate-400 uppercase tracking-widest">Net Margin</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 group hover:shadow-md transition-all duration-300 relative overflow-hidden flex flex-col justify-between">
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 group hover:shadow-md hover:border-brandRed/30 transition-all duration-300 relative overflow-hidden flex flex-col justify-between">
+                    <div class="absolute right-0 top-0 p-5 opacity-5 group-hover:opacity-10 transition-opacity duration-500">
+                        <i class="fa-solid fa-list-check text-6xl text-brandRed dark:text-white"></i>
+                    </div>
                     <div>
                         <div class="flex justify-between items-start mb-2">
-                            <p class="text-xs text-slate-500 font-bold uppercase tracking-wider" data-i18n="kpiProj">المشاريع النشطة</p>
-                            <i class="fa-solid fa-list-check text-slate-300 text-xl"></i>
+                            <p class="text-xs text-slate-500 font-bold uppercase tracking-wider relative z-10" data-i18n="kpiProj">المشاريع النشطة</p>
                         </div>
-                        <h3 class="text-3xl font-bold text-slate-900 dark:text-white num-font tracking-tight mb-4">8 <span class="text-sm font-normal text-slate-400">Projects</span></h3>
+                        <h3 class="text-3xl font-bold text-slate-900 dark:text-white num-font tracking-tight mb-4 relative z-10">8 <span class="text-sm font-normal text-slate-400">Projects</span></h3>
                     </div>
                     
-                    <div class="space-y-3">
+                    <div class="space-y-3 relative z-10">
                         <div class="flex items-center gap-3 p-2 rounded-xl bg-red-50 dark:bg-red-900/10 border border-red-100 dark:border-red-900/30">
                             <div class="w-8 h-8 rounded-lg bg-red-100 text-red-600 flex items-center justify-center shrink-0"><i class="fa-solid fa-triangle-exclamation text-xs"></i></div>
                             <div>
                                 <p class="text-[10px] font-bold text-red-700 dark:text-red-400">مشروع واحد متأخر</p>
                                 <p class="text-[9px] text-red-500">تطوير منصة التجارة الإلكترونية</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-3 p-2 rounded-xl bg-orange-50 dark:bg-orange-900/10 border border-orange-100 dark:border-orange-900/30">
-                            <div class="w-8 h-8 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center shrink-0"><i class="fa-solid fa-shield-halved text-xs"></i></div>
-                            <div>
-                                <p class="text-[10px] font-bold text-orange-700 dark:text-orange-400">تنبيه قانوني (رخصة)</p>
-                                <p class="text-[9px] text-orange-500">تجديد رخصة البلدية (15 يوم)</p>
                             </div>
                         </div>
                     </div>
@@ -199,7 +192,7 @@
                                 <span class="text-[10px] text-slate-400 num-font">09:30 AM</span>
                             </div>
                             <h4 class="font-bold text-sm text-slate-800 dark:text-white mb-1">شراء خوادم جديدة (CFO)</h4>
-                            <p class="text-xs text-slate-500 mb-4 line-clamp-2">طلب اعتماد شراء خوادم Dell PowerEdge لمركز البيانات لزيادة السعة...</p>
+                            <p class="text-xs text-slate-500 mb-4 line-clamp-2">طلب اعتماد شراء خوادم Dell PowerEdge لمركز البيانات...</p>
                             
                             <div class="flex items-center justify-between mt-2 pt-2 border-t border-slate-200 dark:border-slate-600">
                                 <span class="font-bold text-slate-900 dark:text-white num-font">150,000 SAR</span>
@@ -219,7 +212,7 @@
                             <p class="text-xs text-slate-500 mb-4">توقيع مذكرة التفاهم النهائية للتحول الرقمي.</p>
                             
                             <div class="flex items-center justify-between mt-2 pt-2 border-t border-slate-200 dark:border-slate-600">
-                                <span class="text-[10px] text-slate-400"><i class="fa-solid fa-file-pdf"></i> MoU_Final_v2.pdf</span>
+                                <span class="text-[10px] text-slate-400"><i class="fa-solid fa-file-pdf text-brandRed"></i> MoU_Final_v2.pdf</span>
                                 <button onclick="signContract(this)" class="px-3 py-1.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-xs font-bold rounded-lg hover:shadow-lg transition">توقيع رقمي</button>
                             </div>
                         </div>
@@ -229,7 +222,7 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 flex items-center gap-4">
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 flex items-center gap-4 group hover:border-brandRed/30 transition">
                     <div class="w-14 h-14 rounded-full border-4 border-green-100 dark:border-green-900/30 flex items-center justify-center bg-white dark:bg-slate-800 relative">
                         <span class="text-xs font-bold text-green-600">75%</span>
                     </div>
@@ -237,10 +230,10 @@
                         <h4 class="font-bold text-sm text-slate-900 dark:text-white" data-i18n="deptSales">المبيعات والتسويق</h4>
                         <p class="text-xs text-slate-500 mt-1">Target: 8M SAR</p>
                     </div>
-                    <i class="fa-solid fa-arrow-trend-up text-green-500 mr-auto"></i>
+                    <i class="fa-solid fa-arrow-trend-up text-green-500 mr-auto opacity-50 group-hover:opacity-100 transition"></i>
                 </div>
 
-                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 flex items-center gap-4">
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 flex items-center gap-4 group hover:border-brandRed/30 transition">
                     <div class="w-14 h-14 rounded-full border-4 border-blue-100 dark:border-blue-900/30 flex items-center justify-center bg-white dark:bg-slate-800 relative">
                         <span class="text-xs font-bold text-blue-600">60%</span>
                     </div>
@@ -248,10 +241,10 @@
                         <h4 class="font-bold text-sm text-slate-900 dark:text-white" data-i18n="deptTech">المنتجات والتقنية</h4>
                         <p class="text-xs text-slate-500 mt-1">Roadmap Status</p>
                     </div>
-                    <i class="fa-solid fa-code text-blue-500 mr-auto"></i>
+                    <i class="fa-solid fa-code text-blue-500 mr-auto opacity-50 group-hover:opacity-100 transition"></i>
                 </div>
 
-                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 flex items-center gap-4">
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 flex items-center gap-4 group hover:border-brandRed/30 transition">
                     <div class="w-14 h-14 rounded-full border-4 border-orange-100 dark:border-orange-900/30 flex items-center justify-center bg-white dark:bg-slate-800 relative">
                         <span class="text-xs font-bold text-orange-600">90%</span>
                     </div>
@@ -259,7 +252,7 @@
                         <h4 class="font-bold text-sm text-slate-900 dark:text-white" data-i18n="deptHR">الموارد البشرية</h4>
                         <p class="text-xs text-slate-500 mt-1">Hiring Plan</p>
                     </div>
-                    <i class="fa-solid fa-users text-orange-500 mr-auto"></i>
+                    <i class="fa-solid fa-users text-orange-500 mr-auto opacity-50 group-hover:opacity-100 transition"></i>
                 </div>
             </div>
 
