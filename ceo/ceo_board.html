@@ -38,7 +38,7 @@
                 
                 <div class="relative z-10">
                     <div class="flex items-center gap-3 mb-2">
-                        <span class="px-2 py-1 bg-white/10 rounded text-[10px] border border-white/20">Boardroom Access</span>
+                        <span class="px-2 py-1 bg-white/10 rounded text-[10px] border border-white/20" data-i18n="lblAccess">Boardroom Access</span>
                     </div>
                     <h1 class="text-2xl font-bold flex items-center gap-2">
                         <i class="fa-solid fa-gavel text-brandRed"></i> <span data-i18n="headerTitle">مجلس الإدارة والمساهمين</span>
@@ -61,14 +61,14 @@
                     <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="kpiRes">قرارات بالتمرير</p>
                     <div class="flex items-end gap-2 mt-2">
                         <h3 class="text-3xl font-bold num-font text-slate-900 dark:text-white">2</h3>
-                        <span class="text-[10px] text-brandRed font-bold bg-red-50 dark:bg-red-900/20 px-2 py-0.5 rounded">بانتظار تصويتك</span>
+                        <span class="text-[10px] text-brandRed font-bold bg-red-50 dark:bg-red-900/20 px-2 py-0.5 rounded" data-i18n="lblPendingVote">بانتظار تصويتك</span>
                     </div>
                 </div>
                 <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700">
                     <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="kpiMeet">نسبة الحضور</p>
                     <div class="flex items-end gap-2 mt-2">
                         <h3 class="text-3xl font-bold num-font text-green-600">100%</h3>
-                        <span class="text-[10px] text-slate-400">لعام 2026</span>
+                        <span class="text-[10px] text-slate-400" data-i18n="lblYear">لعام 2026</span>
                     </div>
                 </div>
                 <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700">
@@ -104,12 +104,12 @@
                             <div class="absolute top-0 left-0 w-1 h-full bg-orange-500"></div>
                             <div class="flex justify-between items-start mb-2">
                                 <div class="flex items-center gap-2">
-                                    <span class="bg-orange-100 text-orange-700 text-[10px] px-2 py-0.5 rounded font-bold">عاجل</span>
-                                    <h4 class="font-bold text-slate-800 dark:text-white text-sm">اعتماد القوائم المالية الختامية 2025</h4>
+                                    <span class="bg-orange-100 text-orange-700 text-[10px] px-2 py-0.5 rounded font-bold" data-i18n="tagUrgent">عاجل</span>
+                                    <h4 class="font-bold text-slate-800 dark:text-white text-sm" data-i18n="res1Title">اعتماد القوائم المالية الختامية 2025</h4>
                                 </div>
-                                <span class="text-[10px] text-slate-400 num-font"><i class="fa-regular fa-clock"></i> ينتهي التصويت: غداً 12:00 م</span>
+                                <span class="text-[10px] text-slate-400 num-font flex items-center gap-1"><i class="fa-regular fa-clock"></i> <span data-i18n="res1Time">ينتهي التصويت: غداً 12:00 م</span></span>
                             </div>
-                            <p class="text-xs text-slate-500 dark:text-slate-300 mb-4 ml-6 leading-relaxed">بناءً على توصية لجنة المراجعة، يرجى التصويت على اعتماد القوائم المالية المدققة قبل رفعها للجمعية العمومية.</p>
+                            <p class="text-xs text-slate-500 dark:text-slate-300 mb-4 ml-6 leading-relaxed" data-i18n="res1Desc">بناءً على توصية لجنة المراجعة، يرجى التصويت على اعتماد القوائم المالية المدققة قبل رفعها للجمعية العمومية.</p>
                             
                             <div class="flex gap-2 mb-4 ml-6">
                                 <a href="#" class="flex items-center gap-2 bg-white dark:bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-600 text-[10px] text-slate-600 dark:text-slate-300 hover:text-brandRed transition">
@@ -122,13 +122,13 @@
 
                             <div class="flex gap-3 ml-6">
                                 <button onclick="vote('approve', this)" class="flex-1 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-xs font-bold transition shadow-sm flex items-center justify-center gap-2">
-                                    <i class="fa-solid fa-thumbs-up"></i> موافق (Approve)
+                                    <i class="fa-solid fa-thumbs-up"></i> <span data-i18n="btnApprove">موافق</span>
                                 </button>
                                 <button onclick="vote('reject', this)" class="flex-1 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-xs font-bold transition shadow-sm flex items-center justify-center gap-2">
-                                    <i class="fa-solid fa-thumbs-down"></i> غير موافق (Reject)
+                                    <i class="fa-solid fa-thumbs-down"></i> <span data-i18n="btnReject">غير موافق</span>
                                 </button>
                                 <button onclick="vote('abstain', this)" class="px-4 py-2 bg-slate-200 dark:bg-slate-600 text-slate-600 dark:text-slate-200 hover:bg-slate-300 rounded-lg text-xs font-bold transition">
-                                    امتناع (Abstain)
+                                    <span data-i18n="btnAbstain">امتناع</span>
                                 </button>
                             </div>
                         </div>
@@ -137,16 +137,16 @@
                             <div class="absolute top-0 left-0 w-1 h-full bg-blue-500"></div>
                             <div class="flex justify-between items-start mb-2">
                                 <div class="flex items-center gap-2">
-                                    <span class="bg-blue-100 text-blue-700 text-[10px] px-2 py-0.5 rounded font-bold">استراتيجي</span>
-                                    <h4 class="font-bold text-slate-800 dark:text-white text-sm">تعيين مراجع خارجي جديد</h4>
+                                    <span class="bg-blue-100 text-blue-700 text-[10px] px-2 py-0.5 rounded font-bold" data-i18n="tagStrat">استراتيجي</span>
+                                    <h4 class="font-bold text-slate-800 dark:text-white text-sm" data-i18n="res2Title">تعيين مراجع خارجي جديد</h4>
                                 </div>
-                                <span class="text-[10px] text-slate-400 num-font"><i class="fa-regular fa-clock"></i> ينتهي التصويت: 3 أيام</span>
+                                <span class="text-[10px] text-slate-400 num-font flex items-center gap-1"><i class="fa-regular fa-clock"></i> <span data-i18n="res2Time">ينتهي التصويت: 3 أيام</span></span>
                             </div>
-                            <p class="text-xs text-slate-500 dark:text-slate-300 mb-4 ml-6">الموافقة على تعيين شركة (PwC) كمراجع خارجي للعام المالي 2026.</p>
+                            <p class="text-xs text-slate-500 dark:text-slate-300 mb-4 ml-6" data-i18n="res2Desc">الموافقة على تعيين شركة (PwC) كمراجع خارجي للعام المالي 2026.</p>
                             
                             <div class="flex gap-3 ml-6">
-                                <button onclick="vote('approve', this)" class="flex-1 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-xs font-bold transition shadow-sm">موافق</button>
-                                <button onclick="vote('reject', this)" class="flex-1 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-xs font-bold transition shadow-sm">غير موافق</button>
+                                <button onclick="vote('approve', this)" class="flex-1 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-xs font-bold transition shadow-sm" data-i18n="btnApprove">موافق</button>
+                                <button onclick="vote('reject', this)" class="flex-1 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-xs font-bold transition shadow-sm" data-i18n="btnReject">غير موافق</button>
                             </div>
                         </div>
                     </div>
@@ -161,19 +161,19 @@
                     </div>
                     <div class="space-y-3">
                         <div class="flex justify-between items-center text-xs p-2 bg-slate-50 dark:bg-slate-700/50 rounded-lg">
-                            <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-brandRed"></span> المؤسسون</span>
+                            <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-brandRed"></span> <span data-i18n="lblFounders">المؤسسون</span></span>
                             <span class="font-bold num-font">60%</span>
                         </div>
                         <div class="flex justify-between items-center text-xs p-2 bg-slate-50 dark:bg-slate-700/50 rounded-lg">
-                            <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-blue-500"></span> مستثمرون (A)</span>
+                            <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-blue-500"></span> <span data-i18n="lblInvestors">مستثمرون (A)</span></span>
                             <span class="font-bold num-font">25%</span>
                         </div>
                         <div class="flex justify-between items-center text-xs p-2 bg-slate-50 dark:bg-slate-700/50 rounded-lg">
-                            <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-slate-400"></span> أسهم موظفين</span>
+                            <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-slate-400"></span> <span data-i18n="lblEsop">أسهم موظفين</span></span>
                             <span class="font-bold num-font">15%</span>
                         </div>
                     </div>
-                    <button class="w-full mt-4 py-2 border border-slate-200 dark:border-slate-600 rounded-lg text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition" onclick="alert('فتح سجل المساهمين الكامل')">عرض سجل المساهمين</button>
+                    <button class="w-full mt-4 py-2 border border-slate-200 dark:border-slate-600 rounded-lg text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition" onclick="alert('Open Shareholders Register')" data-i18n="btnViewRegister">عرض سجل المساهمين</button>
                 </div>
 
             </div>
@@ -188,41 +188,41 @@
                     
                     <div class="p-5 group hover:bg-slate-50 dark:hover:bg-slate-700/30 transition">
                         <div class="flex justify-between items-start mb-3">
-                            <h4 class="font-bold text-sm text-slate-800 dark:text-white">لجنة المراجعة</h4>
-                            <span class="text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded font-bold">نشطة</span>
+                            <h4 class="font-bold text-sm text-slate-800 dark:text-white" data-i18n="commAudit">لجنة المراجعة</h4>
+                            <span class="text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded font-bold" data-i18n="lblActive">نشطة</span>
                         </div>
-                        <p class="text-xs text-slate-500 mb-3">آخر اجتماع: 2026-02-10</p>
+                        <p class="text-xs text-slate-500 mb-3"><span data-i18n="lblLastMeet">آخر اجتماع</span>: 2026-02-10</p>
                         <div class="flex items-center gap-2 mb-3">
                             <img class="w-6 h-6 rounded-full" src="https://ui-avatars.com/api/?name=Audit+Head&background=random" title="Head">
-                            <span class="text-[10px] text-slate-400">+2 أعضاء</span>
+                            <span class="text-[10px] text-slate-400">+2 <span data-i18n="lblMembers">أعضاء</span></span>
                         </div>
-                        <button class="text-xs text-brandRed font-bold hover:underline flex items-center gap-1">عرض المحاضر <i class="fa-solid fa-arrow-left"></i></button>
+                        <button class="text-xs text-brandRed font-bold hover:underline flex items-center gap-1"><span data-i18n="btnMinutes">عرض المحاضر</span> <i class="fa-solid fa-arrow-left rtl:rotate-0 ltr:rotate-180"></i></button>
                     </div>
 
                     <div class="p-5 group hover:bg-slate-50 dark:hover:bg-slate-700/30 transition">
                         <div class="flex justify-between items-start mb-3">
-                            <h4 class="font-bold text-sm text-slate-800 dark:text-white">لجنة الترشيحات والمكافآت</h4>
-                            <span class="text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded font-bold">نشطة</span>
+                            <h4 class="font-bold text-sm text-slate-800 dark:text-white" data-i18n="commNom">لجنة الترشيحات والمكافآت</h4>
+                            <span class="text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded font-bold" data-i18n="lblActive">نشطة</span>
                         </div>
-                        <p class="text-xs text-slate-500 mb-3">آخر اجتماع: 2026-01-15</p>
+                        <p class="text-xs text-slate-500 mb-3"><span data-i18n="lblLastMeet">آخر اجتماع</span>: 2026-01-15</p>
                         <div class="flex items-center gap-2 mb-3">
                             <img class="w-6 h-6 rounded-full" src="https://ui-avatars.com/api/?name=Nom+Head&background=random" title="Head">
-                            <span class="text-[10px] text-slate-400">+3 أعضاء</span>
+                            <span class="text-[10px] text-slate-400">+3 <span data-i18n="lblMembers">أعضاء</span></span>
                         </div>
-                        <button class="text-xs text-brandRed font-bold hover:underline flex items-center gap-1">عرض المحاضر <i class="fa-solid fa-arrow-left"></i></button>
+                        <button class="text-xs text-brandRed font-bold hover:underline flex items-center gap-1"><span data-i18n="btnMinutes">عرض المحاضر</span> <i class="fa-solid fa-arrow-left rtl:rotate-0 ltr:rotate-180"></i></button>
                     </div>
 
                     <div class="p-5 group hover:bg-slate-50 dark:hover:bg-slate-700/30 transition">
                         <div class="flex justify-between items-start mb-3">
-                            <h4 class="font-bold text-sm text-slate-800 dark:text-white">اللجنة التنفيذية</h4>
-                            <span class="text-[10px] bg-blue-100 text-blue-700 px-2 py-0.5 rounded font-bold">برئاستك</span>
+                            <h4 class="font-bold text-sm text-slate-800 dark:text-white" data-i18n="commExec">اللجنة التنفيذية</h4>
+                            <span class="text-[10px] bg-blue-100 text-blue-700 px-2 py-0.5 rounded font-bold" data-i18n="lblChairedByYou">برئاستك</span>
                         </div>
-                        <p class="text-xs text-slate-500 mb-3">الاجتماع القادم: الأحد القادم</p>
+                        <p class="text-xs text-slate-500 mb-3"><span data-i18n="lblNextMeet">الاجتماع القادم</span>: <span data-i18n="lblNextSun">الأحد القادم</span></p>
                         <div class="flex items-center gap-2 mb-3">
                             <img class="w-6 h-6 rounded-full" src="https://ui-avatars.com/api/?name=Hisham+S&background=FB4747&color=fff" title="You">
-                            <span class="text-[10px] text-slate-400">+4 أعضاء</span>
+                            <span class="text-[10px] text-slate-400">+4 <span data-i18n="lblMembers">أعضاء</span></span>
                         </div>
-                        <button class="text-xs text-brandRed font-bold hover:underline flex items-center gap-1">جدول الأعمال <i class="fa-solid fa-arrow-left"></i></button>
+                        <button class="text-xs text-brandRed font-bold hover:underline flex items-center gap-1"><span data-i18n="btnAgenda">جدول الأعمال</span> <i class="fa-solid fa-arrow-left rtl:rotate-0 ltr:rotate-180"></i></button>
                     </div>
 
                 </div>
@@ -242,27 +242,85 @@
                 headerDesc: "بوابة نائب الرئيس لإدارة قرارات المجلس، التصويت، وشؤون الجمعية العمومية.",
                 btnCalendar: "تقويم المجلس",
                 btnDraftRes: "طرح قرار للتصويت",
+                lblAccess: "صالة المجلس",
                 kpiRes: "قرارات بالتمرير",
+                lblPendingVote: "بانتظار تصويتك",
                 kpiMeet: "نسبة الحضور",
+                lblYear: "لعام 2026",
                 kpiShare: "سعر السهم (داخلي)",
                 kpiMembers: "أعضاء المجلس",
                 secVoting: "التصويت الإلكتروني (قرارات بالتمرير)",
+                tagUrgent: "عاجل",
+                tagStrat: "استراتيجي",
+                res1Title: "اعتماد القوائم المالية الختامية 2025",
+                res1Time: "ينتهي التصويت: غداً 12:00 م",
+                res1Desc: "بناءً على توصية لجنة المراجعة، يرجى التصويت على اعتماد القوائم المالية المدققة قبل رفعها للجمعية العمومية.",
+                res2Title: "تعيين مراجع خارجي جديد",
+                res2Time: "ينتهي التصويت: 3 أيام",
+                res2Desc: "الموافقة على تعيين شركة (PwC) كمراجع خارجي للعام المالي 2026.",
+                btnApprove: "موافق",
+                btnReject: "غير موافق",
+                btnAbstain: "امتناع",
                 secEquity: "هيكل الملكية",
-                secComm: "إشراف اللجان المنبثقة"
+                lblFounders: "المؤسسون",
+                lblInvestors: "مستثمرون (A)",
+                lblEsop: "أسهم موظفين",
+                btnViewRegister: "عرض سجل المساهمين",
+                secComm: "إشراف اللجان المنبثقة",
+                commAudit: "لجنة المراجعة",
+                commNom: "لجنة الترشيحات والمكافآت",
+                commExec: "اللجنة التنفيذية",
+                lblActive: "نشطة",
+                lblLastMeet: "آخر اجتماع",
+                lblMembers: "أعضاء",
+                btnMinutes: "عرض المحاضر",
+                lblChairedByYou: "برئاستك",
+                lblNextMeet: "الاجتماع القادم",
+                lblNextSun: "الأحد القادم",
+                btnAgenda: "جدول الأعمال"
             },
             en: {
                 pageTitle: "Board Affairs | AndroGov",
-                headerTitle: "Board & Shareholders",
-                headerDesc: "Vice Chairman portal for managing board resolutions, voting, and general assembly affairs.",
+                headerTitle: "Board & Shareholders Affairs",
+                headerDesc: "Vice Chairman portal for managing board resolutions, voting, and General Assembly affairs.",
                 btnCalendar: "Board Calendar",
                 btnDraftRes: "Draft Resolution",
-                kpiRes: "Circulated Resolutions",
+                lblAccess: "Boardroom Access",
+                kpiRes: "Resolutions by Circulation",
+                lblPendingVote: "Awaiting your vote",
                 kpiMeet: "Attendance Rate",
+                lblYear: "For 2026",
                 kpiShare: "Share Price (Internal)",
                 kpiMembers: "Board Members",
                 secVoting: "E-Voting (Circular Resolutions)",
-                secEquity: "Equity Structure",
-                secComm: "Committee Oversight"
+                tagUrgent: "Urgent",
+                tagStrat: "Strategic",
+                res1Title: "Approval of 2025 Financial Statements",
+                res1Time: "Voting ends: Tomorrow 12:00 PM",
+                res1Desc: "Based on Audit Committee recommendation, please vote on approving the audited financials before AGM submission.",
+                res2Title: "Appointment of External Auditor",
+                res2Time: "Voting ends: 3 Days",
+                res2Desc: "Approval to appoint PwC as the external auditor for the fiscal year 2026.",
+                btnApprove: "Approve",
+                btnReject: "Reject",
+                btnAbstain: "Abstain",
+                secEquity: "Shareholding Structure",
+                lblFounders: "Founders",
+                lblInvestors: "Investors (A)",
+                lblEsop: "ESOP",
+                btnViewRegister: "View Shareholders Register",
+                secComm: "Committee Oversight",
+                commAudit: "Audit Committee",
+                commNom: "Nomination & Remuneration Comm.",
+                commExec: "Executive Committee",
+                lblActive: "Active",
+                lblLastMeet: "Last Meeting",
+                lblMembers: "Members",
+                btnMinutes: "View Minutes",
+                lblChairedByYou: "Chaired by You",
+                lblNextMeet: "Next Meeting",
+                lblNextSun: "Next Sunday",
+                btnAgenda: "Agenda"
             }
         };
 
@@ -283,27 +341,38 @@
 
         function vote(type, btn) {
             const parent = btn.closest('.group');
-            let msg = "", color = "";
+            const lang = localStorage.getItem('lang') || 'ar';
             
-            if(type === 'approve') { msg = "تم التصويت بالموافقة ✅"; color = "text-green-600"; }
-            if(type === 'reject') { msg = "تم التصويت بالرفض ❌"; color = "text-red-600"; }
-            if(type === 'abstain') { msg = "تم تسجيل الامتناع ⚪"; color = "text-slate-500"; }
+            let msg = "", color = "";
+            let txt = {
+                approve: lang === 'ar' ? "تم التصويت بالموافقة" : "Voted Approved",
+                reject: lang === 'ar' ? "تم التصويت بالرفض" : "Voted Rejected",
+                abstain: lang === 'ar' ? "تم تسجيل الامتناع" : "Abstained",
+                footer: lang === 'ar' ? "تم توثيق التصويت في البلوك تشين" : "Vote recorded on Blockchain"
+            };
+            
+            if(type === 'approve') { msg = `${txt.approve} ✅`; color = "text-green-600"; }
+            if(type === 'reject') { msg = `${txt.reject} ❌`; color = "text-red-600"; }
+            if(type === 'abstain') { msg = `${txt.abstain} ⚪`; color = "text-slate-500"; }
 
             parent.innerHTML = `
                 <div class="h-32 flex flex-col items-center justify-center ${color} animate-fade-in-up">
                     <i class="fa-solid fa-circle-check text-4xl mb-2"></i>
                     <span class="font-bold">${msg}</span>
-                    <span class="text-xs text-slate-400 mt-1">تم توثيق التصويت في البلوك تشين</span>
+                    <span class="text-xs text-slate-400 mt-1">${txt.footer}</span>
                 </div>
             `;
         }
 
         function initEquityChart() {
             const ctx = document.getElementById('equityChart').getContext('2d');
+            const lang = localStorage.getItem('lang') || 'ar';
+            const dict = pageContent[lang];
+
             new Chart(ctx, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Founders', 'Investors A', 'ESOP'],
+                    labels: [dict.lblFounders, dict.lblInvestors, dict.lblEsop],
                     datasets: [{
                         data: [60, 25, 15],
                         backgroundColor: ['#FB4747', '#3B82F6', '#94A3B8'],
@@ -315,7 +384,10 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     cutout: '75%',
-                    plugins: { legend: { display: false } }
+                    plugins: { 
+                        legend: { display: false },
+                        tooltip: { bodyFont: { family: 'Inter' } }
+                    }
                 }
             });
         }
