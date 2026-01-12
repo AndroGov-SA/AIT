@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="pageTitle">إدارة التحويلات | AndroGov</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { 
+                        brandRed: '#FB4747', 
+                        techDark: '#0F172A', 
+                        cyberGreen: '#10B981', 
+                        alertOrange: '#F59E0B' 
+                    },
+                    fontFamily: { 
+                        sans: ['Tajawal', 'sans-serif'], 
+                        mono: ['IBM Plex Mono', 'monospace'] 
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .font-mono { font-family: 'IBM Plex Mono', monospace; }
+        .num-font { font-family: 'IBM Plex Mono', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-200 font-sans transition-colors duration-300 opacity-0">
+
+    <div id="sidebar-container"></div>
+    
+    <div class="main-content-wrapper transition-all duration-300 flex flex-col min-h-screen">
+        <div id="header-container"></div>
+
+        <main class="p-6 space-y-6">
+            
+            <div class="flex flex-col md:flex-row justify-between items-end gap-6 bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-500 to-brandRed"></div>
+                
+                <div class="relative z-10">
+                    <h1 class="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2 mb-2">
+                        <i class="fa-solid fa-users-viewfinder text-brandRed"></i> <span data-i18n="headerTitle">إدارة التحويلات (Extensions)</span>
+                    </h1>
+                    <p class="text-sm text-slate-500 mt-1 max-w-2xl" data-i18n="headerDesc">إدارة حسابات SIP، أرقام التحويلات، وحالة الاتصال لجميع الموظفين.</p>
+                </div>
+                
+                <div class="flex gap-3 relative z-10">
+                    <button class="px-5 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-bold shadow-sm hover:bg-slate-50 transition flex items-center gap-2 text-slate-600 dark:text-white">
+                        <i class="fa-solid fa-file-csv"></i> <span data-i18n="btnExport">تصدير CSV</span>
+                    </button>
+                    <button onclick="document.getElementById('extModal').classList.remove('hidden')" class="px-5 py-2.5 bg-brandRed text-white rounded-xl text-xs font-bold shadow-lg shadow-red-500/30 hover:bg-red-700 transition flex items-center gap-2">
+                        <i class="fa-solid fa-plus"></i> <span data-i18n="btnAdd">إضافة تحويلة</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
+                    <p class="text-xs text-slate-500 uppercase font-bold" data-i18n="statTotal">إجمالي التحويلات</p>
+                    <h3 class="text-2xl font-bold font-mono text-slate-900 dark:text-white mt-1">142</h3>
+                </div>
+                <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl shadow-sm border-l-4 border-green-500 border-y border-r border-slate-100 dark:border-slate-800">
+                    <p class="text-xs text-slate-500 uppercase font-bold" data-i18n="statOnline">متصل (Online)</p>
+                    <h3 class="text-2xl font-bold font-mono text-green-600 mt-1">98</h3>
+                </div>
+                <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl shadow-sm border-l-4 border-red-500 border-y border-r border-slate-100 dark:border-slate-800">
+                    <p class="text-xs text-slate-500 uppercase font-bold" data-i18n="statBusy">مشغول (Busy)</p>
+                    <h3 class="text-2xl font-bold font-mono text-red-500 mt-1">12</h3>
+                </div>
+                <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl shadow-sm border-l-4 border-slate-400 border-y border-r border-slate-100 dark:border-slate-800">
+                    <p class="text-xs text-slate-500 uppercase font-bold" data-i18n="statOffline">غير متصل (Offline)</p>
+                    <h3 class="text-2xl font-bold font-mono text-slate-400 mt-1">32</h3>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden">
+                
+                <div class="p-4 border-b border-slate-100 dark:border-slate-800 flex flex-col md:flex-row gap-4 justify-between items-center">
+                    <div class="relative w-full md:w-64">
+                        <input type="text" placeholder="..." class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-xl pl-10 pr-4 py-2 text-sm focus:ring-2 focus:ring-brandRed outline-none dark:text-white transition" data-i18n="phSearch">
+                        <i class="fa-solid fa-search absolute top-3 left-3 text-slate-400"></i>
+                    </div>
+                    <div class="flex gap-2">
+                        <select class="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold text-slate-600 dark:text-slate-300 focus:ring-2 focus:ring-brandRed outline-none">
+                            <option data-i18n="optAllDept">كل الأقسام</option>
+                            <option>Sales</option>
+                            <option>IT</option>
+                            <option>HR</option>
+                        </select>
+                        <select class="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold text-slate-600 dark:text-slate-300 focus:ring-2 focus:ring-brandRed outline-none">
+                            <option data-i18n="optAllStatus">كل الحالات</option>
+                            <option data-i18n="optOnline">متصل</option>
+                            <option data-i18n="optOffline">غير متصل</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-right rtl:text-right ltr:text-left">
+                        <thead class="bg-slate-50 dark:bg-slate-800/50 text-slate-500 text-xs font-bold uppercase">
+                            <tr>
+                                <th class="p-4" data-i18n="colExt">التحويلة</th>
+                                <th class="p-4" data-i18n="colUser">المستخدم</th>
+                                <th class="p-4" data-i18n="colDept">القسم</th>
+                                <th class="p-4" data-i18n="colDevice">الجهاز / IP</th>
+                                <th class="p-4 text-center" data-i18n="colStatus">الحالة</th>
+                                <th class="p-4 text-center" data-i18n="colAction">إجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 dark:divide-slate-800 dark:text-slate-300 font-mono text-xs">
+                            
+                            <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition group">
+                                <td class="p-4 font-bold text-brandRed">101</td>
+                                <td class="p-4">
+                                    <div class="flex items-center gap-3 font-sans">
+                                        <img src="https://ui-avatars.com/api/?name=Hisham+S&background=random" class="w-8 h-8 rounded-full">
+                                        <div>
+                                            <p class="font-bold text-slate-800 dark:text-white">هشام السحيباني</p>
+                                            <p class="text-[9px] text-slate-400">CEO</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="p-4 font-sans">Executive</td>
+                                <td class="p-4">
+                                    <p>Yealink T54W</p>
+                                    <p class="text-[10px] text-slate-500">192.168.1.10</p>
+                                </td>
+                                <td class="p-4 text-center">
+                                    <span class="inline-flex items-center gap-1 px-2 py-1 rounded bg-green-100 text-green-700 text-[10px] font-bold font-sans border border-green-200">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-green-600 animate-pulse"></span> <span data-i18n="stAvailable">متاح</span>
+                                    </span>
+                                </td>
+                                <td class="p-4 text-center">
+                                    <button class="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-slate-400 hover:text-brandRed transition"><i class="fa-solid fa-pen-to-square"></i></button>
+                                    <button class="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-slate-400 hover:text-brandRed transition"><i class="fa-solid fa-rotate-right"></i></button>
+                                </td>
+                            </tr>
+
+                            <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition group">
+                                <td class="p-4 font-bold text-brandRed">205</td>
+                                <td class="p-4">
+                                    <div class="flex items-center gap-3 font-sans">
+                                        <img src="https://ui-avatars.com/api/?name=Sales+M&background=random" class="w-8 h-8 rounded-full">
+                                        <div>
+                                            <p class="font-bold text-slate-800 dark:text-white">فهد المبيعات</p>
+                                            <p class="text-[9px] text-slate-400">Sales Manager</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="p-4 font-sans">Sales</td>
+                                <td class="p-4">
+                                    <p>Softphone (App)</p>
+                                    <p class="text-[10px] text-slate-500">10.5.0.22</p>
+                                </td>
+                                <td class="p-4 text-center">
+                                    <span class="inline-flex items-center gap-1 px-2 py-1 rounded bg-red-100 text-red-700 text-[10px] font-bold font-sans border border-red-200">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-red-600"></span> <span data-i18n="stBusy">مشغول</span>
+                                    </span>
+                                </td>
+                                <td class="p-4 text-center">
+                                    <button class="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-slate-400 hover:text-brandRed transition"><i class="fa-solid fa-pen-to-square"></i></button>
+                                    <button class="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-slate-400 hover:text-brandRed transition"><i class="fa-solid fa-rotate-right"></i></button>
+                                </td>
+                            </tr>
+
+                            <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition group opacity-75">
+                                <td class="p-4 font-bold text-slate-400">301</td>
+                                <td class="p-4">
+                                    <div class="flex items-center gap-3 font-sans">
+                                        <div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-slate-500"><i class="fa-solid fa-user"></i></div>
+                                        <div>
+                                            <p class="font-bold text-slate-600 dark:text-slate-400">غرفة الاجتماعات 1</p>
+                                            <p class="text-[9px] text-slate-400">Meeting Room</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="p-4 font-sans">Admin</td>
+                                <td class="p-4">
+                                    <p>Polycom Trio</p>
+                                    <p class="text-[10px] text-slate-500">Unknown</p>
+                                </td>
+                                <td class="p-4 text-center">
+                                    <span class="inline-flex items-center gap-1 px-2 py-1 rounded bg-slate-100 text-slate-600 text-[10px] font-bold font-sans border border-slate-200">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span> <span data-i18n="stOffline">غير متصل</span>
+                                    </span>
+                                </td>
+                                <td class="p-4 text-center">
+                                    <button class="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-slate-400 hover:text-brandRed transition"><i class="fa-solid fa-pen-to-square"></i></button>
+                                    <button class="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-slate-400 hover:text-brandRed transition"><i class="fa-solid fa-rotate-right"></i></button>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="p-4 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center text-xs text-slate-500 font-sans">
+                    <span data-i18n="lblShowing">عرض 1-3 من 142</span>
+                    <div class="flex gap-2">
+                        <button class="px-3 py-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded hover:bg-slate-50 transition"><i class="fa-solid fa-chevron-right rtl:rotate-180"></i></button>
+                        <button class="px-3 py-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded hover:bg-slate-50 transition"><i class="fa-solid fa-chevron-left rtl:rotate-180"></i></button>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <div id="extModal" class="fixed inset-0 bg-black/60 hidden z-50 flex items-center justify-center backdrop-blur-sm p-4">
+        <div class="bg-white dark:bg-slate-900 w-full max-w-lg rounded-3xl shadow-2xl p-6 border-t-4 border-brandRed animate-fade-in-up">
+            <div class="flex justify-between items-center mb-6 border-b pb-4 dark:border-slate-800">
+                <h3 class="font-bold text-lg dark:text-white flex items-center gap-2">
+                    <i class="fa-solid fa-phone-plus text-brandRed"></i> <span data-i18n="modTitle">إضافة تحويلة جديدة</span>
+                </h3>
+                <button onclick="document.getElementById('extModal').classList.add('hidden')"><i class="fa-solid fa-xmark text-slate-400 hover:text-red-500"></i></button>
+            </div>
+            
+            <div class="space-y-4 font-sans">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblExtNum">رقم التحويلة</label>
+                        <input type="text" class="w-full bg-slate-50 dark:bg-slate-800 border dark:border-slate-700 rounded-xl p-3 text-sm font-mono dark:text-white focus:ring-2 focus:ring-brandRed outline-none" placeholder="ex: 101">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblName">اسم المستخدم</label>
+                        <input type="text" class="w-full bg-slate-50 dark:bg-slate-800 border dark:border-slate-700 rounded-xl p-3 text-sm dark:text-white focus:ring-2 focus:ring-brandRed outline-none" placeholder="Name">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblEmail">البريد الإلكتروني (لإرسال Voicemail)</label>
+                    <input type="email" class="w-full bg-slate-50 dark:bg-slate-800 border dark:border-slate-700 rounded-xl p-3 text-sm dark:text-white focus:ring-2 focus:ring-brandRed outline-none">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblSecret">كلمة المرور (SIP Secret)</label>
+                        <div class="relative">
+                            <input type="password" value="S3cr3tKey!" class="w-full bg-slate-50 dark:bg-slate-800 border dark:border-slate-700 rounded-xl p-3 text-sm font-mono dark:text-white focus:ring-2 focus:ring-brandRed outline-none">
+                            <i class="fa-solid fa-eye absolute top-3.5 right-3 text-slate-400 cursor-pointer rtl:left-3 rtl:right-auto"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblDept">القسم</label>
+                        <select class="w-full bg-slate-50 dark:bg-slate-800 border dark:border-slate-700 rounded-xl p-3 text-sm dark:text-white focus:ring-2 focus:ring-brandRed outline-none">
+                            <option>Management</option>
+                            <option>Sales</option>
+                            <option>IT</option>
+                            <option>HR</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="bg-slate-50 dark:bg-slate-800/50 p-3 rounded-xl border border-slate-100 dark:border-slate-800">
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" class="w-4 h-4 text-brandRed rounded focus:ring-brandRed">
+                        <span class="text-xs font-bold text-slate-600 dark:text-slate-300" data-i18n="lblRecord">تفعيل تسجيل المكالمات تلقائياً</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="mt-6 flex justify-end gap-3 pt-4 border-t dark:border-slate-800">
+                <button onclick="document.getElementById('extModal').classList.add('hidden')" class="px-5 py-2.5 text-slate-500 text-xs font-bold hover:bg-slate-50 rounded-xl dark:hover:bg-slate-800 transition" data-i18n="btnCancel">إلغاء</button>
+                <button onclick="alert('Extension Added'); document.getElementById('extModal').classList.add('hidden')" class="px-6 py-2.5 bg-brandRed text-white rounded-xl text-xs font-bold hover:bg-red-700 shadow-lg shadow-red-500/30 flex items-center gap-2">
+                    <i class="fa-solid fa-save"></i> <span data-i18n="btnSave">حفظ التحويلة</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="layout-cto.js"></script>
+    <script src="bot.js"></script>
+
+    <script>
+        const pageContent = {
+            ar: {
+                pageTitle: "إدارة التحويلات | AndroGov",
+                headerTitle: "إدارة التحويلات (Extensions)",
+                headerDesc: "إدارة حسابات SIP، أرقام التحويلات، وحالة الاتصال لجميع الموظفين.",
+                btnExport: "تصدير CSV",
+                btnAdd: "إضافة تحويلة",
+                statTotal: "إجمالي التحويلات",
+                statOnline: "متصل (Online)",
+                statBusy: "مشغول (Busy)",
+                statOffline: "غير متصل (Offline)",
+                phSearch: "بحث برقم التحويلة أو الاسم...",
+                optAllDept: "كل الأقسام",
+                optAllStatus: "كل الحالات",
+                optOnline: "متصل",
+                optOffline: "غير متصل",
+                colExt: "التحويلة",
+                colUser: "المستخدم",
+                colDept: "القسم",
+                colDevice: "الجهاز / IP",
+                colStatus: "الحالة",
+                colAction: "إجراءات",
+                stAvailable: "متاح",
+                stBusy: "مشغول",
+                stOffline: "غير متصل",
+                lblShowing: "عرض 1-3 من 142",
+                modTitle: "إضافة تحويلة جديدة",
+                lblExtNum: "رقم التحويلة",
+                lblName: "اسم المستخدم",
+                lblEmail: "البريد الإلكتروني",
+                lblSecret: "كلمة المرور (SIP Secret)",
+                lblDept: "القسم",
+                lblRecord: "تفعيل تسجيل المكالمات تلقائياً",
+                btnCancel: "إلغاء",
+                btnSave: "حفظ التحويلة"
+            },
+            en: {
+                pageTitle: "Extensions Mgmt | AndroGov",
+                headerTitle: "Extensions Management",
+                headerDesc: "Manage SIP accounts, extension numbers, and connection status for all staff.",
+                btnExport: "Export CSV",
+                btnAdd: "Add Extension",
+                statTotal: "Total Extensions",
+                statOnline: "Online",
+                statBusy: "Busy",
+                statOffline: "Offline",
+                phSearch: "Search by Ext or Name...",
+                optAllDept: "All Depts",
+                optAllStatus: "All Status",
+                optOnline: "Online",
+                optOffline: "Offline",
+                colExt: "Ext",
+                colUser: "User",
+                colDept: "Dept",
+                colDevice: "Device / IP",
+                colStatus: "Status",
+                colAction: "Actions",
+                stAvailable: "Available",
+                stBusy: "Busy",
+                stOffline: "Offline",
+                lblShowing: "Showing 1-3 of 142",
+                modTitle: "Add New Extension",
+                lblExtNum: "Extension Number",
+                lblName: "User Name",
+                lblEmail: "Email (Voicemail)",
+                lblSecret: "SIP Secret",
+                lblDept: "Department",
+                lblRecord: "Enable Call Recording",
+                btnCancel: "Cancel",
+                btnSave: "Save Extension"
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const lang = localStorage.getItem('lang') || 'ar';
+            const dict = pageContent[lang];
+            
+            document.documentElement.lang = lang;
+            document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if(dict[key]) {
+                    if(el.tagName === 'INPUT') el.placeholder = dict[key];
+                    else el.innerText = dict[key];
+                }
+            });
+        });
+    </script>
+</body>
+</html>
