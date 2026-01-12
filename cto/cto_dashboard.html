@@ -51,7 +51,7 @@
                     <div>
                         <p class="text-xs text-slate-500 uppercase font-bold" data-i18n="kpiHealth">صحة النظام</p>
                         <h3 class="text-2xl font-bold font-mono text-slate-800 dark:text-white">99.98%</h3>
-                        <p class="text-[10px] text-green-500 mt-1">Uptime (30 Days)</p>
+                        <p class="text-[10px] text-green-500 mt-1" data-i18n="subUptime">Uptime (30 Days)</p>
                     </div>
                     <div class="w-10 h-10 rounded-full bg-green-500/10 flex items-center justify-center text-green-500 animate-pulse-fast">
                         <i class="fa-solid fa-heart-pulse"></i>
@@ -62,7 +62,7 @@
                     <div>
                         <p class="text-xs text-slate-500 uppercase font-bold" data-i18n="kpiPbx">السنترال (Live)</p>
                         <h3 class="text-2xl font-bold font-mono text-slate-800 dark:text-white">12/45</h3>
-                        <p class="text-[10px] text-blue-500 mt-1">Active Calls / Lines</p>
+                        <p class="text-[10px] text-blue-500 mt-1" data-i18n="subCalls">Active Calls / Lines</p>
                     </div>
                     <div class="w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-500">
                         <i class="fa-solid fa-phone-volume"></i>
@@ -73,7 +73,7 @@
                     <div>
                         <p class="text-xs text-slate-500 uppercase font-bold" data-i18n="kpiSec">تهديدات محظورة</p>
                         <h3 class="text-2xl font-bold font-mono text-slate-800 dark:text-white">1,204</h3>
-                        <p class="text-[10px] text-orange-500 mt-1">Last 24 Hours</p>
+                        <p class="text-[10px] text-orange-500 mt-1" data-i18n="subThreats">Last 24 Hours</p>
                     </div>
                     <div class="w-10 h-10 rounded-full bg-orange-500/10 flex items-center justify-center text-orange-500">
                         <i class="fa-solid fa-shield-cat"></i>
@@ -84,7 +84,7 @@
                     <div>
                         <p class="text-xs text-slate-500 uppercase font-bold" data-i18n="kpiTickets">تذاكر الدعم</p>
                         <h3 class="text-2xl font-bold font-mono text-slate-800 dark:text-white">5</h3>
-                        <p class="text-[10px] text-purple-500 mt-1">Open Tickets</p>
+                        <p class="text-[10px] text-purple-500 mt-1" data-i18n="subTickets">Open Tickets</p>
                     </div>
                     <div class="w-10 h-10 rounded-full bg-purple-500/10 flex items-center justify-center text-purple-500">
                         <i class="fa-solid fa-ticket"></i>
@@ -113,22 +113,22 @@
                         <h3 class="font-bold flex items-center gap-2">
                             <i class="fa-solid fa-tower-cell text-blue-400"></i> <span data-i18n="pbxTitle">حالة السنترال</span>
                         </h3>
-                        <button class="text-xs bg-blue-600 hover:bg-blue-500 px-3 py-1 rounded text-white" onclick="window.location.href='cto_pbx.html'">Manage</button>
+                        <button class="text-xs bg-blue-600 hover:bg-blue-500 px-3 py-1 rounded text-white" onclick="window.location.href='cto_pbx.html'" data-i18n="btnManage">Manage</button>
                     </div>
 
                     <div class="space-y-4 relative z-10">
                         <div class="flex justify-between items-center p-3 bg-slate-700/50 rounded-lg">
                             <span class="text-xs text-slate-300">SIP Trunk (STC)</span>
-                            <span class="text-xs font-bold text-green-400 flex items-center gap-1"><i class="fa-solid fa-link"></i> Connected</span>
+                            <span class="text-xs font-bold text-green-400 flex items-center gap-1"><i class="fa-solid fa-link"></i> <span data-i18n="statusConnected">Connected</span></span>
                         </div>
                         
                         <div class="flex justify-between items-center p-3 bg-slate-700/50 rounded-lg">
-                            <span class="text-xs text-slate-300">Call Queue (Support)</span>
-                            <span class="text-xs font-bold text-yellow-400">2 Waiting</span>
+                            <span class="text-xs text-slate-300" data-i18n="lblQueue">Call Queue (Support)</span>
+                            <span class="text-xs font-bold text-yellow-400" data-i18n="valWaiting">2 Waiting</span>
                         </div>
 
                         <div class="mt-4">
-                            <p class="text-[10px] text-slate-400 mb-2 uppercase">Extensions Active</p>
+                            <p class="text-[10px] text-slate-400 mb-2 uppercase" data-i18n="lblActiveExt">Extensions Active</p>
                             <div class="flex gap-2 flex-wrap">
                                 <span class="w-8 h-8 rounded bg-green-500/20 text-green-500 flex items-center justify-center text-xs font-mono border border-green-500/50" title="CEO">101</span>
                                 <span class="w-8 h-8 rounded bg-red-500/20 text-red-500 flex items-center justify-center text-xs font-mono border border-red-500/50 animate-pulse" title="Sales (Busy)">205</span>
@@ -143,7 +143,7 @@
             <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden">
                 <div class="p-5 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
                     <h3 class="font-bold text-slate-800 dark:text-white" data-i18n="logTitle">سجل العمليات الأخير</h3>
-                    <button class="text-xs text-blue-500 font-bold hover:underline">View All Logs</button>
+                    <button class="text-xs text-blue-500 font-bold hover:underline" data-i18n="viewAllLogs">View All Logs</button>
                 </div>
                 <table class="w-full text-sm text-left rtl:text-right">
                     <thead class="bg-slate-50 dark:bg-slate-800/50 text-slate-500 text-xs font-bold uppercase">
@@ -185,18 +185,29 @@
     </div>
 
     <script src="layout-cto.js"></script>
+    <script src="bot.js"></script>
     <script>
         // --- Translations ---
         const pageContent = {
             ar: {
                 pageTitle: "لوحة القيادة التقنية | AndroTech",
                 kpiHealth: "صحة النظام",
+                subUptime: "وقت التشغيل (30 يوم)",
                 kpiPbx: "السنترال (مباشر)",
+                subCalls: "مكالمات نشطة / خطوط",
                 kpiSec: "تهديدات محظورة",
+                subThreats: "آخر 24 ساعة",
                 kpiTickets: "تذاكر الدعم",
+                subTickets: "تذاكر مفتوحة",
                 chartServer: "أداء السيرفرات (Real-time)",
                 pbxTitle: "حالة السنترال",
+                btnManage: "إدارة",
+                statusConnected: "متصل",
+                lblQueue: "قائمة الانتظار (الدعم)",
+                valWaiting: "2 في الانتظار",
+                lblActiveExt: "التحويلات النشطة",
                 logTitle: "سجل العمليات الأخير",
+                viewAllLogs: "عرض كل السجلات",
                 colTime: "الوقت",
                 colType: "النوع",
                 colDesc: "الوصف",
@@ -206,12 +217,22 @@
             en: {
                 pageTitle: "Tech Dashboard | AndroTech",
                 kpiHealth: "System Health",
+                subUptime: "Uptime (30 Days)",
                 kpiPbx: "PBX Status (Live)",
+                subCalls: "Active Calls / Lines",
                 kpiSec: "Threats Blocked",
+                subThreats: "Last 24 Hours",
                 kpiTickets: "Support Tickets",
+                subTickets: "Open Tickets",
                 chartServer: "Server Performance (Real-time)",
                 pbxTitle: "PBX Status",
+                btnManage: "Manage",
+                statusConnected: "Connected",
+                lblQueue: "Call Queue (Support)",
+                valWaiting: "2 Waiting",
+                lblActiveExt: "Active Extensions",
                 logTitle: "Recent System Logs",
+                viewAllLogs: "View All Logs",
                 colTime: "Time",
                 colType: "Type",
                 colDesc: "Description",
