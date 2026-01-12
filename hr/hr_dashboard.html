@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#FB4747">
-    <title>HR & Admin Dashboard | AndroGov</title>
+    <title data-i18n="pageTitle">لوحة القيادة | AndroGov</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -29,156 +29,189 @@
 
     <div id="sidebar-container"></div>
     
-    <div class="main-content-wrapper md:mr-72 transition-all duration-300 flex flex-col min-h-screen">
+    <div class="main-content-wrapper transition-all duration-300 flex flex-col min-h-screen">
         <div id="header-container"></div>
 
         <main class="p-6 space-y-6">
             
             <div class="flex flex-col md:flex-row justify-between items-end gap-4">
                 <div>
-                    <h1 class="text-2xl font-bold text-slate-900 dark:text-white">الموارد البشرية والشؤون الإدارية</h1>
+                    <h1 class="text-2xl font-bold text-slate-900 dark:text-white" data-i18n="headerTitle">الموارد البشرية والشؤون الإدارية</h1>
                     <div class="flex items-center gap-2 mt-1">
-                        <span class="px-2 py-0.5 rounded bg-green-100 text-green-700 text-[10px] font-bold border border-green-200">
-                            <i class="fa-solid fa-check-circle"></i> نطاقات: بلاتيني
+                        <span class="px-2 py-0.5 rounded bg-green-100 text-green-700 text-[10px] font-bold border border-green-200 flex items-center gap-1">
+                            <i class="fa-solid fa-check-circle"></i> <span data-i18n="badgeNitaqat">نطاقات: بلاتيني</span>
                         </span>
-                        <span class="px-2 py-0.5 rounded bg-blue-100 text-blue-700 text-[10px] font-bold border border-blue-200">
-                            <i class="fa-solid fa-building"></i> المكاتب: مكتملة
+                        <span class="px-2 py-0.5 rounded bg-blue-100 text-blue-700 text-[10px] font-bold border border-blue-200 flex items-center gap-1">
+                            <i class="fa-solid fa-building"></i> <span data-i18n="badgeOffice">المكاتب: مكتملة</span>
                         </span>
                     </div>
                 </div>
                 <div class="flex gap-3">
                     <button onclick="openPurchaseModal()" class="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold shadow-sm hover:bg-slate-50 transition flex items-center gap-2">
-                        <i class="fa-solid fa-cart-plus text-slate-400"></i> <span>طلب شراء (إداري)</span>
+                        <i class="fa-solid fa-cart-plus text-slate-400"></i> <span data-i18n="btnPurchase">طلب شراء (إداري)</span>
                     </button>
                     <button onclick="openEmployeeModal()" class="px-4 py-2 bg-brandRed text-white rounded-lg text-xs font-bold shadow-lg shadow-red-500/30 hover:bg-red-700 transition flex items-center gap-2">
-                        <i class="fa-solid fa-user-plus"></i> <span>موظف جديد</span>
+                        <i class="fa-solid fa-user-plus"></i> <span data-i18n="btnNewEmp">موظف جديد</span>
                     </button>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                
                 <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
                     <div class="flex justify-between items-start mb-2">
-                        <p class="text-xs text-slate-500 font-bold uppercase">إجمالي الموظفين</p>
+                        <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="kpiEmp">إجمالي الموظفين</p>
                         <i class="fa-solid fa-users text-brandRed bg-red-50 dark:bg-red-900/20 p-2 rounded-lg"></i>
                     </div>
                     <h3 class="text-2xl font-bold num-font">45</h3>
-                    <p class="text-[10px] text-green-600 mt-2 font-bold"><i class="fa-solid fa-passport"></i> 78% توطين</p>
+                    <p class="text-[10px] text-green-600 mt-2 font-bold flex items-center gap-1"><i class="fa-solid fa-passport"></i> <span data-i18n="kpiEmpSub">78% توطين</span></p>
                 </div>
+
                 <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
                     <div class="flex justify-between items-start mb-2">
-                        <p class="text-xs text-slate-500 font-bold uppercase">الرواتب (المتوقع)</p>
+                        <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="kpiPay">الرواتب (المتوقع)</p>
                         <i class="fa-solid fa-money-bill-wave text-green-600 bg-green-50 dark:bg-green-900/20 p-2 rounded-lg"></i>
                     </div>
                     <h3 class="text-2xl font-bold num-font">320K <span class="text-xs font-normal text-slate-400">SAR</span></h3>
-                    <p class="text-[10px] text-slate-400 mt-2">يستحق في: 27 الشهر</p>
+                    <p class="text-[10px] text-slate-400 mt-2" data-i18n="kpiPaySub">يستحق في: 27 الشهر</p>
                 </div>
+
                 <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
                     <div class="flex justify-between items-start mb-2">
-                        <p class="text-xs text-slate-500 font-bold uppercase">تنبيهات حكومية</p>
+                        <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="kpiGov">تنبيهات حكومية</p>
                         <i class="fa-solid fa-triangle-exclamation text-alertOrange bg-orange-50 dark:bg-orange-900/20 p-2 rounded-lg"></i>
                     </div>
                     <h3 class="text-2xl font-bold num-font text-alertOrange">3</h3>
-                    <p class="text-[10px] text-slate-400 mt-2">انتهاء إقامة / رخص</p>
+                    <p class="text-[10px] text-slate-400 mt-2" data-i18n="kpiGovSub">انتهاء إقامة / رخص</p>
                 </div>
+
                 <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
                     <div class="flex justify-between items-start mb-2">
-                        <p class="text-xs text-slate-500 font-bold uppercase">العهد المسلمة</p>
+                        <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="kpiAsset">العهد المسلمة</p>
                         <i class="fa-solid fa-laptop-code text-blue-600 bg-blue-50 dark:bg-blue-900/20 p-2 rounded-lg"></i>
                     </div>
                     <h3 class="text-2xl font-bold num-font">85</h3>
-                    <p class="text-[10px] text-slate-400 mt-2">سيارات: 5 | أجهزة: 80</p>
+                    <p class="text-[10px] text-slate-400 mt-2" data-i18n="kpiAssetSub">سيارات: 5 | أجهزة: 80</p>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                
                 <div class="lg:col-span-2 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-6">
                     <div class="flex justify-between items-center mb-4">
                         <h3 class="font-bold text-slate-800 dark:text-white flex items-center gap-2">
-                            <i class="fa-solid fa-bell text-brandRed"></i> التنبيهات الحرجة (30 يوم)
+                            <i class="fa-solid fa-bell text-brandRed"></i> <span data-i18n="titleAlerts">التنبيهات الحرجة (30 يوم)</span>
                         </h3>
                     </div>
+                    
                     <div class="space-y-3">
                         <div class="flex items-center justify-between p-3 bg-red-50 dark:bg-red-900/10 rounded-xl border border-red-100 dark:border-red-900/30">
                             <div class="flex items-center gap-3">
                                 <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-red-500 font-bold border border-red-200"><i class="fa-solid fa-id-card"></i></div>
                                 <div>
-                                    <p class="text-xs font-bold text-slate-800 dark:text-white">تجديد إقامة (محمد خان)</p>
-                                    <p class="text-[10px] text-red-600">تنتهي خلال 3 أيام</p>
+                                    <p class="text-xs font-bold text-slate-800 dark:text-white" data-i18n="alert1Title">تجديد إقامة (محمد خان)</p>
+                                    <p class="text-[10px] text-red-600" data-i18n="alert1Time">تنتهي خلال 3 أيام</p>
                                 </div>
                             </div>
-                            <button onclick="alert('تم التوجيه لمنصة مقيم')" class="text-[10px] bg-white border border-red-200 px-3 py-1 rounded text-red-600 hover:bg-red-50 font-bold">إجراء (مقيم)</button>
+                            <button onclick="alert('Redirecting to Muqeem...')" class="text-[10px] bg-white border border-red-200 px-3 py-1 rounded text-red-600 hover:bg-red-50 font-bold" data-i18n="btnAction">إجراء</button>
                         </div>
+
                         <div class="flex items-center justify-between p-3 bg-orange-50 dark:bg-orange-900/10 rounded-xl border border-orange-100 dark:border-orange-900/30">
                             <div class="flex items-center gap-3">
                                 <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-orange-500 font-bold border border-orange-200"><i class="fa-solid fa-building"></i></div>
                                 <div>
-                                    <p class="text-xs font-bold text-slate-800 dark:text-white">رخصة البلدية (فرع الشمال)</p>
-                                    <p class="text-[10px] text-orange-600">تنتهي خلال 15 يوم</p>
+                                    <p class="text-xs font-bold text-slate-800 dark:text-white" data-i18n="alert2Title">رخصة البلدية (فرع الشمال)</p>
+                                    <p class="text-[10px] text-orange-600" data-i18n="alert2Time">تنتهي خلال 15 يوم</p>
                                 </div>
                             </div>
-                            <button onclick="alert('تم بدء إجراء التجديد')" class="text-[10px] bg-white border border-orange-200 px-3 py-1 rounded text-orange-600 hover:bg-orange-50 font-bold">تجديد</button>
+                            <button onclick="alert('Renewal Process Started')" class="text-[10px] bg-white border border-orange-200 px-3 py-1 rounded text-orange-600 hover:bg-orange-50 font-bold" data-i18n="btnRenew">تجديد</button>
+                        </div>
+
+                        <div class="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-700/50 rounded-xl border border-slate-100 dark:border-slate-600">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-slate-500 font-bold border border-slate-200"><i class="fa-solid fa-file-contract"></i></div>
+                                <div>
+                                    <p class="text-xs font-bold text-slate-800 dark:text-white" data-i18n="alert3Title">عقد إيجار المقر الرئيسي</p>
+                                    <p class="text-[10px] text-slate-500" data-i18n="alert3Time">ينتهي خلال 45 يوم</p>
+                                </div>
+                            </div>
+                            <button class="text-[10px] bg-white border border-slate-200 px-3 py-1 rounded text-slate-600 hover:bg-slate-100 font-bold" data-i18n="btnView">عرض</button>
                         </div>
                     </div>
                 </div>
 
                 <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-6">
-                    <h3 class="font-bold text-slate-800 dark:text-white mb-4">الانضباط اليومي</h3>
+                    <h3 class="font-bold text-slate-800 dark:text-white mb-4" data-i18n="titleAtt">الانضباط اليومي</h3>
                     <div class="h-32 relative flex justify-center mb-4">
                         <canvas id="attendanceChart"></canvas>
                     </div>
                     <div class="space-y-2 text-xs">
-                        <div class="flex justify-between items-center p-2 bg-green-50 rounded text-green-700"><span>حضور في الوقت</span><span class="font-bold">40</span></div>
-                        <div class="flex justify-between items-center p-2 bg-red-50 rounded text-red-700"><span>تأخير (>15د)</span><span class="font-bold">3 <span class="text-[9px]">(خصم)</span></span></div>
+                        <div class="flex justify-between items-center p-2 bg-green-50 rounded text-green-700">
+                            <span data-i18n="attPresent">حضور في الوقت</span>
+                            <span class="font-bold">40</span>
+                        </div>
+                        <div class="flex justify-between items-center p-2 bg-red-50 rounded text-red-700">
+                            <span data-i18n="attLate">تأخير (>15د)</span>
+                            <span class="font-bold">3 <span class="text-[9px]" data-i18n="attDeduct">(خصم)</span></span>
+                        </div>
+                        <div class="flex justify-between items-center p-2 bg-slate-100 rounded text-slate-600">
+                            <span data-i18n="attAbsent">غياب / إجازة</span>
+                            <span class="font-bold">2</span>
+                        </div>
                     </div>
                 </div>
+
             </div>
 
             <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden">
                 <div class="p-5 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center">
-                    <h3 class="font-bold text-slate-800 dark:text-white">طلبات بانتظار اعتمادك</h3>
-                    <span class="bg-brandRed text-white text-[10px] px-2 py-0.5 rounded-full">3 طلبات</span>
+                    <h3 class="font-bold text-slate-800 dark:text-white" data-i18n="titleReqs">طلبات بانتظار اعتمادك</h3>
+                    <span class="bg-brandRed text-white text-[10px] px-2 py-0.5 rounded-full" data-i18n="reqCount">4 طلبات</span>
                 </div>
                 <table class="w-full text-sm text-right rtl:text-right ltr:text-left">
                     <thead class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 text-xs font-bold uppercase">
                         <tr>
-                            <th class="p-4">نوع الطلب</th>
-                            <th class="p-4">المقدم</th>
-                            <th class="p-4">التفاصيل</th>
-                            <th class="p-4">التاريخ</th>
-                            <th class="p-4 text-center">الإجراء</th>
+                            <th class="p-4" data-i18n="colType">نوع الطلب</th>
+                            <th class="p-4" data-i18n="colReq">المقدم</th>
+                            <th class="p-4" data-i18n="colDetails">التفاصيل</th>
+                            <th class="p-4" data-i18n="colDate">التاريخ</th>
+                            <th class="p-4 text-center" data-i18n="colAction">الإجراء</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-slate-100 dark:divide-slate-700 dark:text-slate-300">
-                        <tr id="req-1" class="hover:bg-slate-50 dark:hover:bg-slate-700/50">
-                            <td class="p-4"><span class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded text-[10px] font-bold">إجازة سنوية</span></td>
-                            <td class="p-4 font-bold text-xs">خالد العتيبي (IT)</td>
-                            <td class="p-4 text-xs">5 أيام (رصيد متبقي: 12)</td>
+                    <tbody class="divide-y divide-slate-100 dark:divide-slate-700 dark:text-slate-300" id="reqTable">
+                        
+                        <tr id="req-1" class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
+                            <td class="p-4"><span class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded text-[10px] font-bold" data-i18n="typeVac">إجازة سنوية</span></td>
+                            <td class="p-4 font-bold text-xs">خالد العتيبي</td>
+                            <td class="p-4 text-xs" data-i18n="detVac">5 أيام (رصيد متبقي: 12)</td>
                             <td class="p-4 text-xs font-mono">2026-01-10</td>
                             <td class="p-4 text-center flex justify-center gap-2">
                                 <button onclick="approveRequest('req-1')" class="w-6 h-6 rounded bg-green-100 text-green-600 hover:bg-green-200"><i class="fa-solid fa-check"></i></button>
                                 <button onclick="rejectRequest('req-1')" class="w-6 h-6 rounded bg-red-100 text-red-600 hover:bg-red-200"><i class="fa-solid fa-xmark"></i></button>
                             </td>
                         </tr>
-                        <tr id="req-2" class="hover:bg-slate-50 dark:hover:bg-slate-700/50">
-                            <td class="p-4"><span class="bg-purple-100 text-purple-700 px-2 py-0.5 rounded text-[10px] font-bold">شراء (أصول)</span></td>
-                            <td class="p-4 font-bold text-xs">سارة الأحمد (Marketing)</td>
-                            <td class="p-4 text-xs">طابعة ليزر (1200 ريال)</td>
+
+                        <tr id="req-2" class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
+                            <td class="p-4"><span class="bg-purple-100 text-purple-700 px-2 py-0.5 rounded text-[10px] font-bold" data-i18n="typeAsset">شراء (أصول)</span></td>
+                            <td class="p-4 font-bold text-xs">سارة الأحمد</td>
+                            <td class="p-4 text-xs" data-i18n="detAsset">طابعة ليزر (1200 ريال)</td>
                             <td class="p-4 text-xs font-mono">2026-01-11</td>
                             <td class="p-4 text-center flex justify-center gap-2">
                                 <button onclick="approveRequest('req-2')" class="w-6 h-6 rounded bg-green-100 text-green-600 hover:bg-green-200"><i class="fa-solid fa-check"></i></button>
                                 <button onclick="rejectRequest('req-2')" class="w-6 h-6 rounded bg-red-100 text-red-600 hover:bg-red-200"><i class="fa-solid fa-xmark"></i></button>
                             </td>
                         </tr>
-                        <tr id="req-3" class="hover:bg-slate-50 dark:hover:bg-slate-700/50">
-                            <td class="p-4"><span class="bg-orange-100 text-orange-700 px-2 py-0.5 rounded text-[10px] font-bold">عقد شراكة</span></td>
-                            <td class="p-4 font-bold text-xs">إدارة المبيعات</td>
-                            <td class="p-4 text-xs">مراجعة مسودة عقد (شركة الحلول)</td>
+
+                        <tr id="req-3" class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
+                            <td class="p-4"><span class="bg-orange-100 text-orange-700 px-2 py-0.5 rounded text-[10px] font-bold" data-i18n="typeContract">عقد شراكة</span></td>
+                            <td class="p-4 font-bold text-xs" data-i18n="reqSales">إدارة المبيعات</td>
+                            <td class="p-4 text-xs" data-i18n="detContract">مراجعة مسودة عقد (شركة الحلول)</td>
                             <td class="p-4 text-xs font-mono">2026-01-12</td>
                             <td class="p-4 text-center flex justify-center gap-2">
                                 <button class="w-6 h-6 rounded bg-slate-100 text-slate-600 hover:bg-slate-200"><i class="fa-solid fa-eye"></i></button>
                             </td>
                         </tr>
+
                     </tbody>
                 </table>
             </div>
@@ -189,41 +222,41 @@
     <div id="employeeModal" class="fixed inset-0 bg-black/60 hidden z-50 flex items-center justify-center backdrop-blur-sm p-4">
         <div class="bg-white dark:bg-slate-800 w-full max-w-lg rounded-2xl shadow-xl p-6">
             <div class="flex justify-between items-center mb-6 border-b pb-4 dark:border-slate-700">
-                <h3 class="font-bold text-lg dark:text-white">إضافة موظف جديد</h3>
+                <h3 class="font-bold text-lg dark:text-white" data-i18n="modEmpTitle">إضافة موظف جديد</h3>
                 <button onclick="document.getElementById('employeeModal').classList.add('hidden')"><i class="fa-solid fa-xmark text-slate-400"></i></button>
             </div>
             <div class="space-y-4">
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-bold text-slate-500 mb-1">الاسم الأول</label>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblFirst">الاسم الأول</label>
                         <input type="text" class="w-full bg-slate-50 dark:bg-slate-700 border dark:border-slate-600 rounded-lg p-2 text-sm dark:text-white">
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-500 mb-1">العائلة</label>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblLast">العائلة</label>
                         <input type="text" class="w-full bg-slate-50 dark:bg-slate-700 border dark:border-slate-600 rounded-lg p-2 text-sm dark:text-white">
                     </div>
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-500 mb-1">المسمى الوظيفي</label>
+                    <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblJob">المسمى الوظيفي</label>
                     <input type="text" class="w-full bg-slate-50 dark:bg-slate-700 border dark:border-slate-600 rounded-lg p-2 text-sm dark:text-white">
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-bold text-slate-500 mb-1">الجنسية</label>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblNat">الجنسية</label>
                         <select class="w-full bg-slate-50 dark:bg-slate-700 border dark:border-slate-600 rounded-lg p-2 text-sm dark:text-white">
                             <option>سعودي</option>
                             <option>غير سعودي</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-500 mb-1">الراتب الأساسي</label>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblSalary">الراتب الأساسي</label>
                         <input type="number" class="w-full bg-slate-50 dark:bg-slate-700 border dark:border-slate-600 rounded-lg p-2 text-sm dark:text-white">
                     </div>
                 </div>
             </div>
             <div class="mt-6 flex justify-end gap-3 pt-4 border-t dark:border-slate-700">
-                <button onclick="document.getElementById('employeeModal').classList.add('hidden')" class="px-4 py-2 border rounded-lg text-xs font-bold hover:bg-slate-50 dark:text-white">إلغاء</button>
-                <button onclick="alert('تم حفظ بيانات الموظف'); document.getElementById('employeeModal').classList.add('hidden')" class="px-6 py-2 bg-brandRed text-white rounded-lg text-xs font-bold hover:bg-red-700 shadow-md">حفظ وإضافة</button>
+                <button onclick="document.getElementById('employeeModal').classList.add('hidden')" class="px-4 py-2 border rounded-lg text-xs font-bold hover:bg-slate-50 dark:text-white" data-i18n="btnCancel">إلغاء</button>
+                <button onclick="alert('تم حفظ بيانات الموظف'); document.getElementById('employeeModal').classList.add('hidden')" class="px-6 py-2 bg-brandRed text-white rounded-lg text-xs font-bold hover:bg-red-700 shadow-md" data-i18n="btnSave">حفظ وإضافة</button>
             </div>
         </div>
     </div>
@@ -231,31 +264,31 @@
     <div id="purchaseModal" class="fixed inset-0 bg-black/60 hidden z-50 flex items-center justify-center backdrop-blur-sm p-4">
         <div class="bg-white dark:bg-slate-800 w-full max-w-lg rounded-2xl shadow-xl p-6">
             <div class="flex justify-between items-center mb-6 border-b pb-4 dark:border-slate-700">
-                <h3 class="font-bold text-lg dark:text-white">طلب شراء (إداري)</h3>
+                <h3 class="font-bold text-lg dark:text-white" data-i18n="modPurTitle">طلب شراء (إداري)</h3>
                 <button onclick="document.getElementById('purchaseModal').classList.add('hidden')"><i class="fa-solid fa-xmark text-slate-400"></i></button>
             </div>
             <div class="space-y-4">
                 <div>
-                    <label class="block text-xs font-bold text-slate-500 mb-1">بند الشراء</label>
-                    <input type="text" class="w-full bg-slate-50 dark:bg-slate-700 border dark:border-slate-600 rounded-lg p-2 text-sm dark:text-white" placeholder="مثال: أحبار طابعة">
+                    <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblItem">بند الشراء</label>
+                    <input type="text" class="w-full bg-slate-50 dark:bg-slate-700 border dark:border-slate-600 rounded-lg p-2 text-sm dark:text-white">
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-bold text-slate-500 mb-1">الكمية</label>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblQty">الكمية</label>
                         <input type="number" class="w-full bg-slate-50 dark:bg-slate-700 border dark:border-slate-600 rounded-lg p-2 text-sm dark:text-white">
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-500 mb-1">التكلفة التقديرية</label>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblCost">التكلفة التقديرية</label>
                         <input type="number" class="w-full bg-slate-50 dark:bg-slate-700 border dark:border-slate-600 rounded-lg p-2 text-sm dark:text-white">
                     </div>
                 </div>
                 <div class="p-3 bg-yellow-50 text-yellow-800 text-xs rounded border border-yellow-200">
-                    <i class="fa-solid fa-info-circle"></i> ملاحظة: الصلاحية المباشرة للشراء حتى 5000 ريال.
+                    <i class="fa-solid fa-info-circle"></i> <span data-i18n="noteLimit">ملاحظة: الصلاحية المباشرة للشراء حتى 5000 ريال.</span>
                 </div>
             </div>
             <div class="mt-6 flex justify-end gap-3 pt-4 border-t dark:border-slate-700">
-                <button onclick="document.getElementById('purchaseModal').classList.add('hidden')" class="px-4 py-2 border rounded-lg text-xs font-bold hover:bg-slate-50 dark:text-white">إلغاء</button>
-                <button onclick="alert('تم رفع طلب الشراء للمالية'); document.getElementById('purchaseModal').classList.add('hidden')" class="px-6 py-2 bg-brandRed text-white rounded-lg text-xs font-bold hover:bg-red-700 shadow-md">اعتماد الطلب</button>
+                <button onclick="document.getElementById('purchaseModal').classList.add('hidden')" class="px-4 py-2 border rounded-lg text-xs font-bold hover:bg-slate-50 dark:text-white" data-i18n="btnCancel">إلغاء</button>
+                <button onclick="alert('تم رفع طلب الشراء للمالية'); document.getElementById('purchaseModal').classList.add('hidden')" class="px-6 py-2 bg-brandRed text-white rounded-lg text-xs font-bold hover:bg-red-700 shadow-md" data-i18n="btnConfirm">اعتماد الطلب</button>
             </div>
         </div>
     </div>
@@ -264,36 +297,173 @@
     <script src="bot.js"></script>
 
     <script>
-        // --- Modal Functions (Ensured they are globally available) ---
+        // --- 1. الترجمة ---
+        const pageContent = {
+            ar: {
+                pageTitle: "لوحة القيادة | AndroGov",
+                headerTitle: "الموارد البشرية والشؤون الإدارية",
+                badgeNitaqat: "نطاقات: بلاتيني",
+                badgeOffice: "المكاتب: مكتملة",
+                btnPurchase: "طلب شراء (إداري)",
+                btnNewEmp: "موظف جديد",
+                kpiEmp: "إجمالي الموظفين",
+                kpiEmpSub: "78% توطين",
+                kpiPay: "الرواتب (المتوقع)",
+                kpiPaySub: "يستحق في: 27 الشهر",
+                kpiGov: "تنبيهات حكومية",
+                kpiGovSub: "انتهاء إقامة / رخص",
+                kpiAsset: "العهد المسلمة",
+                kpiAssetSub: "سيارات: 5 | أجهزة: 80",
+                titleAlerts: "التنبيهات الحرجة (30 يوم)",
+                alert1Title: "تجديد إقامة (محمد خان)",
+                alert1Time: "تنتهي خلال 3 أيام",
+                btnAction: "إجراء",
+                alert2Title: "رخصة البلدية (فرع الشمال)",
+                alert2Time: "تنتهي خلال 15 يوم",
+                btnRenew: "تجديد",
+                alert3Title: "عقد إيجار المقر الرئيسي",
+                alert3Time: "ينتهي خلال 45 يوم",
+                btnView: "عرض",
+                titleAtt: "الانضباط اليومي",
+                attPresent: "حضور في الوقت",
+                attLate: "تأخير (>15د)",
+                attDeduct: "(خصم)",
+                attAbsent: "غياب / إجازة",
+                titleReqs: "طلبات بانتظار اعتمادك",
+                reqCount: "4 طلبات",
+                colType: "نوع الطلب",
+                colReq: "المقدم",
+                colDetails: "التفاصيل",
+                colDate: "التاريخ",
+                colAction: "الإجراء",
+                typeVac: "إجازة سنوية",
+                detVac: "5 أيام (رصيد متبقي: 12)",
+                typeAsset: "شراء (أصول)",
+                detAsset: "طابعة ليزر (1200 ريال)",
+                typeContract: "عقد شراكة",
+                reqSales: "إدارة المبيعات",
+                detContract: "مراجعة مسودة عقد (شركة الحلول)",
+                modEmpTitle: "إضافة موظف جديد",
+                lblFirst: "الاسم الأول",
+                lblLast: "العائلة",
+                lblJob: "المسمى الوظيفي",
+                lblNat: "الجنسية",
+                lblSalary: "الراتب الأساسي",
+                btnCancel: "إلغاء",
+                btnSave: "حفظ وإضافة",
+                modPurTitle: "طلب شراء (إداري)",
+                lblItem: "بند الشراء",
+                lblQty: "الكمية",
+                lblCost: "التكلفة التقديرية",
+                noteLimit: "ملاحظة: الصلاحية المباشرة للشراء حتى 5000 ريال.",
+                btnConfirm: "اعتماد الطلب"
+            },
+            en: {
+                pageTitle: "Dashboard | AndroGov",
+                headerTitle: "HR & Admin Affairs",
+                badgeNitaqat: "Nitaqat: Platinum",
+                badgeOffice: "Offices: Complete",
+                btnPurchase: "Purchase Request",
+                btnNewEmp: "New Employee",
+                kpiEmp: "Total Employees",
+                kpiEmpSub: "78% Saudization",
+                kpiPay: "Payroll (Forecast)",
+                kpiPaySub: "Due: 27th",
+                kpiGov: "Govt Alerts",
+                kpiGovSub: "Expiring Docs",
+                kpiAsset: "Assigned Assets",
+                kpiAssetSub: "Cars: 5 | Devices: 80",
+                titleAlerts: "Critical Alerts (30 Days)",
+                alert1Title: "Iqama Renewal (Mohammed Khan)",
+                alert1Time: "Expires in 3 Days",
+                btnAction: "Action",
+                alert2Title: "Municipality Lic. (North)",
+                alert2Time: "Expires in 15 Days",
+                btnRenew: "Renew",
+                alert3Title: "HQ Lease Contract",
+                alert3Time: "Expires in 45 Days",
+                btnView: "View",
+                titleAtt: "Daily Attendance",
+                attPresent: "On Time",
+                attLate: "Late (>15m)",
+                attDeduct: "(Deduct)",
+                attAbsent: "Absent / Leave",
+                titleReqs: "Pending Requests",
+                reqCount: "4 Requests",
+                colType: "Request Type",
+                colReq: "Requester",
+                colDetails: "Details",
+                colDate: "Date",
+                colAction: "Action",
+                typeVac: "Annual Leave",
+                detVac: "5 Days (Bal: 12)",
+                typeAsset: "Purchase (Asset)",
+                detAsset: "Laser Printer (1200 SAR)",
+                typeContract: "Partnership",
+                reqSales: "Sales Dept",
+                detContract: "Contract Draft Review",
+                modEmpTitle: "Add New Employee",
+                lblFirst: "First Name",
+                lblLast: "Last Name",
+                lblJob: "Job Title",
+                lblNat: "Nationality",
+                lblSalary: "Basic Salary",
+                btnCancel: "Cancel",
+                btnSave: "Save & Add",
+                modPurTitle: "Purchase Request",
+                lblItem: "Item Name",
+                lblQty: "Quantity",
+                lblCost: "Est. Cost",
+                noteLimit: "Note: Direct purchase limit is 5000 SAR.",
+                btnConfirm: "Approve Request"
+            }
+        };
+
+        // --- 2. التشغيل ---
+        document.addEventListener('DOMContentLoaded', () => {
+            updatePageLanguage();
+            initChart();
+        });
+
+        function updatePageLanguage() {
+            const lang = localStorage.getItem('lang') || 'ar';
+            const dict = pageContent[lang];
+            
+            document.documentElement.lang = lang;
+            document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if(dict[key]) el.innerText = dict[key];
+            });
+        }
+
+        // --- 3. الوظائف ---
         function openEmployeeModal() { document.getElementById('employeeModal').classList.remove('hidden'); }
         function openPurchaseModal() { document.getElementById('purchaseModal').classList.remove('hidden'); }
 
-        // --- Table Actions (Simulation) ---
         function approveRequest(rowId) {
-            if(confirm('هل أنت متأكد من اعتماد هذا الطلب؟')) {
+            if(confirm('Confirm approval?')) {
                 const row = document.getElementById(rowId);
-                row.style.transition = "all 0.5s";
-                row.style.backgroundColor = '#dcfce7'; // Light Green
-                setTimeout(() => row.remove(), 500); 
-            }
-        }
-
-        function rejectRequest(rowId) {
-            if(confirm('هل أنت متأكد من رفض الطلب؟')) {
-                const row = document.getElementById(rowId);
-                row.style.transition = "all 0.5s";
-                row.style.backgroundColor = '#fee2e2'; // Light Red
+                row.style.backgroundColor = '#dcfce7';
                 setTimeout(() => row.remove(), 500);
             }
         }
 
-        // --- Chart Init ---
-        document.addEventListener('DOMContentLoaded', () => {
+        function rejectRequest(rowId) {
+            if(confirm('Confirm rejection?')) {
+                const row = document.getElementById(rowId);
+                row.style.backgroundColor = '#fee2e2';
+                setTimeout(() => row.remove(), 500);
+            }
+        }
+
+        function initChart() {
             const ctx = document.getElementById('attendanceChart').getContext('2d');
             new Chart(ctx, {
                 type: 'doughnut',
                 data: {
-                    labels: ['حضور', 'تأخير', 'غياب'],
+                    labels: ['Present', 'Late', 'Absent'],
                     datasets: [{
                         data: [40, 3, 2],
                         backgroundColor: ['#10B981', '#EF4444', '#CBD5E1'],
@@ -307,7 +477,7 @@
                     cutout: '75%'
                 }
             });
-        });
+        }
     </script>
 </body>
 </html>
