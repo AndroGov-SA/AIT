@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="pageTitle">لوحة القيادة التقنية | AndroTech</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { 
+                        techBlue: '#3B82F6', 
+                        techDark: '#0F172A', 
+                        cyberGreen: '#10B981', 
+                        alertRed: '#EF4444' 
+                    },
+                    fontFamily: { 
+                        sans: ['Tajawal', 'sans-serif'], 
+                        mono: ['IBM Plex Mono', 'monospace'] 
+                    },
+                    animation: {
+                        'pulse-fast': 'pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .font-mono { font-family: 'IBM Plex Mono', monospace; }
+        .glass-panel { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-200 font-sans transition-colors duration-300 opacity-0">
+
+    <div id="sidebar-container"></div>
+    
+    <div class="main-content-wrapper transition-all duration-300 flex flex-col min-h-screen">
+        <div id="header-container"></div>
+
+        <main class="p-6 space-y-6">
+            
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl shadow-sm border-l-4 border-green-500 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs text-slate-500 uppercase font-bold" data-i18n="kpiHealth">صحة النظام</p>
+                        <h3 class="text-2xl font-bold font-mono text-slate-800 dark:text-white">99.98%</h3>
+                        <p class="text-[10px] text-green-500 mt-1">Uptime (30 Days)</p>
+                    </div>
+                    <div class="w-10 h-10 rounded-full bg-green-500/10 flex items-center justify-center text-green-500 animate-pulse-fast">
+                        <i class="fa-solid fa-heart-pulse"></i>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl shadow-sm border-l-4 border-blue-500 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs text-slate-500 uppercase font-bold" data-i18n="kpiPbx">السنترال (Live)</p>
+                        <h3 class="text-2xl font-bold font-mono text-slate-800 dark:text-white">12/45</h3>
+                        <p class="text-[10px] text-blue-500 mt-1">Active Calls / Lines</p>
+                    </div>
+                    <div class="w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-500">
+                        <i class="fa-solid fa-phone-volume"></i>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl shadow-sm border-l-4 border-orange-500 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs text-slate-500 uppercase font-bold" data-i18n="kpiSec">تهديدات محظورة</p>
+                        <h3 class="text-2xl font-bold font-mono text-slate-800 dark:text-white">1,204</h3>
+                        <p class="text-[10px] text-orange-500 mt-1">Last 24 Hours</p>
+                    </div>
+                    <div class="w-10 h-10 rounded-full bg-orange-500/10 flex items-center justify-center text-orange-500">
+                        <i class="fa-solid fa-shield-cat"></i>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl shadow-sm border-l-4 border-purple-500 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs text-slate-500 uppercase font-bold" data-i18n="kpiTickets">تذاكر الدعم</p>
+                        <h3 class="text-2xl font-bold font-mono text-slate-800 dark:text-white">5</h3>
+                        <p class="text-[10px] text-purple-500 mt-1">Open Tickets</p>
+                    </div>
+                    <div class="w-10 h-10 rounded-full bg-purple-500/10 flex items-center justify-center text-purple-500">
+                        <i class="fa-solid fa-ticket"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                
+                <div class="lg:col-span-2 bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 p-5">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-bold text-slate-800 dark:text-white flex items-center gap-2">
+                            <i class="fa-solid fa-server text-blue-500"></i> <span data-i18n="chartServer">أداء السيرفرات (Real-time)</span>
+                        </h3>
+                        <span class="text-[10px] font-mono text-green-500 flex items-center gap-1"><span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span> Live</span>
+                    </div>
+                    <div class="h-64 w-full">
+                        <canvas id="serverChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800 text-white rounded-2xl shadow-lg border border-slate-700 p-5 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-blue-600/20 rounded-full blur-3xl"></div>
+                    
+                    <div class="flex justify-between items-center mb-6 relative z-10">
+                        <h3 class="font-bold flex items-center gap-2">
+                            <i class="fa-solid fa-tower-cell text-blue-400"></i> <span data-i18n="pbxTitle">حالة السنترال</span>
+                        </h3>
+                        <button class="text-xs bg-blue-600 hover:bg-blue-500 px-3 py-1 rounded text-white" onclick="window.location.href='cto_pbx.html'">Manage</button>
+                    </div>
+
+                    <div class="space-y-4 relative z-10">
+                        <div class="flex justify-between items-center p-3 bg-slate-700/50 rounded-lg">
+                            <span class="text-xs text-slate-300">SIP Trunk (STC)</span>
+                            <span class="text-xs font-bold text-green-400 flex items-center gap-1"><i class="fa-solid fa-link"></i> Connected</span>
+                        </div>
+                        
+                        <div class="flex justify-between items-center p-3 bg-slate-700/50 rounded-lg">
+                            <span class="text-xs text-slate-300">Call Queue (Support)</span>
+                            <span class="text-xs font-bold text-yellow-400">2 Waiting</span>
+                        </div>
+
+                        <div class="mt-4">
+                            <p class="text-[10px] text-slate-400 mb-2 uppercase">Extensions Active</p>
+                            <div class="flex gap-2 flex-wrap">
+                                <span class="w-8 h-8 rounded bg-green-500/20 text-green-500 flex items-center justify-center text-xs font-mono border border-green-500/50" title="CEO">101</span>
+                                <span class="w-8 h-8 rounded bg-red-500/20 text-red-500 flex items-center justify-center text-xs font-mono border border-red-500/50 animate-pulse" title="Sales (Busy)">205</span>
+                                <span class="w-8 h-8 rounded bg-slate-600 text-slate-400 flex items-center justify-center text-xs font-mono" title="Idle">206</span>
+                                <span class="w-8 h-8 rounded bg-green-500/20 text-green-500 flex items-center justify-center text-xs font-mono border border-green-500/50" title="HR">301</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden">
+                <div class="p-5 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
+                    <h3 class="font-bold text-slate-800 dark:text-white" data-i18n="logTitle">سجل العمليات الأخير</h3>
+                    <button class="text-xs text-blue-500 font-bold hover:underline">View All Logs</button>
+                </div>
+                <table class="w-full text-sm text-left rtl:text-right">
+                    <thead class="bg-slate-50 dark:bg-slate-800/50 text-slate-500 text-xs font-bold uppercase">
+                        <tr>
+                            <th class="p-4" data-i18n="colTime">Time</th>
+                            <th class="p-4" data-i18n="colType">Type</th>
+                            <th class="p-4" data-i18n="colDesc">Description</th>
+                            <th class="p-4" data-i18n="colUser">User</th>
+                            <th class="p-4" data-i18n="colStatus">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 dark:divide-slate-800 dark:text-slate-300 font-mono text-xs">
+                        <tr>
+                            <td class="p-4">10:42:05</td>
+                            <td class="p-4"><span class="text-red-500 font-bold">SECURITY</span></td>
+                            <td class="p-4">Failed login attempt (IP: 192.168.1.55)</td>
+                            <td class="p-4 text-slate-400">System</td>
+                            <td class="p-4"><span class="bg-red-100 text-red-600 px-2 py-0.5 rounded text-[10px]">Blocked</span></td>
+                        </tr>
+                        <tr>
+                            <td class="p-4">10:38:12</td>
+                            <td class="p-4"><span class="text-blue-500 font-bold">PBX</span></td>
+                            <td class="p-4">Outbound Call (055xxxxxxx) - 4m 12s</td>
+                            <td class="p-4">Ext 205</td>
+                            <td class="p-4"><span class="bg-green-100 text-green-600 px-2 py-0.5 rounded text-[10px]">Completed</span></td>
+                        </tr>
+                        <tr>
+                            <td class="p-4">10:15:00</td>
+                            <td class="p-4"><span class="text-purple-500 font-bold">BACKUP</span></td>
+                            <td class="p-4">Daily Database Backup (SQL_DB_01)</td>
+                            <td class="p-4">Auto-Job</td>
+                            <td class="p-4"><span class="bg-green-100 text-green-600 px-2 py-0.5 rounded text-[10px]">Success</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </main>
+    </div>
+
+    <script src="layout-cto.js"></script>
+    <script>
+        // --- Translations ---
+        const pageContent = {
+            ar: {
+                pageTitle: "لوحة القيادة التقنية | AndroTech",
+                kpiHealth: "صحة النظام",
+                kpiPbx: "السنترال (مباشر)",
+                kpiSec: "تهديدات محظورة",
+                kpiTickets: "تذاكر الدعم",
+                chartServer: "أداء السيرفرات (Real-time)",
+                pbxTitle: "حالة السنترال",
+                logTitle: "سجل العمليات الأخير",
+                colTime: "الوقت",
+                colType: "النوع",
+                colDesc: "الوصف",
+                colUser: "المستخدم",
+                colStatus: "الحالة"
+            },
+            en: {
+                pageTitle: "Tech Dashboard | AndroTech",
+                kpiHealth: "System Health",
+                kpiPbx: "PBX Status (Live)",
+                kpiSec: "Threats Blocked",
+                kpiTickets: "Support Tickets",
+                chartServer: "Server Performance (Real-time)",
+                pbxTitle: "PBX Status",
+                logTitle: "Recent System Logs",
+                colTime: "Time",
+                colType: "Type",
+                colDesc: "Description",
+                colUser: "User",
+                colStatus: "Status"
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const lang = localStorage.getItem('lang') || 'ar';
+            const dict = pageContent[lang];
+            
+            document.documentElement.lang = lang;
+            document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if(dict[key]) el.innerText = dict[key];
+            });
+
+            initChart();
+        });
+
+        function initChart() {
+            const ctx = document.getElementById('serverChart').getContext('2d');
+            
+            // Generate some random data for the "Live" feel
+            const labels = Array.from({length: 20}, (_, i) => i + 1);
+            const dataCPU = Array.from({length: 20}, () => Math.floor(Math.random() * (60 - 20) + 20));
+            const dataMem = Array.from({length: 20}, () => Math.floor(Math.random() * (80 - 40) + 40));
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'CPU Usage %',
+                            data: dataCPU,
+                            borderColor: '#3B82F6',
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 0
+                        },
+                        {
+                            label: 'Memory Usage %',
+                            data: dataMem,
+                            borderColor: '#A855F7',
+                            borderDash: [5, 5],
+                            tension: 0.4,
+                            pointRadius: 0
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: { mode: 'index', intersect: false },
+                    plugins: { legend: { position: 'top' } },
+                    scales: {
+                        y: { beginAtZero: true, max: 100, grid: { color: '#334155' } },
+                        x: { display: false }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
