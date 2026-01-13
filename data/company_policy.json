@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "version": "3.2.0",
+    "version": "3.3.0",
     "last_updated": "2026-01-13",
     "status": "Active",
     "description": "المستودع المركزي لبيانات وسياسات وصلاحيات شركة أندروميدا لتقنية المعلومات"
@@ -24,6 +24,19 @@
       "financial_year_start": "01-01",
       "financial_year_end": "12-31"
     },
+    "shareholders": [
+      { "id": "SH_001", "name": "ورثة محمد بن صالح السحيباني", "percent": 35, "shares": 210000, "voting": true, "email": "alcaseer@gmail.com" },
+      { "id": "SH_002", "name": "هشام بن محمد السحيباني", "percent": 5, "shares": 60000, "voting": true, "email": "Hesham@androomeda.com" },
+      { "id": "SH_003", "name": "وائل بن محمد السحيباني", "percent": 5, "shares": 30000, "voting": true, "email": "W961@live.com" },
+      { "id": "SH_004", "name": "هيثم بن محمد السحيباني", "percent": 10, "shares": 30000, "voting": true, "email": "hmsasis@gmail.com" },
+      { "id": "SH_005", "name": "منصور بن حسن اليامي", "percent": 5, "shares": 30000, "voting": true, "email": "myami@androomeda.com" },
+      { "id": "SH_006", "name": "إبراهيم بن حمد السكيتي", "percent": 5, "shares": 30000, "voting": true, "email": "ihskaity@gmail.com" },
+      { "id": "SH_007", "name": "صالح بن عبدالله الوهيبي", "percent": 5, "shares": 30000, "voting": true, "email": "Saaw4466@yahoo.com" },
+      { "id": "SH_008", "name": "عبدالله بن علي الفريجي", "percent": 5, "shares": 30000, "voting": true, "email": "a_furaiji@hotmail.com" },
+      { "id": "SH_009", "name": "عبدالله بن محمد الحواس", "percent": 5, "shares": 30000, "voting": true, "email": "amh400@gmail.com" },
+      { "id": "SH_010", "name": "شركة بيجي المحدودة", "percent": 15, "shares": 90000, "voting": true, "email": "saleh@bgtech.com" },
+      { "id": "SH_011", "name": "احمد بن سليمان الجاسر", "percent": 5, "shares": 30000, "voting": true, "email": "ahmed.jasser@gmail.com" }
+    ],
     "activities_isic": [
       { "code": "432134", "name_ar": "تركيب وصيانة الأجهزة الأمنية", "category": "Security" },
       { "code": "451030", "name_ar": "مزادات السيارات والمعدات", "category": "Auctions" },
@@ -45,20 +58,6 @@
       { "code": "869027", "name_ar": "مراكز الخدمات الطبية المنزلية", "category": "Medical" },
       { "code": "869037", "name_ar": "مراكز الرعاية عن بعد والطب الإتصالي", "category": "Medical" }
     ]
-    },
-    "shareholders": [
-    { "id": "SH_001", "name": "ورثة محمد بن صالح السحيباني ", "percent": 35, "shares":   210,000, "voting": true, "email": "alcaseer@gmail.com" },
-    { "id": "SH_002", "name": "هشام بن محمد السحيباني", "percent": 5, "shares":  60,000, "voting": true, "email": "Hesham@androomeda.com" },
-    { "id": "SH_003", "name": "وائل بن محمد السحيباني", "percent": 5, "shares":  30,000, "voting": true, "email": "W961@live.com" }
-    { "id": "SH_004", "name": "هيثم بن محمد السحيباني", "percent": 10, "shares":  30,000, "voting": true, "email": "hmsasis@gmail.com" },
-    { "id": "SH_005", "name": "منصور بن حسن اليامي", "percent": 5, "shares":  30,000, "voting": true, "email": "myami@androomeda.com" },
-    { "id": "SH_006", "name": "إبراهيم بن حمد السكيتي", "percent": 5, "shares":  30,000, "voting": true, "email": "ihskaity@gmail.com" }   
-    { "id": "SH_007", "name": "صالح بن عبدالله الوهيبي", "percent": 5, "shares":  30,000, "voting": true, "email": "Saaw4466@yahoo.com" },
-    { "id": "SH_008", "name": "عبدالله بن علي الفريجي", "percent": 5, "shares":  30,000, "voting": true, "email": "a_furaiji@hotmail.com" }   
-    { "id": "SH_009", "name": "عبدالله بن محمد الحواس", "percent": 5, "shares":  30,000, "voting": true, "email": "amh400@gmail.com" }   
-    { "id": "SH_010", "name": "شركة بيجي المحدودة", "percent": 15, "shares":  90,000, "voting": true, "email": "saleh@bgtech.com" }   
-    { "id": "SH_011", "name": "احمد بن سليمان الجاسر", "percent": 5, "shares":  30,000, "voting": true, "email": "ahmed.jasser@gmail.com" }   
-  ]
   },
   "governance_config": {
     "board_structure": {
