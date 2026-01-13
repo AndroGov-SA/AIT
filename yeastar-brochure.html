@@ -92,10 +92,6 @@
       color: var(--text-main);
     }
 
-    body.theme-dark .page-bg {
-      color: var(--text-main);
-    }
-
     .page-bg {
       min-height: 100vh;
       background: var(--bg-body);
@@ -778,31 +774,18 @@
       flex-shrink: 0;
     }
 
-    /* ===== Language visibility ===== */
+    /* ===== Language visibility (بسيطة وواضحة) ===== */
+    .lang-ar,
     .lang-en {
-      display: none;
+      /* نترك العرض الافتراضي، بس نتحكم بالإخفاء */
     }
 
-    body.lang-en .lang-en {
-      display: inline;
-    }
-    body.lang-en .lang-en.block {
-      display: block;
-    }
-    body.lang-en .lang-ar {
-      display: none;
+    body[data-lang="ar"] .lang-en {
+      display: none !important;
     }
 
-    /* عشان عناصر كاملة */
-    .lang-block {
-      display: block;
-    }
-
-    body.lang-en .lang-block.lang-en {
-      display: block;
-    }
-    body.lang-en .lang-block.lang-ar {
-      display: none;
+    body[data-lang="en"] .lang-ar {
+      display: none !important;
     }
 
     /* ===== Responsive ===== */
@@ -850,7 +833,7 @@
     }
   </style>
 </head>
-<body class="theme-dark lang-ar">
+<body class="theme-dark" data-lang="ar">
   <div class="page-bg">
     <div class="page-wrapper">
       <div class="brochure-card">
@@ -1429,7 +1412,7 @@
     </div>
   </div>
 
-  <!-- WhatsApp Floating Button (عدّل رقم الجوال إذا حبيت) -->
+  <!-- WhatsApp Floating Button -->
   <a class="whatsapp-float" href="https://wa.me/966920012888" target="_blank" rel="noopener">
     <span class="wa-icon">✆</span>
     <span class="wa-text lang-ar">تحدث معنا عبر واتساب</span>
@@ -1437,20 +1420,17 @@
   </a>
 
   <script>
-    // لغة افتراضية: عربي
     const langToggle = document.getElementById('langToggle');
     const themeDarkBtn = document.getElementById('themeDark');
     const themeLightBtn = document.getElementById('themeLight');
 
     function setLanguage(lang) {
       if (lang === 'en') {
-        document.body.classList.remove('lang-ar');
-        document.body.classList.add('lang-en');
+        document.body.setAttribute('data-lang', 'en');
         document.documentElement.lang = 'en';
         document.documentElement.dir = 'ltr';
       } else {
-        document.body.classList.remove('lang-en');
-        document.body.classList.add('lang-ar');
+        document.body.setAttribute('data-lang', 'ar');
         document.documentElement.lang = 'ar';
         document.documentElement.dir = 'rtl';
       }
@@ -1471,7 +1451,8 @@
     }
 
     langToggle.addEventListener('click', function () {
-      if (document.body.classList.contains('lang-ar')) {
+      const current = document.body.getAttribute('data-lang') || 'ar';
+      if (current === 'ar') {
         setLanguage('en');
       } else {
         setLanguage('ar');
@@ -1486,7 +1467,7 @@
       setTheme('light');
     });
 
-    // ضبط مبدئي (داكن + عربي)
+    // ضبط مبدئي
     setTheme('dark');
     setLanguage('ar');
   </script>
