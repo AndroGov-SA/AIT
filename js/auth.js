@@ -1,11 +1,7 @@
 /**
- * AndroGov Authentication Engine v2.0
- * المصدر الوحيد للحقيقة: يقرأ البيانات من company_policy.json
+ * AndroGov Authentication Engine v3.5 (No-Server Mode)
+ * يعتمد على متغير POLICY_DATA المحمل مسبقاً في الصفحة.
  */
-
-const AUTH_CONFIG = {
-    policyPath: 'data/company_policy.json' // مسار الملف المركزي
-};
 
 class AuthSystem {
     constructor() {
@@ -13,129 +9,145 @@ class AuthSystem {
         this.isReady = false;
     }
 
-    // تهيئة النظام وجلب البيانات
+    // دالة التهيئة - تقرأ المتغير مباشرة
     async init() {
         if (this.isReady) return;
 
         try {
-            const response = await fetch(AUTH_CONFIG.policyPath);
-            if (!response.ok) throw new Error("Could not load system policy");
-            
-            const data = await response.json();
-            this.processUsers(data);
+            // التحقق من وجود المتغير الذي عرفناه في الملف السابق
+            if (typeof POLICY_DATA === 'undefined') {
+                console.error("خطأ: لم يتم تحميل ملف company_policy.js");
+                return;
+            }
+
+            console.log("✅ تم تحميل البيانات من POLICY_DATA بنجاح");
+            this.processUsers(POLICY_DATA);
             this.isReady = true;
-            console.log("✅ Auth System Ready: Loaded users from Central Repo");
+
         } catch (error) {
-            console.error("❌ Auth Init Failed:", error);
+            console.error("Auth Init Error:", error);
         }
     }
 
-    // دمج وتصنيف المستخدمين من مصادر مختلفة في الملف
     processUsers(data) {
-        let combinedUsers = [];
+        let rawUsers = [];
+        let shareholders = [];
 
-        // 1. معالجة الموظفين وأعضاء المجلس (من users_directory)
+        // 1. الموظفين
         if (data.organizational_chart && data.organizational_chart.users_directory) {
-            const employees = data.organizational_chart.users_directory.map(u => ({
-                id: u.id,
-                name: u.name || u.name_ar, // دعم اللغتين
-                email: u.email,
-                title: u.title || u.role,
-                role: u.role, // الدور التقني
-                type: this.determineUserType(u.role, u.title), // تصنيف للعرض
-                avatarColor: this.getAvatarColor(u.role)
-            }));
-            combinedUsers = [...combinedUsers, ...employees];
+            rawUsers = data.organizational_chart.users_directory;
         }
 
-        // 2. معالجة المساهمين (من shareholders)
+        // 2. المساهمين
         if (data.shareholders) {
-            const shareholders = data.shareholders.map(s => ({
+            shareholders = data.shareholders.map(s => ({
                 id: s.id,
                 name: s.name,
                 email: s.email,
                 title: `مساهم (${s.percent}%)`,
                 role: 'Shareholder',
-                type: 'shareholder',
-                avatarColor: 'fb4747'
+                type: 'shareholder'
             }));
-            // إضافة المساهمين الذين ليسوا موظفين بالفعل (لتجنب التكرار إذا كان الموظف مساهماً)
-            shareholders.forEach(sh => {
-                if (!combinedUsers.find(u => u.email === sh.email)) {
-                    combinedUsers.push(sh);
-                }
-            });
         }
 
-        this.users = combinedUsers;
+        // دمج الكل
+        const all = [...rawUsers, ...shareholders];
+
+        // تنظيف وتجهيز
+        this.users = all.map(u => ({
+            id: u.id,
+            name: u.name || u.name_ar,
+            email: u.email ? u.email.toLowerCase().trim() : '',
+            title: u.title,
+            role: u.role,
+            type: this.determineUserType(u.role, u.type, u.title),
+            avatarColor: this.getAvatarColor(u.role)
+        })).filter(u => u.email !== '');
+        
+        // إزالة التكرار (إذا كان الموظف مساهماً)
+        this.users = this.users.filter((user, index, self) =>
+            index === self.findIndex((t) => (
+                t.email === user.email
+            ))
+        );
     }
 
-    // خوارزمية تحديد نوع المستخدم للعرض في صفحة الدخول
-    determineUserType(role, title) {
-        const r = role.toLowerCase();
-        const t = title.toLowerCase();
+    determineUserType(role, manualType, title) {
+        if (manualType) return manualType;
+        const r = String(role || '').toLowerCase();
+        const t = String(title || '').toLowerCase();
 
         if (r.includes('admin') || r.includes('grc')) return 'admin';
-        if (r.includes('chairman') || t.includes('board') || t.includes('مجلس')) return 'board';
+        if (r.includes('chairman') || r.includes('board') || t.includes('مجلس')) return 'board';
         if (r.includes('ceo') || r.includes('cfo') || r.includes('cao') || r.includes('director')) return 'exec';
+        if (r.includes('shareholder')) return 'shareholder';
         if (r.includes('audit')) return 'audit';
-        if (r.includes('manager') || r.includes('lead') || r.includes('ncso')) return 'manager';
+        if (r.includes('manager')) return 'manager';
         return 'staff';
     }
 
     getAvatarColor(role) {
-        // ألوان مميزة لكل دور
-        const colors = {
-            'admin': 'b91c1c', // Red
-            'board': '1e293b', // Dark Slate
-            'ceo': '4267B2',   // Blue
-            'cfo': '7c3aed',   // Purple
-            'audit': '059669', // Green
-            'default': '64748b' // Gray
-        };
-        // بحث تقريبي عن اللون
-        for (const key in colors) {
-            if (role.toLowerCase().includes(key)) return colors[key];
-        }
-        return colors['default'];
+        const r = String(role || '').toLowerCase();
+        if (r.includes('admin')) return 'b91c1c';
+        if (r.includes('ceo') || r.includes('chairman')) return '4267B2';
+        if (r.includes('shareholder')) return 'fb4747';
+        return '64748b';
     }
 
-    // دالة تسجيل الدخول
+    // دالة الدخول
     async login(email, password) {
         if (!this.isReady) await this.init();
 
-        const user = this.users.find(u => u.email.toLowerCase() === email.toLowerCase());
+        const cleanEmail = email.trim().toLowerCase();
+        const demoPass = "12345678";
+
+        const user = this.users.find(u => u.email === cleanEmail);
         
         if (!user) throw new Error("المستخدم غير موجود");
-        // في الوضع الحقيقي، هنا يتم التحقق من كلمة المرور المشفرة
-        
-        // حفظ الجلسة
-        const session = {
-            ...user,
-            loginTime: new Date().toISOString()
-        };
-        localStorage.setItem('currentUser', JSON.stringify(session));
-        
+        if (password !== demoPass) throw new Error("كلمة المرور غير صحيحة");
+
+        localStorage.setItem('currentUser', JSON.stringify(user));
         return this.getRedirectUrl(user.role);
     }
 
     getRedirectUrl(role) {
-        const r = role.toLowerCase();
-        if (r.includes('ceo') || r.includes('chairman')) return 'ceo/ceo_dashboard.html';
+        const r = String(role).toLowerCase();
+        if (r.includes('admin')) return 'admin/admin.html';
+        if (r.includes('ceo')) return 'ceo/ceo_dashboard.html';
         if (r.includes('cfo') || r.includes('finance')) return 'finance/cfo_dashboard.html';
         if (r.includes('hr') || r.includes('cao')) return 'hr/hr_dashboard.html';
-        if (r.includes('admin') || r.includes('grc')) return 'admin/admin.html';
-        if (r.includes('tech') || r.includes('cto') || r.includes('ncso')) return 'cto/cto_dashboard.html';
-        // الافتراضي لبقية الموظفين
-        return 'employee/dashboard.html'; 
+        if (r.includes('tech') || r.includes('cto')) return 'cto/cto_dashboard.html';
+        return 'hr/my_profile.html';
     }
 
-    // دالة عامة لجلب المستخدمين لواجهة الدخول
     async getDemoUsers() {
         if (!this.isReady) await this.init();
         return this.users;
     }
 }
 
-// تصدير نسخة واحدة للنظام
 window.authSystem = new AuthSystem();
+
+// دالة التعامل مع زر الدخول في الصفحة
+window.handleLogin = async (e) => {
+    e.preventDefault();
+    const btn = document.querySelector('button[type="submit"]');
+    const originalText = btn.innerHTML;
+    
+    btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> جاري التحقق...';
+    btn.disabled = true;
+    document.getElementById('errorMsg').classList.add('hidden');
+
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+    try {
+        const redirect = await window.authSystem.login(email, password);
+        window.location.href = redirect;
+    } catch (err) {
+        document.getElementById('errorText').innerText = err.message;
+        document.getElementById('errorMsg').classList.remove('hidden');
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+    }
+};
