@@ -26,9 +26,9 @@
     },
     "shareholders": [
       { "id": "SH_001", "name": "ورثة محمد بن صالح السحيباني", "percent": 35, "shares": 210000, "voting": true, "email": "alcaseer@gmail.com" },
-      { "id": "SH_002", "name": "هشام بن محمد السحيباني", "percent": 5, "shares": 60000, "voting": true, "email": "Hesham@androomeda.com" },
+      { "id": "SH_002", "name": "هشام بن محمد السحيباني", "percent": 10, "shares": 60000, "voting": true, "email": "Hesham@androomeda.com" },
       { "id": "SH_003", "name": "وائل بن محمد السحيباني", "percent": 5, "shares": 30000, "voting": true, "email": "W961@live.com" },
-      { "id": "SH_004", "name": "هيثم بن محمد السحيباني", "percent": 10, "shares": 30000, "voting": true, "email": "hmsasis@gmail.com" },
+      { "id": "SH_004", "name": "هيثم بن محمد السحيباني", "percent": 5, "shares": 30000, "voting": true, "email": "hmsasis@gmail.com" },
       { "id": "SH_005", "name": "منصور بن حسن اليامي", "percent": 5, "shares": 30000, "voting": true, "email": "myami@androomeda.com" },
       { "id": "SH_006", "name": "إبراهيم بن حمد السكيتي", "percent": 5, "shares": 30000, "voting": true, "email": "ihskaity@gmail.com" },
       { "id": "SH_007", "name": "صالح بن عبدالله الوهيبي", "percent": 5, "shares": 30000, "voting": true, "email": "Saaw4466@yahoo.com" },
@@ -41,12 +41,12 @@
       { "code": "432134", "name_ar": "تركيب وصيانة الأجهزة الأمنية", "category": "Security" },
       { "code": "451030", "name_ar": "مزادات السيارات والمعدات", "category": "Auctions" },
       { "code": "464956", "name_ar": "البيع بالجملة للأجهزة والمعدات والمستلزمات الطبية", "category": "Medical" },
-      { "code": "465101", "name_ar": "البيع بالجملة للحواسيب ومستلزماتها يشمل بيع الطابعات وأحبارها", "category": "Sales" },
+      { "code": "465101", "name_ar": "البيع بالجملة للحواسيب ومستلزماتها", "category": "Sales" },
       { "code": "465102", "name_ar": "البيع بالجملة للبرمجيات ويشمل الاستيراد", "category": "Sales" },
       { "code": "465933", "name_ar": "البيع بالجملة للأجهزة الأمنية", "category": "Security" },
-      { "code": "465934", "name_ar": "البيع بالجملة للمعدات والتجهيزات الأمنية (للمنافسات الحكومية فقط)", "category": "Security" },
+      { "code": "465934", "name_ar": "البيع بالجملة للمعدات والتجهيزات الأمنية", "category": "Security" },
       { "code": "469061", "name_ar": "البيع بالجملة لأجهزة ولوازم الكيماويات والمختبرات", "category": "Medical" },
-      { "code": "474110", "name_ar": "البيع بالتجزئة للحواسيب وملحقاتها يشمل الطابعات وأحبارها", "category": "Retail" },
+      { "code": "474110", "name_ar": "البيع بالتجزئة للحواسيب وملحقاتها", "category": "Retail" },
       { "code": "474152", "name_ar": "بيع البرمجيات غير المعدة بناء على الطلب", "category": "IT" },
       { "code": "477336", "name_ar": "البيع بالتجزئة للأجهزة الأمنية", "category": "Security" },
       { "code": "479940", "name_ar": "المزادات في غير المحلات", "category": "Auctions" },
@@ -77,23 +77,14 @@
       "board_meeting_fee": 2000,
       "audit_committee_fee": 1500,
       "secretary_fee": 1000,
-      "annual_cap_per_member": 500000,
-      "travel_policy": "Business Class for non-residents"
+      "annual_cap_per_member": 500000
     },
     "committees": {
       "Audit": {
         "min_members": 3,
         "is_mandatory": true,
-        "members": [
-          "Mohammed Al-Enezi",
-          "Adel Sasa",
-          "Ahmed Al-Suhaibani"
-        ],
+        "members": ["Mohammed Al-Enezi", "Adel Sasa", "Ahmed Al-Suhaibani"],
         "secretary": "Ayman Al-Maghrabi"
-      },
-      "Remuneration": {
-        "min_members": 3,
-        "is_mandatory": false
       }
     }
   },
@@ -137,6 +128,18 @@
     ]
   },
   "authority_matrix": {
+    "roles_definition": {
+      "chairman": {
+        "title_ar": "رئيس المجلس",
+        "authority_level": "Sole_Signatory",
+        "description": "يمارس الصلاحيات منفرداً"
+      },
+      "vice_chairman": {
+        "title_ar": "نائب رئيس المجلس",
+        "authority_level": "Joint_Signatory",
+        "description": "يمارس الصلاحيات بموافقة من له نفس الصلاحية (توقيع مشترك)"
+      }
+    },
     "financial_authority": [
       {
         "transaction_type": "PO_Approval",
@@ -170,157 +173,147 @@
         ]
       }
     ],
-    "legal_and_admin_powers": {
-      "note": "Extracted from System of Association (Pages 29-61)",
-      "powers": [
-        {
-          "code": "LEG_001",
-          "category": "Government",
-          "action_ar": "استخراج السجلات التجارية وتجديدها",
-          "authorized_roles": ["CEO", "Vice_Chairman"],
-          "execution_type": "Solo",
-          "requires_board_resolution": false
-        },
-        {
-          "code": "LEG_002",
-          "category": "Government",
-          "action_ar": "الاشتراك بالغرفة التجارية وتجديدها",
-          "authorized_roles": ["CEO", "Vice_Chairman"],
-          "execution_type": "Solo",
-          "requires_board_resolution": false
-        },
-        {
-          "code": "BNK_001",
-          "category": "Banking",
-          "action_ar": "فتح الحسابات البنكية",
-          "authorized_roles": ["CEO"],
-          "execution_type": "Solo",
-          "requires_board_resolution": true
-        },
-        {
-          "code": "BNK_002",
-          "category": "Banking",
-          "action_ar": "التوقيع على عقود القروض والتسهيلات",
-          "authorized_roles": ["CEO"],
-          "execution_type": "Solo",
-          "requires_board_resolution": true
-        },
-        {
-          "code": "HR_001",
-          "category": "Human Resources",
-          "action_ar": "استقدام العمالة ونقل الكفالات",
-          "authorized_roles": ["CEO", "CAO"],
-          "execution_type": "Solo",
-          "requires_board_resolution": false
-        },
-        {
-          "code": "R_EST_001",
-          "category": "Real Estate",
-          "action_ar": "بيع العقارات والأراضي",
-          "authorized_roles": ["CEO"],
-          "execution_type": "Solo",
-          "condition": "Total asset value sold < 50% of company assets",
-          "requires_board_resolution": true
-        },
-        {
-          "code": "R_EST_002",
-          "category": "Real Estate",
-          "action_ar": "إفراغ العقارات (كاتب العدل)",
-          "authorized_roles": ["CEO", "Vice_Chairman"],
-          "execution_type": "Solo",
-          "requires_board_resolution": false
-        },
-        {
-          "code": "CORP_001",
-          "category": "Corporate",
-          "action_ar": "تأسيس شركات تابعة",
-          "authorized_roles": ["CEO"],
-          "execution_type": "Solo",
-          "requires_board_resolution": true
-        },
-        {
-          "code": "CORP_002",
-          "category": "Corporate",
-          "action_ar": "تعديل عقد التأسيس (الشركات التابعة)",
-          "authorized_roles": ["CEO"],
-          "execution_type": "Joint",
-          "joint_with": "Board_Member"
-        },
-        {
-          "code": "JUD_001",
-          "category": "Judicial",
-          "action_ar": "التمثيل القضائي (المرافعة، المدافعة، الصلح، الإقرار، التحكيم)",
-          "authorized_roles": ["CEO", "Chairman"],
-          "execution_type": "Solo",
-          "requires_board_resolution": false,
-          "reference_page": "40"
-        },
-        {
-          "code": "JUD_002",
-          "category": "Judicial",
-          "action_ar": "تعيين المحامين وتوكيلهم",
-          "authorized_roles": ["CEO"],
-          "execution_type": "Solo",
-          "requires_board_resolution": false,
-          "reference_page": "40"
-        },
-        {
-          "code": "COM_001",
-          "category": "Commercial",
-          "action_ar": "دخول المناقصات واستلام الاستمارات وتوقيع العقود مع الغير",
-          "authorized_roles": ["CEO"],
-          "execution_type": "Solo",
-          "requires_board_resolution": false,
-          "reference_page": "48"
-        },
-        {
-          "code": "GOV_001",
-          "category": "Government",
-          "action_ar": "مراجعة الجهات الحكومية (الزكاة، التأمينات، العمل، الجوازات)",
-          "authorized_roles": ["CEO", "CAO", "HR_Manager"],
-          "execution_type": "Solo",
-          "requires_board_resolution": false,
-          "reference_page": "45"
-        },
-        {
-          "code": "INV_001",
-          "category": "Investment",
-          "action_ar": "شراء وبيع الأسهم والحصص في الشركات الأخرى",
-          "authorized_roles": ["CEO"],
-          "execution_type": "Solo",
-          "requires_board_resolution": true,
-          "reference_page": "38"
-        },
-        {
-          "code": "R_EST_003",
-          "category": "Real Estate",
-          "action_ar": "توقيع عقود الإيجار (استئجار وتأجير)",
-          "authorized_roles": ["CEO", "CAO"],
-          "execution_type": "Solo",
-          "requires_board_resolution": false,
-          "reference_page": "59"
-        },
-        {
-          "code": "FIN_003",
-          "category": "Financial",
-          "action_ar": "إصدار الشيكات والسحب من الحسابات",
-          "authorized_roles": ["CEO", "CFO"],
-          "execution_type": "Joint",
-          "joint_with": "Authorized_Signatory",
-          "condition": "According to bank mandate limits",
-          "reference_page": "53"
-        }
-      ]
-    }
+    "comprehensive_executive_matrix": [
+      {
+        "category": "السجلات التجارية والتراخيص",
+        "permissions": [
+          "إصدار وتجديد وشطب السجلات التجارية الرئيسية والفرعية",
+          "إدارة السجلات (نقل، تعديل، إضافة نشاط، حجز الاسم التجاري)",
+          "استخراج سجل بدل تالف أو مفقود",
+          "فتح فروع للسجلات والمؤسسة",
+          "تسجيل العلامات التجارية والتنازل عنها",
+          "الاشتراك في الغرفة التجارية (فتح، تجديد، اعتماد/إلغاء التوقيع)",
+          "تحويل فرع المؤسسة أو تحويل المؤسسة إلى شركة والعكس",
+          "شراء وبيع المؤسسة"
+        ],
+        "authorized_roles": ["Chairman", "CEO"]
+      },
+      {
+        "category": "الشركات والشراكات",
+        "permissions": [
+          "توقيع عقود الشركات وتأسيس الشركات باسم الشركة",
+          "شراء وبيع الحصص والأسهم وقبول التنازل عنها",
+          "تصفية الشركة أو دمجها",
+          "تمثيل الشركة في الشركات المساهم فيها وحضور الجمعيات",
+          "التوقيع على عقد التأسيس وملاحق التعديل وقرارات الشركاء",
+          "تغيير الكيان القانوني للشركة",
+          "زيادة أو تخفيض رأس المال",
+          "دخول وخروج الشركاء",
+          "تسجيل الوكالات التجارية"
+        ],
+        "authorized_roles": ["Chairman", "CEO"]
+      },
+      {
+        "category": "المعاملات البنكية والمصرفية",
+        "permissions": [
+          "فتح وقفل وتنشيط الحسابات البنكية (بمختلف أنواعها)",
+          "السحب والإيداع والتحويل من الحسابات",
+          "إصدار الشيكات والشيكات المصدقة واستلام الدفاتر",
+          "طلب التسهيلات والقروض والضمانات البنكية وتوقيع عقودها",
+          "فتح الاعتمادات المستندية",
+          "إعادة جدولة الأقساط وطلب الإعفاء من القروض",
+          "التوقيع على الأوراق التجارية والسندات لأمر",
+          "إدارة صناديق الأمانات (فتح، اشتراك، تجديد، استرداد)",
+          "طلب نقاط البيع"
+        ],
+        "authorized_roles": ["Chairman", "CEO"]
+      },
+      {
+        "category": "إدارة الأملاك والعقارات",
+        "permissions": [
+          "شراء وبيع وإفراغ العقارات والأراضي (وقبول الإفراغ)",
+          "رهن الأملاك وفك الرهن (وقبول الرهن)",
+          "استخراج وتحديث الصكوك (بدل تالف/مفقود، دمج، فرز، تجزئة)",
+          "تخطيط الأراضي وتحويلها (زراعي/سكنية/صناعي)",
+          "استخراج رخص البناء والهدم والترميم والتسوير",
+          "توقيع عقود الإيجار (مؤجر ومستأجر) واستلام الأجرة",
+          "الموافقة على الهبة والإفراغ",
+          "تنازل عن النقص في المساحة أو عن الأرض المؤجرة",
+          "تعديل الحدود والأطوال والمساحة في الصكوك"
+        ],
+        "authorized_roles": ["Chairman", "CEO"]
+      },
+      {
+        "category": "القضاء والعدل",
+        "permissions": [
+          "التمثيل أمام المحاكم الشرعية (مرافعة، مدافعة، مطالبات)",
+          "الصلح، الإقرار، الإنكار، التحكيم (رفض وقبول)",
+          "التنازل والمخاصمة",
+          "تعيين المحامين والمحكمين",
+          "التمثيل أمام كتابات العدل",
+          "استخدام وتنفيذ كافة خدمات وزارة العدل الإلكترونية",
+          "تفويض/توكيل الغير على تنفيذ الخدمات العدلية"
+        ],
+        "authorized_roles": ["Chairman", "CEO"]
+      },
+      {
+        "category": "العلاقات الحكومية والمرافق",
+        "permissions": [
+          "مراجعة هيئة الاستثمار وهيئة السوق المالية",
+          "مراجعة وزارة التجارة ووزارة العدل",
+          "مراجعة مصلحة الزكاة والدخل",
+          "مراجعة التأمينات الاجتماعية",
+          "مراجعة الدفاع المدني",
+          "مراجعة هيئة الاتصالات وتقنية المعلومات (والتفويض لخدماتها)",
+          "مراجعة البلدية والأمانات (رخص محلات، كروت صحية)",
+          "مراجعة شركات الاتصالات وتأسيس الهواتف"
+        ],
+        "authorized_roles": ["Chairman", "CEO"]
+      },
+      {
+        "category": "الموارد البشرية والعمالة",
+        "permissions": [
+          "استخراج وتجديد وإلغاء التأشيرات (استقدام، زيارة، خروج وعودة)",
+          "نقل الكفالات وتعديل المهن",
+          "إصدار وتجديد الإقامات ورخص العمل",
+          "التبليغ عن الهروب وإلغاء البلاغات",
+          "فتح ملفات مكتب العمل والاستقدام وتحديث البيانات",
+          "إدارة نظام حماية الأجور واستلام شهادات السعودة",
+          "إنهاء إجراءات العمالة (نقل ملكية، وفاة، خروج نهائي)",
+          "استلام الرواتب والمستحقات والتعويضات",
+          "إضافة التابعين والمواليد وفصلهم من الجوازات"
+        ],
+        "authorized_roles": ["Chairman", "CEO"]
+      },
+      {
+        "category": "الاستثمار والأسهم",
+        "permissions": [
+          "فتح وإدارة المحافظ الاستثمارية (بيع وشراء الأسهم)",
+          "الاكتتاب في الشركات والمساهمات العقارية",
+          "استلام الأرباح والفائض وقيمة بيع الأسهم",
+          "الاشتراك واسترداد وحدات الصناديق الاستثمارية",
+          "نقل الأسهم من المحفظة",
+          "قسمة الأسهم بين الورثة"
+        ],
+        "authorized_roles": ["Chairman", "CEO"]
+      },
+      {
+        "category": "التراخيص البحرية (القوارب والصيد)",
+        "permissions": [
+          "شراء واستيراد وبيع القوارب",
+          "استخراج وتجديد وإلغاء رخص القوارب وتصاريح الصيد",
+          "نقل رخص القوارب",
+          "استخراج بدل تالف أو مفقود للتراخيص"
+        ],
+        "authorized_roles": ["Chairman", "CEO"]
+      },
+      {
+        "category": "أخرى",
+        "permissions": [
+          "دخول المناقصات واستلام الاستمارات",
+          "استخراج تصاريح الحج",
+          "مراجعة شؤون الخادمات"
+        ],
+        "authorized_roles": ["Chairman", "CEO"]
+      }
+    ]
   },
   "operational_policies": {
     "hr_policies": {
       "probation_period": { "min_days": 90, "max_days": 180 },
       "leaves": {
         "annual_balance": { "junior": 21, "senior_5years": 30 },
-        "maternity": { "paid_weeks": 12 },
-        "paternity": { "paid_days": 3 },
-        "bereavement": { "paid_days": 3 }
+        "maternity": { "paid_weeks": 12 }
       }
     },
     "procurement_policies": {
