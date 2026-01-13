@@ -1,47 +1,79 @@
 /**
- * AndroGov Layout Engine v4.4 (Admin Notifications Added)
- * - Added Notification Bell to Header.
- * - Admin-Specific Content (Security, Policy, HR Alerts).
+ * AndroGov Layout Engine v5.0 (Centralized Data Repository Integrated)
+ * - Fetches configuration from '../data/company_policy.json'
+ * - Dynamic User Profile Binding
+ * - Smart Notifications & Roles
  */
 
 (function() {
-    // --- 1. Configuration & State ---
+    // --- 1. State & Globals ---
+    let policyData = null; // سيتم تعبئته من الملف المركزي
+    
     const config = {
         lang: localStorage.getItem('lang') || 'ar',
         theme: localStorage.getItem('theme') || 'light'
     };
 
-    const currentUser = JSON.parse(localStorage.getItem('currentUser')) || {
-        nameAr: "أيمن المغربي",
-        nameEn: "Ayman Almaghrabi",
-        titleAr: "مدير الحوكمة",
-        titleEn: "Governance Manager",
-        avatar: "https://ui-avatars.com/api/?name=Ayman+Almaghrabi&background=FB4747&color=fff"
+    // سنبدأ بمستخدم افتراضي لحين تحميل البيانات الحقيقية
+    let currentUser = JSON.parse(localStorage.getItem('currentUser')) || {
+        id: "USR_004", // افتراضي: أيمن المغربي (GRC)
+        nameAr: "مستخدم النظام",
+        nameEn: "System User",
+        role: "Guest"
     };
 
-    // --- 2. Admin Notifications Data (New) ---
-    const notifications = [
-        {
-            id: 1, type: 'critical', icon: 'fa-shield-virus', color: 'text-red-500 bg-red-50',
-            titleAr: 'تنبيه أمني عاجل', titleEn: 'Security Alert',
-            msgAr: 'تم رصد 3 محاولات دخول فاشلة من IP غريب.', msgEn: '3 Failed login attempts from unknown IP.',
-            time: '2m'
-        },
-        {
-            id: 2, type: 'warning', icon: 'fa-file-signature', color: 'text-orange-500 bg-orange-50',
-            titleAr: 'طلب تعديل سياسة', titleEn: 'Policy Change Request',
-            msgAr: 'المدير المالي يطلب رفع سقف المشتريات.', msgEn: 'CFO requests raising PO limit.',
-            time: '1h'
-        },
-        {
-            id: 3, type: 'info', icon: 'fa-passport', color: 'text-blue-500 bg-blue-50',
-            titleAr: 'تنبيهات الموارد البشرية', titleEn: 'HR Alert',
-            msgAr: 'إقامة الموظف (محمد علي) تنتهي خلال 5 أيام.', msgEn: 'Residency expiring for Mohammed Ali in 5 days.',
-            time: '3h'
-        }
-    ];
+    // --- 2. Data Fetching (The Smart Part) ---
+    async function loadCompanyData() {
+        try {
+            const response = await fetch('../data/company_policy.json');
+            if (!response.ok) throw new Error('Failed to load policy file');
+            
+            policyData = await response.json();
+            console.log("✅ Company Policy Loaded:", policyData.metadata.version);
 
-    // --- 3. Menu Structure Data ---
+            // 1. تحديث بيانات المستخدم الحالي من الدليل المركزي
+            updateCurrentUserProfile();
+
+            // 2. تحديث إعدادات النظام العامة
+            if (policyData.system_settings) {
+                // تطبيق لون الهوية إذا وجد
+                document.documentElement.style.setProperty('--brand-color', policyData.system_settings.theme_color);
+            }
+
+        } catch (error) {
+            console.error("⚠️ Error loading company policy:", error);
+            // Fallback: Use hardcoded defaults if file fails
+        }
+    }
+
+    function updateCurrentUserProfile() {
+        // البحث عن المستخدم في الدليل المركزي بناءً على ID المخزن
+        // في تطبيق حقيقي، هذا الـ ID يأتي من عملية تسجيل الدخول
+        const storedUser = JSON.parse(localStorage.getItem('currentUser'));
+        const targetId = storedUser ? storedUser.id : "USR_004"; // Default to GRCO for demo
+
+        const directory = policyData.organizational_chart.users_directory;
+        const foundUser = directory.find(u => u.id === targetId);
+
+        if (foundUser) {
+            currentUser = {
+                ...currentUser,
+                id: foundUser.id,
+                nameAr: foundUser.name || foundUser.name_ar, // دعم الصيغتين
+                nameEn: foundUser.name, // في الملف الحالي الاسم موحد، يمكن فصله لاحقاً
+                titleAr: foundUser.title, // المسمى الوظيفي من الملف
+                titleEn: foundUser.title,
+                role: foundUser.role,
+                department: foundUser.department_id,
+                email: foundUser.email,
+                avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(foundUser.name)}&background=FB4747&color=fff`
+            };
+            // تحديث التخزين المحلي لضمان استمرار البيانات
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+        }
+    }
+
+    // --- 3. Menu Structure (Static for now, but role-ready) ---
     const menuStructure = [
         {
             section: 'main',
@@ -92,96 +124,111 @@
         }
     ];
 
-    // --- 4. Translations Dictionary ---
+    // --- 4. Translations ---
     const t = {
         ar: {
             sysName: "AndroGov",
-            sysVer: "Enterprise v4.0",
+            sysVer: "Enterprise v3.3",
             logout: "تسجيل خروج",
-            notifTitle: "الإشعارات والتنبيهات",
-            markRead: "تحديد الكل كمقروء",
+            notifTitle: "الإشعارات",
+            markRead: "تحديد كمقروء",
             emptyNotif: "لا توجد إشعارات جديدة",
             sections: {
                 main: "الرئيسية",
                 comm: "التواصل المؤسسي",
-                gov: "الحوكمة المؤسسية",
-                ops: "الحوكمة التشغيلية",
-                dept: "الإدارات والخدمات",
-                admin: "إدارة النظام"
+                gov: "الحوكمة",
+                ops: "التشغيل",
+                dept: "الإدارات",
+                admin: "النظام"
             },
             menu: {
                 dash: "لوحة القيادة",
-                chat: "الدردشة الداخلية",
-                circulars: "إدارة التعاميم",
+                chat: "الدردشة",
+                circulars: "التعاميم",
                 ga: "الجمعيات العمومية",
                 board: "مجلس الإدارة",
-                committees: "اللجان المنبثقة",
-                shareholders: "سجل المساهمين",
-                doa: "مصفوفة الصلاحيات",
-                policies: "السياسات واللوائح",
-                compliance: "الامتثال والمخاطر",
+                committees: "اللجان",
+                shareholders: "المساهمين",
+                doa: "الصلاحيات (DOA)",
+                policies: "السياسات",
+                compliance: "الامتثال",
                 hr: "الموارد البشرية",
-                finance: "الشؤون المالية",
-                procurement: "المشتريات والعقود",
-                it: "التقنية والأمن",
-                users: "المستخدمين والصلاحيات",
+                finance: "المالية",
+                procurement: "المشتريات",
+                it: "التقنية",
+                users: "المستخدمين",
                 audit: "سجل التدقيق",
-                settings: "إعدادات النظام"
+                settings: "الإعدادات"
             }
         },
         en: {
             sysName: "AndroGov",
-            sysVer: "Enterprise v4.0",
+            sysVer: "Enterprise v3.3",
             logout: "Logout",
             notifTitle: "Notifications",
-            markRead: "Mark all as read",
-            emptyNotif: "No new notifications",
+            markRead: "Mark Read",
+            emptyNotif: "No notifications",
             sections: {
                 main: "Main",
                 comm: "Communication",
-                gov: "Corporate Governance",
-                ops: "Operating Governance",
+                gov: "Governance",
+                ops: "Operations",
                 dept: "Departments",
-                admin: "System Admin"
+                admin: "Admin"
             },
             menu: {
                 dash: "Dashboard",
-                chat: "Internal Chat",
-                circulars: "Circulars Mgmt",
+                chat: "Chat",
+                circulars: "Circulars",
                 ga: "General Assembly",
-                board: "Board of Directors",
+                board: "Board",
                 committees: "Committees",
                 shareholders: "Shareholders",
                 doa: "DOA Matrix",
-                policies: "Policies Center",
-                compliance: "Compliance & Risk",
-                hr: "Human Resources",
+                policies: "Policies",
+                compliance: "Compliance",
+                hr: "HR",
                 finance: "Finance",
                 procurement: "Procurement",
-                it: "IT & Security",
-                users: "Users & Roles",
-                audit: "Audit Logs",
-                settings: "System Settings"
+                it: "IT",
+                users: "Users",
+                audit: "Audit Log",
+                settings: "Settings"
             }
         }
     };
 
-    // --- 5. Core Logic ---
+    // --- 5. Notifications (Mocked for Demo) ---
+    const notifications = [
+        {
+            id: 1, type: 'critical', icon: 'fa-shield-virus', color: 'text-red-500 bg-red-50',
+            titleAr: 'تنبيه أمني', titleEn: 'Security Alert',
+            msgAr: 'محاولة دخول غير مصرح بها.', msgEn: 'Unauthorized login attempt.',
+            time: '2m'
+        },
+        {
+            id: 2, type: 'info', icon: 'fa-file-contract', color: 'text-blue-500 bg-blue-50',
+            titleAr: 'عقد جديد', titleEn: 'New Contract',
+            msgAr: 'عقد توريد بانتظار الاعتماد.', msgEn: 'Supply contract pending approval.',
+            time: '1h'
+        }
+    ];
 
-    function init() {
+    // --- 6. Render Logic ---
+
+    async function init() {
+        // 1. Load Data First
+        await loadCompanyData();
+        
+        // 2. Apply UI
         applySettings();
         renderSidebar();
         renderHeader();
+        
         document.body.style.opacity = '1';
         
-        // Close dropdown when clicking outside
-        document.addEventListener('click', function(event) {
-            const notifMenu = document.getElementById('notifDropdown');
-            const notifBtn = document.getElementById('notifBtn');
-            if (notifMenu && !notifMenu.contains(event.target) && !notifBtn.contains(event.target)) {
-                notifMenu.classList.add('hidden');
-            }
-        });
+        // Listeners
+        setupEventListeners();
     }
 
     function applySettings() {
@@ -205,13 +252,20 @@
 
         const dict = t[config.lang];
         const isRtl = config.lang === 'ar';
-        const currentPath = window.location.pathname.split('/').pop() || 'index.html';
+        const currentPath = window.location.pathname.split('/').pop() || 'admin.html';
         
+        // استخدام البيانات المحدثة من الملف المركزي
         const userDisplayName = isRtl ? currentUser.nameAr : currentUser.nameEn;
         const userDisplayTitle = isRtl ? currentUser.titleAr : currentUser.titleEn;
+        
+        // استخدام اسم الشركة من الملف المركزي إذا توفر
+        const companyName = (policyData && policyData.corporate_profile) 
+            ? (isRtl ? policyData.corporate_profile.identity.name_ar : policyData.corporate_profile.identity.name_en)
+            : dict.sysName;
 
         const getLinkClass = (link) => {
-            const isActive = currentPath === link;
+            // Simple active check
+            const isActive = currentPath.includes(link.split('.')[0]); 
             const baseClass = "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200";
             const activeClass = "bg-brandRed text-white shadow-md shadow-red-500/20";
             const inactiveClass = "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-brandRed";
@@ -226,33 +280,38 @@
                 menuHTML += `
                 <a href="${item.link}" class="${getLinkClass(item.link)}">
                     <div class="w-6 text-center"><i class="fa-solid ${item.icon}"></i></div>
-                    <span class="flex-1">${dict.menu[item.key]}</span>
+                    <span class="flex-1 truncate">${dict.menu[item.key]}</span>
                 </a>`;
             });
         });
 
+        // Sidebar HTML Construction
         const sidebarHTML = `
         <aside class="fixed top-0 ${isRtl ? 'right-0 border-l' : 'left-0 border-r'} z-50 h-screen w-72 flex-col hidden md:flex bg-white dark:bg-[#0F172A] border-slate-200 dark:border-slate-800 transition-all duration-300">
             <div class="h-20 flex items-center px-6 border-b border-slate-100 dark:border-slate-800">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl bg-red-50 text-brandRed flex items-center justify-center text-xl">
-                        <i class="fa-solid fa-coins"></i>
+                <div class="flex items-center gap-3 w-full">
+                    <div class="w-10 h-10 rounded-xl bg-red-50 text-brandRed flex items-center justify-center text-xl shrink-0">
+                        <i class="fa-solid fa-layer-group"></i>
                     </div>
-                    <div>
-                        <h1 class="font-bold text-lg text-slate-800 dark:text-white font-sans">${dict.sysName}</h1>
-                        <p class="text-[10px] text-slate-500 uppercase tracking-widest">${dict.sysVer}</p>
+                    <div class="overflow-hidden">
+                        <h1 class="font-bold text-sm text-slate-800 dark:text-white font-sans truncate" title="${companyName}">
+                            ${companyName.split(' ')[0]} </h1>
+                        <p class="text-[10px] text-slate-500 uppercase tracking-widest truncate">${dict.sysVer}</p>
                     </div>
                 </div>
             </div>
 
             <div class="p-4">
                 <a href="my_profile.html" class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 hover:border-brandRed transition group cursor-pointer">
-                    <img src="${currentUser.avatar}" class="w-10 h-10 rounded-full border-2 border-white dark:border-slate-600 object-cover">
-                    <div class="overflow-hidden flex-1">
-                        <p class="text-sm font-bold text-slate-800 dark:text-white truncate group-hover:text-brandRed transition">${userDisplayName}</p>
-                        <p class="text-[10px] text-brandRed font-medium truncate">${userDisplayTitle}</p>
+                    <img src="${currentUser.avatar}" class="w-10 h-10 rounded-full border-2 border-white dark:border-slate-600 object-cover shrink-0">
+                    <div class="overflow-hidden flex-1 min-w-0">
+                        <p class="text-sm font-bold text-slate-800 dark:text-white truncate group-hover:text-brandRed transition" title="${userDisplayName}">
+                            ${userDisplayName}
+                        </p>
+                        <p class="text-[10px] text-brandRed font-medium truncate" title="${userDisplayTitle}">
+                            ${userDisplayTitle}
+                        </p>
                     </div>
-                    <i class="fa-solid fa-chevron-left text-[10px] text-slate-300 group-hover:text-brandRed mr-auto"></i>
                 </a>
             </div>
 
@@ -275,7 +334,7 @@
         const dict = t[config.lang];
         const isRtl = config.lang === 'ar';
 
-        // Build Notification Items
+        // Notifications List
         let notifListHTML = '';
         if(notifications.length > 0) {
             notifications.forEach(n => {
@@ -298,7 +357,9 @@
         container.innerHTML = `
         <header class="h-20 sticky top-0 z-40 flex items-center justify-between px-6 bg-white/80 dark:bg-[#0F172A]/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 transition-all">
             <div class="flex items-center gap-4">
-                <button class="md:hidden text-slate-500 dark:text-slate-200 hover:text-brandRed"><i class="fa-solid fa-bars text-xl"></i></button>
+                <button onclick="document.querySelector('aside').classList.toggle('hidden'); document.querySelector('aside').classList.toggle('flex');" class="md:hidden text-slate-500 dark:text-slate-200 hover:text-brandRed">
+                    <i class="fa-solid fa-bars text-xl"></i>
+                </button>
             </div>
 
             <div class="flex items-center gap-3">
@@ -306,7 +367,7 @@
                 <div class="relative">
                     <button id="notifBtn" onclick="window.toggleNotif()" class="w-9 h-9 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-white transition relative flex items-center justify-center">
                         <i class="fa-regular fa-bell"></i>
-                        <span class="absolute top-2 right-2.5 w-2 h-2 bg-brandRed rounded-full border border-white dark:border-slate-800"></span>
+                        <span class="absolute top-2 right-2.5 w-2 h-2 bg-brandRed rounded-full border border-white dark:border-slate-800 animate-pulse"></span>
                     </button>
                     
                     <div id="notifDropdown" class="hidden absolute top-12 ${isRtl ? 'left-0' : 'right-0'} w-80 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 overflow-hidden z-50">
@@ -323,22 +384,35 @@
                 <button onclick="window.changeLang()" class="h-9 px-3 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-xs font-bold text-slate-600 dark:text-white transition">
                     ${config.lang === 'ar' ? 'English' : 'عربي'}
                 </button>
+
                 <button onclick="window.changeTheme()" class="w-9 h-9 rounded-lg border border-slate-200 dark:border-slate-700 flex items-center justify-center hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-yellow-400 transition">
                     <i class="fa-solid ${config.theme === 'dark' ? 'fa-sun' : 'fa-moon'}"></i>
                 </button>
+
                 <div class="h-6 w-px bg-slate-200 dark:bg-slate-700 mx-1"></div>
+
                 <button onclick="window.doLogout()" class="text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-2">
-                    <i class="fa-solid fa-power-off"></i> ${dict.logout}
+                    <i class="fa-solid fa-power-off"></i> <span class="hidden sm:inline">${dict.logout}</span>
                 </button>
             </div>
         </header>`;
     }
 
-    // --- 6. Global Functions (Exposed) ---
+    function setupEventListeners() {
+        document.addEventListener('click', function(event) {
+            const notifMenu = document.getElementById('notifDropdown');
+            const notifBtn = document.getElementById('notifBtn');
+            if (notifMenu && !notifMenu.contains(event.target) && !notifBtn.contains(event.target)) {
+                notifMenu.classList.add('hidden');
+            }
+        });
+    }
+
+    // --- 7. Global API (Window) ---
     
     window.toggleNotif = function() {
         const d = document.getElementById('notifDropdown');
-        d.classList.toggle('hidden');
+        if(d) d.classList.toggle('hidden');
     };
 
     window.changeTheme = function() {
@@ -356,9 +430,10 @@
     window.doLogout = function() {
         if (confirm(config.lang === 'ar' ? 'هل أنت متأكد من تسجيل الخروج؟' : 'Are you sure you want to logout?')) {
             localStorage.removeItem('currentUser');
-            window.location.href = 'https://androgov-sa.github.io/AIT/login.html'; 
+            window.location.href = '../login.html'; // Assuming layout is in a subfolder
         }
     };
 
+    // Initialize System
     init();
 })();
