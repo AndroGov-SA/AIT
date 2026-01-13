@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>سنترال Yeastar IP-PBX | اندروميدا لتقنية المعلومات</title>
+
+  <!-- خط تاجوال -->
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --primary: #FB4747;      /* أحمر رئيسي */
+      --primary-dark: #9A2E2E; /* أحمر غامق */
+      --accent: #ffb800;       /* أصفر للأزرار */
+      --text: #111827;
+      --muted: #6b7280;
+      --bg-page-top: #4c1d95;
+      --bg-page-bottom: #0f766e;
+      --card-radius: 18px;
+      --shadow-soft: 0 18px 40px rgba(15, 23, 42, 0.18);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Tajawal", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background: linear-gradient(135deg, var(--bg-page-top), var(--bg-page-bottom));
+      min-height: 100vh;
+    }
+
+    .page-wrapper {
+      max-width: 1200px;
+      margin: 24px auto 40px;
+      padding: 0 16px 32px;
+    }
+
+    .brochure-card {
+      background: #ffffff;
+      border-radius: 28px;
+      box-shadow: var(--shadow-soft);
+      overflow: hidden;
+    }
+
+    /* ===== Header ===== */
+    .header {
+      background: var(--primary);
+      color: #ffffff;
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+    }
+
+    .header-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .header-logo {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: #ffffff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      color: var(--primary);
+      font-size: 20px;
+    }
+
+    .header-text {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .header-text span:first-child {
+      font-weight: 700;
+      font-size: 15px;
+    }
+
+    .header-text span:last-child {
+      font-size: 12px;
+      opacity: 0.9;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .badge-yeastar {
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 999px;
+      padding: 4px 12px;
+      font-size: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .badge-yeastar-icon {
+      width: 20px;
+      height: 20px;
+      border-radius: 999px;
+      background: #ffffff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #000;
+      border-radius: 999px;
+      padding: 8px 18px;
+      font-size: 13px;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.25);
+      white-space: nowrap;
+    }
+
+    .btn-primary:hover {
+      background: #ffd54a;
+      transform: translateY(-1px);
+      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.3);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: #ffffff;
+      border-radius: 999px;
+      padding: 7px 16px;
+      font-size: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      cursor: pointer;
+      transition: background 0.15s ease, color 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .btn-outline:hover {
+      background: #ffffff;
+      color: var(--primary);
+    }
+
+    /* ===== Sections ===== */
+    .content {
+      padding: 24px 24px 32px;
+    }
+
+    section {
+      margin-bottom: 40px;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .section-title {
+      font-size: 24px;
+      font-weight: 800;
+      margin: 0 0 8px;
+      color: var(--primary-dark);
+    }
+
+    .section-subtitle {
+      margin: 0;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    /* ===== Hero ===== */
+    .hero {
+      padding: 24px 20px 26px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, #fecaca, #fecaca 32%, #ffffff 100%);
+      border: 1px solid #fee2e2;
+      display: grid;
+      grid-template-columns: minmax(0, 2.3fr) minmax(0, 1.8fr);
+      gap: 20px;
+      align-items: center;
+    }
+
+    .hero-eyebrow {
+      font-size: 13px;
+      font-weight: 600;
+      color: #991b1b;
+      background: rgba(153, 27, 27, 0.08);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 999px;
+      margin-bottom: 10px;
+    }
+
+    .hero-eyebrow span.emoji {
+      font-size: 15px;
+    }
+
+    .hero-title {
+      font-size: 26px;
+      font-weight: 800;
+      margin: 0 0 8px;
+      color: #7f1d1d;
+    }
+
+    .hero-kicker {
+      font-size: 16px;
+      font-weight: 600;
+      color: #b91c1c;
+      margin-bottom: 10px;
+    }
+
+    .hero-text {
+      font-size: 14px;
+      color: #4b5563;
+      line-height: 1.7;
+      margin-bottom: 14px;
+    }
+
+    .hero-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .hero-badge {
+      background: #ffffff;
+      border-radius: 999px;
+      padding: 6px 12px;
+      font-size: 12px;
+      border: 1px solid #fecaca;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #7f1d1d;
+    }
+
+    .hero-badge strong {
+      font-weight: 800;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 6px;
+      align-items: center;
+    }
+
+    .hero-note {
+      font-size: 11px;
+      color: #6b7280;
+    }
+
+    .hero-side {
+      background: #ffffff;
+      border-radius: 18px;
+      padding: 14px 14px 12px;
+      border: 1px dashed #fecaca;
+    }
+
+    .hero-side-title {
+      font-size: 14px;
+      font-weight: 700;
+      margin: 0 0 8px;
+      color: #7f1d1d;
+    }
+
+    .hero-side-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 6px;
+      font-size: 13px;
+      color: #444;
+    }
+
+    .hero-side-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+    }
+
+    .hero-side-list li span.icon {
+      font-size: 14px;
+      margin-top: 2px;
+    }
+
+    /* ===== Who we are & services ===== */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: minmax(0, 1.3fr) minmax(0, 1.1fr);
+      gap: 24px;
+      align-items: flex-start;
+    }
+
+    .card {
+      background: #ffffff;
+      border-radius: var(--card-radius);
+      border: 1px solid #e5e7eb;
+      padding: 18px 18px 16px;
+    }
+
+    .card-title {
+      font-size: 17px;
+      font-weight: 700;
+      margin: 0 0 8px;
+      color: var(--primary-dark);
+    }
+
+    .card-subtitle {
+      font-size: 13px;
+      font-weight: 500;
+      color: #4b5563;
+      margin: 0 0 10px;
+    }
+
+    .card-text {
+      font-size: 13px;
+      color: #4b5563;
+      line-height: 1.8;
+      margin: 0;
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .service-pill {
+      background: #fef2f2;
+      border-radius: 14px;
+      padding: 10px 10px;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      font-size: 12px;
+      border: 1px solid #fee2e2;
+      color: #7f1d1d;
+    }
+
+    .service-icon {
+      width: 26px;
+      height: 26px;
+      border-radius: 999px;
+      background: #ffffff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+
+    .service-pill strong {
+      font-size: 13px;
+      display: block;
+    }
+
+    /* ===== Unified communications features ===== */
+    .features-unified {
+      background: #fef2f2;
+      border-radius: 20px;
+      border: 1px solid #fee2e2;
+      padding: 18px 18px 16px;
+    }
+
+    .features-unified-header {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: 14px;
+    }
+
+    .features-unified-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: #7f1d1d;
+      margin: 0;
+    }
+
+    .features-unified-sub {
+      font-size: 13px;
+      color: #4b5563;
+      margin: 0;
+    }
+
+    .features-unified-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .feature-box {
+      background: #ffffff;
+      border-radius: 14px;
+      padding: 10px 11px;
+      font-size: 13px;
+      color: #374151;
+      border: 1px solid #ffe4e6;
+    }
+
+    .feature-box strong {
+      display: block;
+      font-weight: 700;
+      margin-bottom: 4px;
+      color: #7f1d1d;
+    }
+
+    /* ===== Why Yeastar ===== */
+    .why-section {
+      background: var(--primary);
+      color: #ffffff;
+      border-radius: 24px;
+      padding: 22px 18px 18px;
+    }
+
+    .why-header {
+      text-align: center;
+      margin-bottom: 18px;
+    }
+
+    .why-title {
+      margin: 0 0 6px;
+      font-size: 20px;
+      font-weight: 800;
+    }
+
+    .why-subtitle {
+      margin: 0;
+      font-size: 13px;
+      opacity: 0.92;
+    }
+
+    .why-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .why-card {
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 16px;
+      padding: 10px 10px 9px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      font-size: 12px;
+    }
+
+    .why-card strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 13px;
+    }
+
+    /* ===== Technical features ===== */
+    .tech-section-header {
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    .tech-section-header h3 {
+      margin: 0 0 6px;
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--primary-dark);
+    }
+
+    .tech-section-header p {
+      margin: 0;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .tech-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      font-size: 12px;
+    }
+
+    .tech-column {
+      background: #f9fafb;
+      border-radius: 14px;
+      padding: 10px 11px;
+      border: 1px solid #e5e7eb;
+    }
+
+    .tech-column-title {
+      font-weight: 700;
+      font-size: 13px;
+      color: #111827;
+      margin-bottom: 6px;
+    }
+
+    .tech-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .tech-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+      margin-bottom: 4px;
+      color: #374151;
+      line-height: 1.5;
+    }
+
+    .tech-list li::before {
+      content: "●";
+      font-size: 10px;
+      margin-top: 3px;
+      color: var(--primary);
+    }
+
+    /* ===== Contact ===== */
+    .contact-section {
+      margin-top: 10px;
+    }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .contact-card {
+      background: #f9fafb;
+      border-radius: 16px;
+      padding: 12px 12px 10px;
+      border: 1px solid #e5e7eb;
+      font-size: 13px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .contact-label {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .contact-main {
+      font-weight: 700;
+      color: #111827;
+    }
+
+    .contact-note {
+      font-size: 11px;
+      color: #6b7280;
+    }
+
+    .contact-extra {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 6px;
+    }
+
+    .contact-extra-card {
+      background: #ffffff;
+      border-radius: 14px;
+      padding: 10px;
+      border: 1px dashed #e5e7eb;
+      font-size: 12px;
+    }
+
+    .contact-extra-card strong {
+      display: block;
+      margin-bottom: 3px;
+      color: #111827;
+    }
+
+    /* ===== Footer ===== */
+    .footer {
+      margin-top: 14px;
+      padding-top: 10px;
+      border-top: 1px solid #e5e7eb;
+      text-align: center;
+      font-size: 11px;
+      color: #6b7280;
+    }
+
+    .footer strong {
+      color: #111827;
+    }
+
+    /* ===== Layout tweaks ===== */
+    @media (max-width: 900px) {
+      .hero {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .grid-2 {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .why-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .tech-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .contact-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .contact-extra {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .header-actions {
+        justify-content: flex-start;
+      }
+      .why-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .tech-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .content {
+        padding: 18px 16px 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-wrapper">
+    <div class="brochure-card">
+
+      <!-- Header -->
+      <header class="header">
+        <div class="header-brand">
+          <div class="header-logo">A</div>
+          <div class="header-text">
+            <span>أندروميدا لتقنية المعلومات</span>
+            <span>Andromeda Information Technology Company</span>
+          </div>
+        </div>
+        <div class="header-actions">
+          <div class="badge-yeastar">
+            <span class="badge-yeastar-icon">Y</span>
+            <span>موزع معتمد &mdash; Authorized Yeastar Distributor</span>
+          </div>
+          <button class="btn-outline">تحميل البروشور PDF</button>
+          <button class="btn-primary">طلب عرض سعر الآن</button>
+        </div>
+      </header>
+
+      <main class="content">
+
+        <!-- Hero -->
+        <section class="hero">
+          <div>
+            <div class="hero-eyebrow">
+              <span class="emoji">🌟</span>
+              <span>الجيل الأذكى في عالم الاتصالات</span>
+            </div>
+            <h1 class="hero-title">Yeastar IP-PBX السنترال الذكي للأعمال</h1>
+            <div class="hero-kicker">
+              نظام اتصالات صوتية متقدم باستخدام شبكات الإنترنت بعيدًا عن الهاتف الأرضي بأعلى جودة وأفضل كفاءة.
+            </div>
+            <p class="hero-text">
+              سنترال <strong>PBX-IP Yeastar</strong> هو النظام الأكثر تطورًا وموثوقية في عالم الاتصالات الحديثة، يجمع بين
+              تقنية VoIP المتقدمة، الأمان العالي، وسهولة الاستخدام لتوفير تجربة اتصالات استثنائية للشركات من جميع الأحجام.
+            </p>
+            <div class="hero-badges">
+              <div class="hero-badge">
+                <span>👥</span>
+                أكثر من <strong>650,000</strong> مستخدم حول العالم
+              </div>
+              <div class="hero-badge">
+                <span>✅</span>
+                تقييم <strong>موصى به 100%</strong> من العملاء
+              </div>
+            </div>
+            <div class="hero-actions">
+              <button class="btn-primary">احصل على استشارة مجانية</button>
+              <button class="btn-outline">تحدث مع خبير الاتصالات</button>
+              <span class="hero-note">جاهزون لمساعدتك في اختيار الحل الأنسب لاحتياج منشأتك.</span>
+            </div>
+          </div>
+          <aside class="hero-side">
+            <h3 class="hero-side-title">ما الذي يقدمه لك نظام Yeastar؟</h3>
+            <ul class="hero-side-list">
+              <li>
+                <span class="icon">💰</span>
+                <span>توفير هائل في التكاليف والتخلص من فواتير الهاتف الأرضي المرتفعة.</span>
+              </li>
+              <li>
+                <span class="icon">📈</span>
+                <span>رفع كفاءة الاتصال الداخلي والخارجي وتحسين تجربة العملاء.</span>
+              </li>
+              <li>
+                <span class="icon">🏢</span>
+                <span>ربط جميع الفروع والمكاتب بنظام موحد مع مكالمات مجانية بين الفروع.</span>
+              </li>
+              <li>
+                <span class="icon">🔒</span>
+                <span>أمان عالي وحماية من الهجمات الإلكترونية مع تشفير للمكالمات.</span>
+              </li>
+              <li>
+                <span class="icon">🌐</span>
+                <span>العمل من أي مكان عبر الجوال أو المتصفح بنفس رقم المكتب.</span>
+              </li>
+            </ul>
+          </aside>
+        </section>
+
+        <!-- Who we are + Services -->
+        <section>
+          <div class="grid-2">
+            <div class="card">
+              <h2 class="card-title">من نحن &mdash; شركة أندروميدا لتقنية المعلومات</h2>
+              <p class="card-subtitle">
+                شركة سعودية رائدة في الحلول التقنية والتحول الرقمي مقرها الرياض.
+              </p>
+              <p class="card-text">
+                شركة أندروميدا لتقنية المعلومات هي شركة سعودية تأسست عام 2016 ومقرها في الرياض.
+                نحن متخصصون في تقديم حلول تقنية المعلومات المتكاملة والتحول الرقمي للشركات والمؤسسات، حيث نجمع بين
+                الخيال والتكنولوجيا لمساعدة الشركات على النمو والتطور.
+              </p>
+              <p class="card-text" style="margin-top:8px;">
+                نفخر بكوننا <strong>موزعاً معتمداً لسنترالات Yeastar في المملكة العربية السعودية</strong>، حيث نقدم جميع
+                الخدمات من التوريد والتركيب إلى التدريب والدعم الفني المستمر، من خلال فريق عمل محترف يتحدث العربية
+                والإنجليزية.
+              </p>
+            </div>
+
+            <div class="card">
+              <h3 class="card-title">خدماتنا المتكاملة مع Yeastar</h3>
+              <p class="card-subtitle">حل متكامل قبل وأثناء وبعد التنفيذ</p>
+              <div class="services-grid">
+                <div class="service-pill">
+                  <div class="service-icon">💡</div>
+                  <div>
+                    <strong>الاستشارات التقنية</strong>
+                    <span>تقديم استشارات احترافية وفقًا لاحتياجات عملك.</span>
+                  </div>
+                </div>
+                <div class="service-pill">
+                  <div class="service-icon">⚙️</div>
+                  <div>
+                    <strong>التركيب والتنفيذ</strong>
+                    <span>تنفيذ المشاريع وفق خطة العمل والوقت المحدد.</span>
+                  </div>
+                </div>
+                <div class="service-pill">
+                  <div class="service-icon">🎓</div>
+                  <div>
+                    <strong>التدريب</strong>
+                    <span>تدريب شامل لفريق عملك على النظام.</span>
+                  </div>
+                </div>
+                <div class="service-pill">
+                  <div class="service-icon">🛠️</div>
+                  <div>
+                    <strong>الدعم الفني والصيانة</strong>
+                    <span>دعم فني مستمر وصيانة دورية للنظام.</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Unified communications -->
+        <section>
+          <div class="features-unified">
+            <div class="features-unified-header">
+              <h2 class="features-unified-title">الحل الشامل للاتصالات الموحدة</h2>
+              <p class="features-unified-sub">
+                نظام واحد يربط الهواتف الأرضية والهواتف الذكية وتطبيقات الأعمال ومراكز الاتصال في منصة موحدة.
+              </p>
+            </div>
+            <div class="features-unified-grid">
+              <div class="feature-box">
+                <strong>نقطة اتصال VoIP متقدمة</strong>
+                <span>
+                  اتصال صوتي عالي الجودة (HD Calling) عبر بروتوكول الإنترنت مع وضوح واستقرار في جميع المكالمات.
+                </span>
+              </div>
+              <div class="feature-box">
+                <strong>المختارات الصوتية الذكية IVR</strong>
+                <span>
+                  إنشاء قوائم صوتية احترافية وتوجيه المكالمات تلقائيًا للأقسام أو الفروع المناسبة.
+                </span>
+              </div>
+              <div class="feature-box">
+                <strong>الربط بين جميع الفروع</strong>
+                <span>
+                  ربط سلس وآمن بين جميع مواقع الشركة مع مكالمات مجانية بين الفروع وإدارة مركزية من مكان واحد.
+                </span>
+              </div>
+              <div class="feature-box">
+                <strong>تقارير تفصيلية متقدمة</strong>
+                <span>
+                  تقارير منفصلة عن مكالمات كل موظف بالوقت والتكلفة مع تحليلات شاملة للأداء.
+                </span>
+              </div>
+              <div class="feature-box">
+                <strong>الاتصال من خلال الجوال</strong>
+                <span>
+                  تطبيق <strong>Linkus UC</strong> على الويب والجوال وسطح المكتب للاتصال من أي مكان بنفس رقم المكتب.
+                </span>
+              </div>
+              <div class="feature-box">
+                <strong>تحويل المكالمات الذكي</strong>
+                <span>
+                  تحويل تلقائي للمكالمات بناءً على الوقت، حالة الموظف، أو قواعد مسبقة مع الرد الآلي.
+                </span>
+              </div>
+              <div class="feature-box">
+                <strong>أقسام داخلية منظمة</strong>
+                <span>
+                  إنشاء أقسام وتحويلات وصلاحيات محددة لكل قسم مع إدارة هرمية احترافية.
+                </span>
+              </div>
+              <div class="feature-box">
+                <strong>الطلب السريع وتسجيل المكالمات</strong>
+                <span>
+                  الاتصال السريع للأرقام المهمة وتسجيل المكالمات تلقائياً أو يدوياً مع أرشفة سحابية.
+                </span>
+              </div>
+              <div class="feature-box">
+                <strong>الأمان المتقدم والعمل عن بعد</strong>
+                <span>
+                  تشفير TLS و&nbsp;SRTP، جدار ناري، مصادقة ثنائية، وحلول عمل عن بُعد عبر خدمة
+                  <strong>Remote Access Service</strong>.
+                </span>
+              </div>
+              <div class="feature-box">
+                <strong>مركز الاتصال الاحترافي</strong>
+                <span>
+                  صفوف الانتظار، توزيع المكالمات التلقائي، لوحة مراقبة، تدريب الموظفين، وتقارير تفصيلية من مكان واحد.
+                </span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Why Yeastar -->
+        <section class="why-section">
+          <div class="why-header">
+            <h2 class="why-title">لماذا Yeastar هو الخيار الأمثل لعملك؟</h2>
+            <p class="why-subtitle">
+              مميزات عملية تجعل النظام استثمارًا طويل الأمد في الاتصالات داخل منشأتك.
+            </p>
+          </div>
+          <div class="why-grid">
+            <div class="why-card">
+              <strong>توفير هائل في التكاليف</strong>
+              تخلّص من تكاليف الهاتف الأرضي الباهظة ووفر حتى 70% من فاتورة الاتصالات مع مكالمات مجانية بين الفروع.
+            </div>
+            <div class="why-card">
+              <strong>سهولة التركيب والاستخدام</strong>
+              واجهة رسومية بديهية وإعداد أجهزة IP Phones تلقائيًا مع دعم فني عربي متخصص.
+            </div>
+            <div class="why-card">
+              <strong>قابلية التوسع المرنة</strong>
+              إضافة خطوط ومستخدمين جدد بسهولة مع دعم من 20 إلى أكثر من 2000 مستخدم دون تعقيد.
+            </div>
+            <div class="why-card">
+              <strong>التوافقية الشاملة</strong>
+              يعمل مع أشهر أجهزة IP Phones مثل Yealink, Fanvil, Cisco, Grandstream ومع أكثر من 120 مزود خدمة SIP.
+            </div>
+            <div class="why-card">
+              <strong>موثوقية عالية</strong>
+              نظام Hot Standby للنسخ الاحتياطي التلقائي وضمان عمل النظام بنسبة توافر تصل إلى 99.99%.
+            </div>
+            <div class="why-card">
+              <strong>التكامل مع التطبيقات</strong>
+              تكامل مع أنظمة CRM مثل Zoho و&nbsp;Salesforce و&nbsp;HubSpot، ومع Microsoft Teams و WhatsApp وأكثر من 50 تطبيقًا.
+            </div>
+            <div class="why-card">
+              <strong>رسائل متعددة القنوات</strong>
+              دعم SMS و WhatsApp و Facebook Messenger و Live Chat من منصة موحدة.
+            </div>
+            <div class="why-card">
+              <strong>مؤتمرات فيديو وصوت</strong>
+              اجتماعات فيديو HD مع مشاركة الشاشة والتسجيل، بالإضافة إلى مؤتمرات صوتية متقدمة.
+            </div>
+            <div class="why-card">
+              <strong>إدارة سحابية وذكاء اصطناعي</strong>
+              إمكانية النشر السحابي على Azure أو AWS أو Google Cloud مع مزايا مثل تحويل الصوت إلى نص وتحليل المكالمات.
+            </div>
+          </div>
+        </section>
+
+        <!-- Technical features -->
+        <section>
+          <div class="tech-section-header">
+            <h3>المواصفات التقنية والمزايا الإضافية</h3>
+            <p>قائمة شاملة بالمزايا الرئيسية التي يوفرها نظام Yeastar IP-PBX.</p>
+          </div>
+          <div class="tech-grid">
+            <div class="tech-column">
+              <div class="tech-column-title">مزايا الاتصال</div>
+              <ul class="tech-list">
+                <li>HD Voice Quality</li>
+                <li>Call Recording &amp; Monitoring</li>
+                <li>Call Transfer &amp; Forwarding</li>
+                <li>Conference Calling (3-Way+)</li>
+                <li>Voicemail to Email</li>
+                <li>Call Parking &amp; Pickup</li>
+                <li>Do Not Disturb (DND)</li>
+                <li>Intercom &amp; Paging</li>
+              </ul>
+              <div class="tech-column-title" style="margin-top:8px;">الوسائط المتعددة</div>
+              <ul class="tech-list">
+                <li>HD Video Conferencing</li>
+                <li>Screen Sharing</li>
+                <li>Audio Conferencing</li>
+                <li>Music on Hold (MOH)</li>
+                <li>Custom Voice Prompts</li>
+                <li>Text-to-Speech</li>
+                <li>Fax over IP (T.38)</li>
+                <li>Voice Message Broadcast</li>
+              </ul>
+            </div>
+
+            <div class="tech-column">
+              <div class="tech-column-title">مزايا مركز الاتصال</div>
+              <ul class="tech-list">
+                <li>ACD (Automatic Call Distribution)</li>
+                <li>Queue Management</li>
+                <li>Real-time Wallboard</li>
+                <li>Agent Coaching &amp; Whisper</li>
+                <li>Call Back Queue</li>
+                <li>Performance Reports</li>
+                <li>SLA Monitoring</li>
+                <li>Outbound Campaign</li>
+              </ul>
+              <div class="tech-column-title" style="margin-top:8px;">الإدارة والصيانة</div>
+              <ul class="tech-list">
+                <li>Web-based Administration</li>
+                <li>Remote Management Portal</li>
+                <li>System Monitoring Dashboard</li>
+                <li>Automatic Software Updates</li>
+                <li>Bulk Configuration Tools</li>
+                <li>Multi-tenant Support</li>
+                <li>White-label Options</li>
+                <li>CDR &amp; Billing Reports</li>
+              </ul>
+            </div>
+
+            <div class="tech-column">
+              <div class="tech-column-title">الأمان والحماية</div>
+              <ul class="tech-list">
+                <li>TLS &amp; SRTP Encryption</li>
+                <li>Built-in Firewall</li>
+                <li>Two-Factor Authentication</li>
+                <li>IP Blacklist / Whitelist</li>
+                <li>Automatic Threat Detection</li>
+                <li>Secure Remote Access</li>
+                <li>Data Backup &amp; Recovery</li>
+                <li>Session Border Controller</li>
+              </ul>
+              <div class="tech-column-title" style="margin-top:8px;">التكامل والتوسع</div>
+              <ul class="tech-list">
+                <li>CRM Integration (Zoho, Salesforce)</li>
+                <li>Microsoft Teams Integration</li>
+                <li>Microsoft 365 Sync</li>
+                <li>WhatsApp Business API</li>
+                <li>REST API &amp; Webhooks</li>
+                <li>LDAP / Active Directory</li>
+                <li>SMS Gateway Integration</li>
+                <li>Hotel PMS Integration</li>
+              </ul>
+              <div class="tech-column-title" style="margin-top:8px;">التطبيقات والأجهزة</div>
+              <ul class="tech-list">
+                <li>Linkus Web Client</li>
+                <li>Linkus Mobile App (iOS / Android)</li>
+                <li>Linkus Desktop (Windows / Mac)</li>
+                <li>IP Phone Models 270+</li>
+                <li>Auto Provisioning</li>
+                <li>Softphone Support</li>
+                <li>Video Phones Support</li>
+                <li>Door Phone Integration</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- Contact -->
+        <section class="contact-section">
+          <div class="section-header" style="margin-bottom:16px;">
+            <h2 class="section-title" style="font-size:20px;">تواصل مع اندروميدا</h2>
+            <p class="section-subtitle">
+              جاهزون لمساعدتك في اختيار، تركيب، وتشغيل نظام الاتصالات الأنسب لمنشأتك.
+            </p>
+          </div>
+
+          <div class="contact-grid">
+            <div class="contact-card">
+              <div class="contact-label">الهاتف الموحد</div>
+              <div class="contact-main">920012888</div>
+              <div class="contact-note">متاح من الأحد إلى الخميس &mdash; 9 صباحًا حتى 5 مساءً</div>
+            </div>
+            <div class="contact-card">
+              <div class="contact-label">البريد الإلكتروني</div>
+              <div class="contact-main">contact@ait.sa</div>
+              <div class="contact-note">للاستفسارات العامة والعروض</div>
+              <div class="contact-main" style="margin-top:4px;">support@ait.sa</div>
+              <div class="contact-note">للدعم الفني والمتابعة</div>
+            </div>
+            <div class="contact-card">
+              <div class="contact-label">الموقع</div>
+              <div class="contact-main">
+                الرياض &mdash; حي الازدهار، شارع عثمان بن عفان<br />
+                الدور الثاني، مكتب رقم 2، بجوار شركة باكس
+              </div>
+              <div class="contact-note">الموقع الإلكتروني: www.ait.sa</div>
+            </div>
+          </div>
+
+          <div class="contact-extra">
+            <div class="contact-extra-card">
+              <strong>خدماتنا الشاملة</strong>
+              <div>✓ التوريد والتركيب الاحترافي</div>
+              <div>✓ التدريب الشامل لفريق العمل</div>
+              <div>✓ الصيانة الدورية والوقائية</div>
+              <div>✓ الدعم الفني المستمر (24/7)</div>
+            </div>
+            <div class="contact-extra-card">
+              <strong>ضمان وثقة</strong>
+              <div>✓ استشارات تقنية متخصصة</div>
+              <div>✓ ضمان شامل على جميع المنتجات</div>
+              <div>✓ خدمة ما بعد البيع المتميزة</div>
+              <div>✓ شريكك الموثوق في التحول الرقمي</div>
+            </div>
+          </div>
+
+          <div class="section-header" style="margin-top:18px;">
+            <button class="btn-primary">احجز استشارة تقنية مجانية الآن</button>
+          </div>
+        </section>
+
+        <!-- Footer -->
+        <div class="footer">
+          <div>
+            شركة اندروميدا لتقنية المعلومات &mdash; <strong>Andromeda Information Technology Company</strong>
+          </div>
+          <div>شريكك الموثوق في التحول الرقمي والحلول التقنية المتكاملة.</div>
+          <div style="margin-top:4px;">© 2026 Andromeda ITC. جميع الحقوق محفوظة.</div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+</body>
+</html>
