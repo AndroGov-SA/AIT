@@ -37,6 +37,11 @@
     [dir="ltr"] .icon-inset { left: .75rem; right: auto; }
     [dir="rtl"] .pass-toggle { left: .5rem; right: auto; }
     [dir="ltr"] .pass-toggle { right: .5rem; left: auto; }
+    
+    /* تحسين شريط التمرير لقائمة المستخدمين */
+    .users-scroll::-webkit-scrollbar { height: 6px; }
+    .users-scroll::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 10px; }
+    .dark .users-scroll::-webkit-scrollbar-thumb { background-color: #475569; }
   </style>
 </head>
 
@@ -66,8 +71,8 @@
           <span data-i18n="feat2">مرتبط بقاعدة البيانات المركزية</span>
         </div>
         <div class="flex items-center gap-4 text-slate-300">
-          <i class="fa-solid fa-sitemap text-purple-400 text-xl"></i>
-          <span data-i18n="feat3">تطبيق ذكي للصلاحيات والأدوار</span>
+          <i class="fa-solid fa-users-gear text-purple-400 text-xl"></i>
+          <span data-i18n="feat3">يدعم +20 دور وظيفي وصلاحية</span>
         </div>
       </div>
     </div>
@@ -94,9 +99,8 @@
         </div>
     </header>
 
-    <section class="flex-1 flex flex-col justify-center items-center w-full px-6">
-      <div class="w-full max-w-md">
-        <div class="lg:hidden text-center mb-8">
+    <section class="flex-1 flex flex-col justify-center items-center w-full px-6 py-8">
+      <div class="w-full max-w-xl"> <div class="lg:hidden text-center mb-8">
             <img src="https://ait.sa/wp-content/uploads/2024/03/cropped-Square-Logo.png" class="w-20 h-20 mx-auto rounded-2xl bg-white p-1 shadow-md object-contain">
             <h2 class="text-2xl font-extrabold mt-4">AndroGov</h2>
         </div>
@@ -135,22 +139,57 @@
           </form>
 
           <div class="mt-8 pt-6 border-t border-slate-100 dark:border-slate-700">
-            <p class="text-[10px] text-center text-slate-400 uppercase tracking-widest mb-4" data-i18n="demoTitle">اختر مستخدم للتجربة (Demo)</p>
-            <div class="flex justify-center gap-3 flex-wrap pb-2" id="demoRoles"></div>
+            <p class="text-[10px] text-center text-slate-400 uppercase tracking-widest mb-4" data-i18n="demoTitle">اختر حساب للتجربة (انقر للتعبئة التلقائية)</p>
+            
+            <div class="max-h-60 overflow-y-auto users-scroll pr-1">
+                <div class="mb-3"><span class="text-[10px] text-brandRed font-bold bg-red-50 dark:bg-red-900/20 px-2 py-0.5 rounded">الإدارة العليا (Top Management)</span></div>
+                <div class="flex flex-wrap gap-2 mb-4" id="execRoles"></div>
+
+                <div class="mb-3"><span class="text-[10px] text-blue-600 font-bold bg-blue-50 dark:bg-blue-900/20 px-2 py-0.5 rounded">مدراء الإدارات (Heads of Depts)</span></div>
+                <div class="flex flex-wrap gap-2 mb-4" id="managerRoles"></div>
+
+                <div class="mb-3"><span class="text-[10px] text-purple-600 font-bold bg-purple-50 dark:bg-purple-900/20 px-2 py-0.5 rounded">التقنية والتطوير (Tech & Dev)</span></div>
+                <div class="flex flex-wrap gap-2 mb-4" id="techRoles"></div>
+
+                <div class="mb-3"><span class="text-[10px] text-slate-500 font-bold bg-slate-100 dark:bg-slate-700/50 px-2 py-0.5 rounded">موظفين (Staff)</span></div>
+                <div class="flex flex-wrap gap-2" id="staffRoles"></div>
+            </div>
           </div>
+
         </div>
       </div>
     </section>
   </main>
 
   <script>
-    // تم تحديث البيانات هنا لتطابق الإيميلات الموجودة في company_policy.json
-    const roles = [
-      { id: 'ceo',     email: 'hesham@androomeda.com',   name: 'هشام السحيباني',  title: 'CEO',     img: 'https://ui-avatars.com/api/?name=Hesham+S&background=3b82f6&color=fff' },
-      { id: 'admin',   email: 'amaghrabi@androomeda.com',name: 'أيمن المغربي',    title: 'GRCO',    img: 'https://ui-avatars.com/api/?name=Ayman+M&background=FB4747&color=fff' },
-      { id: 'finance', email: 'mtahir@androomeda.com',   name: 'محمد البخيتي',    title: 'CFO',     img: 'https://ui-avatars.com/api/?name=Mohammed+B&background=8b5cf6&color=fff' },
-      { id: 'hr',      email: 'myami@androomeda.com',    name: 'منصور اليامي',    title: 'CAO',     img: 'https://ui-avatars.com/api/?name=Mansour+Y&background=f59e0b&color=fff' },
-      { id: 'tech',    email: 'makhtar@androomeda.com',  name: 'M. Akhtar',       title: 'Director',img: 'https://ui-avatars.com/api/?name=M+Akhtar&background=7E3DBE&color=fff' }
+    // --- 1. قاعدة بيانات المستخدمين الكاملة (لأغراض العرض في الواجهة) ---
+    // هذه القائمة يجب أن تطابق تماماً الملف المركزي
+    const allUsers = [
+        // Executive
+        { id: "USR_001", name: "هشام السحيباني", title: "CEO", email: "hesham@androomeda.com", type: "exec" },
+        { id: "USR_002", name: "محمد البخيتي", title: "CFO", email: "mtahir@androomeda.com", type: "exec" },
+        { id: "USR_004", name: "أيمن المغربي", title: "GRCO", email: "amaghrabi@androomeda.com", type: "exec" },
+        { id: "USR_005", name: "منصور اليامي", title: "CAO", email: "myami@androomeda.com", type: "exec" },
+        
+        // Managers
+        { id: "USR_020", name: "M. Akhtar", title: "Director", email: "Makhtar@androomeda.com", type: "manager" },
+        { id: "USR_009", name: "Meshail H", title: "NCSO", email: "malhadyan@androomeda.com", type: "manager" },
+        { id: "USR_006", name: "د. وعد حسين", title: "Medical Sup", email: "whussain@androomeda.com", type: "manager" },
+        { id: "USR_007", name: "نواف السحابي", title: "Acc. Mgr", email: "nalsahabi@androomeda.com", type: "manager" },
+        
+        // Tech
+        { id: "USR_015", name: "Rand Hourani", title: "Tech Lead", email: "Rhourani@androomeda.com", type: "tech" },
+        { id: "USR_016", name: "Hamed A", title: "Frontend", email: "Habdeen@androomeda.com", type: "tech" },
+        { id: "USR_018", name: "Anas Q", title: "Mobile", email: "Aqunaibi@androomeda.com", type: "tech" },
+        { id: "USR_019", name: "Kamran A", title: "Backend", email: "Karshad@androomeda.com", type: "tech" },
+        { id: "USR_023", name: "Dev Team", title: "Developers", email: "SDT@androomeda.com", type: "tech" },
+        
+        // Staff
+        { id: "USR_003", name: "هادي أحمد", title: "Purchasing", email: "hadi@androomeda.com", type: "staff" },
+        { id: "USR_010", name: "مها الهزان", title: "Marketing", email: "mhizan@androomeda.com", type: "staff" },
+        { id: "USR_008", name: "الحسين الحميدي", title: "Support", email: "alhussien@androomeda.com", type: "staff" },
+        { id: "USR_014", name: "عبدالله الجبير", title: "Admin Supp", email: "Ajubeir@androomeda.com", type: "staff" },
+        { id: "USR_017", name: "Naseem K", title: "QA", email: "Nkhudair@androomeda.com", type: "tech" }
     ];
 
     const translations = {
@@ -159,13 +198,13 @@
         systemDesc: "نظام إدارة العمليات الموحد لشركة اندروميدا",
         feat1: "دخول آمن وموحد (SSO)",
         feat2: "مرتبط بقاعدة البيانات المركزية",
-        feat3: "تطبيق ذكي للصلاحيات والأدوار",
+        feat3: "يدعم +20 دور وظيفي وصلاحية",
         loginTitle: "تسجيل الدخول",
         loginSub: "أدخل بيانات اعتمادك للوصول للنظام",
         emailLabel: "البريد الإلكتروني",
         passLabel: "كلمة المرور",
         loginBtn: "دخول آمن",
-        demoTitle: "اختر مستخدم للتجربة (Demo)",
+        demoTitle: "اختر حساب للتجربة (انقر للتعبئة التلقائية)",
         backToHome: "العودة للرئيسية"
       },
       en: {
@@ -173,13 +212,13 @@
         systemDesc: "Andromeda Unified Operations System",
         feat1: "Secure SSO Login",
         feat2: "Connected to Central DB",
-        feat3: "Smart Role-Based Access",
+        feat3: "Supports 20+ Roles & Permissions",
         loginTitle: "Sign In",
         loginSub: "Enter your credentials to access the system",
         emailLabel: "Email Address",
         passLabel: "Password",
         loginBtn: "Secure Login",
-        demoTitle: "Select User (Demo)",
+        demoTitle: "Select Demo Account (Click to autofill)",
         backToHome: "Back to Home"
       }
     };
@@ -190,7 +229,7 @@
     function initUI() {
       applyTheme();
       applyLang();
-      renderRoles();
+      renderAllRoles();
     }
 
     function applyTheme() {
@@ -241,37 +280,47 @@
         }
     };
 
-    // تعبئة البيانات عند الضغط على زر الديمو
-    window.fillDemo = (id) => {
-        const role = roles.find(r => r.id === id);
-        if (role) {
-            document.getElementById('email').value = role.email;
-            document.getElementById('password').value = '12345678'; // كلمة مرور افتراضية
+    window.fillDemo = (email) => {
+        document.getElementById('email').value = email;
+        document.getElementById('password').value = '12345678'; // Default demo password
+        
+        // Visual feedback
+        const btn = document.querySelector(`button[onclick="fillDemo('${email}')"]`);
+        if(btn) {
+            btn.classList.add('ring-2', 'ring-brandRed');
+            setTimeout(() => btn.classList.remove('ring-2', 'ring-brandRed'), 500);
         }
     };
 
-    function renderRoles() {
-        const c = document.getElementById('demoRoles');
-        c.innerHTML = '';
-        roles.forEach(r => {
-            c.innerHTML += `
-                <button type="button" onclick="fillDemo('${r.id}')" class="flex flex-col items-center gap-1 group">
-                    <img src="${r.img}" class="w-10 h-10 rounded-full border-2 border-transparent group-hover:border-brandRed transition-all shadow-sm">
-                    <span class="text-[10px] text-slate-500 font-bold uppercase group-hover:text-brandRed">${r.title}</span>
-                </button>
-            `;
+    function renderAllRoles() {
+        const containers = {
+            exec: document.getElementById('execRoles'),
+            manager: document.getElementById('managerRoles'),
+            tech: document.getElementById('techRoles'),
+            staff: document.getElementById('staffRoles')
+        };
+
+        // Clear first
+        Object.values(containers).forEach(c => c.innerHTML = '');
+
+        allUsers.forEach(user => {
+            const container = containers[user.type];
+            if(container) {
+                const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=random&color=fff&size=64`;
+                container.innerHTML += `
+                    <button type="button" onclick="fillDemo('${user.email}')" class="flex items-center gap-2 px-2 py-1.5 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg hover:border-brandRed hover:shadow-sm transition-all min-w-[130px]" title="${user.email}">
+                        <img src="${avatarUrl}" class="w-6 h-6 rounded-full">
+                        <div class="text-start overflow-hidden">
+                            <p class="text-[9px] font-bold text-slate-700 dark:text-slate-200 truncate w-20 leading-tight">${user.name}</p>
+                            <p class="text-[8px] text-slate-400 truncate w-20">${user.title}</p>
+                        </div>
+                    </button>
+                `;
+            }
         });
     }
 
     initUI();
-  </script>
-
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', function () {
-        navigator.serviceWorker.register('service-worker.js').catch(console.warn);
-      });
-    }
   </script>
 
   <script src="js/auth.js"></script>
