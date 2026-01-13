@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#FB4747">
   <link rel="manifest" href="manifest.json">
 
-  <title>AndroGov | تسجيل الدخول</title>
+  <title>AndroGov | بوابة الدخول الموحدة</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
@@ -38,8 +38,8 @@
     [dir="rtl"] .pass-toggle { left: .5rem; right: auto; }
     [dir="ltr"] .pass-toggle { right: .5rem; left: auto; }
     
-    /* تحسين شريط التمرير لقائمة المستخدمين */
-    .users-scroll::-webkit-scrollbar { height: 6px; }
+    /* تحسين شريط التمرير */
+    .users-scroll::-webkit-scrollbar { width: 4px; }
     .users-scroll::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 10px; }
     .dark .users-scroll::-webkit-scrollbar-thumb { background-color: #475569; }
   </style>
@@ -57,27 +57,37 @@
              alt="Andromeda Logo">
         <div>
           <h1 class="text-5xl font-extrabold tracking-tight leading-none" data-i18n="systemName">AndroGov</h1>
-          <p class="text-slate-300 mt-2 text-lg font-light" data-i18n="systemDesc">نظام إدارة العمليات الموحد لشركة اندروميدا</p>
+          <p class="text-slate-300 mt-2 text-lg font-light" data-i18n="systemDesc">منصة الحوكمة الرقمية الشاملة</p>
         </div>
       </div>
 
-      <div class="space-y-4 max-w-md">
+      <div class="space-y-5 max-w-md">
         <div class="flex items-center gap-4 text-slate-300">
-          <i class="fa-solid fa-shield-halved text-green-400 text-xl"></i>
-          <span data-i18n="feat1">دخول آمن وموحد (SSO)</span>
+          <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center"><i class="fa-solid fa-gavel text-green-400"></i></div>
+          <div>
+            <h3 class="font-bold text-white">حوكمة الشركات</h3>
+            <p class="text-xs text-slate-400">إدارة الجمعيات والمجلس واللجان والامتثال.</p>
+          </div>
         </div>
         <div class="flex items-center gap-4 text-slate-300">
-          <i class="fa-solid fa-database text-blue-400 text-xl"></i>
-          <span data-i18n="feat2">مرتبط بقاعدة البيانات المركزية</span>
+          <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center"><i class="fa-solid fa-briefcase text-blue-400"></i></div>
+          <div>
+            <h3 class="font-bold text-white">العمليات التشغيلية</h3>
+            <p class="text-xs text-slate-400">الموارد البشرية، المالية، المشتريات، والتقنية.</p>
+          </div>
         </div>
         <div class="flex items-center gap-4 text-slate-300">
-          <i class="fa-solid fa-users-gear text-purple-400 text-xl"></i>
-          <span data-i18n="feat3">يدعم +20 دور وظيفي وصلاحية</span>
+          <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center"><i class="fa-solid fa-users-viewfinder text-purple-400"></i></div>
+          <div>
+            <h3 class="font-bold text-white">علاقات المساهمين</h3>
+            <p class="text-xs text-slate-400">بوابة خاصة للمساهمين للتصويت والاطلاع.</p>
+          </div>
         </div>
       </div>
     </div>
     <div class="relative text-xs text-slate-500 flex justify-between">
-      <p>© 2026 Andromeda IT.</p>
+      <p>© 2026 Andromeda IT. All Rights Reserved.</p>
+      <p>System v3.3.0</p>
     </div>
   </aside>
 
@@ -90,69 +100,88 @@
         </a>
 
         <div class="flex gap-2">
-            <button type="button" onclick="toggleLanguage()" class="w-10 h-10 rounded-full border border-slate-200 dark:border-slate-700 flex items-center justify-center bg-white dark:bg-slate-800 shadow-sm">
+            <button type="button" onclick="toggleLanguage()" class="w-10 h-10 rounded-full border border-slate-200 dark:border-slate-700 flex items-center justify-center bg-white dark:bg-slate-800 shadow-sm transition hover:border-brandRed">
                 <span class="font-bold text-xs" id="langLabel">EN</span>
             </button>
-            <button type="button" onclick="toggleDarkMode()" class="w-10 h-10 rounded-full border border-slate-200 dark:border-slate-700 flex items-center justify-center bg-white dark:bg-slate-800 shadow-sm">
+            <button type="button" onclick="toggleDarkMode()" class="w-10 h-10 rounded-full border border-slate-200 dark:border-slate-700 flex items-center justify-center bg-white dark:bg-slate-800 shadow-sm transition hover:border-brandRed">
                 <i id="themeIcon" class="fa-solid fa-moon"></i>
             </button>
         </div>
     </header>
 
-    <section class="flex-1 flex flex-col justify-center items-center w-full px-6 py-8">
-      <div class="w-full max-w-xl"> <div class="lg:hidden text-center mb-8">
-            <img src="https://ait.sa/wp-content/uploads/2024/03/cropped-Square-Logo.png" class="w-20 h-20 mx-auto rounded-2xl bg-white p-1 shadow-md object-contain">
-            <h2 class="text-2xl font-extrabold mt-4">AndroGov</h2>
+    <section class="flex-1 flex flex-col justify-center items-center w-full px-6 py-4">
+      <div class="w-full max-w-xl">
+        
+        <div class="lg:hidden text-center mb-6">
+            <img src="https://ait.sa/wp-content/uploads/2024/03/cropped-Square-Logo.png" class="w-16 h-16 mx-auto rounded-2xl bg-white p-1 shadow-md object-contain">
+            <h2 class="text-xl font-extrabold mt-2">AndroGov</h2>
         </div>
 
-        <div class="bg-white/90 dark:bg-slate-800/90 backdrop-blur p-8 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-lg">
-          <h2 class="text-2xl font-extrabold mb-2 text-slate-800 dark:text-white" data-i18n="loginTitle">تسجيل الدخول</h2>
-          <p class="text-slate-500 dark:text-slate-400 mb-8 text-sm" data-i18n="loginSub">أدخل بيانات اعتمادك للوصول للنظام</p>
+        <div class="bg-white/90 dark:bg-slate-800/90 backdrop-blur p-8 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-xl">
+          <div class="text-center mb-6">
+            <h2 class="text-2xl font-extrabold text-slate-800 dark:text-white" data-i18n="loginTitle">تسجيل الدخول</h2>
+            <p class="text-slate-500 dark:text-slate-400 text-xs mt-1" data-i18n="loginSub">يرجى اختيار صفتك للدخول إلى النظام</p>
+          </div>
 
           <div id="errorMsg" class="hidden mb-5 p-3 bg-red-100 text-red-700 rounded-xl text-sm border border-red-200 text-center flex items-center justify-center gap-2">
             <i class="fa-solid fa-circle-exclamation"></i>
             <span id="errorText">بيانات الدخول غير صحيحة</span>
           </div>
 
-          <form class="space-y-5" novalidate>
+          <form class="space-y-4" novalidate>
             <div>
-              <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" data-i18n="emailLabel">البريد الإلكتروني</label>
+              <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1.5" data-i18n="emailLabel">البريد الإلكتروني / معرف المستخدم</label>
               <div class="relative">
                 <div class="absolute inset-y-0 flex items-center pointer-events-none icon-inset"><i class="fa-regular fa-envelope text-slate-400"></i></div>
-                <input type="email" id="email" class="w-full py-3 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-10 focus:ring-2 focus:ring-brandRed/50 outline-none transition-all dark:text-white" placeholder="user@androomeda.com" required>
+                <input type="email" id="email" class="w-full py-2.5 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-10 focus:ring-2 focus:ring-brandRed/50 outline-none transition-all dark:text-white text-sm" placeholder="name@company.com" required>
               </div>
             </div>
 
             <div>
-              <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" data-i18n="passLabel">كلمة المرور</label>
+              <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1.5" data-i18n="passLabel">كلمة المرور</label>
               <div class="relative">
                 <div class="absolute inset-y-0 flex items-center pointer-events-none icon-inset"><i class="fa-solid fa-lock text-slate-400"></i></div>
-                <input type="password" id="password" class="w-full py-3 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-10 focus:ring-2 focus:ring-brandRed/50 outline-none transition-all dark:text-white" placeholder="••••••••" required>
-                <button type="button" class="absolute inset-y-0 pass-toggle px-3 text-slate-500" onclick="togglePassword()"><i id="passIcon" class="fa-regular fa-eye"></i></button>
+                <input type="password" id="password" class="w-full py-2.5 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-10 focus:ring-2 focus:ring-brandRed/50 outline-none transition-all dark:text-white text-sm" placeholder="••••••••" required>
+                <button type="button" class="absolute inset-y-0 pass-toggle px-3 text-slate-500 hover:text-brandRed transition" onclick="togglePassword()"><i id="passIcon" class="fa-regular fa-eye"></i></button>
               </div>
             </div>
 
-            <button id="loginBtn" type="submit" class="w-full bg-brandRed hover:bg-red-700 text-white font-extrabold py-3 rounded-xl transition-all shadow-lg hover:shadow-brandRed/30 flex justify-center items-center gap-2">
+            <button id="loginBtn" type="submit" class="w-full bg-brandRed hover:bg-red-700 text-white font-bold py-2.5 rounded-xl transition-all shadow-lg hover:shadow-brandRed/30 flex justify-center items-center gap-2 text-sm">
               <span data-i18n="loginBtn">دخول آمن</span>
               <i class="fa-solid fa-arrow-left dir-rotate"></i>
             </button>
           </form>
 
-          <div class="mt-8 pt-6 border-t border-slate-100 dark:border-slate-700">
-            <p class="text-[10px] text-center text-slate-400 uppercase tracking-widest mb-4" data-i18n="demoTitle">اختر حساب للتجربة (انقر للتعبئة التلقائية)</p>
+          <div class="mt-6 pt-6 border-t border-slate-100 dark:border-slate-700">
+            <p class="text-[9px] text-center text-slate-400 uppercase tracking-widest mb-4" data-i18n="demoTitle">حسابات الوصول السريع (Demo Access)</p>
             
-            <div class="max-h-60 overflow-y-auto users-scroll pr-1">
-                <div class="mb-3"><span class="text-[10px] text-brandRed font-bold bg-red-50 dark:bg-red-900/20 px-2 py-0.5 rounded">الإدارة العليا (Top Management)</span></div>
-                <div class="flex flex-wrap gap-2 mb-4" id="execRoles"></div>
+            <div class="max-h-[300px] overflow-y-auto users-scroll space-y-4 pr-1">
+                
+                <div>
+                    <h4 class="text-[10px] font-bold text-brandBlue mb-2 flex items-center gap-1"><i class="fa-solid fa-building-columns"></i> مجلس الإدارة واللجان</h4>
+                    <div class="flex flex-wrap gap-2" id="boardRoles"></div>
+                </div>
 
-                <div class="mb-3"><span class="text-[10px] text-blue-600 font-bold bg-blue-50 dark:bg-blue-900/20 px-2 py-0.5 rounded">مدراء الإدارات (Heads of Depts)</span></div>
-                <div class="flex flex-wrap gap-2 mb-4" id="managerRoles"></div>
+                <div>
+                    <h4 class="text-[10px] font-bold text-green-600 mb-2 flex items-center gap-1"><i class="fa-solid fa-hand-holding-dollar"></i> كبار المساهمين</h4>
+                    <div class="flex flex-wrap gap-2" id="shareholderRoles"></div>
+                </div>
 
-                <div class="mb-3"><span class="text-[10px] text-purple-600 font-bold bg-purple-50 dark:bg-purple-900/20 px-2 py-0.5 rounded">التقنية والتطوير (Tech & Dev)</span></div>
-                <div class="flex flex-wrap gap-2 mb-4" id="techRoles"></div>
+                <div>
+                    <h4 class="text-[10px] font-bold text-purple-600 mb-2 flex items-center gap-1"><i class="fa-solid fa-user-tie"></i> الإدارة التنفيذية</h4>
+                    <div class="flex flex-wrap gap-2" id="execRoles"></div>
+                </div>
 
-                <div class="mb-3"><span class="text-[10px] text-slate-500 font-bold bg-slate-100 dark:bg-slate-700/50 px-2 py-0.5 rounded">موظفين (Staff)</span></div>
-                <div class="flex flex-wrap gap-2" id="staffRoles"></div>
+                <div>
+                    <h4 class="text-[10px] font-bold text-orange-600 mb-2 flex items-center gap-1"><i class="fa-solid fa-scale-balanced"></i> التدقيق والامتثال</h4>
+                    <div class="flex flex-wrap gap-2" id="auditRoles"></div>
+                </div>
+
+                <div>
+                    <h4 class="text-[10px] font-bold text-slate-500 mb-2 flex items-center gap-1"><i class="fa-solid fa-users"></i> الموظفين والعمليات</h4>
+                    <div class="flex flex-wrap gap-2" id="staffRoles"></div>
+                </div>
+
             </div>
           </div>
 
@@ -162,64 +191,76 @@
   </main>
 
   <script>
-    // --- 1. قاعدة بيانات المستخدمين الكاملة (لأغراض العرض في الواجهة) ---
-    // هذه القائمة يجب أن تطابق تماماً الملف المركزي
+    // --- قاعدة بيانات المستخدمين الشاملة ---
     const allUsers = [
-        // Executive
-        { id: "USR_001", name: "هشام السحيباني", title: "CEO", email: "hesham@androomeda.com", type: "exec" },
-        { id: "USR_002", name: "محمد البخيتي", title: "CFO", email: "mtahir@androomeda.com", type: "exec" },
-        { id: "USR_004", name: "أيمن المغربي", title: "GRCO", email: "amaghrabi@androomeda.com", type: "exec" },
-        { id: "USR_005", name: "منصور اليامي", title: "CAO", email: "myami@androomeda.com", type: "exec" },
-        
-        // Managers
-        { id: "USR_020", name: "M. Akhtar", title: "Director", email: "Makhtar@androomeda.com", type: "manager" },
-        { id: "USR_009", name: "Meshail H", title: "NCSO", email: "malhadyan@androomeda.com", type: "manager" },
-        { id: "USR_006", name: "د. وعد حسين", title: "Medical Sup", email: "whussain@androomeda.com", type: "manager" },
-        { id: "USR_007", name: "نواف السحابي", title: "Acc. Mgr", email: "nalsahabi@androomeda.com", type: "manager" },
-        
-        // Tech
-        { id: "USR_015", name: "Rand Hourani", title: "Tech Lead", email: "Rhourani@androomeda.com", type: "tech" },
-        { id: "USR_016", name: "Hamed A", title: "Frontend", email: "Habdeen@androomeda.com", type: "tech" },
-        { id: "USR_018", name: "Anas Q", title: "Mobile", email: "Aqunaibi@androomeda.com", type: "tech" },
-        { id: "USR_019", name: "Kamran A", title: "Backend", email: "Karshad@androomeda.com", type: "tech" },
-        { id: "USR_023", name: "Dev Team", title: "Developers", email: "SDT@androomeda.com", type: "tech" },
-        
-        // Staff
-        { id: "USR_003", name: "هادي أحمد", title: "Purchasing", email: "hadi@androomeda.com", type: "staff" },
-        { id: "USR_010", name: "مها الهزان", title: "Marketing", email: "mhizan@androomeda.com", type: "staff" },
-        { id: "USR_008", name: "الحسين الحميدي", title: "Support", email: "alhussien@androomeda.com", type: "staff" },
-        { id: "USR_014", name: "عبدالله الجبير", title: "Admin Supp", email: "Ajubeir@androomeda.com", type: "staff" },
-        { id: "USR_017", name: "Naseem K", title: "QA", email: "Nkhudair@androomeda.com", type: "tech" }
+      // --- 0. System Admin (Super User) ---
+        { id: "USR_004", name: "أيمن المغربي", title: "مدير النظام / GRCO", email: "amaghrabi@androomeda.com", type: "admin", avatarColor: "b91c1c" },
+      
+        // --- 1. Board Members ---
+        { id: "USR_000", name: "عبدالله الحواس", title: "رئيس المجلس/مساهم (5%)", email: "amh400@gmail.com", type: "board", avatarColor: "1e293b" },
+        { id: "USR_001", name: "هشام السحيباني", title: "نائب الرئيس/مساهم (10%)/CEO", email: "hesham@androomeda.com", type: "board", avatarColor: "4267B2" },
+        { id: "USR_005", name: "منصور اليامي", title: "عضو مجلس/مساهم (5%)/CAO", email: "myami@androomeda.com", type: "board", avatarColor: "ea580c" }, // تم التعديل
+        { id: "BRD_003", name: "أحمد السحيباني", title: "عضو مجلس/لجنة", email: "a.s.alsuhaibani@microtec.com.sa", type: "board", avatarColor: "64748b" },
+        { id: "COMM_01", name: "محمد العنزي", title: "رئيس المراجعة", email: "mohammedmansour.socpa@gmail.com", type: "board", avatarColor: "059669" },
+        { id: "COMM_02", name: "عادل سعسع", title: "عضو المراجعة", email: "adel.sasa1@gmail.com", type: "board", avatarColor: "059669" },
+
+        // --- 2. Shareholders ---
+        { id: "SH_001", name: "ورثة السحيباني", title: "مساهم (35%)", email: "alcaseer@gmail.com", type: "shareholder", avatarColor: "fb4747" },
+        { id: "SH_010", name: "شركة بيجي", title: "مساهم (15%)", email: "saleh@bgtech.com", type: "shareholder", avatarColor: "fb4747" },
+        { id: "SH_004", name: "هيثم السحيباني", title: "مساهم (10%)", email: "hmsasis@gmail.com", type: "shareholder", avatarColor: "fb4747" },
+        { id: "SH_003", name: "وائل السحيباني", title: "مساهم (5%)", email: "W961@live.com", type: "shareholder", avatarColor: "fb4747" },
+        { id: "SH_006", name: "إبراهيم السكيتي", title: "مساهم (5%)", email: "ihskaity@gmail.com", type: "shareholder", avatarColor: "fb4747" },
+        { id: "SH_007", name: "صالح الوهيبي", title: "مساهم (5%)", email: "Saaw4466@yahoo.com", type: "shareholder", avatarColor: "fb4747" },
+        { id: "SH_008", name: "عبدالله الفريجي", title: "مساهم (5%)", email: "a_furaiji@hotmail.com", type: "shareholder", avatarColor: "fb4747" },
+        { id: "SH_009", name: "عبدالله الحواس", title: "مساهم (5%)", email: "amh400@gmail.com", type: "shareholder", avatarColor: "fb4747" },
+        { id: "SH_011", name: "أحمد الجاسر", title: "مساهم (5%)", email: "ahmed.jasser@gmail.com", type: "shareholder", avatarColor: "fb4747" },
+
+        // --- 3. Executive Management ---
+        { id: "USR_002", name: "محمد البخيتي", title: "CFO", email: "mtahir@androomeda.com", type: "exec", avatarColor: "7c3aed" },
+        { id: "USR_020", name: "M. Akhtar", title: "Director", email: "Makhtar@androomeda.com", type: "exec", avatarColor: "0891b2" },
+
+        // --- 4. Audit & Compliance ---
+        { id: "AUD_INT", name: "المدقق الداخلي", title: "Internal Audit", email: "InternalAudit@androomeda.com", type: "audit", avatarColor: "be123c" },
+        { id: "AUD_EXT", name: "المراجع الخارجي", title: "KPMG/EY", email: "ExternalAudit@androomeda.com", type: "audit", avatarColor: "be123c" },
+
+        // --- 5. Staff & Managers ---
+        { id: "USR_009", name: "مشاعل الهضيان", title: "NCSO", email: "malhadyan@androomeda.com", type: "staff", avatarColor: "475569" },
+        { id: "USR_015", name: "رند الحوراني", title: "Tech Lead", email: "Rhourani@androomeda.com", type: "staff", avatarColor: "475569" },
+        { id: "USR_003", name: "هادي أحمد", title: "المشتريات", email: "hadi@androomeda.com", type: "staff", avatarColor: "475569" },
+        { id: "USR_007", name: "نواف السحابي", title: "مدير حسابات", email: "nalsahabi@androomeda.com", type: "staff", avatarColor: "475569" },
+        { id: "USR_006", name: "د. وعد حسين", title: "مشرفة طبية", email: "whussain@androomeda.com", type: "staff", avatarColor: "475569" },
+        { id: "USR_010", "name": "مها الهزان", title: "التسويق", email: "mhizan@androomeda.com", type: "staff", avatarColor: "475569" },
+        { id: "USR_008", name: "الحسين الحميدي", title: "الدعم الفني", email: "alhussien@androomeda.com", type: "staff", avatarColor: "475569" }
     ];
 
     const translations = {
       ar: {
-        systemName: "AndroGov",
-        systemDesc: "نظام إدارة العمليات الموحد لشركة اندروميدا",
-        feat1: "دخول آمن وموحد (SSO)",
-        feat2: "مرتبط بقاعدة البيانات المركزية",
-        feat3: "يدعم +20 دور وظيفي وصلاحية",
         loginTitle: "تسجيل الدخول",
-        loginSub: "أدخل بيانات اعتمادك للوصول للنظام",
+        loginSub: "يرجى اختيار صفتك للدخول إلى النظام",
         emailLabel: "البريد الإلكتروني",
         passLabel: "كلمة المرور",
         loginBtn: "دخول آمن",
-        demoTitle: "اختر حساب للتجربة (انقر للتعبئة التلقائية)",
-        backToHome: "العودة للرئيسية"
+        demoTitle: "حسابات الوصول السريع (Demo Access)",
+        backToHome: "العودة للرئيسية",
+        systemName: "AndroGov",
+        systemDesc: "منصة الحوكمة الرقمية الشاملة",
+        feat1: "دخول آمن وموحد (SSO)",
+        feat2: "مرتبط بقاعدة البيانات المركزية",
+        feat3: "يدعم +20 دور وظيفي وصلاحية"
       },
       en: {
-        systemName: "AndroGov",
-        systemDesc: "Andromeda Unified Operations System",
-        feat1: "Secure SSO Login",
-        feat2: "Connected to Central DB",
-        feat3: "Supports 20+ Roles & Permissions",
         loginTitle: "Sign In",
-        loginSub: "Enter your credentials to access the system",
+        loginSub: "Please select your role to access",
         emailLabel: "Email Address",
         passLabel: "Password",
         loginBtn: "Secure Login",
-        demoTitle: "Select Demo Account (Click to autofill)",
-        backToHome: "Back to Home"
+        demoTitle: "Quick Access Accounts (Demo)",
+        backToHome: "Back to Home",
+        systemName: "AndroGov",
+        systemDesc: "Digital Governance Platform",
+        feat1: "Secure SSO Login",
+        feat2: "Centralized Database",
+        feat3: "Supports 20+ Roles"
       }
     };
 
@@ -282,9 +323,8 @@
 
     window.fillDemo = (email) => {
         document.getElementById('email').value = email;
-        document.getElementById('password').value = '12345678'; // Default demo password
+        document.getElementById('password').value = '12345678';
         
-        // Visual feedback
         const btn = document.querySelector(`button[onclick="fillDemo('${email}')"]`);
         if(btn) {
             btn.classList.add('ring-2', 'ring-brandRed');
@@ -294,25 +334,25 @@
 
     function renderAllRoles() {
         const containers = {
+            board: document.getElementById('boardRoles'),
+            shareholder: document.getElementById('shareholderRoles'),
             exec: document.getElementById('execRoles'),
-            manager: document.getElementById('managerRoles'),
-            tech: document.getElementById('techRoles'),
+            audit: document.getElementById('auditRoles'),
             staff: document.getElementById('staffRoles')
         };
 
-        // Clear first
-        Object.values(containers).forEach(c => c.innerHTML = '');
+        Object.values(containers).forEach(c => { if(c) c.innerHTML = ''; });
 
         allUsers.forEach(user => {
             const container = containers[user.type];
             if(container) {
-                const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=random&color=fff&size=64`;
+                const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=${user.avatarColor}&color=fff&size=64`;
                 container.innerHTML += `
-                    <button type="button" onclick="fillDemo('${user.email}')" class="flex items-center gap-2 px-2 py-1.5 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg hover:border-brandRed hover:shadow-sm transition-all min-w-[130px]" title="${user.email}">
-                        <img src="${avatarUrl}" class="w-6 h-6 rounded-full">
+                    <button type="button" onclick="fillDemo('${user.email}')" class="flex items-center gap-2 px-2 py-1.5 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg hover:border-brandRed hover:shadow-sm transition-all min-w-[130px] w-auto max-w-[180px]" title="${user.email}">
+                        <img src="${avatarUrl}" class="w-6 h-6 rounded-full shrink-0">
                         <div class="text-start overflow-hidden">
-                            <p class="text-[9px] font-bold text-slate-700 dark:text-slate-200 truncate w-20 leading-tight">${user.name}</p>
-                            <p class="text-[8px] text-slate-400 truncate w-20">${user.title}</p>
+                            <p class="text-[9px] font-bold text-slate-700 dark:text-slate-200 truncate leading-tight">${user.name}</p>
+                            <p class="text-[8px] text-slate-400 truncate">${user.title}</p>
                         </div>
                     </button>
                 `;
@@ -321,6 +361,14 @@
     }
 
     initUI();
+  </script>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('service-worker.js').catch(console.warn);
+      });
+    }
   </script>
 
   <script src="js/auth.js"></script>
