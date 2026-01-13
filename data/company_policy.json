@@ -103,7 +103,7 @@
       { "id": "USR_001", "name": "Hesham Al-Sohaibani", "title": "CEO & Board Vice Chairman & Shareholder", "department_id": "DEP_EXEC", "role": "CEO", "email": "hesham@androomeda.com" },
       { "id": "USR_002", "name": "Mohammed Al-Bukheiti", "title": "Chief Financial Officer (CFO)", "department_id": "DEP_FIN", "role": "CFO", "email": "mtahir@androomeda.com" },
       { "id": "USR_003", "name": "Hadi Ahmed", "title": "Purchasing & Admin Support Coordinator (PSSC)", "department_id": "DEP_HR", "role": "Coordinator", "email": "hadi@androomeda.com" },
-      { "id": "USR_004", "name": "Ayman Al-Maghrabi", "title": "Governance, Risk & Compliance Officer (GRCO) / Board Secretary", "department_id": "DEP_GRC", "role": "GRCO", "email": "amaghrabi@androomeda.com" },
+      { "id": "USR_004", "name": "Ayman Al-Maghrabi", "title": "Governance, Risk & Compliance Officer (GRCO) / Board Secretary", "department_id": "DEP_GRC", "role": "admin", "email": "amaghrabi@androomeda.com" },
       { "id": "USR_005", "name": "Mansour Al-Yami", "title": "Chief Administrative Officer (CAO) / Board Member", "department_id": "DEP_HR", "role": "CAO", "email": "myami@androomeda.com" },
       { "id": "USR_006", "name": "Dr. Waad Hussein", "title": "Medical Supervisor (MS)", "department_id": "DEP_MED", "role": "Manager", "email": "whussain@androomeda.com" },
       { "id": "USR_007", "name": "Nawaf Al-Sahabi", "title": "Customer Accounts Manager (CAM)", "department_id": "DEP_SUPPORT", "role": "Manager", "email": "nalsahabi@androomeda.com" },
@@ -124,7 +124,32 @@
       { "id": "USR_022", "name": "Ahmad Ashgar", "title": "Junior Business Analyst", "department_id": "DEP_TECH", "role": "Analyst", "email": "Aashgar@androomeda.com" },
       { "id": "USR_023", "name": "Software Developers Team", "title": "Software Developers Team", "department_id": "DEP_TECH", "role": "Team", "email": "SDT@androomeda.com" },
       { "id": "USR_024", "name": "Jawhar Amin", "title": "Flutter Developer", "department_id": "DEP_TECH", "role": "Developer", "email": "Jamin@androomeda.com" },
-      { "id": "USR_025", "name": "Mohammad Osama Wajid", "title": "Software Quality Assurance Engineer", "department_id": "DEP_TECH", "role": "QA", "email": "Mwajid@androomeda.com" }
+      { "id": "USR_025", "name": "Mohammad Osama Wajid", "title": "Software Quality Assurance Engineer", "department_id": "DEP_TECH", "role": "QA", "email": "Mwajid@androomeda.com" },
+      { 
+        "id": "COMM_01", 
+        "name": "Mohammed Al-Enezi", 
+        "title": "Audit Committee Chairman", 
+        "role": "Committee_Member", 
+        "email": "mohammedmansour.socpa@gmail.com",
+        "is_executive": false
+      },
+      { 
+        "id": "COMM_02", 
+        "name": "Adel Sasa", 
+        "title": "Audit Committee Member", 
+        "role": "Committee_Member", 
+        "email": "adel.sasa1@gmail.com",
+        "is_executive": false
+      },
+      { 
+        "id": "BRD_003", 
+        "name": "Ahmed Al-Suhaibani", 
+        "title": "Board & Audit Member", 
+        "role": "Board_Member", 
+        "email": "a.s.alsuhaibani@microtec.com.sa",
+        "is_executive": false
+      }
+    ]
     ]
   },
   "authority_matrix": {
