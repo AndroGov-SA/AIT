@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#FB4747">
-<link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#FB4747">
+  <link rel="manifest" href="manifest.json">
 
   <title>AndroGov | تسجيل الدخول</title>
 
@@ -31,7 +31,6 @@
   </script>
 
   <style>
-    /* تحسينات الاتجاه */
     [dir="rtl"] .dir-rotate { transform: rotate(0deg); }
     [dir="ltr"] .dir-rotate { transform: rotate(180deg); }
     [dir="rtl"] .icon-inset { right: .75rem; left: auto; }
@@ -43,7 +42,6 @@
 
 <body class="bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-white min-h-screen flex flex-col lg:flex-row font-sans transition-colors duration-300">
 
-  <!-- القسم الأيمن (الخلفية) -->
   <aside class="hidden lg:flex w-1/2 bg-slate-900 relative flex-col justify-between p-12 text-white overflow-hidden h-screen sticky top-0">
     <div class="absolute inset-0 bg-gradient-to-br from-brandBlue/35 to-slate-900/95"></div>
 
@@ -61,11 +59,15 @@
       <div class="space-y-4 max-w-md">
         <div class="flex items-center gap-4 text-slate-300">
           <i class="fa-solid fa-shield-halved text-green-400 text-xl"></i>
-          <span data-i18n="feat1">دخول آمن ومشفّر (SSO)</span>
+          <span data-i18n="feat1">دخول آمن وموحد (SSO)</span>
         </div>
         <div class="flex items-center gap-4 text-slate-300">
-          <i class="fa-solid fa-server text-blue-400 text-xl"></i>
-          <span data-i18n="feat2">متصل بقواعد بيانات الشركة</span>
+          <i class="fa-solid fa-database text-blue-400 text-xl"></i>
+          <span data-i18n="feat2">مرتبط بقاعدة البيانات المركزية</span>
+        </div>
+        <div class="flex items-center gap-4 text-slate-300">
+          <i class="fa-solid fa-sitemap text-purple-400 text-xl"></i>
+          <span data-i18n="feat3">تطبيق ذكي للصلاحيات والأدوار</span>
         </div>
       </div>
     </div>
@@ -74,12 +76,9 @@
     </div>
   </aside>
 
-  <!-- القسم الأيسر (النموذج) -->
   <main class="w-full lg:w-1/2 flex flex-col relative bg-slate-50 dark:bg-slate-900 transition-colors duration-300 min-h-screen">
     
-    <!-- Top Bar with Back Button -->
     <header class="w-full flex justify-between items-center gap-3 p-6">
-        <!-- زر العودة للموقع الرئيسي -->
         <a href="index.html" class="flex items-center gap-2 text-sm font-bold text-slate-500 hover:text-brandBlue transition-colors group">
             <i class="fa-solid fa-arrow-right dir-rotate group-hover:-translate-x-1 transition-transform"></i>
             <span data-i18n="backToHome">العودة للرئيسية</span>
@@ -111,12 +110,12 @@
             <span id="errorText">بيانات الدخول غير صحيحة</span>
           </div>
 
-          <form onsubmit="handleLogin(event)" class="space-y-5" novalidate>
+          <form class="space-y-5" novalidate>
             <div>
-              <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" data-i18n="emailLabel">اسم المستخدم</label>
+              <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" data-i18n="emailLabel">البريد الإلكتروني</label>
               <div class="relative">
-                <div class="absolute inset-y-0 flex items-center pointer-events-none icon-inset"><i class="fa-regular fa-user text-slate-400"></i></div>
-                <input type="text" id="userInput" class="w-full py-3 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-10 focus:ring-2 focus:ring-brandRed/50 outline-none transition-all dark:text-white" placeholder="admin, ceo, hr..." required>
+                <div class="absolute inset-y-0 flex items-center pointer-events-none icon-inset"><i class="fa-regular fa-envelope text-slate-400"></i></div>
+                <input type="email" id="email" class="w-full py-3 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-10 focus:ring-2 focus:ring-brandRed/50 outline-none transition-all dark:text-white" placeholder="user@androomeda.com" required>
               </div>
             </div>
 
@@ -145,25 +144,25 @@
   </main>
 
   <script>
-    // بيانات المستخدمين والروابط (محدثة حسب الطلب)
+    // تم تحديث البيانات هنا لتطابق الإيميلات الموجودة في company_policy.json
     const roles = [
-      { id: 'admin',   username: 'admin',   name: 'أيمن المغربي',     title: 'System Admin',     page: 'admin/admin.html', img: 'https://ui-avatars.com/api/?name=Admin+Sys&background=FB4747&color=fff' },
-      { id: 'ceo',     username: 'ceo',     name: 'هشام السحيباني',  title: 'CEO',              page: 'ceo/ceo_dashboard.html', img: 'https://ui-avatars.com/api/?name=Hesham+S&background=3b82f6&color=fff' },
-      { id: 'hr',      username: 'hr',      name: 'منصور اليامي',    title: 'HR Manager',       page: 'hr/hr_dashboard.html', img: 'https://ui-avatars.com/api/?name=Mansour+Y&background=f59e0b&color=fff' },
-      { id: 'finance', username: 'cfo',     name: 'محمد البخيتي',    title: 'CFO',              page: 'finance/cfo_dashboard.html', img: 'https://ui-avatars.com/api/?name=Mohammed+B&background=8b5cf6&color=fff' },
-      { id: 'audit',   username: 'audit',   name: 'موظف التدقيق',    title: 'Internal Auditor', page: 'audit.html', img: 'https://ui-avatars.com/api/?name=Auditor&background=64748b&color=fff' },
-      { id: 'cto',   username: 'cto',   name: 'المسؤول التقني',    title: 'CTO', page: 'cto/cto_dashboard.html', img: 'https://ui-avatars.com/api/?name=CTO&background=7E3DBE&color=fff' }
+      { id: 'ceo',     email: 'hesham@androomeda.com',   name: 'هشام السحيباني',  title: 'CEO',     img: 'https://ui-avatars.com/api/?name=Hesham+S&background=3b82f6&color=fff' },
+      { id: 'admin',   email: 'amaghrabi@androomeda.com',name: 'أيمن المغربي',    title: 'GRCO',    img: 'https://ui-avatars.com/api/?name=Ayman+M&background=FB4747&color=fff' },
+      { id: 'finance', email: 'mtahir@androomeda.com',   name: 'محمد البخيتي',    title: 'CFO',     img: 'https://ui-avatars.com/api/?name=Mohammed+B&background=8b5cf6&color=fff' },
+      { id: 'hr',      email: 'myami@androomeda.com',    name: 'منصور اليامي',    title: 'CAO',     img: 'https://ui-avatars.com/api/?name=Mansour+Y&background=f59e0b&color=fff' },
+      { id: 'tech',    email: 'makhtar@androomeda.com',  name: 'M. Akhtar',       title: 'Director',img: 'https://ui-avatars.com/api/?name=M+Akhtar&background=7E3DBE&color=fff' }
     ];
 
     const translations = {
       ar: {
         systemName: "AndroGov",
         systemDesc: "نظام إدارة العمليات الموحد لشركة اندروميدا",
-        feat1: "دخول آمن ومشفّر (SSO)",
-        feat2: "متصل بقواعد بيانات الشركة",
+        feat1: "دخول آمن وموحد (SSO)",
+        feat2: "مرتبط بقاعدة البيانات المركزية",
+        feat3: "تطبيق ذكي للصلاحيات والأدوار",
         loginTitle: "تسجيل الدخول",
         loginSub: "أدخل بيانات اعتمادك للوصول للنظام",
-        emailLabel: "اسم المستخدم",
+        emailLabel: "البريد الإلكتروني",
         passLabel: "كلمة المرور",
         loginBtn: "دخول آمن",
         demoTitle: "اختر مستخدم للتجربة (Demo)",
@@ -173,10 +172,11 @@
         systemName: "AndroGov",
         systemDesc: "Andromeda Unified Operations System",
         feat1: "Secure SSO Login",
-        feat2: "Connected to Company DB",
+        feat2: "Connected to Central DB",
+        feat3: "Smart Role-Based Access",
         loginTitle: "Sign In",
         loginSub: "Enter your credentials to access the system",
-        emailLabel: "Username",
+        emailLabel: "Email Address",
         passLabel: "Password",
         loginBtn: "Secure Login",
         demoTitle: "Select User (Demo)",
@@ -187,7 +187,7 @@
     let lang = localStorage.getItem('lang') || 'ar';
     let dark = localStorage.getItem('theme') === 'dark';
 
-    function init() {
+    function initUI() {
       applyTheme();
       applyLang();
       renderRoles();
@@ -241,54 +241,14 @@
         }
     };
 
+    // تعبئة البيانات عند الضغط على زر الديمو
     window.fillDemo = (id) => {
         const role = roles.find(r => r.id === id);
-        document.getElementById('userInput').value = role.username;
-        document.getElementById('password').value = '12341234';
-    };
-
-    window.handleLogin = (e) => {
-        e.preventDefault();
-        const userVal = document.getElementById('userInput').value.toLowerCase();
-        const passVal = document.getElementById('password').value;
-
-        if(passVal !== '12341234') {
-            showError('كلمة المرور غير صحيحة');
-            return;
+        if (role) {
+            document.getElementById('email').value = role.email;
+            document.getElementById('password').value = '12345678'; // كلمة مرور افتراضية
         }
-
-        const role = roles.find(r => r.username === userVal);
-        if(!role) {
-            showError('المستخدم غير موجود');
-            return;
-        }
-
-        // حفظ المستخدم بكامل تفاصيل اللغات
-        localStorage.setItem('currentUser', JSON.stringify({
-             name: role.name,
-             nameAr: role.name, // Simplified for demo
-             nameEn: role.name, 
-             title: role.title,
-             titleAr: role.title,
-             titleEn: role.title,
-             avatar: role.img,
-             role: role.title
-        }));
-
-        const btn = document.getElementById('loginBtn');
-        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري التوجيه...';
-        btn.disabled = true;
-
-        setTimeout(() => {
-            window.location.href = role.page;
-        }, 800);
     };
-
-    function showError(msg) {
-        const el = document.getElementById('errorMsg');
-        document.getElementById('errorText').innerText = msg;
-        el.classList.remove('hidden');
-    }
 
     function renderRoles() {
         const c = document.getElementById('demoRoles');
@@ -296,26 +256,25 @@
         roles.forEach(r => {
             c.innerHTML += `
                 <button type="button" onclick="fillDemo('${r.id}')" class="flex flex-col items-center gap-1 group">
-                    <img src="${r.img}" class="w-10 h-10 rounded-full border-2 border-transparent group-hover:border-brandRed transition-all">
-                    <span class="text-[10px] text-slate-500 font-bold uppercase">${r.username}</span>
+                    <img src="${r.img}" class="w-10 h-10 rounded-full border-2 border-transparent group-hover:border-brandRed transition-all shadow-sm">
+                    <span class="text-[10px] text-slate-500 font-bold uppercase group-hover:text-brandRed">${r.title}</span>
                 </button>
             `;
         });
     }
 
-    init();
+    initUI();
   </script>
-  
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', function () {
-      navigator.serviceWorker
-        .register('service-worker.js')
-        .catch(function (err) {
-          console.warn('Service worker registration failed:', err);
-        });
-    });
-  }
-</script>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('service-worker.js').catch(console.warn);
+      });
+    }
+  </script>
+
+  <script src="js/auth.js"></script>
+
 </body>
 </html>
