@@ -86,10 +86,15 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      font-weight: 800;
-      color: var(--brand-red);
-      font-size: 22px;
       box-shadow: 0 8px 20px rgba(148, 27, 27, 0.25);
+      overflow: hidden;
+    }
+
+    .header-logo img {
+      width: 70%;
+      height: 70%;
+      object-fit: contain;
+      display: block;
     }
 
     .header-text {
@@ -703,7 +708,10 @@
       <!-- Header -->
       <header class="header">
         <div class="header-brand">
-          <div class="header-logo">A</div>
+          <div class="header-logo">
+            <img src="https://ait.sa/wp-content/uploads/2024/03/cropped-Square-Logo.png"
+                 alt="شعار شركة اندروميدا لتقنية المعلومات" />
+          </div>
           <div class="header-text">
             <span>شركة اندروميدا لتقنية المعلومات</span>
             <span>Andromeda Information Technology Company</span>
