@@ -328,13 +328,32 @@
     }
 
     function renderHeader() {
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
         const container = document.getElementById('header-container');
         if (!container) return;
         
         const dict = t[config.lang];
         const isRtl = config.lang === 'ar';
 
-        // Notifications List
+        // 1. تجهيز زر تبديل البوابة (Portal Switcher)
+        let switcherHtml = '';
+        if (currentUser.accessLevels && currentUser.accessLevels.length > 1) {
+            switcherHtml = `
+                <div class="relative group mx-2 hidden md:block">
+                    <button class="flex items-center gap-2 bg-slate-100 dark:bg-slate-700 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-slate-200 dark:hover:bg-slate-600 transition text-slate-600 dark:text-slate-200">
+                        <i class="fa-solid fa-repeat text-brandRed"></i> تبديل البوابة
+                    </button>
+                    <div class="absolute ${isRtl ? 'right-0' : 'left-0'} top-full mt-2 w-56 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-100 dark:border-slate-700 hidden group-hover:block z-50 overflow-hidden">
+                        ${currentUser.accessLevels.includes('board') ? '<a href="../admin/board.html" class="flex items-center gap-3 px-4 py-3 hover:bg-slate-50 dark:hover:bg-slate-700/50 text-slate-700 dark:text-slate-200 text-xs font-bold border-b border-slate-50 dark:border-slate-700"><i class="fa-solid fa-gavel text-blue-500 w-4"></i> بوابة المجلس</a>' : ''}
+                        ${currentUser.accessLevels.includes('exec') ? '<a href="../ceo/ceo_dashboard.html" class="flex items-center gap-3 px-4 py-3 hover:bg-slate-50 dark:hover:bg-slate-700/50 text-slate-700 dark:text-slate-200 text-xs font-bold border-b border-slate-50 dark:border-slate-700"><i class="fa-solid fa-briefcase text-purple-500 w-4"></i> الإدارة التنفيذية</a>' : ''}
+                        ${currentUser.accessLevels.includes('shareholder') ? '<a href="../shareholder/dashboard.html" class="flex items-center gap-3 px-4 py-3 hover:bg-slate-50 dark:hover:bg-slate-700/50 text-slate-700 dark:text-slate-200 text-xs font-bold border-b border-slate-50 dark:border-slate-700"><i class="fa-solid fa-chart-pie text-green-500 w-4"></i> بوابة المساهم</a>' : ''}
+                        ${currentUser.accessLevels.includes('audit') ? '<a href="../audit.html" class="flex items-center gap-3 px-4 py-3 hover:bg-slate-50 dark:hover:bg-slate-700/50 text-slate-700 dark:text-slate-200 text-xs font-bold"><i class="fa-solid fa-magnifying-glass text-orange-500 w-4"></i> لجنة المراجعة</a>' : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        // 2. تجهيز قائمة الإشعارات
         let notifListHTML = '';
         if(notifications.length > 0) {
             notifications.forEach(n => {
@@ -354,12 +373,15 @@
             notifListHTML = `<div class="p-6 text-center text-slate-400 text-xs">${dict.emptyNotif}</div>`;
         }
         
+        // 3. بناء الهيدر النهائي
         container.innerHTML = `
         <header class="h-20 sticky top-0 z-40 flex items-center justify-between px-6 bg-white/80 dark:bg-[#0F172A]/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 transition-all">
             <div class="flex items-center gap-4">
                 <button onclick="document.querySelector('aside').classList.toggle('hidden'); document.querySelector('aside').classList.toggle('flex');" class="md:hidden text-slate-500 dark:text-slate-200 hover:text-brandRed">
                     <i class="fa-solid fa-bars text-xl"></i>
                 </button>
+                
+                ${switcherHtml}
             </div>
 
             <div class="flex items-center gap-3">
@@ -380,6 +402,19 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="h-8 w-[1px] bg-slate-200 dark:bg-slate-700 mx-1"></div>
+
+                <div class="flex items-center gap-3 cursor-pointer group relative" onclick="window.location.href='my_profile.html'">
+                    <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.name)}&background=${currentUser.avatarColor ? currentUser.avatarColor.replace('#','') : 'random'}&color=fff" class="w-9 h-9 rounded-full border-2 border-white dark:border-slate-700 shadow-sm group-hover:border-brandRed transition">
+                    <div class="hidden md:block text-right">
+                        <p class="text-xs font-bold text-slate-700 dark:text-slate-200 group-hover:text-brandRed transition line-clamp-1">${currentUser.name.split(' ')[0]}</p>
+                        <p class="text-[10px] text-slate-400">${currentUser.title}</p>
+                    </div>
+                </div>
+            </div>
+        </header>`;
+    }
 
                 <button onclick="window.changeLang()" class="h-9 px-3 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-xs font-bold text-slate-600 dark:text-white transition">
                     ${config.lang === 'ar' ? 'English' : 'عربي'}
