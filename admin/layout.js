@@ -443,7 +443,7 @@
     window.doLogout = function() {
         if (confirm(config.lang === 'ar' ? 'هل أنت متأكد من تسجيل الخروج؟' : 'Are you sure you want to logout?')) {
             localStorage.removeItem('currentUser');
-            window.location.href = '../login.html';
+            window.location.href = 'https://androgov-sa.github.io/AIT/login.html';
         }
     };
 
