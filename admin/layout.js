@@ -1,102 +1,98 @@
 /**
- * AndroGov Layout Engine v5.1 (Fixed & Synchronized)
- * - Supports Global POLICY_DATA variable (No fetch errors)
- * - Aligned with v4.3.0 Data Schema (key_personnel, bilingual names)
- * - Dynamic Branding & Role Adaptation
+ * AndroGov Layout Engine v5.0 (Fixed Data Source)
+ * - Uses global POLICY_DATA instead of fetching non-existent JSON
+ * - Preserves original currentUser structure (nameAr, nameEn, avatar)
+ * - Maps new data structure (organization.key_personnel) to legacy profile format
  */
 
 (function() {
     // --- 1. State & Globals ---
-    let policyData = null;
+    let policyData = null; 
     
     const config = {
         lang: localStorage.getItem('lang') || 'ar',
         theme: localStorage.getItem('theme') || 'light'
     };
 
-    // تحميل المستخدم من الذاكرة أو استخدام زائر افتراضي
+    // الحفاظ على هيكلية المستخدم كما طلبتها بالضبط
     let currentUser = JSON.parse(localStorage.getItem('currentUser')) || {
-        id: "GUEST",
-        name: { ar: "زائر", en: "Guest" },
-        role: "viewer",
-        avatarColor: "64748b"
+        id: "USR_004",
+        nameAr: "مستخدم النظام",
+        nameEn: "System User",
+        role: "Guest",
+        avatar: ""
     };
 
-    // --- 2. Data Loading (Smart Strategy) ---
+    // --- 2. Data Fetching (Corrected) ---
     async function loadCompanyData() {
         try {
-            // 1. الأولوية: المتغير العام المحمل من company_policy.js
+            // التصحيح: الاعتماد على المتغير العام لأن الملف هو JS وليس JSON
             if (typeof POLICY_DATA !== 'undefined') {
                 policyData = POLICY_DATA;
-                console.log("✅ Loaded from Global Variable:", policyData.system.version);
-            } 
-            // 2. المحاولة الثانية: جلب الملف كـ JSON (احتياطي)
-            else {
-                console.warn("⚠️ POLICY_DATA global not found, trying fetch...");
-                const response = await fetch('../data/company_policy.js'); 
-                // ملاحظة: جلب ملف JS كـ نص لن يعمل كـ JSON مباشرة، لذا نفضل الطريقة الأولى
-                if (!response.ok) throw new Error('Fetch failed');
+                console.log("✅ Company Policy Loaded from Memory:", policyData.system.version);
+                
+                // 1. تحديث بيانات المستخدم
+                updateCurrentUserProfile();
+
+                // 2. تطبيق إعدادات الهوية
+                if (policyData.identity && policyData.identity.tokens) {
+                    const brandColor = policyData.identity.tokens.colors.primary.value.light;
+                    document.documentElement.style.setProperty('--brand-color', brandColor);
+                }
+            } else {
+                console.error("⚠️ POLICY_DATA is not defined. Ensure company_policy.js is loaded before layout.js");
             }
 
-            if (!policyData) throw new Error("No data source available");
-
-            // 3. تحديث البيانات وتطبيق الإعدادات
-            updateCurrentUserProfile();
-            applyBranding();
-
         } catch (error) {
-            console.error("❌ Critical Data Error:", error);
-            alert("تعذر تحميل بيانات النظام. يرجى التأكد من تحميل ملف company_policy.js");
-        }
-    }
-
-    function applyBranding() {
-        if (policyData.identity && policyData.identity.tokens) {
-            const primaryColor = policyData.identity.tokens.colors.primary.value.light;
-            document.documentElement.style.setProperty('--brand-color', primaryColor);
+            console.error("⚠️ Error processing company policy:", error);
         }
     }
 
     function updateCurrentUserProfile() {
-        if (!policyData.organization || !policyData.organization.key_personnel) return;
+        const storedUser = JSON.parse(localStorage.getItem('currentUser'));
+        const targetId = storedUser ? storedUser.id : "USR_004"; 
 
-        // البحث في قائمة الموظفين الجديدة
-        const employees = policyData.organization.key_personnel;
-        const shareholders = policyData.governance ? policyData.governance.shareholders : [];
-        
-        // دمج القائمتين للبحث
-        const allUsers = [...employees, ...shareholders];
-        
-        // العثور على المستخدم الحالي لتحديث بياناته (لضمان أنها طازجة)
-        const foundUser = allUsers.find(u => u.id === currentUser.id || u.email === currentUser.email);
+        // التصحيح: التوافق مع الهيكلية الجديدة (organization.key_personnel)
+        // بدلاً من (organizational_chart.users_directory) القديمة
+        let directory = [];
+        if (policyData.organization && policyData.organization.key_personnel) {
+            directory = policyData.organization.key_personnel;
+        } else if (policyData.organizational_chart) {
+            directory = policyData.organizational_chart.users_directory;
+        }
+
+        const foundUser = directory.find(u => u.id === targetId || u.email === (storedUser ? storedUser.email : ''));
 
         if (foundUser) {
-            // تحديث البيانات في الذاكرة
-            currentUser = { ...currentUser, ...foundUser };
+            // الحفاظ على نفس أسماء المتغيرات التي طلبتها (nameAr, nameEn, avatar)
+            // مع معالجة البيانات القادمة سواء كانت نصاً أو كائناً
+            const nameVal = foundUser.name;
+            const nameAr = (typeof nameVal === 'object') ? nameVal.ar : nameVal;
+            const nameEn = (typeof nameVal === 'object') ? nameVal.en : nameVal;
             
-            // معالجة الاسم إذا كان كائناً
-            if (typeof foundUser.name === 'string') {
-                currentUser.name = { ar: foundUser.name, en: foundUser.name }; // توحيد الصيغة
-            }
+            // استخراج اللون من الهوية أو استخدام الأحمر الافتراضي
+            const brandColorHex = (policyData.identity?.tokens?.colors?.primary?.value?.light || "FB4747").replace('#', '');
 
-            // معالجة اللون للصورة الرمزية (إزالة #)
-            let safeColor = '64748b';
-            if (currentUser.avatarColor) {
-                safeColor = currentUser.avatarColor.replace('#', '');
-            } else if (policyData.identity) {
-                // لون افتراضي من الهوية
-                safeColor = policyData.identity.tokens.colors.primary.value.light.replace('#', '');
-            }
-
-            // تحديث رابط الصورة
-            const nameStr = config.lang === 'ar' ? (currentUser.name.ar || currentUser.name) : (currentUser.name.en || currentUser.name);
-            currentUser.avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(nameStr)}&background=${safeColor}&color=fff&bold=true`;
-
+            currentUser = {
+                ...currentUser,
+                id: foundUser.id,
+                nameAr: nameAr,
+                nameEn: nameEn,
+                titleAr: foundUser.title, // نفترض أن المسمى موحد حالياً
+                titleEn: foundUser.title,
+                role: foundUser.role_ref || foundUser.role, // دعم التسمية الجديدة والقديمة
+                department: foundUser.dept || foundUser.department_id,
+                email: foundUser.email,
+                // الحفاظ على رابط الصورة كما هو في كودك الأصلي
+                avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(nameEn)}&background=${brandColorHex}&color=fff&bold=true`
+            };
+            
             localStorage.setItem('currentUser', JSON.stringify(currentUser));
         }
     }
 
     // --- 3. Menu Structure ---
+    // (لم أقم بتغيير أي شيء هنا، نسخت الهيكل كما هو من كودك)
     const menuStructure = [
         {
             section: 'main',
@@ -151,7 +147,7 @@
     const t = {
         ar: {
             sysName: "AndroGov",
-            sysVer: "v4.3",
+            sysVer: "Enterprise v4.3",
             logout: "تسجيل خروج",
             notifTitle: "الإشعارات",
             markRead: "تحديد كمقروء",
@@ -186,7 +182,7 @@
         },
         en: {
             sysName: "AndroGov",
-            sysVer: "v4.3",
+            sysVer: "Enterprise v4.3",
             logout: "Logout",
             notifTitle: "Notifications",
             markRead: "Mark Read",
@@ -221,7 +217,7 @@
         }
     };
 
-    // --- 5. Notifications (Mocked) ---
+    // --- 5. Notifications (Mocked for Demo) ---
     const notifications = [
         {
             id: 1, type: 'critical', icon: 'fa-shield-virus', color: 'text-red-500 bg-red-50',
@@ -240,11 +236,17 @@
     // --- 6. Render Logic ---
 
     async function init() {
+        // 1. Load Data
         await loadCompanyData();
+        
+        // 2. Apply UI
         applySettings();
         renderSidebar();
         renderHeader();
+        
         document.body.style.opacity = '1';
+        
+        // Listeners
         setupEventListeners();
     }
 
@@ -271,11 +273,11 @@
         const isRtl = config.lang === 'ar';
         const currentPath = window.location.pathname.split('/').pop() || 'admin.html';
         
-        // استخراج الاسم والعنوان بناءً على اللغة
-        const uName = config.lang === 'ar' ? (currentUser.name.ar || currentUser.name) : (currentUser.name.en || currentUser.name);
-        const uTitle = currentUser.title || currentUser.role;
-        const uAvatar = currentUser.avatarUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(uName)}&background=64748b&color=fff`;
-
+        // استخدام المتغيرات الأصلية (nameAr/nameEn)
+        const userDisplayName = isRtl ? currentUser.nameAr : currentUser.nameEn;
+        // fallback to Role if title is missing
+        const userDisplayTitle = (isRtl ? currentUser.titleAr : currentUser.titleEn) || currentUser.role;
+        
         const companyName = (policyData && policyData.identity) 
             ? policyData.identity.meta.brand_name[config.lang]
             : dict.sysName;
@@ -301,6 +303,7 @@
             });
         });
 
+        // Sidebar HTML (Using currentUser.avatar)
         const sidebarHTML = `
         <aside class="fixed top-0 ${isRtl ? 'right-0 border-l' : 'left-0 border-r'} z-50 h-screen w-72 flex-col hidden md:flex bg-white dark:bg-[#0F172A] border-slate-200 dark:border-slate-800 transition-all duration-300">
             <div class="h-20 flex items-center px-6 border-b border-slate-100 dark:border-slate-800">
@@ -319,13 +322,13 @@
 
             <div class="p-4">
                 <a href="my_profile.html" class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 hover:border-brandRed transition group cursor-pointer">
-                    <img src="${uAvatar}" class="w-10 h-10 rounded-full border-2 border-white dark:border-slate-600 object-cover shrink-0">
+                    <img src="${currentUser.avatar}" class="w-10 h-10 rounded-full border-2 border-white dark:border-slate-600 object-cover shrink-0">
                     <div class="overflow-hidden flex-1 min-w-0">
-                        <p class="text-sm font-bold text-slate-800 dark:text-white truncate group-hover:text-brandRed transition">
-                            ${uName}
+                        <p class="text-sm font-bold text-slate-800 dark:text-white truncate group-hover:text-brandRed transition" title="${userDisplayName}">
+                            ${userDisplayName}
                         </p>
-                        <p class="text-[10px] text-brandRed font-medium truncate">
-                            ${uTitle}
+                        <p class="text-[10px] text-brandRed font-medium truncate" title="${userDisplayTitle}">
+                            ${userDisplayTitle}
                         </p>
                     </div>
                 </a>
@@ -422,7 +425,7 @@
         });
     }
 
-    // --- 7. Global API ---
+    // --- 7. Global API (Window) ---
     window.toggleNotif = function() {
         const d = document.getElementById('notifDropdown');
         if(d) d.classList.toggle('hidden');
@@ -447,6 +450,6 @@
         }
     };
 
-    // Start
+    // Initialize System
     init();
 })();
