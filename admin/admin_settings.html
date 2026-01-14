@@ -32,25 +32,34 @@
             }
         }
     </script>
+    <style>
+        .custom-scroll::-webkit-scrollbar { width: 5px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 4px; }
+        .dark .custom-scroll::-webkit-scrollbar-thumb { background-color: #475569; }
+        @media print { .no-print { display: none !important; } }
+        body { transition: opacity 0.2s ease-in-out; }
+    </style>
 </head>
 <body class="bg-brandGray dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300 opacity-0">
 
-    <div id="sidebar-container"></div>
+    <!-- 1. Layout Containers -->
+    <div id="sidebar-container" class="no-print hidden md:block"></div>
     
     <div class="main-content-wrapper md:mr-72 transition-all duration-300 flex flex-col min-h-screen">
-        <div id="header-container"></div>
+        <div id="header-container" class="no-print"></div>
 
+        <!-- 2. Main Content -->
         <main class="p-6 space-y-6">
             
             <div class="flex justify-between items-center">
                 <div>
-                    <h1 class="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                    <h1 class="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2" data-i18n="headerTitle">
                         <i class="fa-solid fa-sliders text-brandRed"></i> إعدادات النظام العامة
                     </h1>
-                    <p class="text-sm text-slate-500 mt-1">تخصيص الهوية، اللغة الافتراضية، وخيارات الصيانة</p>
+                    <p class="text-sm text-slate-500 mt-1" data-i18n="headerDesc">تخصيص الهوية، اللغة الافتراضية، وخيارات الصيانة</p>
                 </div>
                 <button onclick="saveSettings()" class="px-6 py-2 bg-brandRed text-white rounded-lg text-sm font-bold shadow-lg hover:bg-red-700 transition flex items-center gap-2">
-                    <i class="fa-solid fa-floppy-disk"></i> <span>حفظ التغييرات</span>
+                    <i class="fa-solid fa-floppy-disk"></i> <span data-i18n="btnSave">حفظ التغييرات</span>
                 </button>
             </div>
 
@@ -58,25 +67,25 @@
                 
                 <div class="lg:col-span-2 space-y-6">
                     <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-                        <h3 class="font-bold text-slate-800 dark:text-white mb-6 border-b pb-2 dark:border-slate-700">بيانات الشركة والهوية</h3>
+                        <h3 class="font-bold text-slate-800 dark:text-white mb-6 border-b pb-2 dark:border-slate-700" data-i18n="secIdentity">بيانات الشركة والهوية</h3>
                         
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <label class="block text-xs font-bold text-slate-500 mb-1">اسم النظام (عربي)</label>
+                                <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblSysNameAr">اسم النظام (عربي)</label>
                                 <input type="text" id="sysNameAr" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-2.5 text-sm dark:text-white focus:ring-2 focus:ring-brandRed" value="AndroGov">
                             </div>
                             <div>
-                                <label class="block text-xs font-bold text-slate-500 mb-1">System Name (English)</label>
+                                <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblSysNameEn">System Name (English)</label>
                                 <input type="text" id="sysNameEn" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-2.5 text-sm dark:text-white focus:ring-2 focus:ring-brandRed" value="AndroGov">
                             </div>
                             <div class="col-span-1 md:col-span-2">
-                                <label class="block text-xs font-bold text-slate-500 mb-1">وصف النظام (يظهر في صفحة الدخول)</label>
+                                <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblSysDesc">وصف النظام (يظهر في صفحة الدخول)</label>
                                 <input type="text" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-2.5 text-sm dark:text-white" value="نظام إدارة العمليات الموحد لشركة أندروميدا">
                             </div>
                         </div>
 
                         <div class="mt-6 pt-6 border-t border-slate-100 dark:border-slate-700">
-                            <label class="block text-xs font-bold text-slate-500 mb-3">شعار النظام (Logo)</label>
+                            <label class="block text-xs font-bold text-slate-500 mb-3" data-i18n="lblLogo">شعار النظام (Logo)</label>
                             <div class="flex items-center gap-4">
                                 <div class="w-20 h-20 bg-slate-100 dark:bg-slate-700 rounded-xl flex items-center justify-center border-2 border-dashed border-slate-300 dark:border-slate-600 overflow-hidden relative group">
                                     <img id="logoPreview" src="https://ait.sa/wp-content/uploads/2024/03/cropped-Square-Logo.png" class="w-12 h-12 object-contain">
@@ -86,41 +95,41 @@
                                     <input type="file" id="logoInput" class="absolute inset-0 opacity-0 cursor-pointer" onchange="previewLogo(this)">
                                 </div>
                                 <div class="flex-1">
-                                    <p class="text-xs text-slate-500 mb-2">يرجى رفع صورة بخلفية شفافة (PNG) بحجم لا يتجاوز 2MB.</p>
-                                    <button class="text-xs text-brandRed font-bold hover:underline" onclick="document.getElementById('logoInput').click()">تغيير الشعار</button>
+                                    <p class="text-xs text-slate-500 mb-2" data-i18n="logoHint">يرجى رفع صورة بخلفية شفافة (PNG) بحجم لا يتجاوز 2MB.</p>
+                                    <button class="text-xs text-brandRed font-bold hover:underline" onclick="document.getElementById('logoInput').click()" data-i18n="btnChangeLogo">تغيير الشعار</button>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-                        <h3 class="font-bold text-slate-800 dark:text-white mb-6 border-b pb-2 dark:border-slate-700">الإعدادات الإقليمية</h3>
+                        <h3 class="font-bold text-slate-800 dark:text-white mb-6 border-b pb-2 dark:border-slate-700" data-i18n="secRegional">الإعدادات الإقليمية</h3>
                         
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <label class="block text-xs font-bold text-slate-500 mb-1">اللغة الافتراضية</label>
+                                <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblDefLang">اللغة الافتراضية</label>
                                 <select class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-2.5 text-sm dark:text-white">
                                     <option value="ar" selected>العربية (Arabic)</option>
                                     <option value="en">الإنجليزية (English)</option>
                                 </select>
                             </div>
                             <div>
-                                <label class="block text-xs font-bold text-slate-500 mb-1">المنطقة الزمنية</label>
+                                <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblTimezone">المنطقة الزمنية</label>
                                 <select class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-2.5 text-sm dark:text-white">
                                     <option value="Riyadh" selected>Asia/Riyadh (GMT+3)</option>
                                     <option value="Dubai">Asia/Dubai (GMT+4)</option>
                                 </select>
                             </div>
                             <div>
-                                <label class="block text-xs font-bold text-slate-500 mb-1">التقويم الافتراضي</label>
+                                <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblCalendar">التقويم الافتراضي</label>
                                 <div class="flex gap-4 mt-2">
                                     <label class="flex items-center gap-2 cursor-pointer">
-                                        <input type="radio" name="cal" checked class="text-brandRed focus:ring-brandRed">
-                                        <span class="text-sm dark:text-white">ميلادي (Gregorian)</span>
+                                        <input type="radio" name="cal" checked class="text-brandRed focus:ring-brandRed accent-brandRed">
+                                        <span class="text-sm dark:text-white" data-i18n="calGreg">ميلادي (Gregorian)</span>
                                     </label>
                                     <label class="flex items-center gap-2 cursor-pointer">
-                                        <input type="radio" name="cal" class="text-brandRed focus:ring-brandRed">
-                                        <span class="text-sm dark:text-white">هجري (Hijri)</span>
+                                        <input type="radio" name="cal" class="text-brandRed focus:ring-brandRed accent-brandRed">
+                                        <span class="text-sm dark:text-white" data-i18n="calHijri">هجري (Hijri)</span>
                                     </label>
                                 </div>
                             </div>
@@ -131,19 +140,19 @@
                 <div class="lg:col-span-1 space-y-6">
                     
                     <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-                        <h3 class="font-bold text-slate-800 dark:text-white mb-4">تخصيص المظهر</h3>
+                        <h3 class="font-bold text-slate-800 dark:text-white mb-4" data-i18n="secTheme">تخصيص المظهر</h3>
                         
                         <div class="space-y-4">
                             <div>
-                                <label class="block text-xs font-bold text-slate-500 mb-1">لون الهوية الأساسي (Brand Color)</label>
+                                <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblBrandColor">لون الهوية الأساسي (Brand Color)</label>
                                 <div class="flex items-center gap-2">
-                                    <input type="color" id="brandColor" value="#FB4747" class="w-10 h-10 rounded cursor-pointer border-none">
+                                    <input type="color" id="brandColor" value="#FB4747" class="w-10 h-10 rounded cursor-pointer border-none p-0 bg-transparent">
                                     <input type="text" value="#FB4747" class="flex-1 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-2 text-sm font-mono dark:text-white uppercase" readonly>
                                 </div>
                             </div>
                             
                             <div>
-                                <label class="block text-xs font-bold text-slate-500 mb-2">الوضع الافتراضي</label>
+                                <label class="block text-xs font-bold text-slate-500 mb-2" data-i18n="lblDefMode">الوضع الافتراضي</label>
                                 <select class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-2.5 text-sm dark:text-white">
                                     <option value="light">فاتح (Light)</option>
                                     <option value="dark">داكن (Dark)</option>
@@ -154,13 +163,13 @@
                     </div>
 
                     <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-                        <h3 class="font-bold text-slate-800 dark:text-white mb-4">صيانة النظام</h3>
+                        <h3 class="font-bold text-slate-800 dark:text-white mb-4" data-i18n="secMaint">صيانة النظام</h3>
                         
                         <div class="space-y-4">
                             <div class="flex items-center justify-between p-3 bg-red-50 dark:bg-red-900/10 rounded-lg border border-red-100 dark:border-red-900/30">
                                 <div>
-                                    <p class="text-sm font-bold text-red-700 dark:text-red-400">وضع الصيانة</p>
-                                    <p class="text-[10px] text-red-600/70">منع دخول المستخدمين</p>
+                                    <p class="text-sm font-bold text-red-700 dark:text-red-400" data-i18n="maintMode">وضع الصيانة</p>
+                                    <p class="text-[10px] text-red-600/70" data-i18n="maintDesc">منع دخول المستخدمين</p>
                                 </div>
                                 <label class="relative inline-flex items-center cursor-pointer">
                                     <input type="checkbox" class="sr-only peer">
@@ -169,7 +178,7 @@
                             </div>
 
                             <button onclick="clearCache()" class="w-full py-2 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-lg text-xs font-bold hover:bg-slate-200 dark:hover:bg-slate-600 transition flex items-center justify-center gap-2">
-                                <i class="fa-solid fa-broom"></i> تنظيف الذاكرة المؤقتة (Cache)
+                                <i class="fa-solid fa-broom"></i> <span data-i18n="btnClearCache">تنظيف الذاكرة المؤقتة (Cache)</span>
                             </button>
                         </div>
                     </div>
@@ -180,10 +189,227 @@
         </main>
     </div>
 
-    <script src="layout.js"></script>
-    <script src="bot.js"></script>
-
+    <!-- Scripts -->
     <script>
+        // ==========================================
+        // A. DATA REPOSITORY (EMBEDDED)
+        // ==========================================
+        const SYSTEM_DATA = {
+            users: [
+                { id: "USR_004", name: { ar: "أيمن المغربي", en: "Ayman Al-Maghrabi" }, title: { ar: "مسؤول الحوكمة", en: "GRC" }, role: "Manager" }
+            ]
+        };
+
+        // ==========================================
+        // B. LAYOUT ENGINE (EMBEDDED)
+        // ==========================================
+        (function() {
+            let currentUser = JSON.parse(localStorage.getItem('currentUser')) || {
+                id: "USR_004", name: {ar: "مستخدم النظام", en: "System User"}, role: "Guest"
+            };
+            const config = {
+                lang: localStorage.getItem('lang') || 'ar',
+                theme: localStorage.getItem('theme') || 'light'
+            };
+
+            const menuStructure = [
+                { section: 'main', items: [{ key: 'dash', icon: 'fa-gauge-high', link: 'admin.html' }] },
+                { section: 'comm', items: [{ key: 'chat', icon: 'fa-comments', link: 'chat.html' }, { key: 'circulars', icon: 'fa-bullhorn', link: 'admin_circulars.html' }] },
+                { section: 'gov', items: [{ key: 'ga', icon: 'fa-users-rectangle', link: 'ga.html' }, { key: 'board', icon: 'fa-building-columns', link: 'board.html' }, { key: 'committees', icon: 'fa-people-group', link: 'committees.html' }, { key: 'shareholders', icon: 'fa-id-card', link: 'shareholders.html' }] },
+                { section: 'admin', items: [{ key: 'users', icon: 'fa-users-gear', link: 'users.html' }, { key: 'audit', icon: 'fa-list-ul', link: 'audit.html' }, { key: 'settings', icon: 'fa-sliders', link: 'admin_settings.html' }] }
+            ];
+
+            const layoutTrans = {
+                ar: {
+                    sysName: "AndroGov", sysVer: "v4.3", logout: "خروج",
+                    sections: { main: "الرئيسية", comm: "التواصل", gov: "الحوكمة", admin: "النظام" },
+                    menu: { dash: "لوحة القيادة", chat: "الدردشة", circulars: "التعاميم", ga: "الجمعيات", board: "المجلس", users: "المستخدمين", settings: "الإعدادات" }
+                },
+                en: {
+                    sysName: "AndroGov", sysVer: "v4.3", logout: "Logout",
+                    sections: { main: "Main", comm: "Comms", gov: "Gov", admin: "Admin" },
+                    menu: { dash: "Dashboard", chat: "Chat", circulars: "Circulars", ga: "GA", board: "Board", users: "Users", settings: "Settings" }
+                }
+            };
+
+            function initLayout() {
+                if(currentUser.id === 'USR_004') currentUser.avatarUrl = 'https://androgov-sa.github.io/AIT/photo/grc.png';
+                else currentUser.avatarUrl = `https://ui-avatars.com/api/?name=User&background=FB4747&color=fff`;
+
+                applyLayoutSettings();
+                renderSidebar();
+                renderHeader();
+            }
+
+            function applyLayoutSettings() {
+                const html = document.documentElement;
+                html.lang = config.lang;
+                html.dir = config.lang === 'ar' ? 'rtl' : 'ltr';
+                if (config.theme === 'dark') html.classList.add('dark');
+                else html.classList.remove('dark');
+            }
+
+            function renderSidebar() {
+                const container = document.getElementById('sidebar-container');
+                if (!container) return;
+                const dict = layoutTrans[config.lang];
+                const isRtl = config.lang === 'ar';
+                const currentPath = 'admin_settings.html';
+
+                const uName = config.lang === 'ar' ? currentUser.name.ar : currentUser.name.en;
+                
+                let menuHTML = '';
+                menuStructure.forEach(group => {
+                    if(dict.sections[group.section]) { 
+                         menuHTML += `<div class="px-3 mt-6 mb-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider">${dict.sections[group.section]}</div>`;
+                        group.items.forEach(item => {
+                            const isActive = currentPath.includes(item.link);
+                            const activeClass = isActive ? "bg-brandRed text-white shadow-md shadow-red-500/20" : "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-brandRed";
+                            menuHTML += `
+                            <a href="${item.link}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${activeClass}">
+                                <div class="w-6 text-center"><i class="fa-solid ${item.icon}"></i></div>
+                                <span class="flex-1 truncate">${dict.menu[item.key]}</span>
+                            </a>`;
+                        });
+                    }
+                });
+
+                container.innerHTML = `
+                <aside class="fixed top-0 ${isRtl ? 'right-0 border-l' : 'left-0 border-r'} z-50 h-screen w-72 flex-col hidden md:flex bg-white dark:bg-[#0F172A] border-slate-200 dark:border-slate-800 transition-all duration-300">
+                    <div class="h-20 flex items-center px-6 border-b border-slate-100 dark:border-slate-800">
+                        <div class="flex items-center gap-3 w-full">
+                            <img src="https://ait.sa/wp-content/uploads/2024/03/cropped-Square-Logo.png" class="w-10 h-10 rounded-xl bg-white object-contain shrink-0 shadow-sm border border-slate-100 dark:border-slate-700">
+                            <div class="overflow-hidden">
+                                <h1 class="font-bold text-sm text-slate-800 dark:text-white font-sans truncate">AndroGov</h1>
+                                <p class="text-[10px] text-slate-500 uppercase tracking-widest truncate">${dict.sysVer}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <div class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700">
+                            <img src="${currentUser.avatarUrl}" class="w-10 h-10 rounded-full border-2 border-white dark:border-slate-600 object-cover shrink-0">
+                            <div class="overflow-hidden flex-1 min-w-0">
+                                <p class="text-sm font-bold text-slate-800 dark:text-white truncate">${uName}</p>
+                                <p class="text-[10px] text-brandRed font-medium truncate">${currentUser.role}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <nav class="flex-1 overflow-y-auto px-3 py-2 custom-scroll space-y-0.5">${menuHTML}</nav>
+                </aside>`;
+            }
+
+            function renderHeader() {
+                const container = document.getElementById('header-container');
+                if (!container) return;
+                const dict = layoutTrans[config.lang];
+                
+                container.innerHTML = `
+                <header class="h-16 flex items-center justify-between px-6 bg-white dark:bg-[#0F172A] border-b border-slate-200 dark:border-slate-700 no-print">
+                    <div class="flex items-center gap-4">
+                        <button onclick="document.querySelector('aside').classList.toggle('hidden'); document.querySelector('aside').classList.toggle('flex');" class="md:hidden text-slate-500 dark:text-slate-200 hover:text-brandRed"><i class="fa-solid fa-bars text-xl"></i></button>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <button onclick="window.changeLang()" class="h-8 px-3 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-xs font-bold text-slate-600 dark:text-white transition">${config.lang === 'ar' ? 'EN' : 'AR'}</button>
+                        <button onclick="window.changeTheme()" class="w-8 h-8 rounded-lg border border-slate-200 dark:border-slate-700 flex items-center justify-center hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-yellow-400 transition"><i class="fa-solid ${config.theme === 'dark' ? 'fa-sun' : 'fa-moon'}"></i></button>
+                        <button onclick="window.doLogout()" class="text-red-500 hover:bg-red-50 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-2"><i class="fa-solid fa-power-off"></i> <span class="hidden sm:inline">${dict.logout}</span></button>
+                    </div>
+                </header>`;
+            }
+
+            window.changeTheme = function() {
+                localStorage.setItem('theme', config.theme === 'dark' ? 'light' : 'dark');
+                location.reload();
+            };
+            window.changeLang = function() {
+                localStorage.setItem('lang', config.lang === 'ar' ? 'en' : 'ar');
+                location.reload();
+            };
+            window.doLogout = function() {
+                if (confirm(config.lang === 'ar' ? 'هل أنت متأكد من تسجيل الخروج؟' : 'Are you sure?')) {
+                    localStorage.removeItem('currentUser');
+                    window.location.href = 'login.html'; 
+                }
+            };
+
+            initLayout();
+        })();
+
+        // ==========================================
+        // C. PAGE LOGIC
+        // ==========================================
+        const translations = {
+            ar: {
+                pageTitle: "الإعدادات | AndroGov",
+                headerTitle: "إعدادات النظام العامة",
+                headerDesc: "تخصيص الهوية، اللغة الافتراضية، وخيارات الصيانة",
+                btnSave: "حفظ التغييرات",
+                secIdentity: "بيانات الشركة والهوية",
+                lblSysNameAr: "اسم النظام (عربي)",
+                lblSysNameEn: "System Name (English)",
+                lblSysDesc: "وصف النظام (يظهر في صفحة الدخول)",
+                lblLogo: "شعار النظام (Logo)",
+                logoHint: "يرجى رفع صورة بخلفية شفافة (PNG) بحجم لا يتجاوز 2MB.",
+                btnChangeLogo: "تغيير الشعار",
+                secRegional: "الإعدادات الإقليمية",
+                lblDefLang: "اللغة الافتراضية",
+                lblTimezone: "المنطقة الزمنية",
+                lblCalendar: "التقويم الافتراضي",
+                calGreg: "ميلادي (Gregorian)",
+                calHijri: "هجري (Hijri)",
+                secTheme: "تخصيص المظهر",
+                lblBrandColor: "لون الهوية الأساسي (Brand Color)",
+                lblDefMode: "الوضع الافتراضي",
+                secMaint: "صيانة النظام",
+                maintMode: "وضع الصيانة",
+                maintDesc: "منع دخول المستخدمين",
+                btnClearCache: "تنظيف الذاكرة المؤقتة (Cache)"
+            },
+            en: {
+                pageTitle: "Settings | AndroGov",
+                headerTitle: "General System Settings",
+                headerDesc: "Identity customization, default language, and maintenance options",
+                btnSave: "Save Changes",
+                secIdentity: "Company & Identity",
+                lblSysNameAr: "System Name (Arabic)",
+                lblSysNameEn: "System Name (English)",
+                lblSysDesc: "System Description (Login Page)",
+                lblLogo: "System Logo",
+                logoHint: "Please upload transparent PNG image max 2MB.",
+                btnChangeLogo: "Change Logo",
+                secRegional: "Regional Settings",
+                lblDefLang: "Default Language",
+                lblTimezone: "Timezone",
+                lblCalendar: "Default Calendar",
+                calGreg: "Gregorian",
+                calHijri: "Hijri",
+                secTheme: "Appearance",
+                lblBrandColor: "Primary Brand Color",
+                lblDefMode: "Default Mode",
+                secMaint: "System Maintenance",
+                maintMode: "Maintenance Mode",
+                maintDesc: "Prevent user login",
+                btnClearCache: "Clear System Cache"
+            }
+        };
+
+        const currentLang = localStorage.getItem('lang') || 'ar';
+
+        function initPage() {
+            applyLanguage();
+            document.body.style.opacity = '1';
+        }
+
+        function applyLanguage() {
+            const t = translations[currentLang];
+            document.documentElement.lang = currentLang;
+            document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+            
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if(t[key]) el.innerText = t[key];
+            });
+        }
+
         function previewLogo(input) {
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
@@ -195,30 +421,30 @@
         }
 
         function saveSettings() {
-            // محاكاة عملية الحفظ
             const btn = document.querySelector('button[onclick="saveSettings()"]');
             const originalContent = btn.innerHTML;
             
             btn.disabled = true;
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري الحفظ...';
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
             
             setTimeout(() => {
-                alert('تم حفظ إعدادات النظام بنجاح وتحديث الهوية.');
+                alert(currentLang === 'ar' ? 'تم حفظ إعدادات النظام بنجاح وتحديث الهوية.' : 'System settings saved and identity updated.');
                 btn.innerHTML = originalContent;
                 btn.disabled = false;
                 
-                // هنا يمكننا حفظ القيم في localStorage لتبدو واقعية
                 const newBrandColor = document.getElementById('brandColor').value;
                 localStorage.setItem('customBrandColor', newBrandColor);
             }, 1000);
         }
 
         function clearCache() {
-            if(confirm('هل أنت متأكد من مسح الذاكرة المؤقتة؟ سيتم تسجيل خروجك.')) {
+            if(confirm(currentLang === 'ar' ? 'هل أنت متأكد من مسح الذاكرة المؤقتة؟ سيتم تسجيل خروجك.' : 'Are you sure you want to clear cache? You will be logged out.')) {
                 localStorage.clear();
-                window.location.href = 'https://androgov-sa.github.io/AIT/login.html';
+                window.location.href = 'login.html';
             }
         }
+
+        document.addEventListener('DOMContentLoaded', initPage);
     </script>
 </body>
 </html>
