@@ -4,12 +4,16 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#FB4747">
-  <link rel="manifest" href="manifest.json">
-
+  
   <title>AndroGov | بوابة الدخول الموحدة</title>
 
+  <!-- Fonts: Tajawal for Arabic, Inter for English -->
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS (CDN for Development) -->
   <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <script>
@@ -20,7 +24,7 @@
           colors: {
             brandDark: '#1E293B',
             brandBlue: '#4267B2',
-            brandRed:  '#FB4747'
+            brandRed:  '#FB4747' // مطابق لـ company_policy.js
           },
           fontFamily: {
             sans: ['Tajawal', 'Inter', 'sans-serif']
@@ -31,6 +35,7 @@
   </script>
 
   <style>
+    /* LTR/RTL Logic Helpers */
     [dir="rtl"] .dir-rotate { transform: rotate(0deg); }
     [dir="ltr"] .dir-rotate { transform: rotate(180deg); }
     [dir="rtl"] .icon-inset { right: .75rem; left: auto; }
@@ -38,6 +43,7 @@
     [dir="rtl"] .pass-toggle { left: .5rem; right: auto; }
     [dir="ltr"] .pass-toggle { right: .5rem; left: auto; }
     
+    /* Custom Scrollbar for Users List */
     .users-scroll::-webkit-scrollbar { width: 4px; }
     .users-scroll::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 10px; }
     .dark .users-scroll::-webkit-scrollbar-thumb { background-color: #475569; }
@@ -46,37 +52,39 @@
 
 <body class="bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-white min-h-screen flex flex-col lg:flex-row font-sans transition-colors duration-300">
 
+  <!-- Left Sidebar (Brand & Info) -->
   <aside class="hidden lg:flex w-1/2 bg-slate-900 relative flex-col justify-between p-12 text-white overflow-hidden h-screen sticky top-0">
     <div class="absolute inset-0 bg-gradient-to-br from-brandBlue/35 to-slate-900/95"></div>
 
     <div class="relative flex flex-col h-full justify-center">
       <div class="flex items-center gap-5 mb-8">
-        <img src="https://ait.sa/wp-content/uploads/2024/03/cropped-Square-Logo.png" 
-             class="w-24 h-24 rounded-3xl bg-white p-2 shadow-2xl object-contain" 
-             alt="Andromeda Logo">
+        <!-- Logo Placeholder - Will be updated by JS if policy has one -->
+        <div class="w-24 h-24 rounded-3xl bg-white p-2 shadow-2xl flex items-center justify-center">
+             <i class="fa-solid fa-layer-group text-4xl text-brandRed"></i>
+        </div>
         <div>
-          <h1 class="text-5xl font-extrabold tracking-tight leading-none" data-i18n="systemName">AndroGov</h1>
+          <h1 id="systemNameDisplay" class="text-5xl font-extrabold tracking-tight leading-none" data-i18n="systemName">AndroGov</h1>
           <p class="text-slate-300 mt-2 text-lg font-light" data-i18n="systemDesc">منصة الحوكمة الرقمية الشاملة</p>
         </div>
       </div>
 
       <div class="space-y-5 max-w-md">
-        <div class="flex items-center gap-4 text-slate-300">
-          <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center"><i class="fa-solid fa-gavel text-green-400"></i></div>
+        <div class="flex items-center gap-4 text-slate-300 group hover:text-white transition">
+          <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-green-500/20 transition"><i class="fa-solid fa-gavel text-green-400"></i></div>
           <div>
             <h3 class="font-bold text-white">حوكمة الشركات</h3>
             <p class="text-xs text-slate-400">إدارة الجمعيات والمجلس واللجان والامتثال.</p>
           </div>
         </div>
-        <div class="flex items-center gap-4 text-slate-300">
-          <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center"><i class="fa-solid fa-briefcase text-blue-400"></i></div>
+        <div class="flex items-center gap-4 text-slate-300 group hover:text-white transition">
+          <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-blue-500/20 transition"><i class="fa-solid fa-briefcase text-blue-400"></i></div>
           <div>
             <h3 class="font-bold text-white">العمليات التشغيلية</h3>
             <p class="text-xs text-slate-400">الموارد البشرية، المالية، المشتريات، والتقنية.</p>
           </div>
         </div>
-        <div class="flex items-center gap-4 text-slate-300">
-          <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center"><i class="fa-solid fa-users-viewfinder text-purple-400"></i></div>
+        <div class="flex items-center gap-4 text-slate-300 group hover:text-white transition">
+          <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-purple-500/20 transition"><i class="fa-solid fa-users-viewfinder text-purple-400"></i></div>
           <div>
             <h3 class="font-bold text-white">علاقات المساهمين</h3>
             <p class="text-xs text-slate-400">بوابة خاصة للمساهمين للتصويت والاطلاع.</p>
@@ -85,13 +93,15 @@
       </div>
     </div>
     <div class="relative text-xs text-slate-500 flex justify-between">
-      <p>© 2026 Andromeda IT. All Rights Reserved.</p>
-      <p>System v3.4.0</p>
+      <p id="copyrightDisplay">© 2026 Andromeda IT. All Rights Reserved.</p>
+      <p id="versionDisplay">System v4.1.0</p>
     </div>
   </aside>
 
+  <!-- Right Section (Login Form) -->
   <main class="w-full lg:w-1/2 flex flex-col relative bg-slate-50 dark:bg-slate-900 transition-colors duration-300 min-h-screen">
     
+    <!-- Top Navigation -->
     <header class="w-full flex justify-between items-center gap-3 p-6">
         <a href="index.html" class="flex items-center gap-2 text-sm font-bold text-slate-500 hover:text-brandBlue transition-colors group">
             <i class="fa-solid fa-arrow-right dir-rotate group-hover:-translate-x-1 transition-transform"></i>
@@ -108,11 +118,15 @@
         </div>
     </header>
 
+    <!-- Login Container -->
     <section class="flex-1 flex flex-col justify-center items-center w-full px-6 py-4">
       <div class="w-full max-w-xl">
         
+        <!-- Mobile Logo (Visible only on small screens) -->
         <div class="lg:hidden text-center mb-6">
-            <img src="https://ait.sa/wp-content/uploads/2024/03/cropped-Square-Logo.png" class="w-16 h-16 mx-auto rounded-2xl bg-white p-1 shadow-md object-contain">
+            <div class="w-16 h-16 mx-auto rounded-2xl bg-white p-1 shadow-md flex items-center justify-center">
+                 <i class="fa-solid fa-layer-group text-2xl text-brandRed"></i>
+            </div>
             <h2 class="text-xl font-extrabold mt-2">AndroGov</h2>
         </div>
 
@@ -122,7 +136,8 @@
             <p class="text-slate-500 dark:text-slate-400 text-xs mt-1" data-i18n="loginSub">يرجى اختيار صفتك للدخول إلى النظام</p>
           </div>
 
-          <div id="errorMsg" class="hidden mb-5 p-3 bg-red-100 text-red-700 rounded-xl text-sm border border-red-200 text-center flex items-center justify-center gap-2">
+          <!-- Error Message Box -->
+          <div id="errorMsg" class="hidden mb-5 p-3 bg-red-100 text-red-700 rounded-xl text-sm border border-red-200 text-center flex items-center justify-center gap-2 animate-pulse">
             <i class="fa-solid fa-circle-exclamation"></i>
             <span id="errorText">بيانات الدخول غير صحيحة</span>
           </div>
@@ -145,12 +160,13 @@
               </div>
             </div>
 
-            <button id="loginBtn" type="submit" class="w-full bg-brandRed hover:bg-red-700 text-white font-bold py-2.5 rounded-xl transition-all shadow-lg hover:shadow-brandRed/30 flex justify-center items-center gap-2 text-sm">
+            <button id="loginBtn" type="submit" class="w-full bg-brandRed hover:bg-red-700 text-white font-bold py-2.5 rounded-xl transition-all shadow-lg hover:shadow-brandRed/30 flex justify-center items-center gap-2 text-sm group">
               <span data-i18n="loginBtn">دخول آمن</span>
-              <i class="fa-solid fa-arrow-left dir-rotate"></i>
+              <i class="fa-solid fa-arrow-left dir-rotate group-hover:-translate-x-1 transition-transform"></i>
             </button>
           </form>
 
+          <!-- Demo Users Section -->
           <div class="mt-6 pt-6 border-t border-slate-100 dark:border-slate-700">
             <p class="text-[9px] text-center text-slate-400 uppercase tracking-widest mb-4" data-i18n="demoTitle">حسابات الوصول السريع (Demo Access)</p>
             
@@ -166,8 +182,9 @@
     </section>
   </main>
 
-  <script src="data/company_policy.js"></script>
-  
+  <!-- Load Data First -->
+  <script src="company_policy.js"></script>
+  <!-- Load Logic -->
   <script src="js/auth.js"></script>
 
   <script>
@@ -182,7 +199,7 @@
         applyTheme();
         applyLang();
         
-        // 🚨 فحص أمان: التأكد من تحميل البيانات
+        // 1. فحص أمان: التأكد من تحميل البيانات
         if (typeof POLICY_DATA === 'undefined') {
             console.error("Critical Error: POLICY_DATA is missing.");
             document.getElementById('usersContainer').innerHTML = `
@@ -193,7 +210,16 @@
             return;
         }
 
-        // تشغيل المحرك
+        // 2. تحديث الواجهة ديناميكياً من ملف السياسات (Infrastructure as Data)
+        if (POLICY_DATA.system) {
+             document.getElementById('versionDisplay').innerText = `System v${POLICY_DATA.system.version}`;
+        }
+        if (POLICY_DATA.identity && POLICY_DATA.identity.meta) {
+             // يمكن تحديث اسم النظام هنا إذا أردت استخدام الاسم التجاري
+             // document.getElementById('systemNameDisplay').innerText = POLICY_DATA.identity.meta.brand_name[lang];
+        }
+
+        // 3. تشغيل محرك المصادقة
         if(window.authSystem) {
             await window.authSystem.init();
             const users = await window.authSystem.getDemoUsers();
@@ -205,7 +231,7 @@
             }
         }
 
-        // ربط النموذج
+        // 4. ربط نموذج الدخول
         document.getElementById('loginForm').addEventListener('submit', (e) => {
             if(window.handleLogin) window.handleLogin(e);
         });
@@ -215,6 +241,7 @@
         const container = document.getElementById('usersContainer');
         container.innerHTML = ''; 
 
+        // تعريف المجموعات بناءً على الأنواع القادمة من auth.js
         const groups = {
             'admin': { title: 'إدارة النظام', color: 'text-red-600', icon: 'fa-user-shield' },
             'board': { title: 'مجلس الإدارة', color: 'text-brandBlue', icon: 'fa-building-columns' },
@@ -231,13 +258,16 @@
                 let sectionHtml = `<div><h4 class="text-[10px] font-bold ${info.color} mb-2 flex items-center gap-1"><i class="fa-solid ${info.icon}"></i> ${info.title}</h4><div class="flex flex-wrap gap-2">`;
                 
                 groupUsers.forEach(u => {
-                    const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(u.name)}&background=${u.avatarColor}&color=fff&size=64`;
+                    // هام: إزالة رمز # من اللون لأن خدمة ui-avatars لا تقبله
+                    const safeColor = (u.avatarColor || '64748b').replace('#', '');
+                    const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(u.name)}&background=${safeColor}&color=fff&size=64&bold=true`;
+                    
                     sectionHtml += `
                         <button type="button" onclick="fillDemo('${u.email}')" class="flex items-center gap-2 px-2 py-1.5 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg hover:border-brandRed hover:shadow-sm transition-all min-w-[140px] text-right group">
                             <img src="${avatarUrl}" class="w-6 h-6 rounded-full shrink-0 border border-transparent group-hover:border-brandRed transition">
                             <div class="overflow-hidden">
                                 <p class="text-[9px] font-bold text-slate-700 dark:text-slate-200 truncate w-24 leading-tight">${u.name}</p>
-                                <p class="text-[8px] text-slate-400 truncate w-24">${u.title}</p>
+                                <p class="text-[8px] text-slate-400 truncate w-24">${u.title || type}</p>
                             </div>
                         </button>`;
                 });
