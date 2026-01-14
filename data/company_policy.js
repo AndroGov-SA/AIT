@@ -97,8 +97,7 @@ const POLICY_DATA = {
       "quorum_first_meeting": 50,
       "quorum_second_meeting": 25,
       "voting_weight": "One share equals one vote"
-    }
-  },
+    },
   "organizational_chart": {
     "departments": [
       { "id": "DEP_EXEC", "name": "Executive Management", "manager_id": "USR_001" },
