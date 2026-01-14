@@ -1,8 +1,9 @@
 /**
- * AndroGov Layout Engine v5.2 (Fixes Scroll & Active States)
- * - Fixed: Strict Active State matching (No double active buttons)
- * - Fixed: Sidebar Scroll Preservation (Remembers position between reloads)
- * - Uses global POLICY_DATA
+ * AndroGov Layout Engine v5.3 (Logo & Avatar Update)
+ * - Added Official Company Logo
+ * - Custom Avatar for Admin/GRC User
+ * - Fixed: Strict Active State matching
+ * - Fixed: Sidebar Scroll Preservation
  */
 
 (function() {
@@ -62,6 +63,13 @@
             const nameEn = (typeof nameVal === 'object') ? nameVal.en : nameVal;
             const brandColorHex = (policyData.identity?.tokens?.colors?.primary?.value?.light || "FB4747").replace('#', '');
 
+            // تحديد رابط الصورة: إذا كان الأدمن استخدم الصورة المخصصة، وإلا استخدم المولدة تلقائياً
+            let avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(nameEn)}&background=${brandColorHex}&color=fff&bold=true`;
+            
+            if (foundUser.id === 'USR_004') {
+                avatarUrl = 'https://androgov-sa.github.io/AIT/photo/grc.png';
+            }
+
             currentUser = {
                 ...currentUser,
                 id: foundUser.id,
@@ -72,7 +80,7 @@
                 role: foundUser.role_ref || foundUser.role,
                 department: foundUser.dept || foundUser.department_id,
                 email: foundUser.email,
-                avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(nameEn)}&background=${brandColorHex}&color=fff&bold=true`
+                avatar: avatarUrl
             };
             localStorage.setItem('currentUser', JSON.stringify(currentUser));
         }
@@ -261,8 +269,6 @@
             : dict.sysName;
 
         const getLinkClass = (link) => {
-            // FIX 1: مطابقة تامة (Strict Equality) لحل مشكلة الزرين المفعلين
-            // إذا كان الرابط هو نفس اسم الملف الحالي تماماً
             const isActive = currentPath === link;
             
             const baseClass = "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200";
@@ -288,9 +294,7 @@
         <aside class="fixed top-0 ${isRtl ? 'right-0 border-l' : 'left-0 border-r'} z-50 h-screen w-72 flex-col hidden md:flex bg-white dark:bg-[#0F172A] border-slate-200 dark:border-slate-800 transition-all duration-300">
             <div class="h-20 flex items-center px-6 border-b border-slate-100 dark:border-slate-800">
                 <div class="flex items-center gap-3 w-full">
-                    <div class="w-10 h-10 rounded-xl bg-red-50 text-brandRed flex items-center justify-center text-xl shrink-0">
-                        <i class="fa-solid fa-layer-group"></i>
-                    </div>
+                    <img src="https://ait.sa/wp-content/uploads/2024/03/cropped-Square-Logo.png" class="w-10 h-10 rounded-xl bg-white object-contain shrink-0 shadow-sm border border-slate-100 dark:border-slate-700">
                     <div class="overflow-hidden">
                         <h1 class="font-bold text-sm text-slate-800 dark:text-white font-sans truncate" title="${companyName}">
                             ${companyName.split(' ')[0]} <span class="font-light">${companyName.split(' ')[1] || ''}</span>
@@ -314,7 +318,6 @@
                 </a>
             </div>
 
-            <!-- FIX 2: إضافة ID للقائمة لاستخدامه في حفظ مكان التمرير -->
             <nav id="sidebar-nav" class="flex-1 overflow-y-auto px-3 py-2 custom-scroll space-y-0.5">
                 ${menuHTML}
             </nav>
@@ -326,15 +329,12 @@
 
         container.innerHTML = sidebarHTML;
 
-        // FIX 2 (تابع): استعادة وحفظ مكان التمرير
         const nav = document.getElementById('sidebar-nav');
         if (nav) {
-            // استعادة المكان السابق
             const savedScroll = sessionStorage.getItem('sidebarScroll');
             if (savedScroll) {
                 nav.scrollTop = parseInt(savedScroll, 10);
             }
-            // حفظ المكان الجديد عند مغادرة الصفحة
             window.addEventListener('beforeunload', () => {
                 sessionStorage.setItem('sidebarScroll', nav.scrollTop);
             });
