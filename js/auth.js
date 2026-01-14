@@ -156,15 +156,14 @@ class AuthSystem {
 
     getRedirectUrl(role) {
         const r = String(role || '').toLowerCase();
+        
         if (r === 'admin') return 'admin/admin.html';
         if (r === 'board') return 'admin/board.html';
-        if (r === 'exec') return 'ceo/ceo_dashboard.html';
         if (r === 'audit') return 'admin/audit.html'; 
         if (r === 'shareholder') return 'shareholder/dashboard.html';
         
-        // التوافق مع المسميات القديمة
-        if (r.includes('ceo')) return 'ceo/ceo_dashboard.html';
-        if (r.includes('finance')) return 'finance/cfo_dashboard.html';
+        // التغيير الكبير هنا: كل التنفيذيين يذهبون لنفس المجلد ونفس الصفحة الرئيسية
+        if (r === 'exec') return 'exec/dashboard.html'; 
         
         return 'employee/dashboard.html';
     }
