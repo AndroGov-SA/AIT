@@ -1,285 +1,258 @@
 /**
- * AndroGov Ultimate Unified Layout v7.0
- * ملف واحد يحتوي على كافة تفاصيل القوائم (HR, Finance, CTO, CEO, Admin).
- * يقوم بتبديل المحتوى بالكامل بناءً على دور المستخدم.
+ * AndroGov Master Layout v8.0 (The Final Polish)
+ * - Design: Clean White (Light Mode) / Slate Dark (Dark Mode).
+ * - Features: Full Rich Menus, Bilingual (AR/EN), Multi-Role Switcher.
  */
 
 (function() {
-    // 1. التحقق من المستخدم
+    // 1. التحقق من هوية المستخدم
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
     if (!currentUser) {
-        window.location.href = '../login.html';
+        window.location.href = 'https://androgov-sa.github.io/AIT/login.html';
         return;
     }
 
+    // 2. إعدادات النظام (اللغة والثيم)
     const config = {
         lang: localStorage.getItem('lang') || 'ar',
         theme: localStorage.getItem('theme') || 'light'
     };
 
-    // 2. تعريف القوائم التفصيلية (Rich Menus) - هنا وضعت كل التفاصيل
-    const ALL_MENUS = {
-        
-        // --- أ. قائمة الموارد البشرية (بنفس الهيكلية التي طلبتها) ---
+    const isRtl = config.lang === 'ar';
+
+    // 3. قاموس النصوص العامة
+    const i18n = {
+        ar: {
+            logout: "تسجيل خروج",
+            welcome: "مرحباً",
+            switch: "تبديل البوابة",
+            search: "بحث في النظام...",
+            titles: { admin: "مدير النظام", ceo: "الرئيس التنفيذي", cfo: "المدير المالي", hr: "مدير الموارد البشرية", cto: "المدير التقني", emp: "بوابة الموظف" }
+        },
+        en: {
+            logout: "Logout",
+            welcome: "Welcome",
+            switch: "Switch Portal",
+            search: "Search...",
+            titles: { admin: "System Admin", ceo: "CEO", cfo: "CFO", hr: "HR Manager", cto: "CTO", emp: "Employee Portal" }
+        }
+    };
+    const t = i18n[config.lang];
+
+    // 4. هيكلية القوائم الكاملة (Rich Menu Structure)
+    const MENUS = {
+        // --- HR Menu (نسخة طبق الأصل لما طلبته) ---
         hr: [
             {
-                section: 'main', label: 'الرئيسية',
+                label: { ar: 'الرئيسية', en: 'Main' },
                 items: [
-                    { icon: 'fa-chart-pie', link: '../hr/hr_dashboard.html', text: 'لوحة القيادة' },
-                    { icon: 'fa-inbox', link: '../hr/hr_approvals.html', text: 'الموافقات والطلبات' },
-                    { icon: 'fa-comments', link: '../hr/internal_chat.html', text: 'المحادثات الداخلية' }
+                    { icon: 'fa-chart-pie', link: '../hr/hr_dashboard.html', ar: 'لوحة القيادة', en: 'Dashboard' },
+                    { icon: 'fa-inbox', link: '../hr/hr_approvals.html', ar: 'الموافقات والطلبات', en: 'Approvals' },
+                    { icon: 'fa-comments', link: '../hr/internal_chat.html', ar: 'المحادثات الداخلية', en: 'Internal Chat' }
                 ]
             },
             {
-                section: 'workforce', label: 'القوى العاملة',
+                label: { ar: 'القوى العاملة', en: 'Workforce' },
                 items: [
-                    { icon: 'fa-users', link: '../hr/hr_employees.html', text: 'سجل الموظفين' },
-                    { icon: 'fa-file-contract', link: '../hr/hr_contracts.html', text: 'إدارة العقود' },
-                    { icon: 'fa-sitemap', link: '../hr/hr_org.html', text: 'الهيكل التنظيمي' }
+                    { icon: 'fa-users', link: '../hr/hr_employees.html', ar: 'سجل الموظفين', en: 'Employees' },
+                    { icon: 'fa-file-contract', link: '../hr/hr_contracts.html', ar: 'إدارة العقود', en: 'Contracts' },
+                    { icon: 'fa-sitemap', link: '../hr/hr_org.html', ar: 'الهيكل التنظيمي', en: 'Org Chart' }
                 ]
             },
             {
-                section: 'ops', label: 'العمليات والرواتب',
+                label: { ar: 'العمليات والرواتب', en: 'Operations' },
                 items: [
-                    { icon: 'fa-fingerprint', link: '../hr/hr_attendance.html', text: 'الحضور والانصراف' },
-                    { icon: 'fa-calendar-days', link: '../hr/hr_leaves.html', text: 'الإجازات والمغادرات' },
-                    { icon: 'fa-money-bill-wave', link: '../hr/hr_payroll.html', text: 'مسيرات الرواتب' },
-                    { icon: 'fa-plane-departure', link: '../hr/hr_trips.html', text: 'الانتدابات والسفر' }
+                    { icon: 'fa-fingerprint', link: '../hr/hr_attendance.html', ar: 'الحضور والانصراف', en: 'Attendance' },
+                    { icon: 'fa-calendar-days', link: '../hr/hr_leaves.html', ar: 'الإجازات والمغادرات', en: 'Leaves' },
+                    { icon: 'fa-money-bill-wave', link: '../hr/hr_payroll.html', ar: 'مسيرات الرواتب', en: 'Payroll' },
+                    { icon: 'fa-plane-departure', link: '../hr/hr_trips.html', ar: 'الانتدابات والسفر', en: 'Business Trips' }
                 ]
             },
             {
-                section: 'admin', label: 'الشؤون الإدارية',
+                label: { ar: 'الشؤون الإدارية', en: 'Admin Affairs' },
                 items: [
-                    { icon: 'fa-boxes-packing', link: '../hr/hr_assets.html', text: 'العهد والأصول' },
-                    { icon: 'fa-building-user', link: '../hr/hr_logistics.html', text: 'الخدمات اللوجستية' },
-                    { icon: 'fa-cart-shopping', link: '../hr/hr_purchases.html', text: 'المشتريات الإدارية' },
-                    { icon: 'fa-handshake', link: '../hr/hr_partners.html', text: 'الشركاء والموردين' }
+                    { icon: 'fa-boxes-packing', link: '../hr/hr_assets.html', ar: 'العهد والأصول', en: 'Custody & Assets' },
+                    { icon: 'fa-building-user', link: '../hr/hr_logistics.html', ar: 'الخدمات اللوجستية', en: 'Logistics' },
+                    { icon: 'fa-cart-shopping', link: '../hr/hr_purchases.html', ar: 'المشتريات الإدارية', en: 'Admin Purchases' },
+                    { icon: 'fa-handshake', link: '../hr/hr_partners.html', ar: 'الشركاء والموردين', en: 'Partners' }
                 ]
             },
             {
-                section: 'govt', label: 'العلاقات الحكومية',
+                label: { ar: 'العلاقات الحكومية', en: 'Govt Relations' },
                 items: [
-                    { icon: 'fa-passport', link: '../hr/hr_govt.html', text: 'الوثائق الحكومية' },
-                    { icon: 'fa-user-plus', link: '../hr/hr_recruitment.html', text: 'التوظيف والاستقدام' }
+                    { icon: 'fa-passport', link: '../hr/hr_govt.html', ar: 'الوثائق الحكومية', en: 'Govt Documents' },
+                    { icon: 'fa-user-plus', link: '../hr/hr_recruitment.html', ar: 'التوظيف والاستقدام', en: 'Recruitment' }
                 ]
             }
         ],
 
-        // --- ب. قائمة الإدارة المالية (بكامل التفاصيل) ---
+        // --- Finance Menu (كاملة) ---
         finance: [
             {
-                section: 'main', label: 'الرئيسية',
+                label: { ar: 'الرئيسية', en: 'Main' },
                 items: [
-                    { icon: 'fa-chart-line', link: '../finance/cfo_dashboard.html', text: 'المركز المالي' },
-                    { icon: 'fa-check-double', link: '../finance/approvals.html', text: 'الاعتمادات المالية' },
-                    { icon: 'fa-comments', link: '../finance/internal_chat.html', text: 'المحادثات' }
+                    { icon: 'fa-chart-line', link: '../finance/cfo_dashboard.html', ar: 'المركز المالي', en: 'Financial Position' },
+                    { icon: 'fa-check-double', link: '../finance/approvals.html', ar: 'الاعتمادات', en: 'Approvals' },
+                    { icon: 'fa-comments', link: '../finance/internal_chat.html', ar: 'المحادثات', en: 'Chat' }
                 ]
             },
             {
-                section: 'accounting', label: 'المحاسبة العامة (GL)',
+                label: { ar: 'المحاسبة العامة', en: 'Accounting (GL)' },
                 items: [
-                    { icon: 'fa-book', link: '../finance/gl_journal.html', text: 'قيود اليومية' },
-                    { icon: 'fa-list-ol', link: '../finance/gl_coa.html', text: 'دليل الحسابات' },
-                    { icon: 'fa-tags', link: '../finance/gl_cost_centers.html', text: 'مراكز التكلفة' }
+                    { icon: 'fa-book', link: '../finance/gl_journal.html', ar: 'قيود اليومية', en: 'Journal Entries' },
+                    { icon: 'fa-list-ol', link: '../finance/gl_coa.html', ar: 'دليل الحسابات', en: 'Chart of Accounts' },
+                    { icon: 'fa-tags', link: '../finance/gl_cost_centers.html', ar: 'مراكز التكلفة', en: 'Cost Centers' }
                 ]
             },
             {
-                section: 'ap', label: 'المدفوعات والموردين (AP)',
+                label: { ar: 'العمليات المالية', en: 'Operations' },
                 items: [
-                    { icon: 'fa-file-invoice-dollar', link: '../finance/ap_bills.html', text: 'فواتير الموردين' },
-                    { icon: 'fa-money-bill-transfer', link: '../finance/ap_payments.html', text: 'أوامر الدفع' },
-                    { icon: 'fa-users-gear', link: '../finance/ap_vendors.html', text: 'إدارة الموردين' }
+                    { icon: 'fa-file-invoice-dollar', link: '../finance/ap_bills.html', ar: 'الموردين (AP)', en: 'Accounts Payable' },
+                    { icon: 'fa-hand-holding-dollar', link: '../finance/ar_invoices.html', ar: 'العملاء (AR)', en: 'Accounts Receivable' },
+                    { icon: 'fa-boxes-stacked', link: '../finance/inv_assets.html', ar: 'الأصول والمخزون', en: 'Assets & Inventory' }
                 ]
             },
             {
-                section: 'ar', label: 'المقبوضات والعملاء (AR)',
+                label: { ar: 'التقارير', en: 'Reporting' },
                 items: [
-                    { icon: 'fa-hand-holding-dollar', link: '../finance/ar_invoices.html', text: 'فواتير المبيعات' },
-                    { icon: 'fa-receipt', link: '../finance/ar_receipts.html', text: 'سندات القبض' }
-                ]
-            },
-            {
-                section: 'reporting', label: 'التقارير والمخزون',
-                items: [
-                    { icon: 'fa-file-contract', link: '../finance/rep_statements.html', text: 'القوائم المالية' },
-                    { icon: 'fa-scale-balanced', link: '../finance/rep_budget.html', text: 'الموازنة التقديرية' },
-                    { icon: 'fa-percent', link: '../finance/rep_tax.html', text: 'الإقرارات الضريبية' },
-                    { icon: 'fa-boxes-stacked', link: '../finance/inv_assets.html', text: 'الأصول الثابتة' }
+                    { icon: 'fa-file-contract', link: '../finance/rep_statements.html', ar: 'القوائم المالية', en: 'Statements' },
+                    { icon: 'fa-scale-balanced', link: '../finance/rep_budget.html', ar: 'الموازنة التقديرية', en: 'Budgeting' },
+                    { icon: 'fa-percent', link: '../finance/rep_tax.html', ar: 'الإقرارات الضريبية', en: 'Tax Reports' }
                 ]
             }
         ],
 
-        // --- ج. قائمة المدير التقني (بكامل التفاصيل) ---
+        // --- CTO Menu ---
         tech: [
             {
-                section: 'main', label: 'العمليات',
+                label: { ar: 'العمليات', en: 'Operations' },
                 items: [
-                    { icon: 'fa-server', link: '../cto/cto_dashboard.html', text: 'حالة النظام' },
-                    { icon: 'fa-headset', link: '../cto/cto_support.html', text: 'الدعم الفني' },
-                    { icon: 'fa-code-branch', link: '../cto/cto_projects.html', text: 'المشاريع البرمجية' }
+                    { icon: 'fa-server', link: '../cto/cto_dashboard.html', ar: 'حالة النظام', en: 'System Status' },
+                    { icon: 'fa-headset', link: '../cto/cto_support.html', ar: 'الدعم الفني', en: 'Support' },
+                    { icon: 'fa-code-branch', link: '../cto/cto_projects.html', ar: 'المشاريع', en: 'Projects' }
                 ]
             },
             {
-                section: 'infra', label: 'البنية التحتية',
+                label: { ar: 'البنية التحتية', en: 'Infrastructure' },
                 items: [
-                    { icon: 'fa-hard-drive', link: '../cto/cto_servers.html', text: 'الخوادم (Servers)' },
-                    { icon: 'fa-heart-pulse', link: '../cto/cto_monitoring.html', text: 'المراقبة الحية' },
-                    { icon: 'fa-laptop-code', link: '../cto/cto_assets.html', text: 'الأصول التقنية' }
+                    { icon: 'fa-hard-drive', link: '../cto/cto_servers.html', ar: 'الخوادم', en: 'Servers' },
+                    { icon: 'fa-phone-volume', link: '../cto/cto_pbx.html', ar: 'السنترال', en: 'PBX' },
+                    { icon: 'fa-laptop-code', link: '../cto/cto_assets.html', ar: 'الأصول التقنية', en: 'IT Assets' }
                 ]
             },
             {
-                section: 'comms', label: 'الاتصالات (VoIP)',
+                label: { ar: 'الأمن السيبراني', en: 'Security' },
                 items: [
-                    { icon: 'fa-phone-volume', link: '../cto/cto_pbx.html', text: 'السنترال (PBX)' },
-                    { icon: 'fa-users-rectangle', link: '../cto/cto_extensions.html', text: 'التحويلات' },
-                    { icon: 'fa-list-ol', link: '../cto/cto_call_logs.html', text: 'سجل المكالمات' }
-                ]
-            },
-            {
-                section: 'sec', label: 'الأمن والحماية',
-                items: [
-                    { icon: 'fa-shield-halved', link: '../cto/cto_soc.html', text: 'مركز الأمن (SOC)' },
-                    { icon: 'fa-key', link: '../cto/cto_iam.html', text: 'إدارة الهويات (IAM)' }
+                    { icon: 'fa-shield-halved', link: '../cto/cto_soc.html', ar: 'مركز الأمن (SOC)', en: 'SOC' },
+                    { icon: 'fa-key', link: '../cto/cto_iam.html', ar: 'إدارة الهويات', en: 'IAM' }
                 ]
             }
         ],
 
-        // --- د. قائمة الرئيس التنفيذي (CEO) ---
+        // --- CEO Menu ---
         ceo: [
             {
-                section: 'main', label: 'الإدارة العليا',
+                label: { ar: 'الإدارة العليا', en: 'Top Management' },
                 items: [
-                    { icon: 'fa-chart-pie', link: '../ceo/ceo_dashboard.html', text: 'نظرة شاملة' },
-                    { icon: 'fa-chess-queen', link: '../ceo/ceo_strategy.html', text: 'الاستراتيجية' },
-                    { icon: 'fa-file-contract', link: '../ceo/ceo_reports.html', text: 'التقارير الموحدة' }
+                    { icon: 'fa-chart-pie', link: '../ceo/ceo_dashboard.html', ar: 'نظرة شاملة', en: 'Overview' },
+                    { icon: 'fa-chess-queen', link: '../ceo/ceo_strategy.html', ar: 'الاستراتيجية', en: 'Strategy' },
+                    { icon: 'fa-file-contract', link: '../ceo/ceo_reports.html', ar: 'التقارير الموحدة', en: 'Unified Reports' }
                 ]
             },
             {
-                section: 'gov', label: 'الحوكمة والمجلس',
+                label: { ar: 'الحوكمة والمجلس', en: 'Governance' },
                 items: [
-                    { icon: 'fa-gavel', link: '../ceo/ceo_governance.html', text: 'الحوكمة والالتزام' },
-                    { icon: 'fa-triangle-exclamation', link: '../ceo/ceo_risks.html', text: 'إدارة المخاطر' },
-                    { icon: 'fa-users-rectangle', link: '../ceo/ceo_board.html', text: 'شؤون المجلس' }
-                ]
-            },
-            {
-                section: 'comms', label: 'التواصل',
-                items: [
-                    { icon: 'fa-bullhorn', link: '../ceo/ceo_broadcast.html', text: 'التعاميم' },
-                    { icon: 'fa-comments', link: '../ceo/ceo_communication.html', text: 'التواصل المباشر' },
-                    { icon: 'fa-star', link: '../ceo/ceo_feedback.html', text: 'الشكاوى والمقترحات' }
+                    { icon: 'fa-gavel', link: '../ceo/ceo_governance.html', ar: 'الحوكمة والالتزام', en: 'Compliance' },
+                    { icon: 'fa-triangle-exclamation', link: '../ceo/ceo_risks.html', ar: 'إدارة المخاطر', en: 'Risk Mgmt' },
+                    { icon: 'fa-users-rectangle', link: '../ceo/ceo_board.html', ar: 'شؤون المجلس', en: 'Board Affairs' }
                 ]
             }
         ],
 
-        // --- هـ. قائمة مدير النظام (Admin) ---
+        // --- Admin Menu ---
         admin: [
             {
-                section: 'main', label: 'إدارة النظام',
+                label: { ar: 'إدارة النظام', en: 'System Admin' },
                 items: [
-                    { icon: 'fa-gauge-high', link: '../admin/admin.html', text: 'لوحة التحكم' },
-                    { icon: 'fa-users-gear', link: '../admin/users.html', text: 'إدارة المستخدمين' },
-                    { icon: 'fa-sliders', link: '../admin/admin_settings.html', text: 'الإعدادات العامة' }
+                    { icon: 'fa-gauge-high', link: '../admin/admin.html', ar: 'لوحة التحكم', en: 'Control Panel' },
+                    { icon: 'fa-users-gear', link: '../admin/users.html', ar: 'إدارة المستخدمين', en: 'Users' },
+                    { icon: 'fa-sliders', link: '../admin/admin_settings.html', ar: 'الإعدادات العامة', en: 'Settings' }
                 ]
             },
             {
-                section: 'gov', label: 'الحوكمة',
+                label: { ar: 'الحوكمة', en: 'Governance' },
                 items: [
-                    { icon: 'fa-chart-pie', link: '../admin/shareholders.html', text: 'سجل المساهمين' },
-                    { icon: 'fa-book-open', link: '../admin/policies.html', text: 'السياسات واللوائح' },
-                    { icon: 'fa-gavel', link: '../admin/board.html', text: 'مجلس الإدارة' },
-                    { icon: 'fa-magnifying-glass', link: '../admin/audit.html', text: 'لجنة المراجعة' },
-                    { icon: 'fa-users', link: '../admin/committees.html', text: 'اللجان المنبثقة' }
-                ]
-            },
-            {
-                section: 'ops', label: 'العمليات المساندة',
-                items: [
-                    { icon: 'fa-cart-shopping', link: '../admin/procurement.html', text: 'المشتريات' },
-                    { icon: 'fa-scale-balanced', link: '../admin/compliance.html', text: 'الالتزام' },
-                    { icon: 'fa-bullhorn', link: '../admin/admin_circulars.html', text: 'التعاميم' }
+                    { icon: 'fa-chart-pie', link: '../admin/shareholders.html', ar: 'سجل المساهمين', en: 'Shareholders' },
+                    { icon: 'fa-gavel', link: '../admin/board.html', ar: 'مجلس الإدارة', en: 'Board' },
+                    { icon: 'fa-magnifying-glass', link: '../admin/audit.html', ar: 'لجنة المراجعة', en: 'Audit' }
                 ]
             }
         ],
 
-        // --- و. القائمة الافتراضية للموظفين (Common) ---
+        // --- Staff Menu ---
         staff: [
             {
-                section: 'main', label: 'بوابة الموظف',
+                label: { ar: 'بوابة الموظف', en: 'Employee Portal' },
                 items: [
-                    { icon: 'fa-chart-pie', link: '../employee/dashboard.html', text: 'لوحة القيادة' },
-                    { icon: 'fa-file-signature', link: '../employee/my_requests.html', text: 'طلباتي' }
+                    { icon: 'fa-chart-pie', link: '../employee/dashboard.html', ar: 'لوحة القيادة', en: 'Dashboard' },
+                    { icon: 'fa-file-signature', link: '../employee/my_requests.html', ar: 'طلباتي', en: 'My Requests' }
                 ]
             }
         ]
     };
 
-    // --- 3. دالة التشغيل ---
+    // 5. التشغيل
     function init() {
-        if(config.theme === 'dark') document.documentElement.classList.add('dark');
+        if (config.theme === 'dark') document.documentElement.classList.add('dark');
         renderSidebar();
         renderHeader();
         highlightActiveLink();
     }
 
-    // --- 4. بناء القائمة الجانبية (Logic) ---
+    // 6. رسم السايدبار (مع مراعاة التصميم الأبيض)
     function renderSidebar() {
-        const isRtl = config.lang === 'ar';
         const role = (currentUser.role || '').toLowerCase();
         const access = currentUser.accessLevels || [];
-        const title = (currentUser.title || '').toLowerCase();
+        
+        // اختيار القائمة
+        let selectedMenu = MENUS.staff;
+        let roleBadge = t.titles.emp;
 
-        // اختيار القائمة المناسبة بناءً على الصلاحية
-        let selectedMenuStructure = ALL_MENUS.staff; // الافتراضي
+        if (role.includes('admin') || access.includes('admin')) { selectedMenu = MENUS.admin; roleBadge = t.titles.admin; }
+        else if (role.includes('ceo') || access.includes('ceo')) { selectedMenu = MENUS.ceo; roleBadge = t.titles.ceo; }
+        else if (role.includes('cfo') || role.includes('finance') || access.includes('finance')) { selectedMenu = MENUS.finance; roleBadge = t.titles.cfo; }
+        else if (role.includes('cao') || role.includes('hr') || access.includes('hr')) { selectedMenu = MENUS.hr; roleBadge = t.titles.hr; }
+        else if (role.includes('cto') || role.includes('tech') || access.includes('cto')) { selectedMenu = MENUS.tech; roleBadge = t.titles.cto; }
 
-        // الفحص بالترتيب
-        if (role.includes('admin') || role.includes('grc') || access.includes('admin')) {
-            selectedMenuStructure = ALL_MENUS.admin;
-        } 
-        else if (role.includes('ceo') || access.includes('ceo')) {
-            selectedMenuStructure = ALL_MENUS.ceo;
-        } 
-        else if (role.includes('cfo') || role.includes('finance') || access.includes('finance')) {
-            selectedMenuStructure = ALL_MENUS.finance;
-        } 
-        else if (role.includes('cao') || role.includes('hr') || access.includes('hr')) {
-            selectedMenuStructure = ALL_MENUS.hr;
-        } 
-        else if (role.includes('cto') || role.includes('tech') || access.includes('cto')) {
-            selectedMenuStructure = ALL_MENUS.tech;
-        }
-
-        // تحويل الهيكل إلى HTML
         let linksHTML = '';
-        selectedMenuStructure.forEach(section => {
-            // عنوان القسم
-            if (section.label) {
-                linksHTML += `<p class="px-6 mt-6 mb-2 text-[10px] font-bold text-slate-500 uppercase tracking-widest border-t border-slate-800 pt-4 first:border-0">${section.label}</p>`;
-            }
-            // العناصر
+        selectedMenu.forEach(section => {
+            const sectionTitle = config.lang === 'ar' ? section.label.ar : section.label.en;
+            linksHTML += `<p class="px-6 mt-6 mb-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest pt-2">${sectionTitle}</p>`;
+            
             section.items.forEach(item => {
+                const text = config.lang === 'ar' ? item.ar : item.en;
+                // تصميم الروابط (نظيف وواضح)
                 linksHTML += `
-                <a href="${item.link}" class="flex items-center gap-3 px-4 py-3 mx-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-xl transition-all mb-1 group" id="link-${item.link.split('/').pop().replace('.html','')}">
-                    <div class="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center group-hover:bg-brandRed transition-colors shrink-0">
-                        <i class="fa-solid ${item.icon} text-sm"></i> 
-                    </div>
-                    <span class="font-bold text-xs truncate">${item.text}</span>
+                <a href="${item.link}" class="flex items-center gap-3 px-4 py-3 mx-2 rounded-xl transition-all mb-1 group text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white" id="link-${item.link.split('/').pop().replace('.html','')}">
+                    <div class="w-6 text-center"><i class="fa-solid ${item.icon}"></i></div>
+                    <span class="font-bold text-xs ${config.lang === 'en' ? 'font-sans' : ''}">${text}</span>
                 </a>`;
             });
         });
 
-        // رسم السايدبار
-        const sidebar = `
-        <aside class="fixed top-0 ${isRtl ? 'right-0' : 'left-0'} h-screen w-72 bg-[#0F172A] text-white flex flex-col z-50 shadow-2xl hidden md:flex border-${isRtl ? 'l' : 'r'} border-slate-800">
-            <div class="h-20 flex items-center px-6 border-b border-slate-800/50">
-                <h1 class="text-xl font-extrabold tracking-tight">Andro<span class="text-brandRed">Gov</span></h1>
+        // الهيكل الرئيسي للسايدبار (أبيض في الفاتح، داكن في الليلي)
+        document.getElementById('sidebar-container').innerHTML = `
+        <aside class="fixed top-0 ${isRtl ? 'right-0' : 'left-0'} h-screen w-72 bg-white dark:bg-slate-900 border-${isRtl ? 'l' : 'r'} border-slate-100 dark:border-slate-800 flex flex-col z-50 shadow-xl hidden md:flex transition-colors duration-300">
+            <div class="h-20 flex items-center px-6 border-b border-slate-100 dark:border-slate-800">
+                <h1 class="text-xl font-extrabold tracking-tight text-slate-900 dark:text-white">Andro<span class="text-brandRed">Gov</span></h1>
+                <span class="text-[9px] bg-slate-100 dark:bg-slate-800 text-slate-500 px-2 py-1 rounded mx-2">${roleBadge}</span>
             </div>
             
             <div class="p-6">
-                <div class="bg-slate-800/30 rounded-2xl p-4 border border-slate-700/50 flex items-center gap-3">
-                    <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.name)}&background=${currentUser.avatarColor ? currentUser.avatarColor.replace('#','') : 'random'}&color=fff" class="w-10 h-10 rounded-full border border-slate-600">
+                <div class="bg-slate-50 dark:bg-slate-800 rounded-2xl p-4 border border-slate-100 dark:border-slate-700 flex items-center gap-3">
+                    <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.name)}&background=${currentUser.avatarColor ? currentUser.avatarColor.replace('#','') : 'random'}&color=fff" class="w-10 h-10 rounded-full shadow-sm">
                     <div class="overflow-hidden">
-                        <p class="font-bold text-xs text-white truncate w-32">${currentUser.name}</p>
+                        <p class="font-bold text-xs text-slate-800 dark:text-white truncate w-32">${currentUser.name}</p>
                         <p class="text-[10px] text-slate-400 mt-0.5 truncate w-32">${currentUser.title}</p>
                     </div>
                 </div>
@@ -289,56 +262,59 @@
                 ${linksHTML}
             </nav>
 
-            <div class="p-4 border-t border-slate-800/50 bg-[#0F172A]">
-                <button onclick="logout()" class="w-full py-3 bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all">
-                    <i class="fa-solid fa-power-off"></i> تسجيل خروج
+            <div class="p-4 border-t border-slate-100 dark:border-slate-800">
+                <button onclick="logout()" class="w-full py-3 bg-red-50 text-red-600 hover:bg-red-100 dark:bg-red-900/10 dark:text-red-400 dark:hover:bg-red-900/20 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all">
+                    <i class="fa-solid fa-power-off"></i> ${t.logout}
                 </button>
             </div>
         </aside>`;
-
-        document.getElementById('sidebar-container').innerHTML = sidebar;
     }
 
-    // --- 5. بناء الهيدر مع زر التبديل (Switcher) ---
+    // 7. رسم الهيدر (مع زر التبديل والبحث)
     function renderHeader() {
         const levels = currentUser.accessLevels || [];
         
-        // زر التبديل يظهر فقط إذا كان لديه أكثر من صلاحية
         let switcherHtml = '';
         if (levels.length > 1) {
-            let options = `<option value="#" selected disabled>تبديل البوابة</option>`;
-            if (levels.includes('admin')) options += `<option value="../admin/admin.html">🔐 إدارة النظام</option>`;
-            if (levels.includes('board')) options += `<option value="../admin/board.html">⚖️ بوابة المجلس</option>`;
-            if (levels.includes('ceo')) options += `<option value="../ceo/ceo_dashboard.html">👑 الرئيس التنفيذي</option>`;
-            if (levels.includes('finance')) options += `<option value="../finance/cfo_dashboard.html">💰 الإدارة المالية</option>`;
-            if (levels.includes('hr')) options += `<option value="../hr/hr_dashboard.html">👥 الموارد البشرية</option>`;
-            if (levels.includes('audit')) options += `<option value="../admin/audit.html">🔍 لجنة المراجعة</option>`;
-            if (levels.includes('shareholder')) options += `<option value="../shareholder/dashboard.html">📈 بوابة المساهم</option>`;
+            let options = `<option value="#" selected disabled>${t.switch}</option>`;
+            if (levels.includes('admin')) options += `<option value="../admin/admin.html">${i18n[config.lang].titles.admin}</option>`;
+            if (levels.includes('board')) options += `<option value="../admin/board.html">${config.lang==='ar'?'بوابة المجلس':'Board Portal'}</option>`;
+            if (levels.includes('ceo')) options += `<option value="../ceo/ceo_dashboard.html">${i18n[config.lang].titles.ceo}</option>`;
+            if (levels.includes('finance')) options += `<option value="../finance/cfo_dashboard.html">${i18n[config.lang].titles.cfo}</option>`;
+            if (levels.includes('hr')) options += `<option value="../hr/hr_dashboard.html">${i18n[config.lang].titles.hr}</option>`;
+            if (levels.includes('audit')) options += `<option value="../admin/audit.html">${config.lang==='ar'?'لجنة المراجعة':'Audit Committee'}</option>`;
+            if (levels.includes('shareholder')) options += `<option value="../shareholder/dashboard.html">${config.lang==='ar'?'بوابة المساهم':'Shareholder Portal'}</option>`;
 
             switcherHtml = `
-            <div class="hidden md:flex items-center gap-2 bg-slate-50 dark:bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 mx-4 shadow-sm">
+            <div class="hidden md:flex items-center gap-2 bg-slate-100 dark:bg-slate-800 px-3 py-1.5 rounded-lg mx-4">
                 <i class="fa-solid fa-repeat text-brandRed text-xs"></i>
-                <select onchange="if(this.value) window.location.href=this.value" class="bg-transparent text-xs font-bold outline-none cursor-pointer text-slate-600 dark:text-slate-300 w-32">
+                <select onchange="if(this.value) window.location.href=this.value" class="bg-transparent text-xs font-bold outline-none cursor-pointer text-slate-600 dark:text-slate-300 w-28">
                     ${options}
                 </select>
             </div>`;
         }
 
         document.getElementById('header-container').innerHTML = `
-        <header class="h-20 bg-white/90 dark:bg-slate-900/90 backdrop-blur border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-8 sticky top-0 z-40 transition-all">
+        <header class="h-20 bg-white/80 dark:bg-slate-900/80 backdrop-blur border-b border-slate-100 dark:border-slate-800 flex items-center justify-between px-8 sticky top-0 z-40 transition-colors duration-300">
             <div class="flex items-center">
                 <button onclick="document.querySelector('aside').classList.toggle('hidden');" class="md:hidden text-slate-500 mr-4"><i class="fa-solid fa-bars text-xl"></i></button>
-                <h2 class="font-bold text-slate-800 dark:text-white text-lg">
-                    ${document.title.split('|')[0]}
-                </h2>
+                
+                <div class="relative hidden lg:block w-64 mr-4">
+                    <i class="fa-solid fa-magnifying-glass absolute top-3 ${isRtl ? 'right-3' : 'left-3'} text-slate-400 text-xs"></i>
+                    <input type="text" placeholder="${t.search}" class="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-xl py-2.5 ${isRtl ? 'pr-9' : 'pl-9'} text-xs focus:ring-2 focus:ring-brandRed/20 transition-all dark:text-white">
+                </div>
+
                 ${switcherHtml}
             </div>
             
-            <div class="flex items-center gap-3">
-                <button onclick="toggleTheme()" class="w-9 h-9 rounded-lg border border-slate-200 dark:border-slate-700 flex items-center justify-center hover:bg-slate-50 dark:hover:bg-slate-800 transition text-yellow-500">
+            <div class="flex items-center gap-2">
+                <button onclick="toggleLang()" class="w-9 h-9 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-bold text-slate-600 dark:text-slate-300 transition">
+                    ${config.lang === 'ar' ? 'EN' : 'عربي'}
+                </button>
+                <button onclick="toggleTheme()" class="w-9 h-9 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-yellow-500 transition">
                     <i class="fa-solid ${config.theme === 'dark' ? 'fa-sun' : 'fa-moon'}"></i>
                 </button>
-                <div class="h-6 w-px bg-slate-200 dark:bg-slate-700 mx-1"></div>
+                <div class="h-6 w-px bg-slate-200 dark:bg-slate-700 mx-2"></div>
                 <button class="w-10 h-10 rounded-full bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-slate-500 hover:text-brandRed transition relative">
                     <i class="fa-regular fa-bell"></i>
                     <span class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
@@ -347,23 +323,26 @@
         </header>`;
     }
 
-    // --- 6. دوال مساعدة ---
     function highlightActiveLink() {
         try {
             const page = window.location.pathname.split('/').pop().replace('.html','');
             const el = document.getElementById('link-' + page);
             if (el) {
-                el.classList.add('bg-brandRed', 'text-white', 'shadow-lg', 'shadow-brandRed/20');
-                el.classList.remove('text-slate-400', 'hover:text-white', 'hover:bg-white/5');
-                el.querySelector('div').classList.replace('bg-slate-800', 'bg-white/20');
+                el.classList.add('bg-brandRed', 'text-white', 'shadow-lg', 'shadow-brandRed/30');
+                el.classList.remove('text-slate-500', 'hover:bg-slate-100', 'hover:text-slate-900', 'dark:text-slate-400');
             }
         } catch (e) {}
     }
 
-    window.logout = () => { localStorage.removeItem('currentUser'); window.location.href = '../login.html'; };
+    window.logout = () => { localStorage.removeItem('currentUser'); window.location.href = 'https://androgov-sa.github.io/AIT/login.html'; };
     window.toggleTheme = () => {
         const newTheme = config.theme === 'dark' ? 'light' : 'dark';
         localStorage.setItem('theme', newTheme);
+        location.reload();
+    };
+    window.toggleLang = () => {
+        const newLang = config.lang === 'ar' ? 'en' : 'ar';
+        localStorage.setItem('lang', newLang);
         location.reload();
     };
 
