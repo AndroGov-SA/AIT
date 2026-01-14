@@ -4,7 +4,7 @@
  */
 (function() {
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    if (!currentUser) window.location.href = '../login.html';
+    if (!currentUser) window.location.href = 'https://androgov-sa.github.io/AIT/login.html';
 
     const config = { theme: localStorage.getItem('theme') || 'light' };
 
@@ -154,6 +154,6 @@
         }
     }
 
-    window.logout = () => { localStorage.removeItem('currentUser'); window.location.href = '../login.html'; };
+    window.logout = () => { localStorage.removeItem('currentUser'); window.location.href = 'https://androgov-sa.github.io/AIT/login.html'; };
     init();
 })();
