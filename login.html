@@ -72,22 +72,22 @@
         <div class="flex items-center gap-4 text-slate-300 group hover:text-white transition">
           <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-green-500/20 transition"><i class="fa-solid fa-gavel text-green-400"></i></div>
           <div>
-            <h3 class="font-bold text-white">حوكمة الشركات</h3>
-            <p class="text-xs text-slate-400">إدارة الجمعيات والمجلس واللجان والامتثال.</p>
+            <h3 class="font-bold text-white" data-i18n="sidebarGovTitle">حوكمة الشركات</h3>
+            <p class="text-xs text-slate-400" data-i18n="sidebarGovDesc">إدارة الجمعيات والمجلس واللجان والامتثال.</p>
           </div>
         </div>
         <div class="flex items-center gap-4 text-slate-300 group hover:text-white transition">
           <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-blue-500/20 transition"><i class="fa-solid fa-briefcase text-blue-400"></i></div>
           <div>
-            <h3 class="font-bold text-white">العمليات التشغيلية</h3>
-            <p class="text-xs text-slate-400">الموارد البشرية، المالية، المشتريات، والتقنية.</p>
+            <h3 class="font-bold text-white" data-i18n="sidebarOpsTitle">العمليات التشغيلية</h3>
+            <p class="text-xs text-slate-400" data-i18n="sidebarOpsDesc">الموارد البشرية، المالية، المشتريات، والتقنية.</p>
           </div>
         </div>
         <div class="flex items-center gap-4 text-slate-300 group hover:text-white transition">
           <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-purple-500/20 transition"><i class="fa-solid fa-users-viewfinder text-purple-400"></i></div>
           <div>
-            <h3 class="font-bold text-white">علاقات المساهمين</h3>
-            <p class="text-xs text-slate-400">بوابة خاصة للمساهمين للتصويت والاطلاع.</p>
+            <h3 class="font-bold text-white" data-i18n="sidebarRelTitle">علاقات المساهمين</h3>
+            <p class="text-xs text-slate-400" data-i18n="sidebarRelDesc">بوابة خاصة للمساهمين للتصويت والاطلاع.</p>
           </div>
         </div>
       </div>
@@ -139,7 +139,7 @@
           <!-- Error Message Box -->
           <div id="errorMsg" class="hidden mb-5 p-3 bg-red-100 text-red-700 rounded-xl text-sm border border-red-200 text-center flex items-center justify-center gap-2 animate-pulse">
             <i class="fa-solid fa-circle-exclamation"></i>
-            <span id="errorText">بيانات الدخول غير صحيحة</span>
+            <span id="errorText" data-i18n="errorCredentials">بيانات الدخول غير صحيحة</span>
           </div>
 
           <form id="loginForm" class="space-y-4">
@@ -172,7 +172,7 @@
             
             <div id="usersContainer" class="max-h-[300px] overflow-y-auto users-scroll space-y-4 pr-1">
                 <div class="text-center py-4 text-xs text-slate-400">
-                    <i class="fa-solid fa-circle-notch fa-spin text-brandRed"></i> جاري تحميل البيانات من النظام المركزي...
+                    <i class="fa-solid fa-circle-notch fa-spin text-brandRed"></i> <span data-i18n="loadingData">جاري تحميل البيانات من النظام المركزي...</span>
                 </div>
             </div>
           </div>
@@ -197,8 +197,74 @@
 
   <script>
     const translations = {
-      ar: { loginTitle: "تسجيل الدخول", loginSub: "يرجى اختيار صفتك للدخول إلى النظام", emailLabel: "البريد الإلكتروني", passLabel: "كلمة المرور", loginBtn: "دخول آمن", demoTitle: "حسابات الوصول السريع (Demo Access)", backToHome: "العودة للرئيسية", systemName: "AndroGov", systemDesc: "منصة الحوكمة الرقمية الشاملة" },
-      en: { loginTitle: "Sign In", loginSub: "Please select your role to access", emailLabel: "Email Address", passLabel: "Password", loginBtn: "Secure Login", demoTitle: "Quick Access Accounts (Demo)", backToHome: "Back to Home", systemName: "AndroGov", systemDesc: "Digital Governance Platform" }
+      ar: { 
+        loginTitle: "تسجيل الدخول", 
+        loginSub: "يرجى اختيار صفتك للدخول إلى النظام", 
+        emailLabel: "البريد الإلكتروني", 
+        passLabel: "كلمة المرور", 
+        loginBtn: "دخول آمن", 
+        demoTitle: "حسابات الوصول السريع (Demo Access)", 
+        backToHome: "العودة للرئيسية", 
+        systemName: "AndroGov", 
+        systemDesc: "منصة الحوكمة الرقمية الشاملة",
+        errorCredentials: "بيانات الدخول غير صحيحة",
+        // القوائم الجانبية
+        sidebarGovTitle: "حوكمة الشركات",
+        sidebarGovDesc: "إدارة الجمعيات والمجلس واللجان والامتثال.",
+        sidebarOpsTitle: "العمليات التشغيلية",
+        sidebarOpsDesc: "الموارد البشرية، المالية، المشتريات، والتقنية.",
+        sidebarRelTitle: "علاقات المساهمين",
+        sidebarRelDesc: "بوابة خاصة للمساهمين للتصويت والاطلاع.",
+        // رسائل النظام
+        loadingData: "جاري تحميل البيانات من النظام المركزي...",
+        noUsers: "لا يوجد مستخدمين للعرض",
+        systemErrorTitle: "خطأ في النظام:",
+        systemErrorMsg: "لم يتم تحميل ملف البيانات.",
+        systemErrorFix: "تأكد من أن ملف data/company_policy.js موجود وسليم.",
+        verifying: "جاري التحقق...",
+        // مجموعات المستخدمين
+        adminGroup: "إدارة النظام",
+        boardGroup: "مجلس الإدارة",
+        shareholderGroup: "المساهمين",
+        execGroup: "الإدارة التنفيذية",
+        auditGroup: "التدقيق والامتثال",
+        managerGroup: "مدراء الإدارات",
+        staffGroup: "الموظفين"
+      },
+      en: { 
+        loginTitle: "Sign In", 
+        loginSub: "Please select your role to access", 
+        emailLabel: "Email Address", 
+        passLabel: "Password", 
+        loginBtn: "Secure Login", 
+        demoTitle: "Quick Access Accounts (Demo)", 
+        backToHome: "Back to Home", 
+        systemName: "AndroGov", 
+        systemDesc: "Digital Governance Platform",
+        errorCredentials: "Invalid credentials",
+        // Sidebar
+        sidebarGovTitle: "Corporate Governance",
+        sidebarGovDesc: "Managing assemblies, board, committees, and compliance.",
+        sidebarOpsTitle: "Operational Processes",
+        sidebarOpsDesc: "HR, Finance, Procurement, and Technology.",
+        sidebarRelTitle: "Shareholder Relations",
+        sidebarRelDesc: "Private portal for voting and viewing.",
+        // System Messages
+        loadingData: "Loading data from central system...",
+        noUsers: "No users to display",
+        systemErrorTitle: "System Error:",
+        systemErrorMsg: "Data file not loaded.",
+        systemErrorFix: "Ensure data/company_policy.js exists and is valid.",
+        verifying: "Verifying...",
+        // User Groups
+        adminGroup: "System Administration",
+        boardGroup: "Board of Directors",
+        shareholderGroup: "Shareholders",
+        execGroup: "Executive Management",
+        auditGroup: "Audit & Compliance",
+        managerGroup: "Department Managers",
+        staffGroup: "Staff"
+      }
     };
 
     let lang = localStorage.getItem('lang') || 'ar';
@@ -210,21 +276,18 @@
         // 1. فحص أمان: التأكد من تحميل البيانات
         if (typeof POLICY_DATA === 'undefined') {
             console.error("Critical Error: POLICY_DATA is missing.");
+            const t = translations[lang];
             document.getElementById('usersContainer').innerHTML = `
                 <div class="p-3 bg-red-50 text-red-600 rounded-lg text-xs text-center border border-red-200">
-                    <strong>خطأ في النظام:</strong> لم يتم تحميل ملف البيانات.<br>
-                    تأكد من أن ملف data/company_policy.js موجود وسليم.
+                    <strong>${t.systemErrorTitle}</strong> ${t.systemErrorMsg}<br>
+                    ${t.systemErrorFix}
                 </div>`;
             return;
         }
 
-        // 2. تحديث الواجهة ديناميكياً من ملف السياسات (Infrastructure as Data)
+        // 2. تحديث الواجهة ديناميكياً من ملف السياسات
         if (POLICY_DATA.system) {
              document.getElementById('versionDisplay').innerText = `System v${POLICY_DATA.system.version}`;
-        }
-        if (POLICY_DATA.identity && POLICY_DATA.identity.meta) {
-             // يمكن تحديث اسم النظام هنا إذا أردت استخدام الاسم التجاري
-             // document.getElementById('systemNameDisplay').innerText = POLICY_DATA.identity.meta.brand_name[lang];
         }
 
         // 3. تشغيل محرك المصادقة
@@ -235,7 +298,8 @@
             if (users.length > 0) {
                 renderDynamicUsers(users);
             } else {
-                document.getElementById('usersContainer').innerHTML = '<div class="text-center text-slate-400 text-xs py-4">لا يوجد مستخدمين للعرض</div>';
+                const t = translations[lang];
+                document.getElementById('usersContainer').innerHTML = `<div class="text-center text-slate-400 text-xs py-4">${t.noUsers}</div>`;
             }
         }
 
@@ -248,16 +312,17 @@
     function renderDynamicUsers(users) {
         const container = document.getElementById('usersContainer');
         container.innerHTML = ''; 
+        const t = translations[lang]; // استخدام الترجمة الحالية
 
-        // تعريف المجموعات بناءً على الأنواع القادمة من auth.js
+        // تعريف المجموعات مع ربط العناوين بالترجمة
         const groups = {
-            'admin': { title: 'إدارة النظام', color: 'text-red-600', icon: 'fa-user-shield' },
-            'board': { title: 'مجلس الإدارة', color: 'text-brandBlue', icon: 'fa-building-columns' },
-            'shareholder': { title: 'المساهمين', color: 'text-green-600', icon: 'fa-hand-holding-dollar' },
-            'exec': { title: 'الإدارة التنفيذية', color: 'text-purple-600', icon: 'fa-user-tie' },
-            'audit': { title: 'التدقيق والامتثال', color: 'text-orange-600', icon: 'fa-scale-balanced' },
-            'manager': { title: 'مدراء الإدارات', color: 'text-cyan-600', icon: 'fa-users-gear' },
-            'staff': { title: 'الموظفين', color: 'text-slate-500', icon: 'fa-users' }
+            'admin': { title: t.adminGroup, color: 'text-red-600', icon: 'fa-user-shield' },
+            'board': { title: t.boardGroup, color: 'text-brandBlue', icon: 'fa-building-columns' },
+            'shareholder': { title: t.shareholderGroup, color: 'text-green-600', icon: 'fa-hand-holding-dollar' },
+            'exec': { title: t.execGroup, color: 'text-purple-600', icon: 'fa-user-tie' },
+            'audit': { title: t.auditGroup, color: 'text-orange-600', icon: 'fa-scale-balanced' },
+            'manager': { title: t.managerGroup, color: 'text-cyan-600', icon: 'fa-users-gear' },
+            'staff': { title: t.staffGroup, color: 'text-slate-500', icon: 'fa-users' }
         };
 
         for (const [type, info] of Object.entries(groups)) {
@@ -302,6 +367,39 @@
         }
     };
 
+    // تحديث دالة الدخول (override window.handleLogin to support translation)
+    const originalHandleLogin = window.handleLogin; // حفظ الدالة الأصلية إن وجدت
+    window.handleLogin = async (e) => {
+        e.preventDefault();
+        const btn = document.querySelector('button[type="submit"]');
+        const btnSpan = btn.querySelector('span');
+        const originalText = btnSpan.innerText;
+        const t = translations[lang];
+        
+        if(btn) {
+            btnSpan.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> ${t.verifying}`;
+            btn.disabled = true;
+        }
+        
+        const errorMsg = document.getElementById('errorMsg');
+        if(errorMsg) errorMsg.classList.add('hidden');
+
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        try {
+            const redirect = await window.authSystem.login(email, password);
+            window.location.href = redirect;
+        } catch (err) {
+            if(document.getElementById('errorText')) document.getElementById('errorText').innerText = t.errorCredentials; // استخدام نص مترجم
+            if(errorMsg) errorMsg.classList.remove('hidden');
+            if(btn) {
+                btnSpan.innerText = originalText; // إعادة النص الأصلي (المترجم)
+                btn.disabled = false;
+            }
+        }
+    };
+
     function applyTheme() {
         if (localStorage.getItem('theme') === 'dark') {
             document.documentElement.classList.add('dark');
@@ -314,10 +412,17 @@
         document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
         document.getElementById('langLabel').innerText = lang === 'ar' ? 'EN' : 'عربي';
         const t = translations[lang];
+        
+        // تحديث النصوص الثابتة
         document.querySelectorAll('[data-i18n]').forEach(el => {
             const key = el.getAttribute('data-i18n');
             if(t[key]) el.innerText = t[key];
         });
+
+        // إعادة رسم المستخدمين إذا كانوا محملين لتحديث أسماء المجموعات
+        if(window.authSystem && window.authSystem.users.length > 0) {
+             renderDynamicUsers(window.authSystem.users);
+        }
     }
 
     window.toggleDarkMode = () => {
