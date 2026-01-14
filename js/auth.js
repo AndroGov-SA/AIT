@@ -118,6 +118,9 @@ class AuthSystem {
         if (r.includes('hr') || r.includes('cao')) return 'hr/hr_dashboard.html';
         if (r.includes('tech') || r.includes('cto')) return 'cto/cto_dashboard.html';
         return 'employee/dashboard.html'; // توجيه الموظفين للبوابة الجديدة
+        // --- إضافة جديدة: توجيه المساهمين ---
+        if (r.includes('shareholder')) return 'shareholder/dashboard.html';
+    }
     }
 
     async getDemoUsers() {
