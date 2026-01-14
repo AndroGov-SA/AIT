@@ -1,6 +1,7 @@
 /**
- * AndroGov Authentication Engine v4.0 (Multi-Role Support)
- * مصحح: تم إصلاح مشكلة التوجيه (Redirection Bug)
+ * AndroGov Authentication Engine v4.1 (Safe Mode)
+ * - يدعم تعدد الصلاحيات (Admin + Board + Audit)
+ * - محمي ضد الأخطاء إذا كانت البيانات ناقصة
  */
 
 class AuthSystem {
@@ -13,13 +14,14 @@ class AuthSystem {
         if (this.isReady) return;
 
         try {
+            // التحقق من وجود البيانات
             if (typeof POLICY_DATA === 'undefined') {
                 console.error("Critical Error: POLICY_DATA is not defined.");
-                alert("خطأ في النظام: ملف البيانات غير موجود.");
+                alert("خطأ في النظام: ملف البيانات غير موجود أو فيه خطأ.");
                 return;
             }
 
-            console.log("✅ Data Source Loaded Successfully");
+            console.log("✅ تم تحميل البيانات بنجاح");
             this.processUsers(POLICY_DATA);
             this.isReady = true;
 
@@ -32,6 +34,7 @@ class AuthSystem {
         let rawUsers = [];
         let shareholders = [];
 
+        // جلب البيانات بأمان
         if (data.organizational_chart && data.organizational_chart.users_directory) {
             rawUsers = data.organizational_chart.users_directory;
         }
@@ -39,45 +42,47 @@ class AuthSystem {
             shareholders = data.shareholders;
         }
 
+        // معالجة الموظفين
         this.users = rawUsers.map(u => {
             let roles = [];
+            // تنظيف البيانات لتجنب الأخطاء
             let email = u.email ? u.email.toLowerCase().trim() : '';
-            let name = u.name || u.name_ar;
+            let name = u.name || u.name_ar || 'Unknown';
+            let roleRaw = u.role ? String(u.role).toLowerCase() : ''; // حماية ضد null
+            let titleRaw = u.title ? String(u.title).toLowerCase() : '';
 
-            // 1. Admin & GRC
-            if (u.role.toLowerCase() === 'admin' || u.role.toLowerCase().includes('grc')) {
+            // 1. كشف صلاحيات الأدمن والتنفيذيين
+            if (roleRaw === 'admin' || roleRaw.includes('grc')) {
                 roles.push('admin');
             }
-            
-            // 2. Executive (CEO, CFO, etc)
-            if (u.is_executive || u.role.toLowerCase().includes('ceo') || u.role.toLowerCase().includes('cfo')) {
+            if (u.is_executive || roleRaw.includes('ceo') || roleRaw.includes('cfo')) {
                 roles.push('exec');
             }
 
-            // 3. Board Members & Secretary
-            if (u.role.toLowerCase().includes('chairman') || 
-                u.role.toLowerCase().includes('board') || 
-                (u.title && u.title.toLowerCase().includes('secretary'))) {
+            // 2. كشف صلاحيات المجلس (الرئيس، الأعضاء، وأمين السر)
+            if (roleRaw.includes('chairman') || roleRaw.includes('board') || titleRaw.includes('secretary')) {
                 roles.push('board');
             }
 
-            // 4. Audit Committee
+            // 3. كشف صلاحيات لجنة المراجعة (من خلال البحث في القوائم)
             if (data.governance_config && data.governance_config.committees) {
                 const audit = data.governance_config.committees.Audit;
                 if (audit) {
+                    // هل الاسم موجود في قائمة الأعضاء أو هو أمين السر؟
                     const isMember = audit.members && audit.members.some(m => m.includes(name));
                     const isSec = audit.secretary && audit.secretary.includes(name);
+                    
                     if (isMember || isSec) {
                         if (!roles.includes('audit')) roles.push('audit');
                     }
                 }
             }
 
-            // 5. Shareholders
+            // 4. كشف المساهمين (من خلال الإيميل)
             const isShareholder = shareholders.find(s => s.email && s.email.toLowerCase() === email);
             if (isShareholder) roles.push('shareholder');
 
-            // 6. Staff (Default)
+            // 5. الموظف العادي (إذا لم يكن لديه أي دور مما سبق)
             if (roles.length === 0) roles.push('staff');
 
             return {
@@ -85,16 +90,17 @@ class AuthSystem {
                 name: name,
                 email: email,
                 title: u.title,
-                role: u.role,          // <--- (تمت الإضافة) ضروري للحفاظ على البيانات الأصلية
+                role: u.role,          // الدور الأصلي (مهم جداً)
                 primaryRole: roles[0], // الدور الأساسي للدخول
-                accessLevels: roles,   // كافة الصلاحيات
+                accessLevels: roles,   // قائمة بكل الصلاحيات
                 avatarColor: this.getAvatarColor(u.role)
             };
         }).filter(u => u.email !== '');
 
-        // إضافة المساهمين من خارج الشركة
+        // إضافة المساهمين من خارج الشركة (الذين ليس لديهم حساب موظف)
         shareholders.forEach(s => {
             const email = s.email ? s.email.toLowerCase().trim() : '';
+            // إذا لم يكن موجوداً مسبقاً
             if (!this.users.find(u => u.email === email)) {
                 this.users.push({
                     id: s.id,
@@ -122,6 +128,7 @@ class AuthSystem {
         if (!this.isReady) await this.init();
 
         const cleanEmail = email.trim().toLowerCase();
+        // كلمة مرور موحدة للتجربة
         const demoPass = "12345678";
 
         const user = this.users.find(u => u.email === cleanEmail);
@@ -129,29 +136,25 @@ class AuthSystem {
         if (!user) throw new Error("المستخدم غير موجود");
         if (password !== demoPass) throw new Error("كلمة المرور غير صحيحة");
 
+        // حفظ المستخدم في الذاكرة
         localStorage.setItem('currentUser', JSON.stringify(user));
         
-        // (تصحيح) استخدام الدور الأساسي المحسوب للتوجيه
+        // التوجيه حسب الدور الأساسي
         return this.getRedirectUrl(user.primaryRole);
     }
 
-    // تم تحديث الروابط لتتوافق مع الرموز الجديدة (admin, board, exec...)
     getRedirectUrl(role) {
-        const r = String(role).toLowerCase();
+        // تنظيف الدور (تحويله لنص صغير)
+        const r = String(role || '').toLowerCase();
         
         if (r === 'admin') return 'admin/admin.html';
-        if (r === 'board') return 'admin/board.html'; // أو ceo_board.html حسب رغبتك
+        if (r === 'board') return 'admin/board.html';
         if (r === 'exec') return 'ceo/ceo_dashboard.html';
-        if (r === 'audit') return 'admin/audit.html'; // تأكد من وجود هذا الملف
+        if (r === 'audit') return 'audit.html'; // تأكد أن الملف audit.html موجود في الجذر أو عدل المسار
         if (r === 'shareholder') return 'shareholder/dashboard.html';
         
-        // التوجيهات القديمة احتياطاً
-        if (r.includes('ceo')) return 'ceo/ceo_dashboard.html';
-        if (r.includes('finance')) return 'finance/cfo_dashboard.html';
-        if (r.includes('hr')) return 'hr/hr_dashboard.html';
-        if (r.includes('tech')) return 'cto/cto_dashboard.html';
-        
-        return 'employee/dashboard.html'; // الافتراضي
+        // التوجيه الافتراضي للموظفين
+        return 'employee/dashboard.html';
     }
 
     async getDemoUsers() {
@@ -160,27 +163,46 @@ class AuthSystem {
     }
 }
 
+// تهيئة النظام
 window.authSystem = new AuthSystem();
 
+// دالة الدخول (يتم استدعاؤها من login.html)
 window.handleLogin = async (e) => {
     e.preventDefault();
     const btn = document.querySelector('button[type="submit"]');
     const originalText = btn.innerHTML;
     
-    btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> جاري التحقق...';
-    btn.disabled = true;
-    document.getElementById('errorMsg').classList.add('hidden');
+    // إظهار حالة التحميل
+    if(btn) {
+        btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> جاري التحقق...';
+        btn.disabled = true;
+    }
+    
+    const errorMsg = document.getElementById('errorMsg');
+    if(errorMsg) errorMsg.classList.add('hidden');
 
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
+    const emailInput = document.getElementById('email');
+    const passInput = document.getElementById('password');
+
+    if(!emailInput || !passInput) {
+        console.error("Login inputs not found!");
+        return;
+    }
 
     try {
-        const redirect = await window.authSystem.login(email, password);
+        const redirect = await window.authSystem.login(emailInput.value, passInput.value);
+        console.log("Redirecting to:", redirect); // للمساعدة في اكتشاف الأخطاء
         window.location.href = redirect;
     } catch (err) {
-        document.getElementById('errorText').innerText = err.message;
-        document.getElementById('errorMsg').classList.remove('hidden');
-        btn.innerHTML = originalText;
-        btn.disabled = false;
+        console.error(err);
+        if(document.getElementById('errorText')) {
+            document.getElementById('errorText').innerText = err.message;
+        }
+        if(errorMsg) errorMsg.classList.remove('hidden');
+        
+        if(btn) {
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        }
     }
 };
