@@ -1,79 +1,102 @@
 /**
- * AndroGov Layout Engine v5.0 (Centralized Data Repository Integrated)
- * - Fetches configuration from '../data/company_policy.json'
- * - Dynamic User Profile Binding
- * - Smart Notifications & Roles
+ * AndroGov Layout Engine v5.1 (Fixed & Synchronized)
+ * - Supports Global POLICY_DATA variable (No fetch errors)
+ * - Aligned with v4.3.0 Data Schema (key_personnel, bilingual names)
+ * - Dynamic Branding & Role Adaptation
  */
 
 (function() {
     // --- 1. State & Globals ---
-    let policyData = null; // سيتم تعبئته من الملف المركزي
+    let policyData = null;
     
     const config = {
         lang: localStorage.getItem('lang') || 'ar',
         theme: localStorage.getItem('theme') || 'light'
     };
 
-    // سنبدأ بمستخدم افتراضي لحين تحميل البيانات الحقيقية
+    // تحميل المستخدم من الذاكرة أو استخدام زائر افتراضي
     let currentUser = JSON.parse(localStorage.getItem('currentUser')) || {
-        id: "USR_004", // افتراضي: أيمن المغربي (GRC)
-        nameAr: "مستخدم النظام",
-        nameEn: "System User",
-        role: "Guest"
+        id: "GUEST",
+        name: { ar: "زائر", en: "Guest" },
+        role: "viewer",
+        avatarColor: "64748b"
     };
 
-    // --- 2. Data Fetching (The Smart Part) ---
+    // --- 2. Data Loading (Smart Strategy) ---
     async function loadCompanyData() {
         try {
-            const response = await fetch('../data/company_policy.json');
-            if (!response.ok) throw new Error('Failed to load policy file');
-            
-            policyData = await response.json();
-            console.log("✅ Company Policy Loaded:", policyData.metadata.version);
-
-            // 1. تحديث بيانات المستخدم الحالي من الدليل المركزي
-            updateCurrentUserProfile();
-
-            // 2. تحديث إعدادات النظام العامة
-            if (policyData.system_settings) {
-                // تطبيق لون الهوية إذا وجد
-                document.documentElement.style.setProperty('--brand-color', policyData.system_settings.theme_color);
+            // 1. الأولوية: المتغير العام المحمل من company_policy.js
+            if (typeof POLICY_DATA !== 'undefined') {
+                policyData = POLICY_DATA;
+                console.log("✅ Loaded from Global Variable:", policyData.system.version);
+            } 
+            // 2. المحاولة الثانية: جلب الملف كـ JSON (احتياطي)
+            else {
+                console.warn("⚠️ POLICY_DATA global not found, trying fetch...");
+                const response = await fetch('../data/company_policy.js'); 
+                // ملاحظة: جلب ملف JS كـ نص لن يعمل كـ JSON مباشرة، لذا نفضل الطريقة الأولى
+                if (!response.ok) throw new Error('Fetch failed');
             }
 
+            if (!policyData) throw new Error("No data source available");
+
+            // 3. تحديث البيانات وتطبيق الإعدادات
+            updateCurrentUserProfile();
+            applyBranding();
+
         } catch (error) {
-            console.error("⚠️ Error loading company policy:", error);
-            // Fallback: Use hardcoded defaults if file fails
+            console.error("❌ Critical Data Error:", error);
+            alert("تعذر تحميل بيانات النظام. يرجى التأكد من تحميل ملف company_policy.js");
+        }
+    }
+
+    function applyBranding() {
+        if (policyData.identity && policyData.identity.tokens) {
+            const primaryColor = policyData.identity.tokens.colors.primary.value.light;
+            document.documentElement.style.setProperty('--brand-color', primaryColor);
         }
     }
 
     function updateCurrentUserProfile() {
-        // البحث عن المستخدم في الدليل المركزي بناءً على ID المخزن
-        // في تطبيق حقيقي، هذا الـ ID يأتي من عملية تسجيل الدخول
-        const storedUser = JSON.parse(localStorage.getItem('currentUser'));
-        const targetId = storedUser ? storedUser.id : "USR_004"; // Default to GRCO for demo
+        if (!policyData.organization || !policyData.organization.key_personnel) return;
 
-        const directory = policyData.organizational_chart.users_directory;
-        const foundUser = directory.find(u => u.id === targetId);
+        // البحث في قائمة الموظفين الجديدة
+        const employees = policyData.organization.key_personnel;
+        const shareholders = policyData.governance ? policyData.governance.shareholders : [];
+        
+        // دمج القائمتين للبحث
+        const allUsers = [...employees, ...shareholders];
+        
+        // العثور على المستخدم الحالي لتحديث بياناته (لضمان أنها طازجة)
+        const foundUser = allUsers.find(u => u.id === currentUser.id || u.email === currentUser.email);
 
         if (foundUser) {
-            currentUser = {
-                ...currentUser,
-                id: foundUser.id,
-                nameAr: foundUser.name || foundUser.name_ar, // دعم الصيغتين
-                nameEn: foundUser.name, // في الملف الحالي الاسم موحد، يمكن فصله لاحقاً
-                titleAr: foundUser.title, // المسمى الوظيفي من الملف
-                titleEn: foundUser.title,
-                role: foundUser.role,
-                department: foundUser.department_id,
-                email: foundUser.email,
-                avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(foundUser.name)}&background=FB4747&color=fff`
-            };
-            // تحديث التخزين المحلي لضمان استمرار البيانات
+            // تحديث البيانات في الذاكرة
+            currentUser = { ...currentUser, ...foundUser };
+            
+            // معالجة الاسم إذا كان كائناً
+            if (typeof foundUser.name === 'string') {
+                currentUser.name = { ar: foundUser.name, en: foundUser.name }; // توحيد الصيغة
+            }
+
+            // معالجة اللون للصورة الرمزية (إزالة #)
+            let safeColor = '64748b';
+            if (currentUser.avatarColor) {
+                safeColor = currentUser.avatarColor.replace('#', '');
+            } else if (policyData.identity) {
+                // لون افتراضي من الهوية
+                safeColor = policyData.identity.tokens.colors.primary.value.light.replace('#', '');
+            }
+
+            // تحديث رابط الصورة
+            const nameStr = config.lang === 'ar' ? (currentUser.name.ar || currentUser.name) : (currentUser.name.en || currentUser.name);
+            currentUser.avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(nameStr)}&background=${safeColor}&color=fff&bold=true`;
+
             localStorage.setItem('currentUser', JSON.stringify(currentUser));
         }
     }
 
-    // --- 3. Menu Structure (Static for now, but role-ready) ---
+    // --- 3. Menu Structure ---
     const menuStructure = [
         {
             section: 'main',
@@ -128,7 +151,7 @@
     const t = {
         ar: {
             sysName: "AndroGov",
-            sysVer: "Enterprise v3.3",
+            sysVer: "v4.3",
             logout: "تسجيل خروج",
             notifTitle: "الإشعارات",
             markRead: "تحديد كمقروء",
@@ -163,7 +186,7 @@
         },
         en: {
             sysName: "AndroGov",
-            sysVer: "Enterprise v3.3",
+            sysVer: "v4.3",
             logout: "Logout",
             notifTitle: "Notifications",
             markRead: "Mark Read",
@@ -198,7 +221,7 @@
         }
     };
 
-    // --- 5. Notifications (Mocked for Demo) ---
+    // --- 5. Notifications (Mocked) ---
     const notifications = [
         {
             id: 1, type: 'critical', icon: 'fa-shield-virus', color: 'text-red-500 bg-red-50',
@@ -217,17 +240,11 @@
     // --- 6. Render Logic ---
 
     async function init() {
-        // 1. Load Data First
         await loadCompanyData();
-        
-        // 2. Apply UI
         applySettings();
         renderSidebar();
         renderHeader();
-        
         document.body.style.opacity = '1';
-        
-        // Listeners
         setupEventListeners();
     }
 
@@ -254,17 +271,16 @@
         const isRtl = config.lang === 'ar';
         const currentPath = window.location.pathname.split('/').pop() || 'admin.html';
         
-        // استخدام البيانات المحدثة من الملف المركزي
-        const userDisplayName = isRtl ? currentUser.nameAr : currentUser.nameEn;
-        const userDisplayTitle = isRtl ? currentUser.titleAr : currentUser.titleEn;
-        
-        // استخدام اسم الشركة من الملف المركزي إذا توفر
-        const companyName = (policyData && policyData.corporate_profile) 
-            ? (isRtl ? policyData.corporate_profile.identity.name_ar : policyData.corporate_profile.identity.name_en)
+        // استخراج الاسم والعنوان بناءً على اللغة
+        const uName = config.lang === 'ar' ? (currentUser.name.ar || currentUser.name) : (currentUser.name.en || currentUser.name);
+        const uTitle = currentUser.title || currentUser.role;
+        const uAvatar = currentUser.avatarUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(uName)}&background=64748b&color=fff`;
+
+        const companyName = (policyData && policyData.identity) 
+            ? policyData.identity.meta.brand_name[config.lang]
             : dict.sysName;
 
         const getLinkClass = (link) => {
-            // Simple active check
             const isActive = currentPath.includes(link.split('.')[0]); 
             const baseClass = "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200";
             const activeClass = "bg-brandRed text-white shadow-md shadow-red-500/20";
@@ -285,7 +301,6 @@
             });
         });
 
-        // Sidebar HTML Construction
         const sidebarHTML = `
         <aside class="fixed top-0 ${isRtl ? 'right-0 border-l' : 'left-0 border-r'} z-50 h-screen w-72 flex-col hidden md:flex bg-white dark:bg-[#0F172A] border-slate-200 dark:border-slate-800 transition-all duration-300">
             <div class="h-20 flex items-center px-6 border-b border-slate-100 dark:border-slate-800">
@@ -295,7 +310,8 @@
                     </div>
                     <div class="overflow-hidden">
                         <h1 class="font-bold text-sm text-slate-800 dark:text-white font-sans truncate" title="${companyName}">
-                            ${companyName.split(' ')[0]} </h1>
+                            ${companyName.split(' ')[0]} <span class="font-light">${companyName.split(' ')[1] || ''}</span>
+                        </h1>
                         <p class="text-[10px] text-slate-500 uppercase tracking-widest truncate">${dict.sysVer}</p>
                     </div>
                 </div>
@@ -303,13 +319,13 @@
 
             <div class="p-4">
                 <a href="my_profile.html" class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 hover:border-brandRed transition group cursor-pointer">
-                    <img src="${currentUser.avatar}" class="w-10 h-10 rounded-full border-2 border-white dark:border-slate-600 object-cover shrink-0">
+                    <img src="${uAvatar}" class="w-10 h-10 rounded-full border-2 border-white dark:border-slate-600 object-cover shrink-0">
                     <div class="overflow-hidden flex-1 min-w-0">
-                        <p class="text-sm font-bold text-slate-800 dark:text-white truncate group-hover:text-brandRed transition" title="${userDisplayName}">
-                            ${userDisplayName}
+                        <p class="text-sm font-bold text-slate-800 dark:text-white truncate group-hover:text-brandRed transition">
+                            ${uName}
                         </p>
-                        <p class="text-[10px] text-brandRed font-medium truncate" title="${userDisplayTitle}">
-                            ${userDisplayTitle}
+                        <p class="text-[10px] text-brandRed font-medium truncate">
+                            ${uTitle}
                         </p>
                     </div>
                 </a>
@@ -334,7 +350,6 @@
         const dict = t[config.lang];
         const isRtl = config.lang === 'ar';
 
-        // Notifications List
         let notifListHTML = '';
         if(notifications.length > 0) {
             notifications.forEach(n => {
@@ -363,7 +378,6 @@
             </div>
 
             <div class="flex items-center gap-3">
-                
                 <div class="relative">
                     <button id="notifBtn" onclick="window.toggleNotif()" class="w-9 h-9 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-white transition relative flex items-center justify-center">
                         <i class="fa-regular fa-bell"></i>
@@ -408,8 +422,7 @@
         });
     }
 
-    // --- 7. Global API (Window) ---
-    
+    // --- 7. Global API ---
     window.toggleNotif = function() {
         const d = document.getElementById('notifDropdown');
         if(d) d.classList.toggle('hidden');
@@ -430,10 +443,10 @@
     window.doLogout = function() {
         if (confirm(config.lang === 'ar' ? 'هل أنت متأكد من تسجيل الخروج؟' : 'Are you sure you want to logout?')) {
             localStorage.removeItem('currentUser');
-            window.location.href = '../login.html'; // Assuming layout is in a subfolder
+            window.location.href = '../login.html';
         }
     };
 
-    // Initialize System
+    // Start
     init();
 })();
