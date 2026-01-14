@@ -117,7 +117,7 @@ class AuthSystem {
         if (r.includes('cfo') || r.includes('finance')) return 'finance/cfo_dashboard.html';
         if (r.includes('hr') || r.includes('cao')) return 'hr/hr_dashboard.html';
         if (r.includes('tech') || r.includes('cto')) return 'cto/cto_dashboard.html';
-        return 'hr/my_profile.html';
+        return 'employee/dashboard.html'; // توجيه الموظفين للبوابة الجديدة
     }
 
     async getDemoUsers() {
