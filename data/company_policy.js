@@ -89,6 +89,15 @@ const POLICY_DATA = {
       },
       "Remuneration": { "min_members": 3, "is_mandatory": false }
     }
+    },
+    "general_assembly_policy": {
+      "e_voting_allowed": true,
+      "proxy_allowed": true,
+      "corporate_representation_required": true, // للشركات مثل بيجي
+      "quorum_first_meeting": 50,
+      "quorum_second_meeting": 25,
+      "voting_weight": "One share equals one vote"
+    }
   },
   "organizational_chart": {
     "departments": [
