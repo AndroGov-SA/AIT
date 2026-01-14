@@ -59,6 +59,6 @@
         </header>`;
     }
 
-    window.logout = () => { localStorage.removeItem('currentUser'); window.location.href = '../login.html'; };
+    window.logout = () => { localStorage.removeItem('currentUser'); window.location.href = 'https://androgov-sa.github.io/AIT/login.html'; };
     init();
 })();
