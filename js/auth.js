@@ -9,18 +9,17 @@ class AuthSystem {
         this.isReady = false;
     }
 
-    // دالة التهيئة - تقرأ المتغير مباشرة
     async init() {
         if (this.isReady) return;
 
         try {
-            // التحقق من وجود المتغير الذي عرفناه في الملف السابق
             if (typeof POLICY_DATA === 'undefined') {
-                console.error("خطأ: لم يتم تحميل ملف company_policy.js");
+                console.error("Critical Error: POLICY_DATA is not defined. Check company_policy.js");
+                alert("خطأ في النظام: لم يتم تحميل ملف البيانات (company_policy.js).\nتأكد من وجود الملف في مجلد data وعدم وجود أخطاء برمجية فيه.");
                 return;
             }
 
-            console.log("✅ تم تحميل البيانات من POLICY_DATA بنجاح");
+            console.log("✅ Data Source Loaded Successfully");
             this.processUsers(POLICY_DATA);
             this.isReady = true;
 
@@ -50,10 +49,8 @@ class AuthSystem {
             }));
         }
 
-        // دمج الكل
         const all = [...rawUsers, ...shareholders];
 
-        // تنظيف وتجهيز
         this.users = all.map(u => ({
             id: u.id,
             name: u.name || u.name_ar,
@@ -64,7 +61,7 @@ class AuthSystem {
             avatarColor: this.getAvatarColor(u.role)
         })).filter(u => u.email !== '');
         
-        // إزالة التكرار (إذا كان الموظف مساهماً)
+        // إزالة التكرار
         this.users = this.users.filter((user, index, self) =>
             index === self.findIndex((t) => (
                 t.email === user.email
@@ -94,7 +91,6 @@ class AuthSystem {
         return '64748b';
     }
 
-    // دالة الدخول
     async login(email, password) {
         if (!this.isReady) await this.init();
 
@@ -117,10 +113,8 @@ class AuthSystem {
         if (r.includes('cfo') || r.includes('finance')) return 'finance/cfo_dashboard.html';
         if (r.includes('hr') || r.includes('cao')) return 'hr/hr_dashboard.html';
         if (r.includes('tech') || r.includes('cto')) return 'cto/cto_dashboard.html';
-        return 'employee/dashboard.html'; // توجيه الموظفين للبوابة الجديدة
-        // --- إضافة جديدة: توجيه المساهمين ---
-        if (r.includes('shareholder')) return 'shareholder/dashboard.html';
-    }
+        if (r.includes('shareholder')) return 'shareholder/dashboard.html'; // بوابة المساهمين
+        return 'employee/dashboard.html'; // بوابة الموظفين
     }
 
     async getDemoUsers() {
@@ -131,7 +125,6 @@ class AuthSystem {
 
 window.authSystem = new AuthSystem();
 
-// دالة التعامل مع زر الدخول في الصفحة
 window.handleLogin = async (e) => {
     e.preventDefault();
     const btn = document.querySelector('button[type="submit"]');
