@@ -1,7 +1,7 @@
 /**
- * AndroGov Authentication Engine v4.1 (Safe Mode)
+ * AndroGov Authentication Engine v4.2 (Fixed Demo Display)
+ * - تم إصلاح مشكلة اختفاء حسابات الدخول السريع (Demo Users)
  * - يدعم تعدد الصلاحيات (Admin + Board + Audit)
- * - محمي ضد الأخطاء إذا كانت البيانات ناقصة
  */
 
 class AuthSystem {
@@ -14,10 +14,9 @@ class AuthSystem {
         if (this.isReady) return;
 
         try {
-            // التحقق من وجود البيانات
             if (typeof POLICY_DATA === 'undefined') {
                 console.error("Critical Error: POLICY_DATA is not defined.");
-                alert("خطأ في النظام: ملف البيانات غير موجود أو فيه خطأ.");
+                // لا نعرض تنبيه هنا لعدم إزعاج المستخدم، التنبيه موجود في login.html
                 return;
             }
 
@@ -34,7 +33,7 @@ class AuthSystem {
         let rawUsers = [];
         let shareholders = [];
 
-        // جلب البيانات بأمان
+        // جلب البيانات
         if (data.organizational_chart && data.organizational_chart.users_directory) {
             rawUsers = data.organizational_chart.users_directory;
         }
@@ -42,47 +41,35 @@ class AuthSystem {
             shareholders = data.shareholders;
         }
 
-        // معالجة الموظفين
         this.users = rawUsers.map(u => {
             let roles = [];
-            // تنظيف البيانات لتجنب الأخطاء
             let email = u.email ? u.email.toLowerCase().trim() : '';
             let name = u.name || u.name_ar || 'Unknown';
-            let roleRaw = u.role ? String(u.role).toLowerCase() : ''; // حماية ضد null
+            let roleRaw = u.role ? String(u.role).toLowerCase() : '';
             let titleRaw = u.title ? String(u.title).toLowerCase() : '';
 
-            // 1. كشف صلاحيات الأدمن والتنفيذيين
-            if (roleRaw === 'admin' || roleRaw.includes('grc')) {
-                roles.push('admin');
-            }
-            if (u.is_executive || roleRaw.includes('ceo') || roleRaw.includes('cfo')) {
-                roles.push('exec');
-            }
+            // 1. كشف الصلاحيات (Admin, Exec, Board...)
+            if (roleRaw === 'admin' || roleRaw.includes('grc')) roles.push('admin');
+            if (u.is_executive || roleRaw.includes('ceo') || roleRaw.includes('cfo')) roles.push('exec');
+            if (roleRaw.includes('chairman') || roleRaw.includes('board') || titleRaw.includes('secretary')) roles.push('board');
 
-            // 2. كشف صلاحيات المجلس (الرئيس، الأعضاء، وأمين السر)
-            if (roleRaw.includes('chairman') || roleRaw.includes('board') || titleRaw.includes('secretary')) {
-                roles.push('board');
-            }
-
-            // 3. كشف صلاحيات لجنة المراجعة (من خلال البحث في القوائم)
+            // 2. كشف لجنة المراجعة
             if (data.governance_config && data.governance_config.committees) {
                 const audit = data.governance_config.committees.Audit;
                 if (audit) {
-                    // هل الاسم موجود في قائمة الأعضاء أو هو أمين السر؟
                     const isMember = audit.members && audit.members.some(m => m.includes(name));
                     const isSec = audit.secretary && audit.secretary.includes(name);
-                    
                     if (isMember || isSec) {
                         if (!roles.includes('audit')) roles.push('audit');
                     }
                 }
             }
 
-            // 4. كشف المساهمين (من خلال الإيميل)
+            // 3. كشف المساهمين
             const isShareholder = shareholders.find(s => s.email && s.email.toLowerCase() === email);
             if (isShareholder) roles.push('shareholder');
 
-            // 5. الموظف العادي (إذا لم يكن لديه أي دور مما سبق)
+            // 4. الافتراضي
             if (roles.length === 0) roles.push('staff');
 
             return {
@@ -90,23 +77,28 @@ class AuthSystem {
                 name: name,
                 email: email,
                 title: u.title,
-                role: u.role,          // الدور الأصلي (مهم جداً)
-                primaryRole: roles[0], // الدور الأساسي للدخول
-                accessLevels: roles,   // قائمة بكل الصلاحيات
+                role: u.role,          
+                
+                // --- الإصلاح هنا: إعادة خاصية type ليفهمها login.html ---
+                type: roles[0],        
+                // -------------------------------------------------------
+
+                primaryRole: roles[0], // للدخول
+                accessLevels: roles,   // للتبديل
                 avatarColor: this.getAvatarColor(u.role)
             };
         }).filter(u => u.email !== '');
 
-        // إضافة المساهمين من خارج الشركة (الذين ليس لديهم حساب موظف)
+        // إضافة المساهمين الأفراد
         shareholders.forEach(s => {
             const email = s.email ? s.email.toLowerCase().trim() : '';
-            // إذا لم يكن موجوداً مسبقاً
             if (!this.users.find(u => u.email === email)) {
                 this.users.push({
                     id: s.id,
                     name: s.name,
                     email: email,
                     title: `مساهم (${s.percent}%)`,
+                    type: 'shareholder', // هام للعرض
                     role: 'Shareholder',
                     primaryRole: 'shareholder',
                     accessLevels: ['shareholder'],
@@ -128,7 +120,6 @@ class AuthSystem {
         if (!this.isReady) await this.init();
 
         const cleanEmail = email.trim().toLowerCase();
-        // كلمة مرور موحدة للتجربة
         const demoPass = "12345678";
 
         const user = this.users.find(u => u.email === cleanEmail);
@@ -136,24 +127,17 @@ class AuthSystem {
         if (!user) throw new Error("المستخدم غير موجود");
         if (password !== demoPass) throw new Error("كلمة المرور غير صحيحة");
 
-        // حفظ المستخدم في الذاكرة
         localStorage.setItem('currentUser', JSON.stringify(user));
-        
-        // التوجيه حسب الدور الأساسي
         return this.getRedirectUrl(user.primaryRole);
     }
 
     getRedirectUrl(role) {
-        // تنظيف الدور (تحويله لنص صغير)
         const r = String(role || '').toLowerCase();
-        
         if (r === 'admin') return 'admin/admin.html';
         if (r === 'board') return 'admin/board.html';
         if (r === 'exec') return 'ceo/ceo_dashboard.html';
-        if (r === 'audit') return 'audit.html'; // تأكد أن الملف audit.html موجود في الجذر أو عدل المسار
+        if (r === 'audit') return 'audit.html'; 
         if (r === 'shareholder') return 'shareholder/dashboard.html';
-        
-        // التوجيه الافتراضي للموظفين
         return 'employee/dashboard.html';
     }
 
@@ -163,16 +147,14 @@ class AuthSystem {
     }
 }
 
-// تهيئة النظام
 window.authSystem = new AuthSystem();
 
-// دالة الدخول (يتم استدعاؤها من login.html)
+// دالة الدخول
 window.handleLogin = async (e) => {
     e.preventDefault();
     const btn = document.querySelector('button[type="submit"]');
     const originalText = btn.innerHTML;
     
-    // إظهار حالة التحميل
     if(btn) {
         btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> جاري التحقق...';
         btn.disabled = true;
@@ -181,25 +163,15 @@ window.handleLogin = async (e) => {
     const errorMsg = document.getElementById('errorMsg');
     if(errorMsg) errorMsg.classList.add('hidden');
 
-    const emailInput = document.getElementById('email');
-    const passInput = document.getElementById('password');
-
-    if(!emailInput || !passInput) {
-        console.error("Login inputs not found!");
-        return;
-    }
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
 
     try {
-        const redirect = await window.authSystem.login(emailInput.value, passInput.value);
-        console.log("Redirecting to:", redirect); // للمساعدة في اكتشاف الأخطاء
+        const redirect = await window.authSystem.login(email, password);
         window.location.href = redirect;
     } catch (err) {
-        console.error(err);
-        if(document.getElementById('errorText')) {
-            document.getElementById('errorText').innerText = err.message;
-        }
+        if(document.getElementById('errorText')) document.getElementById('errorText').innerText = err.message;
         if(errorMsg) errorMsg.classList.remove('hidden');
-        
         if(btn) {
             btn.innerHTML = originalText;
             btn.disabled = false;
