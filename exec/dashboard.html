@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>لوحة القيادة التنفيذية</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    </head>
+<body class="bg-slate-50 dark:bg-slate-900">
+
+    <div id="sidebar-container"></div>
+    <div class="lg:mr-72">
+        <div id="header-container"></div>
+        
+        <main class="p-8">
+            <h1 class="text-2xl font-bold mb-6">مرحباً، <span id="userName"></span> 👋</h1>
+            
+            <div id="dynamic-content">
+                <div class="bg-yellow-50 p-4 rounded-xl border border-yellow-200 text-yellow-800 text-sm">
+                    <i class="fa-solid fa-info-circle"></i> جاري تحميل أدواتك الإدارية المخصصة...
+                 </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../data/company_policy.js"></script>
+    <script src="../js/layout-exec.js"></script> <script>
+        // سكربت بسيط لتخصيص محتوى الداشبورد الرئيسية
+        document.addEventListener('DOMContentLoaded', () => {
+            const user = JSON.parse(localStorage.getItem('currentUser'));
+            document.getElementById('userName').innerText = user.name;
+            
+            const contentDiv = document.getElementById('dynamic-content');
+            const role = user.role.toLowerCase();
+
+            // تخصيص المحتوى
+            if(role.includes('cfo')) {
+                contentDiv.innerHTML = '<h3>أهلاً بالمدير المالي! هنا ملخص الميزانية...</h3>'; 
+                // (أضف بطاقات المالية هنا)
+            } else if (role.includes('hr') || role.includes('cao')) {
+                contentDiv.innerHTML = '<h3>أهلاً مدير الموارد البشرية! هنا ملخص الموظفين...</h3>';
+                // (أضف بطاقات الـ HR هنا)
+            } else {
+                contentDiv.innerHTML = '<h3>لوحة القيادة العامة</h3>';
+            }
+        });
+    </script>
+</body>
+</html>
