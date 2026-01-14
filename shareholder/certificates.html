@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>شهادات الأسهم | AndroGov</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { brandRed: '#FB4747', brandDark: '#1E293B' },
+                    fontFamily: { sans: ['Tajawal', 'sans-serif'], serif: ['Playfair Display', 'serif'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        .certificate-pattern {
+            background-image: radial-gradient(#FB4747 0.5px, transparent 0.5px), radial-gradient(#FB4747 0.5px, #fff 0.5px);
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+            opacity: 0.05;
+        }
+        @media print {
+            body * { visibility: hidden; }
+            #certContainer, #certContainer * { visibility: visible; }
+            #certContainer { position: absolute; left: 0; top: 0; width: 100%; margin: 0; padding: 0; border: none; }
+            .no-print { display: none !important; }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white font-sans">
+
+    <div id="sidebar-container" class="no-print"></div>
+
+    <div class="lg:mr-72 transition-all duration-300">
+        <div id="header-container" class="no-print"></div>
+
+        <main class="p-8 max-w-5xl mx-auto">
+            
+            <div class="flex items-center justify-between mb-8 no-print">
+                <div>
+                    <h1 class="text-2xl font-bold flex items-center gap-2">
+                        <i class="fa-solid fa-file-contract text-brandRed"></i> سجل المساهمين والشهادات
+                    </h1>
+                    <p class="text-slate-500 text-sm mt-1">شهادة ملكية إلكترونية معتمدة.</p>
+                </div>
+                <button onclick="window.print()" class="px-5 py-2 bg-slate-800 text-white rounded-xl hover:bg-slate-700 transition flex items-center gap-2 shadow-lg">
+                    <i class="fa-solid fa-print"></i> طباعة الشهادة
+                </button>
+            </div>
+
+            <div id="certContainer" class="bg-white text-slate-800 relative p-10 md:p-16 border-[10px] border-double border-slate-200 shadow-2xl mx-auto max-w-4xl min-h-[600px] flex flex-col justify-between overflow-hidden">
+                <div class="absolute inset-0 certificate-pattern pointer-events-none"></div>
+                <div class="absolute top-0 left-0 w-32 h-32 border-t-[20px] border-l-[20px] border-brandRed/20"></div>
+                <div class="absolute bottom-0 right-0 w-32 h-32 border-b-[20px] border-r-[20px] border-brandRed/20"></div>
+
+                <div class="text-center relative z-10">
+                    <img src="https://ait.sa/wp-content/uploads/2024/03/cropped-Square-Logo.png" class="w-20 h-20 mx-auto mb-4 grayscale opacity-80">
+                    <h2 class="text-4xl font-serif font-bold tracking-wider text-slate-900 mb-2">شهادة ملكية أسهم</h2>
+                    <p class="text-sm uppercase tracking-[0.2em] text-slate-500">Share Certificate</p>
+                </div>
+
+                <div class="text-center space-y-8 my-10 relative z-10">
+                    <p class="text-lg text-slate-600">
+                        يشهد مجلس إدارة <span class="font-bold text-slate-900">شركة أندروميدا لتقنية المعلومات</span> (ش.م.م)<br>
+                        بأن المساهم / المساهمة:
+                    </p>
+                    
+                    <h3 id="shName" class="text-3xl font-bold text-brandRed font-serif border-b-2 border-slate-100 inline-block pb-2 px-8">
+                        ...
+                    </h3>
+
+                    <p class="text-lg text-slate-600">
+                        هو المالك المسجل لـ <span id="shShares" class="font-bold text-slate-900 text-2xl mx-2">...</span> سهماً<br>
+                        بقيمة اسمية قدرها (10 ر.س) للسهم الواحد مدفوعة بالكامل.
+                    </p>
+
+                    <div class="grid grid-cols-2 gap-8 max-w-lg mx-auto bg-slate-50 p-6 rounded-xl border border-slate-100">
+                        <div>
+                            <p class="text-xs text-slate-400 uppercase">نسبة الملكية</p>
+                            <p id="shPercent" class="font-bold text-xl">...%</p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-slate-400 uppercase">رقم المساهم</p>
+                            <p id="shID" class="font-bold text-xl font-mono text-slate-600">...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-between items-end mt-8 relative z-10 border-t border-slate-100 pt-8">
+                    <div class="text-center">
+                        <div class="h-16 flex items-end justify-center mb-2">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Signature_sample.svg/1200px-Signature_sample.svg.png" class="h-10 opacity-60">
+                        </div>
+                        <p class="text-sm font-bold border-t border-slate-300 pt-2 w-48 mx-auto">أمين سر المجلس</p>
+                    </div>
+
+                    <div class="relative w-24 h-24 flex items-center justify-center">
+                        <div class="absolute inset-0 border-2 border-yellow-500 rounded-full opacity-30 animate-spin-slow"></div>
+                        <div class="w-20 h-20 bg-yellow-500 rounded-full flex items-center justify-center text-white shadow-lg shadow-yellow-200">
+                            <i class="fa-solid fa-medal text-3xl"></i>
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <div class="h-16 flex items-end justify-center mb-2">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/Signature_sample.svg/1200px-Signature_sample.svg.png" class="h-10 opacity-60">
+                        </div>
+                        <p class="text-sm font-bold border-t border-slate-300 pt-2 w-48 mx-auto">رئيس مجلس الإدارة</p>
+                    </div>
+                </div>
+                
+                <div class="text-[10px] text-center text-slate-300 mt-4 font-mono">
+                    System Generated ID: <span id="certSerial">CERT-2025-XXXX</span>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script src="../data/company_policy.js"></script>
+    <script src="layout-sh.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const user = JSON.parse(localStorage.getItem('currentUser'));
+            if(!user) return;
+
+            const shData = POLICY_DATA.shareholders.find(s => s.email === user.email);
+
+            if(shData) {
+                document.getElementById('shName').innerText = shData.name;
+                document.getElementById('shShares').innerText = shData.shares.toLocaleString();
+                document.getElementById('shPercent').innerText = shData.percent + '%';
+                document.getElementById('shID').innerText = shData.id;
+                document.getElementById('certSerial').innerText = `CERT-2025-${shData.id.split('_')[1]}-${Math.floor(Math.random()*9000)+1000}`;
+            }
+        });
+    </script>
+</body>
+</html>
