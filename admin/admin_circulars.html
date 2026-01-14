@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#FB4747">
-    <title>Circulars & Broadcasts | AndroGov</title>
+    <title data-i18n="pageTitle">Circulars | AndroGov</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -13,131 +13,126 @@
         tailwind.config = {
             darkMode: 'class',
             theme: {
-                extend: { colors: { brandRed: '#FB4747', brandDark: '#0F172A' }, fontFamily: { sans: ['Tajawal', 'Inter', 'sans-serif'] } }
+                extend: { colors: { brandRed: '#FB4747', brandBlue: '#4267B2', brandDark: '#0F172A', brandGray: '#F8FAFC' }, fontFamily: { sans: ['Tajawal', 'Inter', 'sans-serif'] } }
             }
         }
     </script>
+    <style>
+        .custom-scroll::-webkit-scrollbar { width: 5px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 4px; }
+        .dark .custom-scroll::-webkit-scrollbar-thumb { background-color: #475569; }
+        @media print { .no-print { display: none !important; } }
+        body { transition: opacity 0.2s ease-in-out; }
+    </style>
 </head>
-<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300 opacity-0">
+<body class="bg-brandGray dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300 opacity-0">
 
-    <div id="sidebar-container"></div>
+    <!-- 1. Layout Containers -->
+    <div id="sidebar-container" class="no-print hidden md:block"></div>
     
     <div class="main-content-wrapper md:mr-72 transition-all duration-300 flex flex-col min-h-screen">
-        <div id="header-container"></div>
+        <div id="header-container" class="no-print"></div>
 
+        <!-- 2. Main Content -->
         <main class="p-6 space-y-6">
             
+            <!-- Header & Actions -->
             <div class="flex flex-col md:flex-row justify-between items-end gap-4">
                 <div>
-                    <h1 class="text-2xl font-bold text-slate-900 dark:text-white">إدارة التعاميم والرسائل الجماعية</h1>
-                    <p class="text-sm text-slate-500 mt-1">إرسال القرارات الإدارية ومتابعة نسب القراءة والموافقة</p>
+                    <h1 class="text-2xl font-bold text-slate-900 dark:text-white" data-i18n="headerTitle">إدارة التعاميم والرسائل الجماعية</h1>
+                    <p class="text-sm text-slate-500 mt-1" data-i18n="headerDesc">إرسال القرارات الإدارية ومتابعة نسب القراءة والموافقة</p>
                 </div>
                 <button onclick="openCircularModal()" class="px-6 py-2 bg-brandRed text-white rounded-lg text-sm font-bold shadow-lg hover:bg-red-700 transition flex items-center gap-2">
-                    <i class="fa-solid fa-bullhorn"></i> <span>إرسال تعميم جديد</span>
+                    <i class="fa-solid fa-bullhorn"></i> <span data-i18n="btnNew">إرسال تعميم جديد</span>
                 </button>
             </div>
 
+            <!-- KPIs -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
                     <div class="flex justify-between items-start mb-2">
-                        <p class="text-xs text-slate-500 font-bold uppercase">التعاميم النشطة</p>
-                        <i class="fa-solid fa-tower-broadcast text-green-500 bg-green-50 p-2 rounded-lg"></i>
+                        <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="kpiActive">التعاميم النشطة</p>
+                        <i class="fa-solid fa-tower-broadcast text-green-500 bg-green-50 dark:bg-green-900/20 p-2 rounded-lg"></i>
                     </div>
-                    <h3 class="text-2xl font-bold text-slate-900 dark:text-white">1</h3>
-                    <p class="text-[10px] text-slate-400 mt-1">يظهر حالياً للموظفين</p>
+                    <h3 class="text-2xl font-bold text-slate-900 dark:text-white" id="activeCount">--</h3>
+                    <p class="text-[10px] text-slate-400 mt-1" data-i18n="kpiActiveDesc">يظهر حالياً للموظفين</p>
                 </div>
                 <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
                     <div class="flex justify-between items-start mb-2">
-                        <p class="text-xs text-slate-500 font-bold uppercase">نسبة القراءة (Overall)</p>
-                        <i class="fa-solid fa-eye text-blue-500 bg-blue-50 p-2 rounded-lg"></i>
+                        <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="kpiRead">نسبة القراءة (Overall)</p>
+                        <i class="fa-solid fa-eye text-blue-500 bg-blue-50 dark:bg-blue-900/20 p-2 rounded-lg"></i>
                     </div>
                     <h3 class="text-2xl font-bold text-slate-900 dark:text-white">85%</h3>
-                    <p class="text-[10px] text-slate-400 mt-1">متوسط قراءة الموظفين</p>
+                    <p class="text-[10px] text-slate-400 mt-1" data-i18n="kpiReadDesc">متوسط قراءة الموظفين</p>
                 </div>
                 <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
                     <div class="flex justify-between items-start mb-2">
-                        <p class="text-xs text-slate-500 font-bold uppercase">تاريخ الأرشيف</p>
-                        <i class="fa-solid fa-box-archive text-slate-400 bg-slate-100 p-2 rounded-lg"></i>
+                        <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="kpiArchive">تاريخ الأرشيف</p>
+                        <i class="fa-solid fa-box-archive text-slate-400 bg-slate-100 dark:bg-slate-700 p-2 rounded-lg"></i>
                     </div>
-                    <h3 class="text-2xl font-bold text-slate-900 dark:text-white">24</h3>
-                    <p class="text-[10px] text-slate-400 mt-1">تعميم سابق</p>
+                    <h3 class="text-2xl font-bold text-slate-900 dark:text-white" id="archiveCount">--</h3>
+                    <p class="text-[10px] text-slate-400 mt-1" data-i18n="kpiArchiveDesc">تعميم سابق</p>
                 </div>
             </div>
 
+            <!-- List -->
             <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
-                <div class="p-4 border-b border-slate-100 dark:border-slate-700">
-                    <h3 class="font-bold text-slate-800 dark:text-white">سجل التعاميم المرسلة</h3>
+                <div class="p-4 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center">
+                    <h3 class="font-bold text-slate-800 dark:text-white" data-i18n="listTitle">سجل التعاميم المرسلة</h3>
+                    <div class="relative">
+                        <input type="text" id="searchCirc" onkeyup="renderCirculars()" placeholder="..." class="bg-slate-50 dark:bg-slate-900 border-none rounded-lg pl-8 pr-3 py-1.5 text-xs w-48 focus:ring-1 focus:ring-brandRed outline-none dark:text-white">
+                        <i class="fa-solid fa-search absolute top-2 left-2.5 text-slate-400 text-xs"></i>
+                    </div>
                 </div>
-                <table class="w-full text-sm text-right rtl:text-right ltr:text-left">
-                    <thead class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 text-xs font-bold uppercase">
-                        <tr>
-                            <th class="p-4">العنوان</th>
-                            <th class="p-4">التاريخ</th>
-                            <th class="p-4">النوع</th>
-                            <th class="p-4">إلزامية القراءة</th>
-                            <th class="p-4">نسبة القراءة</th>
-                            <th class="p-4 text-center">الحالة</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-100 dark:divide-slate-700 text-slate-700 dark:text-slate-300">
-                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50">
-                            <td class="p-4 font-bold">سياسة الحضور والانصراف الجديدة</td>
-                            <td class="p-4 text-xs font-mono">2026-01-10</td>
-                            <td class="p-4"><span class="bg-purple-100 text-purple-700 px-2 py-0.5 rounded text-[10px] border border-purple-200">إداري</span></td>
-                            <td class="p-4"><span class="text-red-600 font-bold text-xs"><i class="fa-solid fa-lock"></i> نعم (Force Read)</span></td>
-                            <td class="p-4">
-                                <div class="flex items-center gap-2">
-                                    <div class="w-20 h-1.5 bg-slate-200 rounded-full overflow-hidden"><div class="bg-green-500 h-full w-[45%]"></div></div>
-                                    <span class="text-xs font-bold">45%</span>
-                                </div>
-                            </td>
-                            <td class="p-4 text-center"><span class="bg-green-100 text-green-700 px-2 py-0.5 rounded text-[10px] font-bold">نشط</span></td>
-                        </tr>
-                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 opacity-75">
-                            <td class="p-4 font-bold">تهنئة بمناسبة اليوم الوطني</td>
-                            <td class="p-4 text-xs font-mono">2025-09-23</td>
-                            <td class="p-4"><span class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded text-[10px] border border-blue-200">عام</span></td>
-                            <td class="p-4"><span class="text-slate-400 text-xs">لا (إشعار فقط)</span></td>
-                            <td class="p-4">
-                                <div class="flex items-center gap-2">
-                                    <div class="w-20 h-1.5 bg-slate-200 rounded-full overflow-hidden"><div class="bg-green-500 h-full w-[98%]"></div></div>
-                                    <span class="text-xs font-bold">98%</span>
-                                </div>
-                            </td>
-                            <td class="p-4 text-center"><span class="bg-slate-100 text-slate-500 px-2 py-0.5 rounded text-[10px] font-bold">مؤرشف</span></td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-right rtl:text-right ltr:text-left">
+                        <thead class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 text-xs font-bold uppercase">
+                            <tr>
+                                <th class="p-4" data-i18n="colTitle">العنوان</th>
+                                <th class="p-4" data-i18n="colDate">التاريخ</th>
+                                <th class="p-4" data-i18n="colType">النوع</th>
+                                <th class="p-4" data-i18n="colForce">إلزامية القراءة</th>
+                                <th class="p-4" data-i18n="colRate">نسبة القراءة</th>
+                                <th class="p-4 text-center" data-i18n="colStatus">الحالة</th>
+                                <th class="p-4 text-center" data-i18n="colAction">--</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 dark:divide-slate-700 text-slate-700 dark:text-slate-300" id="circularsTable">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
         </main>
     </div>
 
+    <!-- New Circular Modal -->
     <div id="circularModal" class="fixed inset-0 bg-black/70 hidden z-50 flex items-center justify-center backdrop-blur-sm p-4">
-        <div class="bg-white dark:bg-slate-800 w-full max-w-2xl rounded-2xl shadow-2xl flex flex-col max-h-[90vh]">
+        <div class="bg-white dark:bg-slate-800 w-full max-w-2xl rounded-2xl shadow-2xl flex flex-col max-h-[90vh] animate-fade-in-up">
             <div class="p-4 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-900 rounded-t-2xl">
-                <h3 class="font-bold text-lg dark:text-white">إنشاء تعميم جديد</h3>
-                <button onclick="document.getElementById('circularModal').classList.add('hidden')" class="w-8 h-8 rounded-full hover:bg-slate-200 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+                <h3 class="font-bold text-lg dark:text-white" data-i18n="modTitle">إنشاء تعميم جديد</h3>
+                <button onclick="document.getElementById('circularModal').classList.add('hidden')" class="w-8 h-8 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 flex items-center justify-center transition"><i class="fa-solid fa-xmark"></i></button>
             </div>
             
-            <div class="p-6 space-y-4 overflow-y-auto">
+            <div class="p-6 space-y-4 overflow-y-auto custom-scroll">
                 <div>
-                    <label class="block text-xs font-bold text-slate-500 mb-1">عنوان التعميم</label>
-                    <input type="text" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-2 text-sm focus:ring-2 focus:ring-brandRed outline-none dark:text-white" placeholder="مثلاً: تحديث سياسة...">
+                    <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="modSubj">عنوان التعميم</label>
+                    <input type="text" id="newTitle" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-2 text-sm focus:ring-2 focus:ring-brandRed outline-none dark:text-white" placeholder="...">
                 </div>
                 
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-bold text-slate-500 mb-1">نوع التعميم</label>
-                        <select class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-2 text-sm outline-none dark:text-white">
-                            <option>قرار إداري</option>
-                            <option>تحديث سياسات</option>
-                            <option>خبر عام</option>
-                            <option>تنبيه عاجل</option>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="modType">نوع التعميم</label>
+                        <select id="newType" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-2 text-sm outline-none dark:text-white">
+                            <option value="admin">قرار إداري</option>
+                            <option value="policy">تحديث سياسات</option>
+                            <option value="news">خبر عام</option>
+                            <option value="alert">تنبيه عاجل</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-500 mb-1">موجه إلى</label>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="modTarget">موجه إلى</label>
                         <select class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-2 text-sm outline-none dark:text-white">
                             <option>جميع الموظفين</option>
                             <option>مدراء الإدارات فقط</option>
@@ -147,34 +142,339 @@
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold text-slate-500 mb-1">نص التعميم</label>
-                    <textarea class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-3 text-sm h-32 outline-none dark:text-white" placeholder="اكتب التفاصيل هنا..."></textarea>
+                    <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="modBody">نص التعميم</label>
+                    <textarea class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-3 text-sm h-32 outline-none dark:text-white resize-none" placeholder="..."></textarea>
                 </div>
 
                 <div class="p-4 bg-red-50 dark:bg-red-900/10 rounded-xl border border-red-100 dark:border-red-900/30">
-                    <h4 class="text-xs font-bold text-brandRed mb-3">ضوابط الحوكمة والقراءة</h4>
-                    
+                    <h4 class="text-xs font-bold text-brandRed mb-3" data-i18n="modGov">ضوابط الحوكمة والقراءة</h4>
                     <div class="flex items-center gap-3 mb-2">
                         <input type="checkbox" id="forceRead" class="w-4 h-4 text-brandRed rounded focus:ring-brandRed" checked>
-                        <label for="forceRead" class="text-sm text-slate-700 dark:text-slate-300 font-bold">إلزامية القراءة والموافقة (Force Read)</label>
+                        <label for="forceRead" class="text-sm text-slate-700 dark:text-slate-300 font-bold" data-i18n="modForce">إلزامية القراءة والموافقة (Force Read)</label>
                     </div>
-                    <p class="text-[10px] text-slate-500 mr-7">لن يتمكن الموظف من استخدام النظام حتى يفتح هذا التعميم ويضغط "موافق".</p>
+                    <p class="text-[10px] text-slate-500 mr-7" data-i18n="modForceDesc">لن يتمكن الموظف من استخدام النظام حتى يفتح هذا التعميم ويضغط "موافق".</p>
                 </div>
             </div>
 
             <div class="p-4 border-t border-slate-100 dark:border-slate-700 flex justify-end gap-3 bg-slate-50 dark:bg-slate-900 rounded-b-2xl">
-                <button onclick="document.getElementById('circularModal').classList.add('hidden')" class="px-4 py-2 border rounded-lg text-xs font-bold hover:bg-slate-100 dark:text-white">إلغاء</button>
-                <button onclick="alert('تم إرسال التعميم وتفعيله على جميع الحسابات'); document.getElementById('circularModal').classList.add('hidden')" class="px-6 py-2 bg-brandRed text-white rounded-lg text-xs font-bold hover:bg-red-700 shadow-md">نشر وإرسال</button>
+                <button onclick="document.getElementById('circularModal').classList.add('hidden')" class="px-4 py-2 border rounded-lg text-xs font-bold hover:bg-slate-100 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-800" data-i18n="cancel">إلغاء</button>
+                <button onclick="addNewCircular()" class="px-6 py-2 bg-brandRed text-white rounded-lg text-xs font-bold hover:bg-red-700 shadow-md" data-i18n="btnSend">نشر وإرسال</button>
             </div>
         </div>
     </div>
 
-    <script src="layout.js"></script>
-    <script src="bot.js"></script>
+    <!-- Scripts -->
     <script>
-        function openCircularModal() {
-            document.getElementById('circularModal').classList.remove('hidden');
+        // ==========================================
+        // A. DATA REPOSITORY (EMBEDDED)
+        // ==========================================
+        const SYSTEM_DATA = {
+            users: [
+                { id: "USR_004", name: { ar: "أيمن المغربي", en: "Ayman Al-Maghrabi" }, title: { ar: "مسؤول الحوكمة", en: "GRC" }, role: "Manager" }
+            ],
+            circulars: [
+                { id: 1, title: { ar: "سياسة الحضور والانصراف الجديدة", en: "New Attendance Policy" }, date: "2026-01-10", type: "admin", force: true, read: 45, status: "active" },
+                { id: 2, title: { ar: "تهنئة بمناسبة اليوم الوطني", en: "National Day Greetings" }, date: "2025-09-23", type: "news", force: false, read: 98, status: "archived" },
+                { id: 3, title: { ar: "تحديث إجراءات المشتريات", en: "Procurement Procedure Update" }, date: "2025-12-01", type: "policy", force: true, read: 88, status: "archived" }
+            ]
+        };
+
+        // ==========================================
+        // B. LAYOUT ENGINE (EMBEDDED)
+        // ==========================================
+        (function() {
+            let currentUser = JSON.parse(localStorage.getItem('currentUser')) || {
+                id: "USR_004", name: {ar: "مستخدم النظام", en: "System User"}, role: "Guest"
+            };
+            const config = {
+                lang: localStorage.getItem('lang') || 'ar',
+                theme: localStorage.getItem('theme') || 'light'
+            };
+
+            const menuStructure = [
+                { section: 'main', items: [{ key: 'dash', icon: 'fa-gauge-high', link: 'admin.html' }] },
+                { section: 'comm', items: [{ key: 'chat', icon: 'fa-comments', link: 'chat.html' }, { key: 'circulars', icon: 'fa-bullhorn', link: 'admin_circulars.html' }] },
+                { section: 'gov', items: [{ key: 'ga', icon: 'fa-users-rectangle', link: 'ga.html' }, { key: 'board', icon: 'fa-building-columns', link: 'board.html' }] },
+                { section: 'admin', items: [{ key: 'users', icon: 'fa-users-gear', link: 'users.html' }, { key: 'settings', icon: 'fa-sliders', link: 'admin_settings.html' }] }
+            ];
+
+            const layoutTrans = {
+                ar: {
+                    sysName: "AndroGov", sysVer: "v4.3", logout: "خروج",
+                    sections: { main: "الرئيسية", comm: "التواصل", gov: "الحوكمة", admin: "النظام" },
+                    menu: { dash: "لوحة القيادة", chat: "الدردشة", circulars: "التعاميم", ga: "الجمعيات", board: "المجلس", users: "المستخدمين", settings: "الإعدادات" }
+                },
+                en: {
+                    sysName: "AndroGov", sysVer: "v4.3", logout: "Logout",
+                    sections: { main: "Main", comm: "Comms", gov: "Gov", admin: "Admin" },
+                    menu: { dash: "Dashboard", chat: "Chat", circulars: "Circulars", ga: "GA", board: "Board", users: "Users", settings: "Settings" }
+                }
+            };
+
+            function initLayout() {
+                if(currentUser.id === 'USR_004') currentUser.avatarUrl = 'https://androgov-sa.github.io/AIT/photo/grc.png';
+                else currentUser.avatarUrl = `https://ui-avatars.com/api/?name=User&background=FB4747&color=fff`;
+
+                applyLayoutSettings();
+                renderSidebar();
+                renderHeader();
+            }
+
+            function applyLayoutSettings() {
+                const html = document.documentElement;
+                html.lang = config.lang;
+                html.dir = config.lang === 'ar' ? 'rtl' : 'ltr';
+                if (config.theme === 'dark') html.classList.add('dark');
+                else html.classList.remove('dark');
+            }
+
+            function renderSidebar() {
+                const container = document.getElementById('sidebar-container');
+                if (!container) return;
+                const dict = layoutTrans[config.lang];
+                const isRtl = config.lang === 'ar';
+                const currentPath = 'admin_circulars.html';
+
+                const uName = config.lang === 'ar' ? currentUser.name.ar : currentUser.name.en;
+                
+                let menuHTML = '';
+                menuStructure.forEach(group => {
+                    if(dict.sections[group.section]) { 
+                         menuHTML += `<div class="px-3 mt-6 mb-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider">${dict.sections[group.section]}</div>`;
+                        group.items.forEach(item => {
+                            const isActive = currentPath.includes(item.link);
+                            const activeClass = isActive ? "bg-brandRed text-white shadow-md shadow-red-500/20" : "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-brandRed";
+                            menuHTML += `
+                            <a href="${item.link}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${activeClass}">
+                                <div class="w-6 text-center"><i class="fa-solid ${item.icon}"></i></div>
+                                <span class="flex-1 truncate">${dict.menu[item.key]}</span>
+                            </a>`;
+                        });
+                    }
+                });
+
+                container.innerHTML = `
+                <aside class="fixed top-0 ${isRtl ? 'right-0 border-l' : 'left-0 border-r'} z-50 h-screen w-72 flex-col hidden md:flex bg-white dark:bg-[#0F172A] border-slate-200 dark:border-slate-800 transition-all duration-300">
+                    <div class="h-20 flex items-center px-6 border-b border-slate-100 dark:border-slate-800">
+                        <div class="flex items-center gap-3 w-full">
+                            <img src="https://ait.sa/wp-content/uploads/2024/03/cropped-Square-Logo.png" class="w-10 h-10 rounded-xl bg-white object-contain shrink-0 shadow-sm border border-slate-100 dark:border-slate-700">
+                            <div class="overflow-hidden">
+                                <h1 class="font-bold text-sm text-slate-800 dark:text-white font-sans truncate">AndroGov</h1>
+                                <p class="text-[10px] text-slate-500 uppercase tracking-widest truncate">${dict.sysVer}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <div class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700">
+                            <img src="${currentUser.avatarUrl}" class="w-10 h-10 rounded-full border-2 border-white dark:border-slate-600 object-cover shrink-0">
+                            <div class="overflow-hidden flex-1 min-w-0">
+                                <p class="text-sm font-bold text-slate-800 dark:text-white truncate">${uName}</p>
+                                <p class="text-[10px] text-brandRed font-medium truncate">${currentUser.role}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <nav class="flex-1 overflow-y-auto px-3 py-2 custom-scroll space-y-0.5">${menuHTML}</nav>
+                </aside>`;
+            }
+
+            function renderHeader() {
+                const container = document.getElementById('header-container');
+                if (!container) return;
+                const dict = layoutTrans[config.lang];
+                
+                container.innerHTML = `
+                <header class="h-16 flex items-center justify-between px-6 bg-white dark:bg-[#0F172A] border-b border-slate-200 dark:border-slate-700 no-print">
+                    <div class="flex items-center gap-4">
+                        <button onclick="document.querySelector('aside').classList.toggle('hidden'); document.querySelector('aside').classList.toggle('flex');" class="md:hidden text-slate-500 dark:text-slate-200 hover:text-brandRed"><i class="fa-solid fa-bars text-xl"></i></button>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <button onclick="window.changeLang()" class="h-8 px-3 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-xs font-bold text-slate-600 dark:text-white transition">${config.lang === 'ar' ? 'EN' : 'AR'}</button>
+                        <button onclick="window.changeTheme()" class="w-8 h-8 rounded-lg border border-slate-200 dark:border-slate-700 flex items-center justify-center hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-yellow-400 transition"><i class="fa-solid ${config.theme === 'dark' ? 'fa-sun' : 'fa-moon'}"></i></button>
+                        <button onclick="window.doLogout()" class="text-red-500 hover:bg-red-50 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-2"><i class="fa-solid fa-power-off"></i> <span class="hidden sm:inline">${dict.logout}</span></button>
+                    </div>
+                </header>`;
+            }
+
+            window.changeTheme = function() {
+                localStorage.setItem('theme', config.theme === 'dark' ? 'light' : 'dark');
+                location.reload();
+            };
+            window.changeLang = function() {
+                localStorage.setItem('lang', config.lang === 'ar' ? 'en' : 'ar');
+                location.reload();
+            };
+            window.doLogout = function() {
+                if (confirm(config.lang === 'ar' ? 'هل أنت متأكد من تسجيل الخروج؟' : 'Are you sure?')) {
+                    localStorage.removeItem('currentUser');
+                    window.location.href = 'login.html'; 
+                }
+            };
+
+            initLayout();
+        })();
+
+        // ==========================================
+        // C. PAGE LOGIC
+        // ==========================================
+        const translations = {
+            ar: {
+                pageTitle: "التعاميم | AndroGov",
+                headerTitle: "إدارة التعاميم والرسائل الجماعية",
+                headerDesc: "إرسال القرارات الإدارية ومتابعة نسب القراءة والموافقة",
+                btnNew: "إرسال تعميم جديد",
+                kpiActive: "التعاميم النشطة",
+                kpiActiveDesc: "يظهر حالياً للموظفين",
+                kpiRead: "نسبة القراءة (Overall)",
+                kpiReadDesc: "متوسط قراءة الموظفين",
+                kpiArchive: "تاريخ الأرشيف",
+                kpiArchiveDesc: "تعميم سابق",
+                listTitle: "سجل التعاميم المرسلة",
+                colTitle: "العنوان",
+                colDate: "التاريخ",
+                colType: "النوع",
+                colForce: "إلزامية القراءة",
+                colRate: "نسبة القراءة",
+                colStatus: "الحالة",
+                colAction: "--",
+                modTitle: "إنشاء تعميم جديد",
+                modSubj: "عنوان التعميم",
+                modType: "نوع التعميم",
+                modTarget: "موجه إلى",
+                modBody: "نص التعميم",
+                modGov: "ضوابط الحوكمة والقراءة",
+                modForce: "إلزامية القراءة والموافقة (Force Read)",
+                modForceDesc: "لن يتمكن الموظف من استخدام النظام حتى يفتح هذا التعميم ويضغط 'موافق'.",
+                cancel: "إلغاء",
+                btnSend: "نشر وإرسال",
+                statusActive: "نشط",
+                statusArchived: "مؤرشف",
+                yesForce: "نعم (Force)",
+                noForce: "لا (إشعار)"
+            },
+            en: {
+                pageTitle: "Circulars | AndroGov",
+                headerTitle: "Circulars & Broadcast Management",
+                headerDesc: "Send administrative decisions and track read/approval rates",
+                btnNew: "Send New Circular",
+                kpiActive: "Active Circulars",
+                kpiActiveDesc: "Currently visible to staff",
+                kpiRead: "Read Rate (Overall)",
+                kpiReadDesc: "Average employee read rate",
+                kpiArchive: "Archive History",
+                kpiArchiveDesc: "Previous circulars",
+                listTitle: "Sent Circulars Log",
+                colTitle: "Title",
+                colDate: "Date",
+                colType: "Type",
+                colForce: "Force Read",
+                colRate: "Read Rate",
+                colStatus: "Status",
+                colAction: "--",
+                modTitle: "Create New Circular",
+                modSubj: "Subject",
+                modType: "Type",
+                modTarget: "Target Audience",
+                modBody: "Body Content",
+                modGov: "Governance Controls",
+                modForce: "Force Read & Approval",
+                modForceDesc: "Employees cannot use the system until they acknowledge this circular.",
+                cancel: "Cancel",
+                btnSend: "Publish & Send",
+                statusActive: "Active",
+                statusArchived: "Archived",
+                yesForce: "Yes (Force)",
+                noForce: "No (Notify)"
+            }
+        };
+
+        const currentLang = localStorage.getItem('lang') || 'ar';
+
+        function initPage() {
+            applyLanguage();
+            renderCirculars();
+            updateStats();
+            document.body.style.opacity = '1';
         }
+
+        function applyLanguage() {
+            const t = translations[currentLang];
+            document.documentElement.lang = currentLang;
+            document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+            
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if(t[key]) el.innerText = t[key];
+            });
+        }
+
+        function renderCirculars() {
+            const container = document.getElementById('circularsTable');
+            container.innerHTML = '';
+            const t = translations[currentLang];
+            const search = document.getElementById('searchCirc').value.toLowerCase();
+
+            const filtered = SYSTEM_DATA.circulars.filter(c => 
+                (currentLang === 'ar' ? c.title.ar : c.title.en).toLowerCase().includes(search)
+            );
+
+            filtered.forEach(c => {
+                const title = currentLang === 'ar' ? c.title.ar : c.title.en;
+                const statusLabel = c.status === 'active' ? t.statusActive : t.statusArchived;
+                const statusClass = c.status === 'active' ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-500';
+                const forceLabel = c.force ? t.yesForce : t.noForce;
+                const forceClass = c.force ? 'text-red-600 font-bold' : 'text-slate-400';
+
+                container.innerHTML += `
+                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition border-b border-slate-100 dark:border-slate-700 ${c.status === 'archived' ? 'opacity-75' : ''}">
+                        <td class="p-4 font-bold text-slate-800 dark:text-white">${title}</td>
+                        <td class="p-4 text-xs font-mono text-slate-500">${c.date}</td>
+                        <td class="p-4"><span class="bg-purple-100 text-purple-700 px-2 py-0.5 rounded text-[10px] border border-purple-200 uppercase">${c.type}</span></td>
+                        <td class="p-4"><span class="${forceClass} text-xs">${c.force ? '<i class="fa-solid fa-lock"></i>' : ''} ${forceLabel}</span></td>
+                        <td class="p-4">
+                            <div class="flex items-center gap-2">
+                                <div class="w-20 h-1.5 bg-slate-200 rounded-full overflow-hidden"><div class="bg-green-500 h-full" style="width: ${c.read}%"></div></div>
+                                <span class="text-xs font-bold text-slate-600 dark:text-slate-300">${c.read}%</span>
+                            </div>
+                        </td>
+                        <td class="p-4 text-center"><span class="${statusClass} px-2 py-0.5 rounded text-[10px] font-bold">${statusLabel}</span></td>
+                        <td class="p-4 text-center"><button class="text-slate-400 hover:text-brandBlue"><i class="fa-solid fa-ellipsis"></i></button></td>
+                    </tr>
+                `;
+            });
+        }
+
+        function updateStats() {
+            document.getElementById('activeCount').innerText = SYSTEM_DATA.circulars.filter(c => c.status === 'active').length;
+            document.getElementById('archiveCount').innerText = SYSTEM_DATA.circulars.filter(c => c.status === 'archived').length;
+        }
+
+        function openCircularModal() { document.getElementById('circularModal').classList.remove('hidden'); }
+        
+        function addNewCircular() {
+            const title = document.getElementById('newTitle').value;
+            const type = document.getElementById('newType').value;
+            if(!title) return;
+
+            SYSTEM_DATA.circulars.unshift({
+                id: Date.now(),
+                title: { ar: title, en: title },
+                date: new Date().toISOString().split('T')[0],
+                type: type,
+                force: document.getElementById('forceRead').checked,
+                read: 0,
+                status: 'active'
+            });
+            
+            renderCirculars();
+            updateStats();
+            document.getElementById('circularModal').classList.add('hidden');
+            // Reset form
+            document.getElementById('newTitle').value = '';
+            
+            alert(currentLang === 'ar' ? 'تم إرسال التعميم بنجاح' : 'Circular sent successfully');
+        }
+
+        document.addEventListener('DOMContentLoaded', initPage);
     </script>
 </body>
 </html>
