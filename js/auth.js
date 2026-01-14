@@ -32,64 +32,74 @@ class AuthSystem {
         let rawUsers = [];
         let shareholders = [];
 
-        // 1. الموظفين
+        // 1. جلب الموظفين
         if (data.organizational_chart && data.organizational_chart.users_directory) {
             rawUsers = data.organizational_chart.users_directory;
         }
 
-        // 2. المساهمين
+        // 2. جلب المساهمين
         if (data.shareholders) {
             shareholders = data.shareholders;
         }
 
-        // تجهيز قائمة المستخدمين مع كشف جميع الصلاحيات
+        // 3. تجهيز المستخدمين وكشف الصلاحيات المعقدة
         this.users = rawUsers.map(u => {
-            // التحقق من الأدوار المتعددة
             let roles = [];
             let email = u.email ? u.email.toLowerCase().trim() : '';
+            let name = u.name || u.name_ar;
 
-            // 1. هل هو مساهم؟ (مطابقة بالإيميل)
-            const isShareholder = shareholders.find(s => s.email && s.email.toLowerCase() === email);
-            if (isShareholder) roles.push('shareholder');
-
-            // 2. هل هو عضو مجلس؟
-            if (u.role.toLowerCase().includes('chairman') || u.role.toLowerCase().includes('board') || (u.title && u.title.includes('مجلس'))) {
-                roles.push('board');
+            // --- أ. صلاحيات الأدمن والتنفيذيين (GRC, Shareholder Relations) ---
+            // أيمن (Admin) يملك صلاحية إدارة المساهمين والحوكمة تلقائياً
+            if (u.role.toLowerCase() === 'admin' || u.role.toLowerCase().includes('grc')) {
+                roles.push('admin');
             }
-
-            // 3. هل هو تنفيذي؟
             if (u.is_executive || u.role.toLowerCase().includes('ceo') || u.role.toLowerCase().includes('cfo')) {
                 roles.push('exec');
             }
 
-            // 4. هل هو لجنة مراجعة؟
-            if (u.role.toLowerCase().includes('audit') || (u.title && u.title.includes('Audit'))) {
-                roles.push('audit');
+            // --- ب. صلاحيات المجلس (Board) ---
+            // يشمل الرئيس، الأعضاء، وأمين السر (Secretary)
+            if (u.role.toLowerCase().includes('chairman') || 
+                u.role.toLowerCase().includes('board') || 
+                (u.title && u.title.toLowerCase().includes('secretary'))) { // كشف أمناء السر
+                roles.push('board');
             }
 
-            // 5. هل هو أدمن؟
-            if (u.role.toLowerCase() === 'admin' || u.id === 'USR_004') { // أيمن المغربي
-                roles.push('admin');
+            // --- ج. صلاحيات لجنة المراجعة (Audit) ---
+            // فحص دقيق: هل اسمه موجود في قائمة اللجنة (عضو أو أمين سر)؟
+            if (data.governance_config && data.governance_config.committees) {
+                const audit = data.governance_config.committees.Audit;
+                if (audit) {
+                    const isMember = audit.members && audit.members.some(m => m.includes(name));
+                    const isSec = audit.secretary && audit.secretary.includes(name); // أيمن هنا
+                    
+                    if (isMember || isSec) {
+                        if (!roles.includes('audit')) roles.push('audit');
+                    }
+                }
             }
 
-            // إذا لم يكن لديه أي دور خاص، فهو موظف
+            // --- د. صلاحيات المساهمين (Shareholder) ---
+            const isShareholder = shareholders.find(s => s.email && s.email.toLowerCase() === email);
+            if (isShareholder) roles.push('shareholder');
+
+            // --- هـ. الموظف العادي ---
             if (roles.length === 0) roles.push('staff');
 
             return {
                 id: u.id,
-                name: u.name || u.name_ar,
+                name: name,
                 email: email,
                 title: u.title,
-                primaryRole: roles[0], // الدور الافتراضي للدخول
-                accessLevels: roles,   // قائمة كل الصلاحيات
+                primaryRole: roles[0], // الدور الافتراضي عند الدخول
+                accessLevels: roles,   // قائمة كل البوابات المتاحة له
                 avatarColor: this.getAvatarColor(u.role)
             };
         }).filter(u => u.email !== '');
 
-        // إضافة المساهمين الذين ليسوا موظفين (مثل ورثة السحيباني)
+        // إضافة المساهمين الأفراد (غير الموظفين)
         shareholders.forEach(s => {
             const email = s.email ? s.email.toLowerCase().trim() : '';
-            // إذا لم يكن موجوداً مسبقاً في القائمة (كموظف)
             if (!this.users.find(u => u.email === email)) {
                 this.users.push({
                     id: s.id,
