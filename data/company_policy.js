@@ -2,18 +2,17 @@
  * @file company_policy.js
  * @description The Unified System Configuration & Database for Andromeda IT
  * @architecture Infrastructure as Data (IaD)
- * @version 4.2.0 (Browser Compatible)
+ * @version 4.1.0 (Fixed Syntax Errors)
  * @system_driver True
  */
 
-// التغيير هنا: استخدام const بدلاً من module.exports ليعمل في المتصفح
-const POLICY_DATA = {
+module.exports = {
   // ==========================================
   // 1. البيانات الوصفية للنظام (System Metadata)
   // ==========================================
   system: {
     app_id: "ANDROMEDA_CORE_V4",
-    version: "4.2.0",
+    version: "4.1.0",
     last_updated: "2026-01-14",
     environment: "production",
     compliance_standards: ["SA_CL_2024", "ISO_27001"],
@@ -147,6 +146,7 @@ const POLICY_DATA = {
         share_value: 10
       }
     },
+    // تم تحويل المساهمين إلى هيكل بيانات يمكن البحث فيه
     shareholders: [
       { "id": "SH_001", "name": { ar:"ورثة محمد بن صالح السحيباني", en: "Heirs of Mohammed Al-Suhaibani" }, "percent": 35, type: "Individual", "shares": 210000, "voting": true, "email": "alcaseer@gmail.com" },
       { "id": "SH_002", "name": { ar:"هشام بن محمد السحيباني", en: "Hesham bin Muhammad Al-Sohibani" }, "percent": 10, type: "Individual", "shares": 60000, "voting": true, "email": "Hesham@androomeda.com" },
@@ -159,6 +159,27 @@ const POLICY_DATA = {
       { "id": "SH_009", "name": { ar:"عبدالله بن محمد الحواس", en: "Abdullah bin Mohammed Al-Hawas" }, "percent": 5, type: "Individual", "shares": 30000, "voting": true, "email": "amh400@gmail.com" },
       { "id": "SH_010", "name": { ar:"شركة بيجي المحدودة", en: "BG LTD.Company" }, "percent": 15, type: "Entity", "shares": 90000, "voting": true, "email": "saleh@bgtech.com" },
       { "id": "SH_011", "name": { ar:"احمد بن سليمان الجاسر", en: "Ahmed bin Suleiman Al-Jasser" }, "percent": 5, type: "Individual", "shares": 30000, "voting": true, "email": "ahmed.jasser@gmail.com" }
+    ],
+    activities_isic: [
+      { "code": "432134", "name_ar": "تركيب وصيانة الأجهزة الأمنية", "category": "Security" },
+      { "code": "451030", "name_ar": "مزادات السيارات والمعدات", "category": "Auctions" },
+      { "code": "464956", "name_ar": "البيع بالجملة للأجهزة والمعدات والمستلزمات الطبية", "category": "Medical" },
+      { "code": "465101", "name_ar": "البيع بالجملة للحواسيب ومستلزماتها يشمل بيع الطابعات وأحبارها", "category": "Sales" },
+      { "code": "465102", "name_ar": "البيع بالجملة للبرمجيات ويشمل الاستيراد", "category": "Sales" },
+      { "code": "465933", "name_ar": "البيع بالجملة للأجهزة الأمنية", "category": "Security" },
+      { "code": "465934", "name_ar": "البيع بالجملة للمعدات والتجهيزات الأمنية (للمنافسات الحكومية فقط)", "category": "Security" },
+      { "code": "469061", "name_ar": "البيع بالجملة لأجهزة ولوازم الكيماويات والمختبرات", "category": "Medical" },
+      { "code": "474110", "name_ar": "البيع بالتجزئة للحواسيب وملحقاتها يشمل الطابعات وأحبارها", "category": "Retail" },
+      { "code": "474152", "name_ar": "بيع البرمجيات غير المعدة بناء على الطلب", "category": "IT" },
+      { "code": "477336", "name_ar": "البيع بالتجزئة للأجهزة الأمنية", "category": "Security" },
+      { "code": "479940", "name_ar": "المزادات في غير المحلات", "category": "Auctions" },
+      { "code": "620102", "name_ar": "تصميم وبرمجة البرمجيات الخاصة", "category": "IT" },
+      { "code": "682010", "name_ar": "الوساطة العقارية", "category": "RealEstate" },
+      { "code": "682044", "name_ar": "المزادات العقارية", "category": "RealEstate" },
+      { "code": "731013", "name_ar": "تقديم خدمات تسويقية نيابةً عن الغير", "category": "Marketing" },
+      { "code": "749036", "name_ar": "أنشطة خدمات استشارات في مجال تنظيم الأجهزة الطبية", "category": "Medical" },
+      { "code": "869027", "name_ar": "مراكز الخدمات الطبية المنزلية", "category": "Medical" },
+      { "code": "869037", "name_ar": "مراكز الرعاية عن بعد والطب الإتصالي", "category": "Medical" }
     ],
     config: {
       board_structure: {
@@ -188,12 +209,14 @@ const POLICY_DATA = {
   // 5. مصفوفة الصلاحيات (Security Matrix / RBAC)
   // ==========================================
   access_control: {
+    // 1. تعريف الأدوار (Roles Definitions)
     roles: {
       sys_admin: {
         label: { en: "System Admin", ar: "مدير النظام" },
         inherits: ["chairman", "ceo"],
         description: { en: "Technical Superuser", ar: "صلاحيات تقنية كاملة" }
       },
+      // --- مجلس الإدارة (Governance) ---
       chairman: {
         label: { en: "Chairman", ar: "رئيس مجلس الإدارة" },
         inherits: ["board_member"],
@@ -209,6 +232,7 @@ const POLICY_DATA = {
         inherits: ["viewer"],
         access_scope: "Board_Room_Only"
       },
+      // --- الملاك / المساهمين (Ownership) ---
       shareholder: {
         label: { en: "Shareholder", ar: "مساهم" },
         inherits: ["viewer"],
@@ -220,6 +244,7 @@ const POLICY_DATA = {
           request_meeting: "conditional"
         }
       },
+      // --- الإدارة التنفيذية (Executive Management) ---
       ceo: {
         label: { en: "CEO", ar: "الرئيس التنفيذي" },
         inherits: ["cfo", "manager"],
@@ -243,6 +268,7 @@ const POLICY_DATA = {
       }
     },
 
+    // 2. خريطة الصلاحيات الدقيقة (Permissions Map)
     permissions: {
       'shareholder': [
         'general_assembly.view',
@@ -290,6 +316,7 @@ const POLICY_DATA = {
       }
     },
 
+    // 3. الصلاحيات المالية والإدارية (Financial & Admin Authority)
     financial_authority: [
       {
         "transaction_type": "PO_Approval",
@@ -612,6 +639,7 @@ const POLICY_DATA = {
   // 8. المساعدات والوظائف (Logic & Helpers)
   // ==========================================
   helpers: {
+    // تم تحويل دالة canRequestAssembly إلى هنا لتصحيح الخطأ البرمجي
     canRequestAssembly: function(user) {
       if (!user.roles.includes('shareholder')) return false;
       const REQUIRED_PERCENTAGE = 0.05; // 5%
@@ -619,8 +647,3 @@ const POLICY_DATA = {
     }
   }
 };
-
-// دعم بيئة Node.js إذا تم استخدام الملف خارج المتصفح
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = POLICY_DATA;
-}
