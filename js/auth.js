@@ -39,34 +39,69 @@ class AuthSystem {
 
         // 2. المساهمين
         if (data.shareholders) {
-            shareholders = data.shareholders.map(s => ({
-                id: s.id,
-                name: s.name,
-                email: s.email,
-                title: `مساهم (${s.percent}%)`,
-                role: 'Shareholder',
-                type: 'shareholder'
-            }));
+            shareholders = data.shareholders;
         }
 
-        const all = [...rawUsers, ...shareholders];
+        // تجهيز قائمة المستخدمين مع كشف جميع الصلاحيات
+        this.users = rawUsers.map(u => {
+            // التحقق من الأدوار المتعددة
+            let roles = [];
+            let email = u.email ? u.email.toLowerCase().trim() : '';
 
-        this.users = all.map(u => ({
-            id: u.id,
-            name: u.name || u.name_ar,
-            email: u.email ? u.email.toLowerCase().trim() : '',
-            title: u.title,
-            role: u.role,
-            type: this.determineUserType(u.role, u.type, u.title),
-            avatarColor: this.getAvatarColor(u.role)
-        })).filter(u => u.email !== '');
-        
-        // إزالة التكرار
-        this.users = this.users.filter((user, index, self) =>
-            index === self.findIndex((t) => (
-                t.email === user.email
-            ))
-        );
+            // 1. هل هو مساهم؟ (مطابقة بالإيميل)
+            const isShareholder = shareholders.find(s => s.email && s.email.toLowerCase() === email);
+            if (isShareholder) roles.push('shareholder');
+
+            // 2. هل هو عضو مجلس؟
+            if (u.role.toLowerCase().includes('chairman') || u.role.toLowerCase().includes('board') || (u.title && u.title.includes('مجلس'))) {
+                roles.push('board');
+            }
+
+            // 3. هل هو تنفيذي؟
+            if (u.is_executive || u.role.toLowerCase().includes('ceo') || u.role.toLowerCase().includes('cfo')) {
+                roles.push('exec');
+            }
+
+            // 4. هل هو لجنة مراجعة؟
+            if (u.role.toLowerCase().includes('audit') || (u.title && u.title.includes('Audit'))) {
+                roles.push('audit');
+            }
+
+            // 5. هل هو أدمن؟
+            if (u.role.toLowerCase() === 'admin' || u.id === 'USR_004') { // أيمن المغربي
+                roles.push('admin');
+            }
+
+            // إذا لم يكن لديه أي دور خاص، فهو موظف
+            if (roles.length === 0) roles.push('staff');
+
+            return {
+                id: u.id,
+                name: u.name || u.name_ar,
+                email: email,
+                title: u.title,
+                primaryRole: roles[0], // الدور الافتراضي للدخول
+                accessLevels: roles,   // قائمة كل الصلاحيات
+                avatarColor: this.getAvatarColor(u.role)
+            };
+        }).filter(u => u.email !== '');
+
+        // إضافة المساهمين الذين ليسوا موظفين (مثل ورثة السحيباني)
+        shareholders.forEach(s => {
+            const email = s.email ? s.email.toLowerCase().trim() : '';
+            // إذا لم يكن موجوداً مسبقاً في القائمة (كموظف)
+            if (!this.users.find(u => u.email === email)) {
+                this.users.push({
+                    id: s.id,
+                    name: s.name,
+                    email: email,
+                    title: `مساهم (${s.percent}%)`,
+                    primaryRole: 'shareholder',
+                    accessLevels: ['shareholder'],
+                    avatarColor: '#fb4747'
+                });
+            }
+        });
     }
 
     determineUserType(role, manualType, title) {
