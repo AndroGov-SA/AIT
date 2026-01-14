@@ -2,46 +2,243 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>لوحة القيادة التنفيذية</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة القيادة التنفيذية | AndroGov</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    </head>
-<body class="bg-slate-50 dark:bg-slate-900">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: { extend: { colors: { brandRed: '#FB4747', brandDark: '#1E293B' }, fontFamily: { sans: ['Tajawal', 'sans-serif'] } } }
+        }
+    </script>
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white font-sans transition-colors duration-300">
 
     <div id="sidebar-container"></div>
-    <div class="lg:mr-72">
+
+    <div class="lg:mr-72 transition-all duration-300">
         <div id="header-container"></div>
-        
-        <main class="p-8">
-            <h1 class="text-2xl font-bold mb-6">مرحباً، <span id="userName"></span> 👋</h1>
-            
-            <div id="dynamic-content">
-                <div class="bg-yellow-50 p-4 rounded-xl border border-yellow-200 text-yellow-800 text-sm">
-                    <i class="fa-solid fa-info-circle"></i> جاري تحميل أدواتك الإدارية المخصصة...
-                 </div>
+
+        <main class="p-8 max-w-7xl mx-auto space-y-8" id="main-content">
+            <div class="flex items-center justify-center h-64">
+                <div class="text-center">
+                    <i class="fa-solid fa-circle-notch fa-spin text-4xl text-brandRed mb-4"></i>
+                    <p class="text-slate-400">جاري تحميل لوحة القيادة المخصصة...</p>
+                </div>
             </div>
         </main>
     </div>
 
     <script src="../data/company_policy.js"></script>
-    <script src="../js/layout-exec.js"></script> <script>
-        // سكربت بسيط لتخصيص محتوى الداشبورد الرئيسية
+    <script src="../js/layout-exec.js"></script>
+
+    <script>
         document.addEventListener('DOMContentLoaded', () => {
             const user = JSON.parse(localStorage.getItem('currentUser'));
-            document.getElementById('userName').innerText = user.name;
-            
-            const contentDiv = document.getElementById('dynamic-content');
-            const role = user.role.toLowerCase();
+            const role = (user.role || '').toLowerCase();
+            const title = (user.title || '').toLowerCase();
+            const container = document.getElementById('main-content');
 
-            // تخصيص المحتوى
-            if(role.includes('cfo')) {
-                contentDiv.innerHTML = '<h3>أهلاً بالمدير المالي! هنا ملخص الميزانية...</h3>'; 
-                // (أضف بطاقات المالية هنا)
-            } else if (role.includes('hr') || role.includes('cao')) {
-                contentDiv.innerHTML = '<h3>أهلاً مدير الموارد البشرية! هنا ملخص الموظفين...</h3>';
-                // (أضف بطاقات الـ HR هنا)
-            } else {
-                contentDiv.innerHTML = '<h3>لوحة القيادة العامة</h3>';
+            // دالة لبناء بطاقة إحصائية
+            const card = (title, val, icon, color, sub) => `
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-sm relative overflow-hidden group hover:border-${color}-500 transition-all">
+                    <div class="absolute -right-6 -top-6 w-24 h-24 bg-${color}-50 rounded-full group-hover:scale-150 transition-transform duration-500"></div>
+                    <div class="relative z-10">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <p class="text-slate-500 text-xs font-bold uppercase tracking-wider">${title}</p>
+                                <h3 class="text-3xl font-extrabold mt-1 text-slate-800 dark:text-white">${val}</h3>
+                            </div>
+                            <div class="w-10 h-10 rounded-xl bg-${color}-100 text-${color}-600 flex items-center justify-center text-lg shadow-sm">
+                                <i class="fa-solid ${icon}"></i>
+                            </div>
+                        </div>
+                        <p class="text-xs text-${color}-600 font-bold flex items-center gap-1">
+                            <i class="fa-solid fa-arrow-trend-up"></i> ${sub}
+                        </p>
+                    </div>
+                </div>`;
+
+            // 1. لوحة المدير المالي (CFO Dashboard)
+            if (role.includes('cfo') || role.includes('finance')) {
+                container.innerHTML = `
+                    <div class="flex justify-between items-end">
+                        <div>
+                            <h1 class="text-2xl font-bold mb-1">المركز المالي العام</h1>
+                            <p class="text-slate-500 text-sm">آخر تحديث للبيانات المالية: اليوم 09:00 ص</p>
+                        </div>
+                        <button class="bg-brandRed text-white px-4 py-2 rounded-xl text-sm font-bold shadow-lg shadow-red-500/30 hover:bg-red-700 transition"><i class="fa-solid fa-plus"></i> قيد يومية جديد</button>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                        ${card('السيولة النقدية', '12.5M SAR', 'fa-wallet', 'green', '+5.2% عن الشهر الماضي')}
+                        ${card('الذمم المدينة (AR)', '840K SAR', 'fa-hand-holding-dollar', 'blue', '12 فاتورة مستحقة')}
+                        ${card('الذمم الدائنة (AP)', '320K SAR', 'fa-file-invoice-dollar', 'red', '3 فواتير عاجلة')}
+                        ${card('المصروفات (YTD)', '1.2M SAR', 'fa-receipt', 'orange', '92% من الموازنة')}
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="lg:col-span-2 bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-sm">
+                            <h3 class="font-bold mb-4">التدفقات النقدية (2025)</h3>
+                            <div class="h-64 bg-slate-50 dark:bg-slate-900 rounded-xl flex items-center justify-center text-slate-400 border border-dashed border-slate-300">
+                                <i class="fa-solid fa-chart-line mr-2"></i> مساحة للرسم البياني (Chart.js)
+                            </div>
+                        </div>
+                        <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-sm">
+                            <h3 class="font-bold mb-4">الموافقات المعلقة</h3>
+                            <div class="space-y-4">
+                                <div class="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-900 rounded-xl">
+                                    <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center"><i class="fa-solid fa-file-contract"></i></div>
+                                    <div class="flex-1">
+                                        <p class="text-xs font-bold">تعميد شراء أجهزة</p>
+                                        <p class="text-[10px] text-slate-400">IT Dept • 45,000 SAR</p>
+                                    </div>
+                                    <button class="text-xs bg-brandRed text-white px-2 py-1 rounded">اعتماد</button>
+                                </div>
+                                <div class="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-900 rounded-xl">
+                                    <div class="w-8 h-8 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center"><i class="fa-solid fa-receipt"></i></div>
+                                    <div class="flex-1">
+                                        <p class="text-xs font-bold">سلفة موظف</p>
+                                        <p class="text-[10px] text-slate-400">HR Dept • 5,000 SAR</p>
+                                    </div>
+                                    <button class="text-xs bg-brandRed text-white px-2 py-1 rounded">اعتماد</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // 2. لوحة الموارد البشرية (HR Dashboard)
+            else if (role.includes('hr') || role.includes('cao')) {
+                container.innerHTML = `
+                    <div class="flex justify-between items-end">
+                        <div>
+                            <h1 class="text-2xl font-bold mb-1">الموارد البشرية</h1>
+                            <p class="text-slate-500 text-sm">نظرة عامة على القوى العاملة</p>
+                        </div>
+                        <button class="bg-brandRed text-white px-4 py-2 rounded-xl text-sm font-bold shadow-lg shadow-red-500/30 hover:bg-red-700 transition"><i class="fa-solid fa-user-plus"></i> إضافة موظف</button>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                        ${card('إجمالي الموظفين', '142', 'fa-users', 'blue', '12 انضموا هذا الشهر')}
+                        ${card('الحضور اليوم', '96%', 'fa-user-check', 'green', '5 غياب / 2 إجازة')}
+                        ${card('طلبات الإجازة', '8', 'fa-plane', 'orange', 'تنتظر الموافقة')}
+                        ${card('رواتب الشهر', 'Pending', 'fa-coins', 'red', 'تستحق في 25')}
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-sm">
+                            <h3 class="font-bold mb-4">انتهاء العقود والإقامات</h3>
+                            <div class="space-y-3">
+                                <div class="flex justify-between items-center p-3 border-b border-slate-50 dark:border-slate-700">
+                                    <div class="flex items-center gap-3">
+                                        <img src="https://ui-avatars.com/api/?name=Ahmed+Ali&background=random" class="w-8 h-8 rounded-full">
+                                        <div><p class="text-xs font-bold">أحمد علي</p><p class="text-[10px] text-red-500">ينتهي العقد خلال 15 يوم</p></div>
+                                    </div>
+                                    <button class="text-xs text-blue-500 font-bold hover:underline">تجديد</button>
+                                </div>
+                                 <div class="flex justify-between items-center p-3 border-b border-slate-50 dark:border-slate-700">
+                                    <div class="flex items-center gap-3">
+                                        <img src="https://ui-avatars.com/api/?name=Sarah+Smith&background=random" class="w-8 h-8 rounded-full">
+                                        <div><p class="text-xs font-bold">سارة سميث</p><p class="text-[10px] text-orange-500">تنتهي الإقامة خلال 30 يوم</p></div>
+                                    </div>
+                                    <button class="text-xs text-blue-500 font-bold hover:underline">تجديد</button>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-sm">
+                            <h3 class="font-bold mb-4">هيكل الشركة</h3>
+                             <div class="h-48 bg-slate-50 dark:bg-slate-900 rounded-xl flex items-center justify-center text-slate-400 border border-dashed border-slate-300">
+                                <i class="fa-solid fa-sitemap mr-2"></i> مساحة للشجرة التنظيمية
+                            </div>
+                         </div>
+                    </div>
+                `;
+            }
+
+            // 3. لوحة المدير التقني (CTO Dashboard)
+            else if (role.includes('cto') || role.includes('tech')) {
+                container.innerHTML = `
+                    <div class="flex justify-between items-end">
+                        <div>
+                            <h1 class="text-2xl font-bold mb-1">العمليات التقنية</h1>
+                            <p class="text-slate-500 text-sm">حالة النظام والبنية التحتية</p>
+                        </div>
+                        <button class="bg-slate-800 text-white px-4 py-2 rounded-xl text-sm font-bold hover:bg-slate-700 transition"><i class="fa-solid fa-server"></i> فحص السيرفرات</button>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                        ${card('حالة النظام', '99.9%', 'fa-heart-pulse', 'green', 'كل الأنظمة تعمل')}
+                        ${card('تذاكر مفتوحة', '14', 'fa-ticket', 'red', '3 عالية الأهمية')}
+                        ${card('الخوادم النشطة', '24/24', 'fa-server', 'blue', 'Load: 45%')}
+                        ${card('نسخ احتياطي', 'Done', 'fa-database', 'purple', 'آخر نسخ: 03:00 ص')}
+                    </div>
+
+                    <div class="bg-slate-900 text-white p-6 rounded-3xl shadow-lg relative overflow-hidden">
+                        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-green-400 to-blue-500"></div>
+                        <h3 class="font-bold mb-4 flex items-center gap-2"><i class="fa-solid fa-terminal text-green-400"></i> سجل العمليات الحية (Live Logs)</h3>
+                        <div class="font-mono text-xs space-y-2 opacity-80 h-40 overflow-hidden">
+                            <p class="text-green-400">[10:42:01] Server A: Health check passed.</p>
+                            <p class="text-blue-400">[10:42:05] Database: Backup completed successfully (2.4GB).</p>
+                            <p class="text-yellow-400">[10:42:15] Firewall: Blocked suspicious IP 192.168.x.x.</p>
+                            <p class="text-slate-300">[10:42:22] Auth System: User login (ID: USR_002).</p>
+                            <p class="text-green-400">[10:42:30] Service Worker: Registered.</p>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // 4. لوحة الرئيس التنفيذي (CEO - Default)
+            else {
+                container.innerHTML = `
+                    <div class="flex justify-between items-end">
+                        <div>
+                            <h1 class="text-2xl font-bold mb-1">مرحباً، ${user.name}</h1>
+                            <p class="text-slate-500 text-sm">نظرة شاملة على أداء الشركة اليوم</p>
+                        </div>
+                        <div class="flex gap-2">
+                             <button class="bg-white border border-slate-200 text-slate-600 px-4 py-2 rounded-xl text-sm font-bold hover:bg-slate-50"><i class="fa-solid fa-download"></i> تقرير يومي</button>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                         ${card('صافي الربح', '2.4M SAR', 'fa-chart-line', 'green', 'الربع الأول 2026')}
+                         ${card('إجمالي المشاريع', '18', 'fa-briefcase', 'blue', '4 مشاريع مكتملة')}
+                         ${card('رضا العملاء', '4.8/5', 'fa-star', 'yellow', 'بناءً على 150 تقييم')}
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-sm">
+                            <h3 class="font-bold mb-4">أداء الأقسام</h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <div class="flex justify-between text-xs font-bold mb-1"><span>المبيعات</span><span>92%</span></div>
+                                    <div class="h-2 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-green-500 w-[92%]"></div></div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between text-xs font-bold mb-1"><span>التقنية</span><span>85%</span></div>
+                                    <div class="h-2 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-blue-500 w-[85%]"></div></div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between text-xs font-bold mb-1"><span>الموارد البشرية</span><span>78%</span></div>
+                                    <div class="h-2 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-orange-500 w-[78%]"></div></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-gradient-to-br from-slate-900 to-slate-800 text-white p-6 rounded-3xl shadow-lg">
+                            <h3 class="font-bold mb-4 text-white">تذكيرات استراتيجية</h3>
+                            <ul class="space-y-3 text-sm opacity-90">
+                                <li class="flex gap-3"><i class="fa-solid fa-check-circle text-green-400 mt-1"></i> مراجعة خطة التوسع Q2 مع المجلس.</li>
+                                <li class="flex gap-3"><i class="fa-regular fa-circle text-slate-400 mt-1"></i> اعتماد موازنة قسم التسويق الجديدة.</li>
+                                <li class="flex gap-3"><i class="fa-regular fa-circle text-slate-400 mt-1"></i> اجتماع مع الشريك الاستراتيجي (STC).</li>
+                            </ul>
+                        </div>
+                    </div>
+                `;
             }
         });
     </script>
