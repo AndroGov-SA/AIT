@@ -58,9 +58,11 @@
                 <p class="text-sm text-slate-500 dark:text-slate-400" data-i18n="headerDesc">لوحة التحكم المركزية بالوصول والأدوار (RBAC)</p>
             </div>
             <div class="flex gap-3 self-end md:self-auto">
-                <button onclick="window.history.back()" class="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-bold hover:shadow-md transition flex items-center gap-2 text-slate-600 dark:text-slate-300">
-                    <i class="fa-solid fa-arrow-right rtl:ml-2 ltr:mr-2 rtl:rotate-0 ltr:rotate-180"></i> <span data-i18n="btnBack">عودة</span>
+                <!-- Smart Back Button -->
+                <button onclick="goBack()" class="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-bold hover:shadow-md transition flex items-center gap-2 text-slate-600 dark:text-slate-300">
+                    <i class="fa-solid fa-arrow-right rtl:ml-2 ltr:mr-2 rtl:rotate-0 ltr:rotate-180"></i> <span data-i18n="btnBack">عودة للرئيسية</span>
                 </button>
+                
                 <button onclick="toggleLanguage()" class="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-bold hover:shadow-md transition text-slate-600 dark:text-slate-300">
                     <span id="langLabel">EN</span>
                 </button>
@@ -279,7 +281,7 @@
                 pageTitle: "AndroGov | إدارة المستخدمين",
                 headerTitle: "إدارة المستخدمين والصلاحيات",
                 headerDesc: "لوحة التحكم المركزية بالوصول والأدوار (RBAC)",
-                btnBack: "عودة",
+                btnBack: "عودة للرئيسية",
                 statTotal: "إجمالي المستخدمين",
                 statShareholders: "المساهمين",
                 statExec: "الإدارة التنفيذية",
@@ -302,7 +304,7 @@
                 pageTitle: "AndroGov | User Management",
                 headerTitle: "User & Role Management",
                 headerDesc: "Central Access Control Panel (RBAC)",
-                btnBack: "Back",
+                btnBack: "Back to Home",
                 statTotal: "Total Users",
                 statShareholders: "Shareholders",
                 statExec: "Executives",
@@ -339,6 +341,16 @@
             // Select first role
             const firstRole = Object.keys(SYSTEM_DATA.roles)[0];
             showRoleDetails(firstRole);
+        }
+
+        // --- NAVIGATION HELPER ---
+        function goBack() {
+            // Check if there is history, otherwise fallback
+            if (document.referrer.includes('admin') || window.history.length > 1) {
+                window.history.back();
+            } else {
+                window.location.href = 'admin/admin.html'; // Default Fallback
+            }
         }
 
         function toggleLanguage() {
