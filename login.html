@@ -38,7 +38,6 @@
     [dir="rtl"] .pass-toggle { left: .5rem; right: auto; }
     [dir="ltr"] .pass-toggle { right: .5rem; left: auto; }
     
-    /* تحسين شريط التمرير */
     .users-scroll::-webkit-scrollbar { width: 4px; }
     .users-scroll::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 10px; }
     .dark .users-scroll::-webkit-scrollbar-thumb { background-color: #475569; }
@@ -173,45 +172,40 @@
 
   <script>
     const translations = {
-      ar: {
-        loginTitle: "تسجيل الدخول",
-        loginSub: "يرجى اختيار صفتك للدخول إلى النظام",
-        emailLabel: "البريد الإلكتروني",
-        passLabel: "كلمة المرور",
-        loginBtn: "دخول آمن",
-        demoTitle: "حسابات الوصول السريع (Demo Access)",
-        backToHome: "العودة للرئيسية",
-        systemName: "AndroGov",
-        systemDesc: "منصة الحوكمة الرقمية الشاملة"
-      },
-      en: {
-        loginTitle: "Sign In",
-        loginSub: "Please select your role to access",
-        emailLabel: "Email Address",
-        passLabel: "Password",
-        loginBtn: "Secure Login",
-        demoTitle: "Quick Access Accounts (Demo)",
-        backToHome: "Back to Home",
-        systemName: "AndroGov",
-        systemDesc: "Digital Governance Platform"
-      }
+      ar: { loginTitle: "تسجيل الدخول", loginSub: "يرجى اختيار صفتك للدخول إلى النظام", emailLabel: "البريد الإلكتروني", passLabel: "كلمة المرور", loginBtn: "دخول آمن", demoTitle: "حسابات الوصول السريع (Demo Access)", backToHome: "العودة للرئيسية", systemName: "AndroGov", systemDesc: "منصة الحوكمة الرقمية الشاملة" },
+      en: { loginTitle: "Sign In", loginSub: "Please select your role to access", emailLabel: "Email Address", passLabel: "Password", loginBtn: "Secure Login", demoTitle: "Quick Access Accounts (Demo)", backToHome: "Back to Home", systemName: "AndroGov", systemDesc: "Digital Governance Platform" }
     };
 
     let lang = localStorage.getItem('lang') || 'ar';
 
-    // عند تحميل الصفحة
     document.addEventListener('DOMContentLoaded', async () => {
         applyTheme();
         applyLang();
         
-        // تشغيل المحرك وعرض المستخدمين
+        // 🚨 فحص أمان: التأكد من تحميل البيانات
+        if (typeof POLICY_DATA === 'undefined') {
+            console.error("Critical Error: POLICY_DATA is missing.");
+            document.getElementById('usersContainer').innerHTML = `
+                <div class="p-3 bg-red-50 text-red-600 rounded-lg text-xs text-center border border-red-200">
+                    <strong>خطأ في النظام:</strong> لم يتم تحميل ملف البيانات.<br>
+                    تأكد من أن ملف data/company_policy.js موجود وسليم.
+                </div>`;
+            return;
+        }
+
+        // تشغيل المحرك
         if(window.authSystem) {
             await window.authSystem.init();
             const users = await window.authSystem.getDemoUsers();
-            renderDynamicUsers(users);
+            
+            if (users.length > 0) {
+                renderDynamicUsers(users);
+            } else {
+                document.getElementById('usersContainer').innerHTML = '<div class="text-center text-slate-400 text-xs py-4">لا يوجد مستخدمين للعرض</div>';
+            }
         }
 
-        // ربط زر الدخول بوظيفة المحرك
+        // ربط النموذج
         document.getElementById('loginForm').addEventListener('submit', (e) => {
             if(window.handleLogin) window.handleLogin(e);
         });
@@ -219,9 +213,8 @@
 
     function renderDynamicUsers(users) {
         const container = document.getElementById('usersContainer');
-        container.innerHTML = ''; // مسح رسالة التحميل
+        container.innerHTML = ''; 
 
-        // ترتيب المجموعات
         const groups = {
             'admin': { title: 'إدارة النظام', color: 'text-red-600', icon: 'fa-user-shield' },
             'board': { title: 'مجلس الإدارة', color: 'text-brandBlue', icon: 'fa-building-columns' },
@@ -235,18 +228,10 @@
         for (const [type, info] of Object.entries(groups)) {
             const groupUsers = users.filter(u => u.type === type);
             if (groupUsers.length > 0) {
-                let sectionHtml = `
-                    <div>
-                        <h4 class="text-[10px] font-bold ${info.color} mb-2 flex items-center gap-1">
-                            <i class="fa-solid ${info.icon}"></i> ${info.title}
-                        </h4>
-                        <div class="flex flex-wrap gap-2">
-                `;
+                let sectionHtml = `<div><h4 class="text-[10px] font-bold ${info.color} mb-2 flex items-center gap-1"><i class="fa-solid ${info.icon}"></i> ${info.title}</h4><div class="flex flex-wrap gap-2">`;
                 
                 groupUsers.forEach(u => {
-                    // توليد صورة رمزية بناء على الاسم
                     const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(u.name)}&background=${u.avatarColor}&color=fff&size=64`;
-                    
                     sectionHtml += `
                         <button type="button" onclick="fillDemo('${u.email}')" class="flex items-center gap-2 px-2 py-1.5 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg hover:border-brandRed hover:shadow-sm transition-all min-w-[140px] text-right group">
                             <img src="${avatarUrl}" class="w-6 h-6 rounded-full shrink-0 border border-transparent group-hover:border-brandRed transition">
@@ -254,17 +239,14 @@
                                 <p class="text-[9px] font-bold text-slate-700 dark:text-slate-200 truncate w-24 leading-tight">${u.name}</p>
                                 <p class="text-[8px] text-slate-400 truncate w-24">${u.title}</p>
                             </div>
-                        </button>
-                    `;
+                        </button>`;
                 });
-                
                 sectionHtml += `</div></div>`;
                 container.innerHTML += sectionHtml;
             }
         }
     }
 
-    // دوال المساعدة
     window.fillDemo = (email) => {
         document.getElementById('email').value = email;
         document.getElementById('password').value = '12345678';
