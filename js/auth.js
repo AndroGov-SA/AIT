@@ -1,6 +1,6 @@
 /**
- * AndroGov Authentication Engine v3.5 (No-Server Mode)
- * يعتمد على متغير POLICY_DATA المحمل مسبقاً في الصفحة.
+ * AndroGov Authentication Engine v4.0 (Multi-Role Support)
+ * مصحح: تم إصلاح مشكلة التوجيه (Redirection Bug)
  */
 
 class AuthSystem {
@@ -14,8 +14,8 @@ class AuthSystem {
 
         try {
             if (typeof POLICY_DATA === 'undefined') {
-                console.error("Critical Error: POLICY_DATA is not defined. Check company_policy.js");
-                alert("خطأ في النظام: لم يتم تحميل ملف البيانات (company_policy.js).\nتأكد من وجود الملف في مجلد data وعدم وجود أخطاء برمجية فيه.");
+                console.error("Critical Error: POLICY_DATA is not defined.");
+                alert("خطأ في النظام: ملف البيانات غير موجود.");
                 return;
             }
 
@@ -32,58 +32,52 @@ class AuthSystem {
         let rawUsers = [];
         let shareholders = [];
 
-        // 1. جلب الموظفين
         if (data.organizational_chart && data.organizational_chart.users_directory) {
             rawUsers = data.organizational_chart.users_directory;
         }
-
-        // 2. جلب المساهمين
         if (data.shareholders) {
             shareholders = data.shareholders;
         }
 
-        // 3. تجهيز المستخدمين وكشف الصلاحيات المعقدة
         this.users = rawUsers.map(u => {
             let roles = [];
             let email = u.email ? u.email.toLowerCase().trim() : '';
             let name = u.name || u.name_ar;
 
-            // --- أ. صلاحيات الأدمن والتنفيذيين (GRC, Shareholder Relations) ---
-            // أيمن (Admin) يملك صلاحية إدارة المساهمين والحوكمة تلقائياً
+            // 1. Admin & GRC
             if (u.role.toLowerCase() === 'admin' || u.role.toLowerCase().includes('grc')) {
                 roles.push('admin');
             }
+            
+            // 2. Executive (CEO, CFO, etc)
             if (u.is_executive || u.role.toLowerCase().includes('ceo') || u.role.toLowerCase().includes('cfo')) {
                 roles.push('exec');
             }
 
-            // --- ب. صلاحيات المجلس (Board) ---
-            // يشمل الرئيس، الأعضاء، وأمين السر (Secretary)
+            // 3. Board Members & Secretary
             if (u.role.toLowerCase().includes('chairman') || 
                 u.role.toLowerCase().includes('board') || 
-                (u.title && u.title.toLowerCase().includes('secretary'))) { // كشف أمناء السر
+                (u.title && u.title.toLowerCase().includes('secretary'))) {
                 roles.push('board');
             }
 
-            // --- ج. صلاحيات لجنة المراجعة (Audit) ---
-            // فحص دقيق: هل اسمه موجود في قائمة اللجنة (عضو أو أمين سر)؟
+            // 4. Audit Committee
             if (data.governance_config && data.governance_config.committees) {
                 const audit = data.governance_config.committees.Audit;
                 if (audit) {
                     const isMember = audit.members && audit.members.some(m => m.includes(name));
-                    const isSec = audit.secretary && audit.secretary.includes(name); // أيمن هنا
-                    
+                    const isSec = audit.secretary && audit.secretary.includes(name);
                     if (isMember || isSec) {
                         if (!roles.includes('audit')) roles.push('audit');
                     }
                 }
             }
 
-            // --- د. صلاحيات المساهمين (Shareholder) ---
+            // 5. Shareholders
             const isShareholder = shareholders.find(s => s.email && s.email.toLowerCase() === email);
             if (isShareholder) roles.push('shareholder');
 
-            // --- هـ. الموظف العادي ---
+            // 6. Staff (Default)
             if (roles.length === 0) roles.push('staff');
 
             return {
@@ -91,13 +85,14 @@ class AuthSystem {
                 name: name,
                 email: email,
                 title: u.title,
-                primaryRole: roles[0], // الدور الافتراضي عند الدخول
-                accessLevels: roles,   // قائمة كل البوابات المتاحة له
+                role: u.role,          // <--- (تمت الإضافة) ضروري للحفاظ على البيانات الأصلية
+                primaryRole: roles[0], // الدور الأساسي للدخول
+                accessLevels: roles,   // كافة الصلاحيات
                 avatarColor: this.getAvatarColor(u.role)
             };
         }).filter(u => u.email !== '');
 
-        // إضافة المساهمين الأفراد (غير الموظفين)
+        // إضافة المساهمين من خارج الشركة
         shareholders.forEach(s => {
             const email = s.email ? s.email.toLowerCase().trim() : '';
             if (!this.users.find(u => u.email === email)) {
@@ -106,26 +101,13 @@ class AuthSystem {
                     name: s.name,
                     email: email,
                     title: `مساهم (${s.percent}%)`,
+                    role: 'Shareholder',
                     primaryRole: 'shareholder',
                     accessLevels: ['shareholder'],
                     avatarColor: '#fb4747'
                 });
             }
         });
-    }
-
-    determineUserType(role, manualType, title) {
-        if (manualType) return manualType;
-        const r = String(role || '').toLowerCase();
-        const t = String(title || '').toLowerCase();
-
-        if (r.includes('admin') || r.includes('grc')) return 'admin';
-        if (r.includes('chairman') || r.includes('board') || t.includes('مجلس')) return 'board';
-        if (r.includes('ceo') || r.includes('cfo') || r.includes('cao') || r.includes('director')) return 'exec';
-        if (r.includes('shareholder')) return 'shareholder';
-        if (r.includes('audit')) return 'audit';
-        if (r.includes('manager')) return 'manager';
-        return 'staff';
     }
 
     getAvatarColor(role) {
@@ -148,18 +130,28 @@ class AuthSystem {
         if (password !== demoPass) throw new Error("كلمة المرور غير صحيحة");
 
         localStorage.setItem('currentUser', JSON.stringify(user));
-        return this.getRedirectUrl(user.role);
+        
+        // (تصحيح) استخدام الدور الأساسي المحسوب للتوجيه
+        return this.getRedirectUrl(user.primaryRole);
     }
 
+    // تم تحديث الروابط لتتوافق مع الرموز الجديدة (admin, board, exec...)
     getRedirectUrl(role) {
         const r = String(role).toLowerCase();
-        if (r.includes('admin')) return 'admin/admin.html';
+        
+        if (r === 'admin') return 'admin/admin.html';
+        if (r === 'board') return 'admin/board.html'; // أو ceo_board.html حسب رغبتك
+        if (r === 'exec') return 'ceo/ceo_dashboard.html';
+        if (r === 'audit') return 'admin/audit.html'; // تأكد من وجود هذا الملف
+        if (r === 'shareholder') return 'shareholder/dashboard.html';
+        
+        // التوجيهات القديمة احتياطاً
         if (r.includes('ceo')) return 'ceo/ceo_dashboard.html';
-        if (r.includes('cfo') || r.includes('finance')) return 'finance/cfo_dashboard.html';
-        if (r.includes('hr') || r.includes('cao')) return 'hr/hr_dashboard.html';
-        if (r.includes('tech') || r.includes('cto')) return 'cto/cto_dashboard.html';
-        if (r.includes('shareholder')) return 'shareholder/dashboard.html'; // بوابة المساهمين
-        return 'employee/dashboard.html'; // بوابة الموظفين
+        if (r.includes('finance')) return 'finance/cfo_dashboard.html';
+        if (r.includes('hr')) return 'hr/hr_dashboard.html';
+        if (r.includes('tech')) return 'cto/cto_dashboard.html';
+        
+        return 'employee/dashboard.html'; // الافتراضي
     }
 
     async getDemoUsers() {
