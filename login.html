@@ -182,8 +182,16 @@
     </section>
   </main>
 
-  <!-- Load Data First -->
-  <script src="data/company_policy.js"></script>
+  <!-- Load Data First with Error Handling -->
+  <!-- Smart Loader: Tries data/ folder first, then falls back to root -->
+  <script src="data/company_policy.js" onerror="window.policyLoadError=true"></script>
+  <script>
+    if(window.policyLoadError) {
+        console.warn('Failed to load from data/, trying root...');
+        document.write('<script src="company_policy.js"><\/script>');
+    }
+  </script>
+
   <!-- Load Logic -->
   <script src="js/auth.js"></script>
 
