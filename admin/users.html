@@ -41,6 +41,10 @@
         .custom-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
         .custom-scroll::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 4px; }
         .dark .custom-scroll::-webkit-scrollbar-thumb { background-color: #475569; }
+        
+        /* Smooth Fade */
+        .fade-in { animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body class="bg-brandGray dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300">
@@ -54,13 +58,13 @@
                 <p class="text-sm text-slate-500 dark:text-slate-400" data-i18n="headerDesc">لوحة التحكم المركزية بالوصول والأدوار (RBAC)</p>
             </div>
             <div class="flex gap-3 self-end md:self-auto">
-                <button onclick="window.history.back()" class="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-bold hover:shadow-md transition flex items-center gap-2">
+                <button onclick="window.history.back()" class="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-bold hover:shadow-md transition flex items-center gap-2 text-slate-600 dark:text-slate-300">
                     <i class="fa-solid fa-arrow-right rtl:ml-2 ltr:mr-2 rtl:rotate-0 ltr:rotate-180"></i> <span data-i18n="btnBack">عودة</span>
                 </button>
-                <button onclick="toggleLanguage()" class="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-bold hover:shadow-md transition">
+                <button onclick="toggleLanguage()" class="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-bold hover:shadow-md transition text-slate-600 dark:text-slate-300">
                     <span id="langLabel">EN</span>
                 </button>
-                <button onclick="toggleDarkMode()" class="w-10 h-10 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center hover:shadow-md transition">
+                <button onclick="toggleDarkMode()" class="w-10 h-10 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center hover:shadow-md transition text-slate-600 dark:text-slate-300">
                     <i class="fa-solid fa-moon"></i>
                 </button>
             </div>
@@ -117,7 +121,7 @@
             </div>
 
             <!-- View 1: Users List -->
-            <div id="view-users" class="block flex-1">
+            <div id="view-users" class="block flex-1 fade-in">
                 <div class="overflow-x-auto">
                     <table class="w-full text-sm text-right rtl:text-right ltr:text-left">
                         <thead class="bg-slate-50 dark:bg-slate-700 text-xs font-bold text-slate-500 uppercase sticky top-0">
@@ -138,7 +142,7 @@
             </div>
 
             <!-- View 2: Roles & Permissions -->
-            <div id="view-roles" class="hidden p-6">
+            <div id="view-roles" class="hidden p-6 fade-in">
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 h-full">
                     <!-- Roles List -->
                     <div class="lg:col-span-4 border-l rtl:border-l ltr:border-r border-slate-200 dark:border-slate-700 pl-6 rtl:pl-6 ltr:pl-0 ltr:pr-6 space-y-3 overflow-y-auto custom-scroll max-h-[600px]" id="rolesList">
@@ -172,31 +176,31 @@
     <!-- DATA & LOGIC -->
     <script>
         // ==========================================
-        // 1. DATA REPOSITORY
+        // 1. DATA REPOSITORY (FULL DATASET)
         // ==========================================
         const SYSTEM_DATA = {
             users: [
-                { id: "USR_000", name: "Abdullah Al-Hawas", title: "Chairman of the Board", dept: "DEP_EXEC", role_ref: "chairman", email: "amh400@gmail.com" },
-                { id: "USR_001", name: "Hesham Al-Sohaibani", title: "CEO & Board Vice Chairman", dept: "DEP_EXEC", role_ref: "ceo", email: "hesham@androomeda.com" },
-                { id: "USR_002", name: "Mohammed Al-Bukheiti", title: "Chief Financial Officer (CFO)", dept: "DEP_FIN", role_ref: "cfo", email: "mtahir@androomeda.com" },
-                { id: "USR_003", name: "Hadi Ahmed", title: "Purchasing Coordinator", dept: "DEP_PROC", role_ref: "employee", email: "hadi@androomeda.com" },
-                { id: "USR_004", name: "Ayman Al-Maghrabi", title: "GRCO / Board Secretary", dept: "DEP_COMP", role_ref: "manager", email: "amaghrabi@androomeda.com" },
-                { id: "USR_005", name: "Mansour Al-Yami", title: "CAO / Board Member", dept: "DEP_HR", role_ref: "manager", email: "myami@androomeda.com" },
-                { id: "USR_006", name: "Dr. Waad Hussein", title: "Medical Supervisor", dept: "DEP_TECH", role_ref: "manager", email: "whussain@androomeda.com" },
-                { id: "USR_007", name: "Nawaf Al-Sahabi", title: "Customer Accounts Manager", dept: "DEP_CS", role_ref: "team_lead", email: "nalsahabi@androomeda.com" },
-                { id: "USR_008", name: "Al-Hussain Al-Humaidi", title: "Technical Support Specialist", dept: "DEP_CS", role_ref: "employee", email: "alhussien@androomeda.com" },
-                { id: "USR_009", name: "Meshail Al-Hadyan", title: "NCSO", dept: "DEP_SEC", role_ref: "manager", email: "malhadyan@androomeda.com" },
-                { id: "USR_010", name: "Maha Al-Hazzan", title: "Digital Marketing Specialist", dept: "DEP_MKT", role_ref: "employee", email: "mhizan@androomeda.com" },
-                { id: "USR_011", name: "Vacant", title: "Sales Manager", dept: "DEP_SALES", role_ref: "manager", email: "SalesManager@androomeda.com" },
-                { id: "USR_014", name: "Abdullah Al-Jubeir", title: "Office Support", dept: "DEP_HR", role_ref: "employee", email: "Ajubeir@androomeda.com" },
-                { id: "USR_015", name: "Rand Al-Hourani", title: "Technical Team Lead", dept: "DEP_TECH", role_ref: "team_lead", email: "Rhourani@androomeda.com" },
-                { id: "USR_020", name: "Muhammad Akhtar", title: "Director of Development", dept: "DEP_TECH", role_ref: "manager", email: "Makhtar@androomeda.com" },
-                { id: "USR_023", name: "Software Developers Team", title: "Software Developers Team", dept: "DEP_TECH", role_ref: "employee", email: "SDT@androomeda.com" },
-                { id: "COMM_01", name: "Mohammed Al-Enezi", title: "Audit Committee Chairman", dept: "DEP_AUDIT", role_ref: "board_member", email: "mohammedmansour.socpa@gmail.com" },
-                { id: "COMM_02", name: "Adel Sasa", title: "Audit Committee Member", dept: "DEP_AUDIT", role_ref: "viewer", email: "adel.sasa1@gmail.com" },
-                { id: "BRD_003", name: "Ahmed Al-Suhaibani", title: "Board & Audit Member", dept: "DEP_EXEC", role_ref: "board_member", email: "a.s.alsuhaibani@microtec.com.sa" },
-                { id: "AUD_INT", name: "Internal Auditor", title: "Internal Auditor", dept: "DEP_AUDIT", role_ref: "manager", email: "InternalAudit@androomeda.com" },
-                { id: "AUD_EXT", name: "External Auditor", title: "External Auditor (KPMG/EY)", dept: "DEP_AUDIT", role_ref: "viewer", email: "ExternalAudit@androomeda.com" }
+                { id: "USR_000", name: { ar: "عبدالله الحواس", en: "Abdullah Al-Hawas" }, title: { ar: "رئيس مجلس الإدارة", en: "Chairman of the Board" }, dept: "DEP_EXEC", role_ref: "chairman", email: "amh400@gmail.com" },
+                { id: "USR_001", name: { ar: "هشام السحيباني", en: "Hesham Al-Sohaibani" }, title: { ar: "الرئيس التنفيذي ونائب الرئيس", en: "CEO & Vice Chairman" }, dept: "DEP_EXEC", role_ref: "ceo", email: "hesham@androomeda.com" },
+                { id: "USR_002", name: { ar: "محمد البخيتي", en: "Mohammed Al-Bukheiti" }, title: { ar: "المدير المالي", en: "Chief Financial Officer (CFO)" }, dept: "DEP_FIN", role_ref: "cfo", email: "mtahir@androomeda.com" },
+                { id: "USR_003", name: { ar: "هادي أحمد", en: "Hadi Ahmed" }, title: { ar: "منسق المشتريات والدعم", en: "Purchasing Coordinator" }, dept: "DEP_PROC", role_ref: "employee", email: "hadi@androomeda.com" },
+                { id: "USR_004", name: { ar: "أيمن المغربي", en: "Ayman Al-Maghrabi" }, title: { ar: "مسؤول الحوكمة / أمين السر", en: "GRCO / Board Secretary" }, dept: "DEP_COMP", role_ref: "manager", email: "amaghrabi@androomeda.com" },
+                { id: "USR_005", name: { ar: "منصور اليامي", en: "Mansour Al-Yami" }, title: { ar: "المدير الإداري / عضو مجلس", en: "CAO / Board Member" }, dept: "DEP_HR", role_ref: "manager", email: "myami@androomeda.com" },
+                { id: "USR_006", name: { ar: "د. وعد حسين", en: "Dr. Waad Hussein" }, title: { ar: "المشرف الطبي", en: "Medical Supervisor" }, dept: "DEP_TECH", role_ref: "manager", email: "whussain@androomeda.com" },
+                { id: "USR_007", name: { ar: "نواف السحابي", en: "Nawaf Al-Sahabi" }, title: { ar: "مدير حسابات العملاء", en: "Customer Accounts Manager" }, dept: "DEP_CS", role_ref: "team_lead", email: "nalsahabi@androomeda.com" },
+                { id: "USR_008", name: { ar: "الحسين الحميدي", en: "Al-Hussain Al-Humaidi" }, title: { ar: "أخصائي دعم فني", en: "Technical Support Specialist" }, dept: "DEP_CS", role_ref: "employee", email: "alhussien@androomeda.com" },
+                { id: "USR_009", name: { ar: "مشاعل الهذيان", en: "Meshail Al-Hadyan" }, title: { ar: "مسؤول الأمن السيبراني", en: "NCSO" }, dept: "DEP_SEC", role_ref: "manager", email: "malhadyan@androomeda.com" },
+                { id: "USR_010", name: { ar: "مها الحزان", en: "Maha Al-Hazzan" }, title: { ar: "أخصائي تسويق رقمي", en: "Digital Marketing Specialist" }, dept: "DEP_MKT", role_ref: "employee", email: "mhizan@androomeda.com" },
+                { id: "USR_011", name: { ar: "شاغر", en: "Vacant" }, title: { ar: "مدير المبيعات", en: "Sales Manager" }, dept: "DEP_SALES", role_ref: "manager", email: "SalesManager@androomeda.com", status: "inactive" },
+                { id: "USR_014", name: { ar: "عبدالله الجبير", en: "Abdullah Al-Jubeir" }, title: { ar: "دعم إداري", en: "Office Support" }, dept: "DEP_HR", role_ref: "employee", email: "Ajubeir@androomeda.com" },
+                { id: "USR_015", name: { ar: "رند الحوراني", en: "Rand Al-Hourani" }, title: { ar: "قائد الفريق التقني", en: "Technical Team Lead" }, dept: "DEP_TECH", role_ref: "team_lead", email: "Rhourani@androomeda.com" },
+                { id: "USR_020", name: { ar: "محمد أختر", en: "Muhammad Akhtar" }, title: { ar: "مدير التطوير", en: "Director of Development" }, dept: "DEP_TECH", role_ref: "manager", email: "Makhtar@androomeda.com" },
+                { id: "USR_023", name: { ar: "فريق التطوير", en: "Software Developers Team" }, title: { ar: "فريق البرمجيات", en: "Software Developers Team" }, dept: "DEP_TECH", role_ref: "employee", email: "SDT@androomeda.com" },
+                { id: "COMM_01", name: { ar: "محمد العنزي", en: "Mohammed Al-Enezi" }, title: { ar: "رئيس لجنة المراجعة", en: "Audit Committee Chairman" }, dept: "DEP_AUDIT", role_ref: "board_member", email: "mohammedmansour.socpa@gmail.com" },
+                { id: "COMM_02", name: { ar: "عادل ساسا", en: "Adel Sasa" }, title: { ar: "عضو لجنة المراجعة", en: "Audit Committee Member" }, dept: "DEP_AUDIT", role_ref: "viewer", email: "adel.sasa1@gmail.com" },
+                { id: "BRD_003", name: { ar: "أحمد السحيباني", en: "Ahmed Al-Suhaibani" }, title: { ar: "عضو مجلس إدارة ولجنة", en: "Board & Audit Member" }, dept: "DEP_EXEC", role_ref: "board_member", email: "a.s.alsuhaibani@microtec.com.sa" },
+                { id: "AUD_INT", name: { ar: "المدقق الداخلي", en: "Internal Auditor" }, title: { ar: "المدقق الداخلي", en: "Internal Auditor" }, dept: "DEP_AUDIT", role_ref: "manager", email: "InternalAudit@androomeda.com" },
+                { id: "AUD_EXT", name: { ar: "المدقق الخارجي", en: "External Auditor" }, title: { ar: "المدقق الخارجي (KPMG/EY)", en: "External Auditor (KPMG/EY)" }, dept: "DEP_AUDIT", role_ref: "viewer", email: "ExternalAudit@androomeda.com" }
             ],
             shareholders: [
                 { id: "SH_001", name: { ar: "ورثة محمد بن صالح السحيباني", en: "Heirs of Mohammed Al-Suhaibani" }, email: "alcaseer@gmail.com", percent: 35 },
@@ -290,6 +294,7 @@
                 colStatus: "الحالة",
                 colActions: "إجراءات",
                 statusActive: "نشط",
+                statusInactive: "غير نشط",
                 inherits: "يرث صلاحيات:",
                 ownerDept: "الملاك / المساهمين"
             },
@@ -312,6 +317,7 @@
                 colStatus: "Status",
                 colActions: "Actions",
                 statusActive: "Active",
+                statusInactive: "Inactive",
                 inherits: "Inherits from:",
                 ownerDept: "Owners / Shareholders"
             }
@@ -380,7 +386,8 @@
             const emps = SYSTEM_DATA.users.map(u => ({
                 ...u,
                 type: 'employee',
-                displayName: u.name, // Usually EN in source, but we keep it simple
+                displayName: currentLang === 'ar' ? u.name.ar : u.name.en,
+                displayTitle: currentLang === 'ar' ? u.title.ar : u.title.en,
                 displayRole: getRoleLabel(u.role_ref),
                 displayDept: getDeptName(u.dept),
                 avatarColor: getRoleColor(u.role_ref)
@@ -393,7 +400,7 @@
                     id: s.id,
                     email: s.email,
                     displayName: currentLang === 'ar' ? s.name.ar : s.name.en,
-                    title: currentLang === 'ar' ? `مساهم (${s.percent}%)` : `Shareholder (${s.percent}%)`,
+                    displayTitle: currentLang === 'ar' ? `مساهم (${s.percent}%)` : `Shareholder (${s.percent}%)`,
                     type: 'shareholder',
                     role_ref: 'shareholder',
                     displayRole: getRoleLabel('shareholder'),
@@ -419,7 +426,11 @@
             filtered.forEach(u => {
                 const safeColor = (u.avatarColor || '#64748B').replace('#','');
                 const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(u.displayName)}&background=${safeColor}&color=fff&bold=true`;
-                
+                const isActive = u.status !== 'inactive';
+                const statusColor = isActive ? 'bg-green-50 text-green-600 border-green-100' : 'bg-red-50 text-red-600 border-red-100';
+                const statusDot = isActive ? 'bg-green-500' : 'bg-red-500';
+                const statusText = isActive ? t.statusActive : t.statusInactive;
+
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition border-b border-slate-100 dark:border-slate-700">
                         <td class="p-4">
@@ -435,18 +446,18 @@
                             <span class="px-2 py-1 rounded text-[11px] font-bold bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300">
                                 ${u.displayRole}
                             </span>
-                            <div class="text-[10px] text-slate-400 mt-1">${u.title}</div>
+                            <div class="text-[10px] text-slate-400 mt-1">${u.displayTitle}</div>
                         </td>
                         <td class="p-4 text-xs text-slate-500">${u.displayDept}</td>
                         <td class="p-4 text-xs font-en text-slate-500">${u.email}</td>
                         <td class="p-4 text-center">
-                            <span class="inline-flex items-center gap-1.5 px-2 py-1 rounded-full text-[10px] font-bold bg-green-50 text-green-600 border border-green-100">
-                                <span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span> ${t.statusActive}
+                            <span class="inline-flex items-center gap-1.5 px-2 py-1 rounded-full text-[10px] font-bold ${statusColor} border">
+                                <span class="w-1.5 h-1.5 rounded-full ${statusDot} animate-pulse"></span> ${statusText}
                             </span>
                         </td>
                         <td class="p-4 text-center flex justify-center gap-2">
-                            <button onclick="editUser('${u.id}')" class="w-8 h-8 rounded-lg bg-slate-50 hover:bg-brandBlue hover:text-white text-slate-400 transition flex items-center justify-center"><i class="fa-solid fa-pen"></i></button>
-                            <button onclick="deleteUser('${u.id}')" class="w-8 h-8 rounded-lg bg-slate-50 hover:bg-brandRed hover:text-white text-slate-400 transition flex items-center justify-center"><i class="fa-solid fa-trash"></i></button>
+                            <button onclick="editUser('${u.displayName}')" class="w-8 h-8 rounded-lg bg-slate-50 hover:bg-brandBlue hover:text-white text-slate-400 transition flex items-center justify-center"><i class="fa-solid fa-pen"></i></button>
+                            <button onclick="deleteUser('${u.displayName}')" class="w-8 h-8 rounded-lg bg-slate-50 hover:bg-brandRed hover:text-white text-slate-400 transition flex items-center justify-center"><i class="fa-solid fa-trash"></i></button>
                         </td>
                     </tr>
                 `;
@@ -557,9 +568,9 @@
         }
 
         // Mock Actions
-        window.editUser = (id) => alert((currentLang === 'ar' ? "تعديل المستخدم: " : "Edit User: ") + id);
-        window.deleteUser = (id) => {
-            if(confirm(currentLang === 'ar' ? "هل أنت متأكد من الحذف؟" : "Are you sure?")) {
+        window.editUser = (name) => alert((currentLang === 'ar' ? "تعديل: " : "Edit: ") + name);
+        window.deleteUser = (name) => {
+            if(confirm((currentLang === 'ar' ? "هل أنت متأكد من حذف " : "Are you sure you want to delete ") + name + "?")) {
                 alert("تم الحذف (محاكاة)");
             }
         };
