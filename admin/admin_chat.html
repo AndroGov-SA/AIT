@@ -4,135 +4,137 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#FB4747">
-    <title>Internal Chat | AndroGov</title>
+    <title data-i18n="pageTitle">AndroGov | المحادثات الداخلية</title>
+    
+    <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
 
     <script>
         tailwind.config = {
             darkMode: 'class',
             theme: {
-                extend: { colors: { brandRed: '#FB4747', brandDark: '#0F172A' }, fontFamily: { sans: ['Tajawal', 'Inter', 'sans-serif'] } }
+                extend: {
+                    colors: {
+                        brandRed: '#FB4747',
+                        brandBlue: '#4267B2',
+                        brandDark: '#1E293B',
+                        brandGray: '#F8FAFC'
+                    },
+                    fontFamily: {
+                        sans: ['Tajawal', 'Inter', 'sans-serif'],
+                        en: ['Inter', 'sans-serif']
+                    }
+                }
             }
         }
     </script>
     <style>
-        .custom-scroll::-webkit-scrollbar { width: 4px; }
+        @media print { .no-print { display: none !important; } }
+        body { transition: opacity 0.2s ease-in-out; }
+        .custom-scroll::-webkit-scrollbar { width: 5px; }
         .custom-scroll::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 4px; }
+        .dark .custom-scroll::-webkit-scrollbar-thumb { background-color: #475569; }
+        
+        .chat-bubble { max-width: 75%; padding: 10px 14px; border-radius: 16px; font-size: 0.9rem; line-height: 1.5; word-wrap: break-word; position: relative; }
+        .chat-bubble.sent { background-color: #FB4747; color: white; border-bottom-left-radius: 4px; margin-right: auto; }
+        .chat-bubble.received { background-color: #FFFFFF; color: #1E293B; border-bottom-right-radius: 4px; border: 1px solid #E2E8F0; }
+        .dark .chat-bubble.received { background-color: #334155; color: #F8FAFC; border-color: #475569; }
+
+        /* RTL/LTR Adjustments */
+        [dir="ltr"] .chat-bubble.sent { margin-right: 0; margin-left: auto; border-bottom-left-radius: 16px; border-bottom-right-radius: 4px; }
+        [dir="ltr"] .chat-bubble.received { border-bottom-right-radius: 16px; border-bottom-left-radius: 4px; }
     </style>
 </head>
-<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300 opacity-0 overflow-hidden">
+<body class="bg-brandGray dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300 overflow-hidden h-screen flex flex-col">
 
-    <div id="sidebar-container"></div>
+    <!-- 1. Layout Containers -->
+    <div id="sidebar-container" class="no-print hidden md:block"></div>
     
-    <div class="main-content-wrapper md:mr-72 transition-all duration-300 flex flex-col h-screen">
-        <div id="header-container"></div>
+    <div class="main-content-wrapper md:mr-72 transition-all duration-300 flex flex-col h-full">
+        <div id="header-container" class="no-print"></div>
 
-        <main class="flex-1 flex overflow-hidden p-4 gap-4">
+        <!-- 2. Main Content (Chat Interface) -->
+        <main class="flex-1 flex overflow-hidden p-4 gap-4 relative">
             
-            <div class="w-80 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 flex flex-col">
+            <!-- Chat List (Sidebar) -->
+            <div class="w-full md:w-80 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 flex flex-col z-20 absolute md:relative h-full transition-transform transform md:translate-x-0" id="chatListPanel">
+                
+                <!-- Search & Header -->
                 <div class="p-4 border-b border-slate-100 dark:border-slate-700">
+                    <h2 class="text-lg font-bold mb-3 dark:text-white flex justify-between items-center">
+                        <span data-i18n="chatTitle">المحادثات</span>
+                        <button class="md:hidden text-slate-400" onclick="toggleChatList()"><i class="fa-solid fa-xmark"></i></button>
+                    </h2>
                     <div class="relative">
-                        <input type="text" placeholder="بحث موظف / مجموعة..." class="w-full bg-slate-50 dark:bg-slate-900 border-none rounded-lg pl-10 pr-4 py-2 text-xs focus:ring-1 focus:ring-brandRed outline-none dark:text-white">
-                        <i class="fa-solid fa-search absolute top-2.5 left-3 text-slate-400"></i>
+                        <input type="text" id="userSearch" onkeyup="filterUsers()" placeholder="..." class="w-full bg-slate-50 dark:bg-slate-900 border-none rounded-xl pl-10 pr-4 py-2.5 text-sm focus:ring-2 focus:ring-brandRed/20 outline-none dark:text-white transition" data-i18n-ph="searchPh">
+                        <i class="fa-solid fa-search absolute top-3 left-3 text-slate-400 rtl:left-3 ltr:right-3 rtl:right-auto ltr:left-auto"></i>
                     </div>
                 </div>
 
-                <div class="flex-1 overflow-y-auto custom-scroll p-2 space-y-1">
-                    <div class="text-[10px] font-bold text-slate-400 px-3 py-2 uppercase">غرف العمليات (Groups)</div>
-                    
-                    <button class="w-full flex items-center gap-3 p-3 rounded-xl bg-red-50 dark:bg-red-900/20 text-brandRed font-bold transition">
-                        <span class="w-2 h-2 rounded-full bg-brandRed"></span>
-                        <span class="flex-1 text-right">لجنة الحوكمة (Governance)</span>
-                        <span class="text-[10px] bg-red-200 text-red-700 px-1.5 rounded-full">2</span>
-                    </button>
-                    
-                    <button class="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition">
-                        <span class="w-2 h-2 rounded-full bg-slate-300"></span>
-                        <span class="flex-1 text-right text-slate-600 dark:text-slate-300">الاجتماع التنفيذي</span>
-                    </button>
+                <!-- Users List -->
+                <div class="flex-1 overflow-y-auto custom-scroll p-2 space-y-1" id="usersListContainer">
+                    <!-- Groups Section -->
+                    <div class="text-[10px] font-bold text-slate-400 px-3 py-2 uppercase tracking-wider" data-i18n="groupsTitle">غرف العمليات</div>
+                    <div id="groupsList">
+                        <!-- Populated by JS -->
+                    </div>
 
-                    <div class="text-[10px] font-bold text-slate-400 px-3 py-2 uppercase mt-4">مدراء الإدارات (Direct)</div>
-
-                    <button class="w-full flex items-center gap-3 p-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition group" onclick="loadChat('Mohammed')">
-                        <div class="relative">
-                            <img src="https://ui-avatars.com/api/?name=Mohammed+B&background=8b5cf6&color=fff" class="w-10 h-10 rounded-full">
-                            <span class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span>
-                        </div>
-                        <div class="text-right flex-1">
-                            <p class="text-sm font-bold dark:text-white">محمد البخيتي (CFO)</p>
-                            <p class="text-[10px] text-slate-400 truncate">تم رفع تقرير الربع الأول...</p>
-                        </div>
-                        <span class="text-[10px] text-slate-400">10:30</span>
-                    </button>
-
-                    <button class="w-full flex items-center gap-3 p-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition group" onclick="loadChat('Mansour')">
-                        <div class="relative">
-                            <img src="https://ui-avatars.com/api/?name=Mansour+Y&background=f59e0b&color=fff" class="w-10 h-10 rounded-full">
-                            <span class="absolute bottom-0 right-0 w-3 h-3 bg-yellow-500 border-2 border-white rounded-full"></span>
-                        </div>
-                        <div class="text-right flex-1">
-                            <p class="text-sm font-bold dark:text-white">منصور اليامي (HR)</p>
-                            <p class="text-[10px] text-slate-400 truncate">بخصوص التوظيف الجديد...</p>
-                        </div>
-                        <span class="text-[10px] text-slate-400">أمس</span>
-                    </button>
+                    <!-- Direct Messages Section -->
+                    <div class="text-[10px] font-bold text-slate-400 px-3 py-2 uppercase tracking-wider mt-2" data-i18n="directTitle">المحادثات المباشرة</div>
+                    <div id="directList">
+                        <!-- Populated by JS -->
+                    </div>
                 </div>
             </div>
 
-            <div class="flex-1 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 flex flex-col">
+            <!-- Chat Area -->
+            <div class="flex-1 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 flex flex-col overflow-hidden relative">
                 
-                <div class="p-4 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center">
+                <!-- Chat Header -->
+                <div class="p-4 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm z-10">
                     <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-lg bg-red-50 text-brandRed flex items-center justify-center font-bold text-lg"><i class="fa-solid fa-users-gear"></i></div>
+                        <button class="md:hidden text-slate-500 mr-2" onclick="toggleChatList()"><i class="fa-solid fa-bars"></i></button>
+                        <div class="relative">
+                            <img id="activeAvatar" src="https://ui-avatars.com/api/?name=Andro+Gov&background=FB4747&color=fff" class="w-10 h-10 rounded-full border border-slate-100 dark:border-slate-600">
+                            <span class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white dark:border-slate-800 rounded-full"></span>
+                        </div>
                         <div>
-                            <h3 class="font-bold text-slate-800 dark:text-white">لجنة الحوكمة (Governance)</h3>
-                            <p class="text-xs text-slate-500">4 أعضاء • نشطة الآن</p>
+                            <h3 class="font-bold text-slate-800 dark:text-white text-sm" id="activeName">غرفة الإعلانات العامة</h3>
+                            <p class="text-[10px] text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                                <span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span> <span id="activeStatus" data-i18n="statusOnline">نشط الآن</span>
+                            </p>
                         </div>
                     </div>
-                    <div class="flex gap-2 text-slate-400">
-                        <button class="hover:text-brandRed transition"><i class="fa-solid fa-video"></i></button>
-                        <button class="hover:text-brandRed transition"><i class="fa-solid fa-circle-info"></i></button>
+                    <div class="flex gap-3 text-slate-400">
+                        <button class="hover:text-brandRed transition w-8 h-8 rounded-full hover:bg-slate-50 dark:hover:bg-slate-700 flex items-center justify-center"><i class="fa-solid fa-phone"></i></button>
+                        <button class="hover:text-brandRed transition w-8 h-8 rounded-full hover:bg-slate-50 dark:hover:bg-slate-700 flex items-center justify-center"><i class="fa-solid fa-video"></i></button>
+                        <button class="hover:text-brandRed transition w-8 h-8 rounded-full hover:bg-slate-50 dark:hover:bg-slate-700 flex items-center justify-center"><i class="fa-solid fa-circle-info"></i></button>
                     </div>
                 </div>
 
-                <div class="flex-1 overflow-y-auto custom-scroll p-6 space-y-6 bg-slate-50/50 dark:bg-slate-900/50" id="chatMessages">
-                    
-                    <div class="flex justify-center"><span class="text-[10px] bg-slate-200 dark:bg-slate-700 px-3 py-1 rounded-full text-slate-500">اليوم</span></div>
-
-                    <div class="flex gap-4">
-                        <img src="https://ui-avatars.com/api/?name=Hesham+S&background=0F172A&color=fff" class="w-10 h-10 rounded-full mt-1">
-                        <div class="max-w-[70%]">
-                            <div class="flex items-baseline gap-2 mb-1">
-                                <span class="font-bold text-sm dark:text-white">هشام السحيباني (CEO)</span>
-                                <span class="text-[10px] text-slate-400">09:00 AM</span>
-                            </div>
-                            <div class="bg-white dark:bg-slate-700 p-3 rounded-2xl rounded-tr-none shadow-sm text-sm text-slate-700 dark:text-slate-200 border border-slate-100 dark:border-slate-600">
-                                صباح الخير أيمن، هل تم تعميم سياسة الحضور الجديدة على جميع الموظفين؟
-                            </div>
+                <!-- Messages Area -->
+                <div class="flex-1 overflow-y-auto custom-scroll p-6 space-y-4 bg-slate-50/50 dark:bg-slate-900/50" id="chatMessages">
+                    <!-- Default Welcome Message -->
+                    <div class="flex flex-col items-center justify-center h-full text-slate-400 space-y-3 opacity-60">
+                        <div class="w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-3xl mb-2">
+                            <i class="fa-regular fa-comments"></i>
                         </div>
-                    </div>
-
-                    <div class="flex gap-4 flex-row-reverse">
-                        <img src="https://ui-avatars.com/api/?name=Ayman+M&background=FB4747&color=fff" class="w-10 h-10 rounded-full mt-1">
-                        <div class="max-w-[70%]">
-                            <div class="bg-brandRed text-white p-3 rounded-2xl rounded-tl-none shadow-md text-sm">
-                                أهلاً أستاذ هشام. نعم، جاري إرسالها الآن كتعميم إلزامي عبر النظام. لن يستطيع أحد دخول النظام قبل قراءتها.
-                            </div>
-                            <div class="text-[10px] text-slate-400 text-left mt-1 flex items-center gap-1 justify-end">
-                                <i class="fa-solid fa-check-double text-brandRed"></i> 09:05 AM
-                            </div>
-                        </div>
+                        <p class="text-sm" data-i18n="selectChat">اختر محادثة للبدء</p>
                     </div>
                 </div>
 
+                <!-- Input Area -->
                 <div class="p-4 bg-white dark:bg-slate-800 border-t border-slate-100 dark:border-slate-700">
-                    <div class="flex items-center gap-3 bg-slate-50 dark:bg-slate-900 p-2 rounded-xl border border-slate-200 dark:border-slate-700 focus-within:ring-1 focus-within:ring-brandRed transition">
-                        <button class="text-slate-400 hover:text-brandRed p-2"><i class="fa-solid fa-paperclip"></i></button>
-                        <input type="text" id="msgInput" placeholder="اكتب رسالتك..." class="flex-1 bg-transparent border-none outline-none text-sm dark:text-white" onkeypress="handleEnter(event)">
-                        <button onclick="sendMsg()" class="bg-brandRed text-white w-10 h-10 rounded-lg flex items-center justify-center hover:bg-red-700 transition shadow-lg shadow-red-500/20">
-                            <i class="fa-solid fa-paper-plane"></i>
+                    <div class="flex items-center gap-3 bg-slate-50 dark:bg-slate-900 p-2 rounded-xl border border-slate-200 dark:border-slate-700 focus-within:ring-2 focus-within:ring-brandRed/20 transition">
+                        <button class="text-slate-400 hover:text-brandRed p-2 transition"><i class="fa-solid fa-paperclip"></i></button>
+                        <button class="text-slate-400 hover:text-brandRed p-2 transition"><i class="fa-regular fa-face-smile"></i></button>
+                        <input type="text" id="msgInput" placeholder="..." class="flex-1 bg-transparent border-none outline-none text-sm dark:text-white placeholder-slate-400" onkeypress="handleEnter(event)" data-i18n-ph="typeMsg">
+                        <button onclick="sendMsg()" class="bg-brandRed text-white w-10 h-10 rounded-lg flex items-center justify-center hover:bg-red-700 transition shadow-lg shadow-red-500/20 transform active:scale-95">
+                            <i class="fa-solid fa-paper-plane rtl:rotate-0 ltr:rotate-90"></i>
                         </button>
                     </div>
                 </div>
@@ -142,28 +144,346 @@
         </main>
     </div>
 
-    <script src="layout.js"></script>
-    <script src="bot.js"></script>
+    <!-- 3. Scripts -->
     <script>
+        // ==========================================
+        // A. DATA REPOSITORY (FULL)
+        // ==========================================
+        const SYSTEM_DATA = {
+            users: [
+                { id: "USR_001", name: { ar: "هشام السحيباني", en: "Hesham Al-Sohaibani" }, title: { ar: "CEO", en: "CEO" }, role: "CEO" },
+                { id: "USR_002", name: { ar: "محمد البخيتي", en: "Mohammed Al-Bukheiti" }, title: { ar: "CFO", en: "CFO" }, role: "Manager" },
+                { id: "USR_004", name: { ar: "أيمن المغربي", en: "Ayman Al-Maghrabi" }, title: { ar: "GRC", en: "GRC" }, role: "Manager" },
+                { id: "USR_005", name: { ar: "منصور اليامي", en: "Mansour Al-Yami" }, title: { ar: "CAO", en: "CAO" }, role: "Manager" },
+                { id: "USR_007", name: { ar: "نواف السحابي", en: "Nawaf Al-Sahabi" }, title: { ar: "Team Lead", en: "Team Lead" }, role: "Team Lead" },
+                { id: "USR_009", name: { ar: "مشاعل الهذيان", en: "Meshail Al-Hadyan" }, title: { ar: "NCSO", en: "NCSO" }, role: "Manager" },
+                { id: "USR_010", name: { ar: "مها الحزان", en: "Maha Al-Hazzan" }, title: { ar: "Marketing", en: "Marketing" }, role: "Employee" },
+                { id: "USR_014", name: { ar: "عبدالله الجبير", en: "Abdullah Al-Jubeir" }, title: { ar: "Support", en: "Support" }, role: "Employee" },
+                { id: "USR_015", name: { ar: "رند الحوراني", en: "Rand Al-Hourani" }, title: { ar: "Tech Lead", en: "Tech Lead" }, role: "Team Lead" },
+                { id: "USR_020", name: { ar: "محمد أختر", en: "Muhammad Akhtar" }, title: { ar: "Dev Director", en: "Dev Director" }, role: "Manager" }
+            ],
+            groups: [
+                { id: "GRP_01", name: { ar: "الإعلانات العامة", en: "General Announcements" }, color: "brandRed", unread: 0 },
+                { id: "GRP_02", name: { ar: "اللجنة التنفيذية", en: "Executive Committee" }, color: "blue-600", unread: 3 },
+                { id: "GRP_03", name: { ar: "فريق التقنية", en: "Tech Team" }, color: "purple-600", unread: 0 }
+            ]
+        };
+
+        // ==========================================
+        // B. LAYOUT ENGINE (EMBEDDED)
+        // ==========================================
+        (function() {
+            let currentUser = JSON.parse(localStorage.getItem('currentUser')) || {
+                id: "USR_004", name: {ar: "مستخدم النظام", en: "System User"}, role: "Guest"
+            };
+            const config = {
+                lang: localStorage.getItem('lang') || 'ar',
+                theme: localStorage.getItem('theme') || 'light'
+            };
+
+            const menuStructure = [
+                { section: 'main', items: [{ key: 'dash', icon: 'fa-gauge-high', link: 'admin.html' }] },
+                { section: 'comm', items: [{ key: 'chat', icon: 'fa-comments', link: 'chat.html' }, { key: 'circulars', icon: 'fa-bullhorn', link: 'admin_circulars.html' }] },
+                { section: 'gov', items: [{ key: 'ga', icon: 'fa-users-rectangle', link: 'ga.html' }, { key: 'board', icon: 'fa-building-columns', link: 'board.html' }] },
+                { section: 'admin', items: [{ key: 'users', icon: 'fa-users-gear', link: 'users.html' }, { key: 'settings', icon: 'fa-sliders', link: 'admin_settings.html' }] }
+            ];
+
+            const layoutTrans = {
+                ar: {
+                    sysName: "AndroGov", sysVer: "v4.3", logout: "خروج",
+                    sections: { main: "الرئيسية", comm: "التواصل", gov: "الحوكمة", admin: "النظام" },
+                    menu: { dash: "لوحة القيادة", chat: "الدردشة", circulars: "التعاميم", ga: "الجمعيات", board: "المجلس", users: "المستخدمين", settings: "الإعدادات" }
+                },
+                en: {
+                    sysName: "AndroGov", sysVer: "v4.3", logout: "Logout",
+                    sections: { main: "Main", comm: "Comms", gov: "Gov", admin: "Admin" },
+                    menu: { dash: "Dashboard", chat: "Chat", circulars: "Circulars", ga: "GA", board: "Board", users: "Users", settings: "Settings" }
+                }
+            };
+
+            function initLayout() {
+                const foundUser = SYSTEM_DATA.users.find(u => u.id === currentUser.id); 
+                if(foundUser) {
+                    currentUser = { ...currentUser, name: foundUser.name, title: foundUser.title };
+                    if(foundUser.id === 'USR_004') currentUser.avatarUrl = 'https://androgov-sa.github.io/AIT/photo/grc.png';
+                    else currentUser.avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(foundUser.name.en)}&background=FB4747&color=fff&bold=true`;
+                } else {
+                    currentUser.avatarUrl = `https://ui-avatars.com/api/?name=Guest&background=64748b&color=fff`;
+                }
+
+                applyLayoutSettings();
+                renderSidebar();
+                renderHeader();
+            }
+
+            function applyLayoutSettings() {
+                const html = document.documentElement;
+                html.lang = config.lang;
+                html.dir = config.lang === 'ar' ? 'rtl' : 'ltr';
+                if (config.theme === 'dark') html.classList.add('dark');
+                else html.classList.remove('dark');
+            }
+
+            function renderSidebar() {
+                const container = document.getElementById('sidebar-container');
+                if (!container) return;
+                const dict = layoutTrans[config.lang];
+                const isRtl = config.lang === 'ar';
+                const currentPath = 'chat.html'; // Fixed for this page
+
+                const uName = config.lang === 'ar' ? currentUser.name.ar : currentUser.name.en;
+                const uTitle = config.lang === 'ar' ? currentUser.title.ar : currentUser.title.en;
+
+                let menuHTML = '';
+                menuStructure.forEach(group => {
+                    if(dict.sections[group.section]) { // Check if section exists
+                         menuHTML += `<div class="px-3 mt-6 mb-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider">${dict.sections[group.section]}</div>`;
+                        group.items.forEach(item => {
+                            const isActive = currentPath.includes(item.link);
+                            const activeClass = isActive ? "bg-brandRed text-white shadow-md shadow-red-500/20" : "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-brandRed";
+                            menuHTML += `
+                            <a href="${item.link}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${activeClass}">
+                                <div class="w-6 text-center"><i class="fa-solid ${item.icon}"></i></div>
+                                <span class="flex-1 truncate">${dict.menu[item.key]}</span>
+                            </a>`;
+                        });
+                    }
+                });
+
+                container.innerHTML = `
+                <aside class="fixed top-0 ${isRtl ? 'right-0 border-l' : 'left-0 border-r'} z-50 h-screen w-72 flex-col hidden md:flex bg-white dark:bg-[#0F172A] border-slate-200 dark:border-slate-800 transition-all duration-300">
+                    <div class="h-20 flex items-center px-6 border-b border-slate-100 dark:border-slate-800">
+                        <div class="flex items-center gap-3 w-full">
+                            <img src="https://ait.sa/wp-content/uploads/2024/03/cropped-Square-Logo.png" class="w-10 h-10 rounded-xl bg-white object-contain shrink-0 shadow-sm border border-slate-100 dark:border-slate-700">
+                            <div class="overflow-hidden">
+                                <h1 class="font-bold text-sm text-slate-800 dark:text-white font-sans truncate">AndroGov</h1>
+                                <p class="text-[10px] text-slate-500 uppercase tracking-widest truncate">${dict.sysVer}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <div class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700">
+                            <img src="${currentUser.avatarUrl}" class="w-10 h-10 rounded-full border-2 border-white dark:border-slate-600 object-cover shrink-0">
+                            <div class="overflow-hidden flex-1 min-w-0">
+                                <p class="text-sm font-bold text-slate-800 dark:text-white truncate">${uName}</p>
+                                <p class="text-[10px] text-brandRed font-medium truncate">${uTitle}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <nav class="flex-1 overflow-y-auto px-3 py-2 custom-scroll space-y-0.5">${menuHTML}</nav>
+                </aside>`;
+            }
+
+            function renderHeader() {
+                const container = document.getElementById('header-container');
+                if (!container) return;
+                const dict = layoutTrans[config.lang];
+                
+                container.innerHTML = `
+                <header class="h-16 flex items-center justify-between px-6 bg-white dark:bg-[#0F172A] border-b border-slate-200 dark:border-slate-700 no-print">
+                    <div class="flex items-center gap-4">
+                        <button onclick="document.querySelector('aside').classList.toggle('hidden'); document.querySelector('aside').classList.toggle('flex');" class="md:hidden text-slate-500 dark:text-slate-200 hover:text-brandRed"><i class="fa-solid fa-bars text-xl"></i></button>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <button onclick="window.changeLang()" class="h-8 px-3 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-xs font-bold text-slate-600 dark:text-white transition">${config.lang === 'ar' ? 'EN' : 'AR'}</button>
+                        <button onclick="window.changeTheme()" class="w-8 h-8 rounded-lg border border-slate-200 dark:border-slate-700 flex items-center justify-center hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-yellow-400 transition"><i class="fa-solid ${config.theme === 'dark' ? 'fa-sun' : 'fa-moon'}"></i></button>
+                        <button onclick="window.doLogout()" class="text-red-500 hover:bg-red-50 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-2"><i class="fa-solid fa-power-off"></i> <span class="hidden sm:inline">${dict.logout}</span></button>
+                    </div>
+                </header>`;
+            }
+
+            window.changeTheme = function() {
+                localStorage.setItem('theme', config.theme === 'dark' ? 'light' : 'dark');
+                location.reload();
+            };
+            window.changeLang = function() {
+                localStorage.setItem('lang', config.lang === 'ar' ? 'en' : 'ar');
+                location.reload();
+            };
+            window.doLogout = function() {
+                if (confirm(config.lang === 'ar' ? 'هل أنت متأكد من تسجيل الخروج؟' : 'Are you sure?')) {
+                    localStorage.removeItem('currentUser');
+                    window.location.href = 'login.html'; // Simplified path
+                }
+            };
+
+            initLayout();
+        })();
+
+        // ==========================================
+        // C. CHAT PAGE LOGIC
+        // ==========================================
+        const translations = {
+            ar: {
+                pageTitle: "AndroGov | المحادثات",
+                chatTitle: "المحادثات",
+                searchPh: "بحث موظف / مجموعة...",
+                groupsTitle: "غرف العمليات",
+                directTitle: "المحادثات المباشرة",
+                statusOnline: "نشط الآن",
+                selectChat: "اختر محادثة للبدء",
+                typeMsg: "اكتب رسالتك هنا...",
+                you: "أنت",
+                today: "اليوم",
+                group: "مجموعة"
+            },
+            en: {
+                pageTitle: "AndroGov | Chat",
+                chatTitle: "Messages",
+                searchPh: "Search user / group...",
+                groupsTitle: "Workgroups",
+                directTitle: "Direct Messages",
+                statusOnline: "Active Now",
+                selectChat: "Select a conversation",
+                typeMsg: "Type your message...",
+                you: "You",
+                today: "Today",
+                group: "Group"
+            }
+        };
+
+        let currentChatId = null;
+        const currentLang = localStorage.getItem('lang') || 'ar';
+
+        function initPage() {
+            applyLanguage();
+            renderChatList();
+            document.body.style.opacity = '1';
+        }
+
+        function applyLanguage() {
+            const t = translations[currentLang];
+            document.querySelectorAll('[data-i18n]').forEach(el => { el.innerText = t[el.getAttribute('data-i18n')]; });
+            document.querySelectorAll('[data-i18n-ph]').forEach(el => { el.placeholder = t[el.getAttribute('data-i18n-ph')]; });
+        }
+
+        function renderChatList() {
+            const t = translations[currentLang];
+            const search = document.getElementById('userSearch').value.toLowerCase();
+            
+            // Groups
+            const groupsContainer = document.getElementById('groupsList');
+            groupsContainer.innerHTML = SYSTEM_DATA.groups
+                .filter(g => (currentLang==='ar'?g.name.ar:g.name.en).toLowerCase().includes(search))
+                .map(g => {
+                    const name = currentLang==='ar'?g.name.ar:g.name.en;
+                    let colorClass = g.color === 'brandRed' ? 'text-brandRed bg-red-50 dark:bg-red-900/20' : `text-${g.color} bg-${g.color.split('-')[0]}-50 dark:bg-${g.color.split('-')[0]}-900/20`;
+                    // Fix tailwind dynamic class issue with specific hardcode for demo
+                    if(g.id === "GRP_02") colorClass = "text-blue-600 bg-blue-50 dark:bg-blue-900/20";
+                    if(g.id === "GRP_03") colorClass = "text-purple-600 bg-purple-50 dark:bg-purple-900/20";
+
+                    return `
+                    <button onclick="loadChat('${g.id}', '${name}', 'group')" class="w-full flex items-center gap-3 p-3 rounded-xl ${colorClass} font-bold transition hover:opacity-80 mb-1">
+                        <span class="w-2 h-2 rounded-full bg-current"></span>
+                        <span class="flex-1 text-right rtl:text-right ltr:text-left">${name}</span>
+                        ${g.unread > 0 ? `<span class="text-[10px] bg-white/50 px-1.5 rounded-full">${g.unread}</span>` : ''}
+                    </button>
+                `}).join('');
+
+            // Users
+            const usersContainer = document.getElementById('directList');
+            // Filter out current user (USR_004 assumed)
+            const users = SYSTEM_DATA.users.filter(u => u.id !== 'USR_004' && ((currentLang==='ar'?u.name.ar:u.name.en).toLowerCase().includes(search) || u.role.toLowerCase().includes(search)));
+            
+            usersContainer.innerHTML = users.map(u => {
+                const name = currentLang==='ar'?u.name.ar:u.name.en;
+                const avatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(u.name.en)}&background=random&color=fff`;
+                return `
+                <button onclick="loadChat('${u.id}', '${name}', 'user', '${avatar}')" class="w-full flex items-center gap-3 p-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition group mb-1">
+                    <div class="relative">
+                        <img src="${avatar}" class="w-10 h-10 rounded-full border border-slate-100 dark:border-slate-600">
+                        <span class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white dark:border-slate-800 rounded-full"></span>
+                    </div>
+                    <div class="flex-1 text-right rtl:text-right ltr:text-left overflow-hidden">
+                        <p class="text-sm font-bold dark:text-white truncate">${name}</p>
+                        <p class="text-[10px] text-slate-400 truncate">${u.role}</p>
+                    </div>
+                </button>
+            `}).join('');
+        }
+
+        function filterUsers() { renderChatList(); }
+
+        function loadChat(id, name, type, avatar) {
+            currentChatId = id;
+            document.getElementById('activeName').innerText = name;
+            
+            // Set Avatar
+            const activeAv = document.getElementById('activeAvatar');
+            if(type === 'group') {
+                activeAv.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=FB4747&color=fff`;
+            } else {
+                activeAv.src = avatar;
+            }
+
+            // Close sidebar on mobile
+            if(window.innerWidth < 768) {
+                document.getElementById('chatListPanel').classList.add('-translate-x-full');
+            }
+
+            // Mock Messages
+            const container = document.getElementById('chatMessages');
+            container.innerHTML = '';
+            
+            // Add date separator
+            const t = translations[currentLang];
+            container.innerHTML += `<div class="flex justify-center"><span class="text-[10px] bg-slate-200 dark:bg-slate-700 px-3 py-1 rounded-full text-slate-500">${t.today}</span></div>`;
+
+            // Dummy welcome message
+            const welcomeMsg = type === 'group' 
+                ? (currentLang === 'ar' ? "أهلاً بالجميع في غرفة " + name : "Welcome everyone to " + name)
+                : (currentLang === 'ar' ? "مرحباً " + name : "Hello " + name);
+
+            setTimeout(() => addMessage(welcomeMsg, 'received'), 500);
+        }
+
+        function addMessage(text, type) {
+            const container = document.getElementById('chatMessages');
+            const time = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            
+            const msgHTML = `
+                <div class="flex gap-3 ${type === 'sent' ? 'flex-row-reverse' : ''} animate-fade-in-up">
+                    ${type === 'received' ? `<div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-xs text-slate-600 font-bold">${currentChatId ? currentChatId.charAt(0) : 'U'}</div>` : ''}
+                    <div class="max-w-[75%]">
+                        <div class="chat-bubble ${type}">
+                            ${text}
+                        </div>
+                        <div class="text-[10px] text-slate-400 mt-1 ${type === 'sent' ? 'text-left rtl:text-left ltr:text-right' : 'text-right rtl:text-right ltr:text-left'}">
+                            ${time} ${type === 'sent' ? '<i class="fa-solid fa-check text-brandRed"></i>' : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', msgHTML);
+            container.scrollTop = container.scrollHeight;
+        }
+
         function sendMsg() {
             const input = document.getElementById('msgInput');
             const txt = input.value.trim();
             if(!txt) return;
-
-            const container = document.getElementById('chatMessages');
-            const html = `
-            <div class="flex gap-4 flex-row-reverse animate-fade-in-up">
-                <img src="https://ui-avatars.com/api/?name=Ayman+M&background=FB4747&color=fff" class="w-10 h-10 rounded-full mt-1">
-                <div class="max-w-[70%]">
-                    <div class="bg-brandRed text-white p-3 rounded-2xl rounded-tl-none shadow-md text-sm">${txt}</div>
-                    <div class="text-[10px] text-slate-400 text-left mt-1">الآن</div>
-                </div>
-            </div>`;
-            container.insertAdjacentHTML('beforeend', html);
+            
+            addMessage(txt, 'sent');
             input.value = '';
-            container.scrollTop = container.scrollHeight;
+
+            // Auto reply mock
+            if(currentChatId) {
+                setTimeout(() => {
+                    addMessage(currentLang === 'ar' ? "👍 تم الاستلام" : "👍 Received", 'received');
+                }, 1500);
+            }
         }
+
         function handleEnter(e) { if(e.key === 'Enter') sendMsg(); }
+
+        function toggleChatList() {
+            const list = document.getElementById('chatListPanel');
+            list.classList.toggle('-translate-x-full');
+            list.classList.toggle('absolute'); // Toggle absolute to allow overlay on mobile
+            list.classList.toggle('z-20');
+        }
+
+        document.addEventListener('DOMContentLoaded', initPage);
     </script>
 </body>
 </html>
