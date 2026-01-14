@@ -1,8 +1,8 @@
 /**
- * AndroGov Layout Engine v5.0 (Fixed Data Source)
- * - Uses global POLICY_DATA instead of fetching non-existent JSON
- * - Preserves original currentUser structure (nameAr, nameEn, avatar)
- * - Maps new data structure (organization.key_personnel) to legacy profile format
+ * AndroGov Layout Engine v5.2 (Fixes Scroll & Active States)
+ * - Fixed: Strict Active State matching (No double active buttons)
+ * - Fixed: Sidebar Scroll Preservation (Remembers position between reloads)
+ * - Uses global POLICY_DATA
  */
 
 (function() {
@@ -14,7 +14,6 @@
         theme: localStorage.getItem('theme') || 'light'
     };
 
-    // الحفاظ على هيكلية المستخدم كما طلبتها بالضبط
     let currentUser = JSON.parse(localStorage.getItem('currentUser')) || {
         id: "USR_004",
         nameAr: "مستخدم النظام",
@@ -23,26 +22,22 @@
         avatar: ""
     };
 
-    // --- 2. Data Fetching (Corrected) ---
+    // --- 2. Data Fetching ---
     async function loadCompanyData() {
         try {
-            // التصحيح: الاعتماد على المتغير العام لأن الملف هو JS وليس JSON
             if (typeof POLICY_DATA !== 'undefined') {
                 policyData = POLICY_DATA;
                 console.log("✅ Company Policy Loaded from Memory:", policyData.system.version);
                 
-                // 1. تحديث بيانات المستخدم
                 updateCurrentUserProfile();
 
-                // 2. تطبيق إعدادات الهوية
                 if (policyData.identity && policyData.identity.tokens) {
                     const brandColor = policyData.identity.tokens.colors.primary.value.light;
                     document.documentElement.style.setProperty('--brand-color', brandColor);
                 }
             } else {
-                console.error("⚠️ POLICY_DATA is not defined. Ensure company_policy.js is loaded before layout.js");
+                console.error("⚠️ POLICY_DATA is not defined.");
             }
-
         } catch (error) {
             console.error("⚠️ Error processing company policy:", error);
         }
@@ -52,8 +47,6 @@
         const storedUser = JSON.parse(localStorage.getItem('currentUser'));
         const targetId = storedUser ? storedUser.id : "USR_004"; 
 
-        // التصحيح: التوافق مع الهيكلية الجديدة (organization.key_personnel)
-        // بدلاً من (organizational_chart.users_directory) القديمة
         let directory = [];
         if (policyData.organization && policyData.organization.key_personnel) {
             directory = policyData.organization.key_personnel;
@@ -64,13 +57,9 @@
         const foundUser = directory.find(u => u.id === targetId || u.email === (storedUser ? storedUser.email : ''));
 
         if (foundUser) {
-            // الحفاظ على نفس أسماء المتغيرات التي طلبتها (nameAr, nameEn, avatar)
-            // مع معالجة البيانات القادمة سواء كانت نصاً أو كائناً
             const nameVal = foundUser.name;
             const nameAr = (typeof nameVal === 'object') ? nameVal.ar : nameVal;
             const nameEn = (typeof nameVal === 'object') ? nameVal.en : nameVal;
-            
-            // استخراج اللون من الهوية أو استخدام الأحمر الافتراضي
             const brandColorHex = (policyData.identity?.tokens?.colors?.primary?.value?.light || "FB4747").replace('#', '');
 
             currentUser = {
@@ -78,21 +67,18 @@
                 id: foundUser.id,
                 nameAr: nameAr,
                 nameEn: nameEn,
-                titleAr: foundUser.title, // نفترض أن المسمى موحد حالياً
+                titleAr: foundUser.title,
                 titleEn: foundUser.title,
-                role: foundUser.role_ref || foundUser.role, // دعم التسمية الجديدة والقديمة
+                role: foundUser.role_ref || foundUser.role,
                 department: foundUser.dept || foundUser.department_id,
                 email: foundUser.email,
-                // الحفاظ على رابط الصورة كما هو في كودك الأصلي
                 avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(nameEn)}&background=${brandColorHex}&color=fff&bold=true`
             };
-            
             localStorage.setItem('currentUser', JSON.stringify(currentUser));
         }
     }
 
     // --- 3. Menu Structure ---
-    // (لم أقم بتغيير أي شيء هنا، نسخت الهيكل كما هو من كودك)
     const menuStructure = [
         {
             section: 'main',
@@ -217,7 +203,7 @@
         }
     };
 
-    // --- 5. Notifications (Mocked for Demo) ---
+    // --- 5. Notifications ---
     const notifications = [
         {
             id: 1, type: 'critical', icon: 'fa-shield-virus', color: 'text-red-500 bg-red-50',
@@ -236,17 +222,11 @@
     // --- 6. Render Logic ---
 
     async function init() {
-        // 1. Load Data
         await loadCompanyData();
-        
-        // 2. Apply UI
         applySettings();
         renderSidebar();
         renderHeader();
-        
         document.body.style.opacity = '1';
-        
-        // Listeners
         setupEventListeners();
     }
 
@@ -273,9 +253,7 @@
         const isRtl = config.lang === 'ar';
         const currentPath = window.location.pathname.split('/').pop() || 'admin.html';
         
-        // استخدام المتغيرات الأصلية (nameAr/nameEn)
         const userDisplayName = isRtl ? currentUser.nameAr : currentUser.nameEn;
-        // fallback to Role if title is missing
         const userDisplayTitle = (isRtl ? currentUser.titleAr : currentUser.titleEn) || currentUser.role;
         
         const companyName = (policyData && policyData.identity) 
@@ -283,7 +261,10 @@
             : dict.sysName;
 
         const getLinkClass = (link) => {
-            const isActive = currentPath.includes(link.split('.')[0]); 
+            // FIX 1: مطابقة تامة (Strict Equality) لحل مشكلة الزرين المفعلين
+            // إذا كان الرابط هو نفس اسم الملف الحالي تماماً
+            const isActive = currentPath === link;
+            
             const baseClass = "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200";
             const activeClass = "bg-brandRed text-white shadow-md shadow-red-500/20";
             const inactiveClass = "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-brandRed";
@@ -303,7 +284,6 @@
             });
         });
 
-        // Sidebar HTML (Using currentUser.avatar)
         const sidebarHTML = `
         <aside class="fixed top-0 ${isRtl ? 'right-0 border-l' : 'left-0 border-r'} z-50 h-screen w-72 flex-col hidden md:flex bg-white dark:bg-[#0F172A] border-slate-200 dark:border-slate-800 transition-all duration-300">
             <div class="h-20 flex items-center px-6 border-b border-slate-100 dark:border-slate-800">
@@ -334,7 +314,8 @@
                 </a>
             </div>
 
-            <nav class="flex-1 overflow-y-auto px-3 py-2 custom-scroll space-y-0.5">
+            <!-- FIX 2: إضافة ID للقائمة لاستخدامه في حفظ مكان التمرير -->
+            <nav id="sidebar-nav" class="flex-1 overflow-y-auto px-3 py-2 custom-scroll space-y-0.5">
                 ${menuHTML}
             </nav>
 
@@ -344,6 +325,20 @@
         </aside>`;
 
         container.innerHTML = sidebarHTML;
+
+        // FIX 2 (تابع): استعادة وحفظ مكان التمرير
+        const nav = document.getElementById('sidebar-nav');
+        if (nav) {
+            // استعادة المكان السابق
+            const savedScroll = sessionStorage.getItem('sidebarScroll');
+            if (savedScroll) {
+                nav.scrollTop = parseInt(savedScroll, 10);
+            }
+            // حفظ المكان الجديد عند مغادرة الصفحة
+            window.addEventListener('beforeunload', () => {
+                sessionStorage.setItem('sidebarScroll', nav.scrollTop);
+            });
+        }
     }
 
     function renderHeader() {
