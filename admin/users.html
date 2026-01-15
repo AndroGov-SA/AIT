@@ -333,27 +333,26 @@
                     
                     // Initialize page
                     setTimeout(() => {
-    try {
-        // --- بداية كود الإصلاح: تسجيل دخول تلقائي للمدير ---
-        // إذا لم يكن هناك مستخدم مسجل، قم بتسجيل المدير الافتراضي
-        if (!AppConfig.getCurrentUser() && typeof DataService !== 'undefined') {
-            console.log('⚠️ No user logged in. Auto-logging as Admin...');
-            // استخدام معرف أحد المدراء (مثلاً USR_004 أيمن المغربي أو USR_001 هشام)
-            const defaultUser = DataService.getUserById('USR_004') || DataService.getUsers()[0];
-            if (defaultUser) {
-                AppConfig.setCurrentUser(defaultUser);
-                // إعادة تحميل الصفحة لتطبيق الإعدادات على "الهيدر"
-                location.reload();
-                return; 
-            }
-        }
                         try {
+                            // --- بداية كود الإصلاح: تسجيل دخول تلقائي ---
+                            if (typeof AppConfig !== 'undefined' && !AppConfig.getCurrentUser() && typeof DataService !== 'undefined') {
+                                console.log('⚠️ No user logged in. Auto-logging as Admin...');
+                                const defaultUser = DataService.getUserById('USR_004') || DataService.getUsers()[0];
+                                if (defaultUser) {
+                                    AppConfig.setCurrentUser(defaultUser);
+                                    location.reload();
+                                    return;
+                                }
+                            }
+                            // --- نهاية كود الإصلاح ---
+
                             console.log('🎯 Initializing UsersPage...');
                             UsersPage.init();
                             console.log('✅ UsersPage initialized successfully!');
+                            
                         } catch (error) {
                             console.error('❌ Error initializing UsersPage:', error);
-                            showErrorMessage('حدث خطأ في تحميل الصفحة. الرجاء إعادة تحميل الصفحة.');
+                            showErrorMessage('حدث خطأ في تحميل الصفحة. الرجاء إعادة تحميل الصفحة.<br><span class="text-xs text-left" dir="ltr">' + error + '</span>');
                         }
                     }, 100);
                     
