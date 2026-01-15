@@ -154,7 +154,7 @@
             sysName: "AndroGov", sysVer: "Enterprise v5.3", logout: "تسجيل خروج",
             notifTitle: "الإشعارات", markRead: "تحديد كمقروء", emptyNotif: "لا توجد إشعارات جديدة",
             sections: { main: "الرئيسية", comm: "التواصل المؤسسي", gov: "الحوكمة", ops: "التشغيل", dept: "الإدارات", admin: "النظام" },
-            menu: { dash: "لوحة القيادة", chat: "الدردشة", circulars: "التعاميم", ga: "الجمعيات العمومية", board: "مجلس الإدارة", committees: "اللجان", shareholders: "المساهمين", doa: "الصلاحيات (DOA)", policies: "السياسات", compliance: "الامتثال", hr: "الموارد البشرية", finance: "المالية", procurement: "المشتريات", it: "التقنية", users: "المستخدمين", audit: "سجل التدقيق", settings: "الإعدادات" },
+            menu: { dash: "لوحة القيادة", tasks:"إدارة المهام", chat: "الدردشة", circulars: "التعاميم", ga: "الجمعيات العمومية", board: "مجلس الإدارة", committees: "اللجان", shareholders: "المساهمين", doa: "الصلاحيات (DOA)", policies: "السياسات", compliance: "الامتثال", hr: "الموارد البشرية", finance: "المالية", procurement: "المشتريات", it: "التقنية", users: "المستخدمين", audit: "سجل التدقيق", settings: "الإعدادات" },
             // Dashboard Specific
             chartTitle: "هيكل الملكية", chartHeirs: "ورثة السحيباني", chartHesham: "هشام السحيباني", chartBG: "شركة بيجي", chartOthers: "آخرون",
             logBackup: "تم إكمال النسخ الاحتياطي بنجاح", logPolicy: "قام هشام باستعراض سياسة المكافآت", logUpload: "قام أيمن برفع مسودة الدليل الداخلي", logFirewall: "تم حظر محاولة دخول مشبوهة"
@@ -163,7 +163,7 @@
             sysName: "AndroGov", sysVer: "Enterprise v5.3", logout: "Logout",
             notifTitle: "Notifications", markRead: "Mark Read", emptyNotif: "No notifications",
             sections: { main: "Main", comm: "Communication", gov: "Governance", ops: "Operations", dept: "Departments", admin: "Admin" },
-            menu: { dash: "Dashboard", chat: "Chat", circulars: "Circulars", ga: "General Assembly", board: "Board", committees: "Committees", shareholders: "Shareholders", doa: "DOA Matrix", policies: "Policies", compliance: "Compliance", hr: "HR", finance: "Finance", procurement: "Procurement", it: "IT", users: "Users", audit: "Audit Log", settings: "Settings" },
+            menu: { dash: "Dashboard", tasks:"Tasks Management", chat: "Chat", circulars: "Circulars", ga: "General Assembly", board: "Board", committees: "Committees", shareholders: "Shareholders", doa: "DOA Matrix", policies: "Policies", compliance: "Compliance", hr: "HR", finance: "Finance", procurement: "Procurement", it: "IT", users: "Users", audit: "Audit Log", settings: "Settings" },
             // Dashboard Specific
             chartTitle: "Ownership Structure", chartHeirs: "Heirs of Al-Suhaibani", chartHesham: "Hesham Al-Suhaibani", chartBG: "BG LTD", chartOthers: "Others",
             logBackup: "Backup completed successfully", logPolicy: "Hesham viewed Bonus Policy", logUpload: "Ayman uploaded Internal Manual draft", logFirewall: "Suspicious login attempt blocked"
