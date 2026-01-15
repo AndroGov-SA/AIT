@@ -464,7 +464,7 @@
 
     // Global Review Modal (Used in Dashboard)
     window.openReviewModal = function() {
-        if(typeof Swal === 'undefined') return;
+        if(typeof Swal === 'ADMIN') return;
         
         const isAr = config.lang === 'ar';
         Swal.fire({
