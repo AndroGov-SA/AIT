@@ -354,7 +354,17 @@ const CompanyPolicy = {
     
     // Auditors
     { id: "AUD_INT", name: { ar: "المدقق الداخلي", en: "Internal Auditor" }, title: { ar: "المدقق الداخلي", en: "Internal Auditor" }, dept: "DEP_AUDIT", role: "auditor", email: "InternalAudit@androomeda.com", isExternal: false },
-    { id: "AUD_EXT", name: { ar: "المدقق الخارجي", en: "External Auditor" }, title: { ar: "المدقق الخارجي (KPMG/EY)", en: "External Auditor (KPMG/EY)" }, dept: "DEP_AUDIT", role: "auditor", email: "ExternalAudit@androomeda.com", isExternal: true }
+    { id: "AUD_EXT", name: { ar: "المدقق الخارجي", en: "External Auditor" }, title: { ar: "المدقق الخارجي (KPMG/EY)", en: "External Auditor (KPMG/EY)" }, dept: "DEP_AUDIT", role: "auditor", email: "ExternalAudit@androomeda.com", isExternal: true },
+
+    // Shareholders
+    { id: "SH_USER_001", name: { ar: "ورثة محمد بن صالح السحيباني", en: "Heirs of Mohammed Al-Suhaibani" }, title: { ar: "مساهم رئيسي", en: "Major Shareholder" }, dept: "DEP_EXEC", role: "shareholder", email: "alcaseer@gmail.com", isShareholder: true },
+    { id: "SH_USER_003", name: { ar: "وائل بن محمد السحيباني", en: "Wael Al-Suhaibani" }, title: { ar: "مساهم", en: "Shareholder" }, dept: "DEP_EXEC", role: "shareholder", email: "w961@live.com", isShareholder: true },
+    { id: "SH_USER_004", name: { ar: "هيثم بن محمد السحيباني", en: "Haitham Al-Suhaibani" }, title: { ar: "مساهم", en: "Shareholder" }, dept: "DEP_EXEC", role: "shareholder", email: "hmsasis@gmail.com", isShareholder: true },
+    { id: "SH_USER_006", name: { ar: "إبراهيم بن حمد السكيتي", en: "Ibrahim Al-Skeiti" }, title: { ar: "مساهم", en: "Shareholder" }, dept: "DEP_EXEC", role: "shareholder", email: "ihskaity@gmail.com", isShareholder: true },
+    { id: "SH_USER_007", name: { ar: "صالح بن عبدالله الوهيبي", en: "Saleh Al-Wahibi" }, title: { ar: "مساهم", en: "Shareholder" }, dept: "DEP_EXEC", role: "shareholder", email: "saaw4466@yahoo.com", isShareholder: true },
+    { id: "SH_USER_008", name: { ar: "عبدالله بن علي الفريجي", en: "Abdullah Al-Fariji" }, title: { ar: "مساهم", en: "Shareholder" }, dept: "DEP_EXEC", role: "shareholder", email: "a_furaiji@hotmail.com", isShareholder: true },
+    { id: "SH_USER_010", name: { ar: "شركة بيجي المحدودة", en: "BG LTD Company" }, title: { ar: "مساهم (شركة)", en: "Shareholder (Entity)" }, dept: "DEP_EXEC", role: "shareholder", email: "saleh@bgtech.com", isShareholder: true },
+    { id: "SH_USER_011", name: { ar: "أحمد بن سليمان الجاسر", en: "Ahmed Al-Jasser" }, title: { ar: "مساهم", en: "Shareholder" }, dept: "DEP_EXEC", role: "shareholder", email: "ahmed.jasser@gmail.com", isShareholder: true }
   ],
 
   // ==========================================
@@ -399,7 +409,16 @@ const CompanyPolicy = {
     // عادل سعسع
     { userId: "COMM_02", contexts: [
       { context: "audit_committee", role: "audit_committee_member", label: { ar: "لجنة المراجعة", en: "Audit Committee" }, isPrimary: true }
-    ]}
+    ]},
+    // New Shareholders Mapping
+    { userId: "SH_USER_001", contexts: [{ context: "shareholders", role: "shareholder", label: { ar: "المساهمين", en: "Shareholders" }, shareholderId: "SH_001", isPrimary: true }] },
+    { userId: "SH_USER_003", contexts: [{ context: "shareholders", role: "shareholder", label: { ar: "المساهمين", en: "Shareholders" }, shareholderId: "SH_003", isPrimary: true }] },
+    { userId: "SH_USER_004", contexts: [{ context: "shareholders", role: "shareholder", label: { ar: "المساهمين", en: "Shareholders" }, shareholderId: "SH_004", isPrimary: true }] },
+    { userId: "SH_USER_006", contexts: [{ context: "shareholders", role: "shareholder", label: { ar: "المساهمين", en: "Shareholders" }, shareholderId: "SH_006", isPrimary: true }] },
+    { userId: "SH_USER_007", contexts: [{ context: "shareholders", role: "shareholder", label: { ar: "المساهمين", en: "Shareholders" }, shareholderId: "SH_007", isPrimary: true }] },
+    { userId: "SH_USER_008", contexts: [{ context: "shareholders", role: "shareholder", label: { ar: "المساهمين", en: "Shareholders" }, shareholderId: "SH_008", isPrimary: true }] },
+    { userId: "SH_USER_010", contexts: [{ context: "shareholders", role: "shareholder", label: { ar: "المساهمين", en: "Shareholders" }, shareholderId: "SH_010", isPrimary: true }] },
+    { userId: "SH_USER_011", contexts: [{ context: "shareholders", role: "shareholder", label: { ar: "المساهمين", en: "Shareholders" }, shareholderId: "SH_011", isPrimary: true }] }
   ],
 
   // ==========================================
