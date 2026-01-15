@@ -90,7 +90,7 @@
                 role: foundUser.role_ref || foundUser.role,
                 department: foundUser.dept || foundUser.department_id,
                 email: foundUser.email,
-                avatar: avatarUrl
+                avatar: "grc.png"
             };
             localStorage.setItem('currentUser', JSON.stringify(currentUser));
         }
