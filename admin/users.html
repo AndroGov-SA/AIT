@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AndroGov | إدارة المستخدمين والصلاحيات</title>
+    <meta name="theme-color" content="#FB4747">
+    <title data-i18n="pageTitle">AndroGov | إدارة المستخدمين والصلاحيات</title>
     
     <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -12,65 +13,88 @@
     <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
 
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brandRed: '#FB4747',
+                        brandBlue: '#4267B2',
+                        brandDark: '#1E293B',
+                        brandGray: '#F8FAFC'
+                    },
+                    fontFamily: {
+                        sans: ['Tajawal', 'Inter', 'sans-serif'],
+                        en: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        /* CSS مدمج - لا حاجة لملف خارجي */
         @media print { .no-print { display: none !important; } }
         body { transition: opacity 0.2s ease-in-out; }
-        
+        .role-card.active { border-color: #4267B2; background-color: #EFF6FF; }
+        .dark .role-card.active { border-color: #4267B2; background-color: #1E3A8A; }
         /* Custom Scrollbar */
         .custom-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
         .custom-scroll::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 4px; }
         .dark .custom-scroll::-webkit-scrollbar-thumb { background-color: #475569; }
-
-        /* Role Card Active State */
-        .role-card.active { border-color: #4267B2; background-color: #EFF6FF; }
-        .dark .role-card.active { border-color: #4267B2; background-color: #1E3A8A; }
         
-        /* Animations */
+        /* Smooth Fade */
         .fade-in { animation: fadeIn 0.3s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
-<body class="bg-[#F8FAFC] dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans opacity-0 transition-opacity duration-300">
+<body class="bg-brandGray dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300">
 
-    <!-- 1. Layout Containers (سيتم تعبئتها بواسطة layout.js) -->
+    <!-- 1. Layout Containers (Will be populated by Embedded Layout Engine) -->
     <div id="sidebar-container" class="no-print"></div>
     
-    <div class="main-content-wrapper flex-1 flex flex-col md:mr-72 transition-all min-h-screen">
+    <div class="main-content-wrapper md:mr-72 transition-all duration-300 flex flex-col min-h-screen">
         <div id="header-container" class="no-print"></div>
 
-        <!-- 2. Main Content (محتوى الصفحة الأصلي بالكامل) -->
+        <!-- 2. Main Content (Users Page Specific) -->
         <main class="p-6 space-y-6">
             
             <!-- Header & Actions -->
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
                 <div>
-                    <h1 class="text-2xl font-extrabold text-slate-800 dark:text-white mb-1">إدارة المستخدمين والصلاحيات</h1>
-                    <p class="text-sm text-slate-500 dark:text-slate-400">لوحة التحكم المركزية بالوصول والأدوار (RBAC)</p>
+                    <h1 class="text-2xl font-extrabold text-slate-800 dark:text-white mb-1" data-i18n="headerTitle">إدارة المستخدمين والصلاحيات</h1>
+                    <p class="text-sm text-slate-500 dark:text-slate-400" data-i18n="headerDesc">لوحة التحكم المركزية بالوصول والأدوار (RBAC)</p>
                 </div>
-                <!-- زر العودة للرئيسية المضاف حسب طلبك -->
-                <a href="admin.html" class="px-4 py-2 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg text-sm font-bold text-slate-600 dark:text-white hover:bg-slate-50 transition flex items-center gap-2 shadow-sm">
-                    <i class="fa-solid fa-arrow-right"></i> عودة للرئيسية
-                </a>
             </div>
 
             <!-- Stats Cards -->
             <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
                 <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 flex justify-between items-center hover:shadow-md transition">
-                    <div><p class="text-xs text-slate-500 font-bold uppercase">إجمالي المستخدمين</p><h3 class="text-2xl font-bold mt-1 font-en text-brandBlue" id="stat-total">--</h3></div>
-                    <div class="w-10 h-10 rounded-xl bg-blue-50 text-[#4267B2] flex items-center justify-center text-xl"><i class="fa-solid fa-users"></i></div>
+                    <div>
+                        <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="statTotal">إجمالي المستخدمين</p>
+                        <h3 class="text-2xl font-bold mt-1 font-en text-brandBlue" id="stat-total">--</h3>
+                    </div>
+                    <div class="w-10 h-10 rounded-xl bg-blue-50 text-brandBlue flex items-center justify-center text-xl"><i class="fa-solid fa-users"></i></div>
                 </div>
                 <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 flex justify-between items-center hover:shadow-md transition">
-                    <div><p class="text-xs text-slate-500 font-bold uppercase">المساهمين</p><h3 class="text-2xl font-bold mt-1 font-en text-green-600" id="stat-shareholders">--</h3></div>
+                    <div>
+                        <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="statShareholders">المساهمين</p>
+                        <h3 class="text-2xl font-bold mt-1 font-en text-green-600" id="stat-shareholders">--</h3>
+                    </div>
                     <div class="w-10 h-10 rounded-xl bg-green-50 text-green-600 flex items-center justify-center text-xl"><i class="fa-solid fa-hand-holding-dollar"></i></div>
                 </div>
                 <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 flex justify-between items-center hover:shadow-md transition">
-                    <div><p class="text-xs text-slate-500 font-bold uppercase">الإدارة التنفيذية</p><h3 class="text-2xl font-bold mt-1 font-en text-purple-600" id="stat-exec">--</h3></div>
+                    <div>
+                        <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="statExec">الإدارة التنفيذية</p>
+                        <h3 class="text-2xl font-bold mt-1 font-en text-purple-600" id="stat-exec">--</h3>
+                    </div>
                     <div class="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-xl"><i class="fa-solid fa-user-tie"></i></div>
                 </div>
                 <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 flex justify-between items-center hover:shadow-md transition">
-                    <div><p class="text-xs text-slate-500 font-bold uppercase">الأدوار المعرفة</p><h3 class="text-2xl font-bold mt-1 font-en text-[#FB4747]" id="stat-roles">--</h3></div>
-                    <div class="w-10 h-10 rounded-xl bg-red-50 text-[#FB4747] flex items-center justify-center text-xl"><i class="fa-solid fa-shield-halved"></i></div>
+                    <div>
+                        <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="statRoles">الأدوار المعرفة</p>
+                        <h3 class="text-2xl font-bold mt-1 font-en text-brandRed" id="stat-roles">--</h3>
+                    </div>
+                    <div class="w-10 h-10 rounded-xl bg-red-50 text-brandRed flex items-center justify-center text-xl"><i class="fa-solid fa-shield-halved"></i></div>
                 </div>
             </div>
 
@@ -80,13 +104,13 @@
                 <!-- Toolbar -->
                 <div class="p-6 border-b border-slate-100 dark:border-slate-700 flex flex-col md:flex-row justify-between items-center gap-4">
                     <div class="flex bg-slate-100 dark:bg-slate-700 p-1 rounded-xl w-full md:w-auto">
-                        <button onclick="switchView('users')" id="btn-users" class="px-6 py-2 text-xs font-bold rounded-lg bg-white text-[#4267B2] shadow-sm transition-all flex-1 md:flex-none">دليل المستخدمين</button>
-                        <button onclick="switchView('roles')" id="btn-roles" class="px-6 py-2 text-xs font-bold rounded-lg text-slate-500 hover:text-slate-700 transition-all flex-1 md:flex-none">هيكل الصلاحيات</button>
+                        <button onclick="switchView('users')" id="btn-users" class="px-6 py-2 text-xs font-bold rounded-lg bg-white text-brandBlue shadow-sm transition-all flex-1 md:flex-none" data-i18n="tabUsers">دليل المستخدمين</button>
+                        <button onclick="switchView('roles')" id="btn-roles" class="px-6 py-2 text-xs font-bold rounded-lg text-slate-500 hover:text-slate-700 transition-all flex-1 md:flex-none" data-i18n="tabRoles">هيكل الصلاحيات</button>
                     </div>
                     
                     <div class="flex gap-3 w-full md:w-auto" id="userToolbar">
                         <div class="relative w-full md:w-72">
-                            <input type="text" id="searchInput" onkeyup="renderUsers()" placeholder="بحث بالاسم، الدور، أو البريد..." class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 dark:border-slate-600 dark:bg-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-[#4267B2] outline-none dark:text-white">
+                            <input type="text" id="searchInput" onkeyup="renderUsers()" placeholder="..." class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 dark:border-slate-600 dark:bg-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-brandBlue outline-none dark:text-white" data-i18n-ph="searchPlaceholder">
                             <i class="fa-solid fa-search absolute left-3 top-2.5 text-slate-400 rtl:left-3 ltr:right-3"></i>
                         </div>
                     </div>
@@ -98,12 +122,12 @@
                         <table class="w-full text-sm text-right rtl:text-right ltr:text-left">
                             <thead class="bg-slate-50 dark:bg-slate-700 text-xs font-bold text-slate-500 uppercase sticky top-0">
                                 <tr>
-                                    <th class="p-4 w-1/3">المستخدم</th>
-                                    <th class="p-4">الدور الوظيفي</th>
-                                    <th class="p-4">القسم / الجهة</th>
-                                    <th class="p-4">البريد الإلكتروني</th>
-                                    <th class="p-4 text-center">الحالة</th>
-                                    <th class="p-4 text-center">إجراءات</th>
+                                    <th class="p-4 w-1/3" data-i18n="colUser">المستخدم</th>
+                                    <th class="p-4" data-i18n="colRole">الدور الوظيفي</th>
+                                    <th class="p-4" data-i18n="colDept">القسم / الجهة</th>
+                                    <th class="p-4" data-i18n="colEmail">البريد الإلكتروني</th>
+                                    <th class="p-4 text-center" data-i18n="colStatus">الحالة</th>
+                                    <th class="p-4 text-center" data-i18n="colActions">إجراءات</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-100 dark:divide-slate-700" id="usersTableBody">
@@ -117,7 +141,9 @@
                 <div id="view-roles" class="hidden p-6 fade-in">
                     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 h-full">
                         <!-- Roles List -->
-                        <div class="lg:col-span-4 border-l rtl:border-l ltr:border-r border-slate-200 dark:border-slate-700 pl-6 rtl:pl-6 ltr:pl-0 ltr:pr-6 space-y-3 overflow-y-auto custom-scroll max-h-[600px]" id="rolesList"></div>
+                        <div class="lg:col-span-4 border-l rtl:border-l ltr:border-r border-slate-200 dark:border-slate-700 pl-6 rtl:pl-6 ltr:pl-0 ltr:pr-6 space-y-3 overflow-y-auto custom-scroll max-h-[600px]" id="rolesList">
+                            <!-- Populated by JS -->
+                        </div>
 
                         <!-- Permissions Details -->
                         <div class="lg:col-span-8">
@@ -128,10 +154,13 @@
                                         <p class="text-xs text-slate-500" id="roleDetailDesc">--</p>
                                     </div>
                                     <span id="roleInheritsBadge" class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-bold hidden">
-                                        <span>يرث صلاحيات:</span> <span id="roleInheritsVal"></span>
+                                        <span data-i18n="inherits">يرث صلاحيات:</span> <span id="roleInheritsVal"></span>
                                     </span>
                                 </div>
-                                <div class="space-y-6 overflow-y-auto custom-scroll max-h-[500px]" id="permissionsContainer"></div>
+
+                                <div class="space-y-6 overflow-y-auto custom-scroll max-h-[500px]" id="permissionsContainer">
+                                    <!-- Permissions Matrix Injected Here -->
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -141,125 +170,614 @@
         </main>
     </div>
 
-    <!-- Scripts -->
-    <script src="layout.js"></script> <!-- الاستدعاء الوحيد المطلوب -->
-    
+    <!-- 3. Embedded Scripts (Data + Layout + Page Logic) -->
     <script>
         // ==========================================
-        // C. USERS PAGE SPECIFIC LOGIC
+        // A. DATA REPOSITORY (EMBEDDED)
         // ==========================================
-        
-        let allUsers = [];
+        const SYSTEM_DATA = {
+            users: [
+                { id: "USR_000", name: { ar: "عبدالله الحواس", en: "Abdullah Al-Hawas" }, title: { ar: "رئيس مجلس الإدارة", en: "Chairman of the Board" }, dept: "DEP_EXEC", role_ref: "chairman", email: "amh400@gmail.com" },
+                { id: "USR_001", name: { ar: "هشام السحيباني", en: "Hesham Al-Sohaibani" }, title: { ar: "الرئيس التنفيذي ونائب الرئيس", en: "CEO & Board Vice Chairman" }, dept: "DEP_EXEC", role_ref: "ceo", email: "hesham@androomeda.com" },
+                { id: "USR_002", name: { ar: "محمد البخيتي", en: "Mohammed Al-Bukheiti" }, title: { ar: "المدير المالي", en: "Chief Financial Officer (CFO)" }, dept: "DEP_FIN", role_ref: "cfo", email: "mtahir@androomeda.com" },
+                { id: "USR_003", name: { ar: "هادي أحمد", en: "Hadi Ahmed" }, title: { ar: "منسق المشتريات والدعم", en: "Purchasing Coordinator" }, dept: "DEP_PROC", role_ref: "employee", email: "hadi@androomeda.com" },
+                { id: "USR_004", name: { ar: "أيمن المغربي", en: "Ayman Al-Maghrabi" }, title: { ar: "مسؤول الحوكمة / أمين السر", en: "GRCO / Board Secretary" }, dept: "DEP_COMP", role_ref: "manager", email: "amaghrabi@androomeda.com" },
+                { id: "USR_005", name: { ar: "منصور اليامي", en: "Mansour Al-Yami" }, title: { ar: "المدير الإداري / عضو مجلس", en: "CAO / Board Member" }, dept: "DEP_HR", role_ref: "manager", email: "myami@androomeda.com" },
+                { id: "USR_006", name: { ar: "د. وعد حسين", en: "Dr. Waad Hussein" }, title: { ar: "المشرف الطبي", en: "Medical Supervisor" }, dept: "DEP_TECH", role_ref: "manager", email: "whussain@androomeda.com" },
+                { id: "USR_007", name: { ar: "نواف السحابي", en: "Nawaf Al-Sahabi" }, title: { ar: "مدير حسابات العملاء", en: "Customer Accounts Manager" }, dept: "DEP_CS", role_ref: "team_lead", email: "nalsahabi@androomeda.com" },
+                { id: "USR_008", name: { ar: "الحسين الحميدي", en: "Al-Hussain Al-Humaidi" }, title: { ar: "أخصائي دعم فني", en: "Technical Support Specialist" }, dept: "DEP_CS", role_ref: "employee", email: "alhussien@androomeda.com" },
+                { id: "USR_009", name: { ar: "مشاعل الهذيان", en: "Meshail Al-Hadyan" }, title: { ar: "مسؤول الأمن السيبراني", en: "NCSO" }, dept: "DEP_SEC", role_ref: "manager", email: "malhadyan@androomeda.com" },
+                { id: "USR_010", name: { ar: "مها الحزان", en: "Maha Al-Hazzan" }, title: { ar: "أخصائي تسويق رقمي", en: "Digital Marketing Specialist" }, dept: "DEP_MKT", role_ref: "employee", email: "mhizan@androomeda.com" },
+                { id: "USR_011", name: { ar: "شاغر", en: "Vacant" }, title: { ar: "مدير المبيعات", en: "Sales Manager" }, dept: "DEP_SALES", role_ref: "manager", email: "SalesManager@androomeda.com", status: "inactive" },
+                { id: "USR_014", name: { ar: "عبدالله الجبير", en: "Abdullah Al-Jubeir" }, title: { ar: "دعم إداري", en: "Office Support" }, dept: "DEP_HR", role_ref: "employee", email: "Ajubeir@androomeda.com" },
+                { id: "USR_015", name: { ar: "رند الحوراني", en: "Rand Al-Hourani" }, title: { ar: "قائد الفريق التقني", en: "Technical Team Lead" }, dept: "DEP_TECH", role_ref: "team_lead", email: "Rhourani@androomeda.com" },
+                { id: "USR_020", name: { ar: "محمد أختر", en: "Muhammad Akhtar" }, title: { ar: "مدير التطوير", en: "Director of Development" }, dept: "DEP_TECH", role_ref: "manager", email: "Makhtar@androomeda.com" },
+                { id: "USR_023", name: { ar: "فريق التطوير", en: "Software Developers Team" }, title: { ar: "فريق البرمجيات", en: "Software Developers Team" }, dept: "DEP_TECH", role_ref: "employee", email: "SDT@androomeda.com" },
+                { id: "COMM_01", name: { ar: "محمد العنزي", en: "Mohammed Al-Enezi" }, title: { ar: "رئيس لجنة المراجعة", en: "Audit Committee Chairman" }, dept: "DEP_AUDIT", role_ref: "board_member", email: "mohammedmansour.socpa@gmail.com" },
+                { id: "COMM_02", name: { ar: "عادل ساسا", en: "Adel Sasa" }, title: { ar: "عضو لجنة المراجعة", en: "Audit Committee Member" }, dept: "DEP_AUDIT", role_ref: "viewer", email: "adel.sasa1@gmail.com" },
+                { id: "BRD_003", name: { ar: "أحمد السحيباني", en: "Ahmed Al-Suhaibani" }, title: { ar: "عضو مجلس إدارة ولجنة", en: "Board & Audit Member" }, dept: "DEP_EXEC", role_ref: "board_member", email: "a.s.alsuhaibani@microtec.com.sa" },
+                { id: "AUD_INT", name: { ar: "المدقق الداخلي", en: "Internal Auditor" }, title: { ar: "المدقق الداخلي", en: "Internal Auditor" }, dept: "DEP_AUDIT", role_ref: "manager", email: "InternalAudit@androomeda.com" },
+                { id: "AUD_EXT", name: { ar: "المدقق الخارجي", en: "External Auditor" }, title: { ar: "المدقق الخارجي (KPMG/EY)", en: "External Auditor (KPMG/EY)" }, dept: "DEP_AUDIT", role_ref: "viewer", email: "ExternalAudit@androomeda.com" }
+            ],
+            shareholders: [
+                { id: "SH_001", name: { ar: "ورثة محمد بن صالح السحيباني", en: "Heirs of Mohammed Al-Suhaibani" }, email: "alcaseer@gmail.com", percent: 35 },
+                { id: "SH_002", name: { ar: "هشام بن محمد السحيباني", en: "Hesham bin Muhammad Al-Sohibani" }, email: "Hesham@androomeda.com", percent: 10 },
+                { id: "SH_003", name: { ar: "وائل بن محمد السحيباني", en: "Wael bin Mohammed Al Suhaibani" }, email: "W961@live.com", percent: 5 },
+                { id: "SH_004", name: { ar: "هيثم بن محمد السحيباني", en: "Haitham bin Mohammed Al Suhaibani" }, email: "hmsasis@gmail.com", percent: 5 },
+                { id: "SH_005", name: { ar: "منصور بن حسن اليامي", en: "Mansour bin Hassan Al-Yami" }, email: "myami@androomeda.com", percent: 5 },
+                { id: "SH_006", name: { ar: "إبراهيم بن حمد السكيتي", en: "Ibrahim bin Hamad Al Skeiti" }, email: "ihskaity@gmail.com", percent: 5 },
+                { id: "SH_007", name: { ar: "صالح بن عبدالله الوهيبي", en: "Saleh bin Abdullah Al-Wahibi" }, email: "Saaw4466@yahoo.com", percent: 5 },
+                { id: "SH_008", name: { ar: "عبدالله بن علي الفريجي", en: "Abdullah bin Ali Al-Fariji" }, email: "a_furaiji@hotmail.com", percent: 5 },
+                { id: "SH_009", name: { ar: "عبدالله بن محمد الحواس", en: "Abdullah bin Mohammed Al-Hawas" }, email: "amh400@gmail.com", percent: 5 },
+                { id: "SH_010", name: { ar: "شركة بيجي المحدودة", en: "BG LTD.Company" }, email: "saleh@bgtech.com", percent: 15 },
+                { id: "SH_011", name: { ar: "احمد بن سليمان الجاسر", en: "Ahmed bin Suleiman Al-Jasser" }, email: "ahmed.jasser@gmail.com", percent: 5 }
+            ],
+            departments: {
+                "DEP_EXEC": { ar: "الإدارة التنفيذية", en: "Executive Management" },
+                "DEP_FIN": { ar: "الإدارة المالية", en: "Finance Dept" },
+                "DEP_HR": { ar: "الموارد البشرية", en: "Human Resources" },
+                "DEP_TECH": { ar: "التقنية والتطوير", en: "Technology & Development" },
+                "DEP_SALES": { ar: "المبيعات", en: "Sales" },
+                "DEP_CS": { ar: "خدمة العملاء", en: "Customer Success" },
+                "DEP_AUDIT": { ar: "التدقيق الداخلي", en: "Internal Audit" },
+                "DEP_SEC": { ar: "الأمن السيبراني", en: "Cybersecurity" },
+                "DEP_PROC": { ar: "المشتريات", en: "Procurement" },
+                "DEP_COMP": { ar: "الحوكمة والالتزام", en: "Governance & Compliance" },
+                "DEP_MKT": { ar: "التسويق", en: "Marketing" },
+                "DEP_SUPPORT": { ar: "الدعم الفني", en: "Technical Support" },
+                "DEP_GRC": { ar: "الحوكمة والمخاطر", en: "GRC" },
+                "DEP_MED": { ar: "الخدمات الطبية", en: "Medical Services" }
+            },
+            roles: {
+                sys_admin: { label: {ar: "مدير النظام", en: "System Admin"}, desc: {ar: "صلاحيات تقنية كاملة (IT)", en: "Full IT privileges"}, inherits: "chairman" },
+                chairman: { label: {ar: "رئيس مجلس الإدارة", en: "Chairman"}, desc: {ar: "صلاحيات التوقيع المنفرد والقرارات الاستراتيجية", en: "Strategic decisions & sole signatory"}, inherits: "board_member" },
+                ceo: { label: {ar: "الرئيس التنفيذي", en: "CEO"}, desc: {ar: "إدارة تنفيذية وصلاحيات مالية عليا", en: "Executive management & high financial authority"}, inherits: "cfo" },
+                cfo: { label: {ar: "المدير المالي", en: "CFO"}, desc: {ar: "صلاحيات التدقيق المالي واعتماد الصرف", en: "Financial auditing & payment approval"}, inherits: "manager" },
+                board_member: { label: {ar: "عضو مجلس إدارة", en: "Board Member"}, desc: {ar: "الاطلاع على المحاضر والتصويت", en: "View minutes & voting"}, inherits: "viewer" },
+                manager: { label: {ar: "مدير إدارة", en: "Manager"}, desc: {ar: "إدارة الفريق والموافقة على الطلبات", en: "Team management & request approval"}, inherits: "team_lead" },
+                team_lead: { label: {ar: "قائد فريق", en: "Team Lead"}, desc: {ar: "إشراف تقني/تشغيلي", en: "Technical/Operational supervision"}, inherits: "employee" },
+                employee: { label: {ar: "موظف", en: "Employee"}, desc: {ar: "خدمة ذاتية ومهام وظيفية", en: "Self-service & tasks"}, inherits: "viewer" },
+                shareholder: { label: {ar: "مساهم", en: "Shareholder"}, desc: {ar: "الاطلاع على القوائم المالية والتصويت", en: "View financials & voting"}, inherits: "viewer" },
+                viewer: { label: {ar: "زائر/مدقق", en: "Viewer/Auditor"}, desc: {ar: "صلاحيات القراءة فقط", en: "Read-only access"}, inherits: null }
+            },
+            permissions: {
+                financial: {
+                    title: {ar: "الصلاحيات المالية", en: "Financial Permissions"},
+                    items: [
+                        { key: "approve_po", label: {ar: "اعتماد أوامر الشراء", en: "Approve POs"}, roles: ["ceo", "cfo", "manager"] },
+                        { key: "approve_payroll", label: {ar: "اعتماد الرواتب", en: "Approve Payroll"}, roles: ["ceo", "cfo"] },
+                        { key: "petty_cash", label: {ar: "صرف عهدة نقدية", en: "Petty Cash"}, roles: ["manager", "cfo"] },
+                        { key: "view_financials", label: {ar: "الاطلاع على القوائم المالية", en: "View Financials"}, roles: ["chairman", "board_member", "shareholder", "ceo", "cfo"] }
+                    ]
+                },
+                legal: {
+                    title: {ar: "الشؤون القانونية والحكومية", en: "Legal & Gov Affairs"},
+                    items: [
+                        { key: "sign_contracts", label: {ar: "توقيع العقود", en: "Sign Contracts"}, roles: ["chairman", "ceo"] },
+                        { key: "govt_rep", label: {ar: "التمثيل الحكومي", en: "Gov Representation"}, roles: ["ceo", "chairman", "manager"] }
+                    ]
+                },
+                system: {
+                    title: {ar: "إدارة النظام والمحتوى", en: "System & Content"},
+                    items: [
+                        { key: "edit_policies", label: {ar: "تعديل السياسات", en: "Edit Policies"}, roles: ["sys_admin"] },
+                        { key: "publish_content", label: {ar: "نشر تعاميم/أخبار", en: "Publish Content"}, roles: ["sys_admin", "ceo"] },
+                        { key: "view_confidential", label: {ar: "عرض وثائق سرية", en: "View Confidential"}, roles: ["chairman", "ceo", "cfo", "board_member"] }
+                    ]
+                }
+            }
+        };
 
-        document.addEventListener('DOMContentLoaded', () => {
-            // Combine Users & Shareholders from SYSTEM_DATA (layout.js)
-            // نستخدم SYSTEM_DATA من الملف الخارجي
-            if (typeof SYSTEM_DATA !== 'undefined') {
-                const users = SYSTEM_DATA.users.map(u => ({ ...u, type: 'emp', displayDept: 'إدارة' }));
-                const shareholders = SYSTEM_DATA.shareholders.map(s => ({ 
-                    id: s.id, name: s.name, title: {ar:'مساهم', en:'Shareholder'}, role: 'Shareholder', 
-                    email: 'N/A', avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(s.name.en)}&background=10B981&color=fff`, 
-                    type: 'sh', displayDept: 'الملاك' 
-                }));
-                allUsers = [...users, ...shareholders];
+        // ==========================================
+        // B. LAYOUT ENGINE (EMBEDDED)
+        // ==========================================
+        (function() {
+            // Globals
+            let currentUser = JSON.parse(localStorage.getItem('currentUser')) || {
+                id: "USR_004", name: {ar: "مستخدم النظام", en: "System User"}, role: "Guest"
+            };
+            const config = {
+                lang: localStorage.getItem('lang') || 'ar',
+                theme: localStorage.getItem('theme') || 'light'
+            };
 
-                // Update Stats
-                document.getElementById('stat-total').innerText = allUsers.length;
-                document.getElementById('stat-shareholders').innerText = shareholders.length;
-                document.getElementById('stat-exec').innerText = users.length;
+            // Menu Definition
+            const menuStructure = [
+                { section: 'main', items: [{ key: 'dash', icon: 'fa-gauge-high', link: 'admin.html' }] },
+                { section: 'comm', items: [{ key: 'chat', icon: 'fa-comments', link: 'admin_chat.html' }, { key: 'circulars', icon: 'fa-bullhorn', link: 'admin_circulars.html' }] },
+                { section: 'gov', items: [{ key: 'ga', icon: 'fa-users-rectangle', link: 'ga.html' }, { key: 'board', icon: 'fa-building-columns', link: 'board.html' }, { key: 'committees', icon: 'fa-people-group', link: 'committees.html' }, { key: 'shareholders', icon: 'fa-id-card', link: 'shareholders.html' }] },
+                { section: 'ops', items: [{ key: 'doa', icon: 'fa-sitemap', link: 'doa.html' }, { key: 'policies', icon: 'fa-book-open', link: 'policies.html' }, { key: 'compliance', icon: 'fa-scale-balanced', link: 'compliance.html' }] },
+                { section: 'dept', items: [{ key: 'hr', icon: 'fa-user-tie', link: 'hr.html' }, { key: 'finance', icon: 'fa-money-bill-wave', link: 'finance.html' }, { key: 'procurement', icon: 'fa-boxes-packing', link: 'procurement.html' }, { key: 'it', icon: 'fa-shield-cat', link: 'it.html' }] },
+                { section: 'admin', items: [{ key: 'users', icon: 'fa-users-gear', link: 'users.html' }, { key: 'audit', icon: 'fa-list-ul', link: 'audit.html' }, { key: 'settings', icon: 'fa-sliders', link: 'admin_settings.html' }] }
+            ];
+
+            const layoutTrans = {
+                ar: {
+                    sysName: "AndroGov", sysVer: "Enterprise v4.3", logout: "تسجيل خروج",
+                    notifTitle: "الإشعارات", markRead: "تحديد كمقروء", emptyNotif: "لا توجد إشعارات جديدة",
+                    sections: { main: "الرئيسية", comm: "التواصل المؤسسي", gov: "الحوكمة", ops: "التشغيل", dept: "الإدارات", admin: "النظام" },
+                    menu: { dash: "لوحة القيادة", chat: "الدردشة", circulars: "التعاميم", ga: "الجمعيات العمومية", board: "مجلس الإدارة", committees: "اللجان", shareholders: "المساهمين", doa: "الصلاحيات (DOA)", policies: "السياسات", compliance: "الامتثال", hr: "الموارد البشرية", finance: "المالية", procurement: "المشتريات", it: "التقنية", users: "المستخدمين", audit: "سجل التدقيق", settings: "الإعدادات" }
+                },
+                en: {
+                    sysName: "AndroGov", sysVer: "Enterprise v4.3", logout: "Logout",
+                    notifTitle: "Notifications", markRead: "Mark Read", emptyNotif: "No notifications",
+                    sections: { main: "Main", comm: "Communication", gov: "Governance", ops: "Operations", dept: "Departments", admin: "Admin" },
+                    menu: { dash: "Dashboard", chat: "Chat", circulars: "Circulars", ga: "General Assembly", board: "Board", committees: "Committees", shareholders: "Shareholders", doa: "DOA Matrix", policies: "Policies", compliance: "Compliance", hr: "HR", finance: "Finance", procurement: "Procurement", it: "IT", users: "Users", audit: "Audit Log", settings: "Settings" }
+                }
+            };
+
+            // Init Layout
+            function initLayout() {
+                // Update User Info from System Data
+                const foundUser = SYSTEM_DATA.users.find(u => u.id === currentUser.id) || SYSTEM_DATA.users[4]; // Default to GRC
+                if(foundUser) {
+                    currentUser = {
+                        ...currentUser,
+                        name: foundUser.name, // Object {ar, en}
+                        title: foundUser.title,
+                        role: foundUser.role_ref,
+                        email: foundUser.email
+                    };
+                    // Custom avatar for admin
+                    if(foundUser.id === 'USR_004') currentUser.avatarUrl = 'https://androgov-sa.github.io/AIT/photo/grc.png';
+                    else {
+                        const nameEn = foundUser.name.en || "User";
+                        currentUser.avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(nameEn)}&background=FB4747&color=fff&bold=true`;
+                    }
+                }
+
+                applyLayoutSettings();
+                renderSidebar();
+                renderHeader();
+            }
+
+            function applyLayoutSettings() {
+                const html = document.documentElement;
+                html.lang = config.lang;
+                html.dir = config.lang === 'ar' ? 'rtl' : 'ltr';
+                if (config.theme === 'dark') html.classList.add('dark');
+                else html.classList.remove('dark');
                 
-                // Roles from SYSTEM_DATA
-                if(SYSTEM_DATA.roles) {
-                    document.getElementById('stat-roles').innerText = Object.keys(SYSTEM_DATA.roles).length;
-                    renderRoles();
+                const main = document.querySelector('.main-content-wrapper');
+                if (main) {
+                    main.classList.remove('md:mr-72', 'md:ml-72');
+                    main.classList.add(config.lang === 'ar' ? 'md:mr-72' : 'md:ml-72');
                 }
             }
 
+            function renderSidebar() {
+                const container = document.getElementById('sidebar-container');
+                if (!container) return;
+
+                const dict = layoutTrans[config.lang];
+                const isRtl = config.lang === 'ar';
+                // Mark active link
+                const currentPath = window.location.pathname.split('/').pop() || 'users.html';
+
+                const uName = config.lang === 'ar' ? currentUser.name.ar : currentUser.name.en;
+                const uTitle = config.lang === 'ar' ? currentUser.title.ar : currentUser.title.en;
+
+                let menuHTML = '';
+                menuStructure.forEach(group => {
+                    menuHTML += `<div class="px-3 mt-6 mb-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider">${dict.sections[group.section]}</div>`;
+                    group.items.forEach(item => {
+                        const isActive = currentPath.includes(item.link);
+                        const activeClass = isActive ? "bg-brandRed text-white shadow-md shadow-red-500/20" : "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-brandRed";
+                        menuHTML += `
+                        <a href="${item.link}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${activeClass}">
+                            <div class="w-6 text-center"><i class="fa-solid ${item.icon}"></i></div>
+                            <span class="flex-1 truncate">${dict.menu[item.key]}</span>
+                        </a>`;
+                    });
+                });
+
+                container.innerHTML = `
+                <aside class="fixed top-0 ${isRtl ? 'right-0 border-l' : 'left-0 border-r'} z-50 h-screen w-72 flex-col hidden md:flex bg-white dark:bg-[#0F172A] border-slate-200 dark:border-slate-800 transition-all duration-300">
+                    <div class="h-20 flex items-center px-6 border-b border-slate-100 dark:border-slate-800">
+                        <div class="flex items-center gap-3 w-full">
+                            <img src="https://ait.sa/wp-content/uploads/2024/03/cropped-Square-Logo.png" class="w-10 h-10 rounded-xl bg-white object-contain shrink-0 shadow-sm border border-slate-100 dark:border-slate-700">
+                            <div class="overflow-hidden">
+                                <h1 class="font-bold text-sm text-slate-800 dark:text-white font-sans truncate">AndroGov <span class="font-light">System</span></h1>
+                                <p class="text-[10px] text-slate-500 uppercase tracking-widest truncate">${dict.sysVer}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <div class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700">
+                            <img src="${currentUser.avatarUrl}" class="w-10 h-10 rounded-full border-2 border-white dark:border-slate-600 object-cover shrink-0">
+                            <div class="overflow-hidden flex-1 min-w-0">
+                                <p class="text-sm font-bold text-slate-800 dark:text-white truncate">${uName}</p>
+                                <p class="text-[10px] text-brandRed font-medium truncate">${uTitle}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <nav class="flex-1 overflow-y-auto px-3 py-2 custom-scroll space-y-0.5">${menuHTML}</nav>
+                    <div class="p-4 text-center text-[10px] text-slate-400 border-t border-slate-100 dark:border-slate-800">© 2026 Andromeda IT</div>
+                </aside>`;
+            }
+
+            function renderHeader() {
+                const container = document.getElementById('header-container');
+                if (!container) return;
+                const dict = layoutTrans[config.lang];
+                const isRtl = config.lang === 'ar';
+
+                container.innerHTML = `
+                <header class="h-20 sticky top-0 z-40 flex items-center justify-between px-6 bg-white/80 dark:bg-[#0F172A]/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 transition-all no-print">
+                    <div class="flex items-center gap-4">
+                        <button onclick="document.querySelector('aside').classList.toggle('hidden'); document.querySelector('aside').classList.toggle('flex');" class="md:hidden text-slate-500 dark:text-slate-200 hover:text-brandRed">
+                            <i class="fa-solid fa-bars text-xl"></i>
+                        </button>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <button onclick="window.changeLang()" class="h-9 px-3 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-xs font-bold text-slate-600 dark:text-white transition">${config.lang === 'ar' ? 'English' : 'عربي'}</button>
+                        <button onclick="window.changeTheme()" class="w-9 h-9 rounded-lg border border-slate-200 dark:border-slate-700 flex items-center justify-center hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-yellow-400 transition"><i class="fa-solid ${config.theme === 'dark' ? 'fa-sun' : 'fa-moon'}"></i></button>
+                        <div class="h-6 w-px bg-slate-200 dark:bg-slate-700 mx-1"></div>
+                        <button onclick="window.doLogout()" class="text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-2"><i class="fa-solid fa-power-off"></i> <span class="hidden sm:inline">${dict.logout}</span></button>
+                    </div>
+                </header>`;
+            }
+
+            // Expose Layout Actions
+            window.changeTheme = function() {
+                const newTheme = config.theme === 'dark' ? 'light' : 'dark';
+                localStorage.setItem('theme', newTheme);
+                location.reload();
+            };
+            window.changeLang = function() {
+                const newLang = config.lang === 'ar' ? 'en' : 'ar';
+                localStorage.setItem('lang', newLang);
+                location.reload();
+            };
+            window.doLogout = function() {
+                if (confirm(config.lang === 'ar' ? 'هل أنت متأكد من تسجيل الخروج؟' : 'Are you sure you want to logout?')) {
+                    localStorage.removeItem('currentUser');
+                    window.location.href = 'https://androgov-sa.github.io/AIT/login.html';
+                }
+            };
+
+            // Auto-run Layout
+            initLayout();
+        })();
+
+        // ==========================================
+        // C. USERS PAGE SPECIFIC LOGIC
+        // ==========================================
+        const translations = {
+            ar: {
+                pageTitle: "AndroGov | إدارة المستخدمين",
+                headerTitle: "إدارة المستخدمين والصلاحيات",
+                headerDesc: "لوحة التحكم المركزية بالوصول والأدوار (RBAC)",
+                btnBack: "عودة للرئيسية",
+                statTotal: "إجمالي المستخدمين",
+                statShareholders: "المساهمين",
+                statExec: "الإدارة التنفيذية",
+                statRoles: "الأدوار المعرفة",
+                tabUsers: "دليل المستخدمين",
+                tabRoles: "هيكل الصلاحيات",
+                searchPlaceholder: "بحث بالاسم، الدور، أو البريد...",
+                colUser: "المستخدم",
+                colRole: "الدور الوظيفي",
+                colDept: "القسم / الجهة",
+                colEmail: "البريد الإلكتروني",
+                colStatus: "الحالة",
+                colActions: "إجراءات",
+                statusActive: "نشط",
+                statusInactive: "غير نشط",
+                inherits: "يرث صلاحيات:",
+                ownerDept: "الملاك / المساهمين"
+            },
+            en: {
+                pageTitle: "AndroGov | User Management",
+                headerTitle: "User & Role Management",
+                headerDesc: "Central Access Control Panel (RBAC)",
+                btnBack: "Back to Home",
+                statTotal: "Total Users",
+                statShareholders: "Shareholders",
+                statExec: "Executives",
+                statRoles: "Defined Roles",
+                tabUsers: "User Directory",
+                tabRoles: "Roles Structure",
+                searchPlaceholder: "Search name, role, or email...",
+                colUser: "User",
+                colRole: "Role",
+                colDept: "Department",
+                colEmail: "Email",
+                colStatus: "Status",
+                colActions: "Actions",
+                statusActive: "Active",
+                statusInactive: "Inactive",
+                inherits: "Inherits from:",
+                ownerDept: "Owners / Shareholders"
+            }
+        };
+
+        let allUsers = [];
+        let currentLang = localStorage.getItem('lang') || 'ar';
+
+        function initPage() {
+            applyPageLanguage();
+            processUsers();
+            updateStats();
             renderUsers();
-        });
+            renderRolesList();
+            
+            // Select first role
+            const firstRole = Object.keys(SYSTEM_DATA.roles)[0];
+            showRoleDetails(firstRole);
+        }
+
+        // --- NAVIGATION HELPER ---
+        function goBack() {
+            if (document.referrer.includes('admin') || window.history.length > 1) {
+                window.history.back();
+            } else {
+                window.location.href = 'admin.html'; 
+            }
+        }
+
+        function toggleLanguage() {
+            window.changeLang(); // Use layout function
+        }
+
+        function toggleDarkMode() {
+            window.changeTheme(); // Use layout function
+        }
+
+        function applyPageLanguage() {
+            // Apply text translations for page content
+            const t = translations[currentLang];
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if(t[key]) el.innerText = t[key];
+            });
+            document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+                const key = el.getAttribute('data-i18n-ph');
+                if(t[key]) el.placeholder = t[key];
+            });
+        }
+
+        function processUsers() {
+            const t = translations[currentLang];
+
+            // Employees
+            const emps = SYSTEM_DATA.users.map(u => {
+                let dName = u.name;
+                if(typeof u.name === 'object') {
+                    dName = currentLang === 'ar' ? u.name.ar : u.name.en;
+                }
+                
+                let dTitle = u.title;
+                if(typeof u.title === 'object') {
+                    dTitle = currentLang === 'ar' ? u.title.ar : u.title.en;
+                }
+
+                return {
+                    ...u,
+                    type: 'employee',
+                    displayName: dName,
+                    displayTitle: dTitle,
+                    displayRole: getRoleLabel(u.role_ref),
+                    displayDept: getDeptName(u.dept),
+                    avatarColor: getRoleColor(u.role_ref)
+                };
+            });
+
+            // Shareholders
+            const shs = SYSTEM_DATA.shareholders
+                .filter(s => !emps.find(e => e.email === s.email))
+                .map(s => {
+                    let dName = s.name;
+                    if(typeof s.name === 'object') {
+                        dName = currentLang === 'ar' ? s.name.ar : s.name.en;
+                    }
+                    
+                    return {
+                        id: s.id,
+                        email: s.email,
+                        displayName: dName,
+                        displayTitle: currentLang === 'ar' ? `مساهم (${s.percent}%)` : `Shareholder (${s.percent}%)`,
+                        type: 'shareholder',
+                        role_ref: 'shareholder',
+                        displayRole: getRoleLabel('shareholder'),
+                        displayDept: t.ownerDept,
+                        avatarColor: '#10B981'
+                    };
+                });
+
+            allUsers = [...emps, ...shs];
+        }
 
         function renderUsers() {
             const tbody = document.getElementById('usersTableBody');
             const searchInput = document.getElementById('searchInput');
-            if(!tbody) return;
+            if(!tbody || !searchInput) return;
             
-            const search = searchInput ? searchInput.value.toLowerCase() : '';
+            const search = searchInput.value.toLowerCase();
+            const t = translations[currentLang];
             tbody.innerHTML = '';
-            
-            allUsers.filter(u => {
-                const name = u.name.ar || u.name;
-                return name.toLowerCase().includes(search) || u.role.toLowerCase().includes(search);
-            }).forEach(u => {
-                const name = u.name.ar || u.name;
-                const title = u.title.ar || u.title;
-                
+
+            const filtered = allUsers.filter(u => 
+                (u.displayName && u.displayName.toLowerCase().includes(search)) || 
+                (u.email && u.email.toLowerCase().includes(search)) ||
+                (u.displayRole && u.displayRole.toLowerCase().includes(search))
+            );
+
+            filtered.forEach(u => {
+                const safeColor = (u.avatarColor || '#64748B').replace('#','');
+                const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(u.displayName)}&background=${safeColor}&color=fff&bold=true`;
+                const isActive = u.status !== 'inactive';
+                const statusColor = isActive ? 'bg-green-50 text-green-600 border-green-100' : 'bg-red-50 text-red-600 border-red-100';
+                const statusDot = isActive ? 'bg-green-500' : 'bg-red-500';
+                const statusText = isActive ? t.statusActive : t.statusInactive;
+
                 tbody.innerHTML += `
-                <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition border-b border-slate-100 dark:border-slate-700">
-                    <td class="p-4">
-                        <div class="flex items-center gap-3">
-                            <img src="${u.avatar}" class="w-9 h-9 rounded-full border border-slate-200 dark:border-slate-600">
-                            <div><p class="font-bold text-sm text-slate-800 dark:text-white">${name}</p><p class="text-[10px] text-slate-400 font-en uppercase">${u.id}</p></div>
-                        </div>
-                    </td>
-                    <td class="p-4"><span class="px-2 py-1 rounded text-[11px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">${u.role}</span><div class="text-[10px] text-slate-400 mt-1">${title}</div></td>
-                    <td class="p-4 text-xs text-slate-500">${u.displayDept}</td>
-                    <td class="p-4 text-xs font-en text-slate-500">${u.email || '-'}</td>
-                    <td class="p-4 text-center"><span class="inline-flex items-center gap-1.5 px-2 py-1 rounded-full text-[10px] font-bold bg-green-50 text-green-600"><span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span> نشط</span></td>
-                    <td class="p-4 text-center flex justify-center gap-2">
-                        <button class="w-8 h-8 rounded-lg bg-slate-50 hover:bg-[#4267B2] hover:text-white text-slate-400 transition flex items-center justify-center"><i class="fa-solid fa-pen"></i></button>
-                        <button class="w-8 h-8 rounded-lg bg-slate-50 hover:bg-[#FB4747] hover:text-white text-slate-400 transition flex items-center justify-center"><i class="fa-solid fa-trash"></i></button>
-                    </td>
-                </tr>`;
+                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition border-b border-slate-100 dark:border-slate-700">
+                        <td class="p-4">
+                            <div class="flex items-center gap-3">
+                                <img src="${avatarUrl}" class="w-9 h-9 rounded-full border border-slate-200 dark:border-slate-600">
+                                <div>
+                                    <p class="font-bold text-sm text-slate-800 dark:text-white">${u.displayName}</p>
+                                    <p class="text-[10px] text-slate-400 font-en uppercase">${u.id}</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="p-4">
+                            <span class="px-2 py-1 rounded text-[11px] font-bold bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300">
+                                ${u.displayRole}
+                            </span>
+                            <div class="text-[10px] text-slate-400 mt-1">${u.displayTitle}</div>
+                        </td>
+                        <td class="p-4 text-xs text-slate-500">${u.displayDept}</td>
+                        <td class="p-4 text-xs font-en text-slate-500">${u.email}</td>
+                        <td class="p-4 text-center">
+                            <span class="inline-flex items-center gap-1.5 px-2 py-1 rounded-full text-[10px] font-bold ${statusColor} border">
+                                <span class="w-1.5 h-1.5 rounded-full ${statusDot} animate-pulse"></span> ${statusText}
+                            </span>
+                        </td>
+                        <td class="p-4 text-center flex justify-center gap-2">
+                            <button onclick="editUser('${u.displayName}')" class="w-8 h-8 rounded-lg bg-slate-50 hover:bg-brandBlue hover:text-white text-slate-400 transition flex items-center justify-center"><i class="fa-solid fa-pen"></i></button>
+                            <button onclick="deleteUser('${u.displayName}')" class="w-8 h-8 rounded-lg bg-slate-50 hover:bg-brandRed hover:text-white text-slate-400 transition flex items-center justify-center"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `;
             });
         }
 
-        function renderRoles() {
-            const list = document.getElementById('rolesList');
-            if(!list || !SYSTEM_DATA.roles) return;
-            list.innerHTML = '';
+        function renderRolesList() {
+            const container = document.getElementById('rolesList');
+            if(!container) return;
+            container.innerHTML = '';
+            const t = translations[currentLang];
             
-            Object.keys(SYSTEM_DATA.roles).forEach(key => {
-                const r = SYSTEM_DATA.roles[key];
-                list.innerHTML += `
-                <div onclick="showRoleDetails('${key}')" id="role-${key}" class="role-card p-4 rounded-xl border border-slate-200 dark:border-slate-700 cursor-pointer hover:shadow-md transition bg-white dark:bg-slate-800 mb-3">
-                    <div class="flex justify-between items-center mb-1"><h4 class="font-bold text-sm text-slate-800 dark:text-white">${r.label.ar}</h4></div>
-                    <p class="text-[11px] text-slate-500">${r.desc.ar}</p>
-                </div>`;
+            Object.entries(SYSTEM_DATA.roles).forEach(([key, role]) => {
+                const label = role.label[currentLang];
+                const desc = role.desc[currentLang];
+                const inherits = role.inherits ? (SYSTEM_DATA.roles[role.inherits]?.label[currentLang] || role.inherits) : '';
+
+                container.innerHTML += `
+                    <div onclick="showRoleDetails('${key}')" id="role-card-${key}" class="role-card p-4 rounded-xl border border-slate-200 dark:border-slate-700 cursor-pointer hover:shadow-md transition bg-white dark:bg-slate-800">
+                        <div class="flex justify-between items-center mb-2">
+                            <h4 class="font-bold text-sm text-slate-800 dark:text-white">${label}</h4>
+                            <i class="fa-solid fa-chevron-${currentLang === 'ar' ? 'left' : 'right'} text-xs text-slate-400"></i>
+                        </div>
+                        <p class="text-[11px] text-slate-500 leading-snug">${desc}</p>
+                        ${role.inherits ? `<p class="text-[10px] text-blue-500 mt-2"><i class="fa-solid fa-link"></i> ${t.inherits} ${inherits}</p>` : ''}
+                    </div>
+                `;
             });
         }
 
-        function showRoleDetails(key) {
-            const r = SYSTEM_DATA.roles[key];
-            if(!r) return;
-
+        function showRoleDetails(roleKey) {
             document.querySelectorAll('.role-card').forEach(el => el.classList.remove('active'));
-            document.getElementById('role-'+key)?.classList.add('active');
+            document.getElementById(`role-card-${roleKey}`)?.classList.add('active');
 
-            document.getElementById('roleDetailName').innerText = r.label.ar;
-            document.getElementById('roleDetailDesc').innerText = r.desc.ar;
+            const role = SYSTEM_DATA.roles[roleKey];
+            const label = role.label[currentLang];
+            const desc = role.desc[currentLang];
+            
+            document.getElementById('roleDetailName').innerText = label;
+            document.getElementById('roleDetailDesc').innerText = desc;
+            
+            const badge = document.getElementById('roleInheritsBadge');
+            if(role.inherits) {
+                badge.classList.remove('hidden');
+                document.getElementById('roleInheritsVal').innerText = SYSTEM_DATA.roles[role.inherits]?.label[currentLang] || role.inherits;
+            } else {
+                badge.classList.add('hidden');
+            }
+
+            const permContainer = document.getElementById('permissionsContainer');
+            permContainer.innerHTML = '';
+
+            Object.values(SYSTEM_DATA.permissions).forEach(group => {
+                let itemsHTML = '';
+                group.items.forEach(perm => {
+                    const hasPerm = checkPermission(roleKey, perm.roles);
+                    itemsHTML += `
+                        <div class="flex items-center justify-between p-3 border-b border-slate-50 dark:border-slate-700 last:border-0 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
+                            <span class="text-sm text-slate-700 dark:text-slate-300">${perm.label[currentLang]}</span>
+                            ${hasPerm 
+                                ? '<i class="fa-solid fa-circle-check text-green-500 text-lg"></i>' 
+                                : '<i class="fa-regular fa-circle text-slate-300 text-lg opacity-50"></i>'}
+                        </div>
+                    `;
+                });
+
+                permContainer.innerHTML += `
+                    <div class="mb-4">
+                        <h5 class="font-bold text-xs text-brandBlue mb-2 border-b-2 border-brandBlue/10 pb-1 inline-block">${group.title[currentLang]}</h5>
+                        <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700">
+                            ${itemsHTML}
+                        </div>
+                    </div>
+                `;
+            });
         }
 
-        window.switchView = (view) => {
-            const uBtn = document.getElementById('btn-users');
-            const rBtn = document.getElementById('btn-roles');
-            const uView = document.getElementById('view-users');
-            const rView = document.getElementById('view-roles');
-            const search = document.getElementById('userToolbar');
+        function checkPermission(currentRole, allowedRoles) {
+            if (allowedRoles.includes(currentRole)) return true;
+            let inherited = SYSTEM_DATA.roles[currentRole].inherits;
+            while (inherited) {
+                if (allowedRoles.includes(inherited)) return true;
+                inherited = SYSTEM_DATA.roles[inherited]?.inherits;
+            }
+            return false;
+        }
 
-            if(view === 'users') {
-                uView.classList.remove('hidden'); rView.classList.add('hidden'); search.classList.remove('hidden');
-                uBtn.classList.replace('text-slate-500', 'bg-white'); uBtn.classList.add('text-[#4267B2]', 'shadow-sm');
-                rBtn.classList.remove('bg-white', 'text-[#4267B2]', 'shadow-sm'); rBtn.classList.add('text-slate-500');
-            } else {
-                uView.classList.add('hidden'); rView.classList.remove('hidden'); search.classList.add('hidden');
-                rBtn.classList.replace('text-slate-500', 'bg-white'); rBtn.classList.add('text-[#4267B2]', 'shadow-sm');
-                uBtn.classList.remove('bg-white', 'text-[#4267B2]', 'shadow-sm'); uBtn.classList.add('text-slate-500');
-                
-                // Select first role
-                const firstRole = Object.keys(SYSTEM_DATA.roles)[0];
-                if(firstRole) showRoleDetails(firstRole);
+        // --- Helpers ---
+        function getRoleLabel(key) { 
+            return SYSTEM_DATA.roles[key]?.label[currentLang] || key; 
+        }
+        function getDeptName(id) {
+            const dept = SYSTEM_DATA.departments[id];
+            return dept ? dept[currentLang] : id || "General";
+        }
+        function getRoleColor(key) {
+            if(key.includes('admin')) return '#EF4444';
+            if(key.includes('ceo') || key.includes('chair')) return '#3B82F6';
+            if(key.includes('manager')) return '#8B5CF6';
+            if(key.includes('shareholder')) return '#10B981';
+            return '#64748B';
+        }
+
+        function updateStats() {
+            document.getElementById('stat-total').innerText = allUsers.length;
+            document.getElementById('stat-shareholders').innerText = allUsers.filter(u => u.type === 'shareholder').length;
+            document.getElementById('stat-exec').innerText = allUsers.filter(u => ['ceo','cfo','manager'].includes(u.role_ref)).length;
+            document.getElementById('stat-roles').innerText = Object.keys(SYSTEM_DATA.roles).length;
+        }
+
+        // Mock Actions
+        window.editUser = (name) => alert((currentLang === 'ar' ? "تعديل: " : "Edit: ") + name);
+        window.deleteUser = (name) => {
+            if(confirm((currentLang === 'ar' ? "هل أنت متأكد من حذف " : "Are you sure you want to delete ") + name + "?")) {
+                alert("تم الحذف (محاكاة)");
             }
         };
+
+        window.switchView = function(view) {
+            if(view === 'users') {
+                document.getElementById('view-users').classList.remove('hidden');
+                document.getElementById('view-roles').classList.add('hidden');
+                document.getElementById('userToolbar').classList.remove('hidden');
+                document.getElementById('btn-users').classList.add('bg-white', 'text-brandBlue', 'shadow-sm');
+                document.getElementById('btn-users').classList.remove('text-slate-500');
+                document.getElementById('btn-roles').classList.remove('bg-white', 'text-brandBlue', 'shadow-sm');
+                document.getElementById('btn-roles').classList.add('text-slate-500');
+            } else {
+                document.getElementById('view-users').classList.add('hidden');
+                document.getElementById('view-roles').classList.remove('hidden');
+                document.getElementById('userToolbar').classList.add('hidden');
+                document.getElementById('btn-roles').classList.add('bg-white', 'text-brandBlue', 'shadow-sm');
+                document.getElementById('btn-roles').classList.remove('text-slate-500');
+                document.getElementById('btn-users').classList.remove('bg-white', 'text-brandBlue', 'shadow-sm');
+                document.getElementById('btn-users').classList.add('text-slate-500');
+            }
+        }
+
+        // Run Page Init
+        initPage();
     </script>
 </body>
 </html>
