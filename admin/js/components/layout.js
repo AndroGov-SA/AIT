@@ -299,7 +299,7 @@ const Layout = (function() {
           <div class="h-6 w-px bg-slate-200 dark:bg-slate-700 mx-1"></div>
 
           <!-- Logout -->
-          <button onclick="https://androgov-sa.github.io/AIT/login.html" class="text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-2" title="${I18n.t('auth.logout')}">
+          <button onclick="Layout.logout()" class="text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-2" title="${I18n.t('auth.logout')}">
             <i class="fa-solid fa-power-off"></i>
             <span class="hidden sm:inline">${I18n.t('auth.logout')}</span>
           </button>
@@ -389,10 +389,15 @@ const Layout = (function() {
     location.reload();
   }
 
-  function logout() {
+ function logout() {
     const msg = I18n.t('auth.logoutConfirm');
     if (confirm(msg)) {
-      AppConfig.logout();
+      // 1. تنظيف بيانات المستخدم من المتصفح لضمان تسجيل الخروج
+      localStorage.removeItem('currentUser');
+      localStorage.removeItem('activeContext');
+      
+      // 2. التوجيه إلى الرابط المحدد
+      window.location.href = 'https://androgov-sa.github.io/AIT/login.html';
     }
   }
 
@@ -438,7 +443,7 @@ if (typeof window !== 'undefined') {
   // Legacy function names
   window.changeTheme = Layout.toggleTheme;
   window.changeLang = Layout.toggleLang;
-  window.doLogout = "https://androgov-sa.github.io/AIT/login.html";
+  window.doLogout = Layout.logout;
   window.toggleNotif = Layout.toggleNotif;
 }
 
