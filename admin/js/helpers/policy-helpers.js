@@ -1,7 +1,7 @@
 /**
  * PolicyHelpers - Utility Functions for CompanyPolicy
- * @description Helper functions to work with company_policy.js data
- * @version 1.0.0
+ * @description Helper functions to work with company_policy.js data (v5 Compatible)
+ * @version 2.0.0
  * @requires CompanyPolicy (from company_policy.js)
  * @file admin/js/helpers/policy-helpers.js
  */
@@ -11,16 +11,10 @@ const PolicyHelpers = (function() {
   // PRIVATE HELPERS
   // ==========================================
 
-  /**
-   * Check if CompanyPolicy is loaded
-   */
   function _isPolicyLoaded() {
     return typeof CompanyPolicy !== 'undefined' && CompanyPolicy !== null;
   }
 
-  /**
-   * Get current language
-   */
   function _getLang() {
     if (typeof AppConfig !== 'undefined') {
       return AppConfig.getLang();
@@ -28,9 +22,6 @@ const PolicyHelpers = (function() {
     return localStorage.getItem('lang') || 'ar';
   }
 
-  /**
-   * Localize bilingual object
-   */
   function _localize(obj, lang = null) {
     if (!obj) return '';
     if (typeof obj === 'string') return obj;
@@ -42,40 +33,42 @@ const PolicyHelpers = (function() {
   // USER CONTEXTS & ROLES
   // ==========================================
 
-  /**
-   * Get all contexts for a user
-   * @param {string} userId
-   * @returns {Array} Array of context objects
-   */
   function getUserContexts(userId) {
     if (!_isPolicyLoaded()) return [];
 
-    const user = CompanyPolicy.governance.users_directory.find(u => u.id === userId);
+    // FIX: المسار الصحيح في الإصدار الخامس هو CompanyPolicy.users
+    const user = CompanyPolicy.users.find(u => u.id === userId);
     if (!user) return [];
 
-    const contexts = [];
-    const lang = _getLang();
+    // التحقق من وجود تعيينات خاصة للأدوار في userRolesMap
+    const roleMap = CompanyPolicy.userRolesMap?.find(m => m.userId === userId);
+    if (roleMap && roleMap.contexts) {
+      return roleMap.contexts;
+    }
 
-    // Primary role context
+    // إنشاء السياقات الافتراضية إذا لم يوجد تعيين خاص
+    const contexts = [];
+    
+    // الدور الأساسي
     if (user.role) {
       const contextKey = _mapRoleToContext(user.role);
       contexts.push({
         context: contextKey,
         role: user.role,
         isPrimary: true,
-        label: AppConfig.getContextInfo(contextKey)?.label || { ar: user.role, en: user.role }
+        label: _getRoleLabelObj(user.role)
       });
     }
 
-    // Additional roles
-    if (user.additional_roles && Array.isArray(user.additional_roles)) {
-      user.additional_roles.forEach(role => {
+    // الأدوار الإضافية
+    if (user.additionalRoles && Array.isArray(user.additionalRoles)) {
+      user.additionalRoles.forEach(role => {
         const contextKey = _mapRoleToContext(role);
         contexts.push({
           context: contextKey,
           role: role,
           isPrimary: false,
-          label: AppConfig.getContextInfo(contextKey)?.label || { ar: role, en: role }
+          label: _getRoleLabelObj(role)
         });
       });
     }
@@ -83,50 +76,42 @@ const PolicyHelpers = (function() {
     return contexts;
   }
 
-  /**
-   * Map role to context
-   * @param {string} role
-   * @returns {string}
-   */
-  function _mapRoleToContext(role) {
+  function _getRoleLabelObj(roleKey) {
+    const role = CompanyPolicy.roles[roleKey];
+    return role ? role.label : { ar: roleKey, en: roleKey };
+  }
+
+  function _mapRoleToContext(roleKey) {
+    const role = CompanyPolicy.roles[roleKey];
+    return role ? (role.context || _legacyMapRoleToContext(roleKey)) : 'employee';
+  }
+
+  function _legacyMapRoleToContext(role) {
     const mapping = {
-      'admin': 'system',
-      'Chairman': 'board',
+      'sys_admin': 'system',
+      'chairman': 'board',
       'vice_chairman': 'board',
       'board_member': 'board',
-      'board_secretary': 'governance',
-      'shareholder': 'shareholders',
-      'CEO': 'executive',
-      'CFO': 'executive',
-      'CAO': 'executive',
-      'Manager': 'employee',
-      'Coordinator': 'employee',
-      'Specialist': 'employee',
-      'Team_Lead': 'employee',
-      'Committee_Member': 'audit_committee',
-      'Auditor': 'audit_committee'
+      'ceo': 'executive',
+      'cfo': 'executive',
+      'manager': 'employee',
+      'shareholder': 'shareholders'
     };
-
     return mapping[role] || 'employee';
   }
 
-  /**
-   * Get shareholder data for a user
-   * @param {string} userId
-   * @returns {Object|null}
-   */
   function getShareholderData(userId) {
     if (!_isPolicyLoaded()) return null;
 
-    const user = CompanyPolicy.governance.users_directory.find(u => u.id === userId);
-    if (!user || !user.additional_roles?.includes('shareholder')) {
+    // FIX: المسار الصحيح
+    const user = CompanyPolicy.users.find(u => u.id === userId);
+    if (!user || (!user.isShareholder && !user.additionalRoles?.includes('shareholder'))) {
       return null;
     }
 
-    // Find shareholder by email
-    const shareholder = CompanyPolicy.governance.shareholders.find(
-      s => s.email === user.email
-    );
+    // البحث عن المساهم
+    const shareholder = CompanyPolicy.shareholders.find(s => s.email === user.email) ||
+                        CompanyPolicy.shareholders.find(s => s.id === user.shareholderId); // دعم الربط بالمعرف
 
     if (!shareholder) return null;
 
@@ -134,66 +119,55 @@ const PolicyHelpers = (function() {
       id: shareholder.id,
       percent: shareholder.percent,
       shares: shareholder.shares,
-      value: shareholder.shares * CompanyPolicy.governance.profile.capital.share_value,
+      // FIX: المسار الصحيح لقيمة السهم
+      value: shareholder.shares * (CompanyPolicy.capital?.shareValue || 10),
       type: shareholder.type,
       voting: shareholder.voting
     };
   }
 
-  /**
-   * Get role label (localized)
-   * @param {string} roleKey
-   * @param {string} lang
-   * @returns {string}
-   */
   function getRoleLabel(roleKey, lang = null) {
     if (!_isPolicyLoaded()) return roleKey;
-
     const useLang = lang || _getLang();
-    const role = CompanyPolicy.authority_matrix?.access_control?.roles?.[roleKey];
-    
-    if (!role) return roleKey;
-    
-    return _localize(role.label, useLang);
+    // FIX: المسار الصحيح للأدوار
+    const role = CompanyPolicy.roles[roleKey];
+    return role ? _localize(role.label, useLang) : roleKey;
   }
 
-  /**
-   * Check if role has permission (including inheritance)
-   * @param {string} roleKey
-   * @param {Array} allowedRoles
-   * @returns {boolean}
-   */
   function hasPermission(roleKey, allowedRoles = []) {
     if (!_isPolicyLoaded() || !allowedRoles) return false;
-    if (!Array.isArray(allowedRoles)) return false;
+    
+    // FIX: التأكد من أن allowedRoles مصفوفة
+    const rolesArray = Array.isArray(allowedRoles) ? allowedRoles : [allowedRoles];
 
-    // Direct match
-    if (allowedRoles.includes(roleKey)) return true;
+    if (rolesArray.includes(roleKey)) return true;
 
-    // Check inheritance chain
-    let currentRole = CompanyPolicy.authority_matrix?.access_control?.roles?.[roleKey];
+    // التحقق من الوراثة
+    let currentRole = CompanyPolicy.roles[roleKey];
     while (currentRole && currentRole.inherits) {
-      if (allowedRoles.includes(currentRole.inherits)) return true;
-      currentRole = CompanyPolicy.authority_matrix?.access_control?.roles?.[currentRole.inherits];
+      if (rolesArray.includes(currentRole.inherits)) return true;
+      currentRole = CompanyPolicy.roles[currentRole.inherits];
     }
 
     return false;
   }
 
-  /**
-   * Get all permissions for a user (merged from all contexts)
-   * @param {string} userId
-   * @returns {Array} Array of permission keys
-   */
   function getMergedPermissions(userId) {
     if (!_isPolicyLoaded()) return [];
 
     const contexts = getUserContexts(userId);
     const allPermissions = new Set();
 
+    // تجميع الصلاحيات من مصفوفة الصلاحيات
     contexts.forEach(ctx => {
-      const rolePermissions = CompanyPolicy.authority_matrix?.access_control?.permissions?.[ctx.role] || [];
-      rolePermissions.forEach(perm => allPermissions.add(perm));
+      // البحث في كل مجموعات الصلاحيات
+      Object.values(CompanyPolicy.permissions).forEach(group => {
+        group.items.forEach(perm => {
+           if (hasPermission(ctx.role, perm.roles)) {
+             allPermissions.add(perm.key);
+           }
+        });
+      });
     });
 
     return Array.from(allPermissions);
@@ -203,46 +177,34 @@ const PolicyHelpers = (function() {
   // DEPARTMENT HELPERS
   // ==========================================
 
-  /**
-   * Get department name (localized)
-   * @param {string} deptId
-   * @param {string} lang
-   * @returns {string}
-   */
   function getDeptName(deptId, lang = null) {
     if (!_isPolicyLoaded()) return deptId;
-
     const useLang = lang || _getLang();
-    const dept = CompanyPolicy.organization?.departments?.find(d => d.id === deptId);
-    
-    if (!dept) return deptId;
-    
-    return _localize(dept.name, useLang);
+    // FIX: المسار الصحيح للأقسام
+    const dept = CompanyPolicy.departments.find(d => d.id === deptId);
+    return dept ? _localize(dept.name, useLang) : deptId;
   }
 
   // ==========================================
   // FINANCIAL AUTHORITY
   // ==========================================
 
-  /**
-   * Check if user can approve transaction
-   * @param {string} roleKey
-   * @param {string} transactionType
-   * @param {number} amount
-   * @returns {boolean}
-   */
   function canApproveTransaction(roleKey, transactionType, amount) {
     if (!_isPolicyLoaded()) return false;
 
-    const authority = CompanyPolicy.authority_matrix?.financial_authority?.find(
-      f => f.transaction_type === transactionType
-    );
+    // FIX: التعامل مع الهيكلية الجديدة للصلاحيات المالية
+    const authConfig = CompanyPolicy.financialAuthority;
+    if (!authConfig) return false;
 
-    if (!authority) return false;
+    // البحث عن النوع في مفاتيح الكائن
+    // مثال: transactionType = 'po' قد يقابل 'poApproval'
+    let limits = authConfig[transactionType] || authConfig[transactionType + 'Approval'];
 
-    for (const level of authority.levels) {
-      if (level.role === roleKey || hasPermission(roleKey, [level.role])) {
-        if (level.limit === -1) return true; // Unlimited
+    if (!limits || !Array.isArray(limits)) return false;
+
+    for (const level of limits) {
+      if (hasPermission(roleKey, [level.role])) {
+        if (level.limit === -1) return true; // غير محدود
         if (amount <= level.limit) return true;
       }
     }
@@ -254,25 +216,21 @@ const PolicyHelpers = (function() {
   // COMPANY INFO
   // ==========================================
 
-  /**
-   * Get company profile (localized)
-   * @param {string} lang
-   * @returns {Object}
-   */
   function getCompanyProfile(lang = null) {
     if (!_isPolicyLoaded()) return {};
 
     const useLang = lang || _getLang();
-    const profile = CompanyPolicy.governance?.profile;
-    const identity = CompanyPolicy.identity?.meta;
+    // FIX: المسارات الجديدة للهوية ورأس المال
+    const identity = CompanyPolicy.identity;
+    const capital = CompanyPolicy.capital;
 
     return {
-      name: _localize(identity?.brand_name, useLang),
-      legalName: _localize(CompanyPolicy.i18n?.translations?.global?.company_legal_name, useLang),
-      crNumber: profile?.cr_number,
-      unifiedNumber: profile?.unified_number,
-      establishmentDate: profile?.establishment_date,
-      capital: profile?.capital,
+      name: _localize(identity?.name, useLang),
+      legalName: _localize(identity?.legalName, useLang),
+      crNumber: identity?.crNumber,
+      unifiedNumber: identity?.unifiedNumber,
+      establishmentDate: identity?.establishmentDate,
+      capital: capital,
       website: identity?.website
     };
   }
@@ -281,59 +239,36 @@ const PolicyHelpers = (function() {
   // VALIDATION
   // ==========================================
 
-  /**
-   * Validate if user exists
-   * @param {string} userId
-   * @returns {boolean}
-   */
   function userExists(userId) {
     if (!_isPolicyLoaded()) return false;
-    return CompanyPolicy.governance?.users_directory?.some(u => u.id === userId) || false;
+    // FIX: المسار الصحيح
+    return CompanyPolicy.users.some(u => u.id === userId);
   }
 
-  /**
-   * Validate if role exists
-   * @param {string} roleKey
-   * @returns {boolean}
-   */
   function roleExists(roleKey) {
     if (!_isPolicyLoaded()) return false;
-    return !!CompanyPolicy.authority_matrix?.access_control?.roles?.[roleKey];
+    // FIX: المسار الصحيح
+    return !!CompanyPolicy.roles[roleKey];
   }
 
   // ==========================================
   // RETURN PUBLIC API
   // ==========================================
   return {
-    // User & Roles
     getUserContexts,
     getShareholderData,
     getRoleLabel,
     hasPermission,
     getMergedPermissions,
-
-    // Departments
     getDeptName,
-
-    // Financial
     canApproveTransaction,
-
-    // Company
     getCompanyProfile,
-
-    // Validation
     userExists,
     roleExists
   };
 })();
 
-// ==========================================
-// GLOBAL EXPORT
-// ==========================================
+// Export
 if (typeof window !== 'undefined') {
   window.PolicyHelpers = PolicyHelpers;
-}
-
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = PolicyHelpers;
 }
