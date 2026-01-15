@@ -20,7 +20,7 @@
         nameAr: "مستخدم النظام",
         nameEn: "System User",
         role: "Guest",
-        avatar: ""
+        avatar: "https://androgov-sa.github.io/AIT/photo/grc.png"
     };
 
     // --- DASHBOARD DATA (Added to support the dashboard view) ---
