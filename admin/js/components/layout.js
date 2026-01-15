@@ -438,7 +438,7 @@ if (typeof window !== 'undefined') {
   // Legacy function names
   window.changeTheme = Layout.toggleTheme;
   window.changeLang = Layout.toggleLang;
-  window.doLogout = Layout.logout;
+  window.doLogout = "https://androgov-sa.github.io/AIT/login.html";
   window.toggleNotif = Layout.toggleNotif;
 }
 
