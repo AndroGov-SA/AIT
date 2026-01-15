@@ -331,13 +331,58 @@ const I18n = (function() {
     // CHATBOT
     // ==========================================
     bot: {
-      title: { ar: 'AndroBot', en: 'AndroBot' },
-      subtitle: { ar: 'مساعد الحوكمة الذكي', en: 'AI Governance Assistant' },
-      welcome: { ar: 'مرحباً بك! كيف يمكنني مساعدتك؟', en: 'Welcome! How can I help you?' },
-      placeholder: { ar: 'اكتب استفسارك هنا...', en: 'Type your query here...' },
-      thinking: { ar: 'جاري التفكير...', en: 'Thinking...' }
+    title: { ar: 'AndroBot', en: 'AndroBot' },
+    subtitle: { ar: 'مساعد الحوكمة الذكي', en: 'AI Governance Assistant' },
+    welcome: { 
+      ar: 'مرحباً بك في AndroGov 👋<br>أنا المساعد الذكي للنظام. كيف يمكنني مساعدتك؟',
+      en: 'Welcome to AndroGov 👋<br>I am your AI assistant. How can I help you?'
+    },
+    placeholder: { ar: 'اكتب استفسارك هنا...', en: 'Type your query here...' },
+    thinking: { ar: 'جاري التفكير...', en: 'Thinking...' },
+    send: { ar: 'إرسال', en: 'Send' },
+    close: { ar: 'إغلاق', en: 'Close' },
+    
+    // Suggestions
+    suggestions: {
+      majorShareholders: { ar: 'كبار الملاك', en: 'Major Owners' },
+      capital: { ar: 'رأس المال', en: 'Capital' },
+      chairman: { ar: 'رئيس المجلس', en: 'Chairman' },
+      boardMembers: { ar: 'أعضاء المجلس', en: 'Board Members' },
+      userCount: { ar: 'عدد المستخدمين', en: 'User Count' },
+      roles: { ar: 'الأدوار', en: 'Roles' },
+      compliance: { ar: 'نسبة الامتثال', en: 'Compliance Rate' },
+      shareholders: { ar: 'المساهمين', en: 'Shareholders' }
+    },
+    
+    // Questions
+    questions: {
+      majorShareholders: { ar: 'من هم كبار المساهمين؟', en: 'Who are the major shareholders?' },
+      capital: { ar: 'كم رأس المال؟', en: 'What is the capital?' },
+      chairman: { ar: 'من هو رئيس المجلس؟', en: 'Who is the chairman?' },
+      boardCount: { ar: 'كم عدد أعضاء المجلس؟', en: 'How many board members?' },
+      userCount: { ar: 'كم عدد المستخدمين؟', en: 'How many users?' },
+      availableRoles: { ar: 'ما هي الأدوار المتاحة؟', en: 'What roles are available?' },
+      complianceRate: { ar: 'ما هي نسبة الامتثال؟', en: 'What is the compliance rate?' },
+      whoAreShareholders: { ar: 'من هم المساهمين؟', en: 'Who are the shareholders?' }
+    },
+    
+    // Responses
+    responses: {
+      noAnswer: { 
+        ar: 'عذراً، لم أجد إجابة دقيقة. يمكنك سؤالي عن:<br>• المساهمين وهيكل الملكية<br>• مجلس الإدارة واللجان<br>• المستخدمين والأدوار<br>• الامتثال والحوكمة',
+        en: 'Sorry, I couldn\'t find a precise answer. You can ask about:<br>• Shareholders & ownership<br>• Board & committees<br>• Users & roles<br>• Compliance & governance'
+      },
+      greeting: {
+        ar: 'أهلاً وسهلاً! كيف يمكنني مساعدتك اليوم؟',
+        en: 'Hello! How can I help you today?'
+      },
+      compliance: {
+        ar: 'نسبة الامتثال الحالية: <b>92%</b>. النظام متوافق مع معايير SA_CL_2024 وISO 27001.',
+        en: 'Current compliance rate: <b>92%</b>. System compliant with SA_CL_2024 and ISO 27001.'
+      }
     }
-  };
+  }
+};
 
   // ==========================================
   // PRIVATE STATE
