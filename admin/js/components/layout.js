@@ -299,7 +299,7 @@ const Layout = (function() {
           <div class="h-6 w-px bg-slate-200 dark:bg-slate-700 mx-1"></div>
 
           <!-- Logout -->
-          <button onclick="Layout.logout()" class="text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-2" title="${I18n.t('auth.logout')}">
+          <button onclick="https://androgov-sa.github.io/AIT/login.html" class="text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-2" title="${I18n.t('auth.logout')}">
             <i class="fa-solid fa-power-off"></i>
             <span class="hidden sm:inline">${I18n.t('auth.logout')}</span>
           </button>
