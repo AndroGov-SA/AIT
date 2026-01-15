@@ -1,226 +1,339 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#FB4747">
-    <meta name="description" content="AndroGov - User & Role Management System">
-    <title>AndroGov | إدارة المستخدمين والصلاحيات</title>
-    
-    <!-- Favicon -->
-    <link rel="icon" href="https://ait.sa/wp-content/uploads/2024/03/cropped-Square-Logo.png" type="image/png">
-    
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- SweetAlert2 -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+/**
+ * PolicyHelpers - Utility Functions for CompanyPolicy
+ * @description Helper functions to work with company_policy.js data
+ * @version 1.0.0
+ * @requires CompanyPolicy (from company_policy.js)
+ * @file admin/js/helpers/policy-helpers.js
+ */
 
-    <!-- Tailwind Config -->
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        brandRed: '#FB4747',
-                        brandBlue: '#4267B2',
-                        brandDark: '#1E293B',
-                        brandGray: '#F8FAFC'
-                    },
-                    fontFamily: {
-                        sans: ['Tajawal', 'Inter', 'sans-serif'],
-                        en: ['Inter', 'sans-serif']
-                    }
-                }
-            }
-        }
-    </script>
+const PolicyHelpers = (function() {
+  // ==========================================
+  // PRIVATE HELPERS
+  // ==========================================
 
-    <!-- Page Styles -->
-    <link rel="stylesheet" href="css/users.css">
+  /**
+   * Check if CompanyPolicy is loaded
+   */
+  function _isPolicyLoaded() {
+    return typeof CompanyPolicy !== 'undefined' && CompanyPolicy !== null;
+  }
 
-    <style>
-        /* Additional inline styles */
-        body {
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        body.loaded {
-            opacity: 1;
-        }
-    </style>
-</head>
+  /**
+   * Get current language
+   */
+  function _getLang() {
+    if (typeof AppConfig !== 'undefined') {
+      return AppConfig.getLang();
+    }
+    return localStorage.getItem('lang') || 'ar';
+  }
 
-<body class="bg-brandGray dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans">
+  /**
+   * Localize bilingual object
+   */
+  function _localize(obj, lang = null) {
+    if (!obj) return '';
+    if (typeof obj === 'string') return obj;
+    const useLang = lang || _getLang();
+    return obj[useLang] || obj.ar || obj.en || '';
+  }
 
-    <!-- ===== SIDEBAR CONTAINER ===== -->
-    <div id="sidebar-container" class="no-print"></div>
-    
-    <!-- ===== MAIN CONTENT ===== -->
-    <div class="main-content-wrapper md:mr-72 transition-all duration-300 flex flex-col min-h-screen">
-        
-        <!-- Header Container -->
-        <div id="header-container" class="no-print"></div>
+  // ==========================================
+  // USER CONTEXTS & ROLES
+  // ==========================================
 
-        <!-- Page Content -->
-        <main class="p-6 space-y-6">
-            
-            <!-- Page Header -->
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                <div>
-                    <h1 class="text-2xl font-extrabold text-slate-800 dark:text-white mb-1" data-i18n="users.pageTitle">إدارة المستخدمين والصلاحيات</h1>
-                    <p class="text-sm text-slate-500 dark:text-slate-400" data-i18n="users.pageDesc">لوحة التحكم المركزية بالوصول والأدوار (RBAC)</p>
-                </div>
-            </div>
+  /**
+   * Get all contexts for a user
+   * @param {string} userId
+   * @returns {Array} Array of context objects
+   */
+  function getUserContexts(userId) {
+    if (!_isPolicyLoaded()) return [];
 
-            <!-- Stats Cards -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="stats-container">
-                <!-- Populated by JS -->
-            </div>
+    const user = CompanyPolicy.governance.users_directory.find(u => u.id === userId);
+    if (!user) return [];
 
-            <!-- Main Workspace -->
-            <div class="bg-white dark:bg-slate-800 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 min-h-[600px] flex flex-col overflow-hidden">
-                
-                <!-- Toolbar -->
-                <div class="p-4 md:p-6 border-b border-slate-100 dark:border-slate-700 flex flex-col md:flex-row justify-between items-stretch md:items-center gap-4">
-                    
-                    <!-- View Tabs -->
-                    <div class="flex bg-slate-100 dark:bg-slate-700 p-1 rounded-xl">
-                        <button 
-                            onclick="UsersPage.switchView('users')" 
-                            id="btn-users" 
-                            class="flex-1 md:flex-none px-4 md:px-6 py-2 text-xs font-bold rounded-lg bg-white dark:bg-slate-600 text-brandBlue shadow-sm transition-all flex items-center justify-center gap-2"
-                        >
-                            <i class="fa-solid fa-users"></i>
-                            <span data-i18n="users.directory">دليل المستخدمين</span>
-                        </button>
-                        <button 
-                            onclick="UsersPage.switchView('roles')" 
-                            id="btn-roles" 
-                            class="flex-1 md:flex-none px-4 md:px-6 py-2 text-xs font-bold rounded-lg text-slate-500 hover:text-slate-700 dark:text-slate-400 transition-all flex items-center justify-center gap-2"
-                        >
-                            <i class="fa-solid fa-shield-halved"></i>
-                            <span data-i18n="users.rolesStructure">هيكل الصلاحيات</span>
-                        </button>
-                    </div>
-                    
-                    <!-- Search (Users View Only) -->
-                    <div class="flex gap-3" id="userToolbar">
-                        <div class="relative flex-1 md:w-72">
-                            <input 
-                                type="text" 
-                                id="searchInput" 
-                                onkeyup="UsersPage.search(this.value)"
-                                class="w-full pl-10 pr-4 py-2.5 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl text-sm focus:ring-2 focus:ring-brandBlue focus:border-transparent outline-none dark:text-white transition-all"
-                                data-i18n-placeholder="users.searchPlaceholder"
-                                placeholder="بحث بالاسم، الدور، أو البريد..."
-                            >
-                            <i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                        </div>
-                    </div>
-                </div>
+    const contexts = [];
+    const lang = _getLang();
 
-                <!-- View: Users List -->
-                <div id="view-users" class="flex-1 fade-in">
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-sm">
-                            <thead class="bg-slate-50 dark:bg-slate-700/50 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase sticky top-0">
-                                <tr>
-                                    <th class="p-4 text-right" data-i18n="users.colUser">المستخدم</th>
-                                    <th class="p-4 text-right" data-i18n="users.colRole">الدور الوظيفي</th>
-                                    <th class="p-4 text-right" data-i18n="users.colDept">القسم</th>
-                                    <th class="p-4 text-right" data-i18n="users.colEmail">البريد الإلكتروني</th>
-                                    <th class="p-4 text-center" data-i18n="users.colStatus">الحالة</th>
-                                    <th class="p-4 text-center" data-i18n="users.colActions">إجراءات</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-slate-100 dark:divide-slate-700" id="usersTableBody">
-                                <!-- Populated by JS -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+    // Primary role context
+    if (user.role) {
+      const contextKey = _mapRoleToContext(user.role);
+      contexts.push({
+        context: contextKey,
+        role: user.role,
+        isPrimary: true,
+        label: AppConfig.getContextInfo(contextKey)?.label || { ar: user.role, en: user.role }
+      });
+    }
 
-                <!-- View: Roles & Permissions -->
-                <div id="view-roles" class="hidden flex-1 p-6 fade-in">
-                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 h-full">
-                        
-                        <!-- Roles List -->
-                        <div class="lg:col-span-4 lg:border-l border-slate-200 dark:border-slate-700 lg:pl-6 space-y-3 overflow-y-auto custom-scroll max-h-[550px]" id="rolesList">
-                            <!-- Populated by JS -->
-                        </div>
-                        
-                        <!-- Role Details & Permissions -->
-                        <div class="lg:col-span-8">
-                            <div class="bg-slate-50 dark:bg-slate-700/30 rounded-2xl p-6 border border-slate-200 dark:border-slate-600 h-full">
-                                
-                                <!-- Role Header -->
-                                <div class="flex flex-col md:flex-row justify-between items-start gap-4 mb-6 pb-4 border-b border-slate-200 dark:border-slate-600">
-                                    <div>
-                                        <h3 class="font-bold text-xl text-slate-800 dark:text-white mb-1" id="roleDetailName">--</h3>
-                                        <p class="text-sm text-slate-500 dark:text-slate-400" id="roleDetailDesc">--</p>
-                                    </div>
-                                    <span id="roleInheritsBadge" class="hidden px-3 py-1.5 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded-full text-xs font-bold whitespace-nowrap">
-                                        <i class="fa-solid fa-link ml-1"></i>
-                                        <span data-i18n="users.inheritsFrom">يرث صلاحيات:</span>
-                                        <span id="roleInheritsVal" class="font-bold"></span>
-                                    </span>
-                                </div>
-                                
-                                <!-- Permissions Grid -->
-                                <div class="space-y-6 overflow-y-auto custom-scroll max-h-[400px] pr-2" id="permissionsContainer">
-                                    <!-- Populated by JS -->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </main>
-
-        <!-- Footer -->
-        <footer class="p-4 text-center text-xs text-slate-400 border-t border-slate-100 dark:border-slate-800">
-            © 2026 Andromeda IT - AndroGov System v7.0
-        </footer>
-    </div>
-
-    <!-- ===== SCRIPTS ===== -->
-    
-    <!-- 1. Data Layer -->
-    <script src="data/company_policy.js"></script>
-    
-    <!-- 2. Core -->
-    <script src="js/core/config.js"></script>
-    <script src="js/core/i18n.js"></script>
-    
-    <!-- 3. Services -->
-    <script src="js/services/data-service.js"></script>
-    
-    <!-- 4. Components -->
-    <script src="js/components/role-switcher.js"></script>
-    <script src="js/components/layout.js"></script>
-    <script src="js/components/bot.js"></script> <!-- ✅ Bot Component Added -->
-    
-    <!-- 5. Page Controller -->
-    <script src="js/pages/users-page.js"></script>
-
-    <!-- 6. Page Initialization -->
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Initialize page after layout is ready
-            setTimeout(() => {
-                UsersPage.init();
-            }, 100);
+    // Additional roles
+    if (user.additional_roles && Array.isArray(user.additional_roles)) {
+      user.additional_roles.forEach(role => {
+        const contextKey = _mapRoleToContext(role);
+        contexts.push({
+          context: contextKey,
+          role: role,
+          isPrimary: false,
+          label: AppConfig.getContextInfo(contextKey)?.label || { ar: role, en: role }
         });
-    </script>
+      });
+    }
 
-</body>
-</html>
+    return contexts;
+  }
+
+  /**
+   * Map role to context
+   * @param {string} role
+   * @returns {string}
+   */
+  function _mapRoleToContext(role) {
+    const mapping = {
+      'admin': 'system',
+      'Chairman': 'board',
+      'vice_chairman': 'board',
+      'board_member': 'board',
+      'board_secretary': 'governance',
+      'shareholder': 'shareholders',
+      'CEO': 'executive',
+      'CFO': 'executive',
+      'CAO': 'executive',
+      'Manager': 'employee',
+      'Coordinator': 'employee',
+      'Specialist': 'employee',
+      'Team_Lead': 'employee',
+      'Committee_Member': 'audit_committee',
+      'Auditor': 'audit_committee'
+    };
+
+    return mapping[role] || 'employee';
+  }
+
+  /**
+   * Get shareholder data for a user
+   * @param {string} userId
+   * @returns {Object|null}
+   */
+  function getShareholderData(userId) {
+    if (!_isPolicyLoaded()) return null;
+
+    const user = CompanyPolicy.governance.users_directory.find(u => u.id === userId);
+    if (!user || !user.additional_roles?.includes('shareholder')) {
+      return null;
+    }
+
+    // Find shareholder by email
+    const shareholder = CompanyPolicy.governance.shareholders.find(
+      s => s.email === user.email
+    );
+
+    if (!shareholder) return null;
+
+    return {
+      id: shareholder.id,
+      percent: shareholder.percent,
+      shares: shareholder.shares,
+      value: shareholder.shares * CompanyPolicy.governance.profile.capital.share_value,
+      type: shareholder.type,
+      voting: shareholder.voting
+    };
+  }
+
+  /**
+   * Get role label (localized)
+   * @param {string} roleKey
+   * @param {string} lang
+   * @returns {string}
+   */
+  function getRoleLabel(roleKey, lang = null) {
+    if (!_isPolicyLoaded()) return roleKey;
+
+    const useLang = lang || _getLang();
+    const role = CompanyPolicy.authority_matrix.access_control.roles[roleKey];
+    
+    if (!role) return roleKey;
+    
+    return _localize(role.label, useLang);
+  }
+
+  /**
+   * Check if role has permission (including inheritance)
+   * @param {string} roleKey
+   * @param {Array} allowedRoles
+   * @returns {boolean}
+   */
+  function hasPermission(roleKey, allowedRoles = []) {
+    if (!_isPolicyLoaded() || !allowedRoles) return false;
+    if (!Array.isArray(allowedRoles)) return false;
+
+    // Direct match
+    if (allowedRoles.includes(roleKey)) return true;
+
+    // Check inheritance chain
+    let currentRole = CompanyPolicy.authority_matrix.access_control.roles[roleKey];
+    while (currentRole && currentRole.inherits) {
+      if (allowedRoles.includes(currentRole.inherits)) return true;
+      currentRole = CompanyPolicy.authority_matrix.access_control.roles[currentRole.inherits];
+    }
+
+    return false;
+  }
+
+  /**
+   * Get all permissions for a user (merged from all contexts)
+   * @param {string} userId
+   * @returns {Array} Array of permission keys
+   */
+  function getMergedPermissions(userId) {
+    if (!_isPolicyLoaded()) return [];
+
+    const contexts = getUserContexts(userId);
+    const allPermissions = new Set();
+
+    contexts.forEach(ctx => {
+      const rolePermissions = CompanyPolicy.authority_matrix.access_control.permissions[ctx.role] || [];
+      rolePermissions.forEach(perm => allPermissions.add(perm));
+    });
+
+    return Array.from(allPermissions);
+  }
+
+  // ==========================================
+  // DEPARTMENT HELPERS
+  // ==========================================
+
+  /**
+   * Get department name (localized)
+   * @param {string} deptId
+   * @param {string} lang
+   * @returns {string}
+   */
+  function getDeptName(deptId, lang = null) {
+    if (!_isPolicyLoaded()) return deptId;
+
+    const useLang = lang || _getLang();
+    const dept = CompanyPolicy.organization.departments.find(d => d.id === deptId);
+    
+    if (!dept) return deptId;
+    
+    return _localize(dept.name, useLang);
+  }
+
+  // ==========================================
+  // FINANCIAL AUTHORITY
+  // ==========================================
+
+  /**
+   * Check if user can approve transaction
+   * @param {string} roleKey
+   * @param {string} transactionType
+   * @param {number} amount
+   * @returns {boolean}
+   */
+  function canApproveTransaction(roleKey, transactionType, amount) {
+    if (!_isPolicyLoaded()) return false;
+
+    const authority = CompanyPolicy.authority_matrix.financial_authority.find(
+      f => f.transaction_type === transactionType
+    );
+
+    if (!authority) return false;
+
+    for (const level of authority.levels) {
+      if (level.role === roleKey || hasPermission(roleKey, [level.role])) {
+        if (level.limit === -1) return true; // Unlimited
+        if (amount <= level.limit) return true;
+      }
+    }
+
+    return false;
+  }
+
+  // ==========================================
+  // COMPANY INFO
+  // ==========================================
+
+  /**
+   * Get company profile (localized)
+   * @param {string} lang
+   * @returns {Object}
+   */
+  function getCompanyProfile(lang = null) {
+    if (!_isPolicyLoaded()) return {};
+
+    const useLang = lang || _getLang();
+    const profile = CompanyPolicy.governance.profile;
+    const identity = CompanyPolicy.identity.meta;
+
+    return {
+      name: _localize(identity.brand_name, useLang),
+      legalName: _localize(CompanyPolicy.i18n.translations.global.company_legal_name, useLang),
+      crNumber: profile.cr_number,
+      unifiedNumber: profile.unified_number,
+      establishmentDate: profile.establishment_date,
+      capital: profile.capital,
+      website: identity.website
+    };
+  }
+
+  // ==========================================
+  // VALIDATION
+  // ==========================================
+
+  /**
+   * Validate if user exists
+   * @param {string} userId
+   * @returns {boolean}
+   */
+  function userExists(userId) {
+    if (!_isPolicyLoaded()) return false;
+    return CompanyPolicy.governance.users_directory.some(u => u.id === userId);
+  }
+
+  /**
+   * Validate if role exists
+   * @param {string} roleKey
+   * @returns {boolean}
+   */
+  function roleExists(roleKey) {
+    if (!_isPolicyLoaded()) return false;
+    return !!CompanyPolicy.authority_matrix.access_control.roles[roleKey];
+  }
+
+  // ==========================================
+  // RETURN PUBLIC API
+  // ==========================================
+  return {
+    // User & Roles
+    getUserContexts,
+    getShareholderData,
+    getRoleLabel,
+    hasPermission,
+    getMergedPermissions,
+
+    // Departments
+    getDeptName,
+
+    // Financial
+    canApproveTransaction,
+
+    // Company
+    getCompanyProfile,
+
+    // Validation
+    userExists,
+    roleExists
+  };
+})();
+
+// ==========================================
+// GLOBAL EXPORT
+// ==========================================
+if (typeof window !== 'undefined') {
+  window.PolicyHelpers = PolicyHelpers;
+}
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = PolicyHelpers;
+}
