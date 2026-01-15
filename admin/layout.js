@@ -20,7 +20,7 @@
         nameAr: "مستخدم النظام",
         nameEn: "System User",
         role: "Guest",
-        avatar: "https://androgov-sa.github.io/AIT/photo/grc.png"
+        avatar: "grc.png"
     };
 
     // --- DASHBOARD DATA (Added to support the dashboard view) ---
@@ -77,7 +77,7 @@
             let avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(nameEn)}&background=${brandColorHex}&color=fff&bold=true`;
             
             if (foundUser.id === 'USR_004') {
-                avatarUrl = 'https://androgov-sa.github.io/AIT/photo/grc.png';
+                avatarUrl = 'grc.png';
             }
 
             currentUser = {
