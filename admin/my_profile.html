@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#FB4747">
-    <title>My Profile | AndroGov</title>
+    <title>ملفي الشخصي | AndroGov</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -30,6 +30,7 @@
             }
         }
     </script>
+
     <style>
         .num-font { font-family: 'Inter', sans-serif; font-feature-settings: "tnum"; }
         .glass-card { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); }
@@ -40,13 +41,32 @@
         .salary-container:hover .salary-blur { filter: blur(0); }
         .salary-overlay { transition: opacity 0.3s ease; }
         .salary-container:hover .salary-overlay { opacity: 0; }
+
+        /* Loading Overlay */
+        .loading-overlay {
+            position: fixed; inset: 0; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(5px);
+            z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem;
+        }
+        .dark .loading-overlay { background: rgba(15, 23, 42, 0.9); }
+        .loading-overlay.hidden { display: none; }
+        .spinner {
+            width: 48px; height: 48px; border: 5px solid rgba(66, 103, 178, 0.1);
+            border-top-color: #4267B2; border-radius: 50%; animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
-<body class="bg-brandGray dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300 opacity-0">
+<body class="bg-brandGray dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300">
+
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="spinner"></div>
+        <p class="text-sm font-bold text-slate-600 dark:text-slate-300">جاري تحميل الملف الشخصي...</p>
+    </div>
 
     <div id="sidebar-container"></div>
     
-    <div class="main-content-wrapper md:mr-72 transition-all duration-300 flex flex-col min-h-screen">
+    <div class="main-content-wrapper ltr:md:ml-72 rtl:md:mr-72 transition-all duration-300 flex flex-col min-h-screen">
+        
         <div id="header-container"></div>
 
         <main class="p-6 space-y-6">
@@ -55,7 +75,7 @@
                 <div class="h-32 bg-gradient-to-r from-brandRed to-red-700"></div>
                 
                 <div class="px-8 pb-8 flex flex-col md:flex-row items-end gap-6 -mt-12 relative">
-                    <div class="w-32 h-32 rounded-3xl border-4 border-white dark:border-slate-800 shadow-lg overflow-hidden bg-white">
+                    <div class="w-32 h-32 rounded-3xl border-4 border-white dark:border-slate-800 shadow-lg overflow-hidden bg-white relative">
                         <img id="profAvatar" src="" class="w-full h-full object-cover">
                     </div>
                     
@@ -67,9 +87,9 @@
                         <p class="text-slate-500 dark:text-slate-400 font-medium text-lg" id="profRole">...</p>
                         
                         <div class="flex flex-wrap gap-4 mt-4 text-xs font-mono text-slate-500 dark:text-slate-400">
-                            <span class="flex items-center gap-1 bg-slate-100 dark:bg-slate-700 px-3 py-1 rounded-full"><i class="fa-solid fa-id-badge text-brandRed"></i> ID: <span id="profId">1004</span></span>
-                            <span class="flex items-center gap-1 bg-slate-100 dark:bg-slate-700 px-3 py-1 rounded-full"><i class="fa-solid fa-envelope text-brandRed"></i> <span id="profEmail">amaghrabi@androomeda.com</span></span>
-                            <span class="flex items-center gap-1 bg-slate-100 dark:bg-slate-700 px-3 py-1 rounded-full"><i class="fa-solid fa-building text-brandRed"></i> <span id="profDept">إدارة الحوكمة</span></span>
+                            <span class="flex items-center gap-1 bg-slate-100 dark:bg-slate-700 px-3 py-1 rounded-full"><i class="fa-solid fa-id-badge text-brandRed"></i> ID: <span id="profId">...</span></span>
+                            <span class="flex items-center gap-1 bg-slate-100 dark:bg-slate-700 px-3 py-1 rounded-full"><i class="fa-solid fa-envelope text-brandRed"></i> <span id="profEmail">...</span></span>
+                            <span class="flex items-center gap-1 bg-slate-100 dark:bg-slate-700 px-3 py-1 rounded-full"><i class="fa-solid fa-building text-brandRed"></i> <span id="profDept">...</span></span>
                         </div>
                     </div>
 
@@ -302,41 +322,68 @@
             </div>
 
             <div class="mt-6 flex justify-end gap-3 pt-4 border-t dark:border-slate-700">
-                <button onclick="document.getElementById('requestModal').classList.add('hidden')" class="px-4 py-2 border rounded-lg text-xs font-bold hover:bg-slate-50 dark:text-white">إلغاء</button>
+                <button onclick="document.getElementById('requestModal').classList.add('hidden')" class="px-4 py-2 border rounded-lg text-xs font-bold hover:bg-slate-50 dark:text-white hover:text-black transition">إلغاء</button>
                 <button onclick="alert('تم رفع الطلب بنجاح'); document.getElementById('requestModal').classList.add('hidden')" class="px-6 py-2 bg-brandRed text-white rounded-lg text-xs font-bold hover:bg-red-700 shadow-md">إرسال الطلب</button>
             </div>
         </div>
     </div>
 
-    <script src="layout.js"></script>
-    <script src="bot.js"></script>
+    <script src="data/company_policy.js"></script>
+    
+    <script src="js/core/config.js"></script>
+    <script src="js/core/i18n.js"></script>
+    
+    <script src="js/helpers/policy-helpers.js"></script>
+    
+    <script src="js/services/data-service.js"></script>
+    
+    <script src="js/components/role-switcher.js"></script>
+    <script src="js/components/layout.js"></script>
+    <script src="js/components/bot.js"></script>
 
     <script>
-        // تحميل بيانات المستخدم عند فتح الصفحة
         document.addEventListener('DOMContentLoaded', () => {
-            loadUserProfile();
+            const checkSystem = setInterval(() => {
+                if (typeof Layout !== 'undefined' && typeof AppConfig !== 'undefined' && typeof DataService !== 'undefined') {
+                    clearInterval(checkSystem);
+                    
+                    // إصلاح تسجيل الدخول التلقائي
+                    if (!AppConfig.getCurrentUser()) {
+                        console.log('⚠️ No user found. Auto-logging as Admin...');
+                        const defaultUser = DataService.getUserById('USR_004') || DataService.getUsers()[0];
+                        if (defaultUser) {
+                            AppConfig.setCurrentUser(defaultUser);
+                            location.reload();
+                            return;
+                        }
+                    }
+
+                    // تهيئة التخطيط
+                    Layout.init();
+                    
+                    // إخفاء شاشة التحميل
+                    document.getElementById('loadingOverlay')?.classList.add('hidden');
+                    
+                    // تهيئة محتوى الصفحة
+                    initPage();
+                }
+            }, 50);
         });
 
-        function loadUserProfile() {
-            // محاولة جلب المستخدم من LocalStorage
-            let user = JSON.parse(localStorage.getItem('currentUser'));
-            
-            // بيانات افتراضية في حال عدم وجود مستخدم (لأغراض العرض)
-            if (!user) {
-                user = {
-                    nameAr: "أيمن المغربي",
-                    titleAr: "مدير الحوكمة",
-                    avatar: "https://ui-avatars.com/api/?name=Ayman+Almaghrabi&background=FB4747&color=fff"
-                };
-            }
+        // دالة تهيئة محتوى الصفحة
+        function initPage() {
+            const user = AppConfig.getCurrentUser();
+            if (!user) return;
 
-            // تعبئة البيانات في الصفحة
-            const lang = localStorage.getItem('lang') || 'ar';
-            document.getElementById('profName').innerText = lang === 'ar' ? user.nameAr : user.nameEn;
-            document.getElementById('profRole').innerText = lang === 'ar' ? user.titleAr : user.titleEn;
-            document.getElementById('profAvatar').src = user.avatar;
-            // ID وايميل افتراضي
-            document.getElementById('profEmail').innerText = "amaghrabi" + "@androomeda.com";
+            const lang = AppConfig.getLang();
+
+            // تعبئة بيانات المستخدم في الهيدر
+            document.getElementById('profName').innerText = user.displayName || '---';
+            document.getElementById('profRole').innerText = user.displayTitle || '---';
+            document.getElementById('profAvatar').src = user.avatar || '';
+            document.getElementById('profId').innerText = user.id || '---';
+            document.getElementById('profEmail').innerText = user.email || '---';
+            document.getElementById('profDept').innerText = user.displayDept || '---';
         }
 
         function openRequestModal(type) {
