@@ -75,7 +75,7 @@
     <div id="sidebar-container"></div>
 
     <!-- Main Content -->
-    <div class="main-content-wrapper md:mr-72 transition-all duration-300 flex flex-col min-h-screen">
+    <div class="main-content-wrapper ltr:md:ml-72 rtl:md:mr-72 transition-all duration-300 flex flex-col min-h-screen">
         
         <!-- Header (Managed by layout.js) -->
         <div id="header-container"></div>
@@ -313,11 +313,52 @@
         </button>
     </div>
 
-    <!-- استدعاء ملف Layout الأساسي (يجب أن يكون في نفس المجلد) -->
-    <script src="layout.js"></script>
+    <script src="data/company_policy.js"></script>
     
-    <!-- استدعاء ملف البوت الجديد -->
-    <script src="bot.js"></script>
+    <script src="js/core/config.js"></script>
+    <script src="js/core/i18n.js"></script>
+    
+    <script src="js/helpers/policy-helpers.js"></script>
+    
+    <script src="js/services/data-service.js"></script>
+    
+    <script src="js/components/role-switcher.js"></script>
+    <script src="js/components/layout.js"></script>
+    <script src="js/components/bot.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // التحقق من تحميل النظام
+            const checkSystem = setInterval(() => {
+                if (typeof Layout !== 'undefined' && typeof AppConfig !== 'undefined' && typeof DataService !== 'undefined') {
+                    clearInterval(checkSystem);
+                    
+                    // --- إصلاح تسجيل الدخول التلقائي ---
+                    if (!AppConfig.getCurrentUser()) {
+                        console.log('⚠️ No user found. Auto-logging as Admin...');
+                        // حاول جلب المستخدم الافتراضي (مدير النظام)
+                        const defaultUser = DataService.getUserById('USR_004') || DataService.getUsers()[0];
+                        if (defaultUser) {
+                            AppConfig.setCurrentUser(defaultUser);
+                            location.reload();
+                            return;
+                        }
+                    }
+
+                    // تهيئة التخطيط العام (القائمة العلوية والجانبية)
+                    Layout.init();
+                    
+                    // إخفاء شاشة التحميل إن وجدت
+                    document.getElementById('loadingOverlay')?.classList.add('hidden');
+                    
+                    // تشغيل أي وظائف خاصة بالصفحة الحالية إن وجدت
+                    if (typeof initPage === 'function') {
+                        initPage();
+                    }
+                }
+            }, 50);
+        });
+    </script>
 
     <script>
         // --- بيانات الترجمة الشاملة (لكل النصوص الظاهرة) ---
@@ -426,12 +467,14 @@
             }
         };
 
-        // دالة التهيئة
-        document.addEventListener('DOMContentLoaded', () => {
-            updateContent();
-            initCharts();
-            renderLogs();
-        });
+        // بدلاً من document.addEventListener مباشرة، اجعلها دالة:
+function initPage() {
+    updateContent();
+    initCharts();
+    renderLogs();
+}
+
+// ... اترك باقي دوال updateContent و initCharts كما هي ...;
 
         function updateContent() {
             const lang = localStorage.getItem('lang') || 'ar';
