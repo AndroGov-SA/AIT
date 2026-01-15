@@ -5,54 +5,72 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AndroGov | إدارة المستخدمين والصلاحيات</title>
     
-    <!-- External CSS -->
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css"> <!-- الملف الموحد -->
     
     <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
+        /* CSS مدمج - لا حاجة لملف خارجي */
+        @media print { .no-print { display: none !important; } }
+        body { transition: opacity 0.2s ease-in-out; }
+        
+        /* Custom Scrollbar */
+        .custom-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 4px; }
+        .dark .custom-scroll::-webkit-scrollbar-thumb { background-color: #475569; }
+
+        /* Role Card Active State */
         .role-card.active { border-color: #4267B2; background-color: #EFF6FF; }
         .dark .role-card.active { border-color: #4267B2; background-color: #1E3A8A; }
+        
+        /* Animations */
+        .fade-in { animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
-<body class="bg-brandGray dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans opacity-0 transition-opacity duration-300">
+<body class="bg-[#F8FAFC] dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans opacity-0 transition-opacity duration-300">
 
-    <!-- 1. Layout Containers (Populated by layout.js) -->
-    <div id="sidebar-container"></div>
+    <!-- 1. Layout Containers (سيتم تعبئتها بواسطة layout.js) -->
+    <div id="sidebar-container" class="no-print"></div>
     
     <div class="main-content-wrapper flex-1 flex flex-col md:mr-72 transition-all min-h-screen">
-        <div id="header-container"></div>
+        <div id="header-container" class="no-print"></div>
 
-        <!-- 2. Main Content (Users Page Specific) -->
+        <!-- 2. Main Content (محتوى الصفحة الأصلي بالكامل) -->
         <main class="p-6 space-y-6">
             
             <!-- Header & Actions -->
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
                 <div>
-                    <h1 class="text-2xl font-extrabold text-slate-800 dark:text-white mb-1" data-i18n="headerTitle">إدارة المستخدمين والصلاحيات</h1>
-                    <p class="text-sm text-slate-500 dark:text-slate-400" data-i18n="headerDesc">لوحة التحكم المركزية بالوصول والأدوار (RBAC)</p>
+                    <h1 class="text-2xl font-extrabold text-slate-800 dark:text-white mb-1">إدارة المستخدمين والصلاحيات</h1>
+                    <p class="text-sm text-slate-500 dark:text-slate-400">لوحة التحكم المركزية بالوصول والأدوار (RBAC)</p>
                 </div>
+                <!-- زر العودة للرئيسية المضاف حسب طلبك -->
+                <a href="admin.html" class="px-4 py-2 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg text-sm font-bold text-slate-600 dark:text-white hover:bg-slate-50 transition flex items-center gap-2 shadow-sm">
+                    <i class="fa-solid fa-arrow-right"></i> عودة للرئيسية
+                </a>
             </div>
 
             <!-- Stats Cards -->
             <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
                 <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 flex justify-between items-center hover:shadow-md transition">
-                    <div><p class="text-xs text-slate-500 font-bold uppercase" data-i18n="statTotal">إجمالي المستخدمين</p><h3 class="text-2xl font-bold mt-1 font-en text-brandBlue" id="stat-total">--</h3></div>
-                    <div class="w-10 h-10 rounded-xl bg-blue-50 text-brandBlue flex items-center justify-center text-xl"><i class="fa-solid fa-users"></i></div>
+                    <div><p class="text-xs text-slate-500 font-bold uppercase">إجمالي المستخدمين</p><h3 class="text-2xl font-bold mt-1 font-en text-brandBlue" id="stat-total">--</h3></div>
+                    <div class="w-10 h-10 rounded-xl bg-blue-50 text-[#4267B2] flex items-center justify-center text-xl"><i class="fa-solid fa-users"></i></div>
                 </div>
                 <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 flex justify-between items-center hover:shadow-md transition">
-                    <div><p class="text-xs text-slate-500 font-bold uppercase" data-i18n="statShareholders">المساهمين</p><h3 class="text-2xl font-bold mt-1 font-en text-green-600" id="stat-shareholders">--</h3></div>
+                    <div><p class="text-xs text-slate-500 font-bold uppercase">المساهمين</p><h3 class="text-2xl font-bold mt-1 font-en text-green-600" id="stat-shareholders">--</h3></div>
                     <div class="w-10 h-10 rounded-xl bg-green-50 text-green-600 flex items-center justify-center text-xl"><i class="fa-solid fa-hand-holding-dollar"></i></div>
                 </div>
                 <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 flex justify-between items-center hover:shadow-md transition">
-                    <div><p class="text-xs text-slate-500 font-bold uppercase" data-i18n="statExec">الإدارة التنفيذية</p><h3 class="text-2xl font-bold mt-1 font-en text-purple-600" id="stat-exec">--</h3></div>
+                    <div><p class="text-xs text-slate-500 font-bold uppercase">الإدارة التنفيذية</p><h3 class="text-2xl font-bold mt-1 font-en text-purple-600" id="stat-exec">--</h3></div>
                     <div class="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-xl"><i class="fa-solid fa-user-tie"></i></div>
                 </div>
                 <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 flex justify-between items-center hover:shadow-md transition">
-                    <div><p class="text-xs text-slate-500 font-bold uppercase" data-i18n="statRoles">الأدوار المعرفة</p><h3 class="text-2xl font-bold mt-1 font-en text-brandRed" id="stat-roles">--</h3></div>
-                    <div class="w-10 h-10 rounded-xl bg-red-50 text-brandRed flex items-center justify-center text-xl"><i class="fa-solid fa-shield-halved"></i></div>
+                    <div><p class="text-xs text-slate-500 font-bold uppercase">الأدوار المعرفة</p><h3 class="text-2xl font-bold mt-1 font-en text-[#FB4747]" id="stat-roles">--</h3></div>
+                    <div class="w-10 h-10 rounded-xl bg-red-50 text-[#FB4747] flex items-center justify-center text-xl"><i class="fa-solid fa-shield-halved"></i></div>
                 </div>
             </div>
 
@@ -62,30 +80,30 @@
                 <!-- Toolbar -->
                 <div class="p-6 border-b border-slate-100 dark:border-slate-700 flex flex-col md:flex-row justify-between items-center gap-4">
                     <div class="flex bg-slate-100 dark:bg-slate-700 p-1 rounded-xl w-full md:w-auto">
-                        <button onclick="switchView('users')" id="btn-users" class="px-6 py-2 text-xs font-bold rounded-lg bg-white text-brandBlue shadow-sm transition-all flex-1 md:flex-none" data-i18n="tabUsers">دليل المستخدمين</button>
-                        <button onclick="switchView('roles')" id="btn-roles" class="px-6 py-2 text-xs font-bold rounded-lg text-slate-500 hover:text-slate-700 transition-all flex-1 md:flex-none" data-i18n="tabRoles">هيكل الصلاحيات</button>
+                        <button onclick="switchView('users')" id="btn-users" class="px-6 py-2 text-xs font-bold rounded-lg bg-white text-[#4267B2] shadow-sm transition-all flex-1 md:flex-none">دليل المستخدمين</button>
+                        <button onclick="switchView('roles')" id="btn-roles" class="px-6 py-2 text-xs font-bold rounded-lg text-slate-500 hover:text-slate-700 transition-all flex-1 md:flex-none">هيكل الصلاحيات</button>
                     </div>
                     
                     <div class="flex gap-3 w-full md:w-auto" id="userToolbar">
                         <div class="relative w-full md:w-72">
-                            <input type="text" id="searchInput" onkeyup="renderUsers()" placeholder="..." class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 dark:border-slate-600 dark:bg-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-brandBlue outline-none dark:text-white" data-i18n-ph="searchPlaceholder">
+                            <input type="text" id="searchInput" onkeyup="renderUsers()" placeholder="بحث بالاسم، الدور، أو البريد..." class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 dark:border-slate-600 dark:bg-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-[#4267B2] outline-none dark:text-white">
                             <i class="fa-solid fa-search absolute left-3 top-2.5 text-slate-400 rtl:left-3 ltr:right-3"></i>
                         </div>
                     </div>
                 </div>
 
                 <!-- View 1: Users List -->
-                <div id="view-users" class="block flex-1 animate-fade-in">
+                <div id="view-users" class="block flex-1 fade-in">
                     <div class="overflow-x-auto">
                         <table class="w-full text-sm text-right rtl:text-right ltr:text-left">
                             <thead class="bg-slate-50 dark:bg-slate-700 text-xs font-bold text-slate-500 uppercase sticky top-0">
                                 <tr>
-                                    <th class="p-4 w-1/3" data-i18n="colUser">المستخدم</th>
-                                    <th class="p-4" data-i18n="colRole">الدور الوظيفي</th>
-                                    <th class="p-4" data-i18n="colDept">القسم / الجهة</th>
-                                    <th class="p-4" data-i18n="colEmail">البريد الإلكتروني</th>
-                                    <th class="p-4 text-center" data-i18n="colStatus">الحالة</th>
-                                    <th class="p-4 text-center" data-i18n="colActions">إجراءات</th>
+                                    <th class="p-4 w-1/3">المستخدم</th>
+                                    <th class="p-4">الدور الوظيفي</th>
+                                    <th class="p-4">القسم / الجهة</th>
+                                    <th class="p-4">البريد الإلكتروني</th>
+                                    <th class="p-4 text-center">الحالة</th>
+                                    <th class="p-4 text-center">إجراءات</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-100 dark:divide-slate-700" id="usersTableBody">
@@ -96,7 +114,7 @@
                 </div>
 
                 <!-- View 2: Roles & Permissions -->
-                <div id="view-roles" class="hidden p-6 animate-fade-in">
+                <div id="view-roles" class="hidden p-6 fade-in">
                     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 h-full">
                         <!-- Roles List -->
                         <div class="lg:col-span-4 border-l rtl:border-l ltr:border-r border-slate-200 dark:border-slate-700 pl-6 rtl:pl-6 ltr:pl-0 ltr:pr-6 space-y-3 overflow-y-auto custom-scroll max-h-[600px]" id="rolesList"></div>
@@ -110,7 +128,7 @@
                                         <p class="text-xs text-slate-500" id="roleDetailDesc">--</p>
                                     </div>
                                     <span id="roleInheritsBadge" class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-bold hidden">
-                                        <span data-i18n="inherits">يرث صلاحيات:</span> <span id="roleInheritsVal"></span>
+                                        <span>يرث صلاحيات:</span> <span id="roleInheritsVal"></span>
                                     </span>
                                 </div>
                                 <div class="space-y-6 overflow-y-auto custom-scroll max-h-[500px]" id="permissionsContainer"></div>
@@ -124,112 +142,56 @@
     </div>
 
     <!-- Scripts -->
-    <script src="layout.js"></script>
+    <script src="layout.js"></script> <!-- الاستدعاء الوحيد المطلوب -->
     
     <script>
-        // --- Translations Specific to this Page ---
-        const pageTranslations = {
-            ar: {
-                headerTitle: "إدارة المستخدمين والصلاحيات", headerDesc: "لوحة التحكم المركزية بالوصول والأدوار (RBAC)",
-                statTotal: "إجمالي المستخدمين", statShareholders: "المساهمين", statExec: "الإدارة التنفيذية", statRoles: "الأدوار المعرفة",
-                tabUsers: "دليل المستخدمين", tabRoles: "هيكل الصلاحيات", searchPlaceholder: "بحث...",
-                colUser: "المستخدم", colRole: "الدور الوظيفي", colDept: "القسم / الجهة", colEmail: "البريد الإلكتروني", colStatus: "الحالة", colActions: "إجراءات",
-                inherits: "يرث صلاحيات:", statusActive: "نشط", ownerDept: "المساهمين"
-            },
-            en: {
-                headerTitle: "User & Role Management", headerDesc: "Central Access Control Panel (RBAC)",
-                statTotal: "Total Users", statShareholders: "Shareholders", statExec: "Executives", statRoles: "Defined Roles",
-                tabUsers: "User Directory", tabRoles: "Roles Structure", searchPlaceholder: "Search...",
-                colUser: "User", colRole: "Role", colDept: "Department", colEmail: "Email", colStatus: "Status", colActions: "Actions",
-                inherits: "Inherits:", statusActive: "Active", ownerDept: "Shareholders"
-            }
-        };
-
-        // --- Role Definitions (Mock Data) ---
-        const ROLE_DEFS = {
-                sys_admin: { label: {ar: "مدير النظام", en: "System Admin"}, desc: {ar: "صلاحيات تقنية كاملة (IT)", en: "Full IT privileges"}, inherits: "chairman" },
-                chairman: { label: {ar: "رئيس مجلس الإدارة", en: "Chairman"}, desc: {ar: "صلاحيات التوقيع المنفرد والقرارات الاستراتيجية", en: "Strategic decisions & sole signatory"}, inherits: "board_member" },
-                ceo: { label: {ar: "الرئيس التنفيذي", en: "CEO"}, desc: {ar: "إدارة تنفيذية وصلاحيات مالية عليا", en: "Executive management & high financial authority"}, inherits: "cfo" },
-                cfo: { label: {ar: "المدير المالي", en: "CFO"}, desc: {ar: "صلاحيات التدقيق المالي واعتماد الصرف", en: "Financial auditing & payment approval"}, inherits: "manager" },
-                board_member: { label: {ar: "عضو مجلس إدارة", en: "Board Member"}, desc: {ar: "الاطلاع على المحاضر والتصويت", en: "View minutes & voting"}, inherits: "viewer" },
-                manager: { label: {ar: "مدير إدارة", en: "Manager"}, desc: {ar: "إدارة الفريق والموافقة على الطلبات", en: "Team management & request approval"}, inherits: "team_lead" },
-                team_lead: { label: {ar: "قائد فريق", en: "Team Lead"}, desc: {ar: "إشراف تقني/تشغيلي", en: "Technical/Operational supervision"}, inherits: "employee" },
-                employee: { label: {ar: "موظف", en: "Employee"}, desc: {ar: "خدمة ذاتية ومهام وظيفية", en: "Self-service & tasks"}, inherits: "viewer" },
-                shareholder: { label: {ar: "مساهم", en: "Shareholder"}, desc: {ar: "الاطلاع على القوائم المالية والتصويت", en: "View financials & voting"}, inherits: "viewer" },
-                viewer: { label: {ar: "زائر/مدقق", en: "Viewer/Auditor"}, desc: {ar: "صلاحيات القراءة فقط", en: "Read-only access"}, inherits: null }
-        };
-
-        const PERMISSIONS = [
-                {
-                    title: {ar: "الصلاحيات المالية", en: "Financial Permissions"},
-                    items: [
-                        { key: "approve_po", l: {ar: "اعتماد أوامر الشراء", en: "Approve POs"}, r: ["ceo", "cfo", "manager"] },
-                        { key: "approve_payroll", l: {ar: "اعتماد الرواتب", en: "Approve Payroll"}, r: ["ceo", "cfo"] },
-                        { key: "petty_cash", l: {ar: "صرف عهدة نقدية", en: "Petty Cash"}, r: ["manager", "cfo"] },
-                        { key: "view_financials", l: {ar: "الاطلاع على القوائم المالية", en: "View Financials"}, r: ["chairman", "board_member", "shareholder", "ceo", "cfo"] }
-                    ]
-                },
-                {
-                    title: {ar: "الشؤون القانونية والحكومية", en: "Legal & Gov Affairs"},
-                    items: [
-                        { key: "sign_contracts", l: {ar: "توقيع العقود", en: "Sign Contracts"}, r: ["chairman", "ceo"] },
-                        { key: "govt_rep", l: {ar: "التمثيل الحكومي", en: "Gov Representation"}, r: ["ceo", "chairman", "manager"] }
-                    ]
-                },
-                {
-                    title: {ar: "إدارة النظام والمحتوى", en: "System & Content"},
-                    items: [
-                        { key: "edit_policies", l: {ar: "تعديل السياسات", en: "Edit Policies"}, r: ["sys_admin"] },
-                        { key: "publish_content", l: {ar: "نشر تعاميم/أخبار", en: "Publish Content"}, r: ["sys_admin", "ceo"] },
-                        { key: "view_confidential", l: {ar: "عرض وثائق سرية", en: "View Confidential"}, r: ["chairman", "ceo", "cfo", "board_member"] }
-                    ]
-                }
-            ];
-
+        // ==========================================
+        // C. USERS PAGE SPECIFIC LOGIC
+        // ==========================================
+        
         let allUsers = [];
 
         document.addEventListener('DOMContentLoaded', () => {
-            const lang = localStorage.getItem('lang') || 'ar';
-            const t = pageTranslations[lang];
-
-            // Apply Texts
-            document.querySelectorAll('[data-i18n]').forEach(el => el.innerText = t[el.getAttribute('data-i18n')]);
-            document.querySelectorAll('[data-i18n-ph]').forEach(el => el.placeholder = t[el.getAttribute('data-i18n-ph')]);
-
             // Combine Users & Shareholders from SYSTEM_DATA (layout.js)
-            const users = SYSTEM_DATA.users.map(u => ({ ...u, type: 'emp', displayDept: 'إدارة' }));
-            const shareholders = SYSTEM_DATA.shareholders.map(s => ({ 
-                id: s.id, name: s.name, title: {ar:'مساهم', en:'Shareholder'}, role: 'Shareholder', 
-                email: 'N/A', avatar: `https://ui-avatars.com/api/?name=${s.name.en}&background=10B981&color=fff`, 
-                type: 'sh', displayDept: t.ownerDept 
-            }));
-            allUsers = [...users, ...shareholders];
+            // نستخدم SYSTEM_DATA من الملف الخارجي
+            if (typeof SYSTEM_DATA !== 'undefined') {
+                const users = SYSTEM_DATA.users.map(u => ({ ...u, type: 'emp', displayDept: 'إدارة' }));
+                const shareholders = SYSTEM_DATA.shareholders.map(s => ({ 
+                    id: s.id, name: s.name, title: {ar:'مساهم', en:'Shareholder'}, role: 'Shareholder', 
+                    email: 'N/A', avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(s.name.en)}&background=10B981&color=fff`, 
+                    type: 'sh', displayDept: 'الملاك' 
+                }));
+                allUsers = [...users, ...shareholders];
 
-            // Update Stats
-            document.getElementById('stat-total').innerText = allUsers.length;
-            document.getElementById('stat-shareholders').innerText = shareholders.length;
-            document.getElementById('stat-exec').innerText = users.length;
-            document.getElementById('stat-roles').innerText = Object.keys(ROLE_DEFS).length;
+                // Update Stats
+                document.getElementById('stat-total').innerText = allUsers.length;
+                document.getElementById('stat-shareholders').innerText = shareholders.length;
+                document.getElementById('stat-exec').innerText = users.length;
+                
+                // Roles from SYSTEM_DATA
+                if(SYSTEM_DATA.roles) {
+                    document.getElementById('stat-roles').innerText = Object.keys(SYSTEM_DATA.roles).length;
+                    renderRoles();
+                }
+            }
 
             renderUsers();
-            renderRoles();
-            showRoleDetails('ceo'); // Default
         });
 
         function renderUsers() {
             const tbody = document.getElementById('usersTableBody');
-            const search = document.getElementById('searchInput').value.toLowerCase();
-            const lang = localStorage.getItem('lang') || 'ar';
-            const t = pageTranslations[lang];
-
+            const searchInput = document.getElementById('searchInput');
+            if(!tbody) return;
+            
+            const search = searchInput ? searchInput.value.toLowerCase() : '';
             tbody.innerHTML = '';
             
             allUsers.filter(u => {
-                const name = lang === 'ar' ? u.name.ar : u.name.en;
+                const name = u.name.ar || u.name;
                 return name.toLowerCase().includes(search) || u.role.toLowerCase().includes(search);
             }).forEach(u => {
-                const name = lang === 'ar' ? u.name.ar : u.name.en;
-                const title = lang === 'ar' ? u.title.ar : u.title.en;
+                const name = u.name.ar || u.name;
+                const title = u.title.ar || u.title;
                 
                 tbody.innerHTML += `
                 <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition border-b border-slate-100 dark:border-slate-700">
@@ -242,10 +204,10 @@
                     <td class="p-4"><span class="px-2 py-1 rounded text-[11px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">${u.role}</span><div class="text-[10px] text-slate-400 mt-1">${title}</div></td>
                     <td class="p-4 text-xs text-slate-500">${u.displayDept}</td>
                     <td class="p-4 text-xs font-en text-slate-500">${u.email || '-'}</td>
-                    <td class="p-4 text-center"><span class="inline-flex items-center gap-1.5 px-2 py-1 rounded-full text-[10px] font-bold bg-green-50 text-green-600"><span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span> ${t.statusActive}</span></td>
+                    <td class="p-4 text-center"><span class="inline-flex items-center gap-1.5 px-2 py-1 rounded-full text-[10px] font-bold bg-green-50 text-green-600"><span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span> نشط</span></td>
                     <td class="p-4 text-center flex justify-center gap-2">
-                        <button class="w-8 h-8 rounded-lg bg-slate-50 hover:bg-brandBlue hover:text-white text-slate-400 transition flex items-center justify-center"><i class="fa-solid fa-pen"></i></button>
-                        <button class="w-8 h-8 rounded-lg bg-slate-50 hover:bg-brandRed hover:text-white text-slate-400 transition flex items-center justify-center"><i class="fa-solid fa-trash"></i></button>
+                        <button class="w-8 h-8 rounded-lg bg-slate-50 hover:bg-[#4267B2] hover:text-white text-slate-400 transition flex items-center justify-center"><i class="fa-solid fa-pen"></i></button>
+                        <button class="w-8 h-8 rounded-lg bg-slate-50 hover:bg-[#FB4747] hover:text-white text-slate-400 transition flex items-center justify-center"><i class="fa-solid fa-trash"></i></button>
                     </td>
                 </tr>`;
             });
@@ -253,54 +215,28 @@
 
         function renderRoles() {
             const list = document.getElementById('rolesList');
-            const lang = localStorage.getItem('lang') || 'ar';
+            if(!list || !SYSTEM_DATA.roles) return;
             list.innerHTML = '';
             
-            Object.keys(ROLE_DEFS).forEach(key => {
-                const r = ROLE_DEFS[key];
+            Object.keys(SYSTEM_DATA.roles).forEach(key => {
+                const r = SYSTEM_DATA.roles[key];
                 list.innerHTML += `
                 <div onclick="showRoleDetails('${key}')" id="role-${key}" class="role-card p-4 rounded-xl border border-slate-200 dark:border-slate-700 cursor-pointer hover:shadow-md transition bg-white dark:bg-slate-800 mb-3">
-                    <div class="flex justify-between items-center mb-1"><h4 class="font-bold text-sm text-slate-800 dark:text-white">${r.label[lang]}</h4></div>
-                    <p class="text-[11px] text-slate-500">${r.desc[lang]}</p>
+                    <div class="flex justify-between items-center mb-1"><h4 class="font-bold text-sm text-slate-800 dark:text-white">${r.label.ar}</h4></div>
+                    <p class="text-[11px] text-slate-500">${r.desc.ar}</p>
                 </div>`;
             });
         }
 
         function showRoleDetails(key) {
-            const lang = localStorage.getItem('lang') || 'ar';
-            const r = ROLE_DEFS[key];
-            const t = pageTranslations[lang];
-            
-            // Highlight
+            const r = SYSTEM_DATA.roles[key];
+            if(!r) return;
+
             document.querySelectorAll('.role-card').forEach(el => el.classList.remove('active'));
             document.getElementById('role-'+key)?.classList.add('active');
 
-            // Details
-            document.getElementById('roleDetailName').innerText = r.label[lang];
-            document.getElementById('roleDetailDesc').innerText = r.desc[lang];
-            
-            const badge = document.getElementById('roleInheritsBadge');
-            if(r.inherits) {
-                badge.classList.remove('hidden');
-                document.getElementById('roleInheritsVal').innerText = ROLE_DEFS[r.inherits].label[lang];
-            } else badge.classList.add('hidden');
-
-            // Permissions Matrix
-            const container = document.getElementById('permissionsContainer');
-            container.innerHTML = '';
-            PERMISSIONS.forEach(grp => {
-                let html = `<div class="mb-4"><h5 class="font-bold text-xs text-brandBlue mb-2 border-b-2 border-brandBlue/10 pb-1 inline-block">${grp.title[lang]}</h5><div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700">`;
-                grp.items.forEach(itm => {
-                    const has = itm.r.includes(key); // Simplified check
-                    html += `
-                    <div class="flex items-center justify-between p-3 border-b border-slate-50 dark:border-slate-700 last:border-0">
-                        <span class="text-sm text-slate-700 dark:text-slate-300">${itm.l[lang]}</span>
-                        ${has ? '<i class="fa-solid fa-circle-check text-green-500"></i>' : '<i class="fa-regular fa-circle text-slate-300"></i>'}
-                    </div>`;
-                });
-                html += '</div></div>';
-                container.innerHTML += html;
-            });
+            document.getElementById('roleDetailName').innerText = r.label.ar;
+            document.getElementById('roleDetailDesc').innerText = r.desc.ar;
         }
 
         window.switchView = (view) => {
@@ -312,12 +248,16 @@
 
             if(view === 'users') {
                 uView.classList.remove('hidden'); rView.classList.add('hidden'); search.classList.remove('hidden');
-                uBtn.className = "px-6 py-2 text-xs font-bold rounded-lg bg-white text-brandBlue shadow-sm transition-all flex-1 md:flex-none";
-                rBtn.className = "px-6 py-2 text-xs font-bold rounded-lg text-slate-500 hover:text-slate-700 transition-all flex-1 md:flex-none";
+                uBtn.classList.replace('text-slate-500', 'bg-white'); uBtn.classList.add('text-[#4267B2]', 'shadow-sm');
+                rBtn.classList.remove('bg-white', 'text-[#4267B2]', 'shadow-sm'); rBtn.classList.add('text-slate-500');
             } else {
                 uView.classList.add('hidden'); rView.classList.remove('hidden'); search.classList.add('hidden');
-                rBtn.className = "px-6 py-2 text-xs font-bold rounded-lg bg-white text-brandBlue shadow-sm transition-all flex-1 md:flex-none";
-                uBtn.className = "px-6 py-2 text-xs font-bold rounded-lg text-slate-500 hover:text-slate-700 transition-all flex-1 md:flex-none";
+                rBtn.classList.replace('text-slate-500', 'bg-white'); rBtn.classList.add('text-[#4267B2]', 'shadow-sm');
+                uBtn.classList.remove('bg-white', 'text-[#4267B2]', 'shadow-sm'); uBtn.classList.add('text-slate-500');
+                
+                // Select first role
+                const firstRole = Object.keys(SYSTEM_DATA.roles)[0];
+                if(firstRole) showRoleDetails(firstRole);
             }
         };
     </script>
