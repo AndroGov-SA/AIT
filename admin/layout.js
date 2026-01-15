@@ -36,7 +36,7 @@
     // --- 2. Data Fetching ---
     async function loadCompanyData() {
         try {
-            if (typeof POLICY_DATA !== 'undefined') {
+            if (typeof POLICY_DATA !== 'ADMIN') {
                 policyData = POLICY_DATA;
                 console.log("✅ Company Policy Loaded from Memory:", policyData.system.version);
                 
