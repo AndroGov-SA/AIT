@@ -3,6 +3,7 @@
  * @description Fully integrated with AndroGov core system
  * @version 4.0.0
  * @requires AppConfig, I18n, DataService
+ * @file admin/js/components/bot.js
  */
 
 const AndroBot = (function() {
@@ -11,9 +12,10 @@ const AndroBot = (function() {
   // ==========================================
   const _config = {
     apiKey: '', // Empty = demo mode
-    position: 'left', // or 'right'
-    minQueryLength: 3,
-    maxHistorySize: 50
+    position: 'left', // or 'right' (will auto-adjust for RTL)
+    minQueryLength: 2,
+    maxHistorySize: 50,
+    typingDelay: 800
   };
 
   // ==========================================
@@ -45,7 +47,7 @@ const AndroBot = (function() {
   function init() {
     if (_state.isInitialized) return;
     
-    // Wait for AppConfig and I18n
+    // Wait for core modules
     if (typeof AppConfig === 'undefined' || typeof I18n === 'undefined') {
       console.warn('⚠️ AndroBot: Waiting for core modules...');
       setTimeout(init, 100);
@@ -70,7 +72,8 @@ const AndroBot = (function() {
     _state.isInitialized = true;
     console.log('✅ AndroBot v4.0 initialized', {
       context: _state.currentContext,
-      lang: AppConfig.getLang()
+      lang: AppConfig.getLang(),
+      dataServiceAvailable: typeof DataService !== 'undefined'
     });
   }
 
@@ -91,6 +94,10 @@ const AndroBot = (function() {
       _state.currentContext = 'compliance';
     } else if (path.includes('committee') || title.includes('لجنة')) {
       _state.currentContext = 'committees';
+    } else if (path.includes('task') || title.includes('مهام')) {
+      _state.currentContext = 'tasks';
+    } else if (path.includes('policies') || title.includes('سياسات')) {
+      _state.currentContext = 'policies';
     } else {
       _state.currentContext = 'general';
     }
@@ -102,7 +109,6 @@ const AndroBot = (function() {
   function _injectHTML() {
     const lang = AppConfig.getLang();
     const isRTL = AppConfig.isRTL();
-    const isDark = AppConfig.isDarkMode();
     const pos = isRTL ? 'left-6' : 'right-6';
 
     const html = `
@@ -122,13 +128,13 @@ const AndroBot = (function() {
                 <p class="text-[10px] text-white/80">${I18n.t('bot.subtitle')}</p>
               </div>
             </div>
-            <button id="close-chat-btn" class="text-white/80 hover:text-white transition">
+            <button id="close-chat-btn" class="text-white/80 hover:text-white transition" title="${I18n.t('bot.close')}">
               <i class="fa-solid fa-times"></i>
             </button>
           </div>
           
           <!-- Body -->
-          <div id="chat-body" class="flex-1 p-4 bg-slate-50 dark:bg-slate-900/50 overflow-y-auto custom-scroll space-y-3">
+          <div id="chat-body" class="flex-1 p-4 bg-slate-50 dark:bg-slate-900/50 overflow-y-auto custom-scroll space-y-3 flex flex-col">
             <div class="chat-bubble bot">${I18n.t('bot.welcome')}</div>
             <div class="flex flex-wrap gap-2 mt-2" id="suggestions"></div>
           </div>
@@ -141,7 +147,7 @@ const AndroBot = (function() {
               placeholder="${I18n.t('bot.placeholder')}"
               class="flex-1 bg-slate-100 dark:bg-slate-900 border-none rounded-lg text-sm px-4 py-2 focus:ring-2 focus:ring-brandBlue outline-none dark:text-white"
             >
-            <button id="send-btn" class="w-10 h-10 rounded-lg bg-brandBlue text-white hover:bg-blue-700 transition flex items-center justify-center">
+            <button id="send-btn" class="w-10 h-10 rounded-lg bg-brandBlue text-white hover:bg-blue-700 transition flex items-center justify-center" title="${I18n.t('bot.send')}">
               <i class="fa-solid fa-paper-plane"></i>
             </button>
           </div>
@@ -173,7 +179,7 @@ const AndroBot = (function() {
           .chat-bubble.bot { 
             background-color: #f1f5f9; 
             color: #334155; 
-            border-bottom-${AppConfig.isRTL() ? 'left' : 'right'}-radius: 2px;
+            border-bottom-${isRTL ? 'left' : 'right'}-radius: 2px;
             align-self: flex-start;
           }
           .dark .chat-bubble.bot { 
@@ -183,7 +189,7 @@ const AndroBot = (function() {
           .chat-bubble.user { 
             background-color: #4267B2; 
             color: white; 
-            border-bottom-${AppConfig.isRTL() ? 'right' : 'left'}-radius: 2px;
+            border-bottom-${isRTL ? 'right' : 'left'}-radius: 2px;
             align-self: flex-end;
           }
           .typing-indicator { 
@@ -194,6 +200,7 @@ const AndroBot = (function() {
             background-color: #f1f5f9; 
             border-radius: 12px;
             width: fit-content;
+            align-self: flex-start;
           }
           .dark .typing-indicator { 
             background-color: #334155; 
@@ -258,9 +265,15 @@ const AndroBot = (function() {
       _loadContextSuggestions();
     });
 
-    // Listen for theme change
+    // Listen for theme change (automatically handled by Tailwind dark: classes)
     window.addEventListener('themeChanged', () => {
-      // Styles automatically adapt via dark: classes
+      console.log('🎨 Theme changed, bot UI auto-adapts');
+    });
+
+    // Listen for page navigation
+    window.addEventListener('popstate', () => {
+      _detectPageContext();
+      _loadContextSuggestions();
     });
   }
 
@@ -299,7 +312,7 @@ const AndroBot = (function() {
       const response = _getResponse(text);
       _appendMessage(response, 'bot');
       _state.conversationHistory.push({ role: 'bot', content: response });
-    }, 800);
+    }, _config.typingDelay);
   }
 
   // ==========================================
@@ -309,75 +322,120 @@ const AndroBot = (function() {
     const q = query.toLowerCase();
     const lang = AppConfig.getLang();
 
-    // Try DataService first if available
-    if (typeof DataService !== 'undefined') {
-      // Shareholders questions
-      if (_matchesPattern(q, ['مساهم', 'ملاك', 'shareholder', 'owner'])) {
-        if (_matchesPattern(q, ['كبار', 'أكبر', 'major', 'largest'])) {
-          const major = DataService.getMajorShareholders(10);
-          if (major.length > 0) {
-            const top = major[0];
-            return lang === 'ar'
-              ? `أكبر المساهمين هم <b>${top.displayName}</b> بنسبة ${top.percent}%.`
-              : `The largest shareholder is <b>${top.displayName}</b> with ${top.percent}%.`;
-          }
-        }
-
-        if (_matchesPattern(q, ['عدد', 'إجمالي', 'total', 'count'])) {
-          const stats = DataService.getShareholdersStats();
-          return lang === 'ar'
-            ? `إجمالي عدد المساهمين: <b>${stats.totalCount}</b><br>رأس المال: <b>${I18n.formatCurrency(stats.totalCapital)}</b>`
-            : `Total shareholders: <b>${stats.totalCount}</b><br>Capital: <b>${I18n.formatCurrency(stats.totalCapital)}</b>`;
-        }
-      }
-
-      // Board questions
-      if (_matchesPattern(q, ['مجلس', 'إدارة', 'board', 'director'])) {
-        if (_matchesPattern(q, ['رئيس', 'chairman'])) {
-          const board = DataService.getBoardMembers();
-          const chairman = board.find(m => m.boardRole === 'chairman');
-          if (chairman) {
-            return lang === 'ar'
-              ? `رئيس مجلس الإدارة هو <b>${chairman.displayName}</b>.`
-              : `The Chairman is <b>${chairman.displayName}</b>.`;
-          }
-        }
-
-        if (_matchesPattern(q, ['أعضاء', 'members', 'عدد'])) {
-          const board = DataService.getBoardMembers();
-          return lang === 'ar'
-            ? `مجلس الإدارة يتكون من <b>${board.length}</b> أعضاء.`
-            : `The Board consists of <b>${board.length}</b> members.`;
-        }
-      }
-
-      // Users questions
-      if (_matchesPattern(q, ['موظف', 'مستخدم', 'user', 'employee'])) {
-        const stats = DataService.getSystemStats();
-        return lang === 'ar'
-          ? `إجمالي المستخدمين: <b>${stats.totalUsers}</b><br>الإدارة التنفيذية: <b>${stats.executiveCount}</b>`
-          : `Total users: <b>${stats.totalUsers}</b><br>Executives: <b>${stats.executiveCount}</b>`;
-      }
-
-      // Compliance questions
-      if (_matchesPattern(q, ['امتثال', 'compliance', 'حوكمة', 'governance'])) {
-        return lang === 'ar'
-          ? 'نسبة الامتثال الحالية: <b>92%</b>. النظام متوافق مع معايير SA_CL_2024 وISO 27001.'
-          : 'Current compliance rate: <b>92%</b>. System compliant with SA_CL_2024 and ISO 27001.';
-      }
+    // Greetings first
+    if (_matchesPattern(q, ['hello', 'hi', 'مرحبا', 'هلا', 'السلام', 'صباح', 'مساء', 'اهلا'])) {
+      return I18n.t('bot.responses.greeting');
     }
 
-    // Greetings
-    if (_matchesPattern(q, ['hello', 'hi', 'مرحبا', 'هلا', 'السلام', 'صباح', 'مساء'])) {
-      return lang === 'ar'
-        ? 'أهلاً وسهلاً! كيف يمكنني مساعدتك اليوم؟'
-        : 'Hello! How can I help you today?';
+    // Try DataService if available
+    if (typeof DataService !== 'undefined') {
+      
+      // === SHAREHOLDERS QUERIES ===
+      if (_matchesPattern(q, ['مساهم', 'ملاك', 'shareholder', 'owner', 'أسهم', 'shares'])) {
+        
+        // Major shareholders
+        if (_matchesPattern(q, ['كبار', 'أكبر', 'major', 'largest', 'top'])) {
+          try {
+            const major = DataService.getMajorShareholders(5);
+            if (major.length > 0) {
+              const top = major[0];
+              return lang === 'ar'
+                ? `أكبر المساهمين هم <b>${top.displayName}</b> بنسبة <b>${top.percent}%</b> (${I18n.formatNumber(top.shares)} سهم).`
+                : `The largest shareholder is <b>${top.displayName}</b> with <b>${top.percent}%</b> (${I18n.formatNumber(top.shares)} shares).`;
+            }
+          } catch (e) {
+            console.warn('DataService error:', e);
+          }
+        }
+
+        // Total count/capital
+        if (_matchesPattern(q, ['عدد', 'إجمالي', 'total', 'count', 'كم', 'how many'])) {
+          try {
+            const stats = DataService.getShareholdersStats();
+            return lang === 'ar'
+              ? `إجمالي عدد المساهمين: <b>${stats.totalCount}</b><br>رأس المال: <b>${I18n.formatCurrency(stats.totalCapital)}</b><br>عدد الأسهم: <b>${I18n.formatNumber(stats.totalShares)}</b>`
+              : `Total shareholders: <b>${stats.totalCount}</b><br>Capital: <b>${I18n.formatCurrency(stats.totalCapital)}</b><br>Total shares: <b>${I18n.formatNumber(stats.totalShares)}</b>`;
+          } catch (e) {
+            console.warn('DataService error:', e);
+          }
+        }
+      }
+
+      // === BOARD QUERIES ===
+      if (_matchesPattern(q, ['مجلس', 'إدارة', 'board', 'director'])) {
+        
+        // Chairman
+        if (_matchesPattern(q, ['رئيس', 'chairman', 'chair'])) {
+          try {
+            const board = DataService.getBoardMembers();
+            const chairman = board.find(m => m.boardRole === 'chairman');
+            if (chairman) {
+              return lang === 'ar'
+                ? `رئيس مجلس الإدارة هو <b>${chairman.displayName}</b><br>${chairman.displayTitle}`
+                : `The Chairman is <b>${chairman.displayName}</b><br>${chairman.displayTitle}`;
+            }
+          } catch (e) {
+            console.warn('DataService error:', e);
+          }
+        }
+
+        // Board members count
+        if (_matchesPattern(q, ['أعضاء', 'members', 'عدد', 'count', 'كم'])) {
+          try {
+            const board = DataService.getBoardMembers();
+            return lang === 'ar'
+              ? `مجلس الإدارة يتكون من <b>${board.length}</b> أعضاء.`
+              : `The Board consists of <b>${board.length}</b> members.`;
+          } catch (e) {
+            console.warn('DataService error:', e);
+          }
+        }
+      }
+
+      // === USERS QUERIES ===
+      if (_matchesPattern(q, ['موظف', 'مستخدم', 'user', 'employee', 'staff'])) {
+        try {
+          const stats = DataService.getSystemStats();
+          return lang === 'ar'
+            ? `إجمالي المستخدمين: <b>${stats.totalUsers}</b><br>الإدارة التنفيذية: <b>${stats.executiveCount}</b><br>أدوار متعددة: <b>${stats.multiRoleUsers}</b>`
+            : `Total users: <b>${stats.totalUsers}</b><br>Executives: <b>${stats.executiveCount}</b><br>Multi-role users: <b>${stats.multiRoleUsers}</b>`;
+        } catch (e) {
+          console.warn('DataService error:', e);
+        }
+      }
+
+      // === DEPARTMENTS QUERIES ===
+      if (_matchesPattern(q, ['قسم', 'إدارة', 'department', 'dept'])) {
+        try {
+          const depts = DataService.getDepartments();
+          return lang === 'ar'
+            ? `عدد الإدارات: <b>${depts.length}</b><br>من أهمها: ${depts.slice(0, 3).map(d => d.displayName).join(' • ')}`
+            : `Total departments: <b>${depts.length}</b><br>Including: ${depts.slice(0, 3).map(d => d.displayName).join(' • ')}`;
+        } catch (e) {
+          console.warn('DataService error:', e);
+        }
+      }
+
+      // === COMPLIANCE QUERIES ===
+      if (_matchesPattern(q, ['امتثال', 'compliance', 'حوكمة', 'governance'])) {
+        return I18n.t('bot.responses.compliance');
+      }
+
+      // === COMPANY INFO ===
+      if (_matchesPattern(q, ['شركة', 'company', 'اندروميدا', 'andromeda'])) {
+        try {
+          const profile = DataService.getCompanyProfile();
+          return lang === 'ar'
+            ? `<b>${profile.name}</b><br>سجل تجاري: ${profile.crNumber}<br>رأس المال: ${profile.capital.formatted}`
+            : `<b>${profile.name}</b><br>CR: ${profile.crNumber}<br>Capital: ${profile.capital.formatted}`;
+        } catch (e) {
+          console.warn('DataService error:', e);
+        }
+      }
     }
 
     // Default fallback
-    return lang === 'ar'
-      ? 'عذراً، لم أجد إجابة دقيقة. يمكنك سؤالي عن:<br>• المساهمين وهيكل الملكية<br>• مجلس الإدارة واللجان<br>• المستخدمين والأدوار<br>• الامتثال والحوكمة'
-      : 'Sorry, I couldn\'t find a precise answer. You can ask about:<br>• Shareholders & ownership<br>• Board & committees<br>• Users & roles<br>• Compliance & governance';
+    return I18n.t('bot.responses.noAnswer');
   }
 
   // ==========================================
@@ -425,56 +483,36 @@ const AndroBot = (function() {
 
     switch (_state.currentContext) {
       case 'shareholders':
-        items = lang === 'ar'
-          ? [
-              { label: 'كبار الملاك', query: 'من هم كبار المساهمين؟' },
-              { label: 'رأس المال', query: 'كم رأس المال؟' }
-            ]
-          : [
-              { label: 'Major Owners', query: 'Who are the major shareholders?' },
-              { label: 'Capital', query: 'What is the capital?' }
-            ];
+        items = [
+          { label: I18n.t('bot.suggestions.majorShareholders'), query: I18n.t('bot.questions.majorShareholders') },
+          { label: I18n.t('bot.suggestions.capital'), query: I18n.t('bot.questions.capital') }
+        ];
         break;
 
       case 'board':
-        items = lang === 'ar'
-          ? [
-              { label: 'رئيس المجلس', query: 'من هو رئيس المجلس؟' },
-              { label: 'أعضاء المجلس', query: 'كم عدد أعضاء المجلس؟' }
-            ]
-          : [
-              { label: 'Chairman', query: 'Who is the chairman?' },
-              { label: 'Board Members', query: 'How many board members?' }
-            ];
+        items = [
+          { label: I18n.t('bot.suggestions.chairman'), query: I18n.t('bot.questions.chairman') },
+          { label: I18n.t('bot.suggestions.boardMembers'), query: I18n.t('bot.questions.boardCount') }
+        ];
         break;
 
       case 'users':
-        items = lang === 'ar'
-          ? [
-              { label: 'عدد المستخدمين', query: 'كم عدد المستخدمين؟' },
-              { label: 'الأدوار', query: 'ما هي الأدوار المتاحة؟' }
-            ]
-          : [
-              { label: 'User Count', query: 'How many users?' },
-              { label: 'Roles', query: 'What roles are available?' }
-            ];
+        items = [
+          { label: I18n.t('bot.suggestions.userCount'), query: I18n.t('bot.questions.userCount') },
+          { label: I18n.t('bot.suggestions.roles'), query: I18n.t('bot.questions.availableRoles') }
+        ];
         break;
 
       default:
-        items = lang === 'ar'
-          ? [
-              { label: 'نسبة الامتثال', query: 'ما هي نسبة الامتثال؟' },
-              { label: 'المساهمين', query: 'من هم المساهمين؟' }
-            ]
-          : [
-              { label: 'Compliance', query: 'What is the compliance rate?' },
-              { label: 'Shareholders', query: 'Who are the shareholders?' }
-            ];
+        items = [
+          { label: I18n.t('bot.suggestions.compliance'), query: I18n.t('bot.questions.complianceRate') },
+          { label: I18n.t('bot.suggestions.shareholders'), query: I18n.t('bot.questions.whoAreShareholders') }
+        ];
     }
 
     _elements.suggestions.innerHTML = items.map(i => `
       <button 
-        onclick="AndroBot.ask('${i.query}')"
+        onclick="AndroBot.ask('${i.query.replace(/'/g, "\\'")}')"
         class="text-xs bg-white dark:bg-slate-700 border border-brandBlue/30 text-brandBlue dark:text-blue-300 px-3 py-1.5 rounded-full hover:bg-blue-50 dark:hover:bg-slate-600 transition"
       >
         ${i.label}
@@ -486,12 +524,18 @@ const AndroBot = (function() {
   // UPDATE UI (Language Change)
   // ==========================================
   function _updateUI() {
-    // Re-inject to update all text
+    // Save state
     const wasOpen = _state.isOpen;
+    const history = [..._state.conversationHistory];
+
+    // Remove and re-inject
     _elements.container?.remove();
     _injectHTML();
     _cacheElements();
     _setupEventListeners();
+
+    // Restore state
+    _state.conversationHistory = history;
     if (wasOpen) {
       _elements.window?.classList.remove('hidden');
       _state.isOpen = true;
@@ -505,17 +549,31 @@ const AndroBot = (function() {
     init,
     toggle,
     ask(question) {
+      if (!_state.isOpen) toggle();
       if (_elements.input) {
         _elements.input.value = question;
         sendMessage();
       }
-      if (!_state.isOpen) toggle();
     },
     close() {
       if (_state.isOpen) toggle();
     },
+    open() {
+      if (!_state.isOpen) toggle();
+    },
     getState() {
       return { ..._state };
+    },
+    clearHistory() {
+      _state.conversationHistory = [];
+      if (_elements.body) {
+        _elements.body.innerHTML = `
+          <div class="chat-bubble bot">${I18n.t('bot.welcome')}</div>
+          <div class="flex flex-wrap gap-2 mt-2" id="suggestions"></div>
+        `;
+        _elements.suggestions = document.getElementById('suggestions');
+        _loadContextSuggestions();
+      }
     }
   };
 })();
