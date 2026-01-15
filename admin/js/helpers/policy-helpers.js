@@ -1,39 +1,4 @@
-<!-- ===== SCRIPTS ===== -->
-    
-    <!-- 1. Data Layer -->
-    <script src="data/company_policy.js"></script>
-    
-    <!-- 2. Core -->
-    <script src="js/core/config.js"></script>
-    <script src="js/core/i18n.js"></script>
-    
-    <!-- 3. Helpers (IMPORTANT: Load before services) -->
-    <script src="js/helpers/policy-helpers.js"></script>
-    
-    <!-- 4. Services -->
-    <script src="js/services/data-service.js"></script>
-    
-    <!-- 5. Components -->
-    <script src="js/components/role-switcher.js"></script>
-    <script src="js/components/layout.js"></script>
-    <script src="js/components/bot.js"></script>
-    
-    <!-- 6. Page Controller -->
-    <script src="js/pages/users-page.js"></script>
-
-    <!-- 7. Page Initialization -->
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Wait for all dependencies to load
-            let attempts = 0;
-            const maxAttempts = 50; // 5 seconds max
-            
-            const checkDependencies = setInterval(() => {
-                attempts++;
-                
-                if (typeof CompanyPolicy !== 'undefined' && 
-                    typeof PolicyHelpers !== 'undefined' &&
-                    typeof DataSe/**
+/**
  * PolicyHelpers - Utility Functions for CompanyPolicy
  * @description Helper functions to work with company_policy.js data
  * @version 1.0.0
@@ -185,7 +150,7 @@ const PolicyHelpers = (function() {
     if (!_isPolicyLoaded()) return roleKey;
 
     const useLang = lang || _getLang();
-    const role = CompanyPolicy.authority_matrix.access_control.roles[roleKey];
+    const role = CompanyPolicy.authority_matrix?.access_control?.roles?.[roleKey];
     
     if (!role) return roleKey;
     
@@ -206,10 +171,10 @@ const PolicyHelpers = (function() {
     if (allowedRoles.includes(roleKey)) return true;
 
     // Check inheritance chain
-    let currentRole = CompanyPolicy.authority_matrix.access_control.roles[roleKey];
+    let currentRole = CompanyPolicy.authority_matrix?.access_control?.roles?.[roleKey];
     while (currentRole && currentRole.inherits) {
       if (allowedRoles.includes(currentRole.inherits)) return true;
-      currentRole = CompanyPolicy.authority_matrix.access_control.roles[currentRole.inherits];
+      currentRole = CompanyPolicy.authority_matrix?.access_control?.roles?.[currentRole.inherits];
     }
 
     return false;
@@ -227,7 +192,7 @@ const PolicyHelpers = (function() {
     const allPermissions = new Set();
 
     contexts.forEach(ctx => {
-      const rolePermissions = CompanyPolicy.authority_matrix.access_control.permissions[ctx.role] || [];
+      const rolePermissions = CompanyPolicy.authority_matrix?.access_control?.permissions?.[ctx.role] || [];
       rolePermissions.forEach(perm => allPermissions.add(perm));
     });
 
@@ -248,7 +213,7 @@ const PolicyHelpers = (function() {
     if (!_isPolicyLoaded()) return deptId;
 
     const useLang = lang || _getLang();
-    const dept = CompanyPolicy.organization.departments.find(d => d.id === deptId);
+    const dept = CompanyPolicy.organization?.departments?.find(d => d.id === deptId);
     
     if (!dept) return deptId;
     
@@ -269,7 +234,7 @@ const PolicyHelpers = (function() {
   function canApproveTransaction(roleKey, transactionType, amount) {
     if (!_isPolicyLoaded()) return false;
 
-    const authority = CompanyPolicy.authority_matrix.financial_authority.find(
+    const authority = CompanyPolicy.authority_matrix?.financial_authority?.find(
       f => f.transaction_type === transactionType
     );
 
@@ -298,17 +263,17 @@ const PolicyHelpers = (function() {
     if (!_isPolicyLoaded()) return {};
 
     const useLang = lang || _getLang();
-    const profile = CompanyPolicy.governance.profile;
-    const identity = CompanyPolicy.identity.meta;
+    const profile = CompanyPolicy.governance?.profile;
+    const identity = CompanyPolicy.identity?.meta;
 
     return {
-      name: _localize(identity.brand_name, useLang),
-      legalName: _localize(CompanyPolicy.i18n.translations.global.company_legal_name, useLang),
-      crNumber: profile.cr_number,
-      unifiedNumber: profile.unified_number,
-      establishmentDate: profile.establishment_date,
-      capital: profile.capital,
-      website: identity.website
+      name: _localize(identity?.brand_name, useLang),
+      legalName: _localize(CompanyPolicy.i18n?.translations?.global?.company_legal_name, useLang),
+      crNumber: profile?.cr_number,
+      unifiedNumber: profile?.unified_number,
+      establishmentDate: profile?.establishment_date,
+      capital: profile?.capital,
+      website: identity?.website
     };
   }
 
@@ -323,7 +288,7 @@ const PolicyHelpers = (function() {
    */
   function userExists(userId) {
     if (!_isPolicyLoaded()) return false;
-    return CompanyPolicy.governance.users_directory.some(u => u.id === userId);
+    return CompanyPolicy.governance?.users_directory?.some(u => u.id === userId) || false;
   }
 
   /**
@@ -333,7 +298,7 @@ const PolicyHelpers = (function() {
    */
   function roleExists(roleKey) {
     if (!_isPolicyLoaded()) return false;
-    return !!CompanyPolicy.authority_matrix.access_control.roles[roleKey];
+    return !!CompanyPolicy.authority_matrix?.access_control?.roles?.[roleKey];
   }
 
   // ==========================================
