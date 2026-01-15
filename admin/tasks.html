@@ -5,18 +5,46 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AndroGov | إدارة المهام</title>
     
-    <!-- External CSS -->
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css"> <!-- الملف الجديد -->
     
     <!-- Libraries -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-</head>
-<body class="bg-brandGray dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans h-screen flex overflow-hidden opacity-0">
 
-    <!-- Containers populated by layout.js -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { brandRed: '#FB4747', brandBlue: '#4267B2', brandGray: '#F8FAFC' },
+                    fontFamily: { sans: ['Tajawal', 'Inter', 'sans-serif'], en: ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #F8FAFC; color: #1E293B; transition: opacity 0.2s; }
+        .dark body { background-color: #0F172A; color: #F1F5F9; }
+        .task-card { transition: all 0.2s; cursor: grab; }
+        .task-card:active { cursor: grabbing; transform: scale(1.02); }
+        .custom-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 4px; }
+        .dark .custom-scroll::-webkit-scrollbar-thumb { background-color: #475569; }
+        
+        /* List View Styles */
+        .list-view .board-col { min-width: 100%; margin-bottom: 1rem; height: auto; background: transparent; border: none; }
+        .list-view .board-container { flex-direction: column; }
+        .list-view .col-header { background: #f1f5f9; padding: 10px; border-radius: 8px; margin-bottom: 10px; }
+        .dark .list-view .col-header { background: #1e293b; }
+        .list-view .task-body { display: flex; flex-direction: column; gap: 8px; }
+    </style>
+</head>
+<body class="font-sans h-screen flex overflow-hidden opacity-0">
+
+    <!-- Layout Containers -->
     <div id="sidebar-container"></div>
 
     <div class="main-content-wrapper flex-1 flex flex-col md:mr-72 transition-all">
@@ -25,52 +53,57 @@
         <!-- Task Toolbar -->
         <div class="h-16 flex items-center justify-between px-6 bg-white dark:bg-[#1E293B] border-b border-slate-200 dark:border-slate-700">
             <div class="flex items-center gap-4">
-                <h2 class="text-lg font-bold flex items-center gap-2">
+                <h2 class="text-lg font-bold flex items-center gap-2 text-slate-700 dark:text-white">
                     <i class="fa-solid fa-list-check text-brandBlue"></i> مركز المهام
                 </h2>
                 <div class="flex bg-slate-100 dark:bg-slate-700 rounded-lg p-1">
-                    <button id="btn-board" onclick="switchView('board')" class="px-3 py-1 bg-white dark:bg-slate-600 shadow-sm rounded-md text-xs font-bold transition text-brandBlue">لوحة</button>
-                    <button id="btn-list" onclick="switchView('list')" class="px-3 py-1 text-slate-500 dark:text-slate-400 text-xs font-bold hover:text-brandBlue transition">قائمة</button>
+                    <button id="view-board" onclick="switchView('board')" class="px-3 py-1 bg-white dark:bg-slate-600 shadow-sm rounded-md text-xs font-bold transition text-brandBlue"><i class="fa-solid fa-table-columns"></i> لوحة</button>
+                    <button id="view-list" onclick="switchView('list')" class="px-3 py-1 text-slate-500 dark:text-slate-400 text-xs font-bold hover:text-brandBlue transition"><i class="fa-solid fa-list"></i> قائمة</button>
                 </div>
             </div>
-            <button onclick="newTask()" class="bg-brandBlue text-white px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 hover:bg-blue-700 transition">
+            <button onclick="newTask()" class="bg-brandBlue text-white px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 hover:bg-blue-700 transition transform hover:scale-105 active:scale-95">
                 <i class="fa-solid fa-plus"></i> مهمة جديدة
             </button>
         </div>
 
         <!-- Kanban Board Area -->
-        <main class="flex-1 overflow-x-auto p-6">
-            <div id="board-container" class="flex gap-6 h-full min-w-[1000px] transition-all">
+        <main class="flex-1 overflow-x-auto p-6 bg-brandGray dark:bg-slate-900">
+            <div id="board-container" class="flex gap-6 h-full min-w-[1000px] board-container transition-all">
                 
-                <!-- Columns -->
+                <!-- Col 1: To Do -->
                 <div class="flex-1 bg-slate-100 dark:bg-slate-800/50 rounded-2xl flex flex-col border border-slate-200 dark:border-slate-700/50 board-col">
                     <div class="p-4 flex justify-between items-center border-b border-slate-200 dark:border-slate-700 border-b-4 border-slate-400 col-header">
-                        <span class="font-bold text-sm">قيد الانتظار</span>
-                        <span id="count-todo" class="bg-white dark:bg-slate-700 px-2 py-0.5 rounded-full text-xs font-bold shadow-sm">0</span>
+                        <span class="font-bold text-sm dark:text-white">قيد الانتظار</span>
+                        <span class="bg-white dark:bg-slate-700 px-2 py-0.5 rounded-full text-xs font-bold shadow-sm dark:text-white count-badge">4</span>
                     </div>
-                    <div id="col-todo" class="flex-1 p-3 space-y-3 overflow-y-auto custom-scroll task-body"></div>
+                    <div id="col-todo" class="flex-1 p-3 space-y-3 overflow-y-auto custom-scroll task-body">
+                        <!-- Tasks injected via JS -->
+                    </div>
                 </div>
 
+                <!-- Col 2: In Progress -->
                 <div class="flex-1 bg-blue-50 dark:bg-blue-900/10 rounded-2xl flex flex-col border border-blue-100 dark:border-slate-700/50 board-col">
                     <div class="p-4 flex justify-between items-center border-b border-blue-200 dark:border-slate-700 border-b-4 border-blue-400 col-header">
                         <span class="font-bold text-sm text-blue-900 dark:text-blue-100">جاري التنفيذ</span>
-                        <span id="count-progress" class="bg-white dark:bg-slate-700 px-2 py-0.5 rounded-full text-xs font-bold shadow-sm">0</span>
+                        <span class="bg-white dark:bg-slate-700 px-2 py-0.5 rounded-full text-xs font-bold shadow-sm count-badge">2</span>
                     </div>
                     <div id="col-progress" class="flex-1 p-3 space-y-3 overflow-y-auto custom-scroll task-body"></div>
                 </div>
 
+                <!-- Col 3: Review -->
                 <div class="flex-1 bg-orange-50 dark:bg-orange-900/10 rounded-2xl flex flex-col border border-orange-100 dark:border-slate-700/50 board-col">
                     <div class="p-4 flex justify-between items-center border-b border-orange-200 dark:border-slate-700 border-b-4 border-orange-400 col-header">
                         <span class="font-bold text-sm text-orange-900 dark:text-orange-100">تحت المراجعة</span>
-                        <span id="count-review" class="bg-white dark:bg-slate-700 px-2 py-0.5 rounded-full text-xs font-bold shadow-sm">0</span>
+                        <span class="bg-white dark:bg-slate-700 px-2 py-0.5 rounded-full text-xs font-bold shadow-sm count-badge">1</span>
                     </div>
                     <div id="col-review" class="flex-1 p-3 space-y-3 overflow-y-auto custom-scroll task-body"></div>
                 </div>
 
+                <!-- Col 4: Done -->
                 <div class="flex-1 bg-green-50 dark:bg-green-900/10 rounded-2xl flex flex-col border border-green-100 dark:border-slate-700/50 board-col">
                     <div class="p-4 flex justify-between items-center border-b border-green-200 dark:border-slate-700 border-b-4 border-green-400 col-header">
                         <span class="font-bold text-sm text-green-900 dark:text-green-100">مكتمل</span>
-                        <span id="count-done" class="bg-white dark:bg-slate-700 px-2 py-0.5 rounded-full text-xs font-bold shadow-sm text-green-600">0</span>
+                        <span class="bg-white dark:bg-slate-700 px-2 py-0.5 rounded-full text-xs font-bold shadow-sm text-green-600 count-badge">5</span>
                     </div>
                     <div id="col-done" class="flex-1 p-3 space-y-3 overflow-y-auto custom-scroll task-body"></div>
                 </div>
@@ -79,114 +112,148 @@
         </main>
     </div>
 
-    <!-- Bot Container -->
+    <!-- Chatbot Container (Populated by bot.js) -->
     <div id="andro-bot-container" class="fixed bottom-6 left-6 z-50 flex flex-col items-start gap-4" dir="rtl"></div>
 
-    <!-- Core Scripts -->
+    <!-- Scripts -->
     <script src="layout.js"></script>
     <script src="bot.js"></script>
 
-    <!-- Page Specific Script -->
     <script>
-        const tasksData = [
-            { id: 1, title: 'اعتماد سياسة المكافآت', desc: 'مراجعة المسودة النهائية.', tag: 'Gov', color: 'bg-yellow-100 text-yellow-700', status: 'col-todo', urgent: true },
-            { id: 2, title: 'تحديث السجل التجاري', desc: 'إضافة نشاط جديد.', tag: 'Legal', color: 'bg-purple-100 text-purple-700', status: 'col-todo' },
-            { id: 3, title: 'مراجعة تقرير الرواتب', desc: 'التأكد من الخصومات.', tag: 'Ops', color: 'bg-blue-100 text-blue-700', status: 'col-progress' },
-            { id: 4, title: 'عقود التوظيف', desc: 'بانتظار توقيع الرئيس.', tag: 'HR', color: 'bg-pink-100 text-pink-700', status: 'col-review' },
-            { id: 5, title: 'أرشفة المحاضر', desc: 'محاضر الربع الرابع.', tag: 'Board', color: 'bg-green-100 text-green-700', status: 'col-done', done: true }
+        // --- 1. Task Data ---
+        const tasks = [
+            { id: 1, title: 'اعتماد سياسة المكافآت', desc: 'مراجعة المسودة النهائية المرفقة.', tag: 'Gov', tagColor: 'bg-yellow-100 text-yellow-700', status: 'col-todo', date: '2 يوم', urgent: true },
+            { id: 2, title: 'تحديث السجل التجاري', desc: 'إضافة نشاط جديد للسجل.', tag: 'Legal', tagColor: 'bg-purple-100 text-purple-700', status: 'col-todo', date: 'Feb 10', urgent: false },
+            { id: 3, title: 'مراجعة تقرير الرواتب', desc: 'التأكد من خصومات الغياب.', tag: 'Ops', tagColor: 'bg-blue-100 text-blue-700', status: 'col-progress', date: 'اليوم', progress: 60 },
+            { id: 4, title: 'عقود التوظيف الجديدة', desc: 'بانتظار توقيع الرئيس التنفيذي.', tag: 'HR', tagColor: 'bg-pink-100 text-pink-700', status: 'col-review', date: 'أمس', urgent: false },
+            { id: 5, title: 'محضر اجتماع المجلس Q4', desc: 'تمت الأرشفة بنجاح.', tag: 'Board', tagColor: 'bg-green-100 text-green-700', status: 'col-done', date: 'Jan 15', done: true },
         ];
 
+        // --- 2. Render Tasks ---
         function renderTasks() {
-            // Clear
-            ['col-todo', 'col-progress', 'col-review', 'col-done'].forEach(id => {
-                document.getElementById(id).innerHTML = '';
-            });
+            // Clear cols
+            ['col-todo', 'col-progress', 'col-review', 'col-done'].forEach(id => document.getElementById(id).innerHTML = '');
 
-            tasksData.forEach(task => {
-                const html = `
-                <div class="bg-white dark:bg-slate-700 p-4 rounded-xl shadow-sm border border-slate-200 dark:border-slate-600 task-card group ${task.done ? 'opacity-60' : ''}">
+            tasks.forEach(t => {
+                const isDone = t.status === 'col-done';
+                const card = `
+                <div class="bg-white dark:bg-slate-700 p-4 rounded-xl shadow-sm border border-slate-200 dark:border-slate-600 task-card group ${isDone ? 'opacity-60 hover:opacity-100' : ''}" ondblclick="editTask('${t.title}')">
                     <div class="flex justify-between items-start mb-2">
-                        <span class="${task.color} text-[10px] font-bold px-2 py-0.5 rounded">${task.tag}</span>
-                        ${task.urgent ? '<span class="text-[10px] bg-red-100 text-red-600 px-2 py-0.5 rounded-full animate-pulse">عاجل</span>' : ''}
+                        <span class="${t.tagColor} text-[10px] font-bold px-2 py-0.5 rounded">${t.tag}</span>
+                        ${t.urgent ? '<span class="text-[10px] bg-red-100 text-red-600 px-2 py-0.5 rounded-full animate-pulse">عاجل</span>' : ''}
+                        <button class="text-slate-300 hover:text-slate-500 opacity-0 group-hover:opacity-100 transition"><i class="fa-solid fa-ellipsis"></i></button>
                     </div>
-                    <h4 class="font-bold text-sm mb-1 dark:text-white">${task.title}</h4>
-                    <p class="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-2">${task.desc}</p>
+                    <h4 class="font-bold text-sm mb-1 group-hover:text-brandBlue transition ${isDone ? 'line-through text-slate-400' : 'dark:text-white'}">${t.title}</h4>
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-2">${t.desc}</p>
+                    ${t.progress ? `
+                    <div class="w-full bg-slate-100 h-1.5 rounded-full mt-2 mb-3">
+                        <div class="bg-blue-500 h-full rounded-full" style="width: ${t.progress}%"></div>
+                    </div>` : ''}
                     <div class="mt-3 flex justify-between items-center">
-                        <img src="${SYSTEM_DATA.currentUser.avatar}" class="w-6 h-6 rounded-full border-2 border-white dark:border-slate-700">
-                        <button class="text-slate-300 hover:text-slate-500"><i class="fa-solid fa-ellipsis"></i></button>
+                        <div class="flex -space-x-2 space-x-reverse">
+                            <img src="https://ui-avatars.com/api/?name=User&background=random" class="w-6 h-6 rounded-full border-2 border-white dark:border-slate-700">
+                        </div>
+                        <span class="text-[10px] ${t.urgent ? 'text-red-500 font-bold' : 'text-slate-400'}"><i class="fa-regular fa-clock"></i> ${t.date}</span>
                     </div>
                 </div>`;
-                document.getElementById(task.status).insertAdjacentHTML('beforeend', html);
+                document.getElementById(t.status).insertAdjacentHTML('beforeend', card);
             });
-            
-            // Update Counts
+            updateCounts();
+        }
+
+        function updateCounts() {
             ['col-todo', 'col-progress', 'col-review', 'col-done'].forEach(id => {
-                const countId = 'count-' + id.split('-')[1];
                 const count = document.getElementById(id).children.length;
-                if(document.getElementById(countId)) document.getElementById(countId).innerText = count;
+                document.getElementById(id).parentElement.querySelector('.count-badge').innerText = count;
             });
         }
 
-        // Drag & Drop
-        document.addEventListener('DOMContentLoaded', () => {
-            renderTasks();
-            ['col-todo', 'col-progress', 'col-review', 'col-done'].forEach(id => {
-                new Sortable(document.getElementById(id), {
-                    group: 'shared', animation: 150, ghostClass: 'bg-slate-200',
-                    onEnd: () => { 
-                        // Logic to update tasksData array based on new position would go here
-                        // For UI demo, just updating counts is enough
-                        ['col-todo', 'col-progress', 'col-review', 'col-done'].forEach(cid => {
-                             const countId = 'count-' + cid.split('-')[1];
-                             const count = document.getElementById(cid).children.length;
-                             if(document.getElementById(countId)) document.getElementById(countId).innerText = count;
-                        });
-                    }
-                });
-            });
-        });
-
-        // View Switcher
-        window.switchView = (mode) => {
+        // --- 3. View Switcher ---
+        window.switchView = (view) => {
             const container = document.getElementById('board-container');
-            const btnBoard = document.getElementById('btn-board');
-            const btnList = document.getElementById('btn-list');
-            
-            if (mode === 'list') {
+            const btnBoard = document.getElementById('view-board');
+            const btnList = document.getElementById('view-list');
+
+            if (view === 'list') {
                 container.classList.add('list-view');
                 container.classList.remove('flex', 'gap-6', 'min-w-[1000px]');
-                btnList.classList.add('bg-white', 'dark:bg-slate-600', 'shadow-sm', 'text-brandBlue');
-                btnList.classList.remove('text-slate-500');
-                btnBoard.classList.remove('bg-white', 'dark:bg-slate-600', 'shadow-sm', 'text-brandBlue');
-                btnBoard.classList.add('text-slate-500');
+                
+                btnList.className = "px-3 py-1 bg-white dark:bg-slate-600 shadow-sm rounded-md text-xs font-bold transition text-brandBlue";
+                btnBoard.className = "px-3 py-1 text-slate-500 dark:text-slate-400 text-xs font-bold hover:text-brandBlue transition";
             } else {
                 container.classList.remove('list-view');
                 container.classList.add('flex', 'gap-6', 'min-w-[1000px]');
-                btnBoard.classList.add('bg-white', 'dark:bg-slate-600', 'shadow-sm', 'text-brandBlue');
-                btnBoard.classList.remove('text-slate-500');
-                btnList.classList.remove('bg-white', 'dark:bg-slate-600', 'shadow-sm', 'text-brandBlue');
-                btnList.classList.add('text-slate-500');
+                
+                btnBoard.className = "px-3 py-1 bg-white dark:bg-slate-600 shadow-sm rounded-md text-xs font-bold transition text-brandBlue";
+                btnList.className = "px-3 py-1 text-slate-500 dark:text-slate-400 text-xs font-bold hover:text-brandBlue transition";
             }
         };
 
-        // New Task
+        // --- 4. New Task Modal ---
         window.newTask = () => {
             Swal.fire({
-                title: 'مهمة جديدة',
-                input: 'text',
-                inputPlaceholder: 'عنوان المهمة...',
+                title: 'إضافة مهمة جديدة',
+                html: `
+                    <input id="swal-input1" class="w-full mb-3 p-2 border rounded dark:bg-slate-700 dark:text-white dark:border-slate-600" placeholder="عنوان المهمة">
+                    <select id="swal-input2" class="w-full mb-3 p-2 border rounded dark:bg-slate-700 dark:text-white dark:border-slate-600">
+                        <option value="Gov">حوكمة (Gov)</option>
+                        <option value="Ops">تشغيل (Ops)</option>
+                        <option value="Legal">قانوني (Legal)</option>
+                        <option value="HR">موارد بشرية (HR)</option>
+                    </select>
+                    <textarea id="swal-input3" class="w-full p-2 border rounded dark:bg-slate-700 dark:text-white dark:border-slate-600" placeholder="التفاصيل..."></textarea>
+                `,
                 showCancelButton: true,
                 confirmButtonText: 'إضافة',
                 cancelButtonText: 'إلغاء',
-                confirmButtonColor: '#4267B2'
-            }).then((res) => {
-                if (res.isConfirmed && res.value) {
-                    tasksData.unshift({ id: Date.now(), title: res.value, desc: 'مهمة جديدة', tag: 'Gen', color: 'bg-gray-100', status: 'col-todo' });
+                confirmButtonColor: '#4267B2',
+                customClass: { popup: 'dark:bg-slate-800 dark:text-white' },
+                preConfirm: () => {
+                    const title = document.getElementById('swal-input1').value;
+                    const tag = document.getElementById('swal-input2').value;
+                    const desc = document.getElementById('swal-input3').value;
+                    if (!title) Swal.showValidationMessage('الرجاء كتابة العنوان');
+                    return { title, tag, desc };
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    tasks.push({
+                        id: Date.now(),
+                        title: result.value.title,
+                        desc: result.value.desc || 'لا توجد تفاصيل',
+                        tag: result.value.tag,
+                        tagColor: 'bg-gray-100 text-gray-700',
+                        status: 'col-todo',
+                        date: 'جديد',
+                        urgent: false
+                    });
                     renderTasks();
                     Swal.fire({ icon: 'success', title: 'تمت الإضافة', timer: 1500, showConfirmButton: false });
                 }
             });
         };
+
+        window.editTask = (title) => {
+            Swal.fire('تفاصيل المهمة', `تعديل: ${title}`, 'info');
+        }
+
+        // --- 5. Init ---
+        document.addEventListener('DOMContentLoaded', () => {
+            renderTasks();
+            
+            // Init Drag & Drop
+            ['col-todo', 'col-progress', 'col-review', 'col-done'].forEach(id => {
+                new Sortable(document.getElementById(id), {
+                    group: 'shared',
+                    animation: 150,
+                    ghostClass: 'bg-slate-200',
+                    onEnd: function (evt) {
+                        updateCounts(); // Update badges after drop
+                        // Here you would typically update the backend
+                    }
+                });
+            });
+        });
     </script>
 </body>
 </html>
