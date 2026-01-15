@@ -55,10 +55,51 @@
         body.loaded {
             opacity: 1;
         }
+        
+        /* Loading Overlay */
+        .loading-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(5px);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+        
+        .dark .loading-overlay {
+            background: rgba(15, 23, 42, 0.9);
+        }
+        
+        .loading-overlay.hidden {
+            display: none;
+        }
+        
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 5px solid rgba(66, 103, 178, 0.1);
+            border-top-color: #4267B2;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
 
 <body class="bg-brandGray dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans">
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="spinner"></div>
+        <p class="text-sm font-bold text-slate-600 dark:text-slate-300">جاري تحميل البيانات...</p>
+    </div>
 
     <!-- ===== SIDEBAR CONTAINER ===== -->
     <div id="sidebar-container" class="no-print"></div>
@@ -83,6 +124,22 @@
             <!-- Stats Cards -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="stats-container">
                 <!-- Populated by JS -->
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 animate-pulse">
+                    <div class="h-4 bg-slate-200 dark:bg-slate-700 rounded w-1/2 mb-3"></div>
+                    <div class="h-8 bg-slate-200 dark:bg-slate-700 rounded w-1/3"></div>
+                </div>
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 animate-pulse">
+                    <div class="h-4 bg-slate-200 dark:bg-slate-700 rounded w-1/2 mb-3"></div>
+                    <div class="h-8 bg-slate-200 dark:bg-slate-700 rounded w-1/3"></div>
+                </div>
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 animate-pulse">
+                    <div class="h-4 bg-slate-200 dark:bg-slate-700 rounded w-1/2 mb-3"></div>
+                    <div class="h-8 bg-slate-200 dark:bg-slate-700 rounded w-1/3"></div>
+                </div>
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 animate-pulse">
+                    <div class="h-4 bg-slate-200 dark:bg-slate-700 rounded w-1/2 mb-3"></div>
+                    <div class="h-8 bg-slate-200 dark:bg-slate-700 rounded w-1/3"></div>
+                </div>
             </div>
 
             <!-- Main Workspace -->
@@ -142,7 +199,15 @@
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-100 dark:divide-slate-700" id="usersTableBody">
-                                <!-- Populated by JS -->
+                                <!-- Loading State -->
+                                <tr>
+                                    <td colspan="6" class="p-8 text-center">
+                                        <div class="flex flex-col items-center gap-3 text-slate-400">
+                                            <i class="fa-solid fa-spinner fa-spin text-3xl"></i>
+                                            <p class="text-sm">جاري تحميل المستخدمين...</p>
+                                        </div>
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -155,6 +220,14 @@
                         <!-- Roles List -->
                         <div class="lg:col-span-4 lg:border-l border-slate-200 dark:border-slate-700 lg:pl-6 space-y-3 overflow-y-auto custom-scroll max-h-[550px]" id="rolesList">
                             <!-- Populated by JS -->
+                            <div class="p-4 rounded-xl border border-slate-200 dark:border-slate-700 animate-pulse">
+                                <div class="h-4 bg-slate-200 dark:bg-slate-700 rounded w-3/4 mb-2"></div>
+                                <div class="h-3 bg-slate-200 dark:bg-slate-700 rounded w-full"></div>
+                            </div>
+                            <div class="p-4 rounded-xl border border-slate-200 dark:border-slate-700 animate-pulse">
+                                <div class="h-4 bg-slate-200 dark:bg-slate-700 rounded w-3/4 mb-2"></div>
+                                <div class="h-3 bg-slate-200 dark:bg-slate-700 rounded w-full"></div>
+                            </div>
                         </div>
                         
                         <!-- Role Details & Permissions -->
@@ -164,7 +237,7 @@
                                 <!-- Role Header -->
                                 <div class="flex flex-col md:flex-row justify-between items-start gap-4 mb-6 pb-4 border-b border-slate-200 dark:border-slate-600">
                                     <div>
-                                        <h3 class="font-bold text-xl text-slate-800 dark:text-white mb-1" id="roleDetailName">--</h3>
+                                        <h3 class="font-bold text-xl text-slate-800 dark:text-white mb-1" id="roleDetailName">اختر دوراً من القائمة</h3>
                                         <p class="text-sm text-slate-500 dark:text-slate-400" id="roleDetailDesc">--</p>
                                     </div>
                                     <span id="roleInheritsBadge" class="hidden px-3 py-1.5 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded-full text-xs font-bold whitespace-nowrap">
@@ -177,6 +250,10 @@
                                 <!-- Permissions Grid -->
                                 <div class="space-y-6 overflow-y-auto custom-scroll max-h-[400px] pr-2" id="permissionsContainer">
                                     <!-- Populated by JS -->
+                                    <div class="text-center text-slate-400 py-8">
+                                        <i class="fa-solid fa-shield-halved text-4xl mb-3"></i>
+                                        <p class="text-sm">اختر دوراً لعرض الصلاحيات</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -201,25 +278,129 @@
     <script src="js/core/config.js"></script>
     <script src="js/core/i18n.js"></script>
     
-    <!-- 3. Services -->
+    <!-- 3. Helpers (IMPORTANT: Load before services) -->
+    <script src="js/helpers/policy-helpers.js"></script>
+    
+    <!-- 4. Services -->
     <script src="js/services/data-service.js"></script>
     
-    <!-- 4. Components -->
+    <!-- 5. Components -->
     <script src="js/components/role-switcher.js"></script>
     <script src="js/components/layout.js"></script>
-    <script src="js/components/bot.js"></script> <!-- ✅ Bot Component Added -->
+    <script src="js/components/bot.js"></script>
     
-    <!-- 5. Page Controller -->
+    <!-- 6. Page Controller -->
     <script src="js/pages/users-page.js"></script>
 
-    <!-- 6. Page Initialization -->
+    <!-- 7. Page Initialization -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Initialize page after layout is ready
-            setTimeout(() => {
-                UsersPage.init();
+            console.log('🚀 DOM loaded, starting initialization...');
+            
+            // Wait for all dependencies to load
+            let attempts = 0;
+            const maxAttempts = 50; // 5 seconds max
+            
+            const checkDependencies = setInterval(() => {
+                attempts++;
+                
+                const hasCompanyPolicy = typeof CompanyPolicy !== 'undefined';
+                const hasPolicyHelpers = typeof PolicyHelpers !== 'undefined';
+                const hasDataService = typeof DataService !== 'undefined';
+                const hasAppConfig = typeof AppConfig !== 'undefined';
+                const hasI18n = typeof I18n !== 'undefined';
+                const hasLayout = typeof Layout !== 'undefined';
+                const hasUsersPage = typeof UsersPage !== 'undefined';
+                
+                console.log(`📊 Dependency check (${attempts}/${maxAttempts}):`, {
+                    CompanyPolicy: hasCompanyPolicy,
+                    PolicyHelpers: hasPolicyHelpers,
+                    DataService: hasDataService,
+                    AppConfig: hasAppConfig,
+                    I18n: hasI18n,
+                    Layout: hasLayout,
+                    UsersPage: hasUsersPage
+                });
+                
+                if (hasCompanyPolicy && hasPolicyHelpers && hasDataService && 
+                    hasAppConfig && hasI18n && hasLayout && hasUsersPage) {
+                    
+                    clearInterval(checkDependencies);
+                    console.log('✅ All dependencies loaded successfully!');
+                    
+                    // Hide loading overlay
+                    document.getElementById('loadingOverlay')?.classList.add('hidden');
+                    
+                    // Initialize page
+                    setTimeout(() => {
+                        try {
+                            console.log('🎯 Initializing UsersPage...');
+                            UsersPage.init();
+                            console.log('✅ UsersPage initialized successfully!');
+                        } catch (error) {
+                            console.error('❌ Error initializing UsersPage:', error);
+                            showErrorMessage('حدث خطأ في تحميل الصفحة. الرجاء إعادة تحميل الصفحة.');
+                        }
+                    }, 100);
+                    
+                } else if (attempts >= maxAttempts) {
+                    clearInterval(checkDependencies);
+                    console.error('❌ Timeout: Dependencies not loaded after 5 seconds');
+                    
+                    // Show which dependencies failed
+                    const missing = [];
+                    if (!hasCompanyPolicy) missing.push('CompanyPolicy');
+                    if (!hasPolicyHelpers) missing.push('PolicyHelpers');
+                    if (!hasDataService) missing.push('DataService');
+                    if (!hasAppConfig) missing.push('AppConfig');
+                    if (!hasI18n) missing.push('I18n');
+                    if (!hasLayout) missing.push('Layout');
+                    if (!hasUsersPage) missing.push('UsersPage');
+                    
+                    console.error('❌ Missing dependencies:', missing);
+                    showErrorMessage(`فشل تحميل المكونات التالية: ${missing.join(', ')}<br>الرجاء التحقق من وجود الملفات في المسارات الصحيحة.`);
+                }
             }, 100);
         });
+        
+        function showErrorMessage(message) {
+            document.getElementById('loadingOverlay')?.classList.add('hidden');
+            
+            const tbody = document.getElementById('usersTableBody');
+            if (tbody) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="p-8 text-center">
+                            <div class="flex flex-col items-center gap-3 text-red-500">
+                                <i class="fa-solid fa-exclamation-triangle text-4xl"></i>
+                                <p class="text-sm font-bold">${message}</p>
+                                <button onclick="location.reload()" class="mt-4 px-4 py-2 bg-brandRed text-white rounded-lg text-sm font-bold hover:bg-red-700 transition">
+                                    <i class="fa-solid fa-rotate-right ml-2"></i>
+                                    إعادة تحميل الصفحة
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }
+            
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'خطأ في التحميل',
+                    html: message,
+                    confirmButtonText: 'إعادة التحميل',
+                    confirmButtonColor: '#FB4747',
+                    customClass: {
+                        popup: 'dark:bg-slate-800 dark:text-white'
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        location.reload();
+                    }
+                });
+            }
+        }
     </script>
 
 </body>
