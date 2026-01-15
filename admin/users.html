@@ -105,7 +105,7 @@
     <div id="sidebar-container" class="no-print"></div>
     
     <!-- ===== MAIN CONTENT ===== -->
-    <div class="main-content-wrapper md:mr-72 transition-all duration-300 flex flex-col min-h-screen">
+    <div class="main-content-wrapper ltr:md:ml-72 rtl:md:mr-72 transition-all duration-300 flex flex-col min-h-screen">
         
         <!-- Header Container -->
         <div id="header-container" class="no-print"></div>
@@ -333,6 +333,20 @@
                     
                     // Initialize page
                     setTimeout(() => {
+    try {
+        // --- بداية كود الإصلاح: تسجيل دخول تلقائي للمدير ---
+        // إذا لم يكن هناك مستخدم مسجل، قم بتسجيل المدير الافتراضي
+        if (!AppConfig.getCurrentUser() && typeof DataService !== 'undefined') {
+            console.log('⚠️ No user logged in. Auto-logging as Admin...');
+            // استخدام معرف أحد المدراء (مثلاً USR_004 أيمن المغربي أو USR_001 هشام)
+            const defaultUser = DataService.getUserById('USR_004') || DataService.getUsers()[0];
+            if (defaultUser) {
+                AppConfig.setCurrentUser(defaultUser);
+                // إعادة تحميل الصفحة لتطبيق الإعدادات على "الهيدر"
+                location.reload();
+                return; 
+            }
+        }
                         try {
                             console.log('🎯 Initializing UsersPage...');
                             UsersPage.init();
