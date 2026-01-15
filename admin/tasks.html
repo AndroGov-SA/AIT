@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AndroGov | إدارة المهام</title>
+    
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Drag and Drop Library (SortableJS) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brandRed: '#FB4747',
+                        brandBlue: '#4267B2',
+                        brandGray: '#F8FAFC'
+                    },
+                    fontFamily: {
+                        sans: ['Tajawal', 'Inter', 'sans-serif'],
+                        en: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #F8FAFC; color: #1E293B; }
+        .dark body { background-color: #0F172A; color: #F1F5F9; }
+        .column-header { border-bottom: 2px solid; }
+        .task-card { transition: all 0.2s; cursor: grab; }
+        .task-card:active { cursor: grabbing; transform: scale(1.02); }
+        .custom-scroll::-webkit-scrollbar { width: 6px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 4px; }
+    </style>
+</head>
+<body class="font-sans h-screen flex overflow-hidden">
+
+    <!-- Sidebar Placeholder (Will be filled by JS same as admin.html) -->
+    <div id="sidebar-container"></div>
+
+    <div class="flex-1 flex flex-col md:mr-72 transition-all">
+        <!-- Header -->
+        <header class="h-20 flex items-center justify-between px-6 bg-white dark:bg-[#1E293B] border-b border-slate-200 dark:border-slate-700">
+            <div class="flex items-center gap-4">
+                <h2 class="text-xl font-bold flex items-center gap-2">
+                    <i class="fa-solid fa-list-check text-brandBlue"></i> مركز المهام
+                </h2>
+                <div class="flex bg-slate-100 dark:bg-slate-700 rounded-lg p-1">
+                    <button class="px-3 py-1 bg-white dark:bg-slate-600 shadow-sm rounded-md text-xs font-bold transition">لوحة (Kanban)</button>
+                    <button class="px-3 py-1 text-slate-500 dark:text-slate-400 text-xs font-bold hover:text-brandBlue transition">قائمة</button>
+                </div>
+            </div>
+            <button class="bg-brandBlue text-white px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 hover:bg-blue-700 transition">
+                <i class="fa-solid fa-plus"></i> مهمة جديدة
+            </button>
+        </header>
+
+        <!-- Kanban Board -->
+        <main class="flex-1 overflow-x-auto p-6">
+            <div class="flex gap-6 h-full min-w-[1000px]">
+                
+                <!-- Col 1: To Do -->
+                <div class="flex-1 bg-slate-100 dark:bg-slate-800/50 rounded-2xl flex flex-col border border-slate-200 dark:border-slate-700/50">
+                    <div class="p-4 flex justify-between items-center border-b border-slate-200 dark:border-slate-700 border-b-4 border-slate-400">
+                        <span class="font-bold text-sm">قيد الانتظار</span>
+                        <span class="bg-white dark:bg-slate-700 px-2 py-0.5 rounded-full text-xs font-bold shadow-sm">4</span>
+                    </div>
+                    <div id="col-todo" class="flex-1 p-3 space-y-3 overflow-y-auto custom-scroll">
+                        
+                        <!-- Task Card -->
+                        <div class="bg-white dark:bg-slate-700 p-4 rounded-xl shadow-sm border border-slate-200 dark:border-slate-600 task-card group">
+                            <div class="flex justify-between items-start mb-2">
+                                <span class="bg-yellow-100 text-yellow-700 text-[10px] font-bold px-2 py-0.5 rounded">Gov</span>
+                                <button class="text-slate-300 hover:text-slate-500"><i class="fa-solid fa-ellipsis"></i></button>
+                            </div>
+                            <h4 class="font-bold text-sm mb-1 group-hover:text-brandBlue transition">اعتماد سياسة المكافآت</h4>
+                            <p class="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-2">مراجعة المسودة النهائية المرفقة من لجنة الترشيحات.</p>
+                            <div class="mt-3 flex justify-between items-center">
+                                <div class="flex -space-x-2 space-x-reverse">
+                                    <img src="https://ui-avatars.com/api/?name=Hesham&background=random" class="w-6 h-6 rounded-full border-2 border-white dark:border-slate-700" title="هشام">
+                                    <img src="https://ui-avatars.com/api/?name=Ayman&background=random" class="w-6 h-6 rounded-full border-2 border-white dark:border-slate-700" title="أيمن">
+                                </div>
+                                <span class="text-[10px] text-red-500 font-medium"><i class="fa-regular fa-clock"></i> 2 يوم</span>
+                            </div>
+                        </div>
+
+                        <!-- Task Card -->
+                        <div class="bg-white dark:bg-slate-700 p-4 rounded-xl shadow-sm border border-slate-200 dark:border-slate-600 task-card">
+                            <div class="flex justify-between items-start mb-2">
+                                <span class="bg-purple-100 text-purple-700 text-[10px] font-bold px-2 py-0.5 rounded">Legal</span>
+                            </div>
+                            <h4 class="font-bold text-sm mb-1">تحديث السجل التجاري</h4>
+                            <div class="mt-3 flex justify-between items-center">
+                                <div class="w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center text-[10px] text-slate-500">+1</div>
+                                <span class="text-[10px] text-slate-400">Feb 10</span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Col 2: In Progress -->
+                <div class="flex-1 bg-blue-50 dark:bg-blue-900/10 rounded-2xl flex flex-col border border-blue-100 dark:border-slate-700/50">
+                    <div class="p-4 flex justify-between items-center border-b border-blue-200 dark:border-slate-700 border-b-4 border-blue-400">
+                        <span class="font-bold text-sm text-blue-900 dark:text-blue-100">جاري التنفيذ</span>
+                        <span class="bg-white dark:bg-slate-700 px-2 py-0.5 rounded-full text-xs font-bold shadow-sm">2</span>
+                    </div>
+                    <div id="col-progress" class="flex-1 p-3 space-y-3 overflow-y-auto custom-scroll">
+                        
+                        <div class="bg-white dark:bg-slate-700 p-4 rounded-xl shadow-sm border border-slate-200 dark:border-slate-600 task-card border-l-4 border-l-blue-500">
+                            <div class="flex justify-between items-start mb-2">
+                                <span class="bg-blue-100 text-blue-700 text-[10px] font-bold px-2 py-0.5 rounded">Ops</span>
+                            </div>
+                            <h4 class="font-bold text-sm mb-1">مراجعة تقرير الرواتب</h4>
+                            <div class="w-full bg-slate-100 h-1.5 rounded-full mt-2 mb-3">
+                                <div class="bg-blue-500 h-full rounded-full" style="width: 60%"></div>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <img src="https://ui-avatars.com/api/?name=Mansour&background=random" class="w-6 h-6 rounded-full border-2 border-white dark:border-slate-700">
+                                <span class="text-[10px] text-slate-400">جاري المراجعة</span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Col 3: Review -->
+                <div class="flex-1 bg-orange-50 dark:bg-orange-900/10 rounded-2xl flex flex-col border border-orange-100 dark:border-slate-700/50">
+                    <div class="p-4 flex justify-between items-center border-b border-orange-200 dark:border-slate-700 border-b-4 border-orange-400">
+                        <span class="font-bold text-sm text-orange-900 dark:text-orange-100">تحت المراجعة</span>
+                        <span class="bg-white dark:bg-slate-700 px-2 py-0.5 rounded-full text-xs font-bold shadow-sm">1</span>
+                    </div>
+                    <div id="col-review" class="flex-1 p-3 space-y-3 overflow-y-auto custom-scroll">
+                        <div class="bg-white dark:bg-slate-700 p-4 rounded-xl shadow-sm border border-slate-200 dark:border-slate-600 task-card">
+                            <h4 class="font-bold text-sm mb-1">عقود التوظيف الجديدة</h4>
+                            <p class="text-[11px] text-slate-500 dark:text-slate-400">بانتظار توقيع الرئيس التنفيذي</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Col 4: Done -->
+                <div class="flex-1 bg-green-50 dark:bg-green-900/10 rounded-2xl flex flex-col border border-green-100 dark:border-slate-700/50">
+                    <div class="p-4 flex justify-between items-center border-b border-green-200 dark:border-slate-700 border-b-4 border-green-400">
+                        <span class="font-bold text-sm text-green-900 dark:text-green-100">مكتمل</span>
+                        <span class="bg-white dark:bg-slate-700 px-2 py-0.5 rounded-full text-xs font-bold shadow-sm text-green-600">5</span>
+                    </div>
+                    <div id="col-done" class="flex-1 p-3 space-y-3 overflow-y-auto custom-scroll">
+                        <div class="bg-white dark:bg-slate-700 p-4 rounded-xl shadow-sm border border-slate-200 dark:border-slate-600 task-card opacity-60 hover:opacity-100 transition">
+                            <h4 class="font-bold text-sm mb-1 line-through text-slate-400">محضر اجتماع المجلس Q4</h4>
+                            <span class="text-[10px] text-green-600 font-bold"><i class="fa-solid fa-check"></i> تم الأرشفة</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Reusing Sidebar Logic -->
+    <script>
+        // Copying the Layout Logic from admin.html to keep consistency without external JS file
+        (function() {
+            // FIX: Set Ayman Al-Maghrabi as default user
+            let currentUser = JSON.parse(localStorage.getItem('currentUser')) || {
+                id: "USR_004", name: {ar: "أيمن المغربي", en: "Ayman Al-Maghrabi"}, role: "GRCO"
+            };
+            const config = { lang: localStorage.getItem('lang') || 'ar', theme: localStorage.getItem('theme') || 'light' };
+            if (config.theme === 'dark') document.documentElement.classList.add('dark');
+            if (config.lang === 'ar') document.documentElement.dir = 'rtl'; else document.documentElement.dir = 'ltr';
+
+            const menuStructure = [
+                { section: 'main', items: [{ key: 'dash', icon: 'fa-gauge-high', link: 'admin.html' }] },
+                { section: 'comm', items: [{ key: 'chat', icon: 'fa-comments', link: '#' }, { key: 'circulars', icon: 'fa-bullhorn', link: '#' }] },
+                { section: 'gov', items: [{ key: 'ga', icon: 'fa-users-rectangle', link: '#' }, { key: 'board', icon: 'fa-building-columns', link: '#' }, { key: 'committees', icon: 'fa-people-group', link: '#' }] },
+                { section: 'ops', items: [{ key: 'tasks', icon: 'fa-list-check', link: 'tasks.html' }, { key: 'doa', icon: 'fa-sitemap', link: '#' }, { key: 'policies', icon: 'fa-book-open', link: '#' }] },
+            ];
+            
+            const layoutTrans = {
+                ar: { sysVer: "Enterprise v4.5", sections: { main: "الرئيسية", comm: "التواصل", gov: "الحوكمة", ops: "التشغيل" }, menu: { dash: "لوحة القيادة", chat: "الدردشة", circulars: "التعاميم", ga: "الجمعيات", board: "المجلس", committees: "اللجان", tasks: "إدارة المهام", doa: "الصلاحيات", policies: "السياسات" } },
+                en: { sysVer: "Enterprise v4.5", sections: { main: "Main", comm: "Comms", gov: "Gov", ops: "Ops" }, menu: { dash: "Dashboard", chat: "Chat", circulars: "Circulars", ga: "GA", board: "Board", committees: "Committees", tasks: "Task Manager", doa: "DOA", policies: "Policies" } }
+            };
+
+            const dict = layoutTrans[config.lang];
+            let menuHTML = '';
+            menuStructure.forEach(group => {
+                menuHTML += `<div class="px-3 mt-6 mb-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider">${dict.sections[group.section]}</div>`;
+                group.items.forEach(item => {
+                    const isActive = window.location.href.includes(item.link);
+                    const activeClass = isActive ? "bg-brandRed text-white shadow-md shadow-red-500/20" : "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-brandRed";
+                    menuHTML += `<a href="${item.link}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${activeClass}"><div class="w-6 text-center"><i class="fa-solid ${item.icon}"></i></div><span class="flex-1 truncate">${dict.menu[item.key]}</span></a>`;
+                });
+            });
+
+            // Ensure avatar url
+            if(!currentUser.avatarUrl) currentUser.avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.name.ar)}&background=FB4747&color=fff&bold=true`;
+
+            document.getElementById('sidebar-container').innerHTML = `
+                <aside class="fixed top-0 ${config.lang === 'ar' ? 'right-0 border-l' : 'left-0 border-r'} z-50 h-screen w-72 flex-col hidden md:flex bg-white dark:bg-[#0F172A] border-slate-200 dark:border-slate-800 transition-all duration-300">
+                    <div class="h-20 flex items-center px-6 border-b border-slate-100 dark:border-slate-800"><div class="flex items-center gap-3 w-full"><div class="w-10 h-10 rounded-xl bg-brandRed text-white flex items-center justify-center font-bold text-xl shadow-lg shadow-red-500/30">A</div><div class="overflow-hidden"><h1 class="font-bold text-sm text-slate-800 dark:text-white font-sans truncate">AndroGov</h1><p class="text-[10px] text-slate-500 uppercase tracking-widest truncate">${dict.sysVer}</p></div></div></div>
+                    
+                    <!-- User Profile -->
+                    <div class="p-4">
+                        <div class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700">
+                            <img src="${currentUser.avatarUrl}" class="w-10 h-10 rounded-full border-2 border-white dark:border-slate-600 object-cover shrink-0">
+                            <div class="overflow-hidden flex-1 min-w-0">
+                                <p class="text-sm font-bold text-slate-800 dark:text-white truncate">${currentUser.name.ar}</p>
+                                <p class="text-[10px] text-brandRed font-medium truncate">${currentUser.role}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <nav class="flex-1 overflow-y-auto px-3 py-2 custom-scroll space-y-0.5">${menuHTML}</nav>
+                </aside>`;
+        })();
+
+        // Init Sortable JS for Drag and Drop
+        document.addEventListener('DOMContentLoaded', () => {
+            ['col-todo', 'col-progress', 'col-review', 'col-done'].forEach(id => {
+                new Sortable(document.getElementById(id), {
+                    group: 'shared', // set both lists to same group
+                    animation: 150,
+                    ghostClass: 'bg-slate-100'
+                });
+            });
+        });
+    </script>
+</body>
+</html>
