@@ -329,7 +329,7 @@ const CompanyPolicy = {
     { id: "USR_005", name: { ar: "منصور اليامي", en: "Mansour Al-Yami" }, title: { ar: "المدير الإداري وعضو المجلس", en: "CAO / Board Member" }, dept: "DEP_HR", role: "cao", additionalRoles: ["board_member"], email: "myami@androomeda.com", isExecutive: true, isShareholder: true },
     
     // Managers & Directors
-    { id: "USR_004", name: { ar: "أيمن المغربي", en: "Ayman Al-Maghrabi" }, title: { ar: "مسؤول الحوكمة والمخاطر والالتزام / أمين سر المجلس", en: "GRCO / Board Secretary" }, dept: "DEP_GRC", role: "grc_officer", email: "amaghrabi@androomeda.com", isExecutive: false, avatar: "photo/grc.png" },
+    { id: "USR_004", name: { ar: "أيمن المغربي", en: "Ayman Al-Maghrabi" }, title: { ar: "مسؤول الحوكمة والمخاطر والالتزام / أمين سر المجلس", en: "GRCO / Board Secretary" }, dept: "DEP_GRC", role: "grc_officer", email: "amaghrabi@androomeda.com", isExecutive: false, avatar: "../photo/grc.png" },
     { id: "USR_020", name: { ar: "محمد أختر", en: "Muhammad Akhtar" }, title: { ar: "مدير التطوير", en: "Director of Development" }, dept: "DEP_TECH", role: "director", email: "makhtar@androomeda.com" },
     { id: "USR_009", name: { ar: "مشاعل الهديان", en: "Meshail Al-Hadyan" }, title: { ar: "مسؤول الأمن السيبراني الوطني", en: "NCSO" }, dept: "DEP_TECH", role: "ncso", email: "malhadyan@androomeda.com" },
     { id: "USR_007", name: { ar: "نواف الصحابي", en: "Nawaf Al-Sahabi" }, title: { ar: "مدير حسابات العملاء", en: "Customer Accounts Manager" }, dept: "DEP_SUPPORT", role: "manager", email: "nalsahabi@androomeda.com" },
