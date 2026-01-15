@@ -159,32 +159,32 @@
                 viewer: { label: {ar: "زائر/مدقق", en: "Viewer/Auditor"}, desc: {ar: "صلاحيات القراءة فقط", en: "Read-only access"}, inherits: null }
         };
 
-        const PERMISSIONS = {
-                financial: {
+        const PERMISSIONS = [
+                {
                     title: {ar: "الصلاحيات المالية", en: "Financial Permissions"},
                     items: [
-                        { key: "approve_po", label: {ar: "اعتماد أوامر الشراء", en: "Approve POs"}, roles: ["ceo", "cfo", "manager"] },
-                        { key: "approve_payroll", label: {ar: "اعتماد الرواتب", en: "Approve Payroll"}, roles: ["ceo", "cfo"] },
-                        { key: "petty_cash", label: {ar: "صرف عهدة نقدية", en: "Petty Cash"}, roles: ["manager", "cfo"] },
-                        { key: "view_financials", label: {ar: "الاطلاع على القوائم المالية", en: "View Financials"}, roles: ["chairman", "board_member", "shareholder", "ceo", "cfo"] }
+                        { key: "approve_po", l: {ar: "اعتماد أوامر الشراء", en: "Approve POs"}, r: ["ceo", "cfo", "manager"] },
+                        { key: "approve_payroll", l: {ar: "اعتماد الرواتب", en: "Approve Payroll"}, r: ["ceo", "cfo"] },
+                        { key: "petty_cash", l: {ar: "صرف عهدة نقدية", en: "Petty Cash"}, r: ["manager", "cfo"] },
+                        { key: "view_financials", l: {ar: "الاطلاع على القوائم المالية", en: "View Financials"}, r: ["chairman", "board_member", "shareholder", "ceo", "cfo"] }
                     ]
                 },
-                legal: {
+                {
                     title: {ar: "الشؤون القانونية والحكومية", en: "Legal & Gov Affairs"},
                     items: [
-                        { key: "sign_contracts", label: {ar: "توقيع العقود", en: "Sign Contracts"}, roles: ["chairman", "ceo"] },
-                        { key: "govt_rep", label: {ar: "التمثيل الحكومي", en: "Gov Representation"}, roles: ["ceo", "chairman", "manager"] }
+                        { key: "sign_contracts", l: {ar: "توقيع العقود", en: "Sign Contracts"}, r: ["chairman", "ceo"] },
+                        { key: "govt_rep", l: {ar: "التمثيل الحكومي", en: "Gov Representation"}, r: ["ceo", "chairman", "manager"] }
                     ]
                 },
-                system: {
+                {
                     title: {ar: "إدارة النظام والمحتوى", en: "System & Content"},
                     items: [
-                        { key: "edit_policies", label: {ar: "تعديل السياسات", en: "Edit Policies"}, roles: ["sys_admin"] },
-                        { key: "publish_content", label: {ar: "نشر تعاميم/أخبار", en: "Publish Content"}, roles: ["sys_admin", "ceo"] },
-                        { key: "view_confidential", label: {ar: "عرض وثائق سرية", en: "View Confidential"}, roles: ["chairman", "ceo", "cfo", "board_member"] }
+                        { key: "edit_policies", l: {ar: "تعديل السياسات", en: "Edit Policies"}, r: ["sys_admin"] },
+                        { key: "publish_content", l: {ar: "نشر تعاميم/أخبار", en: "Publish Content"}, r: ["sys_admin", "ceo"] },
+                        { key: "view_confidential", l: {ar: "عرض وثائق سرية", en: "View Confidential"}, r: ["chairman", "ceo", "cfo", "board_member"] }
                     ]
                 }
-            }
+            ];
 
         let allUsers = [];
 
