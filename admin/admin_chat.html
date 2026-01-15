@@ -26,7 +26,7 @@
 
     <div id="sidebar-container"></div>
     
-    <div class="main-content-wrapper md:mr-72 transition-all duration-300 flex flex-col h-screen">
+    <div class="main-content-wrapper ltr:md:ml-72 rtl:md:mr-72 transition-all duration-300 flex flex-col min-h-screen">
         <div id="header-container"></div>
 
         <main class="flex-1 flex overflow-hidden p-4 gap-4">
@@ -142,8 +142,52 @@
         </main>
     </div>
 
-    <script src="layout.js"></script>
-    <script src="bot.js"></script>
+    <script src="data/company_policy.js"></script>
+    
+    <script src="js/core/config.js"></script>
+    <script src="js/core/i18n.js"></script>
+    
+    <script src="js/helpers/policy-helpers.js"></script>
+    
+    <script src="js/services/data-service.js"></script>
+    
+    <script src="js/components/role-switcher.js"></script>
+    <script src="js/components/layout.js"></script>
+    <script src="js/components/bot.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // التحقق من تحميل النظام
+            const checkSystem = setInterval(() => {
+                if (typeof Layout !== 'undefined' && typeof AppConfig !== 'undefined' && typeof DataService !== 'undefined') {
+                    clearInterval(checkSystem);
+                    
+                    // --- إصلاح تسجيل الدخول التلقائي ---
+                    if (!AppConfig.getCurrentUser()) {
+                        console.log('⚠️ No user found. Auto-logging as Admin...');
+                        // حاول جلب المستخدم الافتراضي (مدير النظام)
+                        const defaultUser = DataService.getUserById('USR_004') || DataService.getUsers()[0];
+                        if (defaultUser) {
+                            AppConfig.setCurrentUser(defaultUser);
+                            location.reload();
+                            return;
+                        }
+                    }
+
+                    // تهيئة التخطيط العام
+                    Layout.init();
+                    
+                    // إخفاء شاشة التحميل إن وجدت
+                    document.getElementById('loadingOverlay')?.classList.add('hidden');
+                    
+                    // تشغيل أي وظائف خاصة بالصفحة الحالية
+                    if (typeof initPage === 'function') {
+                        initPage();
+                    }
+                }
+            }, 50);
+        });
+    </script>
     <script>
         function sendMsg() {
             const input = document.getElementById('msgInput');
