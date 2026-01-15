@@ -306,24 +306,28 @@ const CompanyPolicy = {
       { context: "shareholders", role: "investor_relations", label: { ar: "علاقات المساهمين", en: "Investor Relations" } },
       { context: "governance", role: "grc_officer", label: { ar: "الحوكمة والالتزام", en: "GRC" } }
     ]},
-    // أحمد السحيباني - عضو مجلس + عضو لجنة مراجعة
-    { userId: "BRD_003", contexts: [
-      { context: "board", role: "board_member", label: { ar: "مجلس الإدارة", en: "Board of Directors" }, isPrimary: true },
-      { context: "audit_committee", role: "audit_committee_member", label: { ar: "لجنة المراجعة", en: "Audit Committee" } }
-    ]},
-    // هشام السحيباني - رئيس تنفيذي + نائب رئيس مجلس
+    // هشام السحيباني - رئيس تنفيذي + نائب رئيس مجلس + مساهم
     { userId: "USR_001", contexts: [
       { context: "executive", role: "ceo", label: { ar: "الإدارة التنفيذية", en: "Executive Management" }, isPrimary: true },
-      { context: "board", role: "vice_chairman", label: { ar: "مجلس الإدارة", en: "Board of Directors" } }
+      { context: "board", role: "vice_chairman", label: { ar: "مجلس الإدارة", en: "Board of Directors" } },
+      { context: "shareholders", role: "shareholder", label: { ar: "المساهمين", en: "Shareholders" }, shareholderId: "SH_002" }
     ]},
-    // منصور اليامي - مدير إداري + عضو مجلس
+    // عبدالله الحواس - رئيس مجلس + مساهم
+    { userId: "USR_000", contexts: [
+      { context: "board", role: "chairman", label: { ar: "مجلس الإدارة", en: "Board of Directors" }, isPrimary: true },
+      { context: "shareholders", role: "shareholder", label: { ar: "المساهمين", en: "Shareholders" }, shareholderId: "SH_009" }
+    ]},
+    // منصور اليامي - مدير إداري + عضو مجلس + مساهم
     { userId: "USR_005", contexts: [
       { context: "executive", role: "manager", label: { ar: "الإدارة التنفيذية", en: "Executive Management" }, isPrimary: true },
-      { context: "board", role: "board_member", label: { ar: "مجلس الإدارة", en: "Board of Directors" } }
+      { context: "board", role: "board_member", label: { ar: "مجلس الإدارة", en: "Board of Directors" } },
+      { context: "shareholders", role: "shareholder", label: { ar: "المساهمين", en: "Shareholders" }, shareholderId: "SH_005" }
     ]},
-    // عبدالله الحواس - رئيس مجلس
-    { userId: "USR_000", contexts: [
-      { context: "board", role: "chairman", label: { ar: "مجلس الإدارة", en: "Board of Directors" }, isPrimary: true }
+    // أحمد السحيباني - عضو مجلس + عضو لجنة مراجعة + مساهم
+    { userId: "BRD_003", contexts: [
+      { context: "board", role: "board_member", label: { ar: "مجلس الإدارة", en: "Board of Directors" }, isPrimary: true },
+      { context: "audit_committee", role: "audit_committee_member", label: { ar: "لجنة المراجعة", en: "Audit Committee" } },
+      { context: "shareholders", role: "shareholder", label: { ar: "المساهمين", en: "Shareholders" }, shareholderId: "SH_011" }
     ]},
     // محمد العنزي - رئيس لجنة مراجعة
     { userId: "COMM_01", contexts: [
@@ -527,6 +531,44 @@ const PolicyHelpers = {
     const contexts = this.getUserContexts(userId);
     const match = contexts.find(c => c.context === pageContext);
     return match || (contexts.length > 0 ? contexts[0] : null);
+  },
+
+  /**
+   * Get shareholder data if user is a shareholder
+   * @param {string} userId
+   * @returns {Object|null} Shareholder data with shares, percent, etc.
+   */
+  getShareholderData(userId) {
+    const contexts = this.getUserContexts(userId);
+    const shareholderContext = contexts.find(c => c.role === 'shareholder');
+    
+    if (!shareholderContext || !shareholderContext.shareholderId) return null;
+    
+    return CompanyPolicy.shareholders.find(s => s.id === shareholderContext.shareholderId) || null;
+  },
+
+  /**
+   * Check if user is a shareholder
+   * @param {string} userId
+   * @returns {boolean}
+   */
+  isShareholder(userId) {
+    return this.getShareholderData(userId) !== null;
+  },
+
+  /**
+   * Get all users who are shareholders (with their user + shareholder data combined)
+   * @returns {Array}
+   */
+  getShareholderUsers() {
+    return CompanyPolicy.userRolesMap
+      .filter(mapping => mapping.contexts.some(c => c.role === 'shareholder'))
+      .map(mapping => {
+        const user = this.getUserById(mapping.userId);
+        const shareholderContext = mapping.contexts.find(c => c.role === 'shareholder');
+        const shareholderData = CompanyPolicy.shareholders.find(s => s.id === shareholderContext?.shareholderId);
+        return { ...user, shareholderData };
+      });
   },
 
   /**
