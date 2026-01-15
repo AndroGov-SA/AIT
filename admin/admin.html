@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#FB4747">
     <title data-i18n="pageTitle">AndroGov | لوحة القيادة</title>
     
     <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Tailwind & Charts -->
+    <!-- Libraries -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -28,38 +27,63 @@
                     fontFamily: {
                         sans: ['Tajawal', 'Inter', 'sans-serif'],
                         en: ['Inter', 'sans-serif']
+                    },
+                    animation: {
+                        'bounce-slow': 'bounce 3s infinite',
                     }
                 }
             }
         }
     </script>
+
+    <!-- تنسيقات خاصة بالبوت فقط -->
     <style>
-        @media print { .no-print { display: none !important; } }
-        body { transition: opacity 0.2s ease-in-out; }
         .custom-scroll::-webkit-scrollbar { width: 6px; }
-        .custom-scroll::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 4px; }
+        .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+        .custom-scroll::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 20px; }
         .dark .custom-scroll::-webkit-scrollbar-thumb { background-color: #475569; }
-        
+
         /* Chatbot Animations */
-        .chat-window-anim { transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); transform-origin: bottom left; }
-        .chat-bubble { max-width: 85%; padding: 10px 14px; border-radius: 12px; font-size: 0.9rem; line-height: 1.5; word-wrap: break-word; }
+        .chat-window-anim {
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            transform-origin: bottom left;
+        }
+        .chat-bubble {
+            max-width: 85%;
+            padding: 10px 14px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            word-wrap: break-word;
+        }
         .chat-bubble.bot { background-color: #f1f5f9; color: #334155; border-bottom-right-radius: 2px; }
         .dark .chat-bubble.bot { background-color: #334155; color: #f8fafc; }
         .chat-bubble.user { background-color: #4267B2; color: white; border-bottom-left-radius: 2px; margin-right: auto; }
+        
+        .typing-indicator span {
+            display: inline-block; width: 6px; height: 6px; background-color: #94a3b8; border-radius: 50%;
+            animation: typing 1.4s infinite ease-in-out both; margin: 0 1px;
+        }
+        .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
+        .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes typing { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
     </style>
 </head>
 <body class="bg-brandGray dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300">
 
-    <!-- 1. Layout Containers (Will be populated by Embedded Layout Engine) -->
-    <div id="sidebar-container" class="no-print"></div>
-    
-    <div class="main-content-wrapper md:mr-72 transition-all duration-300 flex flex-col min-h-screen">
-        <div id="header-container" class="no-print"></div>
+    <!-- Sidebar Container (Managed by layout.js) -->
+    <div id="sidebar-container"></div>
 
-        <!-- 2. Main Content (Dashboard Specific) -->
+    <!-- Main Content -->
+    <div class="main-content-wrapper md:mr-72 transition-all duration-300 flex flex-col min-h-screen">
+        
+        <!-- Header (Managed by layout.js) -->
+        <div id="header-container"></div>
+
+        <!-- Body Content -->
         <main class="p-6 space-y-6">
             
-            <!-- 2.1 Urgent Alerts -->
+            <!-- 1. التنبيهات العاجلة -->
             <div class="bg-white dark:bg-slate-800 rounded-2xl p-1 border-r-4 border-orange-500 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4 overflow-hidden">
                 <div class="p-4 flex items-center gap-4">
                     <div class="w-12 h-12 rounded-full bg-orange-100 dark:bg-orange-500/20 text-orange-600 dark:text-orange-400 flex items-center justify-center text-xl shrink-0">
@@ -80,7 +104,7 @@
                 </div>
             </div>
 
-            <!-- 2.2 KPIs Grid -->
+            <!-- 2. المؤشرات الرئيسية (KPIs) -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <!-- Capital -->
                 <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 hover:shadow-md transition">
@@ -98,12 +122,12 @@
                     </div>
                 </div>
 
-                <!-- Shareholders Count -->
+                <!-- Shareholders -->
                 <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 hover:shadow-md transition">
                     <div class="flex justify-between items-start">
                         <div>
                             <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase" data-i18n="kpiShareholders">المساهمين</p>
-                            <h3 class="text-2xl font-bold mt-1 font-en" id="shareholder-count">-- <span class="text-xs font-sans text-slate-400" data-i18n="member">عضو</span></h3>
+                            <h3 class="text-2xl font-bold mt-1 font-en">11 <span class="text-xs font-sans text-slate-400" data-i18n="member">عضو</span></h3>
                         </div>
                         <div class="w-10 h-10 rounded-xl bg-purple-50 dark:bg-purple-900/30 text-purple-600 flex items-center justify-center">
                             <i class="fa-solid fa-users"></i>
@@ -114,20 +138,20 @@
                     </div>
                 </div>
 
-                <!-- Employees Count -->
+                <!-- Pending Governance -->
                 <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 hover:shadow-md transition">
                     <div class="flex justify-between items-start">
                         <div>
-                            <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase" data-i18n="kpiStaff">الموظفين النشطين</p>
-                            <h3 class="text-2xl font-bold mt-1 font-en text-brandRed" id="staff-count">--</h3>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase" data-i18n="kpiGov">قرارات بالتمرير</p>
+                            <h3 class="text-2xl font-bold mt-1 font-en text-brandRed">2 <span class="text-xs font-sans text-slate-400" data-i18n="pending">قيد التوقيع</span></h3>
                         </div>
                         <div class="w-10 h-10 rounded-xl bg-red-50 dark:bg-red-900/30 text-brandRed flex items-center justify-center">
-                            <i class="fa-solid fa-user-tie"></i>
+                            <i class="fa-solid fa-signature"></i>
                         </div>
                     </div>
                     <div class="mt-4 flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400">
-                        <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-                        <span data-i18n="systemOnline">النظام يعمل بكفاءة</span>
+                        <span class="w-2 h-2 rounded-full bg-brandRed animate-pulse"></span>
+                        <span data-i18n="waitingFor">بانتظار: هشام السحيباني</span>
                     </div>
                 </div>
 
@@ -148,15 +172,16 @@
                 </div>
             </div>
 
-            <!-- 2.3 Charts & Lists -->
+            <!-- 3. لوحات المعلومات التفصيلية -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 
-                <!-- Ownership Structure -->
+                <!-- هيكل الملكية -->
                 <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
                     <div class="flex justify-between items-center mb-6">
                         <h3 class="font-bold text-slate-700 dark:text-white flex items-center gap-2">
                             <i class="fa-solid fa-chart-pie text-brandBlue"></i> <span data-i18n="chartTitle">هيكل الملكية</span>
                         </h3>
+                        <button class="text-xs text-slate-400 hover:text-brandBlue"><i class="fa-solid fa-ellipsis"></i></button>
                     </div>
                     <div class="h-48 relative flex justify-center">
                         <canvas id="ownershipChart"></canvas>
@@ -164,8 +189,52 @@
                     <div class="mt-6 space-y-3" id="chartLegend"></div>
                 </div>
 
-                <!-- Tasks & Operations -->
-                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 flex flex-col lg:col-span-2">
+                <!-- اللجان والحوكمة -->
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <h3 class="font-bold text-slate-700 dark:text-white mb-6 flex items-center gap-2">
+                        <i class="fa-solid fa-users-gear text-purple-500"></i> <span data-i18n="commTitle">اللجان والمجلس</span>
+                    </h3>
+                    
+                    <div class="space-y-4">
+                        <div class="p-4 bg-slate-50 dark:bg-slate-700/50 rounded-xl border border-slate-100 dark:border-slate-700">
+                            <div class="flex justify-between items-center mb-2">
+                                <h4 class="font-bold text-sm text-slate-800 dark:text-white" data-i18n="auditComm">لجنة المراجعة</h4>
+                                <span class="bg-green-100 text-green-700 text-[10px] px-2 py-0.5 rounded-full font-bold" data-i18n="newCycle">دورة جديدة</span>
+                            </div>
+                            <div class="space-y-2 mt-3">
+                                <div class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+                                    <img src="https://ui-avatars.com/api/?name=M&background=random" class="w-5 h-5 rounded-full">
+                                    <span data-i18n="commMember1">محمد بن منصور العنزي (رئيس)</span>
+                                </div>
+                                <div class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+                                    <img src="https://ui-avatars.com/api/?name=A&background=random" class="w-5 h-5 rounded-full">
+                                    <span data-i18n="commMember2">أحمد بن سلطان السحيباني (عضو)</span>
+                                </div>
+                                <div class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+                                    <img src="https://ui-avatars.com/api/?name=A&background=random" class="w-5 h-5 rounded-full">
+                                    <span data-i18n="commMember3">عادل بن عدنان سعسع (رئيس)</span>
+                                </div>
+                            </div>
+                            <div class="mt-3 pt-3 border-t border-slate-200 dark:border-slate-600 flex justify-between text-[10px]">
+                                <span class="text-slate-400" data-i18n="lastMeeting">آخر اجتماع: 22/12/2025</span>
+                                <a href="#" class="text-brandBlue hover:underline" data-i18n="minutes">المحضر</a>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between p-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded bg-purple-100 text-purple-600 flex items-center justify-center text-xs"><i class="fa-solid fa-user-tie"></i></div>
+                                <div>
+                                    <p class="text-xs font-bold dark:text-white" data-i18n="boardSec">أمين السر</p>
+                                    <p class="text-[10px] text-slate-400" data-i18n="secName">أيمن بن علي المغربي</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- العمليات والمهام -->
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 flex flex-col">
                     <h3 class="font-bold text-slate-700 dark:text-white mb-6 flex items-center gap-2">
                         <i class="fa-solid fa-list-check text-green-500"></i> <span data-i18n="opsTitle">المهام التشغيلية</span>
                     </h3>
@@ -200,22 +269,22 @@
                 </div>
             </div>
 
-            <!-- 2.4 Live Audit Log -->
+            <!-- 4. سجل النظام المباشر -->
             <div class="bg-slate-900 rounded-2xl p-5 shadow-lg text-slate-300 font-mono text-xs border border-slate-800">
                 <div class="flex justify-between items-center mb-3 border-b border-slate-700 pb-3">
                     <span class="flex items-center gap-2 font-bold text-white"><i class="fa-solid fa-terminal text-brandRed"></i> <span data-i18n="auditTitle">سجل النظام المباشر</span></span>
                     <span class="flex items-center gap-2 text-green-400"><span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span> Live</span>
                 </div>
                 <div class="space-y-2 h-32 overflow-y-auto custom-scroll" id="audit-log-container">
-                    <!-- Logs via JS -->
+                    <!-- Logs will be populated via JS -->
                 </div>
             </div>
-
         </main>
     </div>
 
     <!-- AI Chatbot Widget -->
     <div id="andro-bot-container" class="fixed bottom-6 left-6 z-50 flex flex-col items-start gap-4" dir="rtl">
+        <!-- Chat Window -->
         <div id="chat-window" class="hidden bg-white dark:bg-slate-800 w-80 md:w-96 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden flex flex-col chat-window-anim" style="height: 500px; max-height: 70vh;">
             <div class="bg-brandBlue p-4 flex justify-between items-center text-white">
                 <div class="flex items-center gap-3">
@@ -225,221 +294,33 @@
                 <button id="close-chat-btn" class="text-white/80 hover:text-white transition"><i class="fa-solid fa-times"></i></button>
             </div>
             <div id="chat-body" class="flex-1 p-4 bg-slate-50 dark:bg-slate-900/50 overflow-y-auto custom-scroll space-y-3 flex flex-col">
-                <div class="chat-bubble bot">مرحباً بك 👋<br>أنا هنا لمساعدتك. اسألني عن حالة النظام أو المهام المعلقة.</div>
+                <div class="chat-bubble bot">مرحباً بك في AndroGov 👋<br>أنا مساعدك الذكي. يمكنني الإجابة عن استفسارات الحوكمة، نسب الملكية، أو المهام العاجلة.</div>
+                <div class="flex flex-wrap gap-2 mt-2" id="suggestions">
+                    <button class="text-xs bg-white dark:bg-slate-700 border border-brandBlue/30 text-brandBlue dark:text-blue-300 px-3 py-1.5 rounded-full hover:bg-blue-50 transition suggestion-btn" data-q="ما هو النصاب القانوني؟">ما هو النصاب؟</button>
+                    <button class="text-xs bg-white dark:bg-slate-700 border border-brandBlue/30 text-brandBlue dark:text-blue-300 px-3 py-1.5 rounded-full hover:bg-blue-50 transition suggestion-btn" data-q="من هم كبار المساهمين؟">كبار المساهمين</button>
+                    <button class="text-xs bg-white dark:bg-slate-700 border border-brandBlue/30 text-brandBlue dark:text-blue-300 px-3 py-1.5 rounded-full hover:bg-blue-50 transition suggestion-btn" data-q="المهام العاجلة">المهام العاجلة</button>
+                </div>
             </div>
             <div class="p-3 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 flex gap-2">
-                <input type="text" id="chat-input" placeholder="اكتب..." class="flex-1 bg-slate-100 dark:bg-slate-900 border-none rounded-lg text-sm px-4 py-2 focus:ring-2 focus:ring-brandBlue outline-none dark:text-white">
+                <input type="text" id="chat-input" placeholder="اكتب استفسارك هنا..." class="flex-1 bg-slate-100 dark:bg-slate-900 border-none rounded-lg text-sm px-4 py-2 focus:ring-2 focus:ring-brandBlue outline-none dark:text-white">
                 <button id="send-btn" class="w-10 h-10 rounded-lg bg-brandBlue text-white hover:bg-blue-700 transition flex items-center justify-center"><i class="fa-solid fa-paper-plane"></i></button>
             </div>
         </div>
+        <!-- Floating Button -->
         <button id="chat-fab" class="w-14 h-14 bg-brandBlue hover:bg-blue-700 text-white rounded-full shadow-lg shadow-blue-600/30 flex items-center justify-center text-2xl transition-all transform hover:scale-110 active:scale-95 animate-bounce-slow">
             <i class="fa-solid fa-comment-dots"></i>
             <span class="absolute top-0 right-0 w-4 h-4 bg-brandRed rounded-full border-2 border-white dark:border-slate-900"></span>
         </button>
     </div>
 
-    <!-- 3. Embedded Scripts -->
+    <!-- استدعاء ملف Layout الأساسي (يجب أن يكون في نفس المجلد) -->
+    <script src="layout.js"></script>
+    
+    <!-- استدعاء ملف البوت الجديد -->
+    <script src="bot.js"></script>
+
     <script>
-        // ==========================================
-        // A. DATA REPOSITORY (EMBEDDED FULL)
-        // ==========================================
-        const SYSTEM_DATA = {
-            users: [
-                { id: "USR_000", name: { ar: "عبدالله الحواس", en: "Abdullah Al-Hawas" }, title: { ar: "رئيس مجلس الإدارة", en: "Chairman of the Board" }, dept: "DEP_EXEC", role_ref: "chairman", email: "amh400@gmail.com" },
-                { id: "USR_001", name: { ar: "هشام السحيباني", en: "Hesham Al-Sohaibani" }, title: { ar: "الرئيس التنفيذي ونائب الرئيس", en: "CEO & Board Vice Chairman" }, dept: "DEP_EXEC", role_ref: "ceo", email: "hesham@androomeda.com" },
-                { id: "USR_002", name: { ar: "محمد البخيتي", en: "Mohammed Al-Bukheiti" }, title: { ar: "المدير المالي", en: "Chief Financial Officer (CFO)" }, dept: "DEP_FIN", role_ref: "cfo", email: "mtahir@androomeda.com" },
-                { id: "USR_003", name: { ar: "هادي أحمد", en: "Hadi Ahmed" }, title: { ar: "منسق المشتريات والدعم", en: "Purchasing Coordinator" }, dept: "DEP_PROC", role_ref: "employee", email: "hadi@androomeda.com" },
-                { id: "USR_004", name: { ar: "أيمن المغربي", en: "Ayman Al-Maghrabi" }, title: { ar: "مسؤول الحوكمة / أمين السر", en: "GRCO / Board Secretary" }, dept: "DEP_COMP", role_ref: "manager", email: "amaghrabi@androomeda.com" },
-                { id: "USR_005", name: { ar: "منصور اليامي", en: "Mansour Al-Yami" }, title: { ar: "المدير الإداري / عضو مجلس", en: "CAO / Board Member" }, dept: "DEP_HR", role_ref: "manager", email: "myami@androomeda.com" },
-                { id: "USR_006", name: { ar: "د. وعد حسين", en: "Dr. Waad Hussein" }, title: { ar: "المشرف الطبي", en: "Medical Supervisor" }, dept: "DEP_MED", role_ref: "manager", email: "whussain@androomeda.com" },
-                { id: "USR_007", name: { ar: "نواف السحابي", en: "Nawaf Al-Sahabi" }, title: { ar: "مدير حسابات العملاء", en: "Customer Accounts Manager" }, dept: "DEP_CS", role_ref: "team_lead", email: "nalsahabi@androomeda.com" },
-                { id: "USR_008", name: { ar: "الحسين الحميدي", en: "Al-Hussain Al-Humaidi" }, title: { ar: "أخصائي دعم فني", en: "Technical Support Specialist" }, dept: "DEP_CS", role_ref: "employee", email: "alhussien@androomeda.com" },
-                { id: "USR_009", name: { ar: "مشاعل الهذيان", en: "Meshail Al-Hadyan" }, title: { ar: "مسؤول الأمن السيبراني", en: "NCSO" }, dept: "DEP_SEC", role_ref: "manager", email: "malhadyan@androomeda.com" },
-                { id: "USR_010", name: { ar: "مها الحزان", en: "Maha Al-Hazzan" }, title: { ar: "أخصائي تسويق رقمي", en: "Digital Marketing Specialist" }, dept: "DEP_MKT", role_ref: "employee", email: "mhizan@androomeda.com" },
-                { id: "USR_011", name: { ar: "شاغر", en: "Vacant" }, title: { ar: "مدير المبيعات", en: "Sales Manager" }, dept: "DEP_SALES", role_ref: "manager", email: "SalesManager@androomeda.com", status: "inactive" },
-                { id: "USR_014", name: { ar: "عبدالله الجبير", en: "Abdullah Al-Jubeir" }, title: { ar: "دعم إداري", en: "Office Support" }, dept: "DEP_HR", role_ref: "employee", email: "Ajubeir@androomeda.com" },
-                { id: "USR_015", name: { ar: "رند الحوراني", en: "Rand Al-Hourani" }, title: { ar: "قائد الفريق التقني", en: "Technical Team Lead" }, dept: "DEP_TECH", role_ref: "team_lead", email: "Rhourani@androomeda.com" },
-                { id: "USR_020", name: { ar: "محمد أختر", en: "Muhammad Akhtar" }, title: { ar: "مدير التطوير", en: "Director of Development" }, dept: "DEP_TECH", role_ref: "manager", email: "Makhtar@androomeda.com" },
-                { id: "USR_023", name: { ar: "فريق التطوير", en: "Software Developers Team" }, title: { ar: "فريق البرمجيات", en: "Software Developers Team" }, dept: "DEP_TECH", role_ref: "employee", email: "SDT@androomeda.com" },
-                { id: "COMM_01", name: { ar: "محمد العنزي", en: "Mohammed Al-Enezi" }, title: { ar: "رئيس لجنة المراجعة", en: "Audit Committee Chairman" }, dept: "DEP_AUDIT", role_ref: "board_member", email: "mohammedmansour.socpa@gmail.com" },
-                { id: "COMM_02", name: { ar: "عادل ساسا", en: "Adel Sasa" }, title: { ar: "عضو لجنة المراجعة", en: "Audit Committee Member" }, dept: "DEP_AUDIT", role_ref: "viewer", email: "adel.sasa1@gmail.com" },
-                { id: "BRD_003", name: { ar: "أحمد السحيباني", en: "Ahmed Al-Suhaibani" }, title: { ar: "عضو مجلس إدارة ولجنة", en: "Board & Audit Member" }, dept: "DEP_EXEC", role_ref: "board_member", email: "a.s.alsuhaibani@microtec.com.sa" },
-                { id: "AUD_INT", name: { ar: "المدقق الداخلي", en: "Internal Auditor" }, title: { ar: "المدقق الداخلي", en: "Internal Auditor" }, dept: "DEP_AUDIT", role_ref: "manager", email: "InternalAudit@androomeda.com" },
-                { id: "AUD_EXT", name: { ar: "المدقق الخارجي", en: "External Auditor" }, title: { ar: "المدقق الخارجي (KPMG/EY)", en: "External Auditor (KPMG/EY)" }, dept: "DEP_AUDIT", role_ref: "viewer", email: "ExternalAudit@androomeda.com" }
-            ],
-            shareholders: [
-                { id: "SH_001", name: { ar: "ورثة محمد بن صالح السحيباني", en: "Heirs of Mohammed Al-Suhaibani" }, email: "alcaseer@gmail.com", percent: 35 },
-                { id: "SH_002", name: { ar: "هشام بن محمد السحيباني", en: "Hesham bin Muhammad Al-Sohibani" }, email: "Hesham@androomeda.com", percent: 10 },
-                { id: "SH_003", name: { ar: "وائل بن محمد السحيباني", en: "Wael bin Mohammed Al Suhaibani" }, email: "W961@live.com", percent: 5 },
-                { id: "SH_004", name: { ar: "هيثم بن محمد السحيباني", en: "Haitham bin Mohammed Al Suhaibani" }, email: "hmsasis@gmail.com", percent: 5 },
-                { id: "SH_005", name: { ar: "منصور بن حسن اليامي", en: "Mansour bin Hassan Al-Yami" }, email: "myami@androomeda.com", percent: 5 },
-                { id: "SH_006", name: { ar: "إبراهيم بن حمد السكيتي", en: "Ibrahim bin Hamad Al Skeiti" }, email: "ihskaity@gmail.com", percent: 5 },
-                { id: "SH_007", name: { ar: "صالح بن عبدالله الوهيبي", en: "Saleh bin Abdullah Al-Wahibi" }, email: "Saaw4466@yahoo.com", percent: 5 },
-                { id: "SH_008", name: { ar: "عبدالله بن علي الفريجي", en: "Abdullah bin Ali Al-Fariji" }, email: "a_furaiji@hotmail.com", percent: 5 },
-                { id: "SH_009", name: { ar: "عبدالله بن محمد الحواس", en: "Abdullah bin Mohammed Al-Hawas" }, email: "amh400@gmail.com", percent: 5 },
-                { id: "SH_010", name: { ar: "شركة بيجي المحدودة", en: "BG LTD.Company" }, email: "saleh@bgtech.com", percent: 15 },
-                { id: "SH_011", name: { ar: "احمد بن سليمان الجاسر", en: "Ahmed bin Suleiman Al-Jasser" }, email: "ahmed.jasser@gmail.com", percent: 5 }
-            ]
-        };
-
-        // ==========================================
-        // B. LAYOUT ENGINE (EMBEDDED)
-        // ==========================================
-        (function() {
-            // Globals
-            let currentUser = JSON.parse(localStorage.getItem('currentUser')) || {
-                id: "USR_004", name: {ar: "مستخدم النظام", en: "System User"}, role: "Guest"
-            };
-            const config = {
-                lang: localStorage.getItem('lang') || 'ar',
-                theme: localStorage.getItem('theme') || 'light'
-            };
-
-            const menuStructure = [
-                { section: 'main', items: [{ key: 'dash', icon: 'fa-gauge-high', link: 'admin.html' }] },
-                { section: 'comm', items: [{ key: 'chat', icon: 'fa-comments', link: 'admin_chat.html' }, { key: 'circulars', icon: 'fa-bullhorn', link: 'admin_circulars.html' }] },
-                { section: 'gov', items: [{ key: 'ga', icon: 'fa-users-rectangle', link: 'ga.html' }, { key: 'board', icon: 'fa-building-columns', link: 'board.html' }, { key: 'committees', icon: 'fa-people-group', link: 'committees.html' }, { key: 'shareholders', icon: 'fa-id-card', link: 'shareholders.html' }] },
-                { section: 'ops', items: [{ key: 'doa', icon: 'fa-sitemap', link: 'doa.html' }, { key: 'policies', icon: 'fa-book-open', link: 'policies.html' }, { key: 'compliance', icon: 'fa-scale-balanced', link: 'compliance.html' }] },
-                { section: 'dept', items: [{ key: 'hr', icon: 'fa-user-tie', link: 'hr.html' }, { key: 'finance', icon: 'fa-money-bill-wave', link: 'finance.html' }, { key: 'procurement', icon: 'fa-boxes-packing', link: 'procurement.html' }, { key: 'it', icon: 'fa-shield-cat', link: 'it.html' }] },
-                { section: 'admin', items: [{ key: 'users', icon: 'fa-users-gear', link: 'users.html' }, { key: 'audit', icon: 'fa-list-ul', link: 'audit.html' }, { key: 'settings', icon: 'fa-sliders', link: 'admin_settings.html' }] }
-            ];
-
-            const layoutTrans = {
-                ar: {
-                    sysName: "AndroGov", sysVer: "Enterprise v4.3", logout: "تسجيل خروج",
-                    notifTitle: "الإشعارات", markRead: "تحديد كمقروء", emptyNotif: "لا توجد إشعارات جديدة",
-                    sections: { main: "الرئيسية", comm: "التواصل المؤسسي", gov: "الحوكمة", ops: "التشغيل", dept: "الإدارات", admin: "النظام" },
-                    menu: { dash: "لوحة القيادة", chat: "الدردشة", circulars: "التعاميم", ga: "الجمعيات العمومية", board: "مجلس الإدارة", committees: "اللجان", shareholders: "المساهمين", doa: "الصلاحيات (DOA)", policies: "السياسات", compliance: "الامتثال", hr: "الموارد البشرية", finance: "المالية", procurement: "المشتريات", it: "التقنية", users: "المستخدمين", audit: "سجل التدقيق", settings: "الإعدادات" }
-                },
-                en: {
-                    sysName: "AndroGov", sysVer: "Enterprise v4.3", logout: "Logout",
-                    notifTitle: "Notifications", markRead: "Mark Read", emptyNotif: "No notifications",
-                    sections: { main: "Main", comm: "Communication", gov: "Governance", ops: "Operations", dept: "Departments", admin: "Admin" },
-                    menu: { dash: "Dashboard", chat: "Chat", circulars: "Circulars", ga: "General Assembly", board: "Board", committees: "Committees", shareholders: "Shareholders", doa: "DOA Matrix", policies: "Policies", compliance: "Compliance", hr: "HR", finance: "Finance", procurement: "Procurement", it: "IT", users: "Users", audit: "Audit Log", settings: "Settings" }
-                }
-            };
-
-            function initLayout() {
-                const foundUser = SYSTEM_DATA.users.find(u => u.id === currentUser.id) || SYSTEM_DATA.users[4]; 
-                if(foundUser) {
-                    currentUser = {
-                        ...currentUser,
-                        name: foundUser.name,
-                        title: foundUser.title,
-                        role: foundUser.role_ref,
-                        email: foundUser.email
-                    };
-                    if(foundUser.id === 'USR_004') currentUser.avatarUrl = 'https://androgov-sa.github.io/AIT/photo/grc.png';
-                    else {
-                        const nameEn = foundUser.name.en || "User";
-                        currentUser.avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(nameEn)}&background=FB4747&color=fff&bold=true`;
-                    }
-                }
-                applyLayoutSettings();
-                renderSidebar();
-                renderHeader();
-            }
-
-            function applyLayoutSettings() {
-                const html = document.documentElement;
-                html.lang = config.lang;
-                html.dir = config.lang === 'ar' ? 'rtl' : 'ltr';
-                if (config.theme === 'dark') html.classList.add('dark');
-                else html.classList.remove('dark');
-                const main = document.querySelector('.main-content-wrapper');
-                if (main) {
-                    main.classList.remove('md:mr-72', 'md:ml-72');
-                    main.classList.add(config.lang === 'ar' ? 'md:mr-72' : 'md:ml-72');
-                }
-            }
-
-            function renderSidebar() {
-                const container = document.getElementById('sidebar-container');
-                if (!container) return;
-                const dict = layoutTrans[config.lang];
-                const isRtl = config.lang === 'ar';
-                const currentPath = window.location.pathname.split('/').pop() || 'admin.html';
-                const uName = config.lang === 'ar' ? currentUser.name.ar : currentUser.name.en;
-                const uTitle = config.lang === 'ar' ? currentUser.title.ar : currentUser.title.en;
-
-                let menuHTML = '';
-                menuStructure.forEach(group => {
-                    menuHTML += `<div class="px-3 mt-6 mb-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider">${dict.sections[group.section]}</div>`;
-                    group.items.forEach(item => {
-                        const isActive = currentPath.includes(item.link);
-                        const activeClass = isActive ? "bg-brandRed text-white shadow-md shadow-red-500/20" : "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-brandRed";
-                        menuHTML += `
-                        <a href="${item.link}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${activeClass}">
-                            <div class="w-6 text-center"><i class="fa-solid ${item.icon}"></i></div>
-                            <span class="flex-1 truncate">${dict.menu[item.key]}</span>
-                        </a>`;
-                    });
-                });
-
-                container.innerHTML = `
-                <aside class="fixed top-0 ${isRtl ? 'right-0 border-l' : 'left-0 border-r'} z-50 h-screen w-72 flex-col hidden md:flex bg-white dark:bg-[#0F172A] border-slate-200 dark:border-slate-800 transition-all duration-300">
-                    <div class="h-20 flex items-center px-6 border-b border-slate-100 dark:border-slate-800">
-                        <div class="flex items-center gap-3 w-full">
-                            <img src="https://ait.sa/wp-content/uploads/2024/03/cropped-Square-Logo.png" class="w-10 h-10 rounded-xl bg-white object-contain shrink-0 shadow-sm border border-slate-100 dark:border-slate-700">
-                            <div class="overflow-hidden">
-                                <h1 class="font-bold text-sm text-slate-800 dark:text-white font-sans truncate">AndroGov <span class="font-light">System</span></h1>
-                                <p class="text-[10px] text-slate-500 uppercase tracking-widest truncate">${dict.sysVer}</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="p-4">
-                        <div class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700">
-                            <img src="${currentUser.avatarUrl}" class="w-10 h-10 rounded-full border-2 border-white dark:border-slate-600 object-cover shrink-0">
-                            <div class="overflow-hidden flex-1 min-w-0">
-                                <p class="text-sm font-bold text-slate-800 dark:text-white truncate">${uName}</p>
-                                <p class="text-[10px] text-brandRed font-medium truncate">${uTitle}</p>
-                            </div>
-                        </div>
-                    </div>
-                    <nav class="flex-1 overflow-y-auto px-3 py-2 custom-scroll space-y-0.5">${menuHTML}</nav>
-                    <div class="p-4 text-center text-[10px] text-slate-400 border-t border-slate-100 dark:border-slate-800">© 2026 Andromeda IT</div>
-                </aside>`;
-            }
-
-            function renderHeader() {
-                const container = document.getElementById('header-container');
-                if (!container) return;
-                const dict = layoutTrans[config.lang];
-                container.innerHTML = `
-                <header class="h-20 sticky top-0 z-40 flex items-center justify-between px-6 bg-white/80 dark:bg-[#0F172A]/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 transition-all no-print">
-                    <div class="flex items-center gap-4">
-                        <button onclick="document.querySelector('aside').classList.toggle('hidden'); document.querySelector('aside').classList.toggle('flex');" class="md:hidden text-slate-500 dark:text-slate-200 hover:text-brandRed"><i class="fa-solid fa-bars text-xl"></i></button>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <button onclick="window.changeLang()" class="h-9 px-3 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-xs font-bold text-slate-600 dark:text-white transition">${config.lang === 'ar' ? 'English' : 'عربي'}</button>
-                        <button onclick="window.changeTheme()" class="w-9 h-9 rounded-lg border border-slate-200 dark:border-slate-700 flex items-center justify-center hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-yellow-400 transition"><i class="fa-solid ${config.theme === 'dark' ? 'fa-sun' : 'fa-moon'}"></i></button>
-                        <div class="h-6 w-px bg-slate-200 dark:bg-slate-700 mx-1"></div>
-                        <button onclick="window.doLogout()" class="text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-2"><i class="fa-solid fa-power-off"></i> <span class="hidden sm:inline">${dict.logout}</span></button>
-                    </div>
-                </header>`;
-            }
-
-            window.changeTheme = function() {
-                localStorage.setItem('theme', config.theme === 'dark' ? 'light' : 'dark');
-                location.reload();
-            };
-            window.changeLang = function() {
-                localStorage.setItem('lang', config.lang === 'ar' ? 'en' : 'ar');
-                location.reload();
-            };
-            window.doLogout = function() {
-                if (confirm(config.lang === 'ar' ? 'هل أنت متأكد من تسجيل الخروج؟' : 'Are you sure you want to logout?')) {
-                    localStorage.removeItem('currentUser');
-                    window.location.href = 'https://androgov-sa.github.io/AIT/login.html';
-                }
-            };
-
-            initLayout();
-        })();
-
-        // ==========================================
-        // C. DASHBOARD LOGIC (Updated with Data)
-        // ==========================================
+        // --- بيانات الترجمة الشاملة (لكل النصوص الظاهرة) ---
         const pageContent = {
             ar: {
                 pageTitle: "AndroGov | لوحة القيادة",
@@ -453,10 +334,22 @@
                 kpiShareholders: 'المساهمين',
                 member: 'عضو',
                 shareholdersList: 'ورثة محمد السحيباني، شركة بيجي...',
-                kpiStaff: 'الموظفين النشطين',
-                systemOnline: 'النظام يعمل بكفاءة',
+                kpiGov: 'قرارات بالتمرير',
+                pending: 'قيد التوقيع',
+                waitingFor: 'بانتظار: هشام السحيباني',
                 kpiComp: 'نسبة الامتثال',
                 chartTitle: 'هيكل الملكية',
+                commTitle: 'اللجان والمجلس',
+                auditComm: 'لجنة المراجعة',
+                newCycle: 'دورة جديدة',
+                commMember1: 'محمد بن منصور العنزي (رئيس)',
+                commMember2: 'أحمد بن سلطان السحيباني (عضو)',
+                commMember3: 'عادل بن عدنان سعسع (رئيس)',
+                lastMeeting: 'آخر اجتماع: 22/12/2025',
+                minutes: 'المحضر',
+                boardSec: 'أمين السر',
+                secName: 'أيمن بن علي المغربي',
+                schedule: 'جدولة',
                 opsTitle: 'المهام التشغيلية',
                 task1: 'اعتماد سياسة المكافآت',
                 dueDate: 'تاريخ الاستحقاق',
@@ -470,12 +363,11 @@
                 legal: 'قانونية',
                 viewAll: 'عرض كل المهام (12)',
                 auditTitle: 'سجل النظام المباشر',
-                // Chart Data
+                // Chart & Logs Arabic
                 chartHeirs: 'ورثة السحيباني',
                 chartHesham: 'هشام السحيباني',
                 chartBG: 'شركة بيجي',
                 chartOthers: 'آخرون',
-                // Logs
                 logBackup: 'تم إكمال النسخ الاحتياطي بنجاح',
                 logPolicy: 'قام هشام باستعراض سياسة المكافآت',
                 logUpload: 'قام أيمن برفع مسودة الدليل الداخلي',
@@ -493,10 +385,22 @@
                 kpiShareholders: 'Shareholders',
                 member: 'Members',
                 shareholdersList: 'Heirs of Al-Suhaibani, BG Company...',
-                kpiStaff: 'Active Employees',
-                systemOnline: 'System Operational',
+                kpiGov: 'Circulated Resolutions',
+                pending: 'Pending Signature',
+                waitingFor: 'Waiting: Hesham Al-Suhaibani',
                 kpiComp: 'Compliance Rate',
                 chartTitle: 'Ownership Structure',
+                commTitle: 'Committees & Board',
+                auditComm: 'Audit Committee',
+                newCycle: 'New Cycle',
+                commMember1: 'Mohammed Al-Enezi (Chairman)',
+                commMember2: 'Ahmed Al-Suhaibani (Member)',
+                commMember3: 'Adel Sasa (Chairman)',
+                lastMeeting: 'Last Meeting: 22/12/2025',
+                minutes: 'Minutes',
+                boardSec: 'Board Secretary',
+                secName: 'Ayman Almaghrabi',
+                schedule: 'Schedule',
                 opsTitle: 'Operational Tasks',
                 task1: 'Approve Bonus Policy',
                 dueDate: 'Due Date',
@@ -510,12 +414,11 @@
                 legal: 'Legal',
                 viewAll: 'View All Tasks (12)',
                 auditTitle: 'Live System Audit',
-                // Chart Data
+                // Chart & Logs English
                 chartHeirs: 'Heirs of Al-Suhaibani',
                 chartHesham: 'Hesham Al-Suhaibani',
                 chartBG: 'BG LTD',
                 chartOthers: 'Others',
-                // Logs
                 logBackup: 'Backup completed successfully',
                 logPolicy: 'Hesham viewed Bonus Policy',
                 logUpload: 'Ayman uploaded Internal Manual draft',
@@ -523,25 +426,37 @@
             }
         };
 
-        function initPage() {
+        // دالة التهيئة
+        document.addEventListener('DOMContentLoaded', () => {
+            updateContent();
+            initCharts();
+            renderLogs();
+        });
+
+        function updateContent() {
             const lang = localStorage.getItem('lang') || 'ar';
             const t = pageContent[lang];
             
+            // 1. Set Page Direction
             document.documentElement.lang = lang;
             document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
 
-            // Text Update
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                const key = el.getAttribute('data-i18n');
-                if(t[key]) el.innerText = t[key];
-            });
+            // 2. Update Text Content
+            if(t) {
+                document.title = t.pageTitle;
+                document.querySelectorAll('[data-i18n]').forEach(el => {
+                    const key = el.getAttribute('data-i18n');
+                    if(t[key]) el.innerText = t[key];
+                });
+            }
+        }
 
-            // Update Counts from Data
-            document.getElementById('shareholder-count').innerHTML = SYSTEM_DATA.shareholders.length + ` <span class="text-xs font-sans text-slate-400">${t.member}</span>`;
-            document.getElementById('staff-count').innerText = SYSTEM_DATA.users.length;
-
-            // Chart
+        function initCharts() {
             const ctx = document.getElementById('ownershipChart').getContext('2d');
+            const lang = localStorage.getItem('lang') || 'ar';
+            const t = pageContent[lang];
+
+            // Re-render chart logic with translations
             const data = {
                 labels: [t.chartHeirs, t.chartHesham, t.chartBG, t.chartOthers],
                 datasets: [{
@@ -551,51 +466,64 @@
                     hoverOffset: 10
                 }]
             };
-            
-            // Clear existing chart if any (simple approach)
-            if(window.myChart) window.myChart.destroy();
-            window.myChart = new Chart(ctx, {
+
+            const legendContainer = document.getElementById('chartLegend');
+            if(legendContainer) {
+                legendContainer.innerHTML = `
+                    <div class="flex justify-between items-center text-xs">
+                        <span class="flex items-center gap-2 text-slate-600 dark:text-slate-300"><span class="w-2 h-2 rounded-full bg-brandRed"></span> ${t.chartHeirs}</span>
+                        <span class="font-bold font-en">35%</span>
+                    </div>
+                    <div class="flex justify-between items-center text-xs">
+                        <span class="flex items-center gap-2 text-slate-600 dark:text-slate-300"><span class="w-2 h-2 rounded-full bg-blue-500"></span> ${t.chartHesham}</span>
+                        <span class="font-bold font-en">10%</span>
+                    </div>
+                    <div class="flex justify-between items-center text-xs">
+                        <span class="flex items-center gap-2 text-slate-600 dark:text-slate-300"><span class="w-2 h-2 rounded-full bg-green-500"></span> ${t.chartBG}</span>
+                        <span class="font-bold font-en">15%</span>
+                    </div>
+                    <div class="flex justify-between items-center text-xs">
+                        <span class="flex items-center gap-2 text-slate-600 dark:text-slate-300"><span class="w-2 h-2 rounded-full bg-slate-300"></span> ${t.chartOthers}</span>
+                        <span class="font-bold font-en">40%</span>
+                    </div>
+                `;
+            }
+
+            new Chart(ctx, {
                 type: 'doughnut',
                 data: data,
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { 
+                            backgroundColor: '#1E293B', 
+                            titleFont: { family: 'Inter' },
+                            bodyFont: { family: 'Inter' }
+                        }
+                    },
                     cutout: '75%'
                 }
             });
+        }
 
-            // Custom Legend
-            document.getElementById('chartLegend').innerHTML = `
-                <div class="flex justify-between items-center text-xs">
-                    <span class="flex items-center gap-2 text-slate-600 dark:text-slate-300"><span class="w-2 h-2 rounded-full bg-brandRed"></span> ${t.chartHeirs}</span>
-                    <span class="font-bold font-en">35%</span>
-                </div>
-                <div class="flex justify-between items-center text-xs">
-                    <span class="flex items-center gap-2 text-slate-600 dark:text-slate-300"><span class="w-2 h-2 rounded-full bg-blue-500"></span> ${t.chartHesham}</span>
-                    <span class="font-bold font-en">10%</span>
-                </div>
-                <div class="flex justify-between items-center text-xs">
-                    <span class="flex items-center gap-2 text-slate-600 dark:text-slate-300"><span class="w-2 h-2 rounded-full bg-green-500"></span> ${t.chartBG}</span>
-                    <span class="font-bold font-en">15%</span>
-                </div>
-                <div class="flex justify-between items-center text-xs">
-                    <span class="flex items-center gap-2 text-slate-600 dark:text-slate-300"><span class="w-2 h-2 rounded-full bg-slate-300"></span> ${t.chartOthers}</span>
-                    <span class="font-bold font-en">40%</span>
-                </div>
-            `;
+        function renderLogs() {
+            const lang = localStorage.getItem('lang') || 'ar';
+            const t = pageContent[lang];
 
-            // Logs
             const logs = [
                 { t: "10:45:22", type: "INFO", u: "System", msg: t.logBackup, c: "text-green-400" },
                 { t: "10:42:15", type: "WARN", u: "Hesham", msg: t.logPolicy, c: "text-yellow-400" },
                 { t: "10:30:01", type: "INFO", u: "Ayman", msg: t.logUpload, c: "text-blue-400" },
                 { t: "09:15:00", type: "CRIT", u: "Firewall", msg: t.logFirewall, c: "text-red-400" }
             ];
-            const logContainer = document.getElementById('audit-log-container');
-            logContainer.innerHTML = '';
+            
+            const container = document.getElementById('audit-log-container');
+            container.innerHTML = '';
+            
             logs.forEach(log => {
-                logContainer.innerHTML += `
+                container.innerHTML += `
                     <div class="flex gap-3 hover:bg-slate-800/50 p-1 rounded transition cursor-default">
                         <span class="text-slate-500 w-16 shrink-0">[${log.t}]</span>
                         <span class="${log.c} font-bold w-10 shrink-0">${log.type}</span>
@@ -605,21 +533,6 @@
                 `;
             });
         }
-
-        // Chatbot logic
-        document.getElementById('chat-fab').addEventListener('click', () => {
-            const w = document.getElementById('chat-window');
-            w.classList.remove('hidden');
-            w.classList.add('flex');
-        });
-        document.getElementById('close-chat-btn').addEventListener('click', () => {
-            const w = document.getElementById('chat-window');
-            w.classList.add('hidden');
-            w.classList.remove('flex');
-        });
-
-        // Run
-        document.addEventListener('DOMContentLoaded', initPage);
     </script>
 </body>
 </html>
