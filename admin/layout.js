@@ -1,9 +1,8 @@
 /**
- * AndroGov Layout Engine v5.3 (Logo & Avatar Update)
- * - Added Official Company Logo
- * - Custom Avatar for Admin/GRC User
- * - Fixed: Strict Active State matching
- * - Fixed: Sidebar Scroll Preservation
+ * AndroGov Layout Engine v5.4 (Corrected & Enhanced)
+ * - Full Data Repository for Andromeda
+ * - Unified Layout Management
+ * - Fixed User Profile & Role Handling
  */
 
 (function() {
@@ -15,86 +14,52 @@
         theme: localStorage.getItem('theme') || 'light'
     };
 
+    // Default User: Ayman Al-Maghrabi (GRCO)
     let currentUser = JSON.parse(localStorage.getItem('currentUser')) || {
         id: "USR_004",
-        nameAr: "مستخدم النظام",
-        nameEn: "System User",
-        role: "Guest",
-        avatar: "grc.png"
+        nameAr: "أيمن المغربي",
+        nameEn: "Ayman Al-Maghrabi",
+        role: "GRCO", // Governance, Risk & Compliance Officer
+        avatar: "https://androgov-sa.github.io/AIT/photo/grc.png"
     };
 
-    // --- DASHBOARD DATA (Added to support the dashboard view) ---
-    const DASHBOARD_DATA = {
+    // --- 2. Central Data Repository (The Source of Truth) ---
+    const SYSTEM_DATA = {
+        // Users Directory
+        users: [
+            { id: "USR_001", name: { ar: "هشام السحيباني", en: "Hesham Al-Sohaibani" }, title: { ar: "الرئيس التنفيذي", en: "CEO" }, role: "CEO", avatar: "https://ui-avatars.com/api/?name=Hesham&background=FB4747&color=fff" },
+            { id: "USR_002", name: { ar: "محمد البخيتي", en: "Mohammed Al-Bukheiti" }, title: { ar: "المدير المالي", en: "CFO" }, role: "CFO", avatar: "https://ui-avatars.com/api/?name=Mohammed&background=4267B2&color=fff" },
+            { id: "USR_004", name: { ar: "أيمن المغربي", en: "Ayman Al-Maghrabi" }, title: { ar: "مسؤول الحوكمة", en: "GRCO" }, role: "GRCO", avatar: "https://androgov-sa.github.io/AIT/photo/grc.png" },
+            { id: "USR_005", name: { ar: "منصور اليامي", en: "Mansour Al-Yami" }, title: { ar: "مدير الموارد البشرية", en: "HR Manager" }, role: "HR", avatar: "https://ui-avatars.com/api/?name=Mansour&background=10B981&color=fff" }
+        ],
+
+        // Shareholders Structure (For Charts)
         shareholders: [
-            { id: "SH_001", name: { ar: "ورثة محمد بن صالح السحيباني", en: "Heirs of Mohammed Al-Suhaibani" }, percent: 35 },
-            { id: "SH_002", name: { ar: "هشام بن محمد السحيباني", en: "Hesham bin Muhammad Al-Sohibani" }, percent: 10 },
-            { id: "SH_010", name: { ar: "شركة بيجي المحدودة", en: "BG LTD.Company" }, percent: 15 },
+            { id: "SH_001", name: { ar: "ورثة محمد بن صالح السحيباني", en: "Heirs of Al-Suhaibani" }, percent: 35 },
+            { id: "SH_002", name: { ar: "هشام بن محمد السحيباني", en: "Hesham Al-Suhaibani" }, percent: 10 },
+            { id: "SH_010", name: { ar: "شركة بيجي المحدودة", en: "BG LTD" }, percent: 15 },
             { id: "SH_OTH", name: { ar: "آخرون", en: "Others" }, percent: 40 }
+        ],
+
+        // Operational Tasks
+        tasks: [
+            { id: 1, title: 'اعتماد سياسة المكافآت', desc: 'مراجعة المسودة النهائية المرفقة من لجنة الترشيحات.', tag: 'Gov', color: 'bg-yellow-100 text-yellow-700', status: 'col-todo', date: '2 يوم', urgent: true, assignees: ["USR_001", "USR_004"] },
+            { id: 2, title: 'تحديث السجل التجاري', desc: 'إضافة نشاط "إدارة الأملاك" للسجل الرئيسي.', tag: 'Legal', color: 'bg-purple-100 text-purple-700', status: 'col-todo', date: 'Feb 10', urgent: false, assignees: ["USR_004"] },
+            { id: 3, title: 'مراجعة تقرير الرواتب', desc: 'التأكد من خصومات الغياب لشهر يناير.', tag: 'Ops', color: 'bg-blue-100 text-blue-700', status: 'col-progress', date: 'اليوم', progress: 60, assignees: ["USR_005", "USR_002"] },
+            { id: 4, title: 'عقود التوظيف الجديدة', desc: 'بانتظار توقيع الرئيس التنفيذي على عقد مدير المبيعات.', tag: 'HR', color: 'bg-pink-100 text-pink-700', status: 'col-review', date: 'أمس', urgent: false, assignees: ["USR_005"] },
+            { id: 5, title: 'أرشفة المحاضر Q4', desc: 'تمت الأرشفة وإرسال النسخ للأعضاء.', tag: 'Board', color: 'bg-green-100 text-green-700', status: 'col-done', date: 'Jan 15', done: true, assignees: ["USR_004"] }
+        ],
+
+        // Notifications
+        notifications: [
+            { id: 1, type: 'critical', icon: 'fa-shield-virus', color: 'text-red-500 bg-red-50', titleAr: 'تنبيه أمني', titleEn: 'Security Alert', msgAr: 'محاولة دخول غير مصرح بها.', msgEn: 'Unauthorized login attempt.', time: '2m' },
+            { id: 2, type: 'info', icon: 'fa-file-contract', color: 'text-blue-500 bg-blue-50', titleAr: 'عقد جديد', titleEn: 'New Contract', msgAr: 'عقد توريد بانتظار الاعتماد.', msgEn: 'Supply contract pending approval.', time: '1h' },
+            { id: 3, type: 'success', icon: 'fa-check-circle', color: 'text-green-500 bg-green-50', titleAr: 'اكتمال النصاب', titleEn: 'Quorum Met', msgAr: 'تم اكتمال نصاب الجمعية العمومية.', msgEn: 'General Assembly quorum met.', time: '3h' }
         ]
     };
 
-    // --- 2. Data Fetching ---
-    async function loadCompanyData() {
-        try {
-            if (typeof POLICY_DATA !== 'ADMIN') {
-                policyData = POLICY_DATA;
-                console.log("✅ Company Policy Loaded from Memory:", policyData.system.version);
-                
-                updateCurrentUserProfile();
-
-                if (policyData.identity && policyData.identity.tokens) {
-                    const brandColor = policyData.identity.tokens.colors.primary.value.light;
-                    document.documentElement.style.setProperty('--brand-color', brandColor);
-                }
-            } else {
-                console.error("⚠️ POLICY_DATA is not defined.");
-            }
-        } catch (error) {
-            console.error("⚠️ Error processing company policy:", error);
-        }
-    }
-
-    function updateCurrentUserProfile() {
-        const storedUser = JSON.parse(localStorage.getItem('currentUser'));
-        const targetId = storedUser ? storedUser.id : "USR_004"; 
-
-        let directory = [];
-        if (policyData && policyData.organization && policyData.organization.key_personnel) {
-            directory = policyData.organization.key_personnel;
-        } else if (policyData && policyData.organizational_chart) {
-            directory = policyData.organizational_chart.users_directory;
-        }
-
-        const foundUser = directory.find(u => u.id === targetId || u.email === (storedUser ? storedUser.email : ''));
-
-        if (foundUser) {
-            const nameVal = foundUser.name;
-            const nameAr = (typeof nameVal === 'object') ? nameVal.ar : nameVal;
-            const nameEn = (typeof nameVal === 'object') ? nameVal.en : nameVal;
-            const brandColorHex = (policyData.identity?.tokens?.colors?.primary?.value?.light || "FB4747").replace('#', '');
-
-            // تحديد رابط الصورة
-            let avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(nameEn)}&background=${brandColorHex}&color=fff&bold=true`;
-            
-            if (foundUser.id === 'USR_004') {
-                avatarUrl = 'grc.png';
-            }
-
-            currentUser = {
-                ...currentUser,
-                id: foundUser.id,
-                nameAr: nameAr,
-                nameEn: nameEn,
-                titleAr: foundUser.title,
-                titleEn: foundUser.title,
-                role: foundUser.role_ref || foundUser.role,
-                department: foundUser.dept || foundUser.department_id,
-                email: foundUser.email,
-                avatar: "grc.png"
-            };
-            localStorage.setItem('currentUser', JSON.stringify(currentUser));
-        }
-    }
+    // Expose Data Globally (Important for other scripts)
+    window.SYSTEM_DATA = SYSTEM_DATA;
 
     // --- 3. Menu Structure ---
     const menuStructure = [
@@ -107,43 +72,43 @@
         {
             section: 'comm',
             items: [
-                { key: 'chat', icon: 'fa-comments', link: 'admin_chat.html' },
-                { key: 'circulars', icon: 'fa-bullhorn', link: 'admin_circulars.html' }
+                { key: 'chat', icon: 'fa-comments', link: '#' },
+                { key: 'circulars', icon: 'fa-bullhorn', link: '#' }
             ]
         },
         {
             section: 'gov',
             items: [
-                { key: 'ga', icon: 'fa-users-rectangle', link: 'ga.html' },
-                { key: 'board', icon: 'fa-building-columns', link: 'board.html' },
-                { key: 'committees', icon: 'fa-people-group', link: 'committees.html' },
-                { key: 'shareholders', icon: 'fa-id-card', link: 'shareholders.html' }
+                { key: 'ga', icon: 'fa-users-rectangle', link: '#' },
+                { key: 'board', icon: 'fa-building-columns', link: '#' },
+                { key: 'committees', icon: 'fa-people-group', link: '#' },
+                { key: 'shareholders', icon: 'fa-id-card', link: '#' }
             ]
         },
         {
             section: 'ops',
             items: [
                 { key: 'tasks', icon: 'fa-list-check', link: 'tasks.html' },
-                { key: 'doa', icon: 'fa-sitemap', link: 'doa.html' },
-                { key: 'policies', icon: 'fa-book-open', link: 'policies.html' },
-                { key: 'compliance', icon: 'fa-scale-balanced', link: 'compliance.html' }
+                { key: 'doa', icon: 'fa-sitemap', link: '#' },
+                { key: 'policies', icon: 'fa-book-open', link: '#' },
+                { key: 'compliance', icon: 'fa-scale-balanced', link: '#' }
             ]
         },
         {
             section: 'dept',
             items: [
-                { key: 'hr', icon: 'fa-user-tie', link: 'hr.html' },
-                { key: 'finance', icon: 'fa-money-bill-wave', link: 'finance.html' },
-                { key: 'procurement', icon: 'fa-boxes-packing', link: 'procurement.html' },
-                { key: 'it', icon: 'fa-shield-cat', link: 'it.html' }
+                { key: 'hr', icon: 'fa-user-tie', link: '#' },
+                { key: 'finance', icon: 'fa-money-bill-wave', link: '#' },
+                { key: 'procurement', icon: 'fa-boxes-packing', link: '#' },
+                { key: 'it', icon: 'fa-shield-cat', link: '#' }
             ]
         },
         {
             section: 'admin',
             items: [
-                { key: 'users', icon: 'fa-users-gear', link: 'users.html' },
-                { key: 'audit', icon: 'fa-list-ul', link: 'audit.html' },
-                { key: 'settings', icon: 'fa-sliders', link: 'admin_settings.html' }
+                { key: 'users', icon: 'fa-users-gear', link: '#' },
+                { key: 'audit', icon: 'fa-list-ul', link: '#' },
+                { key: 'settings', icon: 'fa-sliders', link: '#' }
             ]
         }
     ];
@@ -170,19 +135,19 @@
         }
     };
 
-    // --- 5. Notifications Data ---
-    const notifications = [
-        { id: 1, type: 'critical', icon: 'fa-shield-virus', color: 'text-red-500 bg-red-50', titleAr: 'تنبيه أمني', titleEn: 'Security Alert', msgAr: 'محاولة دخول غير مصرح بها.', msgEn: 'Unauthorized login attempt.', time: '2m' },
-        { id: 2, type: 'info', icon: 'fa-file-contract', color: 'text-blue-500 bg-blue-50', titleAr: 'عقد جديد', titleEn: 'New Contract', msgAr: 'عقد توريد بانتظار الاعتماد.', msgEn: 'Supply contract pending approval.', time: '1h' }
-    ];
-
-    // --- 6. Render Logic ---
+    // --- 5. Render Logic ---
     async function init() {
-        await loadCompanyData();
         applySettings();
         renderSidebar();
         renderHeader();
-        initDashboardWidgets(); // Initialize Charts if on dashboard
+        
+        // Wait for DOM then initialize widgets
+        if(document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initDashboardWidgets);
+        } else {
+            initDashboardWidgets();
+        }
+        
         document.body.style.opacity = '1';
         setupEventListeners();
     }
@@ -211,14 +176,11 @@
         const currentPath = window.location.pathname.split('/').pop() || 'admin.html';
         
         const userDisplayName = isRtl ? currentUser.nameAr : currentUser.nameEn;
-        const userDisplayTitle = (isRtl ? currentUser.titleAr : currentUser.titleEn) || currentUser.role;
-        
-        const companyName = (policyData && policyData.identity) 
-            ? policyData.identity.meta.brand_name[config.lang]
-            : dict.sysName;
+        const userDisplayTitle = currentUser.role;
+        const companyName = "AndroGov";
 
         const getLinkClass = (link) => {
-            const isActive = currentPath === link;
+            const isActive = currentPath.includes(link);
             const baseClass = "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200";
             const activeClass = "bg-brandRed text-white shadow-md shadow-red-500/20";
             const inactiveClass = "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-brandRed";
@@ -244,16 +206,14 @@
                 <div class="flex items-center gap-3 w-full">
                     <img src="https://ait.sa/wp-content/uploads/2024/03/cropped-Square-Logo.png" class="w-10 h-10 rounded-xl bg-white object-contain shrink-0 shadow-sm border border-slate-100 dark:border-slate-700">
                     <div class="overflow-hidden">
-                        <h1 class="font-bold text-sm text-slate-800 dark:text-white font-sans truncate" title="${companyName}">
-                            ${companyName.split(' ')[0]} <span class="font-light">${companyName.split(' ')[1] || ''}</span>
-                        </h1>
+                        <h1 class="font-bold text-sm text-slate-800 dark:text-white font-sans truncate">AndroGov <span class="font-light">System</span></h1>
                         <p class="text-[10px] text-slate-500 uppercase tracking-widest truncate">${dict.sysVer}</p>
                     </div>
                 </div>
             </div>
 
             <div class="p-4">
-                <a href="my_profile.html" class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 hover:border-brandRed transition group cursor-pointer">
+                <div class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 hover:border-brandRed transition group cursor-pointer">
                     <img src="${currentUser.avatar}" class="w-10 h-10 rounded-full border-2 border-white dark:border-slate-600 object-cover shrink-0">
                     <div class="overflow-hidden flex-1 min-w-0">
                         <p class="text-sm font-bold text-slate-800 dark:text-white truncate group-hover:text-brandRed transition" title="${userDisplayName}">
@@ -263,7 +223,7 @@
                             ${userDisplayTitle}
                         </p>
                     </div>
-                </a>
+                </div>
             </div>
 
             <nav id="sidebar-nav" class="flex-1 overflow-y-auto px-3 py-2 custom-scroll space-y-0.5">
@@ -295,10 +255,11 @@
         
         const dict = t[config.lang];
         const isRtl = config.lang === 'ar';
+        const notifCount = SYSTEM_DATA.notifications.length;
 
         let notifListHTML = '';
-        if(notifications.length > 0) {
-            notifications.forEach(n => {
+        if(notifCount > 0) {
+            SYSTEM_DATA.notifications.forEach(n => {
                 notifListHTML += `
                 <div class="p-3 border-b border-slate-100 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition cursor-pointer flex gap-3">
                     <div class="w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${n.color}">
@@ -327,7 +288,7 @@
                 <div class="relative">
                     <button id="notifBtn" onclick="window.toggleNotif()" class="w-9 h-9 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-white transition relative flex items-center justify-center">
                         <i class="fa-regular fa-bell"></i>
-                        <span class="absolute top-2 right-2.5 w-2 h-2 bg-brandRed rounded-full border border-white dark:border-slate-800 animate-pulse"></span>
+                        ${notifCount > 0 ? `<span class="absolute top-2 right-2.5 w-2 h-2 bg-brandRed rounded-full border border-white dark:border-slate-800 animate-pulse"></span>` : ''}
                     </button>
                     
                     <div id="notifDropdown" class="hidden absolute top-12 ${isRtl ? 'left-0' : 'right-0'} w-80 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 overflow-hidden z-50">
@@ -361,7 +322,7 @@
     // --- 7. Dashboard Logic (Charts & Logs) ---
     function initDashboardWidgets() {
         const ctx = document.getElementById('ownershipChart');
-        if(!ctx) return; // Not on dashboard
+        if(!ctx) return; // Not on dashboard page
 
         const dict = t[config.lang];
         const data = {
@@ -421,10 +382,10 @@
 
         // Fill Stats
         const sc = document.getElementById('shareholder-count');
-        if(sc) sc.innerHTML = DASHBOARD_DATA.shareholders.length + ` <span class="text-xs font-sans text-slate-400">${config.lang === 'ar' ? 'عضو' : 'Members'}</span>`;
+        if(sc) sc.innerHTML = SYSTEM_DATA.shareholders.length + ` <span class="text-xs font-sans text-slate-400">${config.lang === 'ar' ? 'عضو' : 'Members'}</span>`;
         
         const stc = document.getElementById('staff-count');
-        if(stc) stc.innerText = "24";
+        if(stc) stc.innerText = SYSTEM_DATA.users.length;
     }
 
     function setupEventListeners() {
@@ -462,9 +423,8 @@
         }
     };
 
-    // Global Review Modal (Used in Dashboard)
     window.openReviewModal = function() {
-        if(typeof Swal === 'ADMIN') return;
+        if(typeof Swal === 'undefined') return;
         
         const isAr = config.lang === 'ar';
         Swal.fire({
@@ -498,7 +458,6 @@
                     icon: 'success', 
                     confirmButtonColor: '#4267B2' 
                 });
-                // Update UI if present
                 const alertBox = document.getElementById('urgent-alert-box');
                 if(alertBox) {
                     alertBox.classList.add('opacity-50', 'pointer-events-none');
