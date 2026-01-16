@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#FB4747">
-    <title data-i18n="pageTitle">الإدارة المالية | AndroGov</title>
+    <title data-i18n="pageTitle">الرقابة المالية | AndroGov</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -44,7 +44,7 @@
 
     <div id="loadingOverlay" class="loading-overlay">
         <div class="spinner"></div>
-        <p class="text-sm font-bold text-slate-600 dark:text-slate-300">جاري تحميل البيانات المالية...</p>
+        <p class="text-sm font-bold text-slate-600 dark:text-slate-300">جاري تحميل بيانات الرقابة المالية...</p>
         <button onclick="document.getElementById('loadingOverlay').classList.add('hidden')" class="mt-4 text-xs text-blue-500 underline">تخطي الانتظار</button>
     </div>
 
@@ -58,18 +58,15 @@
             <div class="flex flex-col md:flex-row justify-between items-end gap-4">
                 <div>
                     <h1 class="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                        <i class="fa-solid fa-coins text-brandRed"></i> <span data-i18n="headerTitle">الإدارة المالية</span>
+                        <i class="fa-solid fa-magnifying-glass-dollar text-brandRed"></i> <span data-i18n="headerTitle">الرقابة المالية (Audit View)</span>
                     </h1>
-                    <p class="text-sm text-slate-500 mt-1" data-i18n="headerDesc">متابعة التدفقات النقدية، الميزانية، والتقارير المالية.</p>
+                    <p class="text-sm text-slate-500 mt-1" data-i18n="headerDesc">مراقبة التدفقات النقدية والتحقق من سلامة السجلات المالية.</p>
                 </div>
                 <div class="flex gap-2">
                     <button onclick="window.print()" class="px-4 py-2 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-white rounded-lg text-sm font-bold hover:bg-slate-200 transition">
-                        <i class="fa-solid fa-file-invoice-dollar"></i> <span data-i18n="btnReport">تقرير مالي</span>
+                        <i class="fa-solid fa-file-pdf"></i> <span data-i18n="btnReport">تقرير التدقيق</span>
                     </button>
-                    <button onclick="openTransactionModal()" class="px-6 py-2 bg-brandBlue text-white rounded-lg text-sm font-bold shadow-lg hover:bg-blue-700 transition flex items-center gap-2">
-                        <i class="fa-solid fa-plus"></i> <span data-i18n="btnAddTrans">إضافة معاملة</span>
-                    </button>
-                </div>
+                    </div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -79,8 +76,9 @@
                         <div class="w-8 h-8 rounded-lg bg-green-50 dark:bg-green-900/30 text-green-600 flex items-center justify-center"><i class="fa-solid fa-money-bill-trend-up"></i></div>
                     </div>
                     <h3 class="text-2xl font-bold text-slate-900 dark:text-white num-font">245,000</h3>
-                    <p class="text-[10px] text-green-500 mt-1 flex items-center gap-1 num-font"><i class="fa-solid fa-arrow-up"></i> 12% <span class="text-slate-400" data-i18n="vsLast">عن الشهر السابق</span></p>
+                    <p class="text-[10px] text-green-500 mt-1 flex items-center gap-1 num-font"><i class="fa-solid fa-check"></i> <span class="text-slate-400" data-i18n="statusMatched">مطابق للبنك</span></p>
                 </div>
+                
                 <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
                     <div class="flex justify-between items-start mb-2">
                         <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase" data-i18n="kpiRev">الإيرادات (YTD)</p>
@@ -89,6 +87,7 @@
                     <h3 class="text-2xl font-bold text-slate-900 dark:text-white num-font">1,200,000</h3>
                     <p class="text-[10px] text-slate-400 mt-1" data-i18n="kpiTarget">95% من المستهدف</p>
                 </div>
+                
                 <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
                     <div class="flex justify-between items-start mb-2">
                         <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase" data-i18n="kpiExp">المصروفات</p>
@@ -97,6 +96,7 @@
                     <h3 class="text-2xl font-bold text-slate-900 dark:text-white num-font">850,000</h3>
                     <p class="text-[10px] text-red-500 mt-1 flex items-center gap-1 num-font"><i class="fa-solid fa-arrow-up"></i> 5% <span class="text-slate-400" data-i18n="vsLast">عن الشهر السابق</span></p>
                 </div>
+                
                 <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
                     <div class="flex justify-between items-start mb-2">
                         <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase" data-i18n="kpiProfit">صافي الربح</p>
@@ -139,7 +139,7 @@
 
             <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden">
                 <div class="p-5 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center">
-                    <h3 class="font-bold text-slate-800 dark:text-white" data-i18n="transTitle">أحدث المعاملات</h3>
+                    <h3 class="font-bold text-slate-800 dark:text-white" data-i18n="transTitle">سجل الحركات المالية (للمتابعة)</h3>
                     <div class="flex gap-2">
                         <button onclick="renderTable('all')" class="px-3 py-1 text-xs font-bold rounded-lg bg-slate-100 dark:bg-slate-700 dark:text-white" data-i18n="filterAll">الكل</button>
                     </div>
@@ -150,7 +150,7 @@
                             <tr>
                                 <th class="p-4" data-i18n="colDesc">الوصف</th>
                                 <th class="p-4" data-i18n="colDate">التاريخ</th>
-                                <th class="p-4" data-i18n="colCategory">التصنيف</th>
+                                <th class="p-4" data-i18n="colUser">بواسطة</th> <th class="p-4" data-i18n="colCategory">التصنيف</th>
                                 <th class="p-4" data-i18n="colAmount">المبلغ</th>
                                 <th class="p-4 text-center" data-i18n="colStatus">الحالة</th>
                             </tr>
@@ -161,42 +161,6 @@
             </div>
 
         </main>
-    </div>
-
-    <div id="transModal" class="fixed inset-0 bg-black/70 hidden z-50 flex items-center justify-center backdrop-blur-sm p-4">
-        <div class="bg-white dark:bg-slate-800 w-full max-w-lg rounded-2xl shadow-2xl flex flex-col">
-            <div class="p-5 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center">
-                <h3 class="font-bold text-lg dark:text-white" data-i18n="modTitle">تسجيل معاملة جديدة</h3>
-                <button onclick="closeModal('transModal')" class="text-slate-400 hover:text-red-500"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <div class="p-6 space-y-4">
-                <div>
-                    <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="modDescLabel">وصف المعاملة</label>
-                    <input type="text" class="w-full border dark:border-slate-600 dark:bg-slate-700 rounded-lg p-2 text-sm dark:text-white">
-                </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="modTypeLabel">النوع</label>
-                        <select class="w-full border dark:border-slate-600 dark:bg-slate-700 rounded-lg p-2 text-sm dark:text-white">
-                            <option value="income" data-i18n="optIncome">دخل</option>
-                            <option value="expense" data-i18n="optExp">مصروف</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="modAmountLabel">المبلغ</label>
-                        <input type="number" class="w-full border dark:border-slate-600 dark:bg-slate-700 rounded-lg p-2 text-sm dark:text-white num-font">
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="modDateLabel">التاريخ</label>
-                    <input type="date" class="w-full border dark:border-slate-600 dark:bg-slate-700 rounded-lg p-2 text-sm dark:text-white">
-                </div>
-            </div>
-            <div class="p-5 border-t border-slate-100 dark:border-slate-700 flex justify-end gap-3">
-                <button onclick="closeModal('transModal')" class="px-4 py-2 border dark:border-slate-600 rounded-lg text-xs font-bold dark:text-white" data-i18n="btnCancel">إلغاء</button>
-                <button onclick="alert('تم حفظ المعاملة'); closeModal('transModal')" class="px-6 py-2 bg-brandBlue text-white rounded-lg text-xs font-bold" data-i18n="btnSave">حفظ</button>
-            </div>
-        </div>
     </div>
 
     <script src="data/company_policy.js"></script>
@@ -210,13 +174,12 @@
 
     <script>
         const transactions = [
-            { id: 1, descAr: "دفعة مشروع أرامكو", descEn: "Aramco Project Payment", date: "2026-01-15", cat: "income", amount: 150000, status: "completed" },
-            { id: 2, descAr: "رواتب شهر يناير", descEn: "January Salaries", date: "2026-01-25", cat: "expense", amount: 85000, status: "pending" },
-            { id: 3, descAr: "تجديد تراخيص البرامج", descEn: "Software License Renewal", date: "2026-01-10", cat: "expense", amount: 12000, status: "completed" }
+            { id: 1, descAr: "دفعة مشروع أرامكو", descEn: "Aramco Project Payment", date: "2026-01-15", user: "Mohammed (CFO)", cat: "income", amount: 150000, status: "completed" },
+            { id: 2, descAr: "رواتب شهر يناير", descEn: "January Salaries", date: "2026-01-25", user: "Mansour (HR)", cat: "expense", amount: 85000, status: "pending" },
+            { id: 3, descAr: "تجديد تراخيص البرامج", descEn: "Software License Renewal", date: "2026-01-10", user: "Akhtar (IT)", cat: "expense", amount: 12000, status: "completed" }
         ];
 
         document.addEventListener('DOMContentLoaded', () => {
-            // Failsafe: Remove overlay after 2 seconds
             setTimeout(() => {
                 const overlay = document.getElementById('loadingOverlay');
                 if(overlay) overlay.classList.add('hidden');
@@ -267,6 +230,7 @@
                     <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 border-b dark:border-slate-700">
                         <td class="p-4 font-bold text-sm dark:text-white">${lang==='ar' ? item.descAr : item.descEn}</td>
                         <td class="p-4 text-xs font-mono text-slate-500">${item.date}</td>
+                        <td class="p-4 text-xs text-slate-500"><i class="fa-solid fa-user-tag"></i> ${item.user}</td>
                         <td class="p-4 text-xs"><span class="${item.cat === 'income' ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-600'} px-2 py-0.5 rounded font-bold uppercase">${item.cat}</span></td>
                         <td class="p-4 font-mono font-bold text-sm ${amountClass} num-font">${sign} ${item.amount.toLocaleString()}</td>
                         <td class="p-4 text-center"><span class="bg-slate-100 px-2 py-1 rounded text-[10px] text-slate-500">${item.status}</span></td>
@@ -300,17 +264,14 @@
             });
         }
 
-        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
-        function openTransactionModal() { document.getElementById('transModal').classList.remove('hidden'); }
-
         const t = {
             ar: {
-                pageTitle: "الإدارة المالية",
-                headerTitle: "الإدارة المالية",
-                headerDesc: "متابعة التدفقات النقدية والميزانية.",
-                btnReport: "تقرير مالي",
-                btnAddTrans: "إضافة معاملة",
+                pageTitle: "الرقابة المالية",
+                headerTitle: "الرقابة المالية (Audit)",
+                headerDesc: "مراقبة التدفقات النقدية والتحقق من سلامة السجلات.",
+                btnReport: "تقرير التدقيق",
                 kpiCash: "التدفق النقدي",
+                statusMatched: "مطابق للبنك",
                 vsLast: "عن السابق",
                 kpiRev: "الإيرادات",
                 kpiTarget: "من المستهدف",
@@ -322,32 +283,22 @@
                 expSalaries: "رواتب",
                 expOps: "تشغيل",
                 expMkt: "تسويق",
-                transTitle: "أحدث المعاملات",
+                transTitle: "سجل الحركات المالية (Audit Log)",
                 filterAll: "الكل",
-                filterIncome: "دخل",
-                filterExp: "مصروف",
                 colDesc: "الوصف",
                 colDate: "التاريخ",
+                colUser: "القائم بالعملية",
                 colCategory: "التصنيف",
                 colAmount: "المبلغ",
-                colStatus: "الحالة",
-                modTitle: "معاملة جديدة",
-                modDescLabel: "الوصف",
-                modTypeLabel: "النوع",
-                optIncome: "دخل",
-                optExp: "مصروف",
-                modAmountLabel: "المبلغ",
-                modDateLabel: "التاريخ",
-                btnCancel: "إلغاء",
-                btnSave: "حفظ"
+                colStatus: "الحالة"
             },
             en: {
-                pageTitle: "Finance",
-                headerTitle: "Financial Management",
-                headerDesc: "Track cash flow and budget.",
-                btnReport: "Report",
-                btnAddTrans: "Add Transaction",
+                pageTitle: "Financial Audit",
+                headerTitle: "Financial Audit View",
+                headerDesc: "Monitor cash flow and verify financial records.",
+                btnReport: "Audit Report",
                 kpiCash: "Cash Flow",
+                statusMatched: "Bank Matched",
                 vsLast: "vs Last",
                 kpiRev: "Revenue",
                 kpiTarget: "Target",
@@ -359,24 +310,14 @@
                 expSalaries: "Salaries",
                 expOps: "Ops",
                 expMkt: "Marketing",
-                transTitle: "Transactions",
+                transTitle: "Audit Log",
                 filterAll: "All",
-                filterIncome: "Income",
-                filterExp: "Expense",
                 colDesc: "Description",
                 colDate: "Date",
+                colUser: "Created By",
                 colCategory: "Category",
                 colAmount: "Amount",
-                colStatus: "Status",
-                modTitle: "New Transaction",
-                modDescLabel: "Description",
-                modTypeLabel: "Type",
-                optIncome: "Income",
-                optExp: "Expense",
-                modAmountLabel: "Amount",
-                modDateLabel: "Date",
-                btnCancel: "Cancel",
-                btnSave: "Save"
+                colStatus: "Status"
             }
         };
     </script>
