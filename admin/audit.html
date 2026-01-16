@@ -2,17 +2,15 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#FB4747">
-<link rel="manifest" href="manifest.json">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#FB4747">
+    <link rel="manifest" href="manifest.json">
 
     <title data-i18n="pageTitle">AndroGov | التدقيق والرقابة</title>
     
-    <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -45,30 +43,35 @@
         
         body { transition: opacity 0.2s ease-in-out; }
 
-        /* Bot Styles */
-        .chat-window-anim { transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); transform-origin: bottom left; }
-        .chat-bubble { max-width: 85%; padding: 10px 14px; border-radius: 12px; font-size: 0.9rem; line-height: 1.5; word-wrap: break-word; }
-        .chat-bubble.bot { background-color: #f1f5f9; color: #334155; border-bottom-right-radius: 2px; }
-        .dark .chat-bubble.bot { background-color: #334155; color: #f8fafc; }
-        .chat-bubble.user { background-color: #4267B2; color: white; border-bottom-left-radius: 2px; margin-right: auto; }
-        .typing-indicator span { display: inline-block; width: 6px; height: 6px; background-color: #94a3b8; border-radius: 50%; animation: typing 1.4s infinite ease-in-out both; margin: 0 1px; }
-        .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
-        .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
-        @keyframes typing { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
+        /* Loading Overlay */
+        .loading-overlay {
+            position: fixed; inset: 0; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(5px);
+            z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem;
+        }
+        .dark .loading-overlay { background: rgba(15, 23, 42, 0.9); }
+        .loading-overlay.hidden { display: none; }
+        .spinner {
+            width: 48px; height: 48px; border: 5px solid rgba(66, 103, 178, 0.1);
+            border-top-color: #4267B2; border-radius: 50%; animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
 <body class="bg-brandGray dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300">
 
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="spinner"></div>
+        <p class="text-sm font-bold text-slate-600 dark:text-slate-300">جاري تحميل بيانات الرقابة...</p>
+    </div>
+
     <div id="sidebar-container" class="no-print"></div>
     
-    <div class="main-content-wrapper md:mr-72 transition-all duration-300 flex flex-col min-h-screen">
+    <div class="main-content-wrapper ltr:md:ml-72 rtl:md:mr-72 transition-all duration-300 flex flex-col min-h-screen">
         <div id="header-container" class="no-print"></div>
 
         <main class="p-6 space-y-6">
             
-            <!-- 1. Audit Stats -->
             <div class="grid grid-cols-1 md:grid-cols-4 gap-6 no-print">
-                <!-- Compliance Score -->
                 <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 flex justify-between items-center">
                     <div>
                         <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase" data-i18n="kpiScore">نسبة الامتثال الرقابي</p>
@@ -77,7 +80,6 @@
                     <div class="w-10 h-10 rounded-xl bg-green-50 dark:bg-green-900/30 text-green-600 flex items-center justify-center text-xl"><i class="fa-solid fa-clipboard-check"></i></div>
                 </div>
 
-                <!-- Open Findings -->
                 <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 flex justify-between items-center">
                     <div>
                         <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase" data-i18n="kpiFindings">ملاحظات مفتوحة</p>
@@ -86,7 +88,6 @@
                     <div class="w-10 h-10 rounded-xl bg-orange-50 dark:bg-orange-900/30 text-orange-500 flex items-center justify-center text-xl"><i class="fa-solid fa-list-check"></i></div>
                 </div>
 
-                <!-- Critical Alerts -->
                 <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 flex justify-between items-center">
                     <div>
                         <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase" data-i18n="kpiAlerts">تنبيهات أمنية (Log)</p>
@@ -95,7 +96,6 @@
                     <div class="w-10 h-10 rounded-xl bg-red-50 dark:bg-red-900/30 text-red-500 flex items-center justify-center text-xl"><i class="fa-solid fa-shield-virus"></i></div>
                 </div>
 
-                <!-- Last Audit -->
                 <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 flex justify-between items-center">
                     <div>
                         <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase" data-i18n="kpiLast">آخر تدقيق داخلي</p>
@@ -106,12 +106,9 @@
                 </div>
             </div>
 
-            <!-- 2. Main Workspace -->
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
                 
-                <!-- Left: Live System Log (The Matrix) -->
                 <div class="lg:col-span-8 bg-slate-900 rounded-3xl shadow-lg border border-slate-800 flex flex-col min-h-[600px] overflow-hidden">
-                    <!-- Terminal Header -->
                     <div class="p-4 bg-slate-950 border-b border-slate-800 flex justify-between items-center">
                         <div class="flex items-center gap-3">
                             <span class="w-3 h-3 rounded-full bg-red-500"></span>
@@ -128,16 +125,12 @@
                         </div>
                     </div>
 
-                    <!-- Terminal Body -->
                     <div class="flex-1 p-4 overflow-y-auto terminal-font text-xs space-y-2 log-container ltr" dir="ltr" id="liveLogContainer">
-                        <!-- Simulated Logs injected here -->
-                    </div>
+                        </div>
                 </div>
 
-                <!-- Right: Findings & Plan -->
                 <div class="lg:col-span-4 space-y-6">
                     
-                    <!-- Internal Audit Plan -->
                     <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700">
                         <h3 class="font-bold text-slate-800 dark:text-white mb-4 flex items-center gap-2">
                             <i class="fa-solid fa-calendar-check text-brandBlue"></i> <span data-i18n="planTitle">خطة التدقيق 2026</span>
@@ -175,7 +168,6 @@
                         </div>
                     </div>
 
-                    <!-- Findings & CAPA -->
                     <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 flex flex-col h-[350px]">
                         <div class="flex justify-between items-center mb-4">
                             <h3 class="font-bold text-slate-800 dark:text-white flex items-center gap-2">
@@ -185,7 +177,6 @@
                         </div>
                         
                         <div class="flex-1 overflow-y-auto space-y-3 pr-1" id="findingsList">
-                            <!-- Finding 1 -->
                             <div class="p-3 bg-red-50 dark:bg-red-900/10 border border-red-100 dark:border-red-900/30 rounded-xl group relative">
                                 <div class="flex justify-between items-start mb-1">
                                     <span class="text-[10px] font-bold text-red-600 bg-red-100 px-1.5 rounded" data-i18n="riskHigh">عالية الخطورة</span>
@@ -199,7 +190,6 @@
                                 </div>
                             </div>
 
-                            <!-- Finding 2 -->
                             <div class="p-3 bg-orange-50 dark:bg-orange-900/10 border border-orange-100 dark:border-orange-900/30 rounded-xl group relative">
                                 <div class="flex justify-between items-start mb-1">
                                     <span class="text-[10px] font-bold text-orange-600 bg-orange-100 px-1.5 rounded" data-i18n="riskMed">متوسطة</span>
@@ -221,7 +211,6 @@
         </main>
     </div>
 
-    <!-- Finding Detail Modal -->
     <div id="findingModal" class="fixed inset-0 bg-black/60 hidden z-50 flex items-center justify-center backdrop-blur-sm">
         <div class="bg-white dark:bg-slate-800 w-full max-w-lg rounded-2xl shadow-xl p-6">
             <div class="flex justify-between items-center mb-4 border-b pb-2 dark:border-slate-700">
@@ -253,38 +242,52 @@
         </div>
     </div>
 
-    <!-- AndroBot Widget (AI Assistant) -->
-    <div id="andro-bot-container" class="fixed bottom-6 left-6 z-50 flex flex-col items-start gap-4 font-sans" dir="rtl">
-        <!-- Chat Window -->
-        <div id="chat-window" class="hidden bg-white dark:bg-slate-800 w-80 md:w-96 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden flex flex-col chat-window-anim" style="height: 500px; max-height: 70vh;">
-            <div class="bg-brandBlue p-4 flex justify-between items-center text-white">
-                <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center"><i class="fa-solid fa-robot"></i></div>
-                    <div><h4 class="font-bold text-sm">AndroBot</h4><p class="text-[10px] text-white/80">مساعد الحوكمة الذكي</p></div>
-                </div>
-                <button id="close-chat-btn" class="text-white/80 hover:text-white transition"><i class="fa-solid fa-times"></i></button>
-            </div>
-            <div id="chat-body" class="flex-1 p-4 bg-slate-50 dark:bg-slate-900/50 overflow-y-auto custom-scroll space-y-3 flex flex-col">
-                <div class="chat-bubble bot">مرحباً بك في سجل التدقيق 👋<br>أنا هنا لمساعدتك في تتبع العمليات، الملاحظات، أو نسبة الامتثال.</div>
-                <div class="flex flex-wrap gap-2 mt-2" id="suggestions">
-                    <button class="suggestion-btn text-xs bg-white border border-brandBlue/30 text-brandBlue px-3 py-1.5 rounded-full" data-q="نسبة الامتثال؟">نسبة الامتثال؟</button>
-                    <button class="suggestion-btn text-xs bg-white border border-brandBlue/30 text-brandBlue px-3 py-1.5 rounded-full" data-q="الملاحظات المفتوحة">الملاحظات المفتوحة</button>
-                </div>
-            </div>
-            <div class="p-3 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 flex gap-2">
-                <input type="text" id="chat-input" placeholder="اكتب استفسارك..." class="flex-1 bg-slate-100 dark:bg-slate-900 border-none rounded-lg text-sm px-4 py-2 focus:ring-2 focus:ring-brandBlue outline-none dark:text-white">
-                <button id="send-btn" class="w-10 h-10 rounded-lg bg-brandBlue text-white hover:bg-blue-700 transition flex items-center justify-center"><i class="fa-solid fa-paper-plane"></i></button>
-            </div>
-        </div>
-        <!-- Floating Button -->
-        <button id="chat-fab" class="w-14 h-14 bg-brandBlue hover:bg-blue-700 text-white rounded-full shadow-lg shadow-blue-600/30 flex items-center justify-center text-2xl transition-all transform hover:scale-110 active:scale-95 animate-bounce-slow">
-            <i class="fa-solid fa-comment-dots"></i>
-            <span class="absolute top-0 right-0 w-4 h-4 bg-brandRed rounded-full border-2 border-white dark:border-slate-900"></span>
-        </button>
-    </div>
+    <script src="data/company_policy.js"></script>
+    
+    <script src="js/core/config.js"></script>
+    <script src="js/core/i18n.js"></script>
+    
+    <script src="js/helpers/policy-helpers.js"></script>
+    
+    <script src="js/services/data-service.js"></script>
+    
+    <script src="js/components/role-switcher.js"></script>
+    <script src="js/components/layout.js"></script>
+    <script src="js/components/bot.js"></script>
 
-    <script src="layout.js"></script>
-    <script src="bot.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // التحقق من تحميل النظام
+            const checkSystem = setInterval(() => {
+                if (typeof Layout !== 'undefined' && typeof AppConfig !== 'undefined' && typeof DataService !== 'undefined') {
+                    clearInterval(checkSystem);
+                    
+                    // --- إصلاح تسجيل الدخول التلقائي ---
+                    if (!AppConfig.getCurrentUser()) {
+                        console.log('⚠️ No user found. Auto-logging as Admin...');
+                        // حاول جلب المستخدم الافتراضي (مدير النظام)
+                        const defaultUser = DataService.getUserById('USR_004') || DataService.getUsers()[0];
+                        if (defaultUser) {
+                            AppConfig.setCurrentUser(defaultUser);
+                            location.reload();
+                            return;
+                        }
+                    }
+
+                    // تهيئة التخطيط العام
+                    Layout.init();
+                    
+                    // إخفاء شاشة التحميل إن وجدت
+                    document.getElementById('loadingOverlay')?.classList.add('hidden');
+                    
+                    // تشغيل أي وظائف خاصة بالصفحة الحالية
+                    if (typeof initPage === 'function') {
+                        initPage();
+                    }
+                }
+            }, 50);
+        });
+    </script>
 
     <script>
         // --- Translation Dictionary ---
@@ -352,10 +355,10 @@
         };
 
         // --- Logic ---
-        document.addEventListener('DOMContentLoaded', () => {
+        function initPage() {
             updatePageLanguage();
             startLiveLog();
-        });
+        }
 
         window.updatePageLanguage = function() {
             const lang = localStorage.getItem('lang') || 'ar';
@@ -388,6 +391,8 @@
         ];
 
         function startLiveLog() {
+            if (!logContainer) return;
+            logContainer.innerHTML = ''; // Clear previous logs
             for(let i=0; i<10; i++) addLogEntry();
             setInterval(() => {
                 if(Math.random() > 0.6) addLogEntry(); 
@@ -395,6 +400,7 @@
         }
 
         function addLogEntry() {
+            if (!logContainer) return;
             const time = new Date().toLocaleTimeString('en-US', {hour12: false});
             const user = users[Math.floor(Math.random() * users.length)];
             const action = actions[Math.floor(Math.random() * actions.length)];
