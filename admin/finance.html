@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#FB4747">
     <link rel="manifest" href="manifest.json">
 
-    <title data-i18n="pageTitle">AndroGov | الرقابة المالية</title>
+    <title data-i18n="pageTitle">الإدارة المالية | AndroGov</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -33,17 +33,34 @@
             }
         }
     </script>
+
     <style>
-        .num-font { font-family: 'Inter', sans-serif; font-feature-settings: "tnum"; }
-        .log-feed::-webkit-scrollbar { width: 4px; }
-        .log-feed::-webkit-scrollbar-thumb { background-color: #475569; border-radius: 4px; }
+        .num-font { font-family: 'Inter', sans-serif; direction: ltr; display: inline-block; }
+        
+        /* Loading Overlay */
+        .loading-overlay {
+            position: fixed; inset: 0; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(5px);
+            z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem;
+        }
+        .dark .loading-overlay { background: rgba(15, 23, 42, 0.9); }
+        .loading-overlay.hidden { display: none; }
+        .spinner {
+            width: 48px; height: 48px; border: 5px solid rgba(66, 103, 178, 0.1);
+            border-top-color: #4267B2; border-radius: 50%; animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
 <body class="bg-brandGray dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300">
 
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="spinner"></div>
+        <p class="text-sm font-bold text-slate-600 dark:text-slate-300">جاري تحميل البيانات المالية...</p>
+    </div>
+
     <div id="sidebar-container" class="no-print"></div>
     
-    <div class="main-content-wrapper md:mr-72 transition-all duration-300 flex flex-col min-h-screen">
+    <div class="main-content-wrapper ltr:md:ml-72 rtl:md:mr-72 transition-all duration-300 flex flex-col min-h-screen">
         <div id="header-container" class="no-print"></div>
 
         <main class="p-6 space-y-6">
@@ -51,100 +68,91 @@
             <div class="flex flex-col md:flex-row justify-between items-end gap-4">
                 <div>
                     <h1 class="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                        <i class="fa-solid fa-scale-balanced text-brandBlue"></i> الرقابة المالية والحوكمة
+                        <i class="fa-solid fa-coins text-brandRed"></i> <span data-i18n="headerTitle">الإدارة المالية</span>
                     </h1>
-                    <div class="flex items-center gap-2 mt-1">
-                        <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-600 text-[10px] font-bold border border-slate-200 flex items-center gap-1">
-                            <i class="fa-solid fa-server"></i> نظام داخلي (Offline)
-                        </span>
-                        <p class="text-sm text-slate-500">العام المالي: 2026</p>
-                    </div>
+                    <p class="text-sm text-slate-500 mt-1" data-i18n="headerDesc">متابعة التدفقات النقدية، الميزانية، والتقارير المالية.</p>
                 </div>
-                <div class="flex gap-3">
-                    <button class="px-4 py-2 bg-slate-800 text-white rounded-lg text-xs font-bold shadow-md hover:bg-slate-700 transition flex items-center gap-2">
-                        <i class="fa-solid fa-file-export"></i> <span>تصدير تقرير التدقيق (Excel)</span>
+                <div class="flex gap-2">
+                    <button onclick="window.print()" class="px-4 py-2 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-white rounded-lg text-sm font-bold hover:bg-slate-200 transition">
+                        <i class="fa-solid fa-file-invoice-dollar"></i> <span data-i18n="btnReport">تقرير مالي</span>
+                    </button>
+                    <button onclick="openTransactionModal()" class="px-6 py-2 bg-brandBlue text-white rounded-lg text-sm font-bold shadow-lg hover:bg-blue-700 transition flex items-center gap-2">
+                        <i class="fa-solid fa-plus"></i> <span data-i18n="btnAddTrans">إضافة معاملة</span>
                     </button>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <div class="flex justify-between items-start mb-2">
+                        <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase" data-i18n="kpiCash">التدفق النقدي</p>
+                        <div class="w-8 h-8 rounded-lg bg-green-50 dark:bg-green-900/30 text-green-600 flex items-center justify-center"><i class="fa-solid fa-money-bill-trend-up"></i></div>
+                    </div>
+                    <h3 class="text-2xl font-bold text-slate-900 dark:text-white num-font">245,000</h3>
+                    <p class="text-[10px] text-green-500 mt-1 flex items-center gap-1 num-font"><i class="fa-solid fa-arrow-up"></i> 12% <span class="text-slate-400" data-i18n="vsLast">عن الشهر السابق</span></p>
+                </div>
                 
                 <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="text-xs text-slate-500 font-bold uppercase">سلامة السجلات</p>
-                            <h3 class="text-2xl font-bold mt-1 font-en text-green-600">100%</h3>
-                        </div>
-                        <div class="w-10 h-10 bg-green-50 dark:bg-green-900/30 text-green-600 rounded-xl flex items-center justify-center text-xl"><i class="fa-solid fa-file-circle-check"></i></div>
+                    <div class="flex justify-between items-start mb-2">
+                        <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase" data-i18n="kpiRev">الإيرادات (YTD)</p>
+                        <div class="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-900/30 text-blue-600 flex items-center justify-center"><i class="fa-solid fa-chart-line"></i></div>
                     </div>
-                    <p class="text-[10px] text-slate-400 mt-2">لا توجد قيود معلقة أو غير متزنة</p>
+                    <h3 class="text-2xl font-bold text-slate-900 dark:text-white num-font">1,200,000</h3>
+                    <p class="text-[10px] text-slate-400 mt-1" data-i18n="kpiTarget">95% من المستهدف</p>
                 </div>
-
-                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 relative overflow-hidden">
-                    <div class="absolute top-0 right-0 w-1 h-full bg-red-500"></div>
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="text-xs text-slate-500 font-bold uppercase">تجاوزات الموازنة</p>
-                            <h3 class="text-2xl font-bold mt-1 font-en text-red-500">1 <span class="text-xs text-slate-400 font-normal">إدارة</span></h3>
-                        </div>
-                        <div class="w-10 h-10 bg-red-50 dark:bg-red-900/30 text-red-500 rounded-xl flex items-center justify-center text-xl"><i class="fa-solid fa-triangle-exclamation"></i></div>
-                    </div>
-                    <p class="text-[10px] text-slate-400 mt-2">إدارة التسويق (105%)</p>
-                </div>
-
+                
                 <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="text-xs text-slate-500 font-bold uppercase">فواتير جاهزة للتصدير</p>
-                            <h3 class="text-2xl font-bold mt-1 font-en text-brandBlue">15</h3>
-                        </div>
-                        <div class="w-10 h-10 bg-blue-50 dark:bg-blue-900/30 text-brandBlue rounded-xl flex items-center justify-center text-xl"><i class="fa-solid fa-print"></i></div>
+                    <div class="flex justify-between items-start mb-2">
+                        <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase" data-i18n="kpiExp">المصروفات</p>
+                        <div class="w-8 h-8 rounded-lg bg-red-50 dark:bg-red-900/30 text-red-600 flex items-center justify-center"><i class="fa-solid fa-arrow-trend-down"></i></div>
                     </div>
-                    <p class="text-[10px] text-slate-400 mt-2">بانتظار الرفع اليدوي للهيئة</p>
+                    <h3 class="text-2xl font-bold text-slate-900 dark:text-white num-font">850,000</h3>
+                    <p class="text-[10px] text-red-500 mt-1 flex items-center gap-1 num-font"><i class="fa-solid fa-arrow-up"></i> 5% <span class="text-slate-400" data-i18n="vsLast">عن الشهر السابق</span></p>
                 </div>
-
+                
                 <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="text-xs text-slate-500 font-bold uppercase">طلبات تعديل السياسات</p>
-                            <h3 class="text-2xl font-bold mt-1 font-en text-orange-500">2 <span class="text-xs text-slate-400 font-normal">معلقة</span></h3>
-                        </div>
-                        <div class="w-10 h-10 bg-orange-50 dark:bg-orange-900/30 text-orange-500 rounded-xl flex items-center justify-center text-xl"><i class="fa-solid fa-file-pen"></i></div>
+                    <div class="flex justify-between items-start mb-2">
+                        <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase" data-i18n="kpiProfit">صافي الربح</p>
+                        <div class="w-8 h-8 rounded-lg bg-purple-50 dark:bg-purple-900/30 text-purple-600 flex items-center justify-center"><i class="fa-solid fa-wallet"></i></div>
                     </div>
-                    <p class="text-[10px] text-slate-400 mt-2">تتطلب موافقة الأدمن</p>
+                    <h3 class="text-2xl font-bold text-slate-900 dark:text-white num-font">350,000</h3>
+                    <p class="text-[10px] text-slate-400 mt-1" data-i18n="kpiMargin">هامش ربح 29%</p>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 
-                <div class="lg:col-span-2 bg-slate-900 rounded-2xl p-5 shadow-lg border border-slate-800 flex flex-col h-[400px]">
-                    <div class="flex justify-between items-center mb-4 border-b border-slate-700 pb-3">
-                        <h3 class="font-bold text-white flex items-center gap-2">
-                            <i class="fa-solid fa-list-ul text-slate-400"></i> سجل العمليات (Internal Log)
-                        </h3>
-                        <span class="text-[10px] bg-slate-800 text-slate-300 px-2 py-1 rounded border border-slate-700">Local DB</span>
+                <div class="lg:col-span-2 bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="font-bold text-slate-800 dark:text-white text-sm" data-i18n="chartRevExp">الإيرادات مقابل المصروفات</h3>
+                        <select class="bg-slate-50 dark:bg-slate-700 border-none rounded-lg text-xs px-2 py-1 dark:text-white">
+                            <option>2026</option>
+                            <option>2025</option>
+                        </select>
                     </div>
-                    
-                    <div class="flex-1 overflow-y-auto log-feed space-y-2 font-mono text-xs pr-2" id="finLogContainer">
-                        </div>
+                    <div class="h-64 w-full">
+                        <canvas id="revExpChart"></canvas>
+                    </div>
                 </div>
 
-                <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-6 flex flex-col">
-                    <h3 class="font-bold text-slate-800 dark:text-white mb-4">توزيع المصروفات (داخلياً)</h3>
-                    <div class="h-48 relative flex justify-center mb-4">
-                        <canvas id="expensesChart"></canvas>
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <h3 class="font-bold text-slate-800 dark:text-white mb-6 text-sm" data-i18n="chartBreakdown">توزيع المصروفات</h3>
+                    <div class="h-48 relative flex justify-center">
+                        <canvas id="breakdownChart"></canvas>
                     </div>
-                    
-                    <div class="mt-auto pt-4 border-t border-slate-100 dark:border-slate-700 space-y-2">
-                        <p class="text-xs font-bold text-slate-500 uppercase mb-2">طلبات المدير المالي</p>
-                        <button onclick="reviewPolicy('limit')" class="w-full text-xs flex justify-between items-center p-2 bg-slate-50 dark:bg-slate-700 rounded hover:bg-slate-100 dark:hover:bg-slate-600 border border-slate-200 dark:border-slate-600 transition">
-                            <span>رفع سقف الشراء المباشر</span>
-                            <span class="text-[10px] bg-orange-100 text-orange-700 px-1.5 rounded">طلب جديد</span>
-                        </button>
-                        <button onclick="reviewPolicy('year')" class="w-full text-xs flex justify-between items-center p-2 bg-slate-50 dark:bg-slate-700 rounded hover:bg-slate-100 dark:hover:bg-slate-600 border border-slate-200 dark:border-slate-600 transition">
-                            <span>إغلاق السنة المالية 2025</span>
-                            <span class="text-[10px] bg-green-100 text-green-700 px-1.5 rounded">جاهز</span>
-                        </button>
+                    <div class="mt-4 space-y-2">
+                        <div class="flex justify-between text-xs">
+                            <span class="flex items-center gap-2 text-slate-500"><span class="w-2 h-2 rounded-full bg-blue-500"></span> <span data-i18n="expSalaries">رواتب</span></span>
+                            <span class="font-bold num-font">60%</span>
+                        </div>
+                        <div class="flex justify-between text-xs">
+                            <span class="flex items-center gap-2 text-slate-500"><span class="w-2 h-2 rounded-full bg-red-500"></span> <span data-i18n="expOps">تشغيل</span></span>
+                            <span class="font-bold num-font">25%</span>
+                        </div>
+                        <div class="flex justify-between text-xs">
+                            <span class="flex items-center gap-2 text-slate-500"><span class="w-2 h-2 rounded-full bg-green-500"></span> <span data-i18n="expMkt">تسويق</span></span>
+                            <span class="font-bold num-font">15%</span>
+                        </div>
                     </div>
                 </div>
 
@@ -152,147 +160,316 @@
 
             <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden">
                 <div class="p-5 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center">
-                    <h3 class="font-bold text-slate-800 dark:text-white flex items-center gap-2">
-                        <i class="fa-solid fa-chart-simple text-slate-400"></i> رقابة الموازنة (Budget Control)
-                    </h3>
-                    <button class="text-xs text-brandBlue hover:underline font-bold">طباعة التقرير</button>
+                    <h3 class="font-bold text-slate-800 dark:text-white" data-i18n="transTitle">أحدث المعاملات</h3>
+                    <div class="flex gap-2">
+                        <button onclick="filterTrans('all')" class="px-3 py-1 text-xs font-bold rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-white" data-i18n="filterAll">الكل</button>
+                        <button onclick="filterTrans('income')" class="px-3 py-1 text-xs font-bold rounded-lg text-slate-500 hover:bg-green-50 hover:text-green-600" data-i18n="filterIncome">دخل</button>
+                        <button onclick="filterTrans('expense')" class="px-3 py-1 text-xs font-bold rounded-lg text-slate-500 hover:bg-red-50 hover:text-red-600" data-i18n="filterExp">مصروف</button>
+                    </div>
                 </div>
-                <table class="w-full text-sm text-right rtl:text-right ltr:text-left">
-                    <thead class="bg-slate-50 dark:bg-slate-700 text-slate-500 text-xs uppercase">
-                        <tr>
-                            <th class="p-4">مركز التكلفة</th>
-                            <th class="p-4">المسؤول</th>
-                            <th class="p-4">الموازنة المعتمدة</th>
-                            <th class="p-4">المنصرف الفعلي</th>
-                            <th class="p-4 text-center">نسبة الانحراف</th>
-                            <th class="p-4 text-center">الحالة</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-100 dark:divide-slate-700 dark:text-slate-300">
-                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50">
-                            <td class="p-4 font-bold">الموارد البشرية (الرواتب)</td>
-                            <td class="p-4 text-xs text-slate-500">منصور اليامي</td>
-                            <td class="p-4 font-mono text-xs">450,000</td>
-                            <td class="p-4 font-mono text-xs">95,000</td>
-                            <td class="p-4 text-center font-mono text-green-600">-5%</td>
-                            <td class="p-4 text-center"><span class="bg-green-100 text-green-700 px-2 py-0.5 rounded text-[10px] font-bold">آمن</span></td>
-                        </tr>
-                        <tr class="bg-red-50/50 dark:bg-red-900/10">
-                            <td class="p-4 font-bold">التسويق والإعلان</td>
-                            <td class="p-4 text-xs text-slate-500">سارة الأحمد</td>
-                            <td class="p-4 font-mono text-xs">100,000</td>
-                            <td class="p-4 font-mono text-xs font-bold text-red-600">105,000</td>
-                            <td class="p-4 text-center font-mono text-red-600 font-bold">+5%</td>
-                            <td class="p-4 text-center"><span class="bg-red-100 text-red-700 px-2 py-0.5 rounded text-[10px] font-bold flex items-center justify-center gap-1"><i class="fa-solid fa-ban"></i> تجاوز</span></td>
-                        </tr>
-                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50">
-                            <td class="p-4 font-bold">تقنية المعلومات</td>
-                            <td class="p-4 text-xs text-slate-500">فهد الحربي</td>
-                            <td class="p-4 font-mono text-xs">200,000</td>
-                            <td class="p-4 font-mono text-xs">45,000</td>
-                            <td class="p-4 text-center font-mono text-green-600">-10%</td>
-                            <td class="p-4 text-center"><span class="bg-green-100 text-green-700 px-2 py-0.5 rounded text-[10px] font-bold">آمن</span></td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-right rtl:text-right ltr:text-left">
+                        <thead class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 dark:text-slate-400 text-xs font-bold uppercase">
+                            <tr>
+                                <th class="p-4" data-i18n="colDesc">الوصف</th>
+                                <th class="p-4" data-i18n="colDate">التاريخ</th>
+                                <th class="p-4" data-i18n="colCategory">التصنيف</th>
+                                <th class="p-4" data-i18n="colAmount">المبلغ</th>
+                                <th class="p-4 text-center" data-i18n="colStatus">الحالة</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 dark:divide-slate-700 text-slate-700 dark:text-slate-300" id="transTable">
+                            </tbody>
+                    </table>
+                </div>
             </div>
 
         </main>
     </div>
 
-    <div id="policyModal" class="fixed inset-0 bg-black/60 hidden z-50 flex items-center justify-center backdrop-blur-sm">
-        <div class="bg-white dark:bg-slate-800 w-full max-w-lg rounded-2xl shadow-xl p-6">
-            <div class="flex justify-between items-center mb-4 border-b pb-2 dark:border-slate-700">
-                <h3 class="font-bold text-lg dark:text-white">مراجعة طلب (Governance)</h3>
-                <button onclick="document.getElementById('policyModal').classList.add('hidden')"><i class="fa-solid fa-xmark text-slate-400"></i></button>
+    <div id="transModal" class="fixed inset-0 bg-black/70 hidden z-50 flex items-center justify-center backdrop-blur-sm p-4">
+        <div class="bg-white dark:bg-slate-800 w-full max-w-lg rounded-2xl shadow-2xl flex flex-col">
+            <div class="p-5 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center">
+                <h3 class="font-bold text-lg dark:text-white" data-i18n="modTitle">تسجيل معاملة جديدة</h3>
+                <button onclick="closeModal('transModal')" class="text-slate-400 hover:text-red-500"><i class="fa-solid fa-xmark"></i></button>
             </div>
             
-            <div class="space-y-4">
-                <div class="bg-slate-50 dark:bg-slate-700 p-3 rounded-lg text-sm">
-                    <p class="text-xs text-slate-500 mb-1">نوع الطلب</p>
-                    <p class="font-bold dark:text-white" id="reqType">تعديل حد الصلاحيات</p>
+            <div class="p-6 space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="modDescLabel">وصف المعاملة</label>
+                    <input type="text" class="w-full border dark:border-slate-600 dark:bg-slate-700 rounded-lg p-2 text-sm dark:text-white">
                 </div>
-                <div class="bg-slate-50 dark:bg-slate-700 p-3 rounded-lg text-sm">
-                    <p class="text-xs text-slate-500 mb-1">مقدم الطلب</p>
-                    <p class="font-bold dark:text-white">محمد البخيتي (CFO)</p>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="modTypeLabel">النوع</label>
+                        <select class="w-full border dark:border-slate-600 dark:bg-slate-700 rounded-lg p-2 text-sm dark:text-white">
+                            <option value="income" data-i18n="optIncome">دخل</option>
+                            <option value="expense" data-i18n="optExp">مصروف</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="modAmountLabel">المبلغ</label>
+                        <input type="number" class="w-full border dark:border-slate-600 dark:bg-slate-700 rounded-lg p-2 text-sm dark:text-white num-font">
+                    </div>
                 </div>
-                <div class="p-3 border border-slate-200 dark:border-slate-600 rounded-lg">
-                    <p class="text-xs text-slate-500 mb-2">التفاصيل:</p>
-                    <p class="text-sm dark:text-slate-300">نطلب رفع حد الشراء المباشر من 5,000 إلى 10,000 ريال لتسريع وتيرة العمل.</p>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="modDateLabel">التاريخ</label>
+                    <input type="date" class="w-full border dark:border-slate-600 dark:bg-slate-700 rounded-lg p-2 text-sm dark:text-white">
                 </div>
             </div>
 
-            <div class="mt-6 flex justify-end gap-2">
-                <button onclick="document.getElementById('policyModal').classList.add('hidden')" class="px-4 py-2 bg-red-100 text-red-700 rounded-lg text-xs font-bold hover:bg-red-200">رفض</button>
-                <button onclick="alert('تم الاعتماد وتحديث السياسة في النظام'); document.getElementById('policyModal').classList.add('hidden')" class="px-6 py-2 bg-brandBlue text-white rounded-lg text-xs font-bold hover:bg-blue-700">موافقة واعتماد</button>
+            <div class="p-5 border-t border-slate-100 dark:border-slate-700 flex justify-end gap-3">
+                <button onclick="closeModal('transModal')" class="px-4 py-2 border dark:border-slate-600 rounded-lg text-xs font-bold dark:text-white" data-i18n="btnCancel">إلغاء</button>
+                <button onclick="alert('تم حفظ المعاملة'); closeModal('transModal')" class="px-6 py-2 bg-brandBlue text-white rounded-lg text-xs font-bold" data-i18n="btnSave">حفظ</button>
             </div>
         </div>
     </div>
 
-    <script src="layout.js"></script>
-    <script src="bot.js"></script>
+    <script src="data/company_policy.js"></script>
+    <script src="js/core/config.js"></script>
+    <script src="js/core/i18n.js"></script>
+    <script src="js/helpers/policy-helpers.js"></script>
+    <script src="js/services/data-service.js"></script>
+    <script src="js/components/role-switcher.js"></script>
+    <script src="js/components/layout.js"></script>
+    <script src="js/components/bot.js"></script>
 
     <script>
-        // --- 1. Audit Log Logic (Internal Only) ---
-        const logContainer = document.getElementById('finLogContainer');
-        const users = ["Mohammed (CFO)", "Sarah (Tax)", "Omar (Treasury)", "System"];
-        const actions = [
-            { t: "INV", msg: "Generated Internal Invoice #1002", c: "text-green-400" },
-            { t: "GL", msg: "Saved Journal Entry #JV-44", c: "text-blue-400" },
-            { t: "AUTH", msg: "Login Success (Local Network)", c: "text-slate-400" },
-            { t: "EXPORT", msg: "Exported Tax Report (PDF)", c: "text-purple-400" },
-            { t: "WARN", msg: "Over-Budget PO Attempt", c: "text-red-500 font-bold" }
+        // --- DATA STATE ---
+        const transactions = [
+            { id: 1, descAr: "دفعة مشروع أرامكو", descEn: "Aramco Project Payment", date: "2026-01-15", cat: "income", amount: 150000, status: "completed" },
+            { id: 2, descAr: "رواتب شهر يناير", descEn: "January Salaries", date: "2026-01-25", cat: "expense", amount: 85000, status: "pending" },
+            { id: 3, descAr: "تجديد تراخيص البرامج", descEn: "Software License Renewal", date: "2026-01-10", cat: "expense", amount: 12000, status: "completed" },
+            { id: 4, descAr: "استشارات قانونية", descEn: "Legal Consulting", date: "2026-01-05", cat: "expense", amount: 5000, status: "completed" },
+            { id: 5, descAr: "دفعة مقدمة - عميل جديد", descEn: "Down Payment - New Client", date: "2026-01-20", cat: "income", amount: 45000, status: "completed" }
         ];
 
-        function addLogEntry() {
-            const time = new Date().toLocaleTimeString('en-US', {hour12: false});
-            const user = users[Math.floor(Math.random() * users.length)];
-            const action = actions[Math.floor(Math.random() * actions.length)];
-            
-            const div = document.createElement('div');
-            div.className = "flex gap-2 items-center p-1 hover:bg-slate-800/50 rounded transition";
-            div.innerHTML = `
-                <span class="text-slate-500 w-16 shrink-0 text-[10px]">[${time}]</span>
-                <span class="text-slate-300 w-24 shrink-0 font-bold text-[10px]">${user}</span>
-                <span class="${action.c} text-[10px] truncate">${action.msg}</span>
-            `;
-            logContainer.prepend(div);
-            if(logContainer.children.length > 20) logContainer.lastElementChild.remove();
+        // --- INIT ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const checkSystem = setInterval(() => {
+                if (typeof Layout !== 'undefined' && typeof AppConfig !== 'undefined' && typeof DataService !== 'undefined') {
+                    clearInterval(checkSystem);
+                    
+                    if (!AppConfig.getCurrentUser()) {
+                        const defaultUser = DataService.getUserById('USR_004') || DataService.getUsers()[0];
+                        if (defaultUser) AppConfig.setCurrentUser(defaultUser);
+                    }
+
+                    Layout.init();
+                    initPage();
+                    document.getElementById('loadingOverlay')?.classList.add('hidden');
+                }
+            }, 50);
+        });
+
+        function initPage() {
+            updatePageLanguage();
+            renderTable('all');
+            renderCharts();
         }
 
-        // Simulate activity
-        setInterval(() => { if(Math.random() > 0.5) addLogEntry(); }, 3000);
-        for(let i=0; i<5; i++) addLogEntry();
+        function updatePageLanguage() {
+            const lang = AppConfig.getLang();
+            const dict = t[lang];
+            
+            document.documentElement.lang = lang;
+            document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
 
-        // --- 2. Chart (Expenses) ---
-        document.addEventListener('DOMContentLoaded', () => {
-            const ctx = document.getElementById('expensesChart').getContext('2d');
-            new Chart(ctx, {
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if(dict[key]) el.innerText = dict[key];
+            });
+
+            renderTable('all');
+            renderCharts();
+        }
+
+        // --- RENDERING ---
+        function renderTable(filter) {
+            const container = document.getElementById('transTable');
+            const lang = AppConfig.getLang();
+            const dict = t[lang];
+
+            container.innerHTML = '';
+
+            const filtered = transactions.filter(t => filter === 'all' || t.cat === filter);
+
+            filtered.forEach(item => {
+                const amountClass = item.cat === 'income' ? 'text-green-600' : 'text-red-500';
+                const sign = item.cat === 'income' ? '+' : '-';
+                const statusBadge = item.status === 'completed' 
+                    ? `<span class="bg-green-100 text-green-700 px-2 py-1 rounded text-[10px] font-bold">${lang==='ar'?'مكتمل':'Completed'}</span>`
+                    : `<span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded text-[10px] font-bold">${lang==='ar'?'معلق':'Pending'}</span>`;
+
+                container.innerHTML += `
+                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition border-b border-slate-100 dark:border-slate-700">
+                        <td class="p-4 font-bold text-slate-800 dark:text-white text-sm">${lang==='ar' ? item.descAr : item.descEn}</td>
+                        <td class="p-4 text-xs font-mono text-slate-500">${item.date}</td>
+                        <td class="p-4 text-xs">
+                            <span class="${item.cat === 'income' ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-600'} px-2 py-0.5 rounded font-bold uppercase text-[10px] border border-transparent dark:bg-opacity-20">
+                                ${item.cat === 'income' ? (lang==='ar'?'دخل':'Income') : (lang==='ar'?'مصروف':'Expense')}
+                            </span>
+                        </td>
+                        <td class="p-4 font-mono font-bold text-sm ${amountClass} num-font">${sign} ${item.amount.toLocaleString()}</td>
+                        <td class="p-4 text-center">${statusBadge}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        function filterTrans(type) {
+            renderTable(type);
+        }
+
+        function renderCharts() {
+            const lang = AppConfig.getLang();
+            
+            // 1. Revenue vs Expenses
+            const ctx1 = document.getElementById('revExpChart').getContext('2d');
+            new Chart(ctx1, {
+                type: 'bar',
+                data: {
+                    labels: lang==='ar' ? ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو'] : ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [
+                        { label: lang==='ar'?'الإيرادات':'Revenue', data: [120, 150, 180, 200, 170, 220], backgroundColor: '#4267B2', borderRadius: 4 },
+                        { label: lang==='ar'?'المصروفات':'Expenses', data: [80, 90, 100, 110, 95, 120], backgroundColor: '#FB4747', borderRadius: 4 }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom' } },
+                    scales: { y: { beginAtZero: true, grid: { color: '#e2e8f0' } }, x: { grid: { display: false } } }
+                }
+            });
+
+            // 2. Breakdown
+            const ctx2 = document.getElementById('breakdownChart').getContext('2d');
+            new Chart(ctx2, {
                 type: 'doughnut',
                 data: {
-                    labels: ['الرواتب', 'التشغيل', 'التسويق', 'أخرى'],
+                    labels: lang==='ar' ? ['رواتب', 'تشغيل', 'تسويق'] : ['Salaries', 'Ops', 'Marketing'],
                     datasets: [{
-                        data: [60, 20, 15, 5],
-                        backgroundColor: ['#4267B2', '#10B981', '#EF4444', '#CBD5E1'],
-                        borderWidth: 0
+                        data: [60, 25, 15],
+                        backgroundColor: ['#4267B2', '#FB4747', '#10B981'],
+                        borderWidth: 0,
+                        hoverOffset: 5
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: {
-                        legend: { position: 'right', labels: { font: { family: 'Inter', size: 10 } } }
-                    }
+                    plugins: { legend: { display: false } },
+                    cutout: '75%'
                 }
             });
-        });
-
-        // --- 3. Modals ---
-        window.reviewPolicy = function(type) {
-            const title = type === 'limit' ? 'تعديل حد الصلاحيات' : 'إغلاق السنة المالية';
-            document.getElementById('reqType').innerText = title;
-            document.getElementById('policyModal').classList.remove('hidden');
         }
+
+        // --- Modals ---
+        function openTransactionModal() { document.getElementById('transModal').classList.remove('hidden'); }
+        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+        // --- Bot Override ---
+        const originalGetAIResponse = window.getAIResponse; 
+        
+        window.getAIResponse = function(query, isArabic) {
+            const q = query.toLowerCase();
+            
+            if (q.includes('revenue') || q.includes('income') || q.includes('إيراد') || q.includes('دخل')) {
+                return isArabic 
+                    ? `إجمالي الإيرادات حتى الآن هو <b>1,200,000 ريال</b> (95% من المستهدف).`
+                    : `Total YTD Revenue is <b>1,200,000 SAR</b> (95% of target).`;
+            }
+            
+            if (q.includes('profit') || q.includes('ربح') || q.includes('صافي')) {
+                return isArabic
+                    ? `صافي الربح الحالي هو <b>350,000 ريال</b> بهامش ربح 29%.`
+                    : `Current Net Profit is <b>350,000 SAR</b> with a 29% margin.`;
+            }
+
+            // Fallback
+            return isArabic
+                ? `يمكنني إجابتك عن: <b>الإيرادات</b>، <b>المصروفات</b>، أو <b>صافي الربح</b>.`
+                : `I can answer about: <b>Revenue</b>, <b>Expenses</b>, or <b>Net Profit</b>.`;
+        }
+
+        // --- Translation Dictionary ---
+        const t = {
+            ar: {
+                pageTitle: "الإدارة المالية | AndroGov",
+                headerTitle: "الإدارة المالية",
+                headerDesc: "متابعة التدفقات النقدية، الميزانية، والتقارير المالية.",
+                btnReport: "تقرير مالي",
+                btnAddTrans: "إضافة معاملة",
+                kpiCash: "التدفق النقدي",
+                vsLast: "عن الشهر السابق",
+                kpiRev: "الإيرادات (YTD)",
+                kpiTarget: "95% من المستهدف",
+                kpiExp: "المصروفات",
+                kpiProfit: "صافي الربح",
+                kpiMargin: "هامش ربح 29%",
+                chartRevExp: "الإيرادات مقابل المصروفات",
+                chartBreakdown: "توزيع المصروفات",
+                expSalaries: "رواتب",
+                expOps: "تشغيل",
+                expMkt: "تسويق",
+                transTitle: "أحدث المعاملات",
+                filterAll: "الكل",
+                filterIncome: "دخل",
+                filterExp: "مصروف",
+                colDesc: "الوصف",
+                colDate: "التاريخ",
+                colCategory: "التصنيف",
+                colAmount: "المبلغ",
+                colStatus: "الحالة",
+                modTitle: "تسجيل معاملة جديدة",
+                modDescLabel: "وصف المعاملة",
+                modTypeLabel: "النوع",
+                optIncome: "دخل",
+                optExp: "مصروف",
+                modAmountLabel: "المبلغ",
+                modDateLabel: "التاريخ",
+                btnCancel: "إلغاء",
+                btnSave: "حفظ"
+            },
+            en: {
+                pageTitle: "Finance | AndroGov",
+                headerTitle: "Financial Management",
+                headerDesc: "Track cash flow, budgeting, and financial reporting.",
+                btnReport: "Financial Report",
+                btnAddTrans: "Add Transaction",
+                kpiCash: "Cash Flow",
+                vsLast: "vs Last Month",
+                kpiRev: "Revenue (YTD)",
+                kpiTarget: "95% of Target",
+                kpiExp: "Expenses",
+                kpiProfit: "Net Profit",
+                kpiMargin: "29% Profit Margin",
+                chartRevExp: "Revenue vs Expenses",
+                chartBreakdown: "Expense Breakdown",
+                expSalaries: "Salaries",
+                expOps: "Operations",
+                expMkt: "Marketing",
+                transTitle: "Recent Transactions",
+                filterAll: "All",
+                filterIncome: "Income",
+                filterExp: "Expense",
+                colDesc: "Description",
+                colDate: "Date",
+                colCategory: "Category",
+                colAmount: "Amount",
+                colStatus: "Status",
+                modTitle: "New Transaction",
+                modDescLabel: "Description",
+                modTypeLabel: "Type",
+                optIncome: "Income",
+                optExp: "Expense",
+                modAmountLabel: "Amount",
+                modDateLabel: "Date",
+                btnCancel: "Cancel",
+                btnSave: "Save"
+            }
+        };
     </script>
 </body>
 </html>
