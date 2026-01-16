@@ -33,6 +33,13 @@
     </script>
 
     <style>
+        /* Force English Numbers */
+        .num-font, .font-en { font-family: 'Inter', sans-serif !important; direction: ltr; display: inline-block; }
+        
+        /* Timeline Styles */
+        .timeline-line { position: absolute; top: 0; bottom: 0; right: 19px; width: 2px; background: #e2e8f0; }
+        .dark .timeline-line { background: #334155; }
+        
         /* Loading Overlay */
         .loading-overlay {
             position: fixed; inset: 0; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(5px);
@@ -51,7 +58,7 @@
 
     <div id="loadingOverlay" class="loading-overlay">
         <div class="spinner"></div>
-        <p class="text-sm font-bold text-slate-600 dark:text-slate-300">جاري تحميل سجل المساهمين...</p>
+        <p class="text-sm font-bold text-slate-600 dark:text-slate-300">جاري تحميل السجل التاريخي...</p>
     </div>
 
     <div id="sidebar-container"></div>
@@ -66,11 +73,14 @@
                     <h1 class="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
                         <i class="fa-solid fa-users-rectangle text-brandRed"></i> <span data-i18n="headerTitle">سجل المساهمين</span>
                     </h1>
-                    <p class="text-sm text-slate-500 mt-1" data-i18n="headerDesc">إدارة حصص الملكية، توزيع الأرباح، وسجل الشهادات.</p>
+                    <p class="text-sm text-slate-500 mt-1" data-i18n="headerDesc">إدارة حصص الملكية، سجل التأسيس، والعمليات التاريخية.</p>
                 </div>
                 <div class="flex gap-2">
-                    <button onclick="exportRegister()" class="px-4 py-2 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-white rounded-lg text-sm font-bold hover:bg-slate-200 transition flex items-center gap-2">
-                        <i class="fa-solid fa-file-export"></i> <span data-i18n="btnExport">تصدير السجل</span>
+                    <button onclick="openTransactionModal('transfer')" class="px-4 py-2 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-white rounded-lg text-xs font-bold hover:bg-slate-200 transition flex items-center gap-2">
+                        <i class="fa-solid fa-arrow-right-arrow-left"></i> <span data-i18n="btnTransfer">نقل ملكية</span>
+                    </button>
+                    <button onclick="openTransactionModal('increase')" class="px-4 py-2 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-white rounded-lg text-xs font-bold hover:bg-slate-200 transition flex items-center gap-2">
+                        <i class="fa-solid fa-arrow-trend-up"></i> <span data-i18n="btnIncrease">زيادة رأس المال</span>
                     </button>
                     <button onclick="openAddModal()" class="px-6 py-2 bg-brandBlue text-white rounded-lg text-sm font-bold shadow-lg hover:bg-blue-700 transition flex items-center gap-2">
                         <i class="fa-solid fa-user-plus"></i> <span data-i18n="btnAdd">إضافة مساهم</span>
@@ -84,7 +94,7 @@
                         <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase" data-i18n="statCapital">رأس المال</p>
                         <div class="w-8 h-8 rounded-lg bg-green-50 dark:bg-green-900/30 text-green-600 flex items-center justify-center"><i class="fa-solid fa-sack-dollar"></i></div>
                     </div>
-                    <h3 class="text-2xl font-bold text-slate-900 dark:text-white font-en" id="stat-capital">...</h3>
+                    <h3 class="text-2xl font-bold text-slate-900 dark:text-white num-font" id="stat-capital">...</h3>
                     <p class="text-[10px] text-slate-400 mt-1" data-i18n="statPaid">مدفوع بالكامل</p>
                 </div>
                 <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
@@ -92,15 +102,17 @@
                         <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase" data-i18n="statShares">عدد الأسهم</p>
                         <div class="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-900/30 text-blue-600 flex items-center justify-center"><i class="fa-solid fa-layer-group"></i></div>
                     </div>
-                    <h3 class="text-2xl font-bold text-slate-900 dark:text-white font-en" id="stat-shares-count">...</h3>
-                    <p class="text-[10px] text-slate-400 mt-1 font-en" id="stat-share-val">...</p>
+                    <h3 class="text-2xl font-bold text-slate-900 dark:text-white num-font" id="stat-shares-count">...</h3>
+                    <p class="text-[10px] text-slate-400 mt-1 flex gap-1 items-center">
+                        <span data-i18n="statShareVal">القيمة الاسمية:</span> <span class="num-font font-bold">10 SAR</span>
+                    </p>
                 </div>
                 <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
                     <div class="flex justify-between items-start mb-2">
                         <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase" data-i18n="statCount">المساهمين</p>
                         <div class="w-8 h-8 rounded-lg bg-purple-50 dark:bg-purple-900/30 text-purple-600 flex items-center justify-center"><i class="fa-solid fa-users"></i></div>
                     </div>
-                    <h3 class="text-2xl font-bold text-slate-900 dark:text-white font-en" id="stat-holders-count">...</h3>
+                    <h3 class="text-2xl font-bold text-slate-900 dark:text-white num-font" id="stat-holders-count">...</h3>
                     <p class="text-[10px] text-slate-400 mt-1" data-i18n="statActive">نشط</p>
                 </div>
                 <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
@@ -110,12 +122,12 @@
                     </div>
                     <div class="flex items-center gap-4 mt-2">
                         <div>
-                            <span class="text-lg font-bold font-en text-slate-800 dark:text-white" id="stat-ind">...</span>
+                            <span class="text-lg font-bold num-font text-slate-800 dark:text-white" id="stat-ind">...</span>
                             <span class="text-[10px] text-slate-400 block" data-i18n="lblInd">أفراد</span>
                         </div>
                         <div class="w-px h-8 bg-slate-200 dark:bg-slate-700"></div>
                         <div>
-                            <span class="text-lg font-bold font-en text-slate-800 dark:text-white" id="stat-ent">...</span>
+                            <span class="text-lg font-bold num-font text-slate-800 dark:text-white" id="stat-ent">...</span>
                             <span class="text-[10px] text-slate-400 block" data-i18n="lblEnt">شركات</span>
                         </div>
                     </div>
@@ -125,9 +137,14 @@
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 
                 <div class="lg:col-span-2 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden flex flex-col">
-                    <div class="p-5 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center">
-                        <h3 class="font-bold text-slate-800 dark:text-white" data-i18n="tableTitle">قائمة الملاك</h3>
-                        <input type="text" id="searchHolder" onkeyup="renderTable()" class="bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-1.5 text-xs outline-none dark:text-white" data-i18n-placeholder="plhSearch" placeholder="بحث...">
+                    <div class="p-5 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50/50 dark:bg-slate-800">
+                        <h3 class="font-bold text-slate-800 dark:text-white flex items-center gap-2">
+                            <i class="fa-solid fa-list text-slate-400"></i> <span data-i18n="tableTitle">قائمة الملاك</span>
+                        </h3>
+                        <div class="relative">
+                            <input type="text" id="searchHolder" onkeyup="renderTable()" class="bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg pl-8 pr-3 py-1.5 text-xs outline-none dark:text-white w-48" data-i18n-placeholder="plhSearch" placeholder="بحث...">
+                            <i class="fa-solid fa-search absolute left-2.5 top-2 text-slate-400 text-xs"></i>
+                        </div>
                     </div>
                     <div class="overflow-x-auto flex-1">
                         <table class="w-full text-sm text-right rtl:text-right ltr:text-left">
@@ -138,7 +155,7 @@
                                     <th class="p-4" data-i18n="colShares">عدد الأسهم</th>
                                     <th class="p-4" data-i18n="colPercent">النسبة</th>
                                     <th class="p-4" data-i18n="colValue">القيمة (SAR)</th>
-                                    <th class="p-4 text-center" data-i18n="colAction">إجراءات</th>
+                                    <th class="p-4 text-center" data-i18n="colAction">شهادة</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-100 dark:divide-slate-700 text-slate-700 dark:text-slate-300" id="shareholdersTable">
@@ -147,13 +164,30 @@
                     </div>
                 </div>
 
-                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-                    <h3 class="font-bold text-slate-800 dark:text-white mb-6" data-i18n="chartTitle">توزيع الملكية</h3>
-                    <div class="h-64 relative">
-                        <canvas id="ownershipChart"></canvas>
-                    </div>
-                    <div class="mt-6 space-y-3" id="chartLegend">
+                <div class="space-y-6">
+                    
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                        <h3 class="font-bold text-slate-800 dark:text-white mb-6 text-sm" data-i18n="chartTitle">توزيع الملكية</h3>
+                        <div class="h-48 relative flex justify-center">
+                            <canvas id="ownershipChart"></canvas>
                         </div>
+                        <div class="mt-6 space-y-3" id="chartLegend">
+                            </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 relative overflow-hidden">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="font-bold text-slate-800 dark:text-white text-sm flex items-center gap-2">
+                                <i class="fa-solid fa-clock-rotate-left text-brandBlue"></i> <span data-i18n="historyTitle">السجل التاريخي للشركة</span>
+                            </h3>
+                            <button class="text-xs text-brandBlue hover:underline" data-i18n="btnViewAll">عرض الكل</button>
+                        </div>
+                        
+                        <div class="relative pr-6 rtl:pr-6 ltr:pl-6 space-y-6" id="historyTimeline">
+                            <div class="timeline-line"></div>
+                            </div>
+                    </div>
+
                 </div>
 
             </div>
@@ -183,7 +217,7 @@
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="modShares">عدد الأسهم</label>
-                        <input type="number" class="w-full border dark:border-slate-600 dark:bg-slate-700 rounded-lg p-2 text-sm dark:text-white">
+                        <input type="number" class="w-full border dark:border-slate-600 dark:bg-slate-700 rounded-lg p-2 text-sm dark:text-white num-font">
                     </div>
                 </div>
                 <div>
@@ -193,7 +227,7 @@
             </div>
 
             <div class="p-5 border-t border-slate-100 dark:border-slate-700 flex justify-end gap-3">
-                <button onclick="closeModal('addModal')" class="px-4 py-2 border rounded-lg text-xs font-bold dark:text-white" data-i18n="btnCancel">إلغاء</button>
+                <button onclick="closeModal('addModal')" class="px-4 py-2 border dark:border-slate-600 rounded-lg text-xs font-bold dark:text-white" data-i18n="btnCancel">إلغاء</button>
                 <button onclick="alert('تمت الإضافة بنجاح'); closeModal('addModal')" class="px-6 py-2 bg-brandBlue text-white rounded-lg text-xs font-bold" data-i18n="btnSave">حفظ</button>
             </div>
         </div>
@@ -212,6 +246,15 @@
         // --- DATA STATE ---
         let shareholders = [];
         let companyInfo = {};
+
+        // Mock History Data
+        const historyData = [
+            { date: "2026-01-01", eventAr: "تحديث السجل التجاري", eventEn: "CR Update", type: "gov", user: "Admin" },
+            { date: "2025-11-28", eventAr: "دخول مساهم جديد (شركة بيجي)", eventEn: "New Shareholder (BG)", type: "transfer", user: "CEO" },
+            { date: "2024-05-15", eventAr: "زيادة رأس المال إلى 6 مليون", eventEn: "Capital Increase to 6M", type: "capital", user: "Board" },
+            { date: "2020-03-10", eventAr: "دخول شركاء جدد (الجولة أ)", eventEn: "Series A Round", type: "transfer", user: "Admin" },
+            { date: "2012-11-28", eventAr: "تأسيس الشركة (رأس مال 500 ألف)", eventEn: "Incorporation (500k Cap)", type: "founding", user: "Founder" }
+        ];
 
         // --- INIT ---
         document.addEventListener('DOMContentLoaded', () => {
@@ -240,6 +283,7 @@
             renderStats();
             renderTable();
             renderChart();
+            renderTimeline();
         }
 
         function updatePageLanguage() {
@@ -264,14 +308,12 @@
             const lang = AppConfig.getLang();
             const stats = DataService.getShareholdersStats();
             
-            document.getElementById('stat-capital').innerText = I18n.formatNumber(stats.totalCapital) + ' ' + stats.currency;
-            document.getElementById('stat-shares-count').innerText = I18n.formatNumber(stats.totalShares);
+            // Format numbers using Latin digits via I18n.formatNumber with 'en-US' locale implicitly or CSS class
+            document.getElementById('stat-capital').innerText = I18n.formatNumber(stats.totalCapital, 'en-US') + ' ' + (lang==='ar'?'ر.س':'SAR');
+            document.getElementById('stat-shares-count').innerText = I18n.formatNumber(stats.totalShares, 'en-US');
             document.getElementById('stat-holders-count').innerText = stats.totalCount;
             document.getElementById('stat-ind').innerText = stats.individualCount;
             document.getElementById('stat-ent').innerText = stats.entityCount;
-            
-            const valLabel = lang === 'ar' ? 'قيمة السهم' : 'Share Value';
-            document.getElementById('stat-share-val').innerText = `${valLabel}: ${stats.shareValue} ${stats.currency}`;
         }
 
         function renderTable() {
@@ -300,19 +342,45 @@
                     <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition border-b border-slate-100 dark:border-slate-700">
                         <td class="p-4">
                             <p class="font-bold text-slate-800 dark:text-white text-sm">${s.displayName}</p>
-                            <p class="text-[10px] text-slate-400 font-mono">${s.id}</p>
+                            <p class="text-[10px] text-slate-400 font-mono num-font">${s.id}</p>
                         </td>
                         <td class="p-4">
                             <span class="${typeColor} px-2 py-0.5 rounded text-[10px] font-bold">${typeLabel}</span>
                         </td>
-                        <td class="p-4 font-mono font-bold text-slate-700 dark:text-slate-300 text-xs">${I18n.formatNumber(s.shares)}</td>
-                        <td class="p-4 font-mono font-bold text-brandBlue text-xs">${s.percent}%</td>
-                        <td class="p-4 font-mono text-green-600 font-bold text-xs">${I18n.formatNumber(s.value)}</td>
+                        <td class="p-4 font-mono font-bold text-slate-700 dark:text-slate-300 text-xs num-font">${I18n.formatNumber(s.shares, 'en-US')}</td>
+                        <td class="p-4 font-mono font-bold text-brandBlue text-xs num-font ltr">${s.percent}%</td>
+                        <td class="p-4 font-mono text-green-600 font-bold text-xs num-font">${I18n.formatNumber(s.value, 'en-US')}</td>
                         <td class="p-4 text-center">
-                            <button onclick="alert('${s.displayName}')" class="text-slate-400 hover:text-brandBlue transition p-1"><i class="fa-solid fa-eye"></i></button>
-                            <button class="text-slate-400 hover:text-green-600 transition p-1"><i class="fa-solid fa-file-invoice-dollar"></i></button>
+                            <button class="text-slate-400 hover:text-green-600 transition p-1" title="Certificate"><i class="fa-solid fa-file-contract"></i></button>
                         </td>
                     </tr>
+                `;
+            });
+        }
+
+        function renderTimeline() {
+            const container = document.getElementById('historyTimeline');
+            const lang = AppConfig.getLang();
+            // Clear existing but keep line
+            container.innerHTML = '<div class="timeline-line"></div>'; 
+
+            historyData.forEach(item => {
+                const icon = item.type === 'founding' ? 'fa-flag-checkered' : item.type === 'capital' ? 'fa-chart-line' : item.type === 'transfer' ? 'fa-right-left' : 'fa-building-columns';
+                const color = item.type === 'founding' ? 'bg-green-100 text-green-600' : item.type === 'capital' ? 'bg-brandBlue text-white' : 'bg-slate-100 text-slate-500';
+                
+                container.innerHTML += `
+                    <div class="relative flex items-center gap-4">
+                        <div class="w-2.5 h-2.5 rounded-full bg-slate-300 dark:bg-slate-600 absolute right-[15px] rtl:right-[15px] ltr:left-[15px] border-2 border-white dark:border-slate-800 z-10"></div>
+                        <div class="flex-1 bg-slate-50 dark:bg-slate-700/50 p-3 rounded-xl border border-slate-100 dark:border-slate-700 mr-4 rtl:mr-4 ltr:ml-4 flex gap-3 items-center">
+                            <div class="w-8 h-8 rounded-lg ${color} flex items-center justify-center shrink-0 text-xs">
+                                <i class="fa-solid ${icon}"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold text-slate-800 dark:text-white">${lang === 'ar' ? item.eventAr : item.eventEn}</p>
+                                <p class="text-[10px] text-slate-400 font-mono num-font">${item.date} • ${item.user}</p>
+                            </div>
+                        </div>
+                    </div>
                 `;
             });
         }
@@ -320,7 +388,6 @@
         function renderChart() {
             const ctx = document.getElementById('ownershipChart').getContext('2d');
             
-            // Prepare Data (Top 5 + Others)
             const sorted = [...shareholders].sort((a,b) => b.shares - a.shares);
             const top = sorted.slice(0, 4);
             const others = sorted.slice(4).reduce((sum, s) => sum + s.percent, 0);
@@ -358,7 +425,7 @@
                         <span class="w-2.5 h-2.5 rounded-full" style="background-color: ${colors[i]}"></span>
                         <span class="truncate max-w-[150px]">${l}</span>
                     </span>
-                    <span class="font-bold font-mono">${data[i]}%</span>
+                    <span class="font-bold font-mono num-font">${data[i]}%</span>
                 </div>
             `).join('');
         }
@@ -367,21 +434,25 @@
         function openAddModal() { document.getElementById('addModal').classList.remove('hidden'); }
         function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
         function exportRegister() { alert(AppConfig.getLang() === 'ar' ? 'جاري تحميل ملف Excel...' : 'Downloading Excel file...'); }
+        function openTransactionModal(type) { alert(type === 'increase' ? 'فتح معالج زيادة رأس المال...' : 'فتح معالج نقل الملكية...'); }
 
         // --- Translation Dictionary ---
         const t = {
             ar: {
                 pageTitle: "سجل المساهمين | AndroGov",
                 headerTitle: "سجل المساهمين",
-                headerDesc: "إدارة حصص الملكية، توزيع الأرباح، وسجل الشهادات.",
+                headerDesc: "إدارة حصص الملكية، سجل التأسيس، والعمليات التاريخية.",
                 btnExport: "تصدير السجل",
                 btnAdd: "إضافة مساهم",
+                btnTransfer: "نقل ملكية",
+                btnIncrease: "زيادة رأس المال",
                 statCapital: "رأس المال",
                 statPaid: "مدفوع بالكامل",
                 statShares: "عدد الأسهم",
                 statCount: "المساهمين",
                 statActive: "نشط",
                 statType: "التوزيع",
+                statShareVal: "القيمة الاسمية:",
                 lblInd: "أفراد",
                 lblEnt: "شركات",
                 tableTitle: "قائمة الملاك",
@@ -391,9 +462,11 @@
                 colShares: "عدد الأسهم",
                 colPercent: "النسبة",
                 colValue: "القيمة (SAR)",
-                colAction: "إجراءات",
+                colAction: "شهادة",
                 noResults: "لا توجد نتائج",
                 chartTitle: "توزيع الملكية",
+                historyTitle: "السجل التاريخي للشركة",
+                btnViewAll: "عرض الكل",
                 modTitle: "إضافة مساهم جديد",
                 modName: "الاسم الكامل",
                 modType: "النوع",
@@ -407,15 +480,18 @@
             en: {
                 pageTitle: "Shareholders Register | AndroGov",
                 headerTitle: "Shareholders Register",
-                headerDesc: "Manage equity, dividends distribution, and certificates.",
+                headerDesc: "Manage equity, founding history, and transactions.",
                 btnExport: "Export Register",
                 btnAdd: "Add Shareholder",
+                btnTransfer: "Transfer Shares",
+                btnIncrease: "Capital Increase",
                 statCapital: "Total Capital",
                 statPaid: "Fully Paid",
                 statShares: "Total Shares",
                 statCount: "Shareholders",
                 statActive: "Active",
                 statType: "Distribution",
+                statShareVal: "Par Value:",
                 lblInd: "Individuals",
                 lblEnt: "Entities",
                 tableTitle: "Owners List",
@@ -425,9 +501,11 @@
                 colShares: "Shares",
                 colPercent: "Percent",
                 colValue: "Value (SAR)",
-                colAction: "Actions",
+                colAction: "Certificate",
                 noResults: "No results found",
                 chartTitle: "Ownership Distribution",
+                historyTitle: "Historical Record",
+                btnViewAll: "View All",
                 modTitle: "Add New Shareholder",
                 modName: "Full Name",
                 modType: "Type",
