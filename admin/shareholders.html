@@ -3,16 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#FB4747">
-<link rel="manifest" href="manifest.json">
-
-    <title data-i18n="pageTitle">AndroGov | سجل المساهمين</title>
+    <meta name="theme-color" content="#FB4747">
+    <title data-i18n="pageTitle">سجل المساهمين | AndroGov</title>
     
-    <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Libraries -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -35,572 +31,414 @@
             }
         }
     </script>
-    <style>
-        @media print {
-            .no-print { display: none !important; }
-            body { background: white; }
-            .print-header { display: block !important; margin-bottom: 20px; text-align: center; }
-        }
-        .print-header { display: none; }
-        
-        body { transition: opacity 0.2s ease-in-out; }
 
-        /* Bot Styles */
-        .chat-window-anim { transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); transform-origin: bottom left; }
-        .chat-bubble { max-width: 85%; padding: 10px 14px; border-radius: 12px; font-size: 0.9rem; line-height: 1.5; word-wrap: break-word; }
-        .chat-bubble.bot { background-color: #f1f5f9; color: #334155; border-bottom-right-radius: 2px; }
-        .dark .chat-bubble.bot { background-color: #334155; color: #f8fafc; }
-        .chat-bubble.user { background-color: #4267B2; color: white; border-bottom-left-radius: 2px; margin-right: auto; }
-        .typing-indicator span { display: inline-block; width: 6px; height: 6px; background-color: #94a3b8; border-radius: 50%; animation: typing 1.4s infinite ease-in-out both; margin: 0 1px; }
-        .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
-        .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
-        @keyframes typing { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
+    <style>
+        /* Loading Overlay */
+        .loading-overlay {
+            position: fixed; inset: 0; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(5px);
+            z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem;
+        }
+        .dark .loading-overlay { background: rgba(15, 23, 42, 0.9); }
+        .loading-overlay.hidden { display: none; }
+        .spinner {
+            width: 48px; height: 48px; border: 5px solid rgba(66, 103, 178, 0.1);
+            border-top-color: #4267B2; border-radius: 50%; animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
 <body class="bg-brandGray dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300">
 
-    <div id="sidebar-container" class="no-print"></div>
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="spinner"></div>
+        <p class="text-sm font-bold text-slate-600 dark:text-slate-300">جاري تحميل سجل المساهمين...</p>
+    </div>
+
+    <div id="sidebar-container"></div>
     
-    <div class="main-content-wrapper md:mr-72 transition-all duration-300 flex flex-col min-h-screen">
-        <div id="header-container" class="no-print"></div>
+    <div class="main-content-wrapper ltr:md:ml-72 rtl:md:mr-72 transition-all duration-300 flex flex-col min-h-screen">
+        <div id="header-container"></div>
 
         <main class="p-6 space-y-6">
             
-            <!-- Print Header -->
-            <div class="print-header">
-                <h1 class="text-2xl font-bold">سجل المساهمين - شركة اندروميدا</h1>
-                <p>Date: <span id="printDate"></span></p>
-            </div>
-
-            <!-- 1. KPI Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 no-print">
-                <!-- Current Capital -->
-                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 relative overflow-hidden">
-                    <div class="absolute top-0 right-0 rtl:right-0 ltr:right-0 w-2 h-full bg-brandBlue"></div>
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase" data-i18n="kpiCapital">رأس المال الحالي</p>
-                            <h3 class="text-2xl font-bold mt-1 font-en text-brandBlue">6,000,000 <span class="text-xs text-slate-400" data-i18n="curr">SAR</span></h3>
-                        </div>
-                        <div class="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/30 text-brandBlue flex items-center justify-center text-xl">
-                            <i class="fa-solid fa-coins"></i>
-                        </div>
-                    </div>
-                    <div class="mt-4 text-xs text-green-600 font-bold bg-green-50 px-2 py-1 rounded w-fit">
-                        <i class="fa-solid fa-check-circle"></i> <span data-i18n="paidFull">مدفوع بالكامل</span>
-                    </div>
+            <div class="flex flex-col md:flex-row justify-between items-end gap-4">
+                <div>
+                    <h1 class="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                        <i class="fa-solid fa-users-rectangle text-brandRed"></i> <span data-i18n="headerTitle">سجل المساهمين</span>
+                    </h1>
+                    <p class="text-sm text-slate-500 mt-1" data-i18n="headerDesc">إدارة حصص الملكية، توزيع الأرباح، وسجل الشهادات.</p>
                 </div>
-
-                <!-- Shares Count -->
-                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase" data-i18n="kpiShares">عدد الأسهم المصدرة</p>
-                            <h3 class="text-2xl font-bold mt-1 font-en text-purple-600">600,000 <span class="text-xs text-slate-400" data-i18n="shareUnit">سهم</span></h3>
-                        </div>
-                        <div class="w-10 h-10 rounded-xl bg-purple-50 dark:bg-purple-900/30 text-purple-600 flex items-center justify-center text-xl">
-                            <i class="fa-solid fa-layer-group"></i>
-                        </div>
-                    </div>
-                    <div class="mt-4 text-xs text-slate-400">
-                        <span data-i18n="parValue">القيمة الاسمية</span>: <span class="font-bold font-en text-slate-600 dark:text-slate-300">10 SAR</span>
-                    </div>
-                </div>
-
-                <!-- Shareholders Count -->
-                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase" data-i18n="kpiCount">عدد المساهمين</p>
-                            <h3 class="text-2xl font-bold mt-1 font-en text-slate-700 dark:text-white">11</h3>
-                        </div>
-                        <div class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-500 flex items-center justify-center text-xl">
-                            <i class="fa-solid fa-users"></i>
-                        </div>
-                    </div>
-                    <div class="mt-4 flex -space-x-2 space-x-reverse rtl:space-x-reverse ltr:space-x-reverse-0">
-                        <span class="w-6 h-6 rounded-full bg-slate-200 border-2 border-white flex items-center justify-center text-[8px] font-bold">W</span>
-                        <span class="w-6 h-6 rounded-full bg-slate-300 border-2 border-white flex items-center justify-center text-[8px] font-bold">H</span>
-                        <span class="w-6 h-6 rounded-full bg-slate-400 border-2 border-white flex items-center justify-center text-[8px] font-bold text-white">+8</span>
-                    </div>
+                <div class="flex gap-2">
+                    <button onclick="exportRegister()" class="px-4 py-2 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-white rounded-lg text-sm font-bold hover:bg-slate-200 transition flex items-center gap-2">
+                        <i class="fa-solid fa-file-export"></i> <span data-i18n="btnExport">تصدير السجل</span>
+                    </button>
+                    <button onclick="openAddModal()" class="px-6 py-2 bg-brandBlue text-white rounded-lg text-sm font-bold shadow-lg hover:bg-blue-700 transition flex items-center gap-2">
+                        <i class="fa-solid fa-user-plus"></i> <span data-i18n="btnAdd">إضافة مساهم</span>
+                    </button>
                 </div>
             </div>
 
-            <!-- 2. Chart & History -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 no-print">
-                
-                <!-- Ownership Chart -->
-                <div class="lg:col-span-1 bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700">
-                    <h3 class="font-bold text-sm mb-6 text-slate-700 dark:text-white flex items-center gap-2">
-                        <i class="fa-solid fa-chart-pie text-brandBlue"></i> <span data-i18n="chartTitle">هيكل الملكية</span>
-                    </h3>
-                    <div class="h-48 relative flex justify-center">
-                        <canvas id="sharesChart"></canvas>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <div class="flex justify-between items-start mb-2">
+                        <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase" data-i18n="statCapital">رأس المال</p>
+                        <div class="w-8 h-8 rounded-lg bg-green-50 dark:bg-green-900/30 text-green-600 flex items-center justify-center"><i class="fa-solid fa-sack-dollar"></i></div>
                     </div>
-                    <div class="mt-6 space-y-2" id="chartLegend">
-                        <!-- Injected by JS -->
-                    </div>
+                    <h3 class="text-2xl font-bold text-slate-900 dark:text-white font-en" id="stat-capital">...</h3>
+                    <p class="text-[10px] text-slate-400 mt-1" data-i18n="statPaid">مدفوع بالكامل</p>
                 </div>
-
-                <!-- Capital History -->
-                <div class="lg:col-span-2 bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700">
-                    <h3 class="font-bold text-sm mb-6 text-slate-700 dark:text-white flex items-center gap-2">
-                        <i class="fa-solid fa-clock-rotate-left text-slate-400"></i> <span data-i18n="histTitle">سجل التغيرات في رأس المال</span>
-                    </h3>
-                    
-                    <div class="relative pl-6 rtl:pl-0 rtl:pr-6 border-l rtl:border-l-0 rtl:border-r border-slate-200 dark:border-slate-700 space-y-8 ml-2 rtl:ml-0 rtl:mr-2">
-                        <!-- Event 1 (Current) -->
-                        <div class="relative">
-                            <div class="absolute top-1.5 -left-[31px] rtl:left-auto rtl:-right-[31px] w-4 h-4 bg-green-500 rounded-full border-4 border-white dark:border-slate-800"></div>
-                            <div class="flex justify-between items-start">
-                                <div>
-                                    <h4 class="font-bold text-sm text-slate-800 dark:text-white" data-i18n="evt1Title">تخفيض رأس المال (الوضع الحالي)</h4>
-                                    <p class="text-xs text-slate-500 mt-1" data-i18n="evt1Desc">بناءً على قرار الجمعية العامة غير العادية (إطفاء خسائر).</p>
-                                </div>
-                                <span class="bg-green-100 text-green-700 px-2 py-1 rounded text-[10px] font-bold font-en">6,000,000 SAR</span>
-                            </div>
-                            <p class="text-[10px] text-slate-400 mt-2 font-en">21 Sep 2025</p>
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <div class="flex justify-between items-start mb-2">
+                        <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase" data-i18n="statShares">عدد الأسهم</p>
+                        <div class="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-900/30 text-blue-600 flex items-center justify-center"><i class="fa-solid fa-layer-group"></i></div>
+                    </div>
+                    <h3 class="text-2xl font-bold text-slate-900 dark:text-white font-en" id="stat-shares-count">...</h3>
+                    <p class="text-[10px] text-slate-400 mt-1 font-en" id="stat-share-val">...</p>
+                </div>
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <div class="flex justify-between items-start mb-2">
+                        <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase" data-i18n="statCount">المساهمين</p>
+                        <div class="w-8 h-8 rounded-lg bg-purple-50 dark:bg-purple-900/30 text-purple-600 flex items-center justify-center"><i class="fa-solid fa-users"></i></div>
+                    </div>
+                    <h3 class="text-2xl font-bold text-slate-900 dark:text-white font-en" id="stat-holders-count">...</h3>
+                    <p class="text-[10px] text-slate-400 mt-1" data-i18n="statActive">نشط</p>
+                </div>
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <div class="flex justify-between items-start mb-2">
+                        <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase" data-i18n="statType">التوزيع</p>
+                        <div class="w-8 h-8 rounded-lg bg-orange-50 dark:bg-orange-900/30 text-orange-600 flex items-center justify-center"><i class="fa-solid fa-chart-pie"></i></div>
+                    </div>
+                    <div class="flex items-center gap-4 mt-2">
+                        <div>
+                            <span class="text-lg font-bold font-en text-slate-800 dark:text-white" id="stat-ind">...</span>
+                            <span class="text-[10px] text-slate-400 block" data-i18n="lblInd">أفراد</span>
                         </div>
-
-                        <!-- Event 2 (Previous) -->
-                        <div class="relative opacity-60">
-                            <div class="absolute top-1.5 -left-[31px] rtl:left-auto rtl:-right-[31px] w-4 h-4 bg-slate-300 rounded-full border-4 border-white dark:border-slate-800"></div>
-                            <div class="flex justify-between items-start">
-                                <div>
-                                    <h4 class="font-bold text-sm text-slate-800 dark:text-white" data-i18n="evt2Title">زيادة رأس المال (السابق)</h4>
-                                    <p class="text-xs text-slate-500 mt-1" data-i18n="evt2Desc">رفع رأس المال لدعم التوسع.</p>
-                                </div>
-                                <span class="bg-slate-100 text-slate-500 px-2 py-1 rounded text-[10px] font-bold font-en line-through">12,000,000 SAR</span>
-                            </div>
-                            <p class="text-[10px] text-slate-400 mt-2 font-en">2021</p>
+                        <div class="w-px h-8 bg-slate-200 dark:bg-slate-700"></div>
+                        <div>
+                            <span class="text-lg font-bold font-en text-slate-800 dark:text-white" id="stat-ent">...</span>
+                            <span class="text-[10px] text-slate-400 block" data-i18n="lblEnt">شركات</span>
                         </div>
                     </div>
-
-                    <div class="mt-8 pt-4 border-t border-slate-100 dark:border-slate-700 flex gap-3">
-                        <button class="text-xs flex items-center gap-2 text-brandBlue hover:underline"><i class="fa-solid fa-file-pdf"></i> <span data-i18n="docBylaw">النظام الأساس (نسخة 3)</span></button>
-                        <button class="text-xs flex items-center gap-2 text-brandBlue hover:underline"><i class="fa-solid fa-file-pdf"></i> <span data-i18n="docReg">سجل المساهمين الرسمي</span></button>
-                    </div>
                 </div>
-
             </div>
 
-            <!-- 3. Registry Table -->
-            <div class="bg-white dark:bg-slate-800 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden">
-                <div class="p-5 border-b border-slate-100 dark:border-slate-700 bg-slate-50/50 flex flex-col md:flex-row justify-between items-center gap-4">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 bg-slate-200 text-slate-600 rounded-lg flex items-center justify-center"><i class="fa-solid fa-table-list"></i></div>
-                        <div>
-                            <h3 class="font-bold text-slate-800 dark:text-white" data-i18n="tableTitle">سجل الملاك والمساهمين</h3>
-                            <p class="text-xs text-slate-500" data-i18n="tableSub">محدث بتاريخ اليوم</p>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                
+                <div class="lg:col-span-2 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden flex flex-col">
+                    <div class="p-5 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center">
+                        <h3 class="font-bold text-slate-800 dark:text-white" data-i18n="tableTitle">قائمة الملاك</h3>
+                        <input type="text" id="searchHolder" onkeyup="renderTable()" class="bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-1.5 text-xs outline-none dark:text-white" data-i18n-placeholder="plhSearch" placeholder="بحث...">
+                    </div>
+                    <div class="overflow-x-auto flex-1">
+                        <table class="w-full text-sm text-right rtl:text-right ltr:text-left">
+                            <thead class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 dark:text-slate-400 text-xs font-bold uppercase">
+                                <tr>
+                                    <th class="p-4" data-i18n="colName">الاسم</th>
+                                    <th class="p-4" data-i18n="colType">النوع</th>
+                                    <th class="p-4" data-i18n="colShares">عدد الأسهم</th>
+                                    <th class="p-4" data-i18n="colPercent">النسبة</th>
+                                    <th class="p-4" data-i18n="colValue">القيمة (SAR)</th>
+                                    <th class="p-4 text-center" data-i18n="colAction">إجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 dark:divide-slate-700 text-slate-700 dark:text-slate-300" id="shareholdersTable">
+                                </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <h3 class="font-bold text-slate-800 dark:text-white mb-6" data-i18n="chartTitle">توزيع الملكية</h3>
+                    <div class="h-64 relative">
+                        <canvas id="ownershipChart"></canvas>
+                    </div>
+                    <div class="mt-6 space-y-3" id="chartLegend">
                         </div>
-                    </div>
-                    <div class="flex gap-2">
-                        <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="..." class="bg-white border border-slate-200 rounded-lg px-3 py-1.5 text-xs w-48 focus:ring-1 focus:ring-brandBlue outline-none" data-i18n-placeholder="searchPlh">
-                        <button onclick="window.print()" class="bg-slate-800 text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-black transition"><i class="fa-solid fa-print"></i> <span data-i18n="btnPrint">طباعة السجل</span></button>
-                        <button onclick="exportCSV()" class="bg-green-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-green-700 transition"><i class="fa-solid fa-file-excel"></i> Excel</button>
-                    </div>
                 </div>
-                
-                <div class="overflow-x-auto">
-                    <table class="w-full text-sm text-right rtl:text-right ltr:text-left" id="registryTable">
-                        <thead class="bg-slate-100 dark:bg-slate-700 text-xs font-bold text-slate-500 uppercase">
-                            <tr>
-                                <th class="p-4" data-i18n="colName">الاسم</th>
-                                <th class="p-4" data-i18n="colRole">التمثيل</th>
-                                <th class="p-4" data-i18n="colNat">الجنسية</th>
-                                <th class="p-4 text-left rtl:text-left ltr:text-right" data-i18n="colShares">عدد الأسهم</th>
-                                <th class="p-4 text-left rtl:text-left ltr:text-right" data-i18n="colPerc">النسبة</th>
-                                <th class="p-4 text-left rtl:text-left ltr:text-right" data-i18n="colVal">القيمة (SAR)</th>
-                                <th class="p-4 text-center" data-i18n="colAction">الإجراءات</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-slate-100 dark:divide-slate-700" id="tableBody">
-                            <!-- Rows generated by JS -->
-                        </tbody>
-                    </table>
-                </div>
-                
-                <div class="p-4 bg-slate-50 dark:bg-slate-900 border-t border-slate-100 dark:border-slate-700 text-xs text-center text-slate-400" data-i18n="tblFooter">
-                    الإجمالي: 600,000 سهم | 100% ملكية
-                </div>
+
             </div>
 
         </main>
     </div>
 
-    <!-- Shareholder Details Modal -->
-    <div id="shareholderModal" class="fixed inset-0 bg-black/60 hidden z-50 flex items-center justify-center backdrop-blur-sm no-print">
-        <div class="bg-white dark:bg-slate-800 w-full max-w-md rounded-2xl shadow-xl p-6 transform transition-all scale-100">
-            <div class="flex justify-between items-start mb-4 border-b border-slate-100 dark:border-slate-700 pb-3">
+    <div id="addModal" class="fixed inset-0 bg-black/70 hidden z-50 flex items-center justify-center backdrop-blur-sm p-4">
+        <div class="bg-white dark:bg-slate-800 w-full max-w-lg rounded-2xl shadow-2xl flex flex-col">
+            <div class="p-5 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center">
+                <h3 class="font-bold text-lg dark:text-white" data-i18n="modTitle">إضافة مساهم جديد</h3>
+                <button onclick="closeModal('addModal')" class="text-slate-400 hover:text-red-500"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <div class="p-6 space-y-4">
                 <div>
-                    <h3 class="font-bold text-lg text-slate-800 dark:text-white" id="modalName">اسم المساهم</h3>
-                    <p class="text-xs text-slate-500" id="modalRole">الصفة</p>
+                    <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="modName">الاسم الكامل</label>
+                    <input type="text" class="w-full border dark:border-slate-600 dark:bg-slate-700 rounded-lg p-2 text-sm dark:text-white">
                 </div>
-                <button onclick="closeModal()" class="text-slate-400 hover:text-red-500"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            
-            <div class="space-y-3 text-sm">
-                <div class="flex justify-between p-2 bg-slate-50 dark:bg-slate-700 rounded">
-                    <span class="text-slate-500" data-i18n="modShares">عدد الأسهم</span>
-                    <span class="font-bold font-en" id="modalShares">0</span>
-                </div>
-                <div class="flex justify-between p-2 bg-slate-50 dark:bg-slate-700 rounded">
-                    <span class="text-slate-500" data-i18n="modPerc">نسبة الملكية</span>
-                    <span class="font-bold font-en text-brandBlue" id="modalPercent">0%</span>
-                </div>
-                <div class="flex justify-between p-2 bg-slate-50 dark:bg-slate-700 rounded">
-                    <span class="text-slate-500" data-i18n="modVal">القيمة الإسمية</span>
-                    <span class="font-bold font-en text-green-600" id="modalValue">0</span>
-                </div>
-                
-                <div class="mt-4">
-                    <p class="text-xs font-bold text-slate-500 mb-2" data-i18n="modProxyTitle">بيانات التمثيل / الوكالة</p>
-                    <div class="p-3 border border-dashed border-slate-300 rounded-lg text-xs text-slate-600" id="modalProxy">
-                        -
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="modType">النوع</label>
+                        <select class="w-full border dark:border-slate-600 dark:bg-slate-700 rounded-lg p-2 text-sm dark:text-white">
+                            <option value="Individual" data-i18n="optInd">فرد</option>
+                            <option value="Entity" data-i18n="optEnt">شركة/جهة</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="modShares">عدد الأسهم</label>
+                        <input type="number" class="w-full border dark:border-slate-600 dark:bg-slate-700 rounded-lg p-2 text-sm dark:text-white">
                     </div>
                 </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="modEmail">البريد الإلكتروني (للدخول)</label>
+                    <input type="email" class="w-full border dark:border-slate-600 dark:bg-slate-700 rounded-lg p-2 text-sm dark:text-white ltr">
+                </div>
+            </div>
 
-                <div class="mt-4">
-                    <p class="text-xs font-bold text-slate-500 mb-2" data-i18n="modContact">معلومات التواصل</p>
-                    <div class="flex items-center gap-2 text-xs text-slate-600">
-                        <i class="fa-solid fa-envelope text-slate-400"></i> <span id="modalEmail" class="font-en">-</span>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="mt-6 flex gap-2">
-                <button class="flex-1 py-2 bg-brandBlue text-white rounded-lg text-xs font-bold hover:bg-blue-700" data-i18n="btnUpdate">تحديث البيانات</button>
-                <button onclick="closeModal()" class="px-4 py-2 border rounded-lg text-xs font-bold hover:bg-slate-50" data-i18n="btnClose">إغلاق</button>
+            <div class="p-5 border-t border-slate-100 dark:border-slate-700 flex justify-end gap-3">
+                <button onclick="closeModal('addModal')" class="px-4 py-2 border rounded-lg text-xs font-bold dark:text-white" data-i18n="btnCancel">إلغاء</button>
+                <button onclick="alert('تمت الإضافة بنجاح'); closeModal('addModal')" class="px-6 py-2 bg-brandBlue text-white rounded-lg text-xs font-bold" data-i18n="btnSave">حفظ</button>
             </div>
         </div>
     </div>
 
-    <!-- AndroBot Widget (AI Assistant) -->
-    <div id="andro-bot-container" class="fixed bottom-6 left-6 z-50 flex flex-col items-start gap-4 font-sans" dir="rtl">
-        <!-- Chat Window -->
-        <div id="chat-window" class="hidden bg-white dark:bg-slate-800 w-80 md:w-96 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden flex flex-col chat-window-anim" style="height: 500px; max-height: 70vh;">
-            <div class="bg-brandBlue p-4 flex justify-between items-center text-white">
-                <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center"><i class="fa-solid fa-robot"></i></div>
-                    <div><h4 class="font-bold text-sm">AndroBot</h4><p class="text-[10px] text-white/80">مساعد الحوكمة الذكي</p></div>
-                </div>
-                <button id="close-chat-btn" class="text-white/80 hover:text-white transition"><i class="fa-solid fa-times"></i></button>
-            </div>
-            <div id="chat-body" class="flex-1 p-4 bg-slate-50 dark:bg-slate-900/50 overflow-y-auto custom-scroll space-y-3 flex flex-col">
-                <div class="chat-bubble bot">مرحباً 👋<br>أنا مساعدك الذكي. يمكنني الإجابة عن توزيع النسب، كبار الملاك، أو رأس المال.</div>
-                <div class="flex flex-wrap gap-2 mt-2" id="suggestions">
-                    <button class="suggestion-btn text-xs bg-white border border-brandBlue/30 text-brandBlue px-3 py-1.5 rounded-full" data-q="من يملك أعلى نسبة؟">من يملك أعلى نسبة؟</button>
-                    <button class="suggestion-btn text-xs bg-white border border-brandBlue/30 text-brandBlue px-3 py-1.5 rounded-full" data-q="كم عدد الأسهم؟">كم عدد الأسهم؟</button>
-                </div>
-            </div>
-            <div class="p-3 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 flex gap-2">
-                <input type="text" id="chat-input" placeholder="اكتب استفسارك..." class="flex-1 bg-slate-100 dark:bg-slate-900 border-none rounded-lg text-sm px-4 py-2 focus:ring-2 focus:ring-brandBlue outline-none dark:text-white">
-                <button id="send-btn" class="w-10 h-10 rounded-lg bg-brandBlue text-white hover:bg-blue-700 transition flex items-center justify-center"><i class="fa-solid fa-paper-plane"></i></button>
-            </div>
-        </div>
-        <!-- Floating Button -->
-        <button id="chat-fab" class="w-14 h-14 bg-brandBlue hover:bg-blue-700 text-white rounded-full shadow-lg shadow-blue-600/30 flex items-center justify-center text-2xl transition-all transform hover:scale-110 active:scale-95 animate-bounce-slow">
-            <i class="fa-solid fa-comment-dots"></i>
-            <span class="absolute top-0 right-0 w-4 h-4 bg-brandRed rounded-full border-2 border-white dark:border-slate-900"></span>
-        </button>
-    </div>
-
-    <script src="layout.js"></script>
-    <script src="bot.js"></script>
+    <script src="data/company_policy.js"></script>
+    <script src="js/core/config.js"></script>
+    <script src="js/core/i18n.js"></script>
+    <script src="js/helpers/policy-helpers.js"></script>
+    <script src="js/services/data-service.js"></script>
+    <script src="js/components/role-switcher.js"></script>
+    <script src="js/components/layout.js"></script>
+    <script src="js/components/bot.js"></script>
 
     <script>
-        // --- Translation Dictionary ---
-        const t = {
-            ar: {
-                pageTitle: "AndroGov | سجل المساهمين",
-                kpiCapital: "رأس المال الحالي",
-                paidFull: "مدفوع بالكامل",
-                kpiShares: "عدد الأسهم المصدرة",
-                shareUnit: "سهم",
-                parValue: "القيمة الاسمية",
-                kpiCount: "عدد المساهمين",
-                chartTitle: "هيكل الملكية",
-                chartHeirs: "الورثة",
-                chartBG: "بيجي",
-                chartHesham: "هشام",
-                chartOthers: "آخرون",
-                histTitle: "سجل التغيرات في رأس المال",
-                evt1Title: "تخفيض رأس المال (الوضع الحالي)",
-                evt1Desc: "بناءً على قرار الجمعية العامة غير العادية (إطفاء خسائر).",
-                evt2Title: "زيادة رأس المال (السابق)",
-                evt2Desc: "رفع رأس المال لدعم التوسع.",
-                docBylaw: "النظام الأساس (نسخة 3)",
-                docReg: "سجل المساهمين الرسمي",
-                tableTitle: "سجل الملاك والمساهمين",
-                tableSub: "محدث بتاريخ اليوم",
-                searchPlh: "بحث بالاسم...",
-                btnPrint: "طباعة السجل",
-                colName: "الاسم",
-                colRole: "التمثيل",
-                colNat: "الجنسية",
-                colShares: "عدد الأسهم",
-                colPerc: "النسبة",
-                colVal: "القيمة (SAR)",
-                colAction: "الإجراءات",
-                tblFooter: "الإجمالي: 600,000 سهم | 100% ملكية",
-                modShares: "عدد الأسهم",
-                modPerc: "نسبة الملكية",
-                modVal: "القيمة الإسمية",
-                modProxyTitle: "بيانات التمثيل / الوكالة",
-                modContact: "معلومات التواصل",
-                btnUpdate: "تحديث البيانات",
-                btnClose: "إغلاق",
-                rolePrincipal: "أصيل",
-                roleProxy: "وكالة",
-                natSaudi: "سعودي"
-            },
-            en: {
-                pageTitle: "AndroGov | Shareholders Registry",
-                kpiCapital: "Current Capital",
-                paidFull: "Fully Paid",
-                kpiShares: "Issued Shares",
-                shareUnit: "Shares",
-                parValue: "Par Value",
-                kpiCount: "Shareholders Count",
-                chartTitle: "Ownership Structure",
-                chartHeirs: "Heirs",
-                chartBG: "BG LTD",
-                chartHesham: "Hesham",
-                chartOthers: "Others",
-                histTitle: "Capital History Log",
-                evt1Title: "Capital Reduction (Current)",
-                evt1Desc: "Based on EGA resolution (Loss absorption).",
-                evt2Title: "Capital Increase (Previous)",
-                evt2Desc: "Capital hike to support expansion.",
-                docBylaw: "Bylaws (Ver 3)",
-                docReg: "Official Shareholder Registry",
-                tableTitle: "Owners & Shareholders Registry",
-                tableSub: "Updated Today",
-                searchPlh: "Search by name...",
-                btnPrint: "Print Registry",
-                colName: "Name",
-                colRole: "Representation",
-                colNat: "Nationality",
-                colShares: "Shares",
-                colPerc: "Percent",
-                colVal: "Value (SAR)",
-                colAction: "Actions",
-                tblFooter: "Total: 600,000 Shares | 100% Ownership",
-                modShares: "Shares Count",
-                modPerc: "Ownership %",
-                modVal: "Par Value",
-                modProxyTitle: "Representation / Proxy Data",
-                modContact: "Contact Info",
-                btnUpdate: "Update Data",
-                btnClose: "Close",
-                rolePrincipal: "Principal",
-                roleProxy: "Proxy",
-                natSaudi: "Saudi"
-            }
-        };
+        // --- DATA STATE ---
+        let shareholders = [];
+        let companyInfo = {};
 
-        // --- Data Source ---
-        const shareholders = [
-            { id: 1, nameAr: "ورثة محمد بن صالح السحيباني", nameEn: "Heirs of Mohammed Al-Suhaibani", role: "major", proxyAr: "وكالة (وائل السحيباني)", proxyEn: "Proxy (Wael Al-Suhaibani)", shares: 210000, percent: 35, email: "alcaseer@gmail.com" },
-            { id: 2, nameAr: "شركة بيجي المحدودة", nameEn: "BG LTD Company", role: "comp", proxyAr: "وكالة (صالح السحيباني)", proxyEn: "Proxy (Saleh Al-Suhaibani)", shares: 90000, percent: 15, email: "info@begi.sa" },
-            { id: 3, nameAr: "هشام بن محمد السحيباني", nameEn: "Hesham Al-Suhaibani", role: "prin", proxyAr: "أصيل", proxyEn: "Principal", shares: 60000, percent: 10, email: "hesham@androomeda.com" },
-            { id: 4, nameAr: "عبدالله بن محمد الحواس", nameEn: "Abdullah Al-Hawas", role: "prin", proxyAr: "أصيل", proxyEn: "Principal", shares: 30000, percent: 5, email: "abdullah@example.com" },
-            { id: 5, nameAr: "منصور بن حسن اليامي", nameEn: "Mansour Al-Yami", role: "prin", proxyAr: "أصيل", proxyEn: "Principal", shares: 30000, percent: 5, email: "mansour@androomeda.com" },
-            { id: 6, nameAr: "إبراهيم بن حمد السكيتي", nameEn: "Ibrahim Al-Skaiti", role: "prin", proxyAr: "أصيل", proxyEn: "Principal", shares: 30000, percent: 5, email: "iskaity@androomeda.com" },
-            { id: 7, nameAr: "وائل بن محمد السحيباني", nameEn: "Wael Al-Suhaibani", role: "prin", proxyAr: "أصيل", proxyEn: "Principal", shares: 30000, percent: 5, email: "wael@live.com" },
-            { id: 8, nameAr: "هيثم بن محمد السحيباني", nameEn: "Haitham Al-Suhaibani", role: "prin", proxyAr: "أصيل", proxyEn: "Principal", shares: 30000, percent: 5, email: "haitham@gmail.com" },
-            { id: 9, nameAr: "أحمد بن سليمان الجاسر", nameEn: "Ahmed Al-Jasser", role: "prin", proxyAr: "أصيل", proxyEn: "Principal", shares: 30000, percent: 5, email: "ahmed@gmail.com" },
-            { id: 10, nameAr: "صالح عبد الله الوهيبي", nameEn: "Saleh Al-Wahaibi", role: "prin", proxyAr: "أصيل", proxyEn: "Principal", shares: 30000, percent: 5, email: "saleh@gmail.com" },
-            { id: 11, nameAr: "عبدالله علي الفريجي", nameEn: "Abdullah Al-Fariji", role: "prin", proxyAr: "أصيل", proxyEn: "Principal", shares: 30000, percent: 5, email: "alfraiji@gmail.com" }
-        ];
-
+        // --- INIT ---
         document.addEventListener('DOMContentLoaded', () => {
-            updatePageLanguage();
+            const checkSystem = setInterval(() => {
+                if (typeof Layout !== 'undefined' && typeof AppConfig !== 'undefined' && typeof DataService !== 'undefined') {
+                    clearInterval(checkSystem);
+                    
+                    if (!AppConfig.getCurrentUser()) {
+                        const defaultUser = DataService.getUserById('USR_004') || DataService.getUsers()[0];
+                        if (defaultUser) AppConfig.setCurrentUser(defaultUser);
+                    }
+
+                    Layout.init();
+                    initPage();
+                    document.getElementById('loadingOverlay')?.classList.add('hidden');
+                }
+            }, 50);
         });
 
+        function initPage() {
+            // Load Data
+            shareholders = DataService.getShareholders();
+            companyInfo = DataService.getCompanyProfile();
+            
+            updatePageLanguage();
+            renderStats();
+            renderTable();
+            renderChart();
+        }
+
         function updatePageLanguage() {
-            const lang = localStorage.getItem('lang') || 'ar';
+            const lang = AppConfig.getLang();
             const dict = t[lang];
             
-            // Document Direction
             document.documentElement.lang = lang;
             document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
 
-            // Static Text
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
                 if(dict[key]) el.innerText = dict[key];
             });
-
-            // Placeholders
             document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
                 const key = el.getAttribute('data-i18n-placeholder');
                 if(dict[key]) el.placeholder = dict[key];
             });
-
-            // Update Table
-            renderTable(shareholders);
-            
-            // Update Chart
-            initChart(lang);
-
-            // Update Date
-            const date = new Date().toLocaleDateString(lang === 'ar' ? 'ar-SA' : 'en-US');
-            document.getElementById('printDate').innerText = date;
         }
 
-        // --- Render Table ---
-        function renderTable(data) {
-            const lang = localStorage.getItem('lang') || 'ar';
+        // --- RENDERING ---
+        function renderStats() {
+            const lang = AppConfig.getLang();
+            const stats = DataService.getShareholdersStats();
+            
+            document.getElementById('stat-capital').innerText = I18n.formatNumber(stats.totalCapital) + ' ' + stats.currency;
+            document.getElementById('stat-shares-count').innerText = I18n.formatNumber(stats.totalShares);
+            document.getElementById('stat-holders-count').innerText = stats.totalCount;
+            document.getElementById('stat-ind').innerText = stats.individualCount;
+            document.getElementById('stat-ent').innerText = stats.entityCount;
+            
+            const valLabel = lang === 'ar' ? 'قيمة السهم' : 'Share Value';
+            document.getElementById('stat-share-val').innerText = `${valLabel}: ${stats.shareValue} ${stats.currency}`;
+        }
+
+        function renderTable() {
+            const container = document.getElementById('shareholdersTable');
+            const search = document.getElementById('searchHolder').value.toLowerCase();
+            const lang = AppConfig.getLang();
             const dict = t[lang];
-            const tbody = document.getElementById('tableBody');
-            
-            tbody.innerHTML = data.map(s => {
-                const name = lang === 'ar' ? s.nameAr : s.nameEn;
-                const proxy = lang === 'ar' ? s.proxyAr : s.proxyEn;
-                const nat = dict.natSaudi;
-                const proxyBadge = s.role === 'prin' 
-                    ? `<span class="bg-slate-100 px-2 py-1 rounded">${proxy}</span>` 
-                    : `<span class="bg-purple-50 text-purple-700 px-2 py-1 rounded font-bold">${proxy}</span>`;
 
-                return `
-                <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition border-b border-slate-100 dark:border-slate-700 group">
-                    <td class="p-4 font-bold text-slate-800 dark:text-slate-200">${name}</td>
-                    <td class="p-4 text-xs text-slate-500">${proxyBadge}</td>
-                    <td class="p-4 text-xs">${nat}</td>
-                    <td class="p-4 font-mono text-left rtl:text-left ltr:text-right font-bold">${s.shares.toLocaleString()}</td>
-                    <td class="p-4 font-mono text-left rtl:text-left ltr:text-right text-brandBlue font-bold">${s.percent}%</td>
-                    <td class="p-4 font-mono text-left rtl:text-left ltr:text-right text-slate-500">${(s.shares * 10).toLocaleString()}</td>
-                    <td class="p-4 text-center">
-                        <button onclick="openModal(${s.id})" class="text-slate-400 hover:text-brandBlue transition group-hover:scale-110"><i class="fa-solid fa-circle-info text-lg"></i></button>
-                    </td>
-                </tr>`;
-            }).join('');
-        }
+            container.innerHTML = '';
 
-        // --- Search Filter ---
-        function filterTable() {
-            const lang = localStorage.getItem('lang') || 'ar';
-            const query = document.getElementById('searchInput').value.toLowerCase();
-            const filtered = shareholders.filter(s => {
-                const name = lang === 'ar' ? s.nameAr : s.nameEn;
-                return name.toLowerCase().includes(query);
+            const filtered = shareholders.filter(s => 
+                s.displayName.toLowerCase().includes(search) || 
+                (s.id && s.id.toLowerCase().includes(search))
+            );
+
+            if(filtered.length === 0) {
+                container.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-slate-400 text-xs">${dict.noResults}</td></tr>`;
+                return;
+            }
+
+            filtered.forEach(s => {
+                const typeLabel = s.type === 'Entity' ? (lang==='ar'?'منشأة':'Entity') : (lang==='ar'?'فرد':'Individual');
+                const typeColor = s.type === 'Entity' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700';
+                
+                container.innerHTML += `
+                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition border-b border-slate-100 dark:border-slate-700">
+                        <td class="p-4">
+                            <p class="font-bold text-slate-800 dark:text-white text-sm">${s.displayName}</p>
+                            <p class="text-[10px] text-slate-400 font-mono">${s.id}</p>
+                        </td>
+                        <td class="p-4">
+                            <span class="${typeColor} px-2 py-0.5 rounded text-[10px] font-bold">${typeLabel}</span>
+                        </td>
+                        <td class="p-4 font-mono font-bold text-slate-700 dark:text-slate-300 text-xs">${I18n.formatNumber(s.shares)}</td>
+                        <td class="p-4 font-mono font-bold text-brandBlue text-xs">${s.percent}%</td>
+                        <td class="p-4 font-mono text-green-600 font-bold text-xs">${I18n.formatNumber(s.value)}</td>
+                        <td class="p-4 text-center">
+                            <button onclick="alert('${s.displayName}')" class="text-slate-400 hover:text-brandBlue transition p-1"><i class="fa-solid fa-eye"></i></button>
+                            <button class="text-slate-400 hover:text-green-600 transition p-1"><i class="fa-solid fa-file-invoice-dollar"></i></button>
+                        </td>
+                    </tr>
+                `;
             });
-            renderTable(filtered);
         }
 
-        // --- Chart ---
-        let myChart = null;
-        function initChart(lang) {
-            const dict = t[lang];
-            const ctx = document.getElementById('sharesChart').getContext('2d');
+        function renderChart() {
+            const ctx = document.getElementById('ownershipChart').getContext('2d');
             
-            if(myChart) myChart.destroy();
+            // Prepare Data (Top 5 + Others)
+            const sorted = [...shareholders].sort((a,b) => b.shares - a.shares);
+            const top = sorted.slice(0, 4);
+            const others = sorted.slice(4).reduce((sum, s) => sum + s.percent, 0);
+            
+            const labels = [...top.map(s => s.displayName), AppConfig.getLang() === 'ar' ? 'آخرون' : 'Others'];
+            const data = [...top.map(s => s.percent), others];
+            const colors = ['#FB4747', '#4267B2', '#10B981', '#F59E0B', '#94A3B8'];
 
-            // Legend
-            const legendDiv = document.getElementById('chartLegend');
-            legendDiv.innerHTML = `
-                <div class="flex justify-between text-xs">
-                    <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-brandRed"></span> ${dict.chartHeirs}</span>
-                    <span class="font-en font-bold">35%</span>
-                </div>
-                <div class="flex justify-between text-xs">
-                    <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-blue-500"></span> ${dict.chartBG}</span>
-                    <span class="font-en font-bold">15%</span>
-                </div>
-                <div class="flex justify-between text-xs">
-                    <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-green-500"></span> ${dict.chartHesham}</span>
-                    <span class="font-en font-bold">10%</span>
-                </div>
-                <div class="flex justify-between text-xs">
-                    <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-slate-300"></span> ${dict.chartOthers}</span>
-                    <span class="font-en font-bold">40%</span>
-                </div>
-            `;
-
-            myChart = new Chart(ctx, {
+            new Chart(ctx, {
                 type: 'doughnut',
                 data: {
-                    labels: [dict.chartHeirs, dict.chartBG, dict.chartHesham, dict.chartOthers],
+                    labels: labels,
                     datasets: [{
-                        data: [35, 15, 10, 40],
-                        backgroundColor: ['#FB4747', '#3B82F6', '#10B981', '#CBD5E1'],
+                        data: data,
+                        backgroundColor: colors,
                         borderWidth: 0,
-                        hoverOffset: 5
+                        hoverOffset: 10
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
+                    plugins: {
+                        legend: { display: false }
+                    },
                     cutout: '70%'
                 }
             });
+
+            // Custom Legend
+            const legend = document.getElementById('chartLegend');
+            legend.innerHTML = labels.map((l, i) => `
+                <div class="flex justify-between items-center text-xs">
+                    <span class="flex items-center gap-2 text-slate-600 dark:text-slate-300">
+                        <span class="w-2.5 h-2.5 rounded-full" style="background-color: ${colors[i]}"></span>
+                        <span class="truncate max-w-[150px]">${l}</span>
+                    </span>
+                    <span class="font-bold font-mono">${data[i]}%</span>
+                </div>
+            `).join('');
         }
 
-        // --- Modal Logic ---
-        function openModal(id) {
-            const lang = localStorage.getItem('lang') || 'ar';
-            const s = shareholders.find(x => x.id === id);
-            if (!s) return;
-            
-            document.getElementById('modalName').innerText = lang === 'ar' ? s.nameAr : s.nameEn;
-            document.getElementById('modalRole').innerText = lang === 'ar' ? s.proxyAr : s.proxyEn;
-            document.getElementById('modalShares').innerText = s.shares.toLocaleString();
-            document.getElementById('modalPercent').innerText = s.percent + '%';
-            document.getElementById('modalValue').innerText = (s.shares * 10).toLocaleString() + ' SAR';
-            document.getElementById('modalProxy').innerText = lang === 'ar' ? s.proxyAr : s.proxyEn;
-            document.getElementById('modalEmail').innerText = s.email || '-';
-            
-            document.getElementById('shareholderModal').classList.remove('hidden');
-        }
+        // --- Modals ---
+        function openAddModal() { document.getElementById('addModal').classList.remove('hidden'); }
+        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+        function exportRegister() { alert(AppConfig.getLang() === 'ar' ? 'جاري تحميل ملف Excel...' : 'Downloading Excel file...'); }
 
-        function closeModal() {
-            document.getElementById('shareholderModal').classList.add('hidden');
-        }
-
-        function exportCSV() {
-            alert("Exporting CSV...");
-        }
-
-        // --- Custom AI Override for Registry Context ---
-        const originalGetAIResponse = window.getAIResponse; 
-        
-        window.getAIResponse = function(query, isArabic) {
-            const q = query.toLowerCase();
-            
-            // Highest Shareholder
-            if (q.includes('most') || q.includes('major') || q.includes('أكبر') || q.includes('نسبة')) {
-                return isArabic
-                    ? `أكبر الملاك هم <b>ورثة محمد السحيباني</b> بنسبة 35% (210,000 سهم).`
-                    : `The major shareholders are <b>Heirs of Al-Suhaibani</b> with 35% (210,000 shares).`;
+        // --- Translation Dictionary ---
+        const t = {
+            ar: {
+                pageTitle: "سجل المساهمين | AndroGov",
+                headerTitle: "سجل المساهمين",
+                headerDesc: "إدارة حصص الملكية، توزيع الأرباح، وسجل الشهادات.",
+                btnExport: "تصدير السجل",
+                btnAdd: "إضافة مساهم",
+                statCapital: "رأس المال",
+                statPaid: "مدفوع بالكامل",
+                statShares: "عدد الأسهم",
+                statCount: "المساهمين",
+                statActive: "نشط",
+                statType: "التوزيع",
+                lblInd: "أفراد",
+                lblEnt: "شركات",
+                tableTitle: "قائمة الملاك",
+                plhSearch: "بحث...",
+                colName: "الاسم",
+                colType: "النوع",
+                colShares: "عدد الأسهم",
+                colPercent: "النسبة",
+                colValue: "القيمة (SAR)",
+                colAction: "إجراءات",
+                noResults: "لا توجد نتائج",
+                chartTitle: "توزيع الملكية",
+                modTitle: "إضافة مساهم جديد",
+                modName: "الاسم الكامل",
+                modType: "النوع",
+                optInd: "فرد",
+                optEnt: "شركة/جهة",
+                modShares: "عدد الأسهم",
+                modEmail: "البريد الإلكتروني (للدخول)",
+                btnCancel: "إلغاء",
+                btnSave: "حفظ"
+            },
+            en: {
+                pageTitle: "Shareholders Register | AndroGov",
+                headerTitle: "Shareholders Register",
+                headerDesc: "Manage equity, dividends distribution, and certificates.",
+                btnExport: "Export Register",
+                btnAdd: "Add Shareholder",
+                statCapital: "Total Capital",
+                statPaid: "Fully Paid",
+                statShares: "Total Shares",
+                statCount: "Shareholders",
+                statActive: "Active",
+                statType: "Distribution",
+                lblInd: "Individuals",
+                lblEnt: "Entities",
+                tableTitle: "Owners List",
+                plhSearch: "Search...",
+                colName: "Name",
+                colType: "Type",
+                colShares: "Shares",
+                colPercent: "Percent",
+                colValue: "Value (SAR)",
+                colAction: "Actions",
+                noResults: "No results found",
+                chartTitle: "Ownership Distribution",
+                modTitle: "Add New Shareholder",
+                modName: "Full Name",
+                modType: "Type",
+                optInd: "Individual",
+                optEnt: "Entity",
+                modShares: "Shares Count",
+                modEmail: "Login Email",
+                btnCancel: "Cancel",
+                btnSave: "Save"
             }
-            
-            // Total Shares
-            if (q.includes('total') || q.includes('count') || q.includes('عدد') || q.includes('مجموع')) {
-                return isArabic
-                    ? `إجمالي عدد الأسهم المصدرة هو <b>600,000 سهم</b>.`
-                    : `Total issued shares: <b>600,000 shares</b>.`;
-            }
-
-            // Default fallback logic from bot.js will act if no specific match, or simple default here
-            return isArabic
-                ? `يمكنني إجابتك عن: <b>أكبر المساهمين</b>، أو <b>إجمالي الأسهم</b>.`
-                : `I can answer about: <b>Major Shareholders</b> or <b>Total Shares</b>.`;
-        }
-
+        };
     </script>
-      
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', function () {
-      navigator.serviceWorker
-        .register('service-worker.js')
-        .catch(function (err) {
-          console.warn('Service worker registration failed:', err);
-        });
-    });
-  }
-</script>
 </body>
 </html>
