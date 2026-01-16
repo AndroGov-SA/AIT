@@ -4,110 +4,123 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#FB4747">
-    <title>Circulars & Broadcasts | AndroGov</title>
+    <title data-i18n="pageTitle">التعاميم | AndroGov</title>
+    
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+    
+    <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
             theme: {
-                extend: { colors: { brandRed: '#FB4747', brandDark: '#0F172A' }, fontFamily: { sans: ['Tajawal', 'Inter', 'sans-serif'] } }
+                extend: {
+                    colors: {
+                        brandRed: '#FB4747',
+                        brandBlue: '#4267B2',
+                        brandDark: '#1E293B',
+                        brandGray: '#F8FAFC'
+                    },
+                    fontFamily: {
+                        sans: ['Tajawal', 'Inter', 'sans-serif'],
+                        en: ['Inter', 'sans-serif']
+                    }
+                }
             }
         }
     </script>
+
+    <style>
+        /* Loading Overlay */
+        .loading-overlay {
+            position: fixed; inset: 0; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(5px);
+            z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem;
+        }
+        .dark .loading-overlay { background: rgba(15, 23, 42, 0.9); }
+        .loading-overlay.hidden { display: none; }
+        .spinner {
+            width: 48px; height: 48px; border: 5px solid rgba(66, 103, 178, 0.1);
+            border-top-color: #4267B2; border-radius: 50%; animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
 </head>
-<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300 opacity-0">
+<body class="bg-brandGray dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300">
+
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="spinner"></div>
+        <p class="text-sm font-bold text-slate-600 dark:text-slate-300">جاري تحميل التعاميم...</p>
+    </div>
 
     <div id="sidebar-container"></div>
     
-    <div class="main-content-wrapper md:mr-72 transition-all duration-300 flex flex-col min-h-screen">
+    <div class="main-content-wrapper ltr:md:ml-72 rtl:md:mr-72 transition-all duration-300 flex flex-col min-h-screen">
         <div id="header-container"></div>
 
         <main class="p-6 space-y-6">
             
             <div class="flex flex-col md:flex-row justify-between items-end gap-4">
                 <div>
-                    <h1 class="text-2xl font-bold text-slate-900 dark:text-white">إدارة التعاميم والرسائل الجماعية</h1>
-                    <p class="text-sm text-slate-500 mt-1">إرسال القرارات الإدارية ومتابعة نسب القراءة والموافقة</p>
+                    <h1 class="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                        <i class="fa-solid fa-bullhorn text-brandRed"></i> <span data-i18n="headerTitle">إدارة التعاميم والرسائل الجماعية</span>
+                    </h1>
+                    <p class="text-sm text-slate-500 mt-1" data-i18n="headerDesc">إرسال القرارات الإدارية ومتابعة نسب القراءة والموافقة</p>
                 </div>
                 <button onclick="openCircularModal()" class="px-6 py-2 bg-brandRed text-white rounded-lg text-sm font-bold shadow-lg hover:bg-red-700 transition flex items-center gap-2">
-                    <i class="fa-solid fa-bullhorn"></i> <span>إرسال تعميم جديد</span>
+                    <i class="fa-solid fa-plus"></i> <span data-i18n="btnNew">إرسال تعميم جديد</span>
                 </button>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
                     <div class="flex justify-between items-start mb-2">
-                        <p class="text-xs text-slate-500 font-bold uppercase">التعاميم النشطة</p>
-                        <i class="fa-solid fa-tower-broadcast text-green-500 bg-green-50 p-2 rounded-lg"></i>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase" data-i18n="statActive">التعاميم النشطة</p>
+                        <div class="w-8 h-8 rounded-lg bg-green-50 dark:bg-green-900/30 text-green-600 flex items-center justify-center"><i class="fa-solid fa-tower-broadcast"></i></div>
                     </div>
-                    <h3 class="text-2xl font-bold text-slate-900 dark:text-white">1</h3>
-                    <p class="text-[10px] text-slate-400 mt-1">يظهر حالياً للموظفين</p>
+                    <h3 class="text-2xl font-bold text-slate-900 dark:text-white font-en">1</h3>
+                    <p class="text-[10px] text-slate-400 mt-1" data-i18n="statActiveDesc">يظهر حالياً للموظفين</p>
                 </div>
                 <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
                     <div class="flex justify-between items-start mb-2">
-                        <p class="text-xs text-slate-500 font-bold uppercase">نسبة القراءة (Overall)</p>
-                        <i class="fa-solid fa-eye text-blue-500 bg-blue-50 p-2 rounded-lg"></i>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase" data-i18n="statRead">نسبة القراءة</p>
+                        <div class="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-900/30 text-blue-600 flex items-center justify-center"><i class="fa-solid fa-eye"></i></div>
                     </div>
-                    <h3 class="text-2xl font-bold text-slate-900 dark:text-white">85%</h3>
-                    <p class="text-[10px] text-slate-400 mt-1">متوسط قراءة الموظفين</p>
+                    <h3 class="text-2xl font-bold text-slate-900 dark:text-white font-en">85%</h3>
+                    <p class="text-[10px] text-slate-400 mt-1" data-i18n="statReadDesc">متوسط قراءة الموظفين</p>
                 </div>
                 <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
                     <div class="flex justify-between items-start mb-2">
-                        <p class="text-xs text-slate-500 font-bold uppercase">تاريخ الأرشيف</p>
-                        <i class="fa-solid fa-box-archive text-slate-400 bg-slate-100 p-2 rounded-lg"></i>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase" data-i18n="statArchive">الأرشيف</p>
+                        <div class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-500 flex items-center justify-center"><i class="fa-solid fa-box-archive"></i></div>
                     </div>
-                    <h3 class="text-2xl font-bold text-slate-900 dark:text-white">24</h3>
-                    <p class="text-[10px] text-slate-400 mt-1">تعميم سابق</p>
+                    <h3 class="text-2xl font-bold text-slate-900 dark:text-white font-en">24</h3>
+                    <p class="text-[10px] text-slate-400 mt-1" data-i18n="statArchiveDesc">تعميم سابق</p>
                 </div>
             </div>
 
-            <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
-                <div class="p-4 border-b border-slate-100 dark:border-slate-700">
-                    <h3 class="font-bold text-slate-800 dark:text-white">سجل التعاميم المرسلة</h3>
+            <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden">
+                <div class="p-5 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center">
+                    <h3 class="font-bold text-slate-800 dark:text-white" data-i18n="tableTitle">سجل التعاميم المرسلة</h3>
+                    <div class="flex gap-2">
+                        <input type="text" class="bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-1.5 text-xs outline-none dark:text-white" data-i18n-placeholder="plhSearch" placeholder="بحث...">
+                    </div>
                 </div>
-                <table class="w-full text-sm text-right rtl:text-right ltr:text-left">
-                    <thead class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 text-xs font-bold uppercase">
-                        <tr>
-                            <th class="p-4">العنوان</th>
-                            <th class="p-4">التاريخ</th>
-                            <th class="p-4">النوع</th>
-                            <th class="p-4">إلزامية القراءة</th>
-                            <th class="p-4">نسبة القراءة</th>
-                            <th class="p-4 text-center">الحالة</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-100 dark:divide-slate-700 text-slate-700 dark:text-slate-300">
-                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50">
-                            <td class="p-4 font-bold">سياسة الحضور والانصراف الجديدة</td>
-                            <td class="p-4 text-xs font-mono">2026-01-10</td>
-                            <td class="p-4"><span class="bg-purple-100 text-purple-700 px-2 py-0.5 rounded text-[10px] border border-purple-200">إداري</span></td>
-                            <td class="p-4"><span class="text-red-600 font-bold text-xs"><i class="fa-solid fa-lock"></i> نعم (Force Read)</span></td>
-                            <td class="p-4">
-                                <div class="flex items-center gap-2">
-                                    <div class="w-20 h-1.5 bg-slate-200 rounded-full overflow-hidden"><div class="bg-green-500 h-full w-[45%]"></div></div>
-                                    <span class="text-xs font-bold">45%</span>
-                                </div>
-                            </td>
-                            <td class="p-4 text-center"><span class="bg-green-100 text-green-700 px-2 py-0.5 rounded text-[10px] font-bold">نشط</span></td>
-                        </tr>
-                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 opacity-75">
-                            <td class="p-4 font-bold">تهنئة بمناسبة اليوم الوطني</td>
-                            <td class="p-4 text-xs font-mono">2025-09-23</td>
-                            <td class="p-4"><span class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded text-[10px] border border-blue-200">عام</span></td>
-                            <td class="p-4"><span class="text-slate-400 text-xs">لا (إشعار فقط)</span></td>
-                            <td class="p-4">
-                                <div class="flex items-center gap-2">
-                                    <div class="w-20 h-1.5 bg-slate-200 rounded-full overflow-hidden"><div class="bg-green-500 h-full w-[98%]"></div></div>
-                                    <span class="text-xs font-bold">98%</span>
-                                </div>
-                            </td>
-                            <td class="p-4 text-center"><span class="bg-slate-100 text-slate-500 px-2 py-0.5 rounded text-[10px] font-bold">مؤرشف</span></td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-right rtl:text-right ltr:text-left">
+                        <thead class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 dark:text-slate-400 text-xs font-bold uppercase">
+                            <tr>
+                                <th class="p-4" data-i18n="colTitle">العنوان</th>
+                                <th class="p-4" data-i18n="colDate">التاريخ</th>
+                                <th class="p-4" data-i18n="colType">النوع</th>
+                                <th class="p-4" data-i18n="colForce">إلزامية القراءة</th>
+                                <th class="p-4" data-i18n="colRate">نسبة القراءة</th>
+                                <th class="p-4 text-center" data-i18n="colStatus">الحالة</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 dark:divide-slate-700 text-slate-700 dark:text-slate-300" id="circularsTable">
+                            </tbody>
+                    </table>
+                </div>
             </div>
 
         </main>
@@ -115,66 +128,260 @@
 
     <div id="circularModal" class="fixed inset-0 bg-black/70 hidden z-50 flex items-center justify-center backdrop-blur-sm p-4">
         <div class="bg-white dark:bg-slate-800 w-full max-w-2xl rounded-2xl shadow-2xl flex flex-col max-h-[90vh]">
-            <div class="p-4 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-900 rounded-t-2xl">
-                <h3 class="font-bold text-lg dark:text-white">إنشاء تعميم جديد</h3>
-                <button onclick="document.getElementById('circularModal').classList.add('hidden')" class="w-8 h-8 rounded-full hover:bg-slate-200 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+            <div class="p-5 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-900 rounded-t-2xl">
+                <h3 class="font-bold text-lg dark:text-white" data-i18n="modalTitle">إنشاء تعميم جديد</h3>
+                <button onclick="document.getElementById('circularModal').classList.add('hidden')" class="w-8 h-8 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 flex items-center justify-center transition"><i class="fa-solid fa-xmark text-slate-500"></i></button>
             </div>
             
             <div class="p-6 space-y-4 overflow-y-auto">
                 <div>
-                    <label class="block text-xs font-bold text-slate-500 mb-1">عنوان التعميم</label>
-                    <input type="text" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-2 text-sm focus:ring-2 focus:ring-brandRed outline-none dark:text-white" placeholder="مثلاً: تحديث سياسة...">
+                    <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblTitle">عنوان التعميم</label>
+                    <input type="text" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-brandRed outline-none dark:text-white" data-i18n-placeholder="plhTitle" placeholder="مثلاً: تحديث سياسة...">
                 </div>
                 
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-bold text-slate-500 mb-1">نوع التعميم</label>
-                        <select class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-2 text-sm outline-none dark:text-white">
-                            <option>قرار إداري</option>
-                            <option>تحديث سياسات</option>
-                            <option>خبر عام</option>
-                            <option>تنبيه عاجل</option>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblType">نوع التعميم</label>
+                        <select class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-2.5 text-sm outline-none dark:text-white">
+                            <option data-i18n="optAdmin">قرار إداري</option>
+                            <option data-i18n="optPolicy">تحديث سياسات</option>
+                            <option data-i18n="optNews">خبر عام</option>
+                            <option data-i18n="optAlert">تنبيه عاجل</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-500 mb-1">موجه إلى</label>
-                        <select class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-2 text-sm outline-none dark:text-white">
-                            <option>جميع الموظفين</option>
-                            <option>مدراء الإدارات فقط</option>
-                            <option>القسم المالي</option>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblTarget">موجه إلى</label>
+                        <select class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-2.5 text-sm outline-none dark:text-white">
+                            <option data-i18n="targetAll">جميع الموظفين</option>
+                            <option data-i18n="targetManagers">مدراء الإدارات فقط</option>
+                            <option data-i18n="targetFinance">القسم المالي</option>
                         </select>
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold text-slate-500 mb-1">نص التعميم</label>
-                    <textarea class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-3 text-sm h-32 outline-none dark:text-white" placeholder="اكتب التفاصيل هنا..."></textarea>
+                    <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblBody">نص التعميم</label>
+                    <textarea class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-3 text-sm h-32 outline-none dark:text-white" data-i18n-placeholder="plhBody" placeholder="اكتب التفاصيل هنا..."></textarea>
                 </div>
 
                 <div class="p-4 bg-red-50 dark:bg-red-900/10 rounded-xl border border-red-100 dark:border-red-900/30">
-                    <h4 class="text-xs font-bold text-brandRed mb-3">ضوابط الحوكمة والقراءة</h4>
+                    <h4 class="text-xs font-bold text-brandRed mb-3" data-i18n="govControls">ضوابط الحوكمة والقراءة</h4>
                     
                     <div class="flex items-center gap-3 mb-2">
                         <input type="checkbox" id="forceRead" class="w-4 h-4 text-brandRed rounded focus:ring-brandRed" checked>
-                        <label for="forceRead" class="text-sm text-slate-700 dark:text-slate-300 font-bold">إلزامية القراءة والموافقة (Force Read)</label>
+                        <label for="forceRead" class="text-sm text-slate-700 dark:text-slate-300 font-bold" data-i18n="lblForce">إلزامية القراءة والموافقة (Force Read)</label>
                     </div>
-                    <p class="text-[10px] text-slate-500 mr-7">لن يتمكن الموظف من استخدام النظام حتى يفتح هذا التعميم ويضغط "موافق".</p>
+                    <p class="text-[10px] text-slate-500 ltr:ml-7 rtl:mr-7" data-i18n="forceDesc">لن يتمكن الموظف من استخدام النظام حتى يفتح هذا التعميم ويضغط "موافق".</p>
                 </div>
             </div>
 
-            <div class="p-4 border-t border-slate-100 dark:border-slate-700 flex justify-end gap-3 bg-slate-50 dark:bg-slate-900 rounded-b-2xl">
-                <button onclick="document.getElementById('circularModal').classList.add('hidden')" class="px-4 py-2 border rounded-lg text-xs font-bold hover:bg-slate-100 dark:text-white">إلغاء</button>
-                <button onclick="alert('تم إرسال التعميم وتفعيله على جميع الحسابات'); document.getElementById('circularModal').classList.add('hidden')" class="px-6 py-2 bg-brandRed text-white rounded-lg text-xs font-bold hover:bg-red-700 shadow-md">نشر وإرسال</button>
+            <div class="p-5 border-t border-slate-100 dark:border-slate-700 flex justify-end gap-3 bg-slate-50 dark:bg-slate-900 rounded-b-2xl">
+                <button onclick="document.getElementById('circularModal').classList.add('hidden')" class="px-4 py-2 border dark:border-slate-600 rounded-lg text-xs font-bold hover:bg-slate-100 dark:text-white dark:hover:bg-slate-700" data-i18n="btnCancel">إلغاء</button>
+                <button onclick="alert('تم إرسال التعميم بنجاح'); document.getElementById('circularModal').classList.add('hidden')" class="px-6 py-2 bg-brandRed text-white rounded-lg text-xs font-bold hover:bg-red-700 shadow-md transition" data-i18n="btnSend">نشر وإرسال</button>
             </div>
         </div>
     </div>
 
-    <script src="layout.js"></script>
-    <script src="bot.js"></script>
+    <script src="data/company_policy.js"></script>
+    <script src="js/core/config.js"></script>
+    <script src="js/core/i18n.js"></script>
+    <script src="js/helpers/policy-helpers.js"></script>
+    <script src="js/services/data-service.js"></script>
+    <script src="js/components/role-switcher.js"></script>
+    <script src="js/components/layout.js"></script>
+    <script src="js/components/bot.js"></script>
+
     <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const checkSystem = setInterval(() => {
+                if (typeof Layout !== 'undefined' && typeof AppConfig !== 'undefined' && typeof DataService !== 'undefined') {
+                    clearInterval(checkSystem);
+                    
+                    if (!AppConfig.getCurrentUser()) {
+                        const defaultUser = DataService.getUserById('USR_004') || DataService.getUsers()[0];
+                        if (defaultUser) {
+                            AppConfig.setCurrentUser(defaultUser);
+                        }
+                    }
+
+                    Layout.init();
+                    document.getElementById('loadingOverlay')?.classList.add('hidden');
+                    initPage();
+                }
+            }, 50);
+        });
+
+        function initPage() {
+            updatePageLanguage();
+        }
+
+        function updatePageLanguage() {
+            const lang = localStorage.getItem('lang') || 'ar';
+            const dict = t[lang];
+            
+            document.documentElement.lang = lang;
+            document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+
+            // Static Text
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if(dict[key]) el.innerText = dict[key];
+            });
+
+            // Placeholders
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                if(dict[key]) el.placeholder = dict[key];
+            });
+
+            // Re-render table
+            renderTable(lang);
+        }
+
+        function renderTable(lang) {
+            const tbody = document.getElementById('circularsTable');
+            const data = [
+                {
+                    titleAr: "سياسة الحضور والانصراف الجديدة",
+                    titleEn: "New Attendance Policy",
+                    date: "2026-01-10",
+                    typeAr: "إداري",
+                    typeEn: "Admin",
+                    force: true,
+                    rate: 45,
+                    statusAr: "نشط",
+                    statusEn: "Active",
+                    statusClass: "bg-green-100 text-green-700"
+                },
+                {
+                    titleAr: "تهنئة بمناسبة اليوم الوطني",
+                    titleEn: "National Day Greetings",
+                    date: "2025-09-23",
+                    typeAr: "عام",
+                    typeEn: "General",
+                    force: false,
+                    rate: 98,
+                    statusAr: "مؤرشف",
+                    statusEn: "Archived",
+                    statusClass: "bg-slate-100 text-slate-500"
+                }
+            ];
+
+            tbody.innerHTML = data.map(item => `
+                <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition border-b border-slate-100 dark:border-slate-700">
+                    <td class="p-4 font-bold text-slate-800 dark:text-white">${lang === 'ar' ? item.titleAr : item.titleEn}</td>
+                    <td class="p-4 text-xs font-mono text-slate-500">${item.date}</td>
+                    <td class="p-4"><span class="bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-0.5 rounded text-[10px] border border-slate-200 dark:border-slate-600">${lang === 'ar' ? item.typeAr : item.typeEn}</span></td>
+                    <td class="p-4">
+                        ${item.force 
+                            ? `<span class="text-red-600 font-bold text-xs"><i class="fa-solid fa-lock"></i> ${t[lang].yesForce}</span>` 
+                            : `<span class="text-slate-400 text-xs">${t[lang].noForce}</span>`
+                        }
+                    </td>
+                    <td class="p-4">
+                        <div class="flex items-center gap-2">
+                            <div class="w-20 h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                                <div class="bg-green-500 h-full" style="width: ${item.rate}%"></div>
+                            </div>
+                            <span class="text-xs font-bold dark:text-white font-mono">${item.rate}%</span>
+                        </div>
+                    </td>
+                    <td class="p-4 text-center">
+                        <span class="${item.statusClass} px-2 py-0.5 rounded text-[10px] font-bold border border-transparent">${lang === 'ar' ? item.statusAr : item.statusEn}</span>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
         function openCircularModal() {
             document.getElementById('circularModal').classList.remove('hidden');
         }
+
+        // --- Translation Dictionary ---
+        const t = {
+            ar: {
+                pageTitle: "التعاميم | AndroGov",
+                headerTitle: "إدارة التعاميم والرسائل الجماعية",
+                headerDesc: "إرسال القرارات الإدارية ومتابعة نسب القراءة والموافقة",
+                btnNew: "إرسال تعميم جديد",
+                statActive: "التعاميم النشطة",
+                statActiveDesc: "يظهر حالياً للموظفين",
+                statRead: "نسبة القراءة",
+                statReadDesc: "متوسط قراءة الموظفين",
+                statArchive: "الأرشيف",
+                statArchiveDesc: "تعميم سابق",
+                tableTitle: "سجل التعاميم المرسلة",
+                plhSearch: "بحث...",
+                colTitle: "العنوان",
+                colDate: "التاريخ",
+                colType: "النوع",
+                colForce: "إلزامية القراءة",
+                colRate: "نسبة القراءة",
+                colStatus: "الحالة",
+                yesForce: "نعم (إلزامي)",
+                noForce: "لا (إشعار)",
+                modalTitle: "إنشاء تعميم جديد",
+                lblTitle: "عنوان التعميم",
+                plhTitle: "مثلاً: تحديث سياسة...",
+                lblType: "نوع التعميم",
+                optAdmin: "قرار إداري",
+                optPolicy: "تحديث سياسات",
+                optNews: "خبر عام",
+                optAlert: "تنبيه عاجل",
+                lblTarget: "موجه إلى",
+                targetAll: "جميع الموظفين",
+                targetManagers: "مدراء الإدارات فقط",
+                targetFinance: "القسم المالي",
+                lblBody: "نص التعميم",
+                plhBody: "اكتب التفاصيل هنا...",
+                govControls: "ضوابط الحوكمة والقراءة",
+                lblForce: "إلزامية القراءة والموافقة (Force Read)",
+                forceDesc: "لن يتمكن الموظف من استخدام النظام حتى يفتح هذا التعميم ويضغط \"موافق\".",
+                btnCancel: "إلغاء",
+                btnSend: "نشر وإرسال"
+            },
+            en: {
+                pageTitle: "Circulars | AndroGov",
+                headerTitle: "Circulars & Broadcasts",
+                headerDesc: "Manage administrative decisions and track read/acknowledgment rates",
+                btnNew: "Send New Circular",
+                statActive: "Active Circulars",
+                statActiveDesc: "Currently visible to employees",
+                statRead: "Read Rate",
+                statReadDesc: "Average employee read rate",
+                statArchive: "Archive",
+                statArchiveDesc: "Past circulars",
+                tableTitle: "Circulars Log",
+                plhSearch: "Search...",
+                colTitle: "Title",
+                colDate: "Date",
+                colType: "Type",
+                colForce: "Force Read",
+                colRate: "Read Rate",
+                colStatus: "Status",
+                yesForce: "Yes (Mandatory)",
+                noForce: "No (Notice)",
+                modalTitle: "Create New Circular",
+                lblTitle: "Circular Title",
+                plhTitle: "Ex: Policy Update...",
+                lblType: "Type",
+                optAdmin: "Admin Decision",
+                optPolicy: "Policy Update",
+                optNews: "General News",
+                optAlert: "Urgent Alert",
+                lblTarget: "Target Audience",
+                targetAll: "All Employees",
+                targetManagers: "Managers Only",
+                targetFinance: "Finance Dept",
+                lblBody: "Content",
+                plhBody: "Type details here...",
+                govControls: "Governance & Controls",
+                lblForce: "Mandatory Read & Acknowledge",
+                forceDesc: "Employees cannot use the system until they acknowledge this circular.",
+                btnCancel: "Cancel",
+                btnSend: "Publish & Send"
+            }
+        };
     </script>
 </body>
 </html>
