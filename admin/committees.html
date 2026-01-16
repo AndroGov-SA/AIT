@@ -36,19 +36,19 @@
             .no-print { display: none !important; }
             body { background: white; }
         }
-        /* Inactive Card Effect */
-        .committee-inactive {
-            filter: grayscale(1);
-            opacity: 0.7;
-            border-style: dashed;
+        /* Card Selection Effect */
+        .committee-card.active {
+            border-color: #4267B2;
+            background-color: #EFF6FF;
         }
-        /* Wizard Steps */
-        .step-active { @apply border-brandBlue text-brandBlue; }
-        .step-completed { @apply border-green-500 text-green-500; }
-        .step-inactive { @apply border-slate-200 text-slate-400; }
+        .dark .committee-card.active {
+            border-color: #4267B2;
+            background-color: #1E293B;
+        }
+        /* Transitions */
+        .fade-in { animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
-        body { transition: opacity 0.2s ease-in-out; }
-
         /* Loading Overlay */
         .loading-overlay {
             position: fixed; inset: 0; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(5px);
@@ -67,7 +67,7 @@
 
     <div id="loadingOverlay" class="loading-overlay">
         <div class="spinner"></div>
-        <p class="text-sm font-bold text-slate-600 dark:text-slate-300">جاري تحميل اللجان...</p>
+        <p class="text-sm font-bold text-slate-600 dark:text-slate-300">جاري تحميل بيانات اللجان...</p>
     </div>
 
     <div id="sidebar-container" class="no-print"></div>
@@ -79,9 +79,9 @@
             
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 
-                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-md border-r-4 rtl:border-r-4 ltr:border-l-4 ltr:border-r-0 border-brandBlue relative overflow-hidden group cursor-pointer hover:shadow-lg transition">
+                <div onclick="filterCommittees('audit')" id="card-audit" class="committee-card active bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-md border-2 border-transparent cursor-pointer hover:shadow-lg transition relative overflow-hidden group">
                     <div class="flex justify-between items-start mb-4">
-                        <div class="w-12 h-12 bg-blue-50 dark:bg-blue-900/30 text-brandBlue rounded-xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+                        <div class="w-12 h-12 bg-blue-50 dark:bg-blue-900/30 text-brandBlue rounded-xl flex items-center justify-center text-2xl">
                             <i class="fa-solid fa-magnifying-glass-chart"></i>
                         </div>
                         <span class="bg-green-100 text-green-700 text-[10px] px-2 py-1 rounded-full font-bold flex items-center gap-1">
@@ -90,117 +90,94 @@
                     </div>
                     <h3 class="font-bold text-lg mb-1" data-i18n="auditTitle">لجنة المراجعة</h3>
                     <p class="text-xs text-slate-500 mb-4" data-i18n="auditTerm">الدورة الحالية (2025-2028)</p>
-                    
                     <div class="space-y-2 border-t border-slate-100 dark:border-slate-700 pt-3">
-                        <div class="flex items-center gap-2 text-xs">
-                            <div class="w-5 h-5 rounded-full bg-slate-200 flex items-center justify-center text-[10px]">M</div>
-                            <span class="font-bold" data-i18n="auditChair">محمد بن منصور العنزي (رئيس)</span>
-                        </div>
                         <div class="flex items-center gap-2 text-xs text-slate-500">
-                            <span class="px-1" data-i18n="auditMembers">+2 أعضاء</span> | <span class="text-brandBlue font-bold" data-i18n="auditSec">أمين السر: أنت</span>
+                            <i class="fa-solid fa-users"></i> <span data-i18n="auditMembers">3 أعضاء</span> | <span class="text-brandBlue font-bold" data-i18n="auditSec">أمين السر: أنت</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-slate-50 dark:bg-slate-800/50 p-6 rounded-3xl border border-slate-200 dark:border-slate-700 committee-inactive relative">
-                    <div class="absolute inset-0 z-10 flex items-center justify-center">
-                        <span class="bg-slate-200 text-slate-600 px-3 py-1 rounded-lg text-xs font-bold shadow-sm transform -rotate-12" data-i18n="statusInactive">غير مفعلة / لم تشكل</span>
-                    </div>
+                <div onclick="filterCommittees('nomination')" id="card-nomination" class="committee-card bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-md border-2 border-transparent cursor-pointer hover:shadow-lg transition">
                     <div class="flex justify-between items-start mb-4">
-                        <div class="w-12 h-12 bg-slate-200 text-slate-500 rounded-xl flex items-center justify-center text-2xl">
+                        <div class="w-12 h-12 bg-purple-50 dark:bg-purple-900/30 text-purple-600 rounded-xl flex items-center justify-center text-2xl">
                             <i class="fa-solid fa-users-gear"></i>
                         </div>
+                        <span class="bg-slate-100 text-slate-500 text-[10px] px-2 py-1 rounded-full font-bold" data-i18n="statusSetup">تحت التشكيل</span>
                     </div>
-                    <h3 class="font-bold text-lg mb-1 text-slate-500" data-i18n="nomTitle">المكافآت والترشيحات</h3>
-                    <p class="text-xs text-slate-400" data-i18n="nomDesc">بانتظار قرار المجلس</p>
+                    <h3 class="font-bold text-lg mb-1" data-i18n="nomTitle">المكافآت والترشيحات</h3>
+                    <p class="text-xs text-slate-500 mb-4" data-i18n="nomDesc">بانتظار قرار المجلس</p>
                 </div>
 
-                <div class="bg-slate-50 dark:bg-slate-800/50 p-6 rounded-3xl border border-slate-200 dark:border-slate-700 committee-inactive relative">
-                    <div class="absolute inset-0 z-10 flex items-center justify-center">
-                        <span class="bg-slate-200 text-slate-600 px-3 py-1 rounded-lg text-xs font-bold shadow-sm transform -rotate-12" data-i18n="statusInactive">غير مفعلة / لم تشكل</span>
-                    </div>
+                <div onclick="filterCommittees('executive')" id="card-executive" class="committee-card bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-md border-2 border-transparent cursor-pointer hover:shadow-lg transition">
                     <div class="flex justify-between items-start mb-4">
-                        <div class="w-12 h-12 bg-slate-200 text-slate-500 rounded-xl flex items-center justify-center text-2xl">
+                        <div class="w-12 h-12 bg-orange-50 dark:bg-orange-900/30 text-orange-600 rounded-xl flex items-center justify-center text-2xl">
                             <i class="fa-solid fa-rocket"></i>
                         </div>
+                        <span class="bg-slate-100 text-slate-500 text-[10px] px-2 py-1 rounded-full font-bold" data-i18n="statusInactive">غير مفعلة</span>
                     </div>
-                    <h3 class="font-bold text-lg mb-1 text-slate-500" data-i18n="execTitle">اللجنة التنفيذية</h3>
-                    <p class="text-xs text-slate-400" data-i18n="execDesc">بانتظار قرار المجلس</p>
+                    <h3 class="font-bold text-lg mb-1" data-i18n="execTitle">اللجنة التنفيذية</h3>
+                    <p class="text-xs text-slate-500 mb-4" data-i18n="execDesc">اختيارية</p>
                 </div>
 
             </div>
 
-            <div id="auditWorkspace" class="grid grid-cols-1 lg:grid-cols-3 gap-6 transition-all duration-500">
+            <div id="workspace" class="grid grid-cols-1 lg:grid-cols-3 gap-6 fade-in">
                 
-                <div class="lg:col-span-2 bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700">
+                <div class="lg:col-span-2 bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 flex flex-col min-h-[500px]">
                     <div class="flex justify-between items-center mb-6">
-                        <h3 class="font-bold text-slate-800 dark:text-white flex items-center gap-2">
-                            <i class="fa-solid fa-briefcase text-brandBlue"></i> <span data-i18n="workTitle">أعمال لجنة المراجعة</span>
+                        <h3 class="font-bold text-slate-800 dark:text-white flex items-center gap-2" id="workspaceTitle">
+                            <i class="fa-solid fa-briefcase text-brandBlue"></i> <span data-i18n="workTitle">أعمال اللجنة</span>
                         </h3>
                         <div class="flex gap-2">
-                            <button onclick="startCommWizard()" class="px-4 py-2 bg-brandBlue text-white rounded-xl text-xs font-bold hover:bg-blue-700 shadow-md flex items-center gap-2 transition">
+                            <div class="relative">
+                                <input type="text" id="searchMtg" onkeyup="renderMeetings()" class="bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg pl-8 pr-3 py-1.5 text-xs outline-none" placeholder="بحث...">
+                                <i class="fa-solid fa-search absolute left-2.5 top-2 text-slate-400 text-xs"></i>
+                            </div>
+                            <button onclick="startCommWizard()" class="px-4 py-1.5 bg-brandBlue text-white rounded-lg text-xs font-bold hover:bg-blue-700 shadow-md flex items-center gap-2 transition">
                                 <i class="fa-solid fa-plus"></i> <span data-i18n="btnNewMtg">اجتماع جديد</span>
                             </button>
                         </div>
                     </div>
 
-                    <div class="border-b border-slate-200 dark:border-slate-700 mb-4">
-                        <nav class="flex gap-6">
-                            <button class="pb-3 text-sm font-bold text-brandBlue border-b-2 border-brandBlue" data-i18n="tabCurrent">الاجتماعات الحالية</button>
-                            <button class="pb-3 text-sm font-bold text-slate-500 hover:text-slate-700 border-b-2 border-transparent" data-i18n="tabArchive">الأرشيف</button>
-                        </nav>
+                    <div class="border-b border-slate-200 dark:border-slate-700 mb-4 flex gap-6">
+                        <button onclick="switchTab('upcoming')" id="tab-upcoming" class="pb-3 text-sm font-bold text-brandBlue border-b-2 border-brandBlue transition-colors" data-i18n="tabCurrent">القادمة / الحالية</button>
+                        <button onclick="switchTab('archive')" id="tab-archive" class="pb-3 text-sm font-bold text-slate-500 hover:text-slate-700 border-b-2 border-transparent transition-colors" data-i18n="tabArchive">الأرشيف (تمت)</button>
                     </div>
 
-                    <div id="meetingsList" class="space-y-3">
-                        <div class="text-center py-12 bg-slate-50 dark:bg-slate-700/30 rounded-xl border border-dashed border-slate-300 dark:border-slate-600">
-                            <div class="w-14 h-14 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-3 text-slate-400 text-xl">
-                                <i class="fa-solid fa-calendar-check"></i>
-                            </div>
-                            <p class="text-sm text-slate-500 font-bold" data-i18n="emptyStateTitle">لا يوجد اجتماعات مجدولة حالياً</p>
-                            <p class="text-xs text-slate-400 mt-1" data-i18n="emptyStateDesc">ابدأ بإنشاء اجتماع لمناقشة القوائم المالية أو التقارير.</p>
+                    <div id="meetingsList" class="space-y-3 flex-1 overflow-y-auto custom-scroll pr-1">
                         </div>
-                    </div>
                 </div>
 
                 <div class="lg:col-span-1 space-y-6">
                     
                     <div class="bg-white dark:bg-slate-800 p-5 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700">
                         <h3 class="font-bold text-sm mb-4 flex items-center gap-2">
-                            <i class="fa-solid fa-money-bill-wave text-green-500"></i> <span data-i18n="feesTitle">المستحقات المالية</span>
+                            <i class="fa-solid fa-wallet text-green-500"></i> <span data-i18n="feesTitle">ملخص المكافآت (2026)</span>
                         </h3>
+                        
+                        <div class="text-center py-4 bg-green-50 dark:bg-green-900/10 rounded-xl mb-4 border border-green-100 dark:border-green-900/30">
+                            <p class="text-xs text-green-600 mb-1">إجمالي المستحقات</p>
+                            <h2 class="text-3xl font-bold text-green-700 font-en" id="totalFees">0 SAR</h2>
+                        </div>
+
                         <div class="space-y-2 text-xs">
                             <div class="flex justify-between p-2 bg-slate-50 rounded border border-slate-100 dark:bg-slate-700 dark:border-slate-600">
-                                <span data-i18n="feeMember">عضو اللجنة</span>
-                                <span class="font-bold font-en text-green-600">1,500 SAR</span>
+                                <span data-i18n="feeMember">بدل العضو</span>
+                                <span class="font-bold font-en text-slate-700 dark:text-white">1,500 SAR</span>
                             </div>
                             <div class="flex justify-between p-2 bg-yellow-50 rounded border border-yellow-100 dark:bg-yellow-900/10 dark:border-yellow-900/30">
-                                <span class="font-bold text-yellow-800 dark:text-yellow-500" data-i18n="feeSec">أمين السر</span>
-                                <span class="font-bold font-en text-green-600">1,000 SAR</span>
+                                <span class="font-bold text-yellow-800 dark:text-yellow-500" data-i18n="feeSec">بدل أمين السر</span>
+                                <span class="font-bold font-en text-slate-700 dark:text-white">1,000 SAR</span>
                             </div>
-                        </div>
-                        <div class="mt-3 text-[10px] text-slate-400" data-i18n="feeNote">
-                            * يتم احتساب المكافأة تلقائياً عند اعتماد محضر الاجتماع.
                         </div>
                     </div>
 
-                    <div class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-3xl p-5 text-white shadow-lg">
-                        <div class="flex items-center gap-3 mb-4">
-                            <div class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-lg border-2 border-brandRed"><i class="fa-solid fa-feather"></i></div>
-                            <div>
-                                <p class="text-xs text-slate-400" data-i18n="secTitle">أمين سر اللجنة</p>
-                                <p class="font-bold text-base" data-i18n="secName">أيمن المغربي</p>
+                    <div class="bg-white dark:bg-slate-800 p-5 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700">
+                        <h3 class="font-bold text-sm mb-4 flex items-center gap-2">
+                            <i class="fa-solid fa-users text-purple-500"></i> <span data-i18n="membersTitle">أعضاء اللجنة</span>
+                        </h3>
+                        <div class="space-y-3" id="membersListContainer">
                             </div>
-                        </div>
-                        <div class="grid grid-cols-2 gap-2 text-center text-[10px]">
-                            <div class="bg-white/5 p-2 rounded">
-                                <span class="block text-slate-400" data-i18n="statMtgs">اجتماعات</span>
-                                <span class="font-bold font-en text-lg">0</span>
-                            </div>
-                            <div class="bg-white/5 p-2 rounded">
-                                <span class="block text-slate-400" data-i18n="statFees">مستحقات</span>
-                                <span class="font-bold font-en text-lg text-green-400">0</span>
-                            </div>
-                        </div>
                     </div>
 
                 </div>
@@ -209,24 +186,23 @@
         </main>
     </div>
 
-    <div id="commWizardModal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center backdrop-blur-sm">
-        <div class="bg-white dark:bg-slate-800 w-full max-w-4xl rounded-2xl shadow-2xl flex flex-col max-h-[90vh]">
+    <div id="commWizardModal" class="hidden fixed inset-0 bg-black/70 z-50 flex items-center justify-center backdrop-blur-sm p-4">
+        <div class="bg-white dark:bg-slate-800 w-full max-w-3xl rounded-2xl shadow-2xl flex flex-col max-h-[90vh]">
             
             <div class="p-5 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-900 rounded-t-2xl">
                 <div>
                     <h3 class="font-bold text-lg flex items-center gap-2 text-slate-800 dark:text-white">
-                        <i class="fa-solid fa-plus-circle text-brandBlue"></i> <span data-i18n="wizTitle">اجتماع لجنة جديد</span>
+                        <i class="fa-solid fa-plus-circle text-brandBlue"></i> <span data-i18n="wizTitle">اجتماع جديد</span>
                     </h3>
-                    <p class="text-xs text-slate-500 mt-1" id="comm-wizard-subtitle">الخطوة 1: الإعداد والملفات</p>
+                    <p class="text-xs text-slate-500 mt-1" id="comm-wizard-subtitle">الخطوة 1: الإعداد</p>
                 </div>
-                <div class="flex items-center gap-4">
-                    <div class="flex gap-1 text-[10px] font-bold">
-                        <span id="cw-step1" class="px-3 py-1 rounded-full bg-brandBlue text-white" data-i18n="wizS1">الإعداد</span>
-                        <span id="cw-step2" class="px-3 py-1 rounded-full bg-slate-100 text-slate-400" data-i18n="wizS2">الحضور</span>
-                        <span id="cw-step3" class="px-3 py-1 rounded-full bg-slate-100 text-slate-400" data-i18n="wizS3">المحضر</span>
-                        <span id="cw-step4" class="px-3 py-1 rounded-full bg-slate-100 text-slate-400" data-i18n="wizS4">الاعتماد</span>
+                <div class="flex items-center gap-2">
+                    <div class="flex gap-1">
+                        <div id="step-dot-1" class="w-2.5 h-2.5 rounded-full bg-brandBlue"></div>
+                        <div id="step-dot-2" class="w-2.5 h-2.5 rounded-full bg-slate-300"></div>
+                        <div id="step-dot-3" class="w-2.5 h-2.5 rounded-full bg-slate-300"></div>
                     </div>
-                    <button onclick="closeCommWizard()" class="text-slate-400 hover:text-red-500"><i class="fa-solid fa-xmark text-xl"></i></button>
+                    <button onclick="closeCommWizard()" class="text-slate-400 hover:text-red-500 mr-4"><i class="fa-solid fa-xmark text-xl"></i></button>
                 </div>
             </div>
 
@@ -236,174 +212,410 @@
                     <div class="grid grid-cols-2 gap-4">
                         <div>
                             <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblMtgNo">رقم الاجتماع</label>
-                            <input type="text" class="w-full border rounded p-2 text-sm bg-slate-50" value="AUD-01-2026" readonly>
+                            <input type="text" id="wz-ref" class="w-full border dark:border-slate-600 dark:bg-slate-700 rounded p-2 text-sm bg-slate-50 font-mono" readonly>
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblDate">التاريخ</label>
-                            <input type="date" class="w-full border rounded p-2 text-sm">
+                            <input type="date" id="wz-date" class="w-full border dark:border-slate-600 dark:bg-slate-700 rounded p-2 text-sm dark:text-white">
                         </div>
                         <div class="col-span-2">
                             <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblTitle">عنوان الاجتماع</label>
-                            <input type="text" class="w-full border rounded p-2 text-sm" data-i18n-placeholder="plhTitle" placeholder="مثال: مراجعة القوائم المالية الربع سنوية">
+                            <input type="text" id="wz-title" class="w-full border dark:border-slate-600 dark:bg-slate-700 rounded p-2 text-sm dark:text-white" placeholder="...">
                         </div>
                     </div>
 
-                    <div class="border border-slate-200 rounded-xl p-4">
-                        <h4 class="font-bold text-sm mb-3 flex justify-between items-center">
-                            <span data-i18n="lblAgendaFiles">بنود المناقشة والملفات المرفقة</span>
-                            <button onclick="addCommAgenda()" class="text-xs bg-green-50 text-green-600 px-3 py-1.5 rounded border border-green-200 font-bold hover:bg-green-100">
-                                <i class="fa-solid fa-plus"></i> <span data-i18n="btnAddItem">إضافة بند</span>
-                            </button>
+                    <div class="border border-slate-200 dark:border-slate-700 rounded-xl p-4 bg-slate-50 dark:bg-slate-700/30">
+                        <h4 class="font-bold text-sm mb-3 flex justify-between items-center text-slate-700 dark:text-white">
+                            <span data-i18n="lblAgenda">جدول الأعمال</span>
+                            <button onclick="addAgendaItem()" class="text-xs bg-white dark:bg-slate-600 px-2 py-1 rounded border shadow-sm hover:text-brandBlue"><i class="fa-solid fa-plus"></i></button>
                         </h4>
-                        <div id="commAgendaList" class="space-y-3">
+                        <div id="wizardAgendaList" class="space-y-2">
                             </div>
                     </div>
                 </div>
 
                 <div id="comm-step2" class="hidden space-y-4">
-                    <div class="bg-blue-50 p-3 rounded-lg border border-blue-100 flex justify-between items-center">
-                        <span class="text-xs font-bold text-blue-800" data-i18n="wizAttTitle">حضور الأعضاء وأمين السر</span>
-                        <span class="text-[10px] text-blue-600" data-i18n="wizAttNote">يتم احتساب البدلات (1500 / 1000) للحاضرين فقط.</span>
+                    <div class="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg border border-blue-100 dark:border-blue-900/50 flex justify-between items-center">
+                        <span class="text-xs font-bold text-blue-800 dark:text-blue-300" data-i18n="wizAttTitle">تسجيل الحضور والمكافآت</span>
+                        <span class="text-xs font-bold text-blue-600 dark:text-blue-400 font-mono" id="wz-total-fee">Total: 0 SAR</span>
                     </div>
-                    <table class="w-full text-sm text-right rtl:text-right ltr:text-left border rounded-lg overflow-hidden">
-                        <thead class="bg-slate-100">
+                    <table class="w-full text-sm text-right rtl:text-right ltr:text-left border dark:border-slate-700 rounded-lg overflow-hidden">
+                        <thead class="bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300">
                             <tr>
-                                <th class="p-2" data-i18n="colName">الاسم</th>
-                                <th class="p-2" data-i18n="colRole">المنصب</th>
-                                <th class="p-2" data-i18n="colFee">البدل</th>
-                                <th class="p-2 text-center" data-i18n="colPres">حاضر</th>
+                                <th class="p-2">الاسم</th>
+                                <th class="p-2">المنصب</th>
+                                <th class="p-2">البدل</th>
+                                <th class="p-2 text-center">حاضر</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y">
-                            <tr><td data-i18n="mem1">محمد بن منصور العنزي</td><td class="text-xs text-slate-500" data-i18n="roleChair">رئيس اللجنة</td><td class="text-xs font-mono text-green-600">1,500</td><td class="text-center"><input type="checkbox" checked class="accent-brandBlue"></td></tr>
-                            <tr><td data-i18n="mem2">عادل بن عدنان سعسع</td><td class="text-xs text-slate-500" data-i18n="roleMem">عضو</td><td class="text-xs font-mono text-green-600">1,500</td><td class="text-center"><input type="checkbox" checked class="accent-brandBlue"></td></tr>
-                            <tr><td data-i18n="mem3">أحمد بن سلطان السحيباني</td><td class="text-xs text-slate-500" data-i18n="roleMem">عضو</td><td class="text-xs font-mono text-green-600">1,500</td><td class="text-center"><input type="checkbox" checked class="accent-brandBlue"></td></tr>
-                            <tr class="bg-yellow-50/50 font-bold text-slate-700"><td data-i18n="secName">أيمن المغربي</td><td class="text-xs text-slate-500" data-i18n="roleSec">أمين السر</td><td class="text-xs font-mono text-green-600">1,000</td><td class="text-center"><input type="checkbox" checked class="accent-slate-500" disabled></td></tr>
-                        </tbody>
+                        <tbody class="divide-y dark:divide-slate-700" id="wz-att-body">
+                            </tbody>
                     </table>
                 </div>
 
-                <div id="comm-step3" class="hidden space-y-4">
-                    <label class="block text-xs font-bold text-slate-500" data-i18n="lblDraft">مسودة المحضر</label>
-                    <textarea class="w-full border rounded-xl p-4 text-sm h-64 bg-slate-50 leading-relaxed" id="minutesText" data-i18n-placeholder="plhDraft"></textarea>
-                </div>
-
-                <div id="comm-step4" class="hidden text-center py-10">
-                    <div class="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-4xl mx-auto mb-4">
-                        <i class="fa-solid fa-file-signature"></i>
+                <div id="comm-step3" class="hidden text-center py-8">
+                    <div class="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-3xl mx-auto mb-4">
+                        <i class="fa-solid fa-check"></i>
                     </div>
-                    <h3 class="text-xl font-bold mb-2" data-i18n="readyTitle">جاهز للإرسال</h3>
-                    <p class="text-sm text-slate-500 mb-6" data-i18n="readyDesc">سيتم إرسال المحضر للأعضاء عبر النظام للمراجعة والتوقيع الإلكتروني.</p>
-                    
-                    <div class="flex justify-center gap-4">
-                        <div class="bg-slate-50 p-3 rounded border text-xs text-left">
-                            <p class="font-bold" data-i18n="attTitle">المرفقات:</p>
-                            <ul class="list-disc list-inside text-slate-500" id="filesSummary">
-                                <li data-i18n="noFiles">لا يوجد ملفات</li>
-                            </ul>
-                        </div>
+                    <h3 class="text-lg font-bold mb-2 dark:text-white">جاهز للحفظ</h3>
+                    <p class="text-sm text-slate-500 mb-6">سيتم حفظ الاجتماع وإرسال إشعارات للأعضاء.</p>
+                    <div class="bg-slate-50 dark:bg-slate-700 p-4 rounded-xl text-right rtl:text-right ltr:text-left text-sm space-y-2 inline-block w-full max-w-md border dark:border-slate-600">
+                        <p><span class="text-slate-500">العنوان:</span> <span class="font-bold dark:text-white" id="rev-title">...</span></p>
+                        <p><span class="text-slate-500">التاريخ:</span> <span class="font-bold dark:text-white" id="rev-date">...</span></p>
+                        <p><span class="text-slate-500">الحضور:</span> <span class="font-bold text-brandBlue" id="rev-count">0</span></p>
                     </div>
                 </div>
 
             </div>
 
-            <div class="p-5 border-t border-slate-200 bg-slate-50 dark:bg-slate-900 rounded-b-2xl flex justify-between">
-                <button onclick="cwPrev()" id="cw-prev" class="px-5 py-2 border rounded-xl text-xs font-bold bg-white text-slate-600 disabled:opacity-50" disabled data-i18n="prev">السابق</button>
-                <button onclick="cwNext()" id="cw-next" class="px-8 py-2 bg-brandBlue text-white rounded-xl text-xs font-bold hover:bg-blue-700" data-i18n="next">التالي</button>
+            <div class="p-5 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 rounded-b-2xl flex justify-between">
+                <button onclick="cwPrev()" id="cw-prev" class="px-5 py-2 border dark:border-slate-600 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 disabled:opacity-50" disabled data-i18n="prev">السابق</button>
+                <button onclick="cwNext()" id="cw-next" class="px-8 py-2 bg-brandBlue text-white rounded-xl text-xs font-bold hover:bg-blue-700 transition" data-i18n="next">التالي</button>
             </div>
         </div>
     </div>
 
     <script src="data/company_policy.js"></script>
-    
     <script src="js/core/config.js"></script>
     <script src="js/core/i18n.js"></script>
-    
     <script src="js/helpers/policy-helpers.js"></script>
-    
     <script src="js/services/data-service.js"></script>
-    
     <script src="js/components/role-switcher.js"></script>
     <script src="js/components/layout.js"></script>
     <script src="js/components/bot.js"></script>
 
     <script>
+        // --- DATA & STATE ---
+        let currentTab = 'upcoming';
+        let currentComm = 'audit';
+        let cwStep = 1;
+        
+        // Mock Meetings Data
+        let meetingsDB = [
+            { id: 1, type: 'audit', ref: 'AUD-01-2026', title: 'مراجعة القوائم المالية Q4', date: '2026-01-20', status: 'scheduled', attendees: 3 },
+            { id: 2, type: 'audit', ref: 'AUD-04-2025', title: 'تقرير التدقيق الداخلي', date: '2025-12-15', status: 'completed', attendees: 4 },
+            { id: 3, type: 'nomination', ref: 'NOM-01-2025', title: 'ترشيح أعضاء جدد', date: '2025-11-10', status: 'completed', attendees: 3 }
+        ];
+
+        // --- INIT ---
         document.addEventListener('DOMContentLoaded', () => {
-            // التحقق من تحميل النظام
             const checkSystem = setInterval(() => {
                 if (typeof Layout !== 'undefined' && typeof AppConfig !== 'undefined' && typeof DataService !== 'undefined') {
                     clearInterval(checkSystem);
                     
-                    // --- إصلاح تسجيل الدخول التلقائي ---
                     if (!AppConfig.getCurrentUser()) {
-                        console.log('⚠️ No user found. Auto-logging as Admin...');
-                        // حاول جلب المستخدم الافتراضي (مدير النظام)
                         const defaultUser = DataService.getUserById('USR_004') || DataService.getUsers()[0];
-                        if (defaultUser) {
-                            AppConfig.setCurrentUser(defaultUser);
-                            location.reload();
-                            return;
-                        }
+                        if (defaultUser) AppConfig.setCurrentUser(defaultUser);
                     }
 
-                    // تهيئة التخطيط العام
                     Layout.init();
-                    
-                    // إخفاء شاشة التحميل إن وجدت
                     document.getElementById('loadingOverlay')?.classList.add('hidden');
-                    
-                    // تشغيل أي وظائف خاصة بالصفحة الحالية
-                    if (typeof initPage === 'function') {
-                        initPage();
-                    }
+                    initPage();
                 }
             }, 50);
         });
-    </script>
 
-    <script>
+        function initPage() {
+            updatePageLanguage();
+            renderMeetings();
+            renderMembers();
+        }
+
+        function updatePageLanguage() {
+            const lang = AppConfig.getLang();
+            const dict = t[lang];
+            
+            document.documentElement.lang = lang;
+            document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if(dict[key]) el.innerText = dict[key];
+            });
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                if(dict[key]) el.placeholder = dict[key];
+            });
+        }
+
+        // --- MAIN FUNCTIONS ---
+        function filterCommittees(type) {
+            currentComm = type;
+            
+            // Visual Active State
+            document.querySelectorAll('.committee-card').forEach(el => el.classList.remove('active'));
+            document.getElementById(`card-${type}`).classList.add('active');
+
+            // Render
+            renderMeetings();
+            renderMembers();
+        }
+
+        function switchTab(tab) {
+            currentTab = tab;
+            
+            // Update UI Tabs
+            document.getElementById('tab-upcoming').className = tab === 'upcoming' ? "pb-3 text-sm font-bold text-brandBlue border-b-2 border-brandBlue transition-colors" : "pb-3 text-sm font-bold text-slate-500 hover:text-slate-700 border-b-2 border-transparent transition-colors";
+            document.getElementById('tab-archive').className = tab === 'archive' ? "pb-3 text-sm font-bold text-brandBlue border-b-2 border-brandBlue transition-colors" : "pb-3 text-sm font-bold text-slate-500 hover:text-slate-700 border-b-2 border-transparent transition-colors";
+
+            renderMeetings();
+        }
+
+        function renderMeetings() {
+            const container = document.getElementById('meetingsList');
+            const search = document.getElementById('searchMtg').value.toLowerCase();
+            const lang = AppConfig.getLang();
+            const dict = t[lang];
+
+            container.innerHTML = '';
+
+            const filtered = meetingsDB.filter(m => {
+                const isType = m.type === currentComm;
+                const isTab = currentTab === 'upcoming' ? m.status === 'scheduled' : m.status === 'completed';
+                const isSearch = m.title.toLowerCase().includes(search) || m.ref.toLowerCase().includes(search);
+                return isType && isTab && isSearch;
+            });
+
+            if(filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12">
+                        <div class="w-14 h-14 bg-slate-100 dark:bg-slate-700 rounded-full flex items-center justify-center mx-auto mb-3 text-slate-400">
+                            <i class="fa-solid fa-calendar-xmark"></i>
+                        </div>
+                        <p class="text-sm text-slate-500 dark:text-slate-400">${dict.emptyStateTitle}</p>
+                    </div>
+                `;
+                return;
+            }
+
+            filtered.forEach(m => {
+                const statusColor = m.status === 'scheduled' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700';
+                const statusIcon = m.status === 'scheduled' ? 'fa-clock' : 'fa-check-circle';
+                const statusText = m.status === 'scheduled' ? (lang==='ar'?'مجدول':'Scheduled') : (lang==='ar'?'مكتمل':'Completed');
+
+                container.innerHTML += `
+                    <div class="p-4 border border-slate-100 dark:border-slate-700 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700/50 transition flex justify-between items-center group">
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-lg bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-slate-500 font-bold text-xs flex-col">
+                                <span>${new Date(m.date).getDate()}</span>
+                                <span class="text-[9px] uppercase">${new Date(m.date).toLocaleString('default', {month:'short'})}</span>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-sm text-slate-800 dark:text-white group-hover:text-brandBlue transition">${m.title}</h4>
+                                <p class="text-xs text-slate-400 font-mono mt-0.5">${m.ref}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="${statusColor} text-[10px] px-2 py-1 rounded-full font-bold flex items-center gap-1">
+                                <i class="fa-regular ${statusIcon}"></i> ${statusText}
+                            </span>
+                            <button class="text-slate-400 hover:text-brandBlue transition px-2"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function renderMembers() {
+            const container = document.getElementById('membersListContainer');
+            const lang = AppConfig.getLang();
+            const dict = t[lang];
+            
+            // Mock members logic based on committee type
+            let members = [];
+            if(currentComm === 'audit') {
+                members = [
+                    { name: dict.mem1, role: dict.roleChair, img: 'M' },
+                    { name: dict.mem2, role: dict.roleMem, img: 'A' },
+                    { name: dict.mem3, role: dict.roleMem, img: 'A' },
+                    { name: dict.secName, role: dict.roleSec, img: 'A', isSec: true }
+                ];
+            } else {
+                container.innerHTML = `<p class="text-xs text-center text-slate-400 py-4">${dict.statusInactive}</p>`;
+                return;
+            }
+
+            container.innerHTML = members.map(m => `
+                <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
+                    <div class="w-8 h-8 rounded-full ${m.isSec ? 'bg-yellow-100 text-yellow-600' : 'bg-slate-200 text-slate-500'} flex items-center justify-center text-xs font-bold">${m.img}</div>
+                    <div>
+                        <p class="text-xs font-bold text-slate-700 dark:text-slate-200">${m.name}</p>
+                        <p class="text-[10px] text-slate-400">${m.role}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // --- WIZARD LOGIC ---
+        function startCommWizard() {
+            if(currentComm !== 'audit') {
+                const lang = AppConfig.getLang();
+                alert(lang==='ar' ? 'عذراً، هذه اللجنة غير مفعلة حالياً.' : 'Sorry, this committee is inactive.');
+                return;
+            }
+            cwStep = 1;
+            document.getElementById('wz-ref').value = `AUD-${Math.floor(Math.random()*100)}-2026`;
+            document.getElementById('wz-date').valueAsDate = new Date();
+            document.getElementById('wizardAgendaList').innerHTML = '';
+            addAgendaItem(); // Add one default item
+            updateCwUI();
+            document.getElementById('commWizardModal').classList.remove('hidden');
+        }
+
+        function closeCommWizard() {
+            document.getElementById('commWizardModal').classList.add('hidden');
+        }
+
+        function updateCwUI() {
+            const lang = AppConfig.getLang();
+            const dict = t[lang];
+
+            // Steps visibility
+            for(let i=1; i<=3; i++) document.getElementById(`comm-step${i}`).classList.add('hidden');
+            document.getElementById(`comm-step${cwStep}`).classList.remove('hidden');
+
+            // Header Dots
+            for(let i=1; i<=3; i++) {
+                const dot = document.getElementById(`step-dot-${i}`);
+                dot.className = i === cwStep ? "w-2.5 h-2.5 rounded-full bg-brandBlue" : "w-2.5 h-2.5 rounded-full bg-slate-300 dark:bg-slate-600";
+            }
+
+            // Buttons
+            document.getElementById('cw-prev').disabled = cwStep === 1;
+            document.getElementById('cw-next').innerText = cwStep === 3 ? dict.send : dict.next;
+
+            // Load Attendance if Step 2
+            if(cwStep === 2) loadWizardAttendance();
+            // Load Summary if Step 3
+            if(cwStep === 3) loadWizardSummary();
+        }
+
+        function cwNext() {
+            if(cwStep < 3) {
+                cwStep++;
+                updateCwUI();
+            } else {
+                handleSave();
+            }
+        }
+
+        function cwPrev() {
+            if(cwStep > 1) {
+                cwStep--;
+                updateCwUI();
+            }
+        }
+
+        function addAgendaItem() {
+            const list = document.getElementById('wizardAgendaList');
+            const lang = AppConfig.getLang();
+            const ph = t[lang].itemPlh;
+            
+            const div = document.createElement('div');
+            div.className = "flex gap-2";
+            div.innerHTML = `
+                <input type="text" class="flex-1 border dark:border-slate-600 dark:bg-slate-700 rounded px-2 py-1 text-xs dark:text-white" placeholder="${ph}">
+                <button onclick="this.parentElement.remove()" class="text-red-400 hover:text-red-500"><i class="fa-solid fa-trash"></i></button>
+            `;
+            list.appendChild(div);
+        }
+
+        function loadWizardAttendance() {
+            const tbody = document.getElementById('wz-att-body');
+            const lang = AppConfig.getLang();
+            const dict = t[lang];
+            
+            // Mock Members
+            const members = [
+                { name: dict.mem1, role: dict.roleChair, fee: 1500 },
+                { name: dict.mem2, role: dict.roleMem, fee: 1500 },
+                { name: dict.mem3, role: dict.roleMem, fee: 1500 },
+                { name: dict.secName, role: dict.roleSec, fee: 1000, locked: true }
+            ];
+
+            tbody.innerHTML = members.map(m => `
+                <tr class="border-b dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50">
+                    <td class="p-2 font-bold dark:text-white">${m.name}</td>
+                    <td class="p-2 text-xs text-slate-500">${m.role}</td>
+                    <td class="p-2 text-xs font-mono text-green-600">${m.fee}</td>
+                    <td class="p-2 text-center">
+                        <input type="checkbox" checked ${m.locked ? 'disabled' : ''} class="w-4 h-4 accent-brandBlue att-check" data-fee="${m.fee}" onchange="calcTotalFee()">
+                    </td>
+                </tr>
+            `).join('');
+            
+            calcTotalFee();
+        }
+
+        function calcTotalFee() {
+            let total = 0;
+            document.querySelectorAll('.att-check:checked').forEach(cb => {
+                total += parseInt(cb.dataset.fee);
+            });
+            document.getElementById('wz-total-fee').innerText = `Total: ${total} SAR`;
+        }
+
+        function loadWizardSummary() {
+            document.getElementById('rev-title').innerText = document.getElementById('wz-title').value || '-';
+            document.getElementById('rev-date').innerText = document.getElementById('wz-date').value || '-';
+            document.getElementById('rev-count').innerText = document.querySelectorAll('.att-check:checked').length;
+        }
+
+        function handleSave() {
+            const lang = AppConfig.getLang();
+            const dict = t[lang];
+            
+            // Add new meeting to DB (Simulated)
+            const newMtg = {
+                id: Date.now(),
+                type: 'audit',
+                ref: document.getElementById('wz-ref').value,
+                title: document.getElementById('wz-title').value || 'New Meeting',
+                date: document.getElementById('wz-date').value,
+                status: 'scheduled',
+                attendees: document.querySelectorAll('.att-check:checked').length
+            };
+            meetingsDB.unshift(newMtg); // Add to top
+            
+            // Refresh View
+            renderMeetings();
+            
+            // Close
+            alert(dict.successMsg);
+            closeCommWizard();
+        }
+
         // --- Translation Dictionary ---
         const t = {
             ar: {
                 pageTitle: "AndroGov | اللجان المنبثقة",
                 statusActive: "نشطة",
-                statusInactive: "غير مفعلة / لم تشكل",
+                statusInactive: "غير مفعلة",
+                statusSetup: "تحت التشكيل",
                 auditTitle: "لجنة المراجعة",
                 auditTerm: "الدورة الحالية (2025-2028)",
-                auditChair: "محمد بن منصور العنزي (رئيس)",
-                auditMembers: "+2 أعضاء",
+                auditMembers: "3 أعضاء",
                 auditSec: "أمين السر: أنت",
                 nomTitle: "المكافآت والترشيحات",
                 nomDesc: "بانتظار قرار المجلس",
                 execTitle: "اللجنة التنفيذية",
-                execDesc: "بانتظار قرار المجلس",
-                workTitle: "أعمال لجنة المراجعة",
+                execDesc: "اختيارية",
+                workTitle: "أعمال اللجنة",
                 btnNewMtg: "اجتماع جديد",
-                tabCurrent: "الاجتماعات الحالية",
-                tabArchive: "الأرشيف",
+                tabCurrent: "القادمة / الحالية",
+                tabArchive: "الأرشيف (تمت)",
                 emptyStateTitle: "لا يوجد اجتماعات مجدولة حالياً",
-                emptyStateDesc: "ابدأ بإنشاء اجتماع لمناقشة القوائم المالية أو التقارير.",
-                feesTitle: "المستحقات المالية",
-                feeMember: "عضو اللجنة",
-                feeSec: "أمين السر",
-                feeNote: "* يتم احتساب المكافأة تلقائياً عند اعتماد محضر الاجتماع.",
-                secTitle: "أمين سر اللجنة",
-                secName: "أيمن المغربي",
-                statMtgs: "اجتماعات",
-                statFees: "مستحقات",
+                feesTitle: "ملخص المكافآت (2026)",
+                feeMember: "بدل العضو",
+                feeSec: "بدل أمين السر",
+                membersTitle: "أعضاء اللجنة",
                 wizTitle: "اجتماع لجنة جديد",
-                wizS1: "الإعداد",
-                wizS2: "الحضور",
-                wizS3: "المحضر",
-                wizS4: "الاعتماد",
                 lblMtgNo: "رقم الاجتماع",
                 lblDate: "التاريخ",
                 lblTitle: "عنوان الاجتماع",
-                plhTitle: "مثال: مراجعة القوائم المالية الربع سنوية",
-                lblAgendaFiles: "بنود المناقشة والملفات المرفقة",
-                btnAddItem: "إضافة بند",
-                wizAttTitle: "حضور الأعضاء وأمين السر",
-                wizAttNote: "يتم احتساب البدلات (1500 / 1000) للحاضرين فقط.",
+                lblAgenda: "جدول الأعمال",
+                itemPlh: "عنوان البند...",
+                wizAttTitle: "تسجيل الحضور والمكافآت",
                 colName: "الاسم",
                 colRole: "المنصب",
                 colFee: "البدل",
@@ -414,61 +626,42 @@
                 roleChair: "رئيس اللجنة",
                 roleMem: "عضو",
                 roleSec: "أمين السر",
-                lblDraft: "مسودة المحضر",
-                plhDraft: "اجتمع أعضاء لجنة المراجعة في يوم... وتم الاتفاق على...",
-                readyTitle: "جاهز للإرسال",
-                readyDesc: "سيتم إرسال المحضر للأعضاء عبر النظام للمراجعة والتوقيع الإلكتروني.",
-                attTitle: "المرفقات:",
-                noFiles: "لا يوجد ملفات",
+                secName: "أيمن المغربي",
                 prev: "السابق",
                 next: "التالي",
-                send: "إرسال للتوقيع",
-                itemPlh: "اكتب عنوان البند هنا...",
-                attach: "إرفاق ملف (PDF)",
-                noFileSel: "لم يتم اختيار ملف",
-                closeConfirm: "إغلاق المعالج؟ قد تفقد البيانات غير المحفوظة.",
-                successMsg: "تم إرسال المحضر للتوقيع بنجاح!"
+                send: "حفظ وإرسال",
+                successMsg: "تم حفظ الاجتماع بنجاح!",
+                closeConfirm: "هل أنت متأكد من الإغلاق؟"
             },
             en: {
-                pageTitle: "AndroGov | Committees",
+                pageTitle: "Committees | AndroGov",
                 statusActive: "Active",
-                statusInactive: "Inactive / Not Formed",
+                statusInactive: "Inactive",
+                statusSetup: "Setting Up",
                 auditTitle: "Audit Committee",
                 auditTerm: "Current Term (2025-2028)",
-                auditChair: "Mohammed Al-Enezi (Chair)",
-                auditMembers: "+2 Members",
-                auditSec: "Secretary: You",
+                auditMembers: "3 Members",
+                auditSec: "Sec: You",
                 nomTitle: "Nomination & Remuneration",
-                nomDesc: "Pending Board Decision",
+                nomDesc: "Pending Board",
                 execTitle: "Executive Committee",
-                execDesc: "Pending Board Decision",
-                workTitle: "Audit Committee Work",
+                execDesc: "Optional",
+                workTitle: "Committee Work",
                 btnNewMtg: "New Meeting",
-                tabCurrent: "Current Meetings",
-                tabArchive: "Archive",
-                emptyStateTitle: "No meetings scheduled",
-                emptyStateDesc: "Start by creating a meeting to review financial statements.",
-                feesTitle: "Financial Dues",
-                feeMember: "Committee Member",
-                feeSec: "Secretary",
-                feeNote: "* Fees calculated automatically upon minutes approval.",
-                secTitle: "Committee Secretary",
-                secName: "Ayman Almaghrabi",
-                statMtgs: "Meetings",
-                statFees: "Dues",
+                tabCurrent: "Upcoming / Active",
+                tabArchive: "Archive (Done)",
+                emptyStateTitle: "No scheduled meetings",
+                feesTitle: "Fees Summary (2026)",
+                feeMember: "Member Fee",
+                feeSec: "Secretary Fee",
+                membersTitle: "Committee Members",
                 wizTitle: "New Committee Meeting",
-                wizS1: "Setup",
-                wizS2: "Attendance",
-                wizS3: "Minutes",
-                wizS4: "Approval",
-                lblMtgNo: "Meeting No",
+                lblMtgNo: "Ref No",
                 lblDate: "Date",
                 lblTitle: "Meeting Title",
-                plhTitle: "Ex: Reviewing Quarterly Financials",
-                lblAgendaFiles: "Agenda Items & Attachments",
-                btnAddItem: "Add Item",
-                wizAttTitle: "Attendance",
-                wizAttNote: "Allowances (1500/1000) calculated for attendees only.",
+                lblAgenda: "Agenda",
+                itemPlh: "Item title...",
+                wizAttTitle: "Attendance & Fees",
                 colName: "Name",
                 colRole: "Role",
                 colFee: "Fee",
@@ -479,185 +672,14 @@
                 roleChair: "Chairman",
                 roleMem: "Member",
                 roleSec: "Secretary",
-                lblDraft: "Minutes Draft",
-                plhDraft: "The Audit Committee met on... and agreed to...",
-                readyTitle: "Ready to Send",
-                readyDesc: "Minutes will be sent to members for review and e-signature.",
-                attTitle: "Attachments:",
-                noFiles: "No files",
+                secName: "Ayman Almaghrabi",
                 prev: "Previous",
                 next: "Next",
-                send: "Send for Signature",
-                itemPlh: "Enter item title...",
-                attach: "Attach PDF",
-                noFileSel: "No file selected",
-                closeConfirm: "Close wizard? Unsaved data will be lost.",
-                successMsg: "Minutes sent for signature successfully!"
+                send: "Save & Send",
+                successMsg: "Meeting saved successfully!",
+                closeConfirm: "Are you sure you want to close?"
             }
         };
-
-        // --- Logic ---
-        let cwStep = 1;
-        let agendaFiles = [];
-
-        function initPage() {
-            updatePageLanguage();
-        }
-
-        window.updatePageLanguage = function() {
-            const lang = localStorage.getItem('lang') || 'ar';
-            const dict = t[lang];
-            
-            // Set Document Direction
-            document.documentElement.lang = lang;
-            document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
-
-            // Update Static Text
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                const key = el.getAttribute('data-i18n');
-                if(dict[key]) el.innerText = dict[key];
-            });
-
-            // Update Placeholders
-            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
-                const key = el.getAttribute('data-i18n-placeholder');
-                if(dict[key]) el.placeholder = dict[key];
-            });
-        }
-
-        window.selectCommittee = function(type) {
-            const lang = localStorage.getItem('lang') || 'ar';
-            if(type === 'audit') {
-                // Focus is already on audit workspace
-                document.getElementById('auditWorkspace').scrollIntoView({behavior: 'smooth'});
-            } else {
-                alert(lang === 'ar' ? 'هذه اللجنة غير مفعلة حالياً.' : 'This committee is currently inactive.');
-            }
-        }
-
-        // --- Wizard Logic ---
-        window.startCommWizard = function() {
-            document.getElementById('commWizardModal').classList.remove('hidden');
-            cwStep = 1;
-            updateCwUI();
-            // Add default agenda item if empty
-            const list = document.getElementById('commAgendaList');
-            if(list.children.length === 0) addCommAgenda(); 
-        }
-
-        window.closeCommWizard = function() {
-            const lang = localStorage.getItem('lang') || 'ar';
-            const dict = t[lang];
-            if(confirm(dict.closeConfirm)) {
-                document.getElementById('commWizardModal').classList.add('hidden');
-            }
-        }
-
-        window.cwNext = function() {
-            const lang = localStorage.getItem('lang') || 'ar';
-            const dict = t[lang];
-            if(cwStep < 4) {
-                cwStep++;
-                updateCwUI();
-            } else {
-                alert(dict.successMsg);
-                document.getElementById('commWizardModal').classList.add('hidden');
-            }
-        }
-
-        window.cwPrev = function() {
-            if(cwStep > 1) {
-                cwStep--;
-                updateCwUI();
-            }
-        }
-
-        window.updateCwUI = function() {
-            const lang = localStorage.getItem('lang') || 'ar';
-            const dict = t[lang];
-
-            // Toggle Steps
-            for(let i=1; i<=4; i++) document.getElementById(`comm-step${i}`).classList.add('hidden');
-            document.getElementById(`comm-step${cwStep}`).classList.remove('hidden');
-
-            // Update Header
-            const titles = ["", dict.wizS1, dict.wizS2, dict.wizS3, dict.wizS4];
-            document.getElementById('comm-wizard-subtitle').innerText = `${lang==='ar'?'الخطوة':'Step'} ${cwStep}: ${titles[cwStep]}`;
-
-            // Update Pills
-            for(let i=1; i<=4; i++) {
-                const pill = document.getElementById(`cw-step${i}`);
-                pill.className = i === cwStep ? "px-3 py-1 rounded-full bg-brandBlue text-white" : (i < cwStep ? "px-3 py-1 rounded-full bg-green-100 text-green-600" : "px-3 py-1 rounded-full bg-slate-100 text-slate-400");
-            }
-
-            // Buttons
-            document.getElementById('cw-prev').disabled = cwStep === 1;
-            document.getElementById('cw-next').innerText = cwStep === 4 ? dict.send : dict.next;
-        }
-
-        // --- Agenda & Files Logic ---
-        window.addCommAgenda = function() {
-            const list = document.getElementById('commAgendaList');
-            const id = Date.now();
-            const lang = localStorage.getItem('lang') || 'ar';
-            const dict = t[lang];
-            
-            const div = document.createElement('div');
-            div.className = "p-3 border border-slate-200 rounded-xl bg-slate-50 space-y-2";
-            div.innerHTML = `
-                <input type="text" class="w-full bg-transparent font-bold text-sm outline-none border-b border-dashed border-slate-300 pb-1" placeholder="${dict.itemPlh}">
-                <div class="flex items-center gap-2">
-                    <label for="file-${id}" class="cursor-pointer text-[10px] bg-white border px-2 py-1 rounded hover:bg-slate-100 flex items-center gap-1 text-slate-600">
-                        <i class="fa-solid fa-paperclip"></i> ${dict.attach}
-                    </label>
-                    <input type="file" id="file-${id}" class="hidden" onchange="fileUploaded(this)">
-                    <span class="text-[10px] text-slate-400" id="filename-${id}">${dict.noFileSel}</span>
-                </div>
-            `;
-            list.appendChild(div);
-        }
-
-        window.fileUploaded = function(input) {
-            if(input.files && input.files[0]) {
-                const span = document.getElementById(`filename-${input.id.split('-')[1]}`);
-                span.innerText = input.files[0].name;
-                span.classList.add('text-green-600', 'font-bold');
-                span.classList.remove('text-slate-400');
-                
-                // Add to summary
-                const summary = document.getElementById('filesSummary');
-                const lang = localStorage.getItem('lang') || 'ar';
-                if(summary.innerText.includes(t[lang].noFiles)) summary.innerHTML = '';
-                summary.innerHTML += `<li>${input.files[0].name}</li>`;
-            }
-        }
-
-        // --- Override Chatbot Response for Committees Context ---
-        const originalGetAIResponse = window.getAIResponse; // Save original if exists
-        
-        window.getAIResponse = function(query, isArabic) {
-            const q = query.toLowerCase();
-            
-            // Context: Audit Committee Members
-            if (q.includes('members') || q.includes('audit') || q.includes('أعضاء') || q.includes('مراجعة')) {
-                return isArabic 
-                    ? `تتكون لجنة المراجعة من:<br>1. <b>محمد بن منصور العنزي</b> (رئيس)<br>2. <b>عادل بن عدنان سعسع</b> (عضو)<br>3. <b>أحمد بن سلطان السحيباني</b> (عضو)`
-                    : `The Audit Committee consists of:<br>1. <b>Mohammed Al-Enezi</b> (Chair)<br>2. <b>Adel Sasa</b> (Member)<br>3. <b>Ahmed Al-Suhaibani</b> (Member)`;
-            }
-
-            // Context: Remuneration
-            if (q.includes('fee') || q.includes('reward') || q.includes('مكافأة') || q.includes('بدل')) {
-                return isArabic
-                    ? `مكافأة حضور اجتماعات اللجان هي <b>1,500 ريال</b> للعضو، و <b>1,000 ريال</b> لأمين السر، عن كل اجتماع.`
-                    : `Committee meeting fees are <b>1,500 SAR</b> per member, and <b>1,000 SAR</b> for the secretary per meeting.`;
-            }
-
-            // Fallback to general logic
-            return isArabic
-                ? `عذراً، لم أفهم. يمكنك سؤالي عن: <b>أعضاء اللجنة</b> أو <b>مكافآت الاجتماع</b>.`
-                : `Sorry, I didn't catch that. Ask me about: <b>Committee Members</b> or <b>Meeting Fees</b>.`;
-        }
-
     </script>
 </body>
 </html>
