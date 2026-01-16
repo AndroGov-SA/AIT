@@ -3,257 +3,440 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AndroGov | إدارة المهام</title>
+    <meta name="theme-color" content="#FB4747">
+    <title data-i18n="pageTitle">إدارة المهام | AndroGov</title>
     
-    <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Libraries -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
     <script>
         tailwind.config = {
             darkMode: 'class',
             theme: {
                 extend: {
-                    colors: { brandRed: '#FB4747', brandBlue: '#4267B2', brandGray: '#F8FAFC' },
-                    fontFamily: { sans: ['Tajawal', 'Inter', 'sans-serif'], en: ['Inter', 'sans-serif'] }
+                    colors: {
+                        brandRed: '#FB4747',
+                        brandBlue: '#4267B2',
+                        brandDark: '#1E293B',
+                        brandGray: '#F8FAFC'
+                    },
+                    fontFamily: {
+                        sans: ['Tajawal', 'Inter', 'sans-serif'],
+                        en: ['Inter', 'sans-serif']
+                    }
                 }
             }
         }
     </script>
+
     <style>
-        body { background-color: #F8FAFC; color: #1E293B; transition: opacity 0.2s; }
-        .dark body { background-color: #0F172A; color: #F1F5F9; }
-        .task-card { transition: all 0.2s; cursor: grab; }
+        /* Kanban Styles */
+        .task-card { cursor: grab; transition: all 0.2s ease; }
         .task-card:active { cursor: grabbing; transform: scale(1.02); }
-        .custom-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
-        .custom-scroll::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 4px; }
-        .dark .custom-scroll::-webkit-scrollbar-thumb { background-color: #475569; }
+        .task-column { min-height: 500px; transition: background 0.3s; }
+        .task-column.drag-over { background-color: rgba(66, 103, 178, 0.05); border-radius: 12px; }
         
-        /* List View Styles */
-        .list-view .board-col { min-width: 100%; margin-bottom: 1rem; height: auto; background: transparent; border: none; }
-        .list-view .board-container { flex-direction: column; }
-        .list-view .col-header { background: #f1f5f9; padding: 10px; border-radius: 8px; margin-bottom: 10px; }
-        .dark .list-view .col-header { background: #1e293b; }
-        .list-view .task-body { display: flex; flex-direction: column; gap: 8px; }
+        /* Priority Colors */
+        .priority-high { border-right: 4px solid #FB4747; } /* RTL Default */
+        .ltr .priority-high { border-right: 0; border-left: 4px solid #FB4747; }
+        
+        .priority-medium { border-right: 4px solid #F59E0B; }
+        .ltr .priority-medium { border-right: 0; border-left: 4px solid #F59E0B; }
+        
+        .priority-low { border-right: 4px solid #10B981; }
+        .ltr .priority-low { border-right: 0; border-left: 4px solid #10B981; }
+
+        /* Loading Overlay */
+        .loading-overlay {
+            position: fixed; inset: 0; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(5px);
+            z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem;
+        }
+        .dark .loading-overlay { background: rgba(15, 23, 42, 0.9); }
+        .loading-overlay.hidden { display: none; }
+        .spinner {
+            width: 48px; height: 48px; border: 5px solid rgba(66, 103, 178, 0.1);
+            border-top-color: #4267B2; border-radius: 50%; animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
-<body class="font-sans h-screen flex overflow-hidden opacity-0">
+<body class="bg-brandGray dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300">
 
-    <!-- Layout Containers -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="spinner"></div>
+        <p class="text-sm font-bold text-slate-600 dark:text-slate-300">جاري تحميل المهام...</p>
+    </div>
+
     <div id="sidebar-container"></div>
-
-    <div class="main-content-wrapper flex-1 flex flex-col md:mr-72 transition-all">
+    
+    <div class="main-content-wrapper ltr:md:ml-72 rtl:md:mr-72 transition-all duration-300 flex flex-col min-h-screen">
         <div id="header-container"></div>
 
-        <!-- Task Toolbar -->
-        <div class="h-16 flex items-center justify-between px-6 bg-white dark:bg-[#1E293B] border-b border-slate-200 dark:border-slate-700">
-            <div class="flex items-center gap-4">
-                <h2 class="text-lg font-bold flex items-center gap-2 text-slate-700 dark:text-white">
-                    <i class="fa-solid fa-list-check text-brandBlue"></i> مركز المهام
-                </h2>
-                <div class="flex bg-slate-100 dark:bg-slate-700 rounded-lg p-1">
-                    <button id="view-board" onclick="switchView('board')" class="px-3 py-1 bg-white dark:bg-slate-600 shadow-sm rounded-md text-xs font-bold transition text-brandBlue"><i class="fa-solid fa-table-columns"></i> لوحة</button>
-                    <button id="view-list" onclick="switchView('list')" class="px-3 py-1 text-slate-500 dark:text-slate-400 text-xs font-bold hover:text-brandBlue transition"><i class="fa-solid fa-list"></i> قائمة</button>
+        <main class="p-6 space-y-6 h-[calc(100vh-80px)] flex flex-col">
+            
+            <div class="flex flex-col md:flex-row justify-between items-end gap-4 shrink-0">
+                <div>
+                    <h1 class="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                        <i class="fa-solid fa-list-check text-brandRed"></i> <span data-i18n="pageTitle">إدارة المهام والمشاريع</span>
+                    </h1>
+                    <p class="text-sm text-slate-500 mt-1" data-i18n="pageDesc">تتبع سير العمل، توزيع المهام، ومراقبة الإنجاز.</p>
+                </div>
+                <div class="flex gap-2">
+                    <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-1 flex">
+                        <button onclick="filterTasks('all')" class="px-3 py-1.5 text-xs font-bold rounded-md bg-brandBlue text-white shadow-sm" id="btn-all" data-i18n="filterAll">الكل</button>
+                        <button onclick="filterTasks('my')" class="px-3 py-1.5 text-xs font-bold rounded-md text-slate-500 hover:text-slate-700 dark:text-slate-400" id="btn-my" data-i18n="filterMy">مهامي</button>
+                        <button onclick="filterTasks('high')" class="px-3 py-1.5 text-xs font-bold rounded-md text-slate-500 hover:text-slate-700 dark:text-slate-400" id="btn-high" data-i18n="filterHigh">عالية الأولوية</button>
+                    </div>
+                    <button onclick="openTaskModal()" class="px-4 py-2 bg-brandBlue text-white rounded-lg text-sm font-bold shadow-lg hover:bg-blue-700 transition flex items-center gap-2">
+                        <i class="fa-solid fa-plus"></i> <span data-i18n="btnNew">مهمة جديدة</span>
+                    </button>
                 </div>
             </div>
-            <button onclick="newTask()" class="bg-brandBlue text-white px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 hover:bg-blue-700 transition transform hover:scale-105 active:scale-95">
-                <i class="fa-solid fa-plus"></i> مهمة جديدة
-            </button>
-        </div>
 
-        <!-- Kanban Board Area -->
-        <main class="flex-1 overflow-x-auto p-6 bg-brandGray dark:bg-slate-900">
-            <div id="board-container" class="flex gap-6 h-full min-w-[1000px] board-container transition-all">
-                
-                <!-- Col 1: To Do -->
-                <div class="flex-1 bg-slate-100 dark:bg-slate-800/50 rounded-2xl flex flex-col border border-slate-200 dark:border-slate-700/50 board-col">
-                    <div class="p-4 flex justify-between items-center border-b border-slate-200 dark:border-slate-700 border-b-4 border-slate-400 col-header">
-                        <span class="font-bold text-sm dark:text-white">قيد الانتظار</span>
-                        <span class="bg-white dark:bg-slate-700 px-2 py-0.5 rounded-full text-xs font-bold shadow-sm dark:text-white count-badge">4</span>
+            <div class="flex-1 overflow-x-auto overflow-y-hidden">
+                <div class="flex gap-6 h-full min-w-[1000px] pb-4">
+                    
+                    <div class="flex-1 flex flex-col bg-slate-100 dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700">
+                        <div class="p-4 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center">
+                            <h3 class="font-bold text-slate-700 dark:text-white flex items-center gap-2">
+                                <span class="w-3 h-3 rounded-full bg-slate-400"></span> <span data-i18n="colTodo">جديد / قيد الانتظار</span>
+                            </h3>
+                            <span class="bg-white dark:bg-slate-700 px-2 py-0.5 rounded text-xs font-mono font-bold" id="count-todo">0</span>
+                        </div>
+                        <div class="flex-1 overflow-y-auto p-3 space-y-3 custom-scroll task-column" id="col-todo" ondrop="drop(event, 'todo')" ondragover="allowDrop(event)" ondragleave="leaveDrop(event)">
+                            </div>
                     </div>
-                    <div id="col-todo" class="flex-1 p-3 space-y-3 overflow-y-auto custom-scroll task-body">
-                        <!-- Tasks injected via JS -->
+
+                    <div class="flex-1 flex flex-col bg-blue-50 dark:bg-blue-900/10 rounded-2xl border border-blue-100 dark:border-blue-900/30">
+                        <div class="p-4 border-b border-blue-100 dark:border-blue-900/30 flex justify-between items-center">
+                            <h3 class="font-bold text-blue-800 dark:text-blue-300 flex items-center gap-2">
+                                <span class="w-3 h-3 rounded-full bg-blue-500 animate-pulse"></span> <span data-i18n="colProgress">جاري التنفيذ</span>
+                            </h3>
+                            <span class="bg-white dark:bg-slate-700 px-2 py-0.5 rounded text-xs font-mono font-bold text-blue-600" id="count-progress">0</span>
+                        </div>
+                        <div class="flex-1 overflow-y-auto p-3 space-y-3 custom-scroll task-column" id="col-progress" ondrop="drop(event, 'progress')" ondragover="allowDrop(event)" ondragleave="leaveDrop(event)">
+                            </div>
                     </div>
+
+                    <div class="flex-1 flex flex-col bg-green-50 dark:bg-green-900/10 rounded-2xl border border-green-100 dark:border-green-900/30">
+                        <div class="p-4 border-b border-green-100 dark:border-green-900/30 flex justify-between items-center">
+                            <h3 class="font-bold text-green-800 dark:text-green-300 flex items-center gap-2">
+                                <span class="w-3 h-3 rounded-full bg-green-500"></span> <span data-i18n="colDone">مكتمل</span>
+                            </h3>
+                            <span class="bg-white dark:bg-slate-700 px-2 py-0.5 rounded text-xs font-mono font-bold text-green-600" id="count-done">0</span>
+                        </div>
+                        <div class="flex-1 overflow-y-auto p-3 space-y-3 custom-scroll task-column" id="col-done" ondrop="drop(event, 'done')" ondragover="allowDrop(event)" ondragleave="leaveDrop(event)">
+                            </div>
+                    </div>
+
                 </div>
-
-                <!-- Col 2: In Progress -->
-                <div class="flex-1 bg-blue-50 dark:bg-blue-900/10 rounded-2xl flex flex-col border border-blue-100 dark:border-slate-700/50 board-col">
-                    <div class="p-4 flex justify-between items-center border-b border-blue-200 dark:border-slate-700 border-b-4 border-blue-400 col-header">
-                        <span class="font-bold text-sm text-blue-900 dark:text-blue-100">جاري التنفيذ</span>
-                        <span class="bg-white dark:bg-slate-700 px-2 py-0.5 rounded-full text-xs font-bold shadow-sm count-badge">2</span>
-                    </div>
-                    <div id="col-progress" class="flex-1 p-3 space-y-3 overflow-y-auto custom-scroll task-body"></div>
-                </div>
-
-                <!-- Col 3: Review -->
-                <div class="flex-1 bg-orange-50 dark:bg-orange-900/10 rounded-2xl flex flex-col border border-orange-100 dark:border-slate-700/50 board-col">
-                    <div class="p-4 flex justify-between items-center border-b border-orange-200 dark:border-slate-700 border-b-4 border-orange-400 col-header">
-                        <span class="font-bold text-sm text-orange-900 dark:text-orange-100">تحت المراجعة</span>
-                        <span class="bg-white dark:bg-slate-700 px-2 py-0.5 rounded-full text-xs font-bold shadow-sm count-badge">1</span>
-                    </div>
-                    <div id="col-review" class="flex-1 p-3 space-y-3 overflow-y-auto custom-scroll task-body"></div>
-                </div>
-
-                <!-- Col 4: Done -->
-                <div class="flex-1 bg-green-50 dark:bg-green-900/10 rounded-2xl flex flex-col border border-green-100 dark:border-slate-700/50 board-col">
-                    <div class="p-4 flex justify-between items-center border-b border-green-200 dark:border-slate-700 border-b-4 border-green-400 col-header">
-                        <span class="font-bold text-sm text-green-900 dark:text-green-100">مكتمل</span>
-                        <span class="bg-white dark:bg-slate-700 px-2 py-0.5 rounded-full text-xs font-bold shadow-sm text-green-600 count-badge">5</span>
-                    </div>
-                    <div id="col-done" class="flex-1 p-3 space-y-3 overflow-y-auto custom-scroll task-body"></div>
-                </div>
-
             </div>
+
         </main>
     </div>
 
-    <!-- Chatbot Container (Populated by bot.js) -->
-    <div id="andro-bot-container" class="fixed bottom-6 left-6 z-50 flex flex-col items-start gap-4" dir="rtl"></div>
+    <div id="taskModal" class="fixed inset-0 bg-black/70 hidden z-50 flex items-center justify-center backdrop-blur-sm p-4">
+        <div class="bg-white dark:bg-slate-800 w-full max-w-lg rounded-2xl shadow-2xl flex flex-col">
+            <div class="p-5 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center">
+                <h3 class="font-bold text-lg dark:text-white" data-i18n="modalTitle">إضافة مهمة جديدة</h3>
+                <button onclick="closeModal('taskModal')" class="text-slate-400 hover:text-red-500"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <div class="p-6 space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblTaskTitle">عنوان المهمة</label>
+                    <input type="text" id="newTaskTitle" class="w-full border dark:border-slate-600 dark:bg-slate-700 rounded-lg p-2.5 text-sm dark:text-white outline-none focus:border-brandBlue">
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblPriority">الأولوية</label>
+                        <select id="newTaskPriority" class="w-full border dark:border-slate-600 dark:bg-slate-700 rounded-lg p-2.5 text-sm dark:text-white outline-none">
+                            <option value="high" data-i18n="prioHigh">عالية</option>
+                            <option value="medium" selected data-i18n="prioMed">متوسطة</option>
+                            <option value="low" data-i18n="prioLow">منخفضة</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblDue">تاريخ الاستحقاق</label>
+                        <input type="date" id="newTaskDate" class="w-full border dark:border-slate-600 dark:bg-slate-700 rounded-lg p-2.5 text-sm dark:text-white outline-none">
+                    </div>
+                </div>
 
-    <!-- Scripts -->
-    <script src="layout.js"></script>
-    <script src="bot.js"></script>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblAssign">تعيين إلى</label>
+                    <select id="newTaskAssign" class="w-full border dark:border-slate-600 dark:bg-slate-700 rounded-lg p-2.5 text-sm dark:text-white outline-none">
+                        </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblDesc">التفاصيل</label>
+                    <textarea id="newTaskDesc" class="w-full border dark:border-slate-600 dark:bg-slate-700 rounded-lg p-3 text-sm h-24 dark:text-white outline-none"></textarea>
+                </div>
+            </div>
+
+            <div class="p-5 border-t border-slate-100 dark:border-slate-700 flex justify-end gap-3">
+                <button onclick="closeModal('taskModal')" class="px-4 py-2 border rounded-lg text-xs font-bold dark:text-white hover:bg-slate-50 dark:hover:bg-slate-700" data-i18n="btnCancel">إلغاء</button>
+                <button onclick="saveNewTask()" class="px-6 py-2 bg-brandBlue text-white rounded-lg text-xs font-bold hover:bg-blue-700 shadow-md" data-i18n="btnSave">حفظ المهمة</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="data/company_policy.js"></script>
+    <script src="js/core/config.js"></script>
+    <script src="js/core/i18n.js"></script>
+    <script src="js/helpers/policy-helpers.js"></script>
+    <script src="js/services/data-service.js"></script>
+    <script src="js/components/role-switcher.js"></script>
+    <script src="js/components/layout.js"></script>
+    <script src="js/components/bot.js"></script>
 
     <script>
-        // --- 1. Task Data ---
-        const tasks = [
-            { id: 1, title: 'اعتماد سياسة المكافآت', desc: 'مراجعة المسودة النهائية المرفقة.', tag: 'Gov', tagColor: 'bg-yellow-100 text-yellow-700', status: 'col-todo', date: '2 يوم', urgent: true },
-            { id: 2, title: 'تحديث السجل التجاري', desc: 'إضافة نشاط جديد للسجل.', tag: 'Legal', tagColor: 'bg-purple-100 text-purple-700', status: 'col-todo', date: 'Feb 10', urgent: false },
-            { id: 3, title: 'مراجعة تقرير الرواتب', desc: 'التأكد من خصومات الغياب.', tag: 'Ops', tagColor: 'bg-blue-100 text-blue-700', status: 'col-progress', date: 'اليوم', progress: 60 },
-            { id: 4, title: 'عقود التوظيف الجديدة', desc: 'بانتظار توقيع الرئيس التنفيذي.', tag: 'HR', tagColor: 'bg-pink-100 text-pink-700', status: 'col-review', date: 'أمس', urgent: false },
-            { id: 5, title: 'محضر اجتماع المجلس Q4', desc: 'تمت الأرشفة بنجاح.', tag: 'Board', tagColor: 'bg-green-100 text-green-700', status: 'col-done', date: 'Jan 15', done: true },
+        // --- DATA STATE ---
+        let tasks = [
+            { id: 101, titleAr: "مراجعة القوائم المالية", titleEn: "Review Financial Statements", status: "progress", priority: "high", due: "2026-02-01", assign: "USR_002", assignName: "Mohammed" },
+            { id: 102, titleAr: "تحديث سياسة الإجازات", titleEn: "Update Leave Policy", status: "todo", priority: "medium", due: "2026-02-15", assign: "USR_005", assignName: "Mansour" },
+            { id: 103, titleAr: "إعداد تقرير الحوكمة السنوي", titleEn: "Annual Governance Report", status: "todo", priority: "high", due: "2026-03-01", assign: "USR_004", assignName: "Ayman" },
+            { id: 104, titleAr: "صيانة الخوادم الرئيسية", titleEn: "Main Server Maintenance", status: "done", priority: "low", due: "2026-01-10", assign: "USR_020", assignName: "Akhtar" }
         ];
+        
+        let currentFilter = 'all';
 
-        // --- 2. Render Tasks ---
-        function renderTasks() {
-            // Clear cols
-            ['col-todo', 'col-progress', 'col-review', 'col-done'].forEach(id => document.getElementById(id).innerHTML = '');
-
-            tasks.forEach(t => {
-                const isDone = t.status === 'col-done';
-                const card = `
-                <div class="bg-white dark:bg-slate-700 p-4 rounded-xl shadow-sm border border-slate-200 dark:border-slate-600 task-card group ${isDone ? 'opacity-60 hover:opacity-100' : ''}" ondblclick="editTask('${t.title}')">
-                    <div class="flex justify-between items-start mb-2">
-                        <span class="${t.tagColor} text-[10px] font-bold px-2 py-0.5 rounded">${t.tag}</span>
-                        ${t.urgent ? '<span class="text-[10px] bg-red-100 text-red-600 px-2 py-0.5 rounded-full animate-pulse">عاجل</span>' : ''}
-                        <button class="text-slate-300 hover:text-slate-500 opacity-0 group-hover:opacity-100 transition"><i class="fa-solid fa-ellipsis"></i></button>
-                    </div>
-                    <h4 class="font-bold text-sm mb-1 group-hover:text-brandBlue transition ${isDone ? 'line-through text-slate-400' : 'dark:text-white'}">${t.title}</h4>
-                    <p class="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-2">${t.desc}</p>
-                    ${t.progress ? `
-                    <div class="w-full bg-slate-100 h-1.5 rounded-full mt-2 mb-3">
-                        <div class="bg-blue-500 h-full rounded-full" style="width: ${t.progress}%"></div>
-                    </div>` : ''}
-                    <div class="mt-3 flex justify-between items-center">
-                        <div class="flex -space-x-2 space-x-reverse">
-                            <img src="https://ui-avatars.com/api/?name=User&background=random" class="w-6 h-6 rounded-full border-2 border-white dark:border-slate-700">
-                        </div>
-                        <span class="text-[10px] ${t.urgent ? 'text-red-500 font-bold' : 'text-slate-400'}"><i class="fa-regular fa-clock"></i> ${t.date}</span>
-                    </div>
-                </div>`;
-                document.getElementById(t.status).insertAdjacentHTML('beforeend', card);
-            });
-            updateCounts();
-        }
-
-        function updateCounts() {
-            ['col-todo', 'col-progress', 'col-review', 'col-done'].forEach(id => {
-                const count = document.getElementById(id).children.length;
-                document.getElementById(id).parentElement.querySelector('.count-badge').innerText = count;
-            });
-        }
-
-        // --- 3. View Switcher ---
-        window.switchView = (view) => {
-            const container = document.getElementById('board-container');
-            const btnBoard = document.getElementById('view-board');
-            const btnList = document.getElementById('view-list');
-
-            if (view === 'list') {
-                container.classList.add('list-view');
-                container.classList.remove('flex', 'gap-6', 'min-w-[1000px]');
-                
-                btnList.className = "px-3 py-1 bg-white dark:bg-slate-600 shadow-sm rounded-md text-xs font-bold transition text-brandBlue";
-                btnBoard.className = "px-3 py-1 text-slate-500 dark:text-slate-400 text-xs font-bold hover:text-brandBlue transition";
-            } else {
-                container.classList.remove('list-view');
-                container.classList.add('flex', 'gap-6', 'min-w-[1000px]');
-                
-                btnBoard.className = "px-3 py-1 bg-white dark:bg-slate-600 shadow-sm rounded-md text-xs font-bold transition text-brandBlue";
-                btnList.className = "px-3 py-1 text-slate-500 dark:text-slate-400 text-xs font-bold hover:text-brandBlue transition";
-            }
-        };
-
-        // --- 4. New Task Modal ---
-        window.newTask = () => {
-            Swal.fire({
-                title: 'إضافة مهمة جديدة',
-                html: `
-                    <input id="swal-input1" class="w-full mb-3 p-2 border rounded dark:bg-slate-700 dark:text-white dark:border-slate-600" placeholder="عنوان المهمة">
-                    <select id="swal-input2" class="w-full mb-3 p-2 border rounded dark:bg-slate-700 dark:text-white dark:border-slate-600">
-                        <option value="Gov">حوكمة (Gov)</option>
-                        <option value="Ops">تشغيل (Ops)</option>
-                        <option value="Legal">قانوني (Legal)</option>
-                        <option value="HR">موارد بشرية (HR)</option>
-                    </select>
-                    <textarea id="swal-input3" class="w-full p-2 border rounded dark:bg-slate-700 dark:text-white dark:border-slate-600" placeholder="التفاصيل..."></textarea>
-                `,
-                showCancelButton: true,
-                confirmButtonText: 'إضافة',
-                cancelButtonText: 'إلغاء',
-                confirmButtonColor: '#4267B2',
-                customClass: { popup: 'dark:bg-slate-800 dark:text-white' },
-                preConfirm: () => {
-                    const title = document.getElementById('swal-input1').value;
-                    const tag = document.getElementById('swal-input2').value;
-                    const desc = document.getElementById('swal-input3').value;
-                    if (!title) Swal.showValidationMessage('الرجاء كتابة العنوان');
-                    return { title, tag, desc };
-                }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    tasks.push({
-                        id: Date.now(),
-                        title: result.value.title,
-                        desc: result.value.desc || 'لا توجد تفاصيل',
-                        tag: result.value.tag,
-                        tagColor: 'bg-gray-100 text-gray-700',
-                        status: 'col-todo',
-                        date: 'جديد',
-                        urgent: false
-                    });
-                    renderTasks();
-                    Swal.fire({ icon: 'success', title: 'تمت الإضافة', timer: 1500, showConfirmButton: false });
-                }
-            });
-        };
-
-        window.editTask = (title) => {
-            Swal.fire('تفاصيل المهمة', `تعديل: ${title}`, 'info');
-        }
-
-        // --- 5. Init ---
+        // --- INIT ---
         document.addEventListener('DOMContentLoaded', () => {
-            renderTasks();
-            
-            // Init Drag & Drop
-            ['col-todo', 'col-progress', 'col-review', 'col-done'].forEach(id => {
-                new Sortable(document.getElementById(id), {
-                    group: 'shared',
-                    animation: 150,
-                    ghostClass: 'bg-slate-200',
-                    onEnd: function (evt) {
-                        updateCounts(); // Update badges after drop
-                        // Here you would typically update the backend
+            const checkSystem = setInterval(() => {
+                if (typeof Layout !== 'undefined' && typeof AppConfig !== 'undefined' && typeof DataService !== 'undefined') {
+                    clearInterval(checkSystem);
+                    
+                    if (!AppConfig.getCurrentUser()) {
+                        const defaultUser = DataService.getUserById('USR_004') || DataService.getUsers()[0];
+                        if (defaultUser) AppConfig.setCurrentUser(defaultUser);
                     }
+
+                    Layout.init();
+                    initPage();
+                    document.getElementById('loadingOverlay')?.classList.add('hidden');
+                }
+            }, 50);
+        });
+
+        function initPage() {
+            updatePageLanguage();
+            populateAssignees();
+            renderKanban();
+        }
+
+        function updatePageLanguage() {
+            const lang = AppConfig.getLang();
+            const dict = t[lang];
+            
+            document.documentElement.lang = lang;
+            document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if(dict[key]) el.innerText = dict[key];
+            });
+            
+            // Re-render columns to update drag/drop text if any
+            renderKanban();
+        }
+
+        function populateAssignees() {
+            const select = document.getElementById('newTaskAssign');
+            const users = DataService.getUsers();
+            const lang = AppConfig.getLang();
+            
+            select.innerHTML = users.map(u => {
+                const name = lang === 'ar' ? u.name.ar : u.name.en;
+                return `<option value="${u.id}">${name}</option>`;
+            }).join('');
+        }
+
+        // --- KANBAN LOGIC ---
+        function renderKanban() {
+            const lang = AppConfig.getLang();
+            const cols = { todo: [], progress: [], done: [] };
+            const currentUser = AppConfig.getCurrentUser();
+
+            // Filter
+            const filtered = tasks.filter(task => {
+                if (currentFilter === 'my') return task.assign === currentUser.id;
+                if (currentFilter === 'high') return task.priority === 'high';
+                return true;
+            });
+
+            // Group
+            filtered.forEach(task => {
+                if(cols[task.status]) cols[task.status].push(task);
+            });
+
+            // Render Columns
+            Object.keys(cols).forEach(key => {
+                const container = document.getElementById(`col-${key}`);
+                const count = document.getElementById(`count-${key}`);
+                count.innerText = cols[key].length;
+                container.innerHTML = '';
+
+                cols[key].forEach(task => {
+                    const title = lang === 'ar' ? task.titleAr : task.titleEn;
+                    const date = new Date(task.due).toLocaleDateString(lang === 'ar' ? 'ar-EG' : 'en-US');
+                    const prioClass = `priority-${task.priority}`;
+                    const prioLabel = t[lang][`prio${task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}`];
+                    
+                    // Avatar (Mock or Real)
+                    const user = DataService.getUserById(task.assign);
+                    const avatarSrc = user?.avatar ? (user.avatar.startsWith('..') ? user.avatar : '../' + user.avatar) : `https://ui-avatars.com/api/?name=${task.assignName}&background=random`;
+
+                    container.innerHTML += `
+                        <div class="task-card bg-white dark:bg-slate-700 p-4 rounded-xl shadow-sm border border-slate-100 dark:border-slate-600 ${prioClass}" draggable="true" ondragstart="drag(event, ${task.id})">
+                            <div class="flex justify-between items-start mb-2">
+                                <span class="text-[10px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-600 text-slate-500 dark:text-slate-300 font-bold">${prioLabel}</span>
+                                <button class="text-slate-400 hover:text-brandBlue"><i class="fa-solid fa-ellipsis"></i></button>
+                            </div>
+                            <h4 class="font-bold text-sm text-slate-800 dark:text-white mb-3 leading-snug">${title}</h4>
+                            <div class="flex justify-between items-center pt-2 border-t border-slate-100 dark:border-slate-600">
+                                <div class="flex items-center gap-1 text-xs text-slate-400" title="${t[lang].dueDate}">
+                                    <i class="fa-regular fa-calendar"></i> <span class="font-mono">${date}</span>
+                                </div>
+                                <img src="${avatarSrc}" class="w-6 h-6 rounded-full border border-white dark:border-slate-600" title="${task.assignName}">
+                            </div>
+                        </div>
+                    `;
                 });
             });
-        });
+        }
+
+        function filterTasks(type) {
+            currentFilter = type;
+            // Update Buttons State
+            ['all', 'my', 'high'].forEach(id => {
+                const btn = document.getElementById(`btn-${id}`);
+                if(id === type) {
+                    btn.classList.add('bg-brandBlue', 'text-white');
+                    btn.classList.remove('text-slate-500');
+                } else {
+                    btn.classList.remove('bg-brandBlue', 'text-white');
+                    btn.classList.add('text-slate-500');
+                }
+            });
+            renderKanban();
+        }
+
+        // --- DRAG & DROP ---
+        function allowDrop(ev) {
+            ev.preventDefault();
+            ev.currentTarget.classList.add('drag-over');
+        }
+
+        function leaveDrop(ev) {
+            ev.currentTarget.classList.remove('drag-over');
+        }
+
+        function drag(ev, id) {
+            ev.dataTransfer.setData("taskId", id);
+        }
+
+        function drop(ev, status) {
+            ev.preventDefault();
+            ev.currentTarget.classList.remove('drag-over');
+            const taskId = ev.dataTransfer.getData("taskId");
+            const task = tasks.find(t => t.id == taskId);
+            
+            if(task && task.status !== status) {
+                task.status = status;
+                renderKanban();
+                // Optional: Play sound or show notification
+            }
+        }
+
+        // --- MODALS ---
+        function openTaskModal() { document.getElementById('taskModal').classList.remove('hidden'); }
+        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+        function saveNewTask() {
+            const title = document.getElementById('newTaskTitle').value;
+            const priority = document.getElementById('newTaskPriority').value;
+            const date = document.getElementById('newTaskDate').value;
+            const assignId = document.getElementById('newTaskAssign').value;
+            
+            if(!title || !date) {
+                alert(AppConfig.getLang() === 'ar' ? 'الرجاء تعبئة البيانات' : 'Please fill all fields');
+                return;
+            }
+
+            const user = DataService.getUserById(assignId);
+            
+            tasks.push({
+                id: Date.now(),
+                titleAr: title,
+                titleEn: title,
+                status: 'todo',
+                priority: priority,
+                due: date,
+                assign: assignId,
+                assignName: user ? (AppConfig.getLang() === 'ar' ? user.name.ar : user.name.en) : 'User'
+            });
+
+            renderKanban();
+            closeModal('taskModal');
+            
+            // Reset form
+            document.getElementById('newTaskTitle').value = '';
+        }
+
+        // --- TRANSLATIONS ---
+        const t = {
+            ar: {
+                pageTitle: "إدارة المهام | AndroGov",
+                pageDesc: "تتبع سير العمل، توزيع المهام، ومراقبة الإنجاز.",
+                filterAll: "الكل",
+                filterMy: "مهامي",
+                filterHigh: "عالية الأولوية",
+                btnNew: "مهمة جديدة",
+                colTodo: "جديد / قيد الانتظار",
+                colProgress: "جاري التنفيذ",
+                colDone: "مكتمل",
+                prioHigh: "عالية",
+                prioMed: "متوسطة",
+                prioLow: "منخفضة", // تم تصحيح الكود هنا
+                prioMedium: "متوسطة", // Fallback
+                dueDate: "تاريخ الاستحقاق",
+                modalTitle: "إضافة مهمة جديدة",
+                lblTaskTitle: "عنوان المهمة",
+                lblPriority: "الأولوية",
+                lblDue: "تاريخ الاستحقاق",
+                lblAssign: "تعيين إلى",
+                lblDesc: "التفاصيل",
+                btnCancel: "إلغاء",
+                btnSave: "حفظ المهمة"
+            },
+            en: {
+                pageTitle: "Tasks | AndroGov",
+                pageDesc: "Track workflows, assign tasks, and monitor progress.",
+                filterAll: "All",
+                filterMy: "My Tasks",
+                filterHigh: "High Priority",
+                btnNew: "New Task",
+                colTodo: "To Do / Pending",
+                colProgress: "In Progress",
+                colDone: "Completed",
+                prioHigh: "High",
+                prioMed: "Medium",
+                prioLow: "Low",
+                prioMedium: "Medium",
+                dueDate: "Due Date",
+                modalTitle: "Add New Task",
+                lblTaskTitle: "Task Title",
+                lblPriority: "Priority",
+                lblDue: "Due Date",
+                lblAssign: "Assign To",
+                lblDesc: "Description",
+                btnCancel: "Cancel",
+                btnSave: "Save Task"
+            }
+        };
     </script>
 </body>
 </html>
