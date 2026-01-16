@@ -70,11 +70,11 @@
                     <h1 class="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
                         <i class="fa-solid fa-cart-flatbed-suitcase text-brandRed"></i> <span data-i18n="headerTitle">المشتريات والعقود</span>
                     </h1>
-                    <p class="text-sm text-slate-500 mt-1" data-i18n="headerDesc">إدارة طلبات الشراء، الموردين، والعقود التشغيلية.</p>
+                    <p class="text-sm text-slate-500 mt-1" data-i18n="headerDesc">إدارة طلبات الشراء، تأهيل الموردين، والعقود التشغيلية.</p>
                 </div>
                 <div class="flex gap-2">
                     <button onclick="openVendorModal()" class="px-4 py-2 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-white rounded-lg text-sm font-bold hover:bg-slate-200 transition flex items-center gap-2">
-                        <i class="fa-solid fa-store"></i> <span data-i18n="btnAddVendor">مورد جديد</span>
+                        <i class="fa-solid fa-store"></i> <span data-i18n="btnAddVendor">تسجيل مورد جديد</span>
                     </button>
                     <button onclick="openRequestModal()" class="px-6 py-2 bg-brandBlue text-white rounded-lg text-sm font-bold shadow-lg hover:bg-blue-700 transition flex items-center gap-2">
                         <i class="fa-solid fa-plus"></i> <span data-i18n="btnAddReq">طلب شراء (PR)</span>
@@ -123,7 +123,7 @@
                     <div class="flex bg-slate-100 dark:bg-slate-700 p-1 rounded-xl w-full md:w-auto">
                         <button onclick="switchTab('pr')" id="btn-pr" class="px-5 py-2 text-xs font-bold rounded-lg bg-white text-brandBlue shadow-sm transition-all tab-btn" data-i18n="tabPR">طلبات الشراء (PR)</button>
                         <button onclick="switchTab('po')" id="btn-po" class="px-5 py-2 text-xs font-bold rounded-lg text-slate-500 hover:text-slate-700 dark:text-slate-400 transition-all tab-btn" data-i18n="tabPO">أوامر الشراء (PO)</button>
-                        <button onclick="switchTab('vendors')" id="btn-vendors" class="px-5 py-2 text-xs font-bold rounded-lg text-slate-500 hover:text-slate-700 dark:text-slate-400 transition-all tab-btn" data-i18n="tabVendors">الموردين</button>
+                        <button onclick="switchTab('vendors')" id="btn-vendors" class="px-5 py-2 text-xs font-bold rounded-lg text-slate-500 hover:text-slate-700 dark:text-slate-400 transition-all tab-btn" data-i18n="tabVendors">قاعدة بيانات الموردين</button>
                     </div>
                     <div class="relative w-64">
                         <input type="text" id="searchProc" onkeyup="renderCurrentTab()" class="w-full pl-10 pr-4 py-2 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg text-xs outline-none dark:text-white" data-i18n-placeholder="plhSearch">
@@ -217,6 +217,57 @@
         </div>
     </div>
 
+    <div id="vendorModal" class="fixed inset-0 bg-black/70 hidden z-50 flex items-center justify-center backdrop-blur-sm p-4">
+        <div class="bg-white dark:bg-slate-800 w-full max-w-lg rounded-2xl shadow-2xl flex flex-col">
+            <div class="p-5 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center">
+                <h3 class="font-bold text-lg dark:text-white flex items-center gap-2">
+                    <i class="fa-solid fa-store text-brandBlue"></i> <span data-i18n="modVenTitle">تسجيل مورد جديد</span>
+                </h3>
+                <button onclick="closeModal('vendorModal')" class="text-slate-400 hover:text-red-500"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="p-6 space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblVenName">اسم المنشأة</label>
+                    <input type="text" id="venName" class="w-full border dark:border-slate-600 dark:bg-slate-700 rounded-lg p-2 text-sm dark:text-white" placeholder="مثال: شركة الحلول التقنية...">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblVenCR">السجل التجاري (CR)</label>
+                        <input type="text" id="venCR" class="w-full border dark:border-slate-600 dark:bg-slate-700 rounded-lg p-2 text-sm dark:text-white num-font" placeholder="1010XXXXXX">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblVenVAT">الرقم الضريبي (VAT)</label>
+                        <input type="text" id="venVAT" class="w-full border dark:border-slate-600 dark:bg-slate-700 rounded-lg p-2 text-sm dark:text-white num-font" placeholder="300XXXXXX">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblVenCat">التصنيف</label>
+                        <select id="venCat" class="w-full border dark:border-slate-600 dark:bg-slate-700 rounded-lg p-2 text-sm dark:text-white">
+                            <option value="Electronics">أجهزة وإلكترونيات</option>
+                            <option value="Services">خدمات واستشارات</option>
+                            <option value="Contracting">مقاولات وصيانة</option>
+                            <option value="Supplies">مستلزمات مكتبية</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblVenContact">مسؤول التواصل</label>
+                        <input type="text" id="venContact" class="w-full border dark:border-slate-600 dark:bg-slate-700 rounded-lg p-2 text-sm dark:text-white" placeholder="الاسم...">
+                    </div>
+                </div>
+                <div class="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg border border-blue-100 dark:border-blue-900/50">
+                    <p class="text-[10px] text-blue-600 dark:text-blue-300 flex items-center gap-2">
+                        <i class="fa-solid fa-circle-info"></i> <span data-i18n="noteGov">سيتم تسجيل المورد بحالة "تحت التأهيل" لحين مراجعة الوثائق.</span>
+                    </p>
+                </div>
+            </div>
+            <div class="p-5 border-t border-slate-100 dark:border-slate-700 flex justify-end gap-3">
+                <button onclick="closeModal('vendorModal')" class="px-4 py-2 border dark:border-slate-600 rounded-lg text-xs font-bold dark:text-white" data-i18n="btnCancel">إلغاء</button>
+                <button onclick="saveVendor()" class="px-6 py-2 bg-brandBlue text-white rounded-lg text-xs font-bold" data-i18n="btnSaveVen">حفظ وإرسال للتأهيل</button>
+            </div>
+        </div>
+    </div>
+
     <script src="data/company_policy.js"></script>
     <script src="js/core/config.js"></script>
     <script src="js/core/i18n.js"></script>
@@ -241,13 +292,14 @@
         ];
 
         let vendorData = [
-            { name: "Jarir Bookstore", cat: "Electronics", rating: 5, status: "Active" },
-            { name: "Al-Othaim", cat: "Catering", rating: 4, status: "Active" },
-            { name: "STC Business", cat: "Telecom", rating: 3, status: "Review" }
+            { name: "Jarir Bookstore", cat: "Electronics", rating: 5, status: "Active", cr: "1010156221" },
+            { name: "Al-Othaim", cat: "Supplies", rating: 4, status: "Active", cr: "1010223344" },
+            { name: "STC Business", cat: "Services", rating: 3, status: "Review", cr: "1010000000" }
         ];
 
         // --- INIT ---
         document.addEventListener('DOMContentLoaded', () => {
+            // Failsafe for loading overlay
             setTimeout(() => {
                 const overlay = document.getElementById('loadingOverlay');
                 if(overlay) overlay.classList.add('hidden');
@@ -327,24 +379,29 @@
                 </tr>
             `).join('');
 
-            // 3. Vendors
+            // 3. Vendors Grid
             const vendGrid = document.getElementById('vendorsGrid');
-            vendGrid.innerHTML = vendorData.map(v => `
-                <div class="bg-white dark:bg-slate-700 border dark:border-slate-600 p-4 rounded-xl shadow-sm">
+            vendGrid.innerHTML = vendorData.map(v => {
+                let statusColor = v.status === 'Active' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700';
+                let statusText = v.status === 'Active' ? (lang==='ar'?'نشط':'Active') : (lang==='ar'?'تحت المراجعة':'Review');
+                
+                return `
+                <div class="bg-white dark:bg-slate-800 border dark:border-slate-700 p-4 rounded-xl shadow-sm">
                     <div class="flex justify-between items-start">
-                        <div class="w-10 h-10 bg-slate-100 dark:bg-slate-600 rounded-full flex items-center justify-center text-slate-500 font-bold">${v.name[0]}</div>
-                        <span class="text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded font-bold">${v.status}</span>
+                        <div class="w-10 h-10 bg-slate-100 dark:bg-slate-700 rounded-full flex items-center justify-center text-slate-500 font-bold">${v.name[0]}</div>
+                        <span class="text-[10px] ${statusColor} px-2 py-0.5 rounded font-bold">${statusText}</span>
                     </div>
                     <h4 class="font-bold text-sm mt-3 dark:text-white">${v.name}</h4>
                     <p class="text-xs text-slate-400">${v.cat}</p>
+                    <p class="text-[10px] text-slate-400 font-mono mt-1">CR: ${v.cr}</p>
                     <div class="flex text-yellow-400 text-xs mt-2">
                         ${Array(5).fill(0).map((_, i) => `<i class="fa-${i < v.rating ? 'solid' : 'regular'} fa-star"></i>`).join('')}
                     </div>
-                </div>
-            `).join('');
+                </div>`;
+            }).join('');
         }
 
-        // --- Logic Actions ---
+        // --- Actions ---
         function switchTab(target) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             document.querySelectorAll('.tab-btn').forEach(el => {
@@ -356,8 +413,8 @@
         }
 
         function openRequestModal() { document.getElementById('reqModal').classList.remove('hidden'); }
+        function openVendorModal() { document.getElementById('vendorModal').classList.remove('hidden'); }
         function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
-        function openVendorModal() { alert('صفحة إضافة مورد - قريباً'); }
 
         function saveRequest() {
             const desc = document.getElementById('prDesc').value;
@@ -371,9 +428,38 @@
                 amount: parseInt(price),
                 status: 'pending'
             });
-            
             renderAllTabs();
             closeModal('reqModal');
+        }
+
+        function saveVendor() {
+            const name = document.getElementById('venName').value;
+            const cr = document.getElementById('venCR').value;
+            const cat = document.getElementById('venCat').value;
+            
+            if(!name || !cr) {
+                alert(AppConfig.getLang() === 'ar' ? 'الرجاء إدخال اسم المنشأة والسجل التجاري.' : 'Please enter Vendor Name and CR.');
+                return;
+            }
+
+            // Governance: Start as "Review" (Pending Qualification)
+            vendorData.unshift({
+                name: name,
+                cat: cat,
+                rating: 0,
+                status: 'Review',
+                cr: cr
+            });
+
+            renderAllTabs();
+            closeModal('vendorModal');
+            
+            // Success Feedback
+            alert(AppConfig.getLang() === 'ar' ? 'تم تسجيل المورد بنجاح ويتم الآن مراجعة الوثائق.' : 'Vendor registered successfully. Pending document review.');
+            
+            // Clear inputs
+            document.getElementById('venName').value = '';
+            document.getElementById('venCR').value = '';
         }
 
         function approvePR(id) {
@@ -381,7 +467,6 @@
             if(req) {
                 req.status = 'approved';
                 renderAllTabs();
-                // Optionally convert to PO
                 if(confirm('هل تريد إنشاء أمر شراء (PO) فوراً؟')) {
                     poData.unshift({
                         id: `PO-${Math.floor(Math.random()*1000)}`,
@@ -415,7 +500,7 @@
                 pageTitle: "المشتريات والعقود",
                 headerTitle: "المشتريات والعقود",
                 headerDesc: "إدارة طلبات الشراء والموردين.",
-                btnAddVendor: "مورد جديد",
+                btnAddVendor: "تسجيل مورد جديد",
                 btnAddReq: "طلب شراء (PR)",
                 kpiSpend: "إنفاق السنة (YTD)",
                 kpiBudget: "من الميزانية",
@@ -427,7 +512,7 @@
                 kpiTop: "الأفضل تقييماً",
                 tabPR: "طلبات الشراء (PR)",
                 tabPO: "أوامر الشراء (PO)",
-                tabVendors: "الموردين",
+                tabVendors: "قاعدة بيانات الموردين",
                 plhSearch: "بحث...",
                 colID: "رقم الطلب",
                 colDesc: "الوصف",
@@ -444,12 +529,20 @@
                 colTotal: "الإجمالي",
                 colDelivery: "التسليم",
                 modPrTitle: "طلب شراء جديد",
+                modVenTitle: "تسجيل مورد جديد",
                 lblItemDesc: "الوصف",
                 lblDept: "الإدارة",
                 lblEstPrice: "السعر التقديري",
                 lblJustify: "المبررات",
+                lblVenName: "اسم المنشأة",
+                lblVenCR: "السجل التجاري (CR)",
+                lblVenVAT: "الرقم الضريبي (VAT)",
+                lblVenCat: "التصنيف",
+                lblVenContact: "مسؤول التواصل",
+                noteGov: "سيتم تسجيل المورد بحالة 'تحت التأهيل' لحين مراجعة الوثائق.",
                 btnCancel: "إلغاء",
-                btnSave: "حفظ"
+                btnSave: "حفظ",
+                btnSaveVen: "حفظ وإرسال للتأهيل"
             },
             en: {
                 pageTitle: "Procurement",
@@ -467,7 +560,7 @@
                 kpiTop: "Top Rated",
                 tabPR: "Purchase Requests",
                 tabPO: "Purchase Orders",
-                tabVendors: "Vendors",
+                tabVendors: "Vendor Database",
                 plhSearch: "Search...",
                 colID: "PR #",
                 colDesc: "Description",
@@ -484,12 +577,20 @@
                 colTotal: "Total",
                 colDelivery: "Delivery",
                 modPrTitle: "New Purchase Request",
+                modVenTitle: "Register New Vendor",
                 lblItemDesc: "Description",
                 lblDept: "Department",
                 lblEstPrice: "Estimated Price",
                 lblJustify: "Justification",
+                lblVenName: "Company Name",
+                lblVenCR: "CR Number",
+                lblVenVAT: "VAT Number",
+                lblVenCat: "Category",
+                lblVenContact: "Contact Person",
+                noteGov: "Vendor will be listed as 'Under Qualification' pending document review.",
                 btnCancel: "Cancel",
-                btnSave: "Save"
+                btnSave: "Save",
+                btnSaveVen: "Save & Submit for Review"
             }
         };
     </script>
