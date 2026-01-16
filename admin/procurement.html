@@ -3,16 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#FB4747">
-<link rel="manifest" href="manifest.json">
-
-    <title data-i18n="pageTitle">AndroGov | المشتريات والعقود</title>
+    <meta name="theme-color" content="#FB4747">
+    <title data-i18n="pageTitle">المشتريات والعقود | AndroGov</title>
     
-    <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Libraries -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -35,240 +31,147 @@
             }
         }
     </script>
-    <style>
-        @media print {
-            .no-print { display: none !important; }
-            body { background: white; }
-        }
-        /* Custom Status Badges */
-        .status-badge { @apply px-2 py-1 rounded text-[10px] font-bold border; }
-        .status-pending { @apply bg-orange-50 text-orange-600 border-orange-200; }
-        .status-approved { @apply bg-green-50 text-green-600 border-green-200; }
-        .status-rejected { @apply bg-red-50 text-red-600 border-red-200; }
-        
-        body { transition: opacity 0.2s ease-in-out; }
 
-        /* Bot Styles */
-        .chat-window-anim { transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); transform-origin: bottom left; }
-        .chat-bubble { max-width: 85%; padding: 10px 14px; border-radius: 12px; font-size: 0.9rem; line-height: 1.5; word-wrap: break-word; }
-        .chat-bubble.bot { background-color: #f1f5f9; color: #334155; border-bottom-right-radius: 2px; }
-        .dark .chat-bubble.bot { background-color: #334155; color: #f8fafc; }
-        .chat-bubble.user { background-color: #4267B2; color: white; border-bottom-left-radius: 2px; margin-right: auto; }
-        .typing-indicator span { display: inline-block; width: 6px; height: 6px; background-color: #94a3b8; border-radius: 50%; animation: typing 1.4s infinite ease-in-out both; margin: 0 1px; }
-        .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
-        .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
-        @keyframes typing { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
+    <style>
+        .num-font { font-family: 'Inter', sans-serif; direction: ltr; display: inline-block; }
+        
+        /* Loading Overlay */
+        .loading-overlay {
+            position: fixed; inset: 0; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(5px);
+            z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem;
+            transition: opacity 0.5s ease, visibility 0.5s;
+        }
+        .dark .loading-overlay { background: rgba(15, 23, 42, 0.95); }
+        .loading-overlay.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+        .spinner {
+            width: 48px; height: 48px; border: 5px solid rgba(66, 103, 178, 0.1);
+            border-top-color: #4267B2; border-radius: 50%; animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
 <body class="bg-brandGray dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300">
 
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="spinner"></div>
+        <p class="text-sm font-bold text-slate-600 dark:text-slate-300">جاري تحميل نظام المشتريات...</p>
+        <button onclick="document.getElementById('loadingOverlay').classList.add('hidden')" class="mt-4 text-xs text-blue-500 underline">تخطي الانتظار</button>
+    </div>
+
     <div id="sidebar-container" class="no-print"></div>
     
-    <div class="main-content-wrapper md:mr-72 transition-all duration-300 flex flex-col min-h-screen">
+    <div class="main-content-wrapper ltr:md:ml-72 rtl:md:mr-72 transition-all duration-300 flex flex-col min-h-screen">
         <div id="header-container" class="no-print"></div>
 
         <main class="p-6 space-y-6">
             
-            <!-- 1. Procurement Dashboard -->
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 no-print">
-                <!-- Total Requests -->
-                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase" data-i18n="kpiReq">طلبات الشراء (PR)</p>
-                            <h3 class="text-2xl font-bold mt-1 font-en text-blue-600">12</h3>
-                        </div>
-                        <div class="w-10 h-10 bg-blue-50 dark:bg-blue-900/30 text-blue-600 rounded-xl flex items-center justify-center text-xl"><i class="fa-solid fa-cart-shopping"></i></div>
-                    </div>
-                    <p class="text-[10px] text-slate-400 mt-2" data-i18n="kpiReqSub">3 بانتظار الاعتماد</p>
+            <div class="flex flex-col md:flex-row justify-between items-end gap-4">
+                <div>
+                    <h1 class="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                        <i class="fa-solid fa-cart-flatbed-suitcase text-brandRed"></i> <span data-i18n="headerTitle">المشتريات والعقود</span>
+                    </h1>
+                    <p class="text-sm text-slate-500 mt-1" data-i18n="headerDesc">إدارة طلبات الشراء، الموردين، والعقود التشغيلية.</p>
                 </div>
-
-                <!-- Active Contracts -->
-                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase" data-i18n="kpiCont">العقود النشطة</p>
-                            <h3 class="text-2xl font-bold mt-1 font-en text-purple-600">8</h3>
-                        </div>
-                        <div class="w-10 h-10 bg-purple-50 dark:bg-purple-900/30 text-purple-600 rounded-xl flex items-center justify-center text-xl"><i class="fa-solid fa-file-contract"></i></div>
-                    </div>
-                    <p class="text-[10px] text-slate-400 mt-2" data-i18n="kpiContSub">1 ينتهي قريباً</p>
-                </div>
-
-                <!-- Budget Usage -->
-                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase" data-i18n="kpiBud">استهلاك الميزانية</p>
-                            <h3 class="text-2xl font-bold mt-1 font-en text-orange-500">45%</h3>
-                        </div>
-                        <div class="w-10 h-10 bg-orange-50 dark:bg-orange-900/30 text-orange-500 rounded-xl flex items-center justify-center text-xl"><i class="fa-solid fa-chart-pie"></i></div>
-                    </div>
-                    <div class="w-full bg-slate-100 h-1.5 rounded-full mt-3 overflow-hidden">
-                        <div class="bg-orange-500 h-full w-[45%]"></div>
-                    </div>
-                </div>
-
-                <!-- Pending POs -->
-                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase" data-i18n="kpiPO">أوامر شراء مفتوحة</p>
-                            <h3 class="text-2xl font-bold mt-1 font-en text-green-600">5</h3>
-                        </div>
-                        <div class="w-10 h-10 bg-green-50 dark:bg-green-900/30 text-green-600 rounded-xl flex items-center justify-center text-xl"><i class="fa-solid fa-truck-fast"></i></div>
-                    </div>
-                    <p class="text-[10px] text-slate-400 mt-2" data-i18n="kpiPOSub">إجمالي: 150,000 SAR</p>
+                <div class="flex gap-2">
+                    <button onclick="openVendorModal()" class="px-4 py-2 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-white rounded-lg text-sm font-bold hover:bg-slate-200 transition flex items-center gap-2">
+                        <i class="fa-solid fa-store"></i> <span data-i18n="btnAddVendor">مورد جديد</span>
+                    </button>
+                    <button onclick="openRequestModal()" class="px-6 py-2 bg-brandBlue text-white rounded-lg text-sm font-bold shadow-lg hover:bg-blue-700 transition flex items-center gap-2">
+                        <i class="fa-solid fa-plus"></i> <span data-i18n="btnAddReq">طلب شراء (PR)</span>
+                    </button>
                 </div>
             </div>
 
-            <!-- 2. Procurement Workspace -->
-            <div class="bg-white dark:bg-slate-800 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 min-h-[600px] flex flex-col">
-                
-                <!-- Toolbar -->
-                <div class="p-6 border-b border-slate-100 dark:border-slate-700 flex flex-col md:flex-row justify-between items-center gap-4">
-                    <div class="flex bg-slate-100 dark:bg-slate-700 p-1 rounded-xl w-full md:w-auto overflow-x-auto">
-                        <button onclick="switchTab('requests')" id="btn-requests" class="px-5 py-2 text-xs font-bold rounded-lg bg-white text-brandBlue shadow-sm transition-all tab-btn" data-i18n="tabPR">طلبات الشراء (PR)</button>
-                        <button onclick="switchTab('orders')" id="btn-orders" class="px-5 py-2 text-xs font-bold rounded-lg text-slate-500 hover:text-slate-700 transition-all tab-btn" data-i18n="tabPO">أوامر الشراء (PO)</button>
-                        <button onclick="switchTab('contracts')" id="btn-contracts" class="px-5 py-2 text-xs font-bold rounded-lg text-slate-500 hover:text-slate-700 transition-all tab-btn" data-i18n="tabCont">العقود والموردين</button>
-                        <button onclick="switchTab('assets')" id="btn-assets" class="px-5 py-2 text-xs font-bold rounded-lg text-slate-500 hover:text-slate-700 transition-all tab-btn" data-i18n="tabAssets">الأصول والعهد</button>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <div class="flex justify-between items-start mb-2">
+                        <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase" data-i18n="kpiSpend">إنفاق السنة (YTD)</p>
+                        <div class="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-900/30 text-blue-600 flex items-center justify-center"><i class="fa-solid fa-wallet"></i></div>
                     </div>
-                    <div class="flex gap-2">
-                        <button onclick="openPRModal()" class="px-4 py-2 bg-brandBlue text-white rounded-xl text-xs font-bold hover:bg-blue-700 transition flex items-center gap-2 shadow-lg">
-                            <i class="fa-solid fa-plus"></i> <span data-i18n="btnAddPR">طلب جديد</span>
-                        </button>
+                    <h3 class="text-2xl font-bold text-slate-900 dark:text-white num-font">450,000</h3>
+                    <p class="text-[10px] text-slate-400 mt-1" data-i18n="kpiBudget">من ميزانية 600,000</p>
+                </div>
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <div class="flex justify-between items-start mb-2">
+                        <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase" data-i18n="kpiPending">طلبات معلقة</p>
+                        <div class="w-8 h-8 rounded-lg bg-orange-50 dark:bg-orange-900/30 text-orange-500 flex items-center justify-center"><i class="fa-solid fa-clock"></i></div>
+                    </div>
+                    <h3 class="text-2xl font-bold text-slate-900 dark:text-white num-font" id="count-pending">3</h3>
+                    <p class="text-[10px] text-orange-500 mt-1" data-i18n="kpiReview">بانتظار الموافقة</p>
+                </div>
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <div class="flex justify-between items-start mb-2">
+                        <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase" data-i18n="kpiContracts">عقود سارية</p>
+                        <div class="w-8 h-8 rounded-lg bg-purple-50 dark:bg-purple-900/30 text-purple-600 flex items-center justify-center"><i class="fa-solid fa-file-contract"></i></div>
+                    </div>
+                    <h3 class="text-2xl font-bold text-slate-900 dark:text-white num-font">8</h3>
+                    <p class="text-[10px] text-slate-400 mt-1" data-i18n="kpiRenew">2 للتجديد قريباً</p>
+                </div>
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <div class="flex justify-between items-start mb-2">
+                        <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase" data-i18n="kpiVendors">الموردين المعتمدين</p>
+                        <div class="w-8 h-8 rounded-lg bg-green-50 dark:bg-green-900/30 text-green-600 flex items-center justify-center"><i class="fa-solid fa-handshake"></i></div>
+                    </div>
+                    <h3 class="text-2xl font-bold text-slate-900 dark:text-white num-font">15</h3>
+                    <p class="text-[10px] text-green-500 mt-1" data-i18n="kpiTop">أفضل مورد: Jarir</p>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-slate-800 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 min-h-[500px] flex flex-col">
+                
+                <div class="p-5 border-b border-slate-100 dark:border-slate-700 flex flex-col md:flex-row justify-between items-center gap-4">
+                    <div class="flex bg-slate-100 dark:bg-slate-700 p-1 rounded-xl w-full md:w-auto">
+                        <button onclick="switchTab('pr')" id="btn-pr" class="px-5 py-2 text-xs font-bold rounded-lg bg-white text-brandBlue shadow-sm transition-all tab-btn" data-i18n="tabPR">طلبات الشراء (PR)</button>
+                        <button onclick="switchTab('po')" id="btn-po" class="px-5 py-2 text-xs font-bold rounded-lg text-slate-500 hover:text-slate-700 dark:text-slate-400 transition-all tab-btn" data-i18n="tabPO">أوامر الشراء (PO)</button>
+                        <button onclick="switchTab('vendors')" id="btn-vendors" class="px-5 py-2 text-xs font-bold rounded-lg text-slate-500 hover:text-slate-700 dark:text-slate-400 transition-all tab-btn" data-i18n="tabVendors">الموردين</button>
+                    </div>
+                    <div class="relative w-64">
+                        <input type="text" id="searchProc" onkeyup="renderCurrentTab()" class="w-full pl-10 pr-4 py-2 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg text-xs outline-none dark:text-white" data-i18n-placeholder="plhSearch">
+                        <i class="fa-solid fa-search absolute left-3 top-2.5 text-slate-400 rtl:left-3 ltr:right-3"></i>
                     </div>
                 </div>
 
-                <!-- Tab 1: Purchase Requests (PR) -->
-                <div id="tab-requests" class="tab-content block p-6">
-                    <div class="flex justify-between mb-4">
-                        <div class="relative w-64">
-                            <input type="text" id="prSearch" onkeyup="filterPRs()" placeholder="..." class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 dark:border-slate-600 dark:bg-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-brandBlue outline-none dark:text-white" data-i18n-placeholder="plhSearch">
-                            <i class="fa-solid fa-search absolute left-3 top-2.5 text-slate-400 rtl:left-3 ltr:right-3"></i>
-                        </div>
-                        <select class="bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-1.5 text-xs focus:outline-none dark:text-white">
-                            <option data-i18n="filterAll">الكل</option>
-                            <option data-i18n="filterPending">بانتظار الموافقة</option>
-                            <option data-i18n="filterApproved">معتمد</option>
-                        </select>
-                    </div>
-                    
-                    <div class="overflow-x-auto border border-slate-200 dark:border-slate-600 rounded-xl">
+                <div id="tab-pr" class="tab-content block p-0">
+                    <div class="overflow-x-auto">
                         <table class="w-full text-sm text-right rtl:text-right ltr:text-left">
-                            <thead class="bg-slate-50 dark:bg-slate-700 text-xs font-bold text-slate-500 uppercase">
+                            <thead class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 dark:text-slate-400 text-xs font-bold uppercase">
                                 <tr>
                                     <th class="p-4" data-i18n="colID">رقم الطلب</th>
-                                    <th class="p-4" data-i18n="colDate">تاريخ الطلب</th>
-                                    <th class="p-4" data-i18n="colDept">القسم الطالب</th>
-                                    <th class="p-4 w-1/3" data-i18n="colDesc">الوصف</th>
-                                    <th class="p-4" data-i18n="colCost">التكلفة التقديرية</th>
+                                    <th class="p-4" data-i18n="colDesc">الوصف</th>
+                                    <th class="p-4" data-i18n="colDept">الإدارة</th>
+                                    <th class="p-4" data-i18n="colAmount">المبلغ التقديري</th>
                                     <th class="p-4 text-center" data-i18n="colStatus">الحالة</th>
-                                    <th class="p-4 text-center" data-i18n="colAction">إجراءات</th>
+                                    <th class="p-4 text-center" data-i18n="colAction">إجراء</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-100 dark:divide-slate-700" id="prTable">
-                                <!-- Generated Rows -->
-                            </tbody>
+                                </tbody>
                         </table>
                     </div>
                 </div>
 
-                <!-- Tab 2: Purchase Orders (PO) -->
-                <div id="tab-orders" class="tab-content hidden p-6">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- PO List -->
-                        <div class="border dark:border-slate-700 rounded-2xl p-4">
-                            <h4 class="font-bold text-sm mb-4 dark:text-white" data-i18n="poActive">أوامر الشراء النشطة</h4>
-                            <div class="space-y-3" id="poList">
-                                <!-- Populated via JS -->
-                            </div>
-                        </div>
-
-                        <!-- Vendor Evaluation Preview -->
-                        <div class="border dark:border-slate-700 rounded-2xl p-4 bg-slate-50 dark:bg-slate-700/50">
-                            <h4 class="font-bold text-sm mb-4 dark:text-white" data-i18n="vendorPerf">أداء الموردين (Top 3)</h4>
-                            <div class="space-y-4">
-                                <div>
-                                    <div class="flex justify-between text-xs mb-1 dark:text-slate-300">
-                                        <span data-i18n="ven1Name">شركة التقنية المتقدمة</span>
-                                        <span class="text-green-600 font-bold">95%</span>
-                                    </div>
-                                    <div class="w-full bg-slate-200 dark:bg-slate-600 rounded-full h-1.5"><div class="bg-green-500 h-1.5 rounded-full" style="width: 95%"></div></div>
-                                </div>
-                                <div>
-                                    <div class="flex justify-between text-xs mb-1 dark:text-slate-300">
-                                        <span data-i18n="ven2Name">مؤسسة التوريدات السريعة</span>
-                                        <span class="text-yellow-600 font-bold">80%</span>
-                                    </div>
-                                    <div class="w-full bg-slate-200 dark:bg-slate-600 rounded-full h-1.5"><div class="bg-yellow-500 h-1.5 rounded-full" style="width: 80%"></div></div>
-                                </div>
-                            </div>
-                        </div>
+                <div id="tab-po" class="tab-content hidden p-0">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-right rtl:text-right ltr:text-left">
+                            <thead class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 dark:text-slate-400 text-xs font-bold uppercase">
+                                <tr>
+                                    <th class="p-4">PO #</th>
+                                    <th class="p-4" data-i18n="colVendor">المورد</th>
+                                    <th class="p-4" data-i18n="colItems">الأصناف</th>
+                                    <th class="p-4" data-i18n="colTotal">الإجمالي</th>
+                                    <th class="p-4 text-center" data-i18n="colDelivery">التسليم</th>
+                                    <th class="p-4 text-center" data-i18n="colAction">طباعة</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 dark:divide-slate-700" id="poTable">
+                                </tbody>
+                        </table>
                     </div>
                 </div>
 
-                <!-- Tab 3: Contracts & Vendors -->
-                <div id="tab-contracts" class="tab-content hidden p-6">
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        <div class="lg:col-span-2">
-                             <div class="overflow-x-auto border border-slate-200 dark:border-slate-600 rounded-xl">
-                                <table class="w-full text-sm text-right rtl:text-right ltr:text-left">
-                                    <thead class="bg-slate-50 dark:bg-slate-700 text-xs font-bold text-slate-500">
-                                        <tr>
-                                            <th class="p-3" data-i18n="colContID">رقم العقد</th>
-                                            <th class="p-3" data-i18n="colVendor">المورد</th>
-                                            <th class="p-3" data-i18n="colEnd">تاريخ الانتهاء</th>
-                                            <th class="p-3" data-i18n="colVal">القيمة</th>
-                                            <th class="p-3 text-center" data-i18n="colAlert">التنبيهات</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="divide-y divide-slate-100 dark:divide-slate-700" id="contractsTable">
-                                        <!-- JS -->
-                                    </tbody>
-                                </table>
-                            </div>
+                <div id="tab-vendors" class="tab-content hidden p-6">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="vendorsGrid">
                         </div>
-                        <div class="lg:col-span-1 bg-slate-50 dark:bg-slate-700/30 p-4 rounded-xl">
-                            <h4 class="font-bold text-sm mb-3 dark:text-white" data-i18n="addVendor">إضافة مورد جديد</h4>
-                            <form class="space-y-3">
-                                <input type="text" class="w-full border dark:border-slate-600 rounded p-2 text-xs dark:bg-slate-700 dark:text-white" data-i18n-placeholder="plhCompName" placeholder="اسم الشركة">
-                                <input type="text" class="w-full border dark:border-slate-600 rounded p-2 text-xs dark:bg-slate-700 dark:text-white" data-i18n-placeholder="plhCR" placeholder="رقم السجل التجاري">
-                                <input type="email" class="w-full border dark:border-slate-600 rounded p-2 text-xs dark:bg-slate-700 dark:text-white" data-i18n-placeholder="plhEmail" placeholder="البريد الإلكتروني">
-                                <button type="button" onclick="alert('تم تسجيل المورد')" class="w-full bg-slate-800 text-white py-2 rounded text-xs font-bold hover:bg-black" data-i18n="btnSaveVendor">حفظ</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Tab 4: Assets (الأصول) -->
-                <div id="tab-assets" class="tab-content hidden p-6">
-                    <div class="flex justify-between items-center mb-4">
-                        <h4 class="font-bold text-sm dark:text-white" data-i18n="assetsLog">سجل الأصول الثابتة والعهد</h4>
-                        <button class="text-xs bg-white dark:bg-slate-700 border dark:border-slate-600 px-3 py-1 rounded hover:bg-slate-50 dark:hover:bg-slate-600 dark:text-white" data-i18n="btnAddAsset">+ إضافة أصل</button>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <!-- Asset Card -->
-                        <div class="p-4 border dark:border-slate-700 rounded-xl hover:border-brandBlue transition group cursor-pointer bg-white dark:bg-slate-700/30">
-                            <div class="flex justify-between items-start mb-2">
-                                <div class="p-2 bg-blue-50 dark:bg-blue-900/30 text-blue-600 rounded-lg"><i class="fa-solid fa-laptop"></i></div>
-                                <span class="text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded" data-i18n="astCustody">عهدة</span>
-                            </div>
-                            <h5 class="font-bold text-sm dark:text-white" data-i18n="ast1Name">MacBook Pro M3</h5>
-                            <p class="text-xs text-slate-500 mt-1">S/N: XYZ123</p>
-                            <p class="text-[10px] text-slate-400 mt-2"><span data-i18n="astEmp">الموظف:</span> <span data-i18n="empName">هشام السحيباني</span></p>
-                        </div>
-                        <!-- Asset Card -->
-                        <div class="p-4 border dark:border-slate-700 rounded-xl hover:border-brandBlue transition group cursor-pointer bg-white dark:bg-slate-700/30">
-                            <div class="flex justify-between items-start mb-2">
-                                <div class="p-2 bg-blue-50 dark:bg-blue-900/30 text-blue-600 rounded-lg"><i class="fa-solid fa-chair"></i></div>
-                                <span class="text-[10px] bg-slate-100 dark:bg-slate-600 text-slate-700 dark:text-slate-300 px-2 py-0.5 rounded" data-i18n="astStock">مخزون</span>
-                            </div>
-                            <h5 class="font-bold text-sm dark:text-white" data-i18n="ast2Name">كراسي مكتبية (10)</h5>
-                            <p class="text-xs text-slate-500 mt-1" data-i18n="astLoc">الموقع: المستودع الرئيسي</p>
-                            <p class="text-[10px] text-slate-400 mt-2">2025-10-01</p>
-                        </div>
-                    </div>
                 </div>
 
             </div>
@@ -276,309 +179,173 @@
         </main>
     </div>
 
-    <!-- New Purchase Request Modal -->
-    <div id="prModal" class="fixed inset-0 bg-black/60 hidden z-50 flex items-center justify-center backdrop-blur-sm">
-        <div class="bg-white dark:bg-slate-800 w-full max-w-2xl rounded-2xl shadow-xl p-6">
-            <div class="flex justify-between items-center mb-4 border-b pb-2 dark:border-slate-700">
+    <div id="reqModal" class="fixed inset-0 bg-black/70 hidden z-50 flex items-center justify-center backdrop-blur-sm p-4">
+        <div class="bg-white dark:bg-slate-800 w-full max-w-lg rounded-2xl shadow-2xl flex flex-col">
+            <div class="p-5 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center">
                 <h3 class="font-bold text-lg dark:text-white" data-i18n="modPrTitle">طلب شراء جديد (PR)</h3>
-                <button onclick="document.getElementById('prModal').classList.add('hidden')"><i class="fa-solid fa-xmark text-slate-400"></i></button>
+                <button onclick="closeModal('reqModal')" class="text-slate-400 hover:text-red-500"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            
-            <div class="space-y-4">
+            <div class="p-6 space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblItemDesc">وصف السلعة / الخدمة</label>
+                    <input type="text" id="prDesc" class="w-full border dark:border-slate-600 dark:bg-slate-700 rounded-lg p-2 text-sm dark:text-white">
+                </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="modDept">القسم الطالب</label>
-                        <select class="w-full border dark:border-slate-600 rounded p-2 text-sm bg-slate-50 dark:bg-slate-700 dark:text-white">
-                            <option data-i18n="dIT">تقنية المعلومات</option>
-                            <option data-i18n="dHR">الموارد البشرية</option>
-                            <option data-i18n="dAdmin">الإدارة العامة</option>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblDept">الإدارة الطالبة</label>
+                        <select id="prDept" class="w-full border dark:border-slate-600 dark:bg-slate-700 rounded-lg p-2 text-sm dark:text-white">
+                            <option>IT</option>
+                            <option>HR</option>
+                            <option>Finance</option>
+                            <option>Marketing</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="modDate">تاريخ الاحتياج</label>
-                        <input type="date" class="w-full border dark:border-slate-600 rounded p-2 text-sm bg-slate-50 dark:bg-slate-700 dark:text-white">
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblEstPrice">السعر التقديري</label>
+                        <input type="number" id="prPrice" class="w-full border dark:border-slate-600 dark:bg-slate-700 rounded-lg p-2 text-sm dark:text-white num-font">
                     </div>
                 </div>
-                
                 <div>
-                    <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="modTitle">عنوان الطلب</label>
-                    <input type="text" class="w-full border dark:border-slate-600 rounded p-2 text-sm dark:bg-slate-700 dark:text-white" data-i18n-placeholder="plhPrTitle" placeholder="مثال: أجهزة لابتوب للموظفين الجدد">
-                </div>
-
-                <div class="border dark:border-slate-600 rounded-xl overflow-hidden">
-                    <table class="w-full text-xs text-right rtl:text-right ltr:text-left">
-                        <thead class="bg-slate-100 dark:bg-slate-700">
-                            <tr>
-                                <th class="p-2 w-1/2" data-i18n="colItem">البند</th>
-                                <th class="p-2" data-i18n="colQty">الكمية</th>
-                                <th class="p-2" data-i18n="colPrice">السعر التقديري</th>
-                                <th class="p-2 text-center">x</th>
-                            </tr>
-                        </thead>
-                        <tbody class="dark:text-white">
-                            <tr>
-                                <td class="p-2"><input type="text" class="w-full border dark:border-slate-600 rounded p-1 dark:bg-slate-700" placeholder="..."></td>
-                                <td class="p-2"><input type="number" class="w-full border dark:border-slate-600 rounded p-1 text-center dark:bg-slate-700" placeholder="0"></td>
-                                <td class="p-2"><input type="number" class="w-full border dark:border-slate-600 rounded p-1 text-center dark:bg-slate-700" placeholder="0.00"></td>
-                                <td class="p-2 text-center text-red-500 cursor-pointer"><i class="fa-solid fa-trash"></i></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <div class="p-2 bg-slate-50 dark:bg-slate-700 text-center">
-                        <button class="text-xs text-brandBlue font-bold" data-i18n="btnAddLine">+ إضافة سطر</button>
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="modJust">مبررات الشراء</label>
-                    <textarea class="w-full border dark:border-slate-600 rounded p-2 text-sm h-16 dark:bg-slate-700 dark:text-white" placeholder="..."></textarea>
+                    <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblJustify">المبررات</label>
+                    <textarea class="w-full border dark:border-slate-600 dark:bg-slate-700 rounded-lg p-2 text-sm h-20 dark:text-white"></textarea>
                 </div>
             </div>
-
-            <div class="mt-6 flex justify-end gap-3">
-                <button onclick="document.getElementById('prModal').classList.add('hidden')" class="px-4 py-2 border dark:border-slate-600 rounded-lg text-xs font-bold hover:bg-slate-50 dark:hover:bg-slate-700 dark:text-white" data-i18n="cancel">إلغاء</button>
-                <button onclick="alert('تم رفع طلب الشراء للموافقة'); document.getElementById('prModal').classList.add('hidden')" class="px-6 py-2 bg-brandBlue text-white rounded-lg text-xs font-bold hover:bg-blue-700" data-i18n="btnSubmit">إرسال للموافقة</button>
+            <div class="p-5 border-t border-slate-100 dark:border-slate-700 flex justify-end gap-3">
+                <button onclick="closeModal('reqModal')" class="px-4 py-2 border dark:border-slate-600 rounded-lg text-xs font-bold dark:text-white" data-i18n="btnCancel">إلغاء</button>
+                <button onclick="saveRequest()" class="px-6 py-2 bg-brandBlue text-white rounded-lg text-xs font-bold" data-i18n="btnSave">إرسال للموافقة</button>
             </div>
         </div>
     </div>
 
-    <!-- AndroBot Widget (AI Assistant) -->
-    <div id="andro-bot-container" class="fixed bottom-6 left-6 z-50 flex flex-col items-start gap-4 font-sans" dir="rtl">
-        <!-- Chat Window -->
-        <div id="chat-window" class="hidden bg-white dark:bg-slate-800 w-80 md:w-96 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden flex flex-col chat-window-anim" style="height: 500px; max-height: 70vh;">
-            <div class="bg-brandBlue p-4 flex justify-between items-center text-white">
-                <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center"><i class="fa-solid fa-robot"></i></div>
-                    <div><h4 class="font-bold text-sm">AndroBot</h4><p class="text-[10px] text-white/80">مساعد الحوكمة الذكي</p></div>
-                </div>
-                <button id="close-chat-btn" class="text-white/80 hover:text-white transition"><i class="fa-solid fa-times"></i></button>
-            </div>
-            <div id="chat-body" class="flex-1 p-4 bg-slate-50 dark:bg-slate-900/50 overflow-y-auto custom-scroll space-y-3 flex flex-col">
-                <div class="chat-bubble bot">مرحباً بك في قسم المشتريات 👋<br>أنا هنا لمساعدتك في تتبع الطلبات أو الاستفسار عن العقود.</div>
-                <div class="flex flex-wrap gap-2 mt-2" id="suggestions">
-                    <button class="suggestion-btn text-xs bg-white border border-brandBlue/30 text-brandBlue px-3 py-1.5 rounded-full" data-q="عدد طلبات الشراء">عدد طلبات الشراء</button>
-                    <button class="suggestion-btn text-xs bg-white border border-brandBlue/30 text-brandBlue px-3 py-1.5 rounded-full" data-q="العقود النشطة">العقود النشطة</button>
-                </div>
-            </div>
-            <div class="p-3 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 flex gap-2">
-                <input type="text" id="chat-input" placeholder="اكتب استفسارك..." class="flex-1 bg-slate-100 dark:bg-slate-900 border-none rounded-lg text-sm px-4 py-2 focus:ring-2 focus:ring-brandBlue outline-none dark:text-white">
-                <button id="send-btn" class="w-10 h-10 rounded-lg bg-brandBlue text-white hover:bg-blue-700 transition flex items-center justify-center"><i class="fa-solid fa-paper-plane"></i></button>
-            </div>
-        </div>
-        <!-- Floating Button -->
-        <button id="chat-fab" class="w-14 h-14 bg-brandBlue hover:bg-blue-700 text-white rounded-full shadow-lg shadow-blue-600/30 flex items-center justify-center text-2xl transition-all transform hover:scale-110 active:scale-95 animate-bounce-slow">
-            <i class="fa-solid fa-comment-dots"></i>
-            <span class="absolute top-0 right-0 w-4 h-4 bg-brandRed rounded-full border-2 border-white dark:border-slate-900"></span>
-        </button>
-    </div>
-
-    <script src="layout.js"></script>
-    <script src="bot.js"></script>
+    <script src="data/company_policy.js"></script>
+    <script src="js/core/config.js"></script>
+    <script src="js/core/i18n.js"></script>
+    <script src="js/helpers/policy-helpers.js"></script>
+    <script src="js/services/data-service.js"></script>
+    <script src="js/components/role-switcher.js"></script>
+    <script src="js/components/layout.js"></script>
+    <script src="js/components/bot.js"></script>
 
     <script>
-        // --- Translation Dictionary ---
-        const t = {
-            ar: {
-                pageTitle: "AndroGov | المشتريات والعقود",
-                kpiReq: "طلبات الشراء (PR)",
-                kpiReqSub: "3 بانتظار الاعتماد",
-                kpiCont: "العقود النشطة",
-                kpiContSub: "1 ينتهي قريباً",
-                kpiBud: "استهلاك الميزانية",
-                kpiPO: "أوامر شراء مفتوحة",
-                kpiPOSub: "إجمالي: 150,000 SAR",
-                tabPR: "طلبات الشراء (PR)",
-                tabPO: "أوامر الشراء (PO)",
-                tabCont: "العقود والموردين",
-                tabAssets: "الأصول والعهد",
-                btnAddPR: "طلب جديد",
-                plhSearch: "بحث برقم الطلب...",
-                filterAll: "الكل",
-                filterPending: "بانتظار الموافقة",
-                filterApproved: "معتمد",
-                colID: "رقم الطلب",
-                colDate: "تاريخ الطلب",
-                colDept: "القسم الطالب",
-                colDesc: "الوصف",
-                colCost: "التكلفة التقديرية",
-                colStatus: "الحالة",
-                colAction: "إجراءات",
-                statPending: "بانتظار الموافقة",
-                statApproved: "معتمد",
-                statRejected: "مرفوض",
-                poActive: "أوامر الشراء النشطة",
-                poRec: "تم الاستلام",
-                poProc: "جاري التجهيز",
-                vendorPerf: "أداء الموردين (Top 3)",
-                ven1Name: "شركة التقنية المتقدمة",
-                ven2Name: "مؤسسة التوريدات السريعة",
-                colContID: "رقم العقد",
-                colVendor: "المورد",
-                colEnd: "تاريخ الانتهاء",
-                colVal: "القيمة",
-                colAlert: "التنبيهات",
-                alertActive: "ساري",
-                alertSoon: "ينتهي قريباً",
-                addVendor: "إضافة مورد جديد",
-                plhCompName: "اسم الشركة",
-                plhCR: "رقم السجل التجاري",
-                plhEmail: "البريد الإلكتروني",
-                btnSaveVendor: "حفظ",
-                assetsLog: "سجل الأصول الثابتة والعهد",
-                btnAddAsset: "+ إضافة أصل",
-                astCustody: "عهدة",
-                ast1Name: "MacBook Pro M3",
-                astEmp: "الموظف:",
-                empName: "هشام السحيباني",
-                astStock: "مخزون",
-                ast2Name: "كراسي مكتبية (10)",
-                astLoc: "الموقع: المستودع الرئيسي",
-                modPrTitle: "طلب شراء جديد (PR)",
-                modDept: "القسم الطالب",
-                dIT: "تقنية المعلومات",
-                dHR: "الموارد البشرية",
-                dAdmin: "الإدارة العامة",
-                modDate: "تاريخ الاحتياج",
-                modTitle: "عنوان الطلب",
-                plhPrTitle: "مثال: أجهزة لابتوب للموظفين الجدد",
-                colItem: "البند",
-                colQty: "الكمية",
-                colPrice: "السعر التقديري",
-                btnAddLine: "+ إضافة سطر",
-                modJust: "مبررات الشراء",
-                cancel: "إلغاء",
-                btnSubmit: "إرسال للموافقة",
-                // Data
-                pr1Desc: "سيرفرات جديدة للداتا سنتر",
-                pr2Desc: "قرطاسية ومستلزمات مكتبية",
-                pr3Desc: "خدمات تصميم هوية",
-                po1Desc: "توريد أجهزة (جرير)",
-                po2Desc: "رخص برامج (Microsoft)",
-                cnt1Vend: "شركة الاتصالات السعودية",
-                cnt2Vend: "مكتب المحاماة"
-            },
-            en: {
-                pageTitle: "AndroGov | Procurement & Contracts",
-                kpiReq: "Purchase Requests (PR)",
-                kpiReqSub: "3 Pending Approval",
-                kpiCont: "Active Contracts",
-                kpiContSub: "1 Expiring Soon",
-                kpiBud: "Budget Usage",
-                kpiPO: "Open POs",
-                kpiPOSub: "Total: 150,000 SAR",
-                tabPR: "Purchase Requests (PR)",
-                tabPO: "Purchase Orders (PO)",
-                tabCont: "Contracts & Vendors",
-                tabAssets: "Assets & Custody",
-                btnAddPR: "New Request",
-                plhSearch: "Search Request No...",
-                filterAll: "All",
-                filterPending: "Pending",
-                filterApproved: "Approved",
-                colID: "Req No",
-                colDate: "Date",
-                colDept: "Dept",
-                colDesc: "Description",
-                colCost: "Est. Cost",
-                colStatus: "Status",
-                colAction: "Actions",
-                statPending: "Pending",
-                statApproved: "Approved",
-                statRejected: "Rejected",
-                poActive: "Active Purchase Orders",
-                poRec: "Received",
-                poProc: "Processing",
-                vendorPerf: "Top 3 Vendors",
-                ven1Name: "Advanced Tech Co.",
-                ven2Name: "Fast Supply Est.",
-                colContID: "Contract No",
-                colVendor: "Vendor",
-                colEnd: "End Date",
-                colVal: "Value",
-                colAlert: "Alerts",
-                alertActive: "Active",
-                alertSoon: "Expiring Soon",
-                addVendor: "Add New Vendor",
-                plhCompName: "Company Name",
-                plhCR: "CR Number",
-                plhEmail: "Email",
-                btnSaveVendor: "Save",
-                assetsLog: "Fixed Assets & Custody Log",
-                btnAddAsset: "+ Add Asset",
-                astCustody: "Custody",
-                ast1Name: "MacBook Pro M3",
-                astEmp: "Employee:",
-                empName: "Hesham Al-Suhaibani",
-                astStock: "Stock",
-                ast2Name: "Office Chairs (10)",
-                astLoc: "Loc: Main Warehouse",
-                modPrTitle: "New Purchase Request (PR)",
-                modDept: "Department",
-                dIT: "IT",
-                dHR: "HR",
-                dAdmin: "General Admin",
-                modDate: "Needed Date",
-                modTitle: "Request Title",
-                plhPrTitle: "Ex: Laptops for new hires",
-                colItem: "Item",
-                colQty: "Qty",
-                colPrice: "Est. Price",
-                btnAddLine: "+ Add Line",
-                modJust: "Justification",
-                cancel: "Cancel",
-                btnSubmit: "Submit",
-                // Data
-                pr1Desc: "New Data Center Servers",
-                pr2Desc: "Office Stationery",
-                pr3Desc: "Identity Design Services",
-                po1Desc: "Hardware Supply (Jarir)",
-                po2Desc: "Software Licenses (Microsoft)",
-                cnt1Vend: "STC",
-                cnt2Vend: "Law Firm"
-            }
-        };
-
-        // Mock Data
-        const prs = [
-            { id: "PR-2026-010", date: "2026-01-08", dept: "IT", descAr: "سيرفرات جديدة للداتا سنتر", descEn: "New Data Center Servers", amount: 45000, status: "pending" },
-            { id: "PR-2026-009", date: "2026-01-05", dept: "HR", descAr: "قرطاسية ومستلزمات مكتبية", descEn: "Office Stationery", amount: 2500, status: "approved" },
-            { id: "PR-2026-008", date: "2026-01-02", dept: "Marketing", descAr: "خدمات تصميم هوية", descEn: "Identity Design Services", amount: 15000, status: "rejected" }
+        // --- DATA STATE ---
+        let prData = [
+            { id: "PR-2026-001", desc: "أجهزة لابتوب للموظفين الجدد", dept: "IT", amount: 15000, status: "pending" },
+            { id: "PR-2026-002", desc: "قرطاسية مكتبية (ربع سنوي)", dept: "HR", amount: 2000, status: "approved" },
+            { id: "PR-2026-003", desc: "اشتراك LinkedIn Premium", dept: "HR", amount: 5000, status: "rejected" },
+            { id: "PR-2026-004", desc: "صيانة أجهزة التكييف", dept: "Ops", amount: 3500, status: "pending" }
         ];
 
-        const contracts = [
-            { id: "CNT-2025-05", vendorAr: "شركة الاتصالات السعودية", vendorEn: "STC", end: "2026-05-01", val: "120,000 SAR", alert: "active" },
-            { id: "CNT-2025-12", vendorAr: "مكتب المحاماة", vendorEn: "Law Firm", end: "2026-02-15", val: "50,000 SAR", alert: "soon" }
+        let poData = [
+            { id: "PO-901", vendor: "Jarir Bookstore", items: "Laptops x3", total: 15000, status: "Delivered" },
+            { id: "PO-902", vendor: "Extra Stores", items: "Projectors", total: 4500, status: "Processing" }
         ];
 
+        let vendorData = [
+            { name: "Jarir Bookstore", cat: "Electronics", rating: 5, status: "Active" },
+            { name: "Al-Othaim", cat: "Catering", rating: 4, status: "Active" },
+            { name: "STC Business", cat: "Telecom", rating: 3, status: "Review" }
+        ];
+
+        // --- INIT ---
         document.addEventListener('DOMContentLoaded', () => {
-            updatePageLanguage();
+            setTimeout(() => {
+                const overlay = document.getElementById('loadingOverlay');
+                if(overlay) overlay.classList.add('hidden');
+            }, 2000);
+
+            const checkSystem = setInterval(() => {
+                if (typeof Layout !== 'undefined' && typeof AppConfig !== 'undefined') {
+                    clearInterval(checkSystem);
+                    if (!AppConfig.getCurrentUser()) {
+                        const defaultUser = DataService.getUserById('USR_004') || DataService.getUsers()[0];
+                        if (defaultUser) AppConfig.setCurrentUser(defaultUser);
+                    }
+                    Layout.init();
+                    initPage();
+                }
+            }, 50);
         });
 
-        window.updatePageLanguage = function() {
-            const lang = localStorage.getItem('lang') || 'ar';
+        function initPage() {
+            updatePageLanguage();
+            renderAllTabs();
+        }
+
+        function updatePageLanguage() {
+            const lang = AppConfig.getLang() || 'ar';
             const dict = t[lang];
-            
             document.documentElement.lang = lang;
             document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
-
-            // Text
+            
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
                 if(dict[key]) el.innerText = dict[key];
             });
-            // Placeholders
             document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
                 const key = el.getAttribute('data-i18n-placeholder');
                 if(dict[key]) el.placeholder = dict[key];
             });
-
-            renderPRs();
-            renderContracts();
-            renderPOs();
         }
 
-        // --- Tab Switching ---
-        window.switchTab = function(target) {
+        function renderAllTabs() {
+            const lang = AppConfig.getLang() || 'ar';
+            const dict = t[lang];
+            
+            // 1. PR Table
+            const prBody = document.getElementById('prTable');
+            prBody.innerHTML = prData.map(pr => {
+                let badge = pr.status === 'approved' ? 'bg-green-100 text-green-700' : 
+                            pr.status === 'rejected' ? 'bg-red-100 text-red-700' : 'bg-orange-100 text-orange-700';
+                let statusText = pr.status === 'approved' ? dict.stApproved : pr.status === 'rejected' ? dict.stRejected : dict.stPending;
+                
+                return `
+                <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 border-b dark:border-slate-700">
+                    <td class="p-4 font-mono text-xs font-bold text-blue-600">${pr.id}</td>
+                    <td class="p-4 font-bold text-slate-800 dark:text-white text-xs">${pr.desc}</td>
+                    <td class="p-4 text-xs text-slate-500">${pr.dept}</td>
+                    <td class="p-4 font-mono font-bold num-font">${pr.amount.toLocaleString()}</td>
+                    <td class="p-4 text-center"><span class="${badge} px-2 py-1 rounded text-[10px] font-bold">${statusText}</span></td>
+                    <td class="p-4 text-center">
+                        ${pr.status === 'pending' ? `<button onclick="approvePR('${pr.id}')" class="text-green-600 hover:text-green-800 text-xs font-bold border border-green-200 px-2 py-1 rounded">${dict.btnApprove}</button>` : '-'}
+                    </td>
+                </tr>`;
+            }).join('');
+
+            // Update pending count
+            document.getElementById('count-pending').innerText = prData.filter(x => x.status === 'pending').length;
+
+            // 2. PO Table
+            const poBody = document.getElementById('poTable');
+            poBody.innerHTML = poData.map(po => `
+                <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 border-b dark:border-slate-700">
+                    <td class="p-4 font-mono text-xs font-bold">${po.id}</td>
+                    <td class="p-4 font-bold text-slate-800 dark:text-white text-xs">${po.vendor}</td>
+                    <td class="p-4 text-xs text-slate-500">${po.items}</td>
+                    <td class="p-4 font-mono font-bold num-font">${po.total.toLocaleString()}</td>
+                    <td class="p-4 text-center text-xs">${po.status}</td>
+                    <td class="p-4 text-center"><button class="text-slate-400 hover:text-blue-600"><i class="fa-solid fa-print"></i></button></td>
+                </tr>
+            `).join('');
+
+            // 3. Vendors
+            const vendGrid = document.getElementById('vendorsGrid');
+            vendGrid.innerHTML = vendorData.map(v => `
+                <div class="bg-white dark:bg-slate-700 border dark:border-slate-600 p-4 rounded-xl shadow-sm">
+                    <div class="flex justify-between items-start">
+                        <div class="w-10 h-10 bg-slate-100 dark:bg-slate-600 rounded-full flex items-center justify-center text-slate-500 font-bold">${v.name[0]}</div>
+                        <span class="text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded font-bold">${v.status}</span>
+                    </div>
+                    <h4 class="font-bold text-sm mt-3 dark:text-white">${v.name}</h4>
+                    <p class="text-xs text-slate-400">${v.cat}</p>
+                    <div class="flex text-yellow-400 text-xs mt-2">
+                        ${Array(5).fill(0).map((_, i) => `<i class="fa-${i < v.rating ? 'solid' : 'regular'} fa-star"></i>`).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // --- Logic Actions ---
+        function switchTab(target) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             document.querySelectorAll('.tab-btn').forEach(el => {
                 el.classList.remove('bg-white', 'text-brandBlue', 'shadow-sm');
@@ -586,136 +353,145 @@
             });
             document.getElementById(`tab-${target}`).classList.remove('hidden');
             document.getElementById(`btn-${target}`).classList.add('bg-white', 'text-brandBlue', 'shadow-sm');
-            document.getElementById(`btn-${target}`).classList.remove('text-slate-500', 'border-transparent');
         }
 
-        // --- Render Functions ---
-        window.renderPRs = function() {
-            const lang = localStorage.getItem('lang') || 'ar';
-            const dict = t[lang];
-            const tbody = document.getElementById('prTable');
-            const search = document.getElementById('prSearch').value.toLowerCase();
+        function openRequestModal() { document.getElementById('reqModal').classList.remove('hidden'); }
+        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+        function openVendorModal() { alert('صفحة إضافة مورد - قريباً'); }
 
-            const filtered = prs.filter(e => e.id.toLowerCase().includes(search));
+        function saveRequest() {
+            const desc = document.getElementById('prDesc').value;
+            const price = document.getElementById('prPrice').value;
+            if(!desc || !price) return alert('البيانات ناقصة');
 
-            tbody.innerHTML = filtered.map(e => {
-                let statusBadge = '';
-                if(e.status === 'pending') statusBadge = `<span class="status-badge status-pending">${dict.statPending}</span>`;
-                if(e.status === 'approved') statusBadge = `<span class="status-badge status-approved">${dict.statApproved}</span>`;
-                if(e.status === 'rejected') statusBadge = `<span class="status-badge status-rejected">${dict.statRejected}</span>`;
-
-                const desc = lang === 'ar' ? e.descAr : e.descEn;
-
-                return `
-                <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition border-b border-slate-100 dark:border-slate-700">
-                    <td class="p-4 font-mono text-xs font-bold text-brandBlue">${e.id}</td>
-                    <td class="p-4 font-en text-xs text-slate-500">${e.date}</td>
-                    <td class="p-4 text-xs font-bold text-slate-700 dark:text-white">${e.dept}</td>
-                    <td class="p-4 text-xs text-slate-600 dark:text-slate-300 text-left rtl:text-right ltr:text-left">${desc}</td>
-                    <td class="p-4 font-mono text-xs font-bold text-slate-600 dark:text-slate-200 text-left rtl:text-left ltr:text-right">${e.amount.toLocaleString()}</td>
-                    <td class="p-4 text-center">${statusBadge}</td>
-                    <td class="p-4 text-center">
-                        <button class="text-slate-400 hover:text-brandBlue"><i class="fa-solid fa-eye"></i></button>
-                    </td>
-                </tr>
-            `}).join('');
-        }
-
-        window.filterPRs = function() {
-            renderPRs();
-        }
-
-        window.renderContracts = function() {
-            const lang = localStorage.getItem('lang') || 'ar';
-            const dict = t[lang];
-            const tbody = document.getElementById('contractsTable');
+            prData.unshift({
+                id: `PR-2026-${Math.floor(Math.random()*1000)}`,
+                desc: desc,
+                dept: document.getElementById('prDept').value,
+                amount: parseInt(price),
+                status: 'pending'
+            });
             
-            tbody.innerHTML = contracts.map(c => {
-                const vendor = lang === 'ar' ? c.vendorAr : c.vendorEn;
-                const alertText = c.alert === 'active' ? dict.alertActive : dict.alertSoon;
-                const alertClass = c.alert === 'active' ? 'text-green-600' : 'text-red-500 font-bold';
-
-                return `
-                <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition border-b border-slate-100 dark:border-slate-700">
-                    <td class="p-3 font-mono text-xs dark:text-slate-300">${c.id}</td>
-                    <td class="p-3 font-bold text-xs dark:text-white">${vendor}</td>
-                    <td class="p-3 font-en text-xs dark:text-slate-300">${c.end}</td>
-                    <td class="p-3 font-en text-xs font-bold dark:text-slate-200">${c.val}</td>
-                    <td class="p-3 text-center text-xs ${alertClass}">${alertText}</td>
-                </tr>
-            `}).join('');
+            renderAllTabs();
+            closeModal('reqModal');
         }
 
-        window.renderPOs = function() {
-            const lang = localStorage.getItem('lang') || 'ar';
-            const dict = t[lang];
-            const list = document.getElementById('poList');
-            
-            list.innerHTML = `
-                <div class="flex justify-between items-center p-3 bg-slate-50 dark:bg-slate-700/50 rounded-lg border border-slate-200 dark:border-slate-600">
-                    <div>
-                        <p class="text-xs font-bold text-blue-800 dark:text-blue-300">PO-2026-001</p>
-                        <p class="text-[10px] text-slate-500 dark:text-slate-400">${dict.po1Desc}</p>
-                    </div>
-                    <span class="text-[10px] bg-green-100 text-green-700 px-2 py-1 rounded">${dict.poRec}</span>
-                </div>
-                <div class="flex justify-between items-center p-3 bg-slate-50 dark:bg-slate-700/50 rounded-lg border border-slate-200 dark:border-slate-600">
-                    <div>
-                        <p class="text-xs font-bold text-blue-800 dark:text-blue-300">PO-2026-002</p>
-                        <p class="text-[10px] text-slate-500 dark:text-slate-400">${dict.po2Desc}</p>
-                    </div>
-                    <span class="text-[10px] bg-yellow-100 text-yellow-700 px-2 py-1 rounded">${dict.poProc}</span>
-                </div>
-            `;
+        function approvePR(id) {
+            const req = prData.find(r => r.id === id);
+            if(req) {
+                req.status = 'approved';
+                renderAllTabs();
+                // Optionally convert to PO
+                if(confirm('هل تريد إنشاء أمر شراء (PO) فوراً؟')) {
+                    poData.unshift({
+                        id: `PO-${Math.floor(Math.random()*1000)}`,
+                        vendor: "Pending Selection",
+                        items: req.desc,
+                        total: req.amount,
+                        status: "Draft"
+                    });
+                    switchTab('po');
+                    renderAllTabs();
+                }
+            }
         }
 
-        // --- Modals ---
-        window.openPRModal = function() {
-            document.getElementById('prModal').classList.remove('hidden');
-        }
-
-        // --- Bot Override for Procurement Context ---
+        // --- Bot Override ---
         const originalGetAIResponse = window.getAIResponse; 
-        
         window.getAIResponse = function(query, isArabic) {
             const q = query.toLowerCase();
-            
-            if (q.includes('request') || q.includes('pr') || q.includes('طلب') || q.includes('شراء')) {
+            if (q.includes('po') || q.includes('approval') || q.includes('شراء') || q.includes('حدود')) {
                 return isArabic 
-                    ? `إجمالي طلبات الشراء: <b>12</b>. يوجد <b>3</b> بانتظار الاعتماد.`
-                    : `Total Purchase Requests: <b>12</b>. There are <b>3</b> pending approval.`;
+                    ? `حد الشراء المباشر لمدير الإدارة هو <b>5,000 ريال</b>. ما فوق ذلك يتطلب موافقة المالية.`
+                    : `Direct purchase limit for Managers is <b>5,000 SAR</b>. Above that requires Finance approval.`;
             }
-            
-            if (q.includes('contract') || q.includes('active') || q.includes('عقد') || q.includes('عقود')) {
-                return isArabic
-                    ? `عدد العقود النشطة: <b>8</b>. يوجد عقد واحد ينتهي قريباً.`
-                    : `Active Contracts: <b>8</b>. One contract is expiring soon.`;
-            }
-
-            if (q.includes('budget') || q.includes('usage') || q.includes('ميزانية') || q.includes('استهلاك')) {
-                return isArabic
-                    ? `نسبة استهلاك الميزانية الحالية هي <b>45%</b>.`
-                    : `Current budget usage is <b>45%</b>.`;
-            }
-
-            // Fallback default
             return isArabic
-                ? `يمكنني إجابتك عن: <b>طلبات الشراء</b>، <b>العقود</b>، أو <b>الميزانية</b>.`
-                : `I can answer about: <b>Purchase Requests</b>, <b>Contracts</b>, or <b>Budget</b>.`;
+                ? `يمكنني إجابتك عن: <b>حدود الصلاحيات</b>، <b>حالة الطلبات</b>، أو <b>الموردين</b>.`
+                : `I can answer about: <b>Spending Limits</b>, <b>Request Status</b>, or <b>Vendors</b>.`;
         }
 
+        const t = {
+            ar: {
+                pageTitle: "المشتريات والعقود",
+                headerTitle: "المشتريات والعقود",
+                headerDesc: "إدارة طلبات الشراء والموردين.",
+                btnAddVendor: "مورد جديد",
+                btnAddReq: "طلب شراء (PR)",
+                kpiSpend: "إنفاق السنة (YTD)",
+                kpiBudget: "من الميزانية",
+                kpiPending: "طلبات معلقة",
+                kpiReview: "بانتظار الموافقة",
+                kpiContracts: "عقود سارية",
+                kpiRenew: "للتجديد",
+                kpiVendors: "الموردين",
+                kpiTop: "الأفضل تقييماً",
+                tabPR: "طلبات الشراء (PR)",
+                tabPO: "أوامر الشراء (PO)",
+                tabVendors: "الموردين",
+                plhSearch: "بحث...",
+                colID: "رقم الطلب",
+                colDesc: "الوصف",
+                colDept: "الإدارة",
+                colAmount: "المبلغ",
+                colStatus: "الحالة",
+                colAction: "إجراء",
+                stApproved: "موافق عليه",
+                stRejected: "مرفوض",
+                stPending: "قيد المراجعة",
+                btnApprove: "موافقة",
+                colVendor: "المورد",
+                colItems: "الأصناف",
+                colTotal: "الإجمالي",
+                colDelivery: "التسليم",
+                modPrTitle: "طلب شراء جديد",
+                lblItemDesc: "الوصف",
+                lblDept: "الإدارة",
+                lblEstPrice: "السعر التقديري",
+                lblJustify: "المبررات",
+                btnCancel: "إلغاء",
+                btnSave: "حفظ"
+            },
+            en: {
+                pageTitle: "Procurement",
+                headerTitle: "Procurement & Contracts",
+                headerDesc: "Manage PRs, POs and Vendors.",
+                btnAddVendor: "New Vendor",
+                btnAddReq: "New PR",
+                kpiSpend: "YTD Spend",
+                kpiBudget: "Of Budget",
+                kpiPending: "Pending PRs",
+                kpiReview: "Awaiting Approval",
+                kpiContracts: "Active Contracts",
+                kpiRenew: "Renewals",
+                kpiVendors: "Vendors",
+                kpiTop: "Top Rated",
+                tabPR: "Purchase Requests",
+                tabPO: "Purchase Orders",
+                tabVendors: "Vendors",
+                plhSearch: "Search...",
+                colID: "PR #",
+                colDesc: "Description",
+                colDept: "Dept",
+                colAmount: "Amount",
+                colStatus: "Status",
+                colAction: "Action",
+                stApproved: "Approved",
+                stRejected: "Rejected",
+                stPending: "Pending",
+                btnApprove: "Approve",
+                colVendor: "Vendor",
+                colItems: "Items",
+                colTotal: "Total",
+                colDelivery: "Delivery",
+                modPrTitle: "New Purchase Request",
+                lblItemDesc: "Description",
+                lblDept: "Department",
+                lblEstPrice: "Estimated Price",
+                lblJustify: "Justification",
+                btnCancel: "Cancel",
+                btnSave: "Save"
+            }
+        };
     </script>
-      
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', function () {
-      navigator.serviceWorker
-        .register('service-worker.js')
-        .catch(function (err) {
-          console.warn('Service worker registration failed:', err);
-        });
-    });
-  }
-</script>
 </body>
 </html>
