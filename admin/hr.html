@@ -355,13 +355,27 @@
             });
 
             // Date
-            document.getElementById('att-date').innerText = new Date().toLocaleDateString(lang === 'ar' ? 'en-US' : 'en-US'); // Keeping date numbers in EN for now or custom format
+            document.getElementById('att-date').innerText = new Date().toLocaleDateString(lang === 'ar' ? 'en-US' : 'en-US'); // Keeping date numbers in EN
 
             renderData(lang);
         }
 
         function renderData(lang) {
-            const users = DataService.getUsers();
+            // Fetch users from centralized data service
+            const allUsers = DataService.getUsers();
+            
+            // FILTER: Only show Employees & Executives. Exclude pure Board/Shareholders.
+            // Logic: Include if role is 'employee', 'manager', 'director', 'specialist', 'team_lead', 'support', 'coordinator'
+            // OR isExecutive is true.
+            // Exclude: chairman, board_member, shareholder (unless isExecutive=true)
+            
+            const employeeRoles = ['employee', 'manager', 'director', 'specialist', 'team_lead', 'support', 'coordinator', 'grc_officer', 'ncso', 'cao', 'cfo', 'ceo'];
+            
+            const users = allUsers.filter(u => {
+                const isEmpRole = employeeRoles.includes(u.role);
+                const isExec = u.isExecutive === true;
+                return isEmpRole || isExec;
+            });
             
             // 1. Stats
             document.getElementById('stat-total-emp').innerText = users.length;
@@ -378,9 +392,18 @@
 
             tbody.innerHTML = filtered.map(u => {
                 const name = lang === 'ar' ? u.name.ar : u.name.en;
-                const role = u.role; // Simplified for now, ideally map role code to text
+                // Translate Role using dictionary or fallback
+                let roleText = u.role; 
+                // Simple mapping for display (could be improved with a full role dictionary)
+                if(u.role === 'ceo') roleText = 'CEO';
+                else if(u.role === 'cfo') roleText = 'CFO';
+                else if(u.role === 'cao') roleText = 'CAO';
+                else roleText = u.title ? (lang==='ar' ? u.title.ar : u.title.en) : u.role;
+
                 const dept = u.dept;
-                const salary = u.isExecutive ? '***' : (Math.floor(Math.random() * 5000) + 5000);
+                // Mock salary logic for display only (Hidden for privacy in real app usually)
+                const salary = u.isExecutive ? '***' : (Math.floor(Math.random() * 5000) + 5000); 
+                
                 const avatar = u.avatar && u.avatar.startsWith('..') ? u.avatar : `https://ui-avatars.com/api/?name=${name}&background=random`;
 
                 return `
@@ -395,7 +418,7 @@
                         </div>
                     </td>
                     <td class="p-4 text-xs text-left rtl:text-right ltr:text-left text-slate-600 dark:text-slate-300">
-                        <p class="font-bold">${role}</p>
+                        <p class="font-bold">${roleText}</p>
                         <p class="text-slate-400">${dept}</p>
                     </td>
                     <td class="p-4 font-en text-xs text-slate-500 text-left rtl:text-right ltr:text-left">2024-01-01</td>
