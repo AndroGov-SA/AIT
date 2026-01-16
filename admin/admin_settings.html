@@ -4,15 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#FB4747">
-    <link rel="manifest" href="manifest.json">
-
-    <title data-i18n="pageTitle">AndroGov | إعدادات النظام</title>
+    <title data-i18n="pageTitle">إعدادات النظام | AndroGov</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <script src="https://cdn.tailwindcss.com"></script>
-
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -32,146 +29,164 @@
             }
         }
     </script>
+
+    <style>
+        /* Loading Overlay */
+        .loading-overlay {
+            position: fixed; inset: 0; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(5px);
+            z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem;
+        }
+        .dark .loading-overlay { background: rgba(15, 23, 42, 0.9); }
+        .loading-overlay.hidden { display: none; }
+        .spinner {
+            width: 48px; height: 48px; border: 5px solid rgba(66, 103, 178, 0.1);
+            border-top-color: #4267B2; border-radius: 50%; animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Toggles */
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #4267B2;
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: #4267B2;
+        }
+    </style>
 </head>
-<body class="bg-brandGray dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300 opacity-0">
+<body class="bg-brandGray dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300">
+
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="spinner"></div>
+        <p class="text-sm font-bold text-slate-600 dark:text-slate-300">جاري تحميل الإعدادات...</p>
+    </div>
 
     <div id="sidebar-container"></div>
     
-    <div class="main-content-wrapper md:mr-72 transition-all duration-300 flex flex-col min-h-screen">
+    <div class="main-content-wrapper ltr:md:ml-72 rtl:md:mr-72 transition-all duration-300 flex flex-col min-h-screen">
         <div id="header-container"></div>
 
         <main class="p-6 space-y-6">
             
-            <div class="flex justify-between items-center">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-2">
                 <div>
-                    <h1 class="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                        <i class="fa-solid fa-sliders text-brandRed"></i> إعدادات النظام العامة
+                    <h1 class="text-2xl font-extrabold text-slate-800 dark:text-white flex items-center gap-2">
+                        <i class="fa-solid fa-sliders text-brandRed"></i> <span data-i18n="pageTitle">إعدادات النظام</span>
                     </h1>
-                    <p class="text-sm text-slate-500 mt-1">تخصيص الهوية، اللغة الافتراضية، وخيارات الصيانة</p>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 mt-1" data-i18n="pageDesc">التحكم في خصائص النظام، الأمان، والتفضيلات العامة.</p>
                 </div>
-                <button onclick="saveSettings()" class="px-6 py-2 bg-brandRed text-white rounded-lg text-sm font-bold shadow-lg hover:bg-red-700 transition flex items-center gap-2">
-                    <i class="fa-solid fa-floppy-disk"></i> <span>حفظ التغييرات</span>
+                <button onclick="saveSettings()" class="px-6 py-2.5 bg-brandBlue text-white rounded-xl text-sm font-bold shadow-lg hover:bg-blue-700 transition flex items-center gap-2">
+                    <i class="fa-solid fa-save"></i> <span data-i18n="btnSave">حفظ التغييرات</span>
                 </button>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 
                 <div class="lg:col-span-2 space-y-6">
-                    <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-                        <h3 class="font-bold text-slate-800 dark:text-white mb-6 border-b pb-2 dark:border-slate-700">بيانات الشركة والهوية</h3>
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label class="block text-xs font-bold text-slate-500 mb-1">اسم النظام (عربي)</label>
-                                <input type="text" id="sysNameAr" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-2.5 text-sm dark:text-white focus:ring-2 focus:ring-brandRed" value="AndroGov">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-slate-500 mb-1">System Name (English)</label>
-                                <input type="text" id="sysNameEn" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-2.5 text-sm dark:text-white focus:ring-2 focus:ring-brandRed" value="AndroGov">
-                            </div>
-                            <div class="col-span-1 md:col-span-2">
-                                <label class="block text-xs font-bold text-slate-500 mb-1">وصف النظام (يظهر في صفحة الدخول)</label>
-                                <input type="text" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-2.5 text-sm dark:text-white" value="نظام إدارة العمليات الموحد لشركة أندروميدا">
-                            </div>
-                        </div>
-
-                        <div class="mt-6 pt-6 border-t border-slate-100 dark:border-slate-700">
-                            <label class="block text-xs font-bold text-slate-500 mb-3">شعار النظام (Logo)</label>
-                            <div class="flex items-center gap-4">
-                                <div class="w-20 h-20 bg-slate-100 dark:bg-slate-700 rounded-xl flex items-center justify-center border-2 border-dashed border-slate-300 dark:border-slate-600 overflow-hidden relative group">
-                                    <img id="logoPreview" src="https://ait.sa/wp-content/uploads/2024/03/cropped-Square-Logo.png" class="w-12 h-12 object-contain">
-                                    <div class="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
-                                        <i class="fa-solid fa-pen text-white"></i>
-                                    </div>
-                                    <input type="file" id="logoInput" class="absolute inset-0 opacity-0 cursor-pointer" onchange="previewLogo(this)">
-                                </div>
-                                <div class="flex-1">
-                                    <p class="text-xs text-slate-500 mb-2">يرجى رفع صورة بخلفية شفافة (PNG) بحجم لا يتجاوز 2MB.</p>
-                                    <button class="text-xs text-brandRed font-bold hover:underline" onclick="document.getElementById('logoInput').click()">تغيير الشعار</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-                        <h3 class="font-bold text-slate-800 dark:text-white mb-6 border-b pb-2 dark:border-slate-700">الإعدادات الإقليمية</h3>
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label class="block text-xs font-bold text-slate-500 mb-1">اللغة الافتراضية</label>
-                                <select class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-2.5 text-sm dark:text-white">
-                                    <option value="ar" selected>العربية (Arabic)</option>
-                                    <option value="en">الإنجليزية (English)</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-slate-500 mb-1">المنطقة الزمنية</label>
-                                <select class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-2.5 text-sm dark:text-white">
-                                    <option value="Riyadh" selected>Asia/Riyadh (GMT+3)</option>
-                                    <option value="Dubai">Asia/Dubai (GMT+4)</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-slate-500 mb-1">التقويم الافتراضي</label>
-                                <div class="flex gap-4 mt-2">
-                                    <label class="flex items-center gap-2 cursor-pointer">
-                                        <input type="radio" name="cal" checked class="text-brandRed focus:ring-brandRed">
-                                        <span class="text-sm dark:text-white">ميلادي (Gregorian)</span>
-                                    </label>
-                                    <label class="flex items-center gap-2 cursor-pointer">
-                                        <input type="radio" name="cal" class="text-brandRed focus:ring-brandRed">
-                                        <span class="text-sm dark:text-white">هجري (Hijri)</span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="lg:col-span-1 space-y-6">
                     
                     <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-                        <h3 class="font-bold text-slate-800 dark:text-white mb-4">تخصيص المظهر</h3>
-                        
-                        <div class="space-y-4">
+                        <h3 class="font-bold text-lg mb-4 flex items-center gap-2 border-b border-slate-100 dark:border-slate-700 pb-3">
+                            <i class="fa-solid fa-building text-slate-400"></i> <span data-i18n="secCompany">بيانات المنشأة</span>
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <label class="block text-xs font-bold text-slate-500 mb-1">لون الهوية الأساسي (Brand Color)</label>
-                                <div class="flex items-center gap-2">
-                                    <input type="color" id="brandColor" value="#FB4747" class="w-10 h-10 rounded cursor-pointer border-none">
-                                    <input type="text" value="#FB4747" class="flex-1 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-2 text-sm font-mono dark:text-white uppercase" readonly>
-                                </div>
+                                <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblCompName">اسم المنشأة</label>
+                                <input type="text" id="compName" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-2.5 text-sm text-slate-500 cursor-not-allowed" readonly>
                             </div>
-                            
                             <div>
-                                <label class="block text-xs font-bold text-slate-500 mb-2">الوضع الافتراضي</label>
-                                <select class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-2.5 text-sm dark:text-white">
-                                    <option value="light">فاتح (Light)</option>
-                                    <option value="dark">داكن (Dark)</option>
-                                    <option value="system">حسب النظام</option>
-                                </select>
+                                <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblCompLegal">الاسم القانوني</label>
+                                <input type="text" id="compLegal" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-2.5 text-sm text-slate-500 cursor-not-allowed" readonly>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblCR">رقم السجل التجاري</label>
+                                <input type="text" id="compCR" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-2.5 text-sm font-mono text-slate-500 cursor-not-allowed" readonly>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblUnified">الرقم الموحد (700)</label>
+                                <input type="text" id="compUnified" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-2.5 text-sm font-mono text-slate-500 cursor-not-allowed" readonly>
                             </div>
                         </div>
                     </div>
 
                     <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-                        <h3 class="font-bold text-slate-800 dark:text-white mb-4">صيانة النظام</h3>
+                        <h3 class="font-bold text-lg mb-4 flex items-center gap-2 border-b border-slate-100 dark:border-slate-700 pb-3">
+                            <i class="fa-solid fa-sliders text-slate-400"></i> <span data-i18n="secPrefs">تفضيلات النظام</span>
+                        </h3>
                         
                         <div class="space-y-4">
-                            <div class="flex items-center justify-between p-3 bg-red-50 dark:bg-red-900/10 rounded-lg border border-red-100 dark:border-red-900/30">
+                            <div class="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-700/50 rounded-xl">
                                 <div>
-                                    <p class="text-sm font-bold text-red-700 dark:text-red-400">وضع الصيانة</p>
-                                    <p class="text-[10px] text-red-600/70">منع دخول المستخدمين</p>
+                                    <p class="font-bold text-sm" data-i18n="prefLang">لغة الواجهة</p>
+                                    <p class="text-xs text-slate-500" data-i18n="prefLangDesc">اختر اللغة المفضلة للنظام</p>
                                 </div>
-                                <label class="relative inline-flex items-center cursor-pointer">
-                                    <input type="checkbox" class="sr-only peer">
-                                    <div class="w-9 h-5 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-red-600"></div>
-                                </label>
+                                <select id="sysLang" onchange="AppConfig.setLang(this.value); location.reload();" class="bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg text-sm px-3 py-1.5 outline-none">
+                                    <option value="ar">العربية (Arabic)</option>
+                                    <option value="en">English (الإنجليزية)</option>
+                                </select>
                             </div>
 
-                            <button onclick="clearCache()" class="w-full py-2 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-lg text-xs font-bold hover:bg-slate-200 dark:hover:bg-slate-600 transition flex items-center justify-center gap-2">
-                                <i class="fa-solid fa-broom"></i> تنظيف الذاكرة المؤقتة (Cache)
-                            </button>
+                            <div class="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-700/50 rounded-xl">
+                                <div>
+                                    <p class="font-bold text-sm" data-i18n="prefTheme">المظهر</p>
+                                    <p class="text-xs text-slate-500" data-i18n="prefThemeDesc">التبديل بين الوضع الليلي والنهاري</p>
+                                </div>
+                                <select id="sysTheme" onchange="AppConfig.setTheme(this.value)" class="bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg text-sm px-3 py-1.5 outline-none">
+                                    <option value="light" data-i18n="themeLight">فاتح</option>
+                                    <option value="dark" data-i18n="themeDark">داكن</option>
+                                </select>
+                            </div>
+
+                            <div class="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-700/50 rounded-xl">
+                                <div>
+                                    <p class="font-bold text-sm" data-i18n="prefNotif">الإشعارات</p>
+                                    <p class="text-xs text-slate-500" data-i18n="prefNotifDesc">تفعيل إشعارات سطح المكتب</p>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" checked class="sr-only peer">
+                                    <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brandBlue"></div>
+                                </label>
+                            </div>
                         </div>
+                    </div>
+
+                </div>
+
+                <div class="space-y-6">
+                    
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                        <h3 class="font-bold text-lg mb-4 flex items-center gap-2 border-b border-slate-100 dark:border-slate-700 pb-3">
+                            <i class="fa-solid fa-shield-halved text-green-500"></i> <span data-i18n="secSecurity">الأمان والحماية</span>
+                        </h3>
+                        
+                        <form onsubmit="event.preventDefault(); alert('تم تحديث كلمة المرور');" class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblCurrPass">كلمة المرور الحالية</label>
+                                <input type="password" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-2.5 text-sm outline-none focus:border-brandBlue">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblNewPass">كلمة المرور الجديدة</label>
+                                <input type="password" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-2.5 text-sm outline-none focus:border-brandBlue">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblConfirmPass">تأكيد كلمة المرور</label>
+                                <input type="password" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-2.5 text-sm outline-none focus:border-brandBlue">
+                            </div>
+                            <button type="submit" class="w-full py-2 bg-slate-800 hover:bg-black text-white rounded-lg text-xs font-bold transition" data-i18n="btnChangePass">تحديث كلمة المرور</button>
+                        </form>
+
+                        <div class="mt-6 pt-4 border-t border-slate-100 dark:border-slate-700">
+                            <p class="text-xs font-bold text-slate-700 dark:text-white mb-2" data-i18n="lbl2FA">المصادقة الثنائية (2FA)</p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-[10px] text-green-600 bg-green-50 px-2 py-1 rounded border border-green-100" data-i18n="statusEnabled">مفعلة حالياً</span>
+                                <button class="text-xs text-brandRed hover:underline" data-i18n="btnDisable">تعطيل</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-red-50 dark:bg-red-900/20 p-6 rounded-2xl border border-red-100 dark:border-red-900/30">
+                        <h3 class="font-bold text-brandRed text-sm mb-2" data-i18n="zoneDanger">منطقة الخطر</h3>
+                        <p class="text-[10px] text-slate-500 dark:text-slate-400 mb-4" data-i18n="zoneDesc">الإجراءات هنا لا يمكن التراجع عنها.</p>
+                        <button onclick="alert('Contact System Admin for this action.')" class="w-full py-2 border border-red-200 bg-white text-brandRed hover:bg-red-50 rounded-lg text-xs font-bold transition" data-i18n="btnReset">إعادة تعيين إعدادات المصنع</button>
                     </div>
 
                 </div>
@@ -180,45 +195,138 @@
         </main>
     </div>
 
-    <script src="layout.js"></script>
-    <script src="bot.js"></script>
+    <script src="data/company_policy.js"></script>
+    <script src="js/core/config.js"></script>
+    <script src="js/core/i18n.js"></script>
+    <script src="js/helpers/policy-helpers.js"></script>
+    <script src="js/services/data-service.js"></script>
+    <script src="js/components/role-switcher.js"></script>
+    <script src="js/components/layout.js"></script>
+    <script src="js/components/bot.js"></script>
 
     <script>
-        function previewLogo(input) {
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('logoPreview').src = e.target.result;
+        document.addEventListener('DOMContentLoaded', () => {
+            const checkSystem = setInterval(() => {
+                if (typeof Layout !== 'undefined' && typeof AppConfig !== 'undefined' && typeof DataService !== 'undefined') {
+                    clearInterval(checkSystem);
+                    
+                    if (!AppConfig.getCurrentUser()) {
+                        const defaultUser = DataService.getUserById('USR_004') || DataService.getUsers()[0];
+                        if (defaultUser) {
+                            AppConfig.setCurrentUser(defaultUser);
+                        }
+                    }
+
+                    Layout.init();
+                    document.getElementById('loadingOverlay')?.classList.add('hidden');
+                    initPage();
                 }
-                reader.readAsDataURL(input.files[0]);
+            }, 50);
+        });
+
+        function initPage() {
+            // 1. ترجمة الصفحة
+            updatePageLanguage();
+
+            // 2. تعبئة بيانات الشركة من ملف السياسات
+            const lang = AppConfig.getLang();
+            const company = DataService.getCompanyProfile();
+            
+            if (company) {
+                document.getElementById('compName').value = company.name || '';
+                document.getElementById('compLegal').value = company.legalName || '';
+                document.getElementById('compCR').value = company.crNumber || '';
+                document.getElementById('compUnified').value = company.unifiedNumber || '';
             }
+
+            // 3. تعيين حالة القوائم المنسدلة
+            document.getElementById('sysLang').value = lang;
+            document.getElementById('sysTheme').value = AppConfig.getTheme();
+        }
+
+        function updatePageLanguage() {
+            const lang = localStorage.getItem('lang') || 'ar';
+            const dict = t[lang];
+            
+            document.documentElement.lang = lang;
+            document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if(dict[key]) el.innerText = dict[key];
+            });
         }
 
         function saveSettings() {
-            // محاكاة عملية الحفظ
-            const btn = document.querySelector('button[onclick="saveSettings()"]');
-            const originalContent = btn.innerHTML;
-            
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري الحفظ...';
-            
-            setTimeout(() => {
-                alert('تم حفظ إعدادات النظام بنجاح وتحديث الهوية.');
-                btn.innerHTML = originalContent;
-                btn.disabled = false;
-                
-                // هنا يمكننا حفظ القيم في localStorage لتبدو واقعية
-                const newBrandColor = document.getElementById('brandColor').value;
-                localStorage.setItem('customBrandColor', newBrandColor);
-            }, 1000);
+            const lang = AppConfig.getLang();
+            alert(t[lang].saved);
         }
 
-        function clearCache() {
-            if(confirm('هل أنت متأكد من مسح الذاكرة المؤقتة؟ سيتم تسجيل خروجك.')) {
-                localStorage.clear();
-                window.location.href = 'https://androgov-sa.github.io/AIT/login.html';
+        // --- Translation Dictionary ---
+        const t = {
+            ar: {
+                pageTitle: "إعدادات النظام",
+                pageDesc: "التحكم في خصائص النظام، الأمان، والتفضيلات العامة.",
+                btnSave: "حفظ التغييرات",
+                secCompany: "بيانات المنشأة",
+                lblCompName: "اسم المنشأة",
+                lblCompLegal: "الاسم القانوني",
+                lblCR: "رقم السجل التجاري",
+                lblUnified: "الرقم الموحد (700)",
+                secPrefs: "تفضيلات النظام",
+                prefLang: "لغة الواجهة",
+                prefLangDesc: "اختر اللغة المفضلة للنظام",
+                prefTheme: "المظهر",
+                prefThemeDesc: "التبديل بين الوضع الليلي والنهاري",
+                themeLight: "فاتح",
+                themeDark: "داكن",
+                prefNotif: "الإشعارات",
+                prefNotifDesc: "تفعيل إشعارات سطح المكتب",
+                secSecurity: "الأمان والحماية",
+                lblCurrPass: "كلمة المرور الحالية",
+                lblNewPass: "كلمة المرور الجديدة",
+                lblConfirmPass: "تأكيد كلمة المرور",
+                btnChangePass: "تحديث كلمة المرور",
+                lbl2FA: "المصادقة الثنائية (2FA)",
+                statusEnabled: "مفعلة حالياً",
+                btnDisable: "تعطيل",
+                zoneDanger: "منطقة الخطر",
+                zoneDesc: "الإجراءات هنا لا يمكن التراجع عنها.",
+                btnReset: "إعادة تعيين إعدادات المصنع",
+                saved: "تم حفظ الإعدادات بنجاح!"
+            },
+            en: {
+                pageTitle: "System Settings",
+                pageDesc: "Manage system properties, security, and general preferences.",
+                btnSave: "Save Changes",
+                secCompany: "Organization Profile",
+                lblCompName: "Organization Name",
+                lblCompLegal: "Legal Name",
+                lblCR: "CR Number",
+                lblUnified: "Unified Number (700)",
+                secPrefs: "System Preferences",
+                prefLang: "Interface Language",
+                prefLangDesc: "Choose your preferred language",
+                prefTheme: "Appearance",
+                prefThemeDesc: "Toggle between Light and Dark mode",
+                themeLight: "Light",
+                themeDark: "Dark",
+                prefNotif: "Notifications",
+                prefNotifDesc: "Enable desktop notifications",
+                secSecurity: "Security",
+                lblCurrPass: "Current Password",
+                lblNewPass: "New Password",
+                lblConfirmPass: "Confirm Password",
+                btnChangePass: "Update Password",
+                lbl2FA: "Two-Factor Auth (2FA)",
+                statusEnabled: "Currently Enabled",
+                btnDisable: "Disable",
+                zoneDanger: "Danger Zone",
+                zoneDesc: "Actions here cannot be undone.",
+                btnReset: "Factory Reset",
+                saved: "Settings saved successfully!"
             }
-        }
+        };
     </script>
 </body>
 </html>
