@@ -3,16 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#FB4747">
-<link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#FB4747">
+    <link rel="manifest" href="manifest.json">
 
     <title data-i18n="pageTitle">AndroGov | إدارة الجمعيات</title>
     
-    <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -47,87 +45,86 @@
         /* Smooth fade for language switch */
         body { transition: opacity 0.2s ease-in-out; }
 
-        /* Bot Styles */
-        .chat-window-anim { transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); transform-origin: bottom left; }
-        .chat-bubble { max-width: 85%; padding: 10px 14px; border-radius: 12px; font-size: 0.9rem; line-height: 1.5; word-wrap: break-word; }
-        .chat-bubble.bot { background-color: #f1f5f9; color: #334155; border-bottom-right-radius: 2px; }
-        .dark .chat-bubble.bot { background-color: #334155; color: #f8fafc; }
-        .chat-bubble.user { background-color: #4267B2; color: white; border-bottom-left-radius: 2px; margin-right: auto; }
-        .typing-indicator span { display: inline-block; width: 6px; height: 6px; background-color: #94a3b8; border-radius: 50%; animation: typing 1.4s infinite ease-in-out both; margin: 0 1px; }
-        .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
-        .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
-        @keyframes typing { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
+        /* Loading Overlay */
+        .loading-overlay {
+            position: fixed; inset: 0; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(5px);
+            z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem;
+        }
+        .dark .loading-overlay { background: rgba(15, 23, 42, 0.9); }
+        .loading-overlay.hidden { display: none; }
+        .spinner {
+            width: 48px; height: 48px; border: 5px solid rgba(66, 103, 178, 0.1);
+            border-top-color: #4267B2; border-radius: 50%; animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
 <body class="bg-brandGray dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300">
 
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="spinner"></div>
+        <p class="text-sm font-bold text-slate-600 dark:text-slate-300">جاري تحميل نظام الجمعيات...</p>
+    </div>
+
     <div id="sidebar-container" class="no-print"></div>
     
-    <div class="main-content-wrapper md:mr-72 transition-all duration-300 flex flex-col min-h-screen">
+    <div class="main-content-wrapper ltr:md:ml-72 rtl:md:mr-72 transition-all duration-300 flex flex-col min-h-screen">
         <div id="header-container" class="no-print"></div>
 
         <main class="p-6 space-y-6">
             
-            <!-- Dashboard Home (Initial View) -->
             <div id="dashboardView" class="space-y-6 no-print">
                 
-                <!-- Capital Info -->
                 <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 flex justify-between items-center">
                     <div>
-                        <h2 class="text-lg font-bold" data-i18n="centerTitle">مركز إدارة الجمعيات</h2>
-                        <p class="text-xs text-slate-500">
+                        <h2 class="text-lg font-bold dark:text-white" data-i18n="centerTitle">مركز إدارة الجمعيات</h2>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">
                             <span data-i18n="capital">رأس المال</span>: <span class="font-en font-bold text-brandBlue">6,000,000</span> SAR | 
                             <span data-i18n="shares">الأسهم</span>: <span class="font-en font-bold">600,000</span>
                         </p>
                     </div>
-                    <!-- طلبات المساهمين -->
                     <div class="flex gap-2">
-                        <button onclick="document.getElementById('requestsModal').classList.remove('hidden')" class="relative px-4 py-2 bg-orange-50 text-orange-600 rounded-xl text-xs font-bold hover:bg-orange-100 transition">
+                        <button onclick="document.getElementById('requestsModal').classList.remove('hidden')" class="relative px-4 py-2 bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400 rounded-xl text-xs font-bold hover:bg-orange-100 transition">
                             <i class="fa-solid fa-inbox"></i> <span data-i18n="requestsBtn">طلبات المساهمين</span>
                             <span class="absolute -top-1 -right-1 rtl:right-auto rtl:-left-1 w-4 h-4 bg-red-500 text-white text-[9px] rounded-full flex items-center justify-center">1</span>
                         </button>
                     </div>
                 </div>
 
-                <!-- Main Actions -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- 1. Start Meeting -->
                     <div class="bg-white dark:bg-slate-800 p-8 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition cursor-pointer text-center group" onclick="startMeetingWizard()">
-                        <div class="w-16 h-16 bg-blue-50 text-brandBlue rounded-full flex items-center justify-center text-3xl mx-auto mb-4 group-hover:scale-110 transition-transform">
+                        <div class="w-16 h-16 bg-blue-50 dark:bg-blue-900/30 text-brandBlue rounded-full flex items-center justify-center text-3xl mx-auto mb-4 group-hover:scale-110 transition-transform">
                             <i class="fa-solid fa-users-rectangle"></i>
                         </div>
-                        <h3 class="text-xl font-bold mb-2" data-i18n="startMeetingTitle">عقد اجتماع جمعية</h3>
-                        <p class="text-sm text-slate-500" data-i18n="startMeetingDesc">إدارة دورة حياة الاجتماع: الإعداد، الحضور، التصويت، والمحاضر.</p>
-                        <button class="mt-6 px-6 py-2 bg-brandBlue text-white rounded-lg text-sm font-bold" data-i18n="startWizardBtn">بدء المعالج</button>
+                        <h3 class="text-xl font-bold mb-2 dark:text-white" data-i18n="startMeetingTitle">عقد اجتماع جمعية</h3>
+                        <p class="text-sm text-slate-500 dark:text-slate-400" data-i18n="startMeetingDesc">إدارة دورة حياة الاجتماع: الإعداد، الحضور، التصويت، والمحاضر.</p>
+                        <button class="mt-6 px-6 py-2 bg-brandBlue text-white rounded-lg text-sm font-bold hover:bg-blue-700 transition" data-i18n="startWizardBtn">بدء المعالج</button>
                     </div>
 
-                    <!-- 2. Circular Resolution -->
                     <div class="bg-white dark:bg-slate-800 p-8 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition cursor-pointer text-center group" onclick="openCircularModal()">
-                        <div class="w-16 h-16 bg-purple-50 text-purple-600 rounded-full flex items-center justify-center text-3xl mx-auto mb-4 group-hover:scale-110 transition-transform">
+                        <div class="w-16 h-16 bg-purple-50 dark:bg-purple-900/30 text-purple-600 rounded-full flex items-center justify-center text-3xl mx-auto mb-4 group-hover:scale-110 transition-transform">
                             <i class="fa-solid fa-file-signature"></i>
                         </div>
-                        <h3 class="text-xl font-bold mb-2" data-i18n="circularTitle">قرار بالتمرير</h3>
-                        <p class="text-sm text-slate-500" data-i18n="circularDesc">إصدار قرارات دون الحاجة لعقد اجتماع (يتطلب موافقة 100%).</p>
-                        <button class="mt-6 px-6 py-2 bg-purple-600 text-white rounded-lg text-sm font-bold" data-i18n="circularBtn">إنشاء قرار</button>
+                        <h3 class="text-xl font-bold mb-2 dark:text-white" data-i18n="circularTitle">قرار بالتمرير</h3>
+                        <p class="text-sm text-slate-500 dark:text-slate-400" data-i18n="circularDesc">إصدار قرارات دون الحاجة لعقد اجتماع (يتطلب موافقة 100%).</p>
+                        <button class="mt-6 px-6 py-2 bg-purple-600 text-white rounded-lg text-sm font-bold hover:bg-purple-700 transition" data-i18n="circularBtn">إنشاء قرار</button>
                     </div>
                 </div>
 
-                <!-- Archive Section -->
                 <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700">
                     <div class="flex flex-col md:flex-row justify-between items-center mb-4 gap-4">
                         <h3 class="font-bold text-slate-700 dark:text-white flex items-center gap-2">
                             <i class="fa-solid fa-clock-rotate-left"></i> <span data-i18n="archiveTitle">الأرشيف والاجتماعات السابقة</span>
                         </h3>
-                        <!-- Search Bar -->
                         <div class="relative w-full md:w-64">
-                            <input type="text" id="archiveSearch" onkeyup="filterArchive()" placeholder="بحث في الأرشيف..." class="w-full bg-slate-50 border border-slate-200 rounded-full py-2 px-4 text-sm focus:ring-2 focus:ring-brandBlue outline-none pr-10 rtl:pr-4 rtl:pl-10 ltr:pl-4 ltr:pr-10">
+                            <input type="text" id="archiveSearch" onkeyup="filterArchive()" placeholder="بحث في الأرشيف..." class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-full py-2 px-4 text-sm focus:ring-2 focus:ring-brandBlue outline-none pr-10 rtl:pr-4 rtl:pl-10 ltr:pl-4 ltr:pr-10 dark:text-white">
                             <i class="fa-solid fa-search absolute top-2.5 text-slate-400 rtl:left-3 ltr:right-3"></i>
                         </div>
                     </div>
                     
                     <div class="overflow-x-auto">
                         <table class="w-full text-sm text-right rtl:text-right ltr:text-left">
-                            <thead class="bg-slate-50 dark:bg-slate-700 font-bold text-slate-500 text-xs">
+                            <thead class="bg-slate-50 dark:bg-slate-700 font-bold text-slate-500 dark:text-slate-400 text-xs">
                                 <tr>
                                     <th class="p-3" data-i18n="tableDate">التاريخ</th>
                                     <th class="p-3" data-i18n="tableType">نوع الجمعية</th>
@@ -136,24 +133,24 @@
                                     <th class="p-3" data-i18n="tableDocs">المستندات</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-slate-100 dark:divide-slate-700" id="archiveTableBody">
-                                <tr class="hover:bg-slate-50 transition">
+                            <tbody class="divide-y divide-slate-100 dark:divide-slate-700 dark:text-slate-300" id="archiveTableBody">
+                                <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
                                     <td class="p-3 font-en">21 Sep 2025</td>
                                     <td class="p-3" data-i18n="typeExtra">جمعية عامة غير عادية</td>
                                     <td class="p-3 text-xs">تخفيض رأس المال 50%، انتخاب المجلس</td>
-                                    <td class="p-3"><span class="bg-green-100 text-green-700 px-2 rounded text-[10px]" data-i18n="statusCompleted">مكتملة</span></td>
+                                    <td class="p-3"><span class="bg-green-100 text-green-700 px-2 rounded text-[10px] font-bold" data-i18n="statusCompleted">مكتملة</span></td>
                                     <td class="p-3">
-                                        <button onclick="viewArchiveDoc('minutes')" class="text-blue-600 hover:underline text-xs" data-i18n="docMinutes">المحضر</button> | 
-                                        <button onclick="viewArchiveDoc('attendance')" class="text-blue-600 hover:underline text-xs" data-i18n="docAttendance">الحضور</button>
+                                        <button onclick="viewArchiveDoc('minutes')" class="text-blue-600 hover:underline text-xs font-bold" data-i18n="docMinutes">المحضر</button> | 
+                                        <button onclick="viewArchiveDoc('attendance')" class="text-blue-600 hover:underline text-xs font-bold" data-i18n="docAttendance">الحضور</button>
                                     </td>
                                 </tr>
-                                <tr class="hover:bg-slate-50 transition">
+                                <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
                                     <td class="p-3 font-en">15 Jun 2024</td>
                                     <td class="p-3" data-i18n="typeOrdinary">جمعية عامة عادية</td>
                                     <td class="p-3 text-xs">الموافقة على القوائم المالية 2023</td>
-                                    <td class="p-3"><span class="bg-green-100 text-green-700 px-2 rounded text-[10px]" data-i18n="statusCompleted">مكتملة</span></td>
+                                    <td class="p-3"><span class="bg-green-100 text-green-700 px-2 rounded text-[10px] font-bold" data-i18n="statusCompleted">مكتملة</span></td>
                                     <td class="p-3">
-                                        <button onclick="viewArchiveDoc('minutes')" class="text-blue-600 hover:underline text-xs" data-i18n="docMinutes">المحضر</button>
+                                        <button onclick="viewArchiveDoc('minutes')" class="text-blue-600 hover:underline text-xs font-bold" data-i18n="docMinutes">المحضر</button>
                                     </td>
                                 </tr>
                             </tbody>
@@ -162,21 +159,18 @@
                 </div>
             </div>
 
-            <!-- MEETING WIZARD (Hidden by default) -->
             <div id="meetingWizard" class="hidden bg-white dark:bg-slate-800 rounded-3xl shadow-lg border border-slate-200 dark:border-slate-700 min-h-[600px] flex flex-col">
                 
-                <!-- Wizard Header -->
-                <div class="p-6 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center no-print">
+                <div class="p-6 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center no-print bg-slate-50 dark:bg-slate-900 rounded-t-3xl">
                     <div>
-                        <h2 class="text-xl font-bold flex items-center gap-2">
+                        <h2 class="text-xl font-bold flex items-center gap-2 dark:text-white">
                             <i class="fa-solid fa-gavel text-brandRed"></i> <span data-i18n="wizTitle">إدارة الاجتماع</span>
                         </h2>
-                        <p class="text-xs text-slate-500 mt-1" id="wizardSubtitle">الخطوة 1: الإعداد والبنود</p>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1" id="wizardSubtitle">الخطوة 1: الإعداد والبنود</p>
                     </div>
-                    <button onclick="exitWizard()" class="text-slate-400 hover:text-red-500 text-sm font-bold flex items-center gap-1"><i class="fa-solid fa-xmark"></i> <span data-i18n="cancel">إلغاء</span></button>
+                    <button onclick="exitWizard()" class="text-slate-400 hover:text-red-500 text-sm font-bold flex items-center gap-1 transition"><i class="fa-solid fa-xmark"></i> <span data-i18n="cancel">إلغاء</span></button>
                 </div>
 
-                <!-- Steps Indicator -->
                 <div class="px-6 pt-6 no-print">
                     <div class="flex items-center justify-between text-xs font-bold text-center">
                         <div class="flex-1 border-b-4 step-active pb-2 transition-colors" id="step1-ind">1. <span data-i18n="wizStep1">الإعداد</span></div>
@@ -186,107 +180,97 @@
                     </div>
                 </div>
 
-                <!-- Step Content Area -->
                 <div class="p-6 flex-1 overflow-y-auto">
                     
-                    <!-- STEP 1: Setup & Agenda -->
                     <div id="step1" class="wizard-step space-y-6">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblType">نوع الجمعية</label>
-                                <select id="meetingType" onchange="updateDefaultAgenda()" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm focus:ring-2 focus:ring-brandBlue">
+                                <select id="meetingType" onchange="updateDefaultAgenda()" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl p-3 text-sm focus:ring-2 focus:ring-brandBlue outline-none dark:text-white">
                                     <option value="ordinary" data-i18n="typeOrdinary">جمعية عامة عادية (OGA)</option>
                                     <option value="extra" data-i18n="typeExtra">جمعية عامة غير عادية (EGA)</option>
                                 </select>
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblDate">تاريخ ووقت الاجتماع</label>
-                                <input type="datetime-local" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm">
+                                <input type="datetime-local" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl p-3 text-sm outline-none dark:text-white">
                             </div>
                             <div class="col-span-2">
                                 <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblLocation">المكان</label>
-                                <input type="text" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm" value="المقر الرئيسي - الرياض (وعبر وسائل التقنية الحديثة)">
+                                <input type="text" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl p-3 text-sm outline-none dark:text-white" value="المقر الرئيسي - الرياض (وعبر وسائل التقنية الحديثة)">
                             </div>
                         </div>
 
-                        <!-- Agenda Builder -->
-                        <div class="border border-slate-200 rounded-xl p-4">
-                            <h4 class="font-bold text-sm mb-3 flex justify-between items-center">
+                        <div class="border border-slate-200 dark:border-slate-700 rounded-xl p-4 bg-slate-50 dark:bg-slate-700/30">
+                            <h4 class="font-bold text-sm mb-3 flex justify-between items-center text-slate-800 dark:text-white">
                                 <span data-i18n="lblAgenda">جدول الأعمال</span>
-                                <button onclick="openAddAgendaModal()" class="text-xs bg-green-50 text-green-600 px-3 py-1.5 rounded-lg hover:bg-green-100 font-bold border border-green-200">
+                                <button onclick="openAddAgendaModal()" class="text-xs bg-green-50 dark:bg-green-900/30 text-green-600 px-3 py-1.5 rounded-lg hover:bg-green-100 font-bold border border-green-200 dark:border-green-900/50 transition">
                                     <i class="fa-solid fa-plus"></i> <span data-i18n="addAgendaBtn">إضافة بند مخصص</span>
                                 </button>
                             </h4>
                             <div class="space-y-2" id="agendaList">
-                                <!-- Default Items inserted by JS -->
-                            </div>
+                                </div>
                         </div>
                     </div>
 
-                    <!-- STEP 2: Attendance -->
                     <div id="step2" class="wizard-step hidden space-y-4">
-                        <div class="flex justify-between items-center bg-blue-50 p-3 rounded-xl border border-blue-100">
+                        <div class="flex justify-between items-center bg-blue-50 dark:bg-blue-900/20 p-3 rounded-xl border border-blue-100 dark:border-blue-900/50">
                             <div>
-                                <p class="text-xs text-blue-800 font-bold"><span data-i18n="lblQuorumReq">النصاب المطلوب</span>: <span id="requiredQuorum">50%</span></p>
-                                <p class="text-xs text-blue-600 mt-1"><span data-i18n="lblQuorumCur">الحضور الحالي</span>: <span class="font-en text-lg font-bold" id="currentQuorum">0%</span></p>
+                                <p class="text-xs text-blue-800 dark:text-blue-300 font-bold"><span data-i18n="lblQuorumReq">النصاب المطلوب</span>: <span id="requiredQuorum">50%</span></p>
+                                <p class="text-xs text-blue-600 dark:text-blue-400 mt-1"><span data-i18n="lblQuorumCur">الحضور الحالي</span>: <span class="font-en text-lg font-bold" id="currentQuorum">0%</span></p>
                             </div>
-                            <div class="w-1/3 h-2 bg-blue-200 rounded-full overflow-hidden">
+                            <div class="w-1/3 h-2 bg-blue-200 dark:bg-blue-900 rounded-full overflow-hidden">
                                 <div id="quorumBar" class="h-full bg-brandBlue w-0 transition-all duration-500"></div>
                             </div>
                         </div>
 
-                        <div class="overflow-x-auto border border-slate-200 rounded-xl max-h-96">
+                        <div class="overflow-x-auto border border-slate-200 dark:border-slate-700 rounded-xl max-h-96">
                             <table class="w-full text-xs text-right rtl:text-right ltr:text-left">
-                                <thead class="bg-slate-100 font-bold text-slate-600 sticky top-0">
+                                <thead class="bg-slate-100 dark:bg-slate-700 font-bold text-slate-600 dark:text-slate-300 sticky top-0">
                                     <tr>
                                         <th class="p-3" data-i18n="tblShareholder">المساهم</th>
                                         <th class="p-3" data-i18n="tblShares">الأسهم</th>
                                         <th class="p-3 text-center" data-i18n="tblPresent">حاضر؟</th>
                                     </tr>
                                 </thead>
-                                <tbody class="bg-white divide-y" id="attendanceTable">
-                                    <!-- JS -->
-                                </tbody>
+                                <tbody class="bg-white dark:bg-slate-800 divide-y dark:divide-slate-700 dark:text-slate-300" id="attendanceTable">
+                                    </tbody>
                             </table>
                         </div>
                     </div>
 
-                    <!-- STEP 3: Voting -->
                     <div id="step3" class="wizard-step hidden space-y-4">
-                        <p class="text-xs text-slate-500 text-center bg-slate-50 p-2 rounded" data-i18n="voteInstruction">قم بإدخال عدد الأسهم الموافقة والمعارضة لكل بند.</p>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 text-center bg-slate-50 dark:bg-slate-700/50 p-2 rounded" data-i18n="voteInstruction">قم بإدخال عدد الأسهم الموافقة والمعارضة لكل بند.</p>
                         <div id="votingList" class="space-y-4">
-                            <!-- Items from Step 1 will be rendered here for voting -->
-                        </div>
+                            </div>
                     </div>
 
-                    <!-- STEP 4: Outputs -->
                     <div id="step4" class="wizard-step hidden space-y-6">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 no-print">
                             <div>
                                 <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblEndTime">وقت انتهاء الاجتماع</label>
-                                <input type="time" class="w-full border rounded-lg p-2 text-sm" id="endTime">
+                                <input type="time" class="w-full border dark:border-slate-600 dark:bg-slate-700 rounded-lg p-2 text-sm dark:text-white" id="endTime">
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblNotes">ملاحظات / تحفظات</label>
-                                <textarea class="w-full border rounded-lg p-2 text-sm h-10" placeholder="..."></textarea>
+                                <textarea class="w-full border dark:border-slate-600 dark:bg-slate-700 rounded-lg p-2 text-sm h-10 dark:text-white" placeholder="..."></textarea>
                             </div>
                         </div>
 
-                        <div class="border-t pt-4">
+                        <div class="border-t dark:border-slate-700 pt-4">
                             <div class="flex gap-4 mb-4 no-print">
-                                <button onclick="showPreview('minutes')" class="flex-1 py-3 bg-white border border-slate-200 rounded-xl hover:border-brandBlue text-sm font-bold text-slate-600 hover:text-brandBlue shadow-sm">
+                                <button onclick="showPreview('minutes')" class="flex-1 py-3 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl hover:border-brandBlue text-sm font-bold text-slate-600 dark:text-slate-300 hover:text-brandBlue shadow-sm transition">
                                     <i class="fa-solid fa-file-contract"></i> <span data-i18n="btnPreviewMinutes">معاينة محضر الاجتماع</span>
                                 </button>
-                                <button onclick="showPreview('sorting')" class="flex-1 py-3 bg-white border border-slate-200 rounded-xl hover:border-brandBlue text-sm font-bold text-slate-600 hover:text-brandBlue shadow-sm">
+                                <button onclick="showPreview('sorting')" class="flex-1 py-3 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl hover:border-brandBlue text-sm font-bold text-slate-600 dark:text-slate-300 hover:text-brandBlue shadow-sm transition">
                                     <i class="fa-solid fa-chart-pie"></i> <span data-i18n="btnPreviewSort">معاينة محضر الفرز</span>
                                 </button>
-                                <button onclick="showPreview('attendance')" class="flex-1 py-3 bg-white border border-slate-200 rounded-xl hover:border-brandBlue text-sm font-bold text-slate-600 hover:text-brandBlue shadow-sm">
+                                <button onclick="showPreview('attendance')" class="flex-1 py-3 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl hover:border-brandBlue text-sm font-bold text-slate-600 dark:text-slate-300 hover:text-brandBlue shadow-sm transition">
                                     <i class="fa-solid fa-list-check"></i> <span data-i18n="btnPreviewAtt">معاينة سجل الحضور</span>
                                 </button>
                             </div>
 
-                            <!-- Preview Container -->
-                            <div id="previewContainer" class="bg-white border border-slate-300 p-8 rounded-none shadow-sm min-h-[500px] text-black">
+                            <div id="previewContainer" class="bg-white p-8 rounded-none shadow-sm min-h-[500px] text-black">
                                 <div class="text-center text-slate-400 py-20" data-i18n="placeholderPreview">اختر وثيقة للمعاينة</div>
                             </div>
                         </div>
@@ -294,58 +278,54 @@
 
                 </div>
 
-                <!-- Footer Navigation -->
                 <div class="p-6 border-t border-slate-100 dark:border-slate-700 flex justify-between bg-slate-50 dark:bg-slate-900 rounded-b-3xl no-print">
-                    <button onclick="prevStep()" id="btnPrev" class="px-6 py-2 bg-white border border-slate-300 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-50 disabled:opacity-50" disabled data-i18n="prev">السابق</button>
-                    <button onclick="nextStep()" id="btnNext" class="px-8 py-2 bg-brandBlue text-white rounded-xl text-sm font-bold hover:bg-blue-700 shadow-lg" data-i18n="next">التالي</button>
+                    <button onclick="prevStep()" id="btnPrev" class="px-6 py-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-50" disabled data-i18n="prev">السابق</button>
+                    <button onclick="nextStep()" id="btnNext" class="px-8 py-2 bg-brandBlue text-white rounded-xl text-sm font-bold hover:bg-blue-700 shadow-lg transition" data-i18n="next">التالي</button>
                 </div>
             </div>
 
         </main>
     </div>
 
-    <!-- Modals -->
-    <!-- Add Custom Agenda Modal -->
-    <div id="addAgendaModal" class="fixed inset-0 bg-black/50 hidden z-[60] flex items-center justify-center">
-        <div class="bg-white w-96 p-6 rounded-2xl shadow-xl">
-            <h3 class="font-bold text-lg mb-4" data-i18n="modalAddAgenda">إضافة بند جديد</h3>
+    <div id="addAgendaModal" class="fixed inset-0 bg-black/50 hidden z-[60] flex items-center justify-center backdrop-blur-sm">
+        <div class="bg-white dark:bg-slate-800 w-96 p-6 rounded-2xl shadow-xl">
+            <h3 class="font-bold text-lg mb-4 dark:text-white" data-i18n="modalAddAgenda">إضافة بند جديد</h3>
             <div class="space-y-3">
-                <input type="text" id="newAgendaText" class="w-full border rounded p-2 text-sm" placeholder="...">
+                <input type="text" id="newAgendaText" class="w-full border dark:border-slate-600 dark:bg-slate-700 rounded p-2 text-sm dark:text-white" placeholder="...">
                 <div>
                     <label class="flex items-center gap-2 text-xs font-bold text-red-600 cursor-pointer">
                         <input type="checkbox" id="hasConflict" class="accent-red-600"> <span data-i18n="modalConflict">يوجد تعارض مصالح؟</span>
                     </label>
                 </div>
-                <div id="conflictList" class="hidden text-xs space-y-1 bg-red-50 p-2 rounded">
-                    <p class="font-bold" data-i18n="modalBan">منع التصويت عن:</p>
-                    <label class="flex items-center gap-2"><input type="checkbox" value="board"> <span data-i18n="modalBanBoard">أعضاء المجلس</span></label>
-                    <label class="flex items-center gap-2"><input type="checkbox" value="major"> <span data-i18n="modalBanMajor">كبار المساهمين</span></label>
+                <div id="conflictList" class="hidden text-xs space-y-1 bg-red-50 dark:bg-red-900/20 p-2 rounded">
+                    <p class="font-bold dark:text-red-300" data-i18n="modalBan">منع التصويت عن:</p>
+                    <label class="flex items-center gap-2 dark:text-slate-300"><input type="checkbox" value="board"> <span data-i18n="modalBanBoard">أعضاء المجلس</span></label>
+                    <label class="flex items-center gap-2 dark:text-slate-300"><input type="checkbox" value="major"> <span data-i18n="modalBanMajor">كبار المساهمين</span></label>
                 </div>
             </div>
             <div class="mt-4 flex justify-end gap-2">
-                <button onclick="document.getElementById('addAgendaModal').classList.add('hidden')" class="px-4 py-1.5 border rounded text-xs" data-i18n="cancel">إلغاء</button>
+                <button onclick="document.getElementById('addAgendaModal').classList.add('hidden')" class="px-4 py-1.5 border dark:border-slate-600 rounded text-xs dark:text-white" data-i18n="cancel">إلغاء</button>
                 <button onclick="confirmAddAgenda()" class="px-4 py-1.5 bg-brandBlue text-white rounded text-xs font-bold" data-i18n="btnAdd">إضافة</button>
             </div>
         </div>
     </div>
 
-    <!-- Requests Inbox Modal -->
-    <div id="requestsModal" class="fixed inset-0 bg-black/50 hidden z-[60] flex items-center justify-center">
-        <div class="bg-white w-[500px] p-6 rounded-2xl shadow-xl">
-            <div class="flex justify-between items-center mb-4 border-b pb-2">
-                <h3 class="font-bold text-lg" data-i18n="modalRequests">طلبات المساهمين</h3>
-                <button onclick="document.getElementById('requestsModal').classList.add('hidden')"><i class="fa-solid fa-xmark"></i></button>
+    <div id="requestsModal" class="fixed inset-0 bg-black/50 hidden z-[60] flex items-center justify-center backdrop-blur-sm">
+        <div class="bg-white dark:bg-slate-800 w-[500px] p-6 rounded-2xl shadow-xl">
+            <div class="flex justify-between items-center mb-4 border-b pb-2 dark:border-slate-700">
+                <h3 class="font-bold text-lg dark:text-white" data-i18n="modalRequests">طلبات المساهمين</h3>
+                <button onclick="document.getElementById('requestsModal').classList.add('hidden')" class="dark:text-white"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div id="inboxContent">
-                <div class="p-3 bg-slate-50 border rounded-xl flex flex-col gap-2" id="req1">
+                <div class="p-3 bg-slate-50 dark:bg-slate-700 border dark:border-slate-600 rounded-xl flex flex-col gap-2" id="req1">
                     <div class="flex justify-between">
-                        <span class="font-bold text-sm">هشام السحيباني</span>
-                        <span class="text-[10px] bg-green-100 text-green-700 px-2 rounded">10%</span>
+                        <span class="font-bold text-sm dark:text-white">هشام السحيباني</span>
+                        <span class="text-[10px] bg-green-100 text-green-700 px-2 rounded font-mono">10%</span>
                     </div>
-                    <p class="text-xs text-slate-600 bg-white p-2 rounded border">"نبي نعين مراجع خارجي إضافي للتدقيق"</p>
+                    <p class="text-xs text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-800 p-2 rounded border dark:border-slate-600">"نبي نعين مراجع خارجي إضافي للتدقيق"</p>
                     <div class="flex gap-2 mt-1">
-                        <button onclick="processRequest('reject')" class="flex-1 py-1 bg-red-50 text-red-600 text-xs rounded hover:bg-red-100" data-i18n="btnReject">رفض</button>
-                        <button onclick="processRequest('edit')" class="flex-1 py-1 bg-yellow-50 text-yellow-700 text-xs rounded hover:bg-yellow-100" data-i18n="btnEdit">تعديل وقبول</button>
+                        <button onclick="processRequest('reject')" class="flex-1 py-1 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-xs rounded hover:bg-red-100" data-i18n="btnReject">رفض</button>
+                        <button onclick="processRequest('edit')" class="flex-1 py-1 bg-yellow-50 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 text-xs rounded hover:bg-yellow-100" data-i18n="btnEdit">تعديل وقبول</button>
                         <button onclick="processRequest('accept')" class="flex-1 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700" data-i18n="btnAccept">قبول</button>
                     </div>
                 </div>
@@ -353,76 +333,51 @@
         </div>
     </div>
 
-    <!-- Circular Resolution Modal -->
-    <div id="circularModal" class="fixed inset-0 bg-black/50 hidden z-[60] flex items-center justify-center">
-        <div class="bg-white w-[500px] p-6 rounded-2xl shadow-xl">
-            <div class="flex justify-between items-center mb-4 border-b pb-2">
-                <h3 class="font-bold text-lg" data-i18n="modalCircular">قرار بالتمرير</h3>
-                <button onclick="document.getElementById('circularModal').classList.add('hidden')"><i class="fa-solid fa-xmark"></i></button>
+    <div id="circularModal" class="fixed inset-0 bg-black/50 hidden z-[60] flex items-center justify-center backdrop-blur-sm">
+        <div class="bg-white dark:bg-slate-800 w-[500px] p-6 rounded-2xl shadow-xl">
+            <div class="flex justify-between items-center mb-4 border-b pb-2 dark:border-slate-700">
+                <h3 class="font-bold text-lg dark:text-white" data-i18n="modalCircular">قرار بالتمرير</h3>
+                <button onclick="document.getElementById('circularModal').classList.add('hidden')" class="dark:text-white"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="space-y-3">
-                <input type="text" class="w-full border rounded p-2 text-sm" data-i18n-placeholder="modalCircularTitle" placeholder="العنوان">
-                <textarea class="w-full border rounded p-2 text-sm h-24" data-i18n-placeholder="modalCircularText" placeholder="النص..."></textarea>
-                <p class="text-[10px] text-red-500 bg-red-50 p-2 rounded" data-i18n="modalCircularWarn">تنبيه: يجب موافقة جميع المساهمين كتابياً.</p>
+                <input type="text" class="w-full border dark:border-slate-600 dark:bg-slate-700 rounded p-2 text-sm dark:text-white outline-none" data-i18n-placeholder="modalCircularTitle" placeholder="العنوان">
+                <textarea class="w-full border dark:border-slate-600 dark:bg-slate-700 rounded p-2 text-sm h-24 dark:text-white outline-none" data-i18n-placeholder="modalCircularText" placeholder="النص..."></textarea>
+                <p class="text-[10px] text-red-500 bg-red-50 dark:bg-red-900/10 p-2 rounded" data-i18n="modalCircularWarn">تنبيه: يجب موافقة جميع المساهمين كتابياً.</p>
             </div>
             <div class="mt-4 flex justify-end gap-2">
-                <button onclick="document.getElementById('circularModal').classList.add('hidden')" class="px-4 py-1.5 border rounded text-xs" data-i18n="cancel">إلغاء</button>
-                <button onclick="alert('تم الإرسال للمساهمين')" class="px-4 py-1.5 bg-purple-600 text-white rounded text-xs font-bold" data-i18n="btnSend">إرسال للتوقيع</button>
+                <button onclick="document.getElementById('circularModal').classList.add('hidden')" class="px-4 py-1.5 border dark:border-slate-600 rounded text-xs dark:text-white" data-i18n="cancel">إلغاء</button>
+                <button onclick="alert('تم الإرسال للمساهمين')" class="px-4 py-1.5 bg-purple-600 text-white rounded text-xs font-bold hover:bg-purple-700" data-i18n="btnSend">إرسال للتوقيع</button>
             </div>
         </div>
     </div>
 
-    <!-- AndroBot Widget (AI Assistant) -->
-    <!-- Note: Make sure bot.js is loaded -->
-    <div id="andro-bot-container" class="fixed bottom-6 left-6 z-50 flex flex-col items-start gap-4 font-sans" dir="rtl">
-        <!-- Chat Window -->
-        <div id="chat-window" class="hidden bg-white dark:bg-slate-800 w-80 md:w-96 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden flex flex-col chat-window-anim" style="height: 500px; max-height: 70vh;">
-            <!-- Header -->
-            <div class="bg-brandBlue p-4 flex justify-between items-center text-white">
-                <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
-                        <i class="fa-solid fa-robot"></i>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-sm">AndroBot</h4>
-                        <p class="text-[10px] text-white/80">مساعد الحوكمة الذكي</p>
-                    </div>
-                </div>
-                <button id="close-chat-btn" class="text-white/80 hover:text-white transition"><i class="fa-solid fa-times"></i></button>
-            </div>
-            
-            <!-- Body -->
-            <div id="chat-body" class="flex-1 p-4 bg-slate-50 dark:bg-slate-900/50 overflow-y-auto custom-scroll space-y-3 flex flex-col">
-                <div class="chat-bubble bot">
-                    مرحباً بك 👋<br>يمكنني مساعدتك في استفسارات الجمعيات، النصاب، أو سجل المساهمين.
-                </div>
-                <div class="flex flex-wrap gap-2 mt-2" id="suggestions">
-                    <button class="suggestion-btn text-xs bg-white border border-brandBlue/30 text-brandBlue px-3 py-1.5 rounded-full" data-q="ما هو النصاب؟">ما هو النصاب؟</button>
-                    <button class="suggestion-btn text-xs bg-white border border-brandBlue/30 text-brandBlue px-3 py-1.5 rounded-full" data-q="كبار المساهمين">كبار المساهمين</button>
-                </div>
-            </div>
-
-            <!-- Input -->
-            <div class="p-3 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 flex gap-2">
-                <input type="text" id="chat-input" placeholder="اكتب استفسارك..." class="flex-1 bg-slate-100 dark:bg-slate-900 border-none rounded-lg text-sm px-4 py-2 focus:ring-2 focus:ring-brandBlue outline-none dark:text-white">
-                <button id="send-btn" class="w-10 h-10 rounded-lg bg-brandBlue text-white hover:bg-blue-700 transition flex items-center justify-center">
-                    <i class="fa-solid fa-paper-plane"></i>
-                </button>
-            </div>
-        </div>
-
-        <!-- Floating Button -->
-        <button id="chat-fab" class="w-14 h-14 bg-brandBlue hover:bg-blue-700 text-white rounded-full shadow-lg shadow-blue-600/30 flex items-center justify-center text-2xl transition-all transform hover:scale-110 active:scale-95 animate-bounce-slow">
-            <i class="fa-solid fa-comment-dots"></i>
-            <span class="absolute top-0 right-0 w-4 h-4 bg-brandRed rounded-full border-2 border-white dark:border-slate-900"></span>
-        </button>
-    </div>
-
-    <!-- Scripts -->
-    <script src="layout.js"></script>
-    <script src="bot.js"></script>
+    <script src="data/company_policy.js"></script>
+    <script src="js/core/config.js"></script>
+    <script src="js/core/i18n.js"></script>
+    <script src="js/helpers/policy-helpers.js"></script>
+    <script src="js/services/data-service.js"></script>
+    <script src="js/components/role-switcher.js"></script>
+    <script src="js/components/layout.js"></script>
+    <script src="js/components/bot.js"></script>
 
     <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const checkSystem = setInterval(() => {
+                if (typeof Layout !== 'undefined' && typeof AppConfig !== 'undefined' && typeof DataService !== 'undefined') {
+                    clearInterval(checkSystem);
+                    
+                    if (!AppConfig.getCurrentUser()) {
+                        const defaultUser = DataService.getUserById('USR_004') || DataService.getUsers()[0];
+                        if (defaultUser) AppConfig.setCurrentUser(defaultUser);
+                    }
+
+                    Layout.init();
+                    initPage();
+                    document.getElementById('loadingOverlay')?.classList.add('hidden');
+                }
+            }, 50);
+        });
+
         // --- Translation Dictionary ---
         const t = {
             ar: {
@@ -492,7 +447,6 @@
                 btnReject: "رفض",
                 btnEdit: "تعديل وقبول",
                 btnAccept: "قبول",
-                // Dynamic
                 agenda1: "التصويت على تقرير مجلس الإدارة والقوائم المالية",
                 agenda2: "تعيين مراجع الحسابات وتحديد أتعابه",
                 agenda3: "إبراء ذمة أعضاء مجلس الإدارة",
@@ -568,7 +522,6 @@
                 btnReject: "Reject",
                 btnEdit: "Edit & Accept",
                 btnAccept: "Accept",
-                // Dynamic
                 agenda1: "Vote on Board Report & Financial Statements",
                 agenda2: "Appoint External Auditor & Fees",
                 agenda3: "Discharge Board Members",
@@ -603,36 +556,33 @@
             votes: {} 
         };
 
-        // --- Init ---
-        document.addEventListener('DOMContentLoaded', () => {
+        // --- Logic ---
+        function initPage() {
             updatePageLanguage();
-        });
+        }
 
         window.updatePageLanguage = function() {
             const lang = localStorage.getItem('lang') || 'ar';
             const dict = t[lang];
             
-            // Set Document Direction
             document.documentElement.lang = lang;
             document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
 
-            // Update Static Text
+            // Static Text
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
                 if(dict[key]) el.innerText = dict[key];
             });
 
-            // Update Placeholders
+            // Placeholders
             document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
                 const key = el.getAttribute('data-i18n-placeholder');
                 if(dict[key]) el.placeholder = dict[key];
             });
 
-            // Update Search Placeholder
             document.getElementById('archiveSearch').placeholder = lang === 'ar' ? "بحث في الأرشيف..." : "Search archive...";
         }
 
-        // --- Search Logic ---
         window.filterArchive = function() {
             const query = document.getElementById('archiveSearch').value.toLowerCase();
             const rows = document.querySelectorAll('#archiveTableBody tr');
@@ -682,19 +632,15 @@
             const lang = localStorage.getItem('lang') || 'ar';
             const dict = t[lang];
 
-            // Hide all steps
             for(let i=1; i<=4; i++) document.getElementById(`step${i}`).classList.add('hidden');
-            // Show current
             document.getElementById(`step${currentStep}`).classList.remove('hidden');
             
-            // Update Header & Buttons
             const stepTitleKey = `wizStep${currentStep}`;
             document.getElementById('wizardSubtitle').innerText = `${lang==='ar'?'الخطوة':'Step'} ${currentStep}: ${dict[stepTitleKey]}`;
             
             document.getElementById('btnPrev').disabled = currentStep === 1;
             document.getElementById('btnNext').innerText = currentStep === 4 ? dict.finish : dict.next;
 
-            // Update Indicators
             for(let i=1; i<=4; i++) {
                 const ind = document.getElementById(`step${i}-ind`);
                 ind.className = i === currentStep ? "flex-1 border-b-4 step-active pb-2 transition-colors font-bold" : (i < currentStep ? "flex-1 border-b-4 step-completed pb-2 transition-colors" : "flex-1 border-b-4 step-inactive pb-2 transition-colors");
@@ -727,9 +673,9 @@
         window.renderAgendaList = function() {
             const list = document.getElementById('agendaList');
             list.innerHTML = meetingData.agenda.map((item, index) => `
-                <div class="flex justify-between items-center p-3 bg-slate-50 border rounded-lg mb-2">
+                <div class="flex justify-between items-center p-3 bg-slate-50 dark:bg-slate-700/30 border dark:border-slate-600 rounded-lg mb-2">
                     <div>
-                        <span class="font-bold text-sm text-slate-700">${index + 1}. ${item.text}</span>
+                        <span class="font-bold text-sm text-slate-700 dark:text-white">${index + 1}. ${item.text}</span>
                         ${item.conflict ? `<div class="text-[10px] text-red-500 mt-1"><i class="fa-solid fa-ban"></i> ${item.note}</div>` : ''}
                     </div>
                     <button onclick="removeAgendaItem(${index})" class="text-slate-400 hover:text-red-500"><i class="fa-solid fa-trash"></i></button>
@@ -768,9 +714,9 @@
             const tbody = document.getElementById('attendanceTable');
             
             tbody.innerHTML = shareholders.map((s, idx) => `
-                <tr class="border-b">
-                    <td class="p-3 font-bold">${lang === 'ar' ? s.nameAr : s.nameEn}</td>
-                    <td class="p-3 font-mono">${s.shares.toLocaleString()}</td>
+                <tr class="border-b dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50">
+                    <td class="p-3 font-bold dark:text-white">${lang === 'ar' ? s.nameAr : s.nameEn}</td>
+                    <td class="p-3 font-mono dark:text-slate-300">${s.shares.toLocaleString()}</td>
                     <td class="p-3 text-center">
                         <input type="checkbox" onchange="updateQuorum()" class="w-5 h-5 accent-brandBlue attendance-chk" data-shares="${s.shares}">
                     </td>
@@ -804,15 +750,15 @@
             const container = document.getElementById('votingList');
             
             container.innerHTML = meetingData.agenda.map((item, idx) => `
-                <div class="border rounded-xl p-4">
-                    <div class="flex justify-between mb-3 border-b pb-2">
-                        <span class="font-bold text-sm">${idx+1}. ${item.text}</span>
+                <div class="border dark:border-slate-600 rounded-xl p-4 bg-white dark:bg-slate-700/30">
+                    <div class="flex justify-between mb-3 border-b dark:border-slate-600 pb-2">
+                        <span class="font-bold text-sm dark:text-white">${idx+1}. ${item.text}</span>
                         ${item.conflict ? `<span class="text-[10px] bg-red-100 text-red-600 px-2 rounded">${dict.voteBan}</span>` : ''}
                     </div>
                     <div class="grid grid-cols-3 gap-3">
-                        <div><label class="text-[10px] block">${dict.voteAgree}</label><input type="number" class="w-full border rounded p-1 bg-green-50 text-center vote-agree" data-idx="${idx}"></div>
-                        <div><label class="text-[10px] block">${dict.voteDisagree}</label><input type="number" class="w-full border rounded p-1 bg-red-50 text-center vote-disagree" data-idx="${idx}"></div>
-                        <div><label class="text-[10px] block">${dict.voteAbstain}</label><input type="number" class="w-full border rounded p-1 bg-slate-50 text-center vote-abstain" data-idx="${idx}"></div>
+                        <div><label class="text-[10px] block dark:text-slate-400">${dict.voteAgree}</label><input type="number" class="w-full border dark:border-slate-500 rounded p-1 bg-green-50 dark:bg-green-900/20 text-center vote-agree dark:text-white" data-idx="${idx}"></div>
+                        <div><label class="text-[10px] block dark:text-slate-400">${dict.voteDisagree}</label><input type="number" class="w-full border dark:border-slate-500 rounded p-1 bg-red-50 dark:bg-red-900/20 text-center vote-disagree dark:text-white" data-idx="${idx}"></div>
+                        <div><label class="text-[10px] block dark:text-slate-400">${dict.voteAbstain}</label><input type="number" class="w-full border dark:border-slate-500 rounded p-1 bg-slate-50 dark:bg-slate-600 text-center vote-abstain dark:text-white" data-idx="${idx}"></div>
                     </div>
                 </div>
             `).join('');
@@ -826,18 +772,18 @@
             
             if (type === 'minutes') {
                 container.innerHTML = `
-                    <div class="text-center font-bold text-lg mb-4">${lang==='ar'?'محضر اجتماع الجمعية':'General Assembly Minutes'}</div>
-                    <p class="text-sm mb-2">${lang==='ar'?'عقدت الجمعية بتاريخ':'Meeting held on'} ${date}...</p>
-                    <p class="text-sm mb-4">${lang==='ar'?'بلغت نسبة الحضور':'Attendance rate was'} ${meetingData.quorumPct || 0}%.</p>
-                    <div class="text-sm font-bold mb-2">${lang==='ar'?'القرارات:':'Decisions:'}</div>
-                    <ul class="list-disc list-inside text-sm">
+                    <div class="text-center font-bold text-lg mb-4 text-black">${lang==='ar'?'محضر اجتماع الجمعية':'General Assembly Minutes'}</div>
+                    <p class="text-sm mb-2 text-black">${lang==='ar'?'عقدت الجمعية بتاريخ':'Meeting held on'} ${date}...</p>
+                    <p class="text-sm mb-4 text-black">${lang==='ar'?'بلغت نسبة الحضور':'Attendance rate was'} ${meetingData.quorumPct || 0}%.</p>
+                    <div class="text-sm font-bold mb-2 text-black">${lang==='ar'?'القرارات:':'Decisions:'}</div>
+                    <ul class="list-disc list-inside text-sm text-black">
                         ${meetingData.agenda.map(i => `<li>${i.text}</li>`).join('')}
                     </ul>
                 `;
             } else if (type === 'sorting') {
                 container.innerHTML = `
-                    <div class="text-center font-bold text-lg mb-4">${lang==='ar'?'محضر لجنة الفرز':'Vote Count Report'}</div>
-                    <table class="w-full border text-sm text-center">
+                    <div class="text-center font-bold text-lg mb-4 text-black">${lang==='ar'?'محضر لجنة الفرز':'Vote Count Report'}</div>
+                    <table class="w-full border text-sm text-center text-black">
                         <thead class="bg-gray-100"><tr><th class="border p-2">${lang==='ar'?'البند':'Item'}</th><th class="border p-2">${lang==='ar'?'موافق':'Agree'}</th></tr></thead>
                         <tbody>
                             ${meetingData.agenda.map(i => `<tr><td class="border p-2 text-right rtl:text-right ltr:text-left">${i.text}</td><td class="border p-2">--</td></tr>`).join('')}
@@ -846,9 +792,9 @@
                 `;
             } else {
                 container.innerHTML = `
-                    <div class="text-center font-bold text-lg mb-4">${lang==='ar'?'سجل الحضور':'Attendance Register'}</div>
-                    <p class="text-sm mb-2 text-center">${date}</p>
-                    <table class="w-full border text-sm text-center">
+                    <div class="text-center font-bold text-lg mb-4 text-black">${lang==='ar'?'سجل الحضور':'Attendance Register'}</div>
+                    <p class="text-sm mb-2 text-center text-black">${date}</p>
+                    <table class="w-full border text-sm text-center text-black">
                          <thead class="bg-gray-100"><tr><th class="border p-2">${lang==='ar'?'المساهم':'Shareholder'}</th><th class="border p-2">${lang==='ar'?'الأسهم':'Shares'}</th></tr></thead>
                          <tbody>
                             ${shareholders.filter((s, i) => document.querySelectorAll('.attendance-chk')[i]?.checked).map(s => 
@@ -889,18 +835,23 @@
             alert(lang === 'ar' ? `سيتم عرض ملف PDF الخاص بـ ${type}` : `Viewing PDF for ${type}`);
         }
 
+        // --- Bot Override ---
+        const originalGetAIResponse = window.getAIResponse; 
+        
+        window.getAIResponse = function(query, isArabic) {
+            const q = query.toLowerCase();
+            
+            if (q.includes('quorum') || q.includes('نصاب')) {
+                return isArabic 
+                    ? `النصاب القانوني للجمعية العادية هو 25% (أول اجتماع). وغير العادية 50%.`
+                    : `Quorum for OGA is 25% (1st meeting). EGA is 50%.`;
+            }
+            
+            return isArabic
+                ? `يمكنني إجابتك عن: <b>النصاب القانوني</b>، <b>جدول الأعمال</b>، أو <b>حقوق التصويت</b>.`
+                : `I can answer about: <b>Quorum</b>, <b>Agenda</b>, or <b>Voting Rights</b>.`;
+        }
+
     </script>
-      
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', function () {
-      navigator.serviceWorker
-        .register('service-worker.js')
-        .catch(function (err) {
-          console.warn('Service worker registration failed:', err);
-        });
-    });
-  }
-</script>
 </body>
 </html>
