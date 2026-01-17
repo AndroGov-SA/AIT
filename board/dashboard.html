@@ -1,231 +1,0 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#FB4747">
-    <title data-i18n="pageTitle">بوابة المجلس | AndroGov</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        brandRed: '#FB4747',
-                        brandBlue: '#4267B2',
-                        brandDark: '#1E293B',
-                        brandGray: '#F8FAFC'
-                    },
-                    fontFamily: {
-                        sans: ['Tajawal', 'Inter', 'sans-serif'],
-                        en: ['Inter', 'sans-serif']
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        .num-font { font-family: 'Inter', sans-serif; direction: ltr; display: inline-block; }
-        .loading-overlay { position: fixed; inset: 0; background: rgba(255, 255, 255, 0.95); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.5s; }
-        .loading-overlay.hidden { opacity: 0; pointer-events: none; }
-        .nav-link.active { background-color: #FB4747; color: white; box-shadow: 0 4px 10px rgba(251, 71, 71, 0.3); }
-        .nav-link:hover:not(.active) { background-color: #F1F5F9; }
-        .dark .nav-link:hover:not(.active) { background-color: #1E293B; }
-    </style>
-</head>
-<body class="bg-brandGray dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300 h-screen flex overflow-hidden">
-
-    <div id="loadingOverlay" class="loading-overlay">
-        <div class="w-12 h-12 border-4 border-brandBlue border-t-transparent rounded-full animate-spin"></div>
-        <p class="mt-4 text-sm font-bold text-slate-600">جاري تحميل البوابة...</p>
-    </div>
-
-    <aside class="w-72 bg-white dark:bg-slate-800 border-l border-slate-200 dark:border-slate-700 flex flex-col z-30 hidden md:flex">
-        <div class="h-20 flex items-center px-6 border-b border-slate-100 dark:border-slate-700 gap-3">
-            <div class="w-10 h-10 bg-brandRed rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg">A</div>
-            <div>
-                <h1 class="font-bold text-lg text-slate-800 dark:text-white">AndroGov</h1>
-                <p class="text-[10px] text-slate-400 uppercase tracking-widest">Board Portal</p>
-            </div>
-        </div>
-
-        <div class="p-6 border-b border-slate-100 dark:border-slate-700 flex items-center gap-3">
-            <img id="sidebarAvatar" src="" class="w-12 h-12 rounded-full object-cover border-2 border-slate-100 dark:border-slate-600">
-            <div>
-                <h4 class="text-sm font-bold text-slate-800 dark:text-white" id="sidebarName">...</h4>
-                <p class="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-bold" id="sidebarRole">...</p>
-            </div>
-        </div>
-
-        <nav class="flex-1 overflow-y-auto p-4 space-y-1">
-            <p class="px-4 text-[10px] font-bold text-slate-400 uppercase mb-2">القائمة الرئيسية</p>
-            
-            <a href="#" onclick="BoardSystem.switchTab('dashboard')" id="nav-dashboard" class="nav-link active flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all">
-                <i class="fa-solid fa-chart-pie w-5 text-center"></i> <span>لوحة القيادة</span>
-            </a>
-            <a href="#" onclick="BoardSystem.switchTab('meetings')" id="nav-meetings" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-slate-500 dark:text-slate-400 transition-all">
-                <i class="fa-solid fa-calendar-days w-5 text-center"></i> <span>الاجتماعات</span>
-            </a>
-            <a href="#" onclick="BoardSystem.switchTab('resolutions')" id="nav-resolutions" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-slate-500 dark:text-slate-400 transition-all">
-                <i class="fa-solid fa-file-signature w-5 text-center"></i> <span>القرارات</span>
-            </a>
-            <a href="#" onclick="BoardSystem.switchTab('library')" id="nav-library" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-slate-500 dark:text-slate-400 transition-all">
-                <i class="fa-solid fa-box-archive w-5 text-center"></i> <span>المكتبة</span>
-            </a>
-
-            <div id="secMenu" class="hidden mt-6 pt-6 border-t border-slate-100 dark:border-slate-700">
-                <p class="px-4 text-[10px] font-bold text-slate-400 uppercase mb-2">أمانة السر</p>
-                <a href="#" onclick="BoardSystem.switchTab('secretary')" id="nav-secretary" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-purple-600 bg-purple-50 dark:bg-purple-900/20 dark:text-purple-300 transition-all">
-                    <i class="fa-solid fa-briefcase w-5 text-center"></i> <span>إدارة المجلس</span>
-                </a>
-            </div>
-        </nav>
-
-        <div class="p-4 border-t border-slate-100 dark:border-slate-700">
-            <button onclick="BoardSystem.logout()" class="flex items-center gap-3 px-4 py-3 w-full rounded-xl text-sm font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 transition-all">
-                <i class="fa-solid fa-right-from-bracket w-5"></i> <span>تسجيل الخروج</span>
-            </button>
-        </div>
-    </aside>
-
-    <div class="flex-1 flex flex-col h-full overflow-hidden relative">
-        
-        <header class="h-20 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-100 dark:border-slate-700 flex justify-between items-center px-8 z-20">
-            <h2 class="text-xl font-bold flex items-center gap-2 text-slate-800 dark:text-white">
-                <i class="fa-solid fa-chess-king text-brandRed"></i> <span id="pageTitle">لوحة القيادة</span>
-            </h2>
-            <div class="flex items-center gap-4">
-                <div class="hidden md:flex bg-slate-100 dark:bg-slate-800 p-1 rounded-lg">
-                    <button class="px-4 py-1 text-xs font-bold bg-white dark:bg-slate-700 shadow-sm rounded-md text-brandBlue">المجلس</button>
-                    <button class="px-4 py-1 text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-white">المراجعة</button>
-                </div>
-                <button class="w-10 h-10 rounded-full bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition">
-                    <i class="fa-regular fa-bell"></i>
-                </button>
-            </div>
-        </header>
-
-        <div class="flex-1 overflow-y-auto p-8 custom-scroll" id="mainContainer">
-            
-            <div id="tab-dashboard" class="space-y-8 animate-fade-in">
-                <div class="bg-gradient-to-r from-slate-900 to-slate-800 rounded-3xl p-8 text-white shadow-xl relative overflow-hidden">
-                    <div class="relative z-10">
-                        <h1 class="text-3xl font-bold mb-2">مرحباً، <span id="dashName" class="text-brandBlue">...</span> 👋</h1>
-                        <p class="text-slate-300 text-sm">لديك اجتماع قادم وقرارات بانتظار التصويت.</p>
-                        <div class="mt-6 flex gap-3">
-                            <button onclick="BoardSystem.switchTab('meetings')" class="bg-brandBlue hover:bg-blue-600 px-6 py-2 rounded-xl font-bold text-sm shadow-lg transition">جدول الأعمال</button>
-                            <button onclick="BoardSystem.switchTab('resolutions')" class="bg-white/10 hover:bg-white/20 px-6 py-2 rounded-xl font-bold text-sm transition">التصويت</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                    <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-                        <div class="flex justify-between mb-4"><div class="w-10 h-10 bg-red-50 dark:bg-red-900/20 text-red-600 rounded-xl flex items-center justify-center"><i class="fa-solid fa-gavel"></i></div><span class="text-xs font-bold bg-red-50 text-red-600 px-2 py-1 rounded">عاجل</span></div>
-                        <h3 class="text-2xl font-bold num-font text-slate-800 dark:text-white">2</h3>
-                        <p class="text-xs text-slate-500">قرارات بانتظار التصويت</p>
-                    </div>
-                    <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-                        <div class="flex justify-between mb-4"><div class="w-10 h-10 bg-blue-50 dark:bg-blue-900/20 text-brandBlue rounded-xl flex items-center justify-center"><i class="fa-solid fa-calendar-check"></i></div></div>
-                        <h3 class="text-2xl font-bold num-font text-slate-800 dark:text-white">95%</h3>
-                        <p class="text-xs text-slate-500">نسبة حضورك</p>
-                    </div>
-                    <div class="md:col-span-2 bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-                        <h3 class="font-bold text-sm mb-4 text-slate-800 dark:text-white">أداء المجلس (2025)</h3>
-                        <div class="h-32"><canvas id="boardChart"></canvas></div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="tab-meetings" class="hidden space-y-6">
-                <div class="flex justify-between items-center">
-                    <h2 class="text-xl font-bold text-slate-800 dark:text-white">جدول الاجتماعات</h2>
-                    <button class="px-4 py-2 bg-brandBlue text-white rounded-lg text-xs font-bold shadow-lg">اجتماع قادم</button>
-                </div>
-                <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden">
-                    <table class="w-full text-sm text-right text-slate-700 dark:text-slate-300">
-                        <thead class="bg-slate-50 dark:bg-slate-700 text-slate-500 font-bold text-xs uppercase">
-                            <tr><th class="p-4">العنوان</th><th class="p-4">التاريخ</th><th class="p-4 text-center">النوع</th><th class="p-4 text-center">الحالة</th><th class="p-4 text-center">إجراء</th></tr>
-                        </thead>
-                        <tbody class="divide-y divide-slate-100 dark:divide-slate-700" id="meetingsTableBody">
-                            </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div id="tab-resolutions" class="hidden space-y-6">
-                <h2 class="text-xl font-bold text-slate-800 dark:text-white">القرارات والتصويت</h2>
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border-r-4 border-r-brandRed border-y border-l border-slate-100 dark:border-slate-700">
-                        <div class="flex justify-between mb-4">
-                            <span class="text-xs bg-red-50 text-red-600 px-2 py-1 rounded font-bold">تصويت عاجل</span>
-                            <span class="text-xs text-slate-400 font-en">REF: CIR-2026-02</span>
-                        </div>
-                        <h3 class="font-bold text-lg mb-2 text-slate-800 dark:text-white">تعيين مستشار قانوني للمجموعة</h3>
-                        <p class="text-sm text-slate-500 mb-4">الموافقة على تعيين مكتب "ألفا" كمستشار قانوني.</p>
-                        <div class="grid grid-cols-3 gap-3">
-                            <button onclick="BoardSystem.castVote('approve')" class="py-2 bg-green-50 text-green-700 border border-green-200 rounded-lg text-xs font-bold hover:bg-green-600 hover:text-white transition">موافق</button>
-                            <button onclick="BoardSystem.castVote('reject')" class="py-2 bg-red-50 text-red-700 border border-red-200 rounded-lg text-xs font-bold hover:bg-red-600 hover:text-white transition">رفض</button>
-                            <button class="py-2 bg-slate-50 text-slate-600 border border-slate-200 rounded-lg text-xs font-bold">ممتنع</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="tab-library" class="hidden space-y-6">
-                <h2 class="text-xl font-bold text-slate-800 dark:text-white">المكتبة الرقمية</h2>
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div class="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-100 dark:border-slate-700 hover:shadow-md transition text-center cursor-pointer">
-                        <i class="fa-solid fa-folder text-4xl text-yellow-400 mb-2"></i>
-                        <p class="font-bold text-sm text-slate-800 dark:text-white">اللوائح والسياسات</p>
-                    </div>
-                    <div class="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-100 dark:border-slate-700 hover:shadow-md transition text-center cursor-pointer">
-                        <i class="fa-solid fa-folder text-4xl text-blue-400 mb-2"></i>
-                        <p class="font-bold text-sm text-slate-800 dark:text-white">محاضر الاجتماعات</p>
-                    </div>
-                </div>
-            </div>
-
-            <div id="tab-secretary" class="hidden space-y-6">
-                <div class="bg-slate-800 text-white rounded-3xl p-8 relative overflow-hidden shadow-xl">
-                    <h2 class="text-2xl font-bold mb-2">مركز أمانة السر</h2>
-                    <p class="text-slate-400 text-sm mb-6">أدوات إدارة الجلسات والمحاضر.</p>
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 relative z-10">
-                        <button class="bg-white/10 hover:bg-white/20 p-4 rounded-xl text-center backdrop-blur-sm border border-white/5 transition"><i class="fa-solid fa-plus text-green-400 text-2xl mb-2"></i><p class="text-xs font-bold">اجتماع جديد</p></button>
-                        <button class="bg-white/10 hover:bg-white/20 p-4 rounded-xl text-center backdrop-blur-sm border border-white/5 transition"><i class="fa-solid fa-pen-nib text-blue-400 text-2xl mb-2"></i><p class="text-xs font-bold">محضر جديد</p></button>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </div>
-
-    <div id="signModal" class="fixed inset-0 bg-black/80 hidden z-50 flex items-center justify-center backdrop-blur-sm p-4">
-        <div class="bg-white dark:bg-slate-800 w-full max-w-md rounded-2xl shadow-2xl p-6">
-            <h3 class="font-bold text-lg mb-2 text-center text-slate-800 dark:text-white">تأكيد التصويت</h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400 text-center mb-4">يرجى التوقيع أدناه لاعتماد تصويتك.</p>
-            <div class="h-32 bg-slate-50 dark:bg-slate-700 border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-xl mb-4 flex items-center justify-center cursor-crosshair" onclick="this.innerHTML='<i class=\'fa-solid fa-signature text-3xl opacity-50 dark:text-white\'></i>'">
-                <span class="text-xs text-slate-400 pointer-events-none">ارسم توقيعك هنا</span>
-            </div>
-            <div class="flex gap-2">
-                <button onclick="document.getElementById('signModal').classList.add('hidden')" class="flex-1 py-2 border rounded-lg text-sm font-bold dark:text-white">إلغاء</button>
-                <button onclick="BoardSystem.confirmVote()" class="flex-1 py-2 bg-brandBlue text-white rounded-lg text-sm font-bold shadow-lg">اعتماد</button>
-            </div>
-        </div>
-    </div>
-
-    <script src="../admin/data/company_policy.js"></script>
-    <script src="../admin/js/core/config.js"></script>
-    <script src="../admin/js/services/data-service.js"></script>
-    
-    <script src="js/board.js"></script>
-
-</body>
-</html>
