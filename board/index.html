@@ -4,83 +4,176 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#FB4747">
-    <title>الرئيسية | AndroGov</title>
+    <title id="pageTitle">بوابة المجلس | AndroGov</title>
+    
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <script>
-        tailwind.config = { darkMode: 'class', theme: { extend: { colors: { brandRed: '#FB4747', brandBlue: '#4267B2', brandDark: '#1E293B', brandGray: '#F8FAFC' }, fontFamily: { sans: ['Tajawal', 'Inter', 'sans-serif'], en: ['Inter', 'sans-serif'] } } } }
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brandRed: '#FB4747',
+                        brandBlue: '#4267B2',
+                        brandDark: '#1E293B',
+                        brandGray: '#F8FAFC'
+                    },
+                    fontFamily: {
+                        sans: ['Tajawal', 'Inter', 'sans-serif'],
+                        en: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
     </script>
-    <style>.num-font { font-family: 'Inter', sans-serif; direction: ltr; display: inline-block; } .nav-link.active { background-color: #FB4747; color: white; box-shadow: 0 4px 10px rgba(251, 71, 71, 0.3); } .nav-link:hover:not(.active) { background-color: #F1F5F9; }</style>
+    <style>
+        .num-font { font-family: 'Inter', sans-serif; direction: ltr; display: inline-block; }
+        .custom-scroll::-webkit-scrollbar { width: 6px; }
+        .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+        .custom-scroll::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 20px; }
+        .dark .custom-scroll::-webkit-scrollbar-thumb { background-color: #475569; }
+        
+        /* Loading Overlay */
+        .loading-overlay {
+            position: fixed; inset: 0; background: rgba(255, 255, 255, 0.98); 
+            z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: opacity 0.5s ease;
+        }
+        .dark .loading-overlay { background: rgba(15, 23, 42, 0.98); }
+    </style>
 </head>
-<body class="bg-brandGray dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300 h-screen flex overflow-hidden">
-    
+<body class="bg-brandGray dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300 h-screen flex overflow-hidden opacity-0">
+
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="w-12 h-12 border-4 border-brandBlue border-t-transparent rounded-full animate-spin"></div>
+        <p class="mt-4 text-sm font-bold text-slate-600 dark:text-slate-300">جاري تحميل بوابة المجلس...</p>
+    </div>
+
     <div id="sidebar-container"></div>
 
-    <div class="flex-1 flex flex-col h-full overflow-hidden relative main-content-wrapper ltr:md:ml-72 rtl:md:mr-72">
+    <div class="flex-1 flex flex-col h-full overflow-hidden relative main-content-wrapper ltr:md:ml-72 rtl:md:mr-72 transition-all duration-300">
+        
         <div id="header-container"></div>
 
-        <main class="p-8 space-y-8 overflow-y-auto custom-scroll">
-            <div class="bg-gradient-to-r from-slate-900 to-slate-800 rounded-3xl p-8 text-white shadow-xl relative overflow-hidden">
-                <div class="relative z-10 flex flex-col md:flex-row justify-between items-center gap-6">
-                    <div>
-                        <h1 class="text-3xl font-bold mb-2">مرحباً بك في بوابتك الرقمية 👋</h1>
-                        <p class="text-slate-300 text-sm">لديك <b class="text-white">اجتماع قادم</b> بتاريخ 15 فبراير و <b class="text-white">قرار عاجل</b>.</p>
-                        <div class="mt-6 flex gap-3">
-                            <a href="meetings.html" class="bg-brandBlue hover:bg-blue-600 px-6 py-2 rounded-xl font-bold text-sm shadow-lg transition">جدول الأعمال</a>
-                            <a href="communication.html" class="bg-white/10 hover:bg-white/20 px-6 py-2 rounded-xl font-bold text-sm transition">التصويت</a>
+        <main class="flex-1 overflow-y-auto p-6 md:p-8 custom-scroll" id="main-content">
+            
+            <div id="view-dashboard" class="space-y-8 animate-fade-in">
+                <div class="bg-gradient-to-r from-slate-900 to-slate-800 rounded-3xl p-8 text-white relative overflow-hidden shadow-xl">
+                    <div class="relative z-10 flex flex-col md:flex-row justify-between items-center gap-6">
+                        <div>
+                            <h1 class="text-3xl font-bold mb-2">مرحباً بك في بوابتك الرقمية 👋</h1>
+                            <p class="text-slate-300 text-sm">لديك <b class="text-white">اجتماع قادم</b> بتاريخ 15 فبراير و <b class="text-white">قرار عاجل</b> بانتظار تصويتك.</p>
+                            <div class="mt-6 flex gap-3">
+                                <button onclick="BoardLayout.switchView('meetings')" class="bg-brandBlue hover:bg-blue-600 px-6 py-2.5 rounded-xl font-bold text-sm shadow-lg transition">جدول الأعمال</button>
+                                <button onclick="BoardLayout.switchView('resolutions')" class="bg-white/10 hover:bg-white/20 px-6 py-2.5 rounded-xl font-bold text-sm transition backdrop-blur-sm">التصويت الآن</button>
+                            </div>
+                        </div>
+                        <div class="hidden lg:block text-center bg-white/10 p-4 rounded-2xl backdrop-blur-sm border border-white/10">
+                            <span class="block text-xs text-slate-300 mb-1">الاجتماع القادم</span>
+                            <span class="block text-3xl font-bold font-en text-white">15</span>
+                            <span class="block text-xs text-slate-300 uppercase">FEB 2026</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 hover:border-brandRed/30 transition">
+                        <div class="flex justify-between mb-4">
+                            <div class="w-12 h-12 bg-red-50 dark:bg-red-900/20 text-red-600 rounded-2xl flex items-center justify-center text-xl"><i class="fa-solid fa-gavel"></i></div>
+                            <span class="text-[10px] bg-red-100 text-red-700 px-2 py-1 rounded-full h-fit font-bold">عاجل</span>
+                        </div>
+                        <h3 class="text-3xl font-bold text-slate-900 dark:text-white num-font">2</h3>
+                        <p class="text-xs text-slate-500 mt-1">قرارات بانتظار التصويت</p>
+                    </div>
+                    
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                        <div class="flex justify-between mb-4">
+                            <div class="w-12 h-12 bg-blue-50 dark:bg-blue-900/20 text-brandBlue rounded-2xl flex items-center justify-center text-xl"><i class="fa-solid fa-calendar-check"></i></div>
+                        </div>
+                        <h3 class="text-3xl font-bold text-slate-900 dark:text-white num-font">95%</h3>
+                        <p class="text-xs text-slate-500 mt-1">نسبة حضورك (سنوي)</p>
+                    </div>
+
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                        <div class="flex justify-between mb-4">
+                            <div class="w-12 h-12 bg-purple-50 dark:bg-purple-900/20 text-purple-600 rounded-2xl flex items-center justify-center text-xl"><i class="fa-solid fa-folder-open"></i></div>
+                        </div>
+                        <h3 class="text-3xl font-bold text-slate-900 dark:text-white num-font">8</h3>
+                        <p class="text-xs text-slate-500 mt-1">وثائق جديدة في المكتبة</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="lg:col-span-2 bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                        <h3 class="font-bold text-slate-800 dark:text-white mb-6">مؤشرات أداء المجلس</h3>
+                        <div class="h-64 w-full">
+                            <canvas id="boardChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                        <h3 class="font-bold text-slate-800 dark:text-white mb-4">أحدث الملفات</h3>
+                        <div class="space-y-3">
+                            <div class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-700/50">
+                                <div class="w-8 h-8 flex items-center justify-center bg-white dark:bg-slate-600 rounded-lg text-red-500"><i class="fa-solid fa-file-pdf"></i></div>
+                                <div class="flex-1">
+                                    <p class="text-xs font-bold text-slate-700 dark:text-slate-200">محضر الاجتماع السابق</p>
+                                    <p class="text-[10px] text-slate-400">PDF • 2 MB</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-700/50">
+                                <div class="w-8 h-8 flex items-center justify-center bg-white dark:bg-slate-600 rounded-lg text-green-500"><i class="fa-solid fa-file-excel"></i></div>
+                                <div class="flex-1">
+                                    <p class="text-xs font-bold text-slate-700 dark:text-slate-200">القوائم المالية Q3</p>
+                                    <p class="text-[10px] text-slate-400">XLSX • 1.5 MB</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-                    <div class="flex justify-between mb-4"><div class="w-10 h-10 bg-red-50 text-red-600 rounded-xl flex items-center justify-center"><i class="fa-solid fa-gavel"></i></div></div>
-                    <h3 class="text-2xl font-bold num-font">2</h3>
-                    <p class="text-xs text-slate-500">قرارات بانتظار التصويت</p>
-                </div>
-                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-                    <div class="flex justify-between mb-4"><div class="w-10 h-10 bg-blue-50 text-brandBlue rounded-xl flex items-center justify-center"><i class="fa-solid fa-calendar-check"></i></div></div>
-                    <h3 class="text-2xl font-bold num-font">95%</h3>
-                    <p class="text-xs text-slate-500">نسبة حضورك</p>
-                </div>
-                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-                    <div class="flex justify-between mb-4"><div class="w-10 h-10 bg-green-50 text-green-600 rounded-xl flex items-center justify-center"><i class="fa-solid fa-chart-line"></i></div></div>
-                    <h3 class="text-2xl font-bold num-font">14%</h3>
-                    <p class="text-xs text-slate-500">نمو الأرباح (Q4)</p>
+            <div id="view-meetings" class="hidden space-y-6 animate-fade-in">
+                <div class="text-center py-20 text-slate-400">جاري تحميل جدول الاجتماعات...</div>
+            </div>
+
+            <div id="view-resolutions" class="hidden space-y-6 animate-fade-in">
+                <div class="text-center py-20 text-slate-400">جاري تحميل القرارات...</div>
+            </div>
+
+            <div id="view-library" class="hidden space-y-6 animate-fade-in">
+                <div class="text-center py-20 text-slate-400">جاري تحميل المكتبة...</div>
+            </div>
+
+            <div id="view-secretary" class="hidden space-y-6 animate-fade-in">
+                <div class="bg-slate-800 text-white rounded-3xl p-8 relative overflow-hidden shadow-xl">
+                    <div class="absolute top-0 right-0 p-6 opacity-10"><i class="fa-solid fa-feather-pointed text-9xl"></i></div>
+                    <div class="relative z-10">
+                        <h2 class="text-2xl font-bold mb-2">مركز إدارة أمانة السر</h2>
+                        <p class="text-slate-400 text-sm mb-6">أدوات التحكم في الجلسات، المحاضر، والتواصل مع الأعضاء.</p>
+                        
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <button class="bg-white/10 hover:bg-white/20 p-4 rounded-xl text-center transition backdrop-blur-sm border border-white/5">
+                                <div class="w-10 h-10 mx-auto bg-green-500 rounded-full flex items-center justify-center mb-2 shadow-lg"><i class="fa-solid fa-plus text-white"></i></div>
+                                <p class="text-xs font-bold">اجتماع جديد</p>
+                            </button>
+                            </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-                <h3 class="font-bold text-sm mb-4">أداء الشركة المالي (2025)</h3>
-                <div class="h-64"><canvas id="mainChart"></canvas></div>
-            </div>
         </main>
     </div>
 
     <script src="../admin/data/company_policy.js"></script>
     <script src="../admin/js/core/config.js"></script>
+    <script src="../admin/js/core/i18n.js"></script>
+    <script src="../admin/js/services/data-service.js"></script>
     <script src="js/board-layout.js"></script>
-    <script>
-        // Page Specific Chart
-        document.addEventListener('DOMContentLoaded', () => {
-            const ctx = document.getElementById('mainChart').getContext('2d');
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                    datasets: [{
-                        label: 'الإيرادات',
-                        data: [120, 190, 300, 500, 200, 300],
-                        borderColor: '#4267B2',
-                        tension: 0.4
-                    }]
-                },
-                options: { responsive: true, maintainAspectRatio: false }
-            });
-        });
-    </script>
+
 </body>
 </html>
