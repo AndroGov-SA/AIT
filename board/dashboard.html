@@ -31,348 +31,189 @@
             }
         }
     </script>
-
     <style>
         .num-font { font-family: 'Inter', sans-serif; direction: ltr; display: inline-block; }
-        
-        /* Loading Overlay */
-        .loading-overlay {
-            position: fixed; inset: 0; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(5px);
-            z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem;
-            transition: opacity 0.5s ease, visibility 0.5s;
-        }
-        .dark .loading-overlay { background: rgba(15, 23, 42, 0.95); }
-        .loading-overlay.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
-        .spinner {
-            width: 48px; height: 48px; border: 5px solid rgba(66, 103, 178, 0.1);
-            border-top-color: #4267B2; border-radius: 50%; animation: spin 1s linear infinite;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        
+        .loading-overlay { position: fixed; inset: 0; background: rgba(255, 255, 255, 0.95); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.5s; }
+        .loading-overlay.hidden { opacity: 0; pointer-events: none; }
         /* Active Sidebar Link */
-        .nav-link.active { @apply bg-brandRed text-white shadow-lg shadow-red-500/30; }
-        .nav-link:hover:not(.active) { @apply bg-slate-100 dark:bg-slate-700; }
+        .nav-link.active { background-color: #FB4747; color: white; box-shadow: 0 4px 6px -1px rgba(251, 71, 71, 0.3); }
+        .nav-link:hover:not(.active) { background-color: #F1F5F9; }
     </style>
 </head>
-<body class="bg-brandGray dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300">
+<body class="bg-brandGray dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300 h-screen flex overflow-hidden">
 
     <div id="loadingOverlay" class="loading-overlay">
-        <div class="spinner"></div>
-        <p class="text-sm font-bold text-slate-600 dark:text-slate-300">جاري تحميل بيانات المجلس...</p>
+        <div class="w-12 h-12 border-4 border-brandBlue border-t-transparent rounded-full animate-spin"></div>
+        <p class="mt-4 text-sm font-bold text-slate-600">جاري تحميل البوابة...</p>
     </div>
 
-    <aside class="fixed top-0 right-0 h-full w-72 bg-white dark:bg-slate-800 border-l border-slate-100 dark:border-slate-700 z-30 flex flex-col transition-all duration-300 hidden md:flex">
-        <div class="h-20 flex items-center gap-3 px-6 border-b border-slate-100 dark:border-slate-700">
-            <div class="w-10 h-10 bg-brandRed rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-red-500/20">A</div>
+    <aside class="w-72 bg-white dark:bg-slate-800 border-l border-slate-200 dark:border-slate-700 flex flex-col z-30 hidden md:flex">
+        <div class="h-20 flex items-center px-6 border-b border-slate-100 dark:border-slate-700 gap-3">
+            <div class="w-10 h-10 bg-brandRed rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg">A</div>
             <div>
-                <h1 class="font-bold text-lg text-slate-800 dark:text-white tracking-wide">AndroGov</h1>
-                <p class="text-[10px] text-slate-400 uppercase tracking-widest">Board Edition</p>
+                <h1 class="font-bold text-lg">AndroGov</h1>
+                <p class="text-[10px] text-slate-400 uppercase tracking-widest">Board Portal</p>
             </div>
         </div>
 
-        <div class="p-6 border-b border-slate-100 dark:border-slate-700">
-            <div class="flex items-center gap-4">
-                <div class="relative">
-                    <img id="sidebarAvatar" src="" class="w-12 h-12 rounded-full object-cover border-2 border-slate-100 dark:border-slate-600">
-                    <span class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span>
-                </div>
-                <div>
-                    <h4 class="text-sm font-bold text-slate-800 dark:text-white" id="sidebarName">...</h4>
-                    <p class="text-[10px] text-slate-500 uppercase font-bold tracking-wider" id="sidebarRole">...</p>
-                </div>
+        <div class="p-6 border-b border-slate-100 dark:border-slate-700 flex items-center gap-3">
+            <img id="sidebarAvatar" src="" class="w-12 h-12 rounded-full object-cover border-2 border-slate-100">
+            <div>
+                <h4 class="text-sm font-bold" id="sidebarName">...</h4>
+                <p class="text-[10px] text-slate-500 uppercase font-bold" id="sidebarRole">...</p>
             </div>
         </div>
 
         <nav class="flex-1 overflow-y-auto p-4 space-y-1">
-            <p class="text-[10px] font-bold text-slate-400 uppercase px-4 mb-2 mt-2">القائمة الرئيسية</p>
+            <p class="px-4 text-[10px] font-bold text-slate-400 uppercase mb-2">القائمة</p>
             
-            <a href="#" onclick="switchBoardTab('dashboard')" id="nav-dashboard" class="nav-link active flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all">
-                <i class="fa-solid fa-chart-pie w-5"></i> <span data-i18n="navDash">لوحة القيادة</span>
+            <a href="#" onclick="BoardLayout.switchView('dashboard')" id="nav-dashboard" class="nav-link active flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all">
+                <i class="fa-solid fa-chart-pie w-5 text-center"></i> <span>لوحة القيادة</span>
             </a>
-            <a href="#" onclick="switchBoardTab('meetings')" id="nav-meetings" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-slate-500 dark:text-slate-400 transition-all">
-                <i class="fa-solid fa-calendar-days w-5"></i> <span data-i18n="navMtgs">الاجتماعات والمحاضر</span>
+            <a href="#" onclick="BoardLayout.switchView('meetings')" id="nav-meetings" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-slate-500 transition-all">
+                <i class="fa-solid fa-calendar-days w-5 text-center"></i> <span>الاجتماعات</span>
             </a>
-            <a href="#" onclick="switchBoardTab('resolutions')" id="nav-resolutions" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-slate-500 dark:text-slate-400 transition-all">
-                <i class="fa-solid fa-gavel w-5"></i> <span data-i18n="navRes">القرارات والتصويت</span>
-                <span class="mr-auto bg-red-500 text-white text-[9px] px-1.5 py-0.5 rounded-md">2</span>
+            <a href="#" onclick="BoardLayout.switchView('resolutions')" id="nav-resolutions" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-slate-500 transition-all">
+                <i class="fa-solid fa-file-signature w-5 text-center"></i> <span>القرارات</span>
             </a>
-            <a href="#" onclick="switchBoardTab('library')" id="nav-library" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-slate-500 dark:text-slate-400 transition-all">
-                <i class="fa-solid fa-box-archive w-5"></i> <span data-i18n="navLib">الأرشيف والمكتبة</span>
+            <a href="#" onclick="BoardLayout.switchView('library')" id="nav-library" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-slate-500 transition-all">
+                <i class="fa-solid fa-box-archive w-5 text-center"></i> <span>المكتبة</span>
             </a>
 
-            <div id="secMenu" class="hidden">
-                <p class="text-[10px] font-bold text-slate-400 uppercase px-4 mb-2 mt-6">أدوات أمانة السر</p>
-                <a href="#" onclick="switchBoardTab('secretary')" id="nav-secretary" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-900/10 transition-all">
-                    <i class="fa-solid fa-briefcase w-5"></i> <span data-i18n="navSec">إدارة المجلس</span>
+            <div id="secMenu" class="hidden mt-6 pt-6 border-t border-slate-100">
+                <p class="px-4 text-[10px] font-bold text-slate-400 uppercase mb-2">أمانة السر</p>
+                <a href="#" onclick="BoardLayout.switchView('secretary')" id="nav-secretary" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-purple-600 bg-purple-50 transition-all">
+                    <i class="fa-solid fa-briefcase w-5 text-center"></i> <span>إدارة المجلس</span>
                 </a>
             </div>
         </nav>
 
         <div class="p-4 border-t border-slate-100 dark:border-slate-700">
-            <button onclick="logout()" class="flex items-center gap-3 px-4 py-3 w-full rounded-xl text-sm font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 transition-all">
-                <i class="fa-solid fa-right-from-bracket w-5"></i> <span data-i18n="logout">تسجيل الخروج</span>
+            <button onclick="BoardLayout.logout()" class="flex items-center gap-3 px-4 py-3 w-full rounded-xl text-sm font-bold text-red-500 hover:bg-red-50 transition-all">
+                <i class="fa-solid fa-right-from-bracket w-5"></i> <span>تسجيل الخروج</span>
             </button>
         </div>
     </aside>
 
-    <div class="main-content-wrapper ltr:md:ml-72 rtl:md:mr-72 transition-all duration-300 flex flex-col min-h-screen">
+    <div class="flex-1 flex flex-col h-full overflow-hidden relative">
         
-        <header class="h-20 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-100 dark:border-slate-700 flex justify-between items-center px-8 sticky top-0 z-20">
+        <header class="h-20 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-100 flex justify-between items-center px-8 z-20">
+            <h2 class="text-xl font-bold flex items-center gap-2">
+                <i class="fa-solid fa-chess-king text-brandRed"></i> <span id="pageTitle">لوحة القيادة</span>
+            </h2>
             <div class="flex items-center gap-4">
-                <h2 class="text-xl font-bold dark:text-white flex items-center gap-2">
-                    <i class="fa-solid fa-chess-king text-brandRed"></i> <span id="pageTitle" data-i18n="pageTitle">لوحة القيادة</span>
-                </h2>
-                <div class="hidden md:flex bg-slate-100 dark:bg-slate-800 p-1 rounded-lg">
-                    <button class="px-4 py-1.5 text-xs font-bold bg-white dark:bg-slate-700 shadow-sm rounded-md text-brandBlue">مجلس الإدارة</button>
-                    <button class="px-4 py-1.5 text-xs font-bold text-slate-500 hover:text-slate-700 dark:hover:text-slate-300">لجنة المراجعة</button>
+                <div class="hidden md:flex bg-slate-100 p-1 rounded-lg">
+                    <button class="px-4 py-1 text-xs font-bold bg-white shadow-sm rounded-md text-brandBlue">المجلس</button>
+                    <button class="px-4 py-1 text-xs font-bold text-slate-500 hover:text-slate-700">المراجعة</button>
                 </div>
-            </div>
-            
-            <div class="flex items-center gap-4">
-                <button class="w-10 h-10 rounded-full bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-white hover:bg-slate-100 transition relative">
-                    <i class="fa-regular fa-bell"></i>
-                    <span class="absolute top-2 right-2 w-2.5 h-2.5 bg-red-500 border-2 border-white dark:border-slate-900 rounded-full"></span>
-                </button>
             </div>
         </header>
 
-        <main class="p-8 space-y-8">
-
-            <div id="tab-dashboard" class="space-y-8 animate-fade-in">
-                <div class="bg-gradient-to-r from-slate-900 to-slate-800 rounded-3xl p-8 text-white relative overflow-hidden shadow-xl">
-                    <div class="relative z-10 flex justify-between items-end">
-                        <div>
-                            <p class="text-slate-400 text-xs font-bold uppercase mb-2">الدورة الحالية: 2025 - 2029</p>
-                            <h1 class="text-3xl font-bold mb-2">مرحباً، <span id="dashName">...</span> 👋</h1>
-                            <p class="text-slate-300 text-sm max-w-xl">لديك <b>اجتماع قادم</b> بتاريخ 15 فبراير، وهناك <b>2 قرارات</b> تتطلب تصويتك قبل نهاية الأسبوع.</p>
-                            <div class="mt-6 flex gap-3">
-                                <button onclick="switchBoardTab('meetings')" class="bg-brandBlue hover:bg-blue-600 px-6 py-2.5 rounded-xl font-bold text-sm transition shadow-lg shadow-blue-900/50">عرض جدول الأعمال</button>
-                                <button onclick="switchBoardTab('resolutions')" class="bg-white/10 hover:bg-white/20 px-6 py-2.5 rounded-xl font-bold text-sm transition backdrop-blur-sm">التصويت الآن</button>
-                            </div>
-                        </div>
-                        <div class="hidden lg:block text-center bg-white/10 p-4 rounded-2xl backdrop-blur-sm border border-white/10">
-                            <span class="block text-xs text-slate-300 mb-1">الاجتماع القادم</span>
-                            <span class="block text-3xl font-bold font-en text-white">15</span>
-                            <span class="block text-xs text-slate-300 uppercase">FEB 2026</span>
+        <div class="flex-1 overflow-y-auto p-8 custom-scroll" id="mainContainer">
+            
+            <div id="view-dashboard" class="space-y-8 animate-fade-in">
+                <div class="bg-gradient-to-r from-slate-900 to-slate-800 rounded-3xl p-8 text-white shadow-xl relative overflow-hidden">
+                    <div class="relative z-10">
+                        <h1 class="text-3xl font-bold mb-2">مرحباً، <span id="dashName" class="text-brandBlue">...</span> 👋</h1>
+                        <p class="text-slate-300 text-sm">لديك اجتماع قادم وقرارات بانتظار التصويت.</p>
+                        <div class="mt-6 flex gap-3">
+                            <button onclick="BoardLayout.switchView('meetings')" class="bg-brandBlue hover:bg-blue-600 px-6 py-2 rounded-xl font-bold text-sm shadow-lg transition">جدول الأعمال</button>
+                            <button onclick="BoardLayout.switchView('resolutions')" class="bg-white/10 hover:bg-white/20 px-6 py-2 rounded-xl font-bold text-sm transition">التصويت</button>
                         </div>
                     </div>
-                    <div class="absolute top-0 left-0 w-64 h-64 bg-brandBlue/20 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                    <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-                        <div class="flex justify-between items-start mb-4">
-                            <div class="w-10 h-10 bg-blue-50 dark:bg-blue-900/20 text-brandBlue rounded-xl flex items-center justify-center"><i class="fa-solid fa-calendar-check"></i></div>
-                            <span class="text-xs font-bold text-slate-400">سنوي</span>
-                        </div>
-                        <h3 class="text-2xl font-bold text-slate-900 dark:text-white num-font">95%</h3>
-                        <p class="text-xs text-slate-500 mt-1">نسبة حضور الاجتماعات</p>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                        <div class="flex justify-between mb-4"><div class="w-10 h-10 bg-red-50 text-red-600 rounded-xl flex items-center justify-center"><i class="fa-solid fa-gavel"></i></div><span class="text-xs font-bold bg-red-50 text-red-600 px-2 py-1 rounded">عاجل</span></div>
+                        <h3 class="text-2xl font-bold num-font">2</h3>
+                        <p class="text-xs text-slate-500">قرارات بانتظار التصويت</p>
                     </div>
-                    <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-                        <div class="flex justify-between items-start mb-4">
-                            <div class="w-10 h-10 bg-red-50 dark:bg-red-900/20 text-red-500 rounded-xl flex items-center justify-center"><i class="fa-solid fa-gavel"></i></div>
-                            <span class="text-xs font-bold text-red-500 bg-red-50 px-2 py-0.5 rounded">عاجل</span>
-                        </div>
-                        <h3 class="text-2xl font-bold text-slate-900 dark:text-white num-font">2</h3>
-                        <p class="text-xs text-slate-500 mt-1">قرارات بانتظار التصويت</p>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                        <div class="flex justify-between mb-4"><div class="w-10 h-10 bg-blue-50 text-brandBlue rounded-xl flex items-center justify-center"><i class="fa-solid fa-calendar-check"></i></div></div>
+                        <h3 class="text-2xl font-bold num-font">95%</h3>
+                        <p class="text-xs text-slate-500">نسبة حضورك</p>
                     </div>
-                    <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-                        <div class="flex justify-between items-start mb-4">
-                            <div class="w-10 h-10 bg-green-50 dark:bg-green-900/20 text-green-600 rounded-xl flex items-center justify-center"><i class="fa-solid fa-file-contract"></i></div>
-                        </div>
-                        <h3 class="text-2xl font-bold text-slate-900 dark:text-white num-font">14</h3>
-                        <p class="text-xs text-slate-500 mt-1">قرارات تم اعتمادها (2026)</p>
-                    </div>
-                    <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-                        <div class="flex justify-between items-start mb-4">
-                            <div class="w-10 h-10 bg-purple-50 dark:bg-purple-900/20 text-purple-600 rounded-xl flex items-center justify-center"><i class="fa-solid fa-folder-open"></i></div>
-                        </div>
-                        <h3 class="text-2xl font-bold text-slate-900 dark:text-white num-font">8</h3>
-                        <p class="text-xs text-slate-500 mt-1">وثائق جديدة في المكتبة</p>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div class="lg:col-span-2 bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-                        <h3 class="font-bold text-slate-800 dark:text-white mb-6">مؤشرات أداء المجلس (المشاركة والتصويت)</h3>
-                        <div class="h-64 relative w-full">
-                            <canvas id="boardChart"></canvas>
-                        </div>
-                    </div>
-                    
-                    <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-                        <h3 class="font-bold text-slate-800 dark:text-white mb-4">آخر التحديثات</h3>
-                        <div class="space-y-4">
-                            <div class="flex gap-3">
-                                <div class="mt-1 w-2 h-2 rounded-full bg-blue-500 flex-shrink-0"></div>
-                                <div>
-                                    <p class="text-xs font-bold text-slate-700 dark:text-slate-300">تم رفع محضر الاجتماع السابق</p>
-                                    <p class="text-[10px] text-slate-400">قبل ساعتين • أمانة السر</p>
-                                </div>
-                            </div>
-                            <div class="flex gap-3">
-                                <div class="mt-1 w-2 h-2 rounded-full bg-green-500 flex-shrink-0"></div>
-                                <div>
-                                    <p class="text-xs font-bold text-slate-700 dark:text-slate-300">اعتماد القوائم المالية Q4</p>
-                                    <p class="text-[10px] text-slate-400">أمس • قرار بالتمرير</p>
-                                </div>
-                            </div>
-                            <div class="flex gap-3">
-                                <div class="mt-1 w-2 h-2 rounded-full bg-yellow-500 flex-shrink-0"></div>
-                                <div>
-                                    <p class="text-xs font-bold text-slate-700 dark:text-slate-300">تذكير: تحديث نموذج الإفصاح</p>
-                                    <p class="text-[10px] text-slate-400">قبل يومين • الامتثال</p>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="md:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                        <h3 class="font-bold text-sm mb-4">أداء المجلس (2025)</h3>
+                        <div class="h-32"><canvas id="boardChart"></canvas></div>
                     </div>
                 </div>
             </div>
 
-            <div id="tab-meetings" class="hidden space-y-6 animate-fade-in">
+            <div id="view-meetings" class="hidden space-y-6">
                 <div class="flex justify-between items-center">
-                    <h2 class="text-xl font-bold dark:text-white">جدول الاجتماعات والمحاضر</h2>
-                    <div class="flex gap-2">
-                        <button class="px-4 py-2 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg text-xs font-bold">السابقة</button>
-                        <button class="px-4 py-2 bg-brandBlue text-white rounded-lg text-xs font-bold shadow-lg">القادمة</button>
-                    </div>
+                    <h2 class="text-xl font-bold">جدول الاجتماعات</h2>
+                    <button class="px-4 py-2 bg-brandBlue text-white rounded-lg text-xs font-bold shadow-lg">اجتماع قادم</button>
                 </div>
-
-                <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden">
-                    <table class="w-full text-sm text-right rtl:text-right ltr:text-left">
-                        <thead class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 dark:text-slate-400 text-xs font-bold uppercase">
-                            <tr>
-                                <th class="p-4">المرجع</th>
-                                <th class="p-4">عنوان الاجتماع</th>
-                                <th class="p-4">التاريخ والوقت</th>
-                                <th class="p-4 text-center">النوع</th>
-                                <th class="p-4 text-center">الحالة</th>
-                                <th class="p-4 text-center">إجراء</th>
-                            </tr>
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+                    <table class="w-full text-sm text-right">
+                        <thead class="bg-slate-50 text-slate-500 font-bold text-xs uppercase">
+                            <tr><th class="p-4">العنوان</th><th class="p-4">التاريخ</th><th class="p-4 text-center">النوع</th><th class="p-4 text-center">الحالة</th><th class="p-4 text-center">إجراء</th></tr>
                         </thead>
-                        <tbody class="divide-y divide-slate-100 dark:divide-slate-700 text-slate-700 dark:text-slate-300">
-                            <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
-                                <td class="p-4 font-mono text-xs font-bold text-blue-600">BOD-2026-01</td>
-                                <td class="p-4 font-bold">اجتماع مجلس الإدارة الأول</td>
-                                <td class="p-4 text-xs font-mono">15 Feb 2026 • 10:00 AM</td>
-                                <td class="p-4 text-center"><span class="bg-purple-50 text-purple-700 px-2 py-1 rounded text-[10px] font-bold">حضوري</span></td>
-                                <td class="p-4 text-center"><span class="bg-blue-50 text-brandBlue px-2 py-1 rounded text-[10px] font-bold">مجدول</span></td>
-                                <td class="p-4 text-center">
-                                    <button onclick="alert('تفاصيل')" class="text-slate-500 hover:text-brandBlue"><i class="fa-solid fa-eye"></i></button>
-                                </td>
-                            </tr>
-                            <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
-                                <td class="p-4 font-mono text-xs font-bold text-slate-500">BOD-2025-04</td>
-                                <td class="p-4 font-bold">اجتماع مجلس الإدارة الرابع</td>
-                                <td class="p-4 text-xs font-mono">20 Dec 2025 • 01:00 PM</td>
-                                <td class="p-4 text-center"><span class="bg-orange-50 text-orange-700 px-2 py-1 rounded text-[10px] font-bold">عن بعد</span></td>
-                                <td class="p-4 text-center"><span class="bg-green-50 text-green-700 px-2 py-1 rounded text-[10px] font-bold">منعقد</span></td>
-                                <td class="p-4 text-center">
-                                    <button class="text-brandBlue hover:underline text-xs font-bold"><i class="fa-solid fa-file-pdf"></i> المحضر</button>
-                                </td>
-                            </tr>
-                        </tbody>
+                        <tbody class="divide-y divide-slate-100" id="meetingsTableBody">
+                            </tbody>
                     </table>
                 </div>
             </div>
 
-            <div id="tab-resolutions" class="hidden space-y-6 animate-fade-in">
-                <h2 class="text-xl font-bold dark:text-white">القرارات والتصويت الإلكتروني</h2>
-                
+            <div id="view-resolutions" class="hidden space-y-6">
+                <h2 class="text-xl font-bold">القرارات والتصويت</h2>
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border-l-4 border-l-brandRed border-y border-r border-slate-100 dark:border-slate-700">
-                        <div class="flex justify-between items-start mb-4">
-                            <div>
-                                <div class="flex items-center gap-2 mb-1">
-                                    <span class="text-[10px] bg-red-50 text-red-600 px-2 py-0.5 rounded font-bold">تصويت عاجل</span>
-                                    <span class="text-[10px] text-slate-400 font-en">REF: CIR-2026-02</span>
-                                </div>
-                                <h3 class="font-bold text-lg text-slate-800 dark:text-white">تعيين مستشار قانوني للمجموعة</h3>
-                            </div>
-                            <div class="text-center bg-slate-50 dark:bg-slate-700 p-2 rounded-lg">
-                                <span class="block text-xs text-slate-400">ينتهي خلال</span>
-                                <span class="block text-lg font-bold font-en text-red-500">24h</span>
-                            </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border-r-4 border-r-brandRed border-y border-l border-slate-100">
+                        <div class="flex justify-between mb-4">
+                            <span class="text-xs bg-red-50 text-red-600 px-2 py-1 rounded font-bold">تصويت عاجل</span>
+                            <span class="text-xs text-slate-400 font-en">REF: CIR-2026-02</span>
                         </div>
-                        
-                        <p class="text-sm text-slate-500 dark:text-slate-400 mb-4 bg-slate-50 dark:bg-slate-700/50 p-3 rounded-xl">
-                            الموافقة على التعاقد مع مكتب "ألفا" للاستشارات القانونية لمدة عام واحد بقيمة إجمالية 200,000 ريال، وتفويض الرئيس التنفيذي بالتوقيع.
-                        </p>
-                        
-                        <div class="flex items-center gap-2 mb-6">
-                            <i class="fa-solid fa-paperclip text-slate-400"></i>
-                            <a href="#" class="text-xs text-brandBlue underline font-bold">العرض الفني والمالي.pdf</a>
-                            <span class="text-[10px] text-slate-400">(2.4 MB)</span>
-                        </div>
-
-                        <div class="mb-6">
-                            <div class="flex justify-between text-xs mb-1">
-                                <span class="text-slate-500">نسبة التصويت حتى الآن</span>
-                                <span class="font-bold">60%</span>
-                            </div>
-                            <div class="w-full bg-slate-100 rounded-full h-2">
-                                <div class="bg-blue-500 h-2 rounded-full" style="width: 60%"></div>
-                            </div>
-                        </div>
-
+                        <h3 class="font-bold text-lg mb-2">تعيين مستشار قانوني للمجموعة</h3>
+                        <p class="text-sm text-slate-500 mb-4">الموافقة على تعيين مكتب "ألفا" كمستشار قانوني.</p>
                         <div class="grid grid-cols-3 gap-3">
-                            <button onclick="castVote('approve')" class="py-3 border border-green-200 bg-green-50 text-green-700 rounded-xl font-bold text-sm hover:bg-green-600 hover:text-white transition flex flex-col items-center gap-1">
-                                <i class="fa-solid fa-check"></i> موافق
-                            </button>
-                            <button onclick="castVote('reject')" class="py-3 border border-red-200 bg-red-50 text-red-700 rounded-xl font-bold text-sm hover:bg-red-600 hover:text-white transition flex flex-col items-center gap-1">
-                                <i class="fa-solid fa-xmark"></i> غير موافق
-                            </button>
-                            <button onclick="castVote('abstain')" class="py-3 border border-slate-200 bg-slate-50 text-slate-700 rounded-xl font-bold text-sm hover:bg-slate-600 hover:text-white transition flex flex-col items-center gap-1">
-                                <i class="fa-solid fa-minus"></i> ممتنع
-                            </button>
+                            <button onclick="BoardLayout.castVote('approve')" class="py-2 bg-green-50 text-green-700 border border-green-200 rounded-lg text-xs font-bold hover:bg-green-600 hover:text-white transition">موافق</button>
+                            <button onclick="BoardLayout.castVote('reject')" class="py-2 bg-red-50 text-red-700 border border-red-200 rounded-lg text-xs font-bold hover:bg-red-600 hover:text-white transition">رفض</button>
+                            <button class="py-2 bg-slate-50 text-slate-600 border border-slate-200 rounded-lg text-xs font-bold">ممتنع</button>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div id="tab-secretary" class="hidden space-y-6 animate-fade-in">
+            <div id="view-library" class="hidden space-y-6">
+                <h2 class="text-xl font-bold">المكتبة الرقمية</h2>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="bg-white p-6 rounded-xl border border-slate-100 hover:shadow-md transition text-center cursor-pointer">
+                        <i class="fa-solid fa-folder text-4xl text-yellow-400 mb-2"></i>
+                        <p class="font-bold text-sm">اللوائح والسياسات</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl border border-slate-100 hover:shadow-md transition text-center cursor-pointer">
+                        <i class="fa-solid fa-folder text-4xl text-blue-400 mb-2"></i>
+                        <p class="font-bold text-sm">محاضر الاجتماعات</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="view-secretary" class="hidden space-y-6">
                 <div class="bg-slate-800 text-white rounded-3xl p-8 relative overflow-hidden shadow-xl">
-                    <div class="absolute top-0 right-0 p-6 opacity-10"><i class="fa-solid fa-feather-pointed text-9xl"></i></div>
-                    <div class="relative z-10">
-                        <h2 class="text-2xl font-bold mb-2">مركز إدارة أمانة السر</h2>
-                        <p class="text-slate-400 text-sm mb-6">أدوات التحكم في الجلسات، المحاضر، والتواصل مع الأعضاء.</p>
-                        
-                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                            <button class="bg-white/10 hover:bg-white/20 p-4 rounded-xl text-center transition backdrop-blur-sm border border-white/5">
-                                <div class="w-10 h-10 mx-auto bg-green-500 rounded-full flex items-center justify-center mb-2 shadow-lg"><i class="fa-solid fa-plus text-white"></i></div>
-                                <p class="text-xs font-bold">اجتماع جديد</p>
-                            </button>
-                            <button class="bg-white/10 hover:bg-white/20 p-4 rounded-xl text-center transition backdrop-blur-sm border border-white/5">
-                                <div class="w-10 h-10 mx-auto bg-blue-500 rounded-full flex items-center justify-center mb-2 shadow-lg"><i class="fa-solid fa-pen-nib text-white"></i></div>
-                                <p class="text-xs font-bold">مسودة محضر</p>
-                            </button>
-                            <button class="bg-white/10 hover:bg-white/20 p-4 rounded-xl text-center transition backdrop-blur-sm border border-white/5">
-                                <div class="w-10 h-10 mx-auto bg-purple-500 rounded-full flex items-center justify-center mb-2 shadow-lg"><i class="fa-solid fa-bullhorn text-white"></i></div>
-                                <p class="text-xs font-bold">تعميم قرار</p>
-                            </button>
-                            <button class="bg-white/10 hover:bg-white/20 p-4 rounded-xl text-center transition backdrop-blur-sm border border-white/5">
-                                <div class="w-10 h-10 mx-auto bg-yellow-500 rounded-full flex items-center justify-center mb-2 shadow-lg"><i class="fa-solid fa-bell text-white"></i></div>
-                                <p class="text-xs font-bold">إرسال تذكير</p>
-                            </button>
-                        </div>
+                    <h2 class="text-2xl font-bold mb-2">مركز أمانة السر</h2>
+                    <p class="text-slate-400 text-sm mb-6">أدوات إدارة الجلسات والمحاضر.</p>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 relative z-10">
+                        <button class="bg-white/10 hover:bg-white/20 p-4 rounded-xl text-center backdrop-blur-sm border border-white/5 transition"><i class="fa-solid fa-plus text-green-400 text-2xl mb-2"></i><p class="text-xs font-bold">اجتماع جديد</p></button>
+                        <button class="bg-white/10 hover:bg-white/20 p-4 rounded-xl text-center backdrop-blur-sm border border-white/5 transition"><i class="fa-solid fa-pen-nib text-blue-400 text-2xl mb-2"></i><p class="text-xs font-bold">محضر جديد</p></button>
                     </div>
                 </div>
             </div>
 
-        </main>
+        </div>
     </div>
 
     <div id="signModal" class="fixed inset-0 bg-black/80 hidden z-50 flex items-center justify-center backdrop-blur-sm p-4">
-        <div class="bg-white dark:bg-slate-800 w-full max-w-md rounded-2xl shadow-2xl p-6 transform scale-95 transition-transform" id="signContent">
-            <h3 class="font-bold text-lg mb-2 text-center dark:text-white">تأكيد التصويت والتوقيع</h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400 text-center mb-4">أقر بصفتي عضو مجلس إدارة على الموافقة.</p>
-            <div class="h-32 bg-slate-50 dark:bg-slate-700 border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-xl mb-4 flex items-center justify-center relative group cursor-crosshair">
-                <span class="text-slate-400 text-xs pointer-events-none group-hover:hidden">ارسم توقيعك هنا</span>
-                <div class="w-full h-full" onclick="this.innerHTML='<div class=\'flex items-center justify-center h-full\'><i class=\'fa-solid fa-signature text-4xl text-brandBlue opacity-80\'></i></div>'"></div>
+        <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl p-6">
+            <h3 class="font-bold text-lg mb-2 text-center">تأكيد التصويت</h3>
+            <p class="text-xs text-slate-500 text-center mb-4">يرجى التوقيع أدناه لاعتماد تصويتك.</p>
+            <div class="h-32 bg-slate-50 border-2 border-dashed border-slate-300 rounded-xl mb-4 flex items-center justify-center cursor-crosshair" onclick="this.innerHTML='<i class=\'fa-solid fa-signature text-3xl opacity-50\'></i>'">
+                <span class="text-xs text-slate-400 pointer-events-none">ارسم توقيعك هنا</span>
             </div>
             <div class="flex gap-2">
-                <button onclick="document.getElementById('signModal').classList.add('hidden')" class="flex-1 py-2 border dark:border-slate-600 rounded-lg text-sm font-bold dark:text-white">إلغاء</button>
-                <button onclick="confirmVoteProcess()" class="flex-1 py-2 bg-brandBlue text-white rounded-lg text-sm font-bold shadow-lg">اعتماد</button>
+                <button onclick="document.getElementById('signModal').classList.add('hidden')" class="flex-1 py-2 border rounded-lg text-sm font-bold">إلغاء</button>
+                <button onclick="BoardLayout.confirmVote()" class="flex-1 py-2 bg-brandBlue text-white rounded-lg text-sm font-bold shadow-lg">اعتماد</button>
             </div>
         </div>
     </div>
@@ -381,84 +222,7 @@
     <script src="../admin/js/core/config.js"></script>
     <script src="../admin/js/services/data-service.js"></script>
     
-    <script>
-        // Mock User
-        const currentUser = {
-            name: "م. هشام السحيباني",
-            role: "Secretary", // Change to 'Member' to hide secretary tools
-            avatar: "../photo/ceo.jpeg"
-        };
+    <script src="js/board-layout.js"></script>
 
-        // Init
-        document.addEventListener('DOMContentLoaded', () => {
-            setTimeout(() => document.getElementById('loadingOverlay').classList.add('hidden'), 1000);
-            
-            document.getElementById('sidebarName').innerText = currentUser.name;
-            document.getElementById('sidebarRole').innerText = currentUser.role === 'Secretary' ? 'أمين السر' : 'عضو مجلس';
-            document.getElementById('dashName').innerText = currentUser.name.split(' ')[1];
-            document.getElementById('sidebarAvatar').src = currentUser.avatar;
-
-            if(currentUser.role === 'Secretary') {
-                document.getElementById('secMenu').classList.remove('hidden');
-            }
-
-            renderChart();
-        });
-
-        // Navigation Logic
-        function switchBoardTab(tabId) {
-            // Hide all tabs
-            document.querySelectorAll('[id^="tab-"]').forEach(el => el.classList.add('hidden'));
-            // Show target
-            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
-            
-            // Update Sidebar
-            document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active', 'bg-brandRed', 'text-white'));
-            document.querySelectorAll('.nav-link').forEach(el => el.classList.add('text-slate-500'));
-            
-            const activeBtn = document.getElementById(`nav-${tabId}`);
-            if(activeBtn) {
-                activeBtn.classList.add('active', 'bg-brandRed', 'text-white');
-                activeBtn.classList.remove('text-slate-500');
-            }
-
-            // Update Title
-            const titles = { 'dashboard': 'لوحة القيادة', 'meetings': 'الاجتماعات', 'resolutions': 'القرارات', 'library': 'المكتبة', 'secretary': 'أمانة السر' };
-            document.getElementById('pageTitle').innerText = titles[tabId];
-        }
-
-        // Voting Logic
-        function castVote(type) {
-            document.getElementById('signModal').classList.remove('hidden');
-        }
-        function confirmVoteProcess() {
-            document.getElementById('signModal').classList.add('hidden');
-            alert('تم اعتماد صوتك وتشفير التوقيع.');
-        }
-        function logout() { window.location.href = '../index.html'; }
-
-        // Chart
-        function renderChart() {
-            const ctx = document.getElementById('boardChart').getContext('2d');
-            new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: ['Q1', 'Q2', 'Q3', 'Q4'],
-                    datasets: [{
-                        label: 'نسبة الحضور',
-                        data: [100, 90, 95, 100],
-                        backgroundColor: '#4267B2',
-                        borderRadius: 5
-                    }, {
-                        label: 'القرارات المعتمدة',
-                        data: [5, 8, 3, 6],
-                        backgroundColor: '#FB4747',
-                        borderRadius: 5
-                    }]
-                },
-                options: { responsive: true, maintainAspectRatio: false }
-            });
-        }
-    </script>
 </body>
 </html>
