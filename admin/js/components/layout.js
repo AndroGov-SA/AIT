@@ -318,7 +318,7 @@ const Layout = (function() {
   }
 
   // ==========================================
-  // 5. RENDER FUNCTIONS
+  // 5. RENDER FUNCTIONS (Fixed for New Auth Roles)
   // ==========================================
   function renderSidebar() {
     const container = document.getElementById('sidebar-container');
@@ -326,12 +326,36 @@ const Layout = (function() {
 
     const lang = AppConfig.getLang();
     const isRTL = AppConfig.isRTL();
-    const currentPath = window.location.pathname.split('/').pop() || 'admin.html';
+    const currentPath = window.location.pathname.split('/').pop() || 'index.html';
     const systemInfo = AppConfig.getSystemInfo();
-    const user = _state.currentUser;
+    
+    // التأكد من جلب المستخدم سواء من الحالة أو التخزين المحلي
+    const user = _state.currentUser || JSON.parse(localStorage.getItem('currentUser'));
 
-    const userRole = user?.role || 'Admin';
-    const activeMenu = _menuDefinitions[userRole] || _menuDefinitions['Admin'];
+    // ----------------------------------------------------
+    // 🛠️ التعديل الجوهري: ربط أنواع المستخدمين بالقوائم
+    // ----------------------------------------------------
+    const roleMap = {
+        'admin': 'Admin',
+        'ceo': 'Admin',       // الرئيس التنفيذي يرى قائمة الأدمن (أو يمكنك عمل قائمة خاصة Exec)
+        'cfo': 'Admin',       // المدير المالي يرى قائمة الأدمن مؤقتاً
+        'cto': 'Admin',       // المدير التقني
+        'hr_exec': 'Admin',   // مدير الموارد
+        'board': 'Board',     // أعضاء المجلس
+        'audit': 'Audit',     // التدقيق
+        'shareholder': 'Shareholder', // المساهمين
+        'staff': 'Employee',  // الموظفين
+        'employee': 'Employee'
+    };
+
+    // نستخدم user.type الذي انشأناه في auth.js، إذا لم يوجد نستخدم role
+    const userType = user?.type || user?.role || 'staff';
+    
+    // تحديد مفتاح القائمة بناءً على الخريطة، والافتراضي هو Employee
+    const menuKey = roleMap[userType] || 'Employee';
+    
+    // جلب القائمة المناسبة
+    const activeMenu = _menuDefinitions[menuKey] || _menuDefinitions['Employee'];
 
     let menuHTML = '';
     
@@ -341,17 +365,18 @@ const Layout = (function() {
           menuHTML += `<div class="px-3 mt-6 mb-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider">${sectionLabel}</div>`;
           
           group.items.forEach(item => {
+            // معالجة الروابط لتتوافق مع المجلدات المختلفة
             const linkPage = item.link.split('/').pop(); 
-            const isActive = currentPath === linkPage;
+            const isActive = currentPath === linkPage || window.location.href.includes(item.link);
             
             const label = (typeof I18n !== 'undefined') ? (I18n.t(`nav.${item.key}`) || item.key) : item.key;
-            const baseClass = "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200";
+            const baseClass = "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 group";
             const activeClass = "bg-brandRed text-white shadow-md shadow-red-500/20";
             const inactiveClass = "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-brandRed";
 
             menuHTML += `
               <a href="${item.link}" class="${baseClass} ${isActive ? activeClass : inactiveClass}">
-                <div class="w-6 text-center"><i class="fa-solid ${item.icon}"></i></div>
+                <div class="w-6 text-center transition-transform group-hover:scale-110"><i class="fa-solid ${item.icon}"></i></div>
                 <span class="flex-1 truncate">${label}</span>
               </a>
             `;
@@ -363,92 +388,47 @@ const Layout = (function() {
       ? `<div class="mt-3 flex flex-wrap gap-1">${RoleSwitcher.renderBadges()}</div>` 
       : '';
 
+    // تحديد اسم العرض (يدعم اللغتين)
+    const displayName = typeof user.name === 'object' ? (lang === 'ar' ? user.name.ar : user.name.en) : user.name;
+    const displayTitle = user.title || user.role;
+
     container.innerHTML = `
       <aside id="main-sidebar" class="fixed top-0 ${isRTL ? 'right-0 border-l' : 'left-0 border-r'} z-50 h-screen w-72 flex-col hidden md:flex bg-white dark:bg-[#0F172A] border-slate-200 dark:border-slate-800 transition-all duration-300">
         <div class="h-20 flex items-center px-6 border-b border-slate-100 dark:border-slate-800">
           <div class="flex items-center gap-3 w-full">
-            <div class="w-10 h-10 rounded-xl bg-brandRed text-white flex items-center justify-center font-bold text-xl">A</div>
+            <div class="w-10 h-10 rounded-xl bg-brandRed text-white flex items-center justify-center font-bold text-xl shadow-lg shadow-brandRed/20">
+                <i class="fa-solid fa-layer-group"></i>
+            </div>
             <div class="overflow-hidden">
               <h1 class="font-bold text-sm text-slate-800 dark:text-white truncate">${systemInfo.name}</h1>
               <p class="text-[10px] text-slate-500 uppercase tracking-widest truncate">v${systemInfo.version}</p>
             </div>
           </div>
         </div>
+        
         <div class="p-4">
-          <a link: 'profile.html' class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 hover:border-brandRed transition group cursor-pointer">
-            <img src="${user.avatar}" class="w-10 h-10 rounded-full border-2 border-white dark:border-slate-600 object-cover shrink-0">
+          <a href="profile.html" class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 hover:border-brandRed transition group cursor-pointer">
+            <div class="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-slate-500 font-bold shrink-0">
+                ${displayName.charAt(0).toUpperCase()}
+            </div>
             <div class="overflow-hidden flex-1 min-w-0">
-              <p class="text-sm font-bold text-slate-800 dark:text-white truncate group-hover:text-brandRed transition">${user.displayName}</p>
-              <p class="text-[10px] text-brandRed font-medium truncate">${user.displayTitle}</p>
+              <p class="text-sm font-bold text-slate-800 dark:text-white truncate group-hover:text-brandRed transition">${displayName}</p>
+              <p class="text-[10px] text-brandRed font-medium truncate">${displayTitle}</p>
             </div>
           </a>
           ${roleBadges}
         </div>
+
         <nav id="sidebar-nav" class="flex-1 overflow-y-auto px-3 py-2 custom-scroll space-y-0.5">
           ${menuHTML}
         </nav>
+        
         <div class="p-4 text-center text-[10px] text-slate-400 border-t border-slate-100 dark:border-slate-800">
           ${systemInfo.copyright}
         </div>
       </aside>
     `;
   }
-
-  function renderHeader() {
-    const container = document.getElementById('header-container');
-    if (!container) return;
-
-    const lang = AppConfig.getLang();
-    const isRTL = AppConfig.isRTL();
-    const isDark = AppConfig.isDarkMode();
-
-    let notifListHTML = _notifications.length > 0 ? _notifications.map(n => `
-      <div class="p-3 border-b border-slate-100 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition cursor-pointer flex gap-3">
-        <div class="w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${n.color}"><i class="fa-solid ${n.icon} text-xs"></i></div>
-        <div class="flex-1 min-w-0">
-          <p class="text-xs font-bold text-slate-800 dark:text-white">${(typeof I18n !== 'undefined') ? I18n.t(n.titleKey) : n.titleKey}</p>
-          <p class="text-[10px] text-slate-500 mt-0.5 truncate">${lang==='ar'?n.msgAr:n.msgEn}</p>
-          <p class="text-[9px] text-slate-400 mt-1">${n.time}</p>
-        </div>
-      </div>
-    `).join('') : `<div class="p-6 text-center text-slate-400 text-xs">${(typeof I18n !== 'undefined') ? I18n.t('notifications.empty') : 'No Notifications'}</div>`;
-
-    const roleSwitcherHTML = (typeof RoleSwitcher !== 'undefined' && RoleSwitcher.hasMultipleRoles()) ? RoleSwitcher.renderButton() : '';
-
-    container.innerHTML = `
-      <header class="h-20 sticky top-0 z-40 flex items-center justify-between px-6 bg-white/80 dark:bg-[#0F172A]/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 transition-all">
-        <div class="flex items-center gap-4">
-          <button onclick="Layout.toggleMobileSidebar()" class="md:hidden text-slate-500 dark:text-slate-200 hover:text-brandRed transition"><i class="fa-solid fa-bars text-xl"></i></button>
-        </div>
-        <div class="flex items-center gap-3">
-          ${roleSwitcherHTML}
-          
-          <button onclick="if(typeof AndroBot !== 'undefined') AndroBot.toggle()" class="w-9 h-9 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-brandBlue transition flex items-center justify-center" title="${lang==='ar'?'المساعد الذكي':'AI Assistant'}">
-             <i class="fa-solid fa-robot"></i>
-          </button>
-
-          <div class="relative">
-            <button id="notifBtn" onclick="Layout.toggleNotif()" class="w-9 h-9 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-white transition relative flex items-center justify-center">
-              <i class="fa-regular fa-bell"></i>
-              ${_notifications.length > 0 ? '<span class="absolute top-2 right-2.5 w-2 h-2 bg-brandRed rounded-full border border-white dark:border-slate-800 animate-pulse"></span>' : ''}
-            </button>
-            <div id="notifDropdown" class="hidden absolute top-12 ${isRTL ? 'left-0' : 'right-0'} w-80 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 overflow-hidden z-50">
-              <div class="p-3 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-900/50">
-                <span class="text-xs font-bold dark:text-white">${(typeof I18n !== 'undefined') ? I18n.t('notifications.title') : 'Notifications'}</span>
-              </div>
-              <div class="max-h-64 overflow-y-auto custom-scroll">${notifListHTML}</div>
-            </div>
-          </div>
-
-          <button onclick="Layout.toggleLang()" class="h-9 px-3 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-xs font-bold text-slate-600 dark:text-white transition">${lang === 'ar' ? 'EN' : 'عربي'}</button>
-          <button onclick="Layout.toggleTheme()" class="w-9 h-9 rounded-lg border border-slate-200 dark:border-slate-700 flex items-center justify-center hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-yellow-400 transition"><i class="fa-solid ${isDark ? 'fa-sun' : 'fa-moon'}"></i></button>
-          <div class="h-6 w-px bg-slate-200 dark:bg-slate-700 mx-1"></div>
-          <button onclick="Layout.logout()" class="text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-2"><i class="fa-solid fa-power-off"></i> <span class="hidden sm:inline">${(typeof I18n !== 'undefined') ? I18n.t('auth.logout') : 'Logout'}</span></button>
-        </div>
-      </header>
-    `;
-  }
-
   // ==========================================
   // 6. HELPER FUNCTIONS & EXPORTS
   // ==========================================
