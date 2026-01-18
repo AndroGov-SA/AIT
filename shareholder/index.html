@@ -13,68 +13,91 @@
             theme: { extend: { colors: { brandRed: '#FB4747', brandDark: '#1E293B' }, fontFamily: { sans: ['Tajawal', 'sans-serif'] } } }
         }
     </script>
+    <style>
+        .num-font { font-family: 'Inter', sans-serif; font-feature-settings: "tnum"; }
+        .card-grad { background: linear-gradient(135deg, rgba(251, 71, 71, 0.1) 0%, rgba(251, 71, 71, 0) 100%); }
+    </style>
 </head>
-<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white font-sans">
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white font-sans transition-colors duration-300">
 
     <div id="sidebar-container"></div>
 
-    <div class="lg:mr-72 transition-all duration-300">
+    <div class="main-content-wrapper transition-all duration-300 flex flex-col min-h-screen rtl:lg:mr-64 ltr:lg:ml-64">
+        
         <div id="header-container"></div>
 
         <main class="p-8 space-y-8">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-sm">
-                    <div class="flex justify-between items-start mb-4">
-                        <div>
-                            <p class="text-slate-400 text-xs font-bold uppercase">مجموع الأسهم</p>
-                            <h3 class="text-3xl font-extrabold text-slate-900 dark:text-white mt-1" id="sharesCount">...</h3>
-                        </div>
-                        <div class="w-12 h-12 rounded-xl bg-blue-50 dark:bg-blue-900/20 text-blue-600 flex items-center justify-center text-xl"><i class="fa-solid fa-layer-group"></i></div>
-                    </div>
-                    <p class="text-xs text-slate-500">من أصل 600,000 سهم</p>
+            
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <div>
+                    <h1 class="text-2xl font-bold flex items-center gap-3">
+                        <i class="fa-solid fa-chart-line text-brandRed"></i> 
+                        <span data-i18n="dashboardTitle">مركز علاقات المستثمرين</span>
+                    </h1>
+                    <p class="text-slate-500 text-sm mt-1" id="welcomeMsg">مرحباً بك في لوحة استثماراتك الخاصة.</p>
                 </div>
-
-                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-sm">
-                    <div class="flex justify-between items-start mb-4">
-                        <div>
-                            <p class="text-slate-400 text-xs font-bold uppercase">نسبة الملكية</p>
-                            <h3 class="text-3xl font-extrabold text-slate-900 dark:text-white mt-1" id="sharesPercent">...%</h3>
-                        </div>
-                        <div class="w-12 h-12 rounded-xl bg-purple-50 dark:bg-purple-900/20 text-purple-600 flex items-center justify-center text-xl"><i class="fa-solid fa-chart-pie"></i></div>
-                    </div>
-                    <div class="w-full bg-slate-100 h-1.5 rounded-full mt-2 overflow-hidden">
-                        <div id="percentBar" class="bg-purple-600 h-full rounded-full" style="width: 0%"></div>
-                    </div>
-                </div>
-
-                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-sm">
-                    <div class="flex justify-between items-start mb-4">
-                        <div>
-                            <p class="text-slate-400 text-xs font-bold uppercase">القيمة الدفترية</p>
-                            <h3 class="text-3xl font-extrabold text-brandRed mt-1" id="sharesValue">...</h3>
-                        </div>
-                        <div class="w-12 h-12 rounded-xl bg-red-50 dark:bg-red-900/20 text-brandRed flex items-center justify-center text-xl"><i class="fa-solid fa-sack-dollar"></i></div>
-                    </div>
-                    <p class="text-xs text-green-600 font-bold"><i class="fa-solid fa-arrow-trend-up"></i> القيمة الاسمية: 10 ر.س</p>
+                <div class="flex gap-2">
+                    <button class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-4 py-2 rounded-xl text-xs font-bold shadow-sm hover:bg-slate-50 transition">
+                        <i class="fa-solid fa-file-pdf ml-1"></i> تحميل التقرير السنوي
+                    </button>
                 </div>
             </div>
 
-            <div class="bg-white dark:bg-slate-800 rounded-3xl border border-slate-100 dark:border-slate-700 p-8">
+            
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-sm card-grad">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <p class="text-slate-400 text-xs font-bold uppercase">مجموع الأسهم</p>
+                            <h3 class="text-3xl font-extrabold text-slate-900 dark:text-white mt-1 num-font" id="sharesCount">...</h3>
+                        </div>
+                        <div class="w-12 h-12 rounded-xl bg-blue-50 dark:bg-blue-900/20 text-blue-600 flex items-center justify-center text-xl"><i class="fa-solid fa-layer-group"></i></div>
+                    </div>
+                    <p class="text-xs text-slate-500">من أصل 600,000 سهم مصدر</p>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-sm card-grad">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <p class="text-slate-400 text-xs font-bold uppercase">نسبة الملكية</p>
+                            <h3 class="text-3xl font-extrabold text-slate-900 dark:text-white mt-1 num-font" id="sharesPercent">...%</h3>
+                        </div>
+                        <div class="w-12 h-12 rounded-xl bg-purple-50 dark:bg-purple-900/20 text-purple-600 flex items-center justify-center text-xl"><i class="fa-solid fa-chart-pie"></i></div>
+                    </div>
+                    <div class="w-full bg-slate-100 dark:bg-slate-700 h-1.5 rounded-full mt-2 overflow-hidden">
+                        <div id="percentBar" class="bg-purple-600 h-full rounded-full transition-all duration-1000" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-sm card-grad">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <p class="text-slate-400 text-xs font-bold uppercase">القيمة الاسمية الإجمالية</p>
+                            <h3 class="text-3xl font-extrabold text-brandRed mt-1 num-font" id="sharesValue">...</h3>
+                        </div>
+                        <div class="w-12 h-12 rounded-xl bg-red-50 dark:bg-red-900/20 text-brandRed flex items-center justify-center text-xl"><i class="fa-solid fa-sack-dollar"></i></div>
+                    </div>
+                    <p class="text-xs text-green-600 font-bold"><i class="fa-solid fa-arrow-trend-up"></i> القيمة الاسمية للسهم: 10 ر.س</p>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-slate-800 rounded-3xl border border-slate-100 dark:border-slate-700 p-8 shadow-sm">
                 <h3 class="text-xl font-bold mb-6 flex items-center gap-2">
                     <i class="fa-solid fa-certificate text-yellow-500"></i> تفاصيل ملكية الأسهم
                 </h3>
                 <div class="overflow-x-auto">
                     <table class="w-full text-sm text-right">
-                        <thead class="text-xs text-slate-400 uppercase bg-slate-50 dark:bg-slate-900/50 rounded-lg">
+                        <thead class="text-xs text-slate-400 uppercase bg-slate-50 dark:bg-slate-900/50">
                             <tr>
-                                <th class="px-6 py-3 rounded-r-lg">المساهم</th>
-                                <th class="px-6 py-3">نوع الأسهم</th>
-                                <th class="px-6 py-3">العدد</th>
-                                <th class="px-6 py-3">النسبة</th>
-                                <th class="px-6 py-3 rounded-l-lg">الحالة</th>
+                                <th class="px-6 py-4 rounded-r-xl">المساهم</th>
+                                <th class="px-6 py-4">نوع الأسهم</th>
+                                <th class="px-6 py-4">العدد</th>
+                                <th class="px-6 py-4">النسبة</th>
+                                <th class="px-6 py-4 rounded-l-xl">الحالة</th>
                             </tr>
                         </thead>
-                        <tbody id="shareDetailsBody">
+                        <tbody id="shareDetailsBody" class="divide-y divide-slate-50 dark:divide-slate-700">
                             </tbody>
                     </table>
                 </div>
@@ -86,69 +109,66 @@
     <script src="../admin/js/core/i18n.js"></script>
     <script src="../admin/js/services/data-service.js"></script>
     <script src="../admin/js/components/role-switcher.js"></script>
-    
     <script src="../admin/js/components/layout.js"></script>
-    <script src="../admin/js/components/bot.js"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // ننتظر تحميل السكربتات
             const checkLibs = setInterval(() => {
                 if (typeof Layout !== 'undefined' && typeof AppConfig !== 'undefined') {
                     clearInterval(checkLibs);
 
-                    // ✅ الخطوة المهمة: تحديد هوية المستخدم كمساهم
-                    const boardUser = {
+                    // 1. تحديد هوية المستخدم (مساهم)
+                    const currentUser = AppConfig.getCurrentUser() || {
                         id: 'IR_001',
-                        role: 'shareholder', // <--- هذا هو المفتاح الذي سيغير القائمة إلى قائمة المجلس المختصرة
-                        displayName: 'مساهم',
-                        displayTitle: 'مساهم',
-                        avatar: 'https://ui-avatars.com/api/?name=Board&background=random'
+                        role: 'shareholder',
+                        displayName: 'المساهم'
                     };
-
-                    // حفظ المستخدم وتشغيل النظام
-                    AppConfig.setCurrentUser(boardUser);
+                    
+                    // ضمان تعيين الدور كمساهم لفتح القائمة الصحيحة
+                    currentUser.role = 'shareholder';
+                    AppConfig.setCurrentUser(currentUser);
+                    
                     Layout.init();
+                    loadShareholderData(currentUser);
                 }
             }, 50);
         });
-    </script>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // 1. معرفة من هو المساهم الحالي
-            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-            if(!currentUser) return;
+        function loadShareholderData(user) {
+            if (typeof POLICY_DATA === 'undefined') return;
 
-            // 2. البحث عن بياناته المالية في الملف المركزي
-            // (نستخدم الإيميل كمعرف فريد للربط بين المستخدم والمساهم)
-            const shareholderData = POLICY_DATA.shareholders.find(s => s.email === currentUser.email);
+            // البحث عن المساهم باستخدام الإيميل أو المعرف
+            const shareholder = POLICY_DATA.shareholders.find(s => s.id === user.id || s.email === user.email);
 
-            if(shareholderData) {
-                // 3. تعبئة الأرقام
-                document.getElementById('sharesCount').innerText = shareholderData.shares.toLocaleString();
-                document.getElementById('sharesPercent').innerText = shareholderData.percent + '%';
-                document.getElementById('percentBar').style.width = shareholderData.percent + '%';
+            if (shareholder) {
+                // تعبئة البيانات العلوية
+                document.getElementById('sharesCount').innerText = shareholder.shares.toLocaleString();
+                document.getElementById('sharesPercent').innerText = shareholder.percent + '%';
                 
-                // حساب القيمة (عدد الأسهم * 10 ريال القيمة الاسمية)
-                const value = shareholderData.shares * 10;
-                document.getElementById('sharesValue').innerText = value.toLocaleString() + ' ر.س';
+                setTimeout(() => {
+                    document.getElementById('percentBar').style.width = shareholder.percent + '%';
+                }, 500);
 
-                // 4. تعبئة الجدول
+                const totalValue = shareholder.shares * 10;
+                document.getElementById('sharesValue').innerText = totalValue.toLocaleString() + ' ر.س';
+
+                // تعبئة الجدول
                 const tbody = document.getElementById('shareDetailsBody');
                 tbody.innerHTML = `
-                    <tr class="border-b border-slate-100 dark:border-slate-700">
-                        <td class="px-6 py-4 font-bold">${shareholderData.name}</td>
-                        <td class="px-6 py-4">أسهم عادية (Common Stocks)</td>
-                        <td class="px-6 py-4 font-mono text-slate-600 dark:text-slate-300">${shareholderData.shares.toLocaleString()}</td>
-                        <td class="px-6 py-4 text-brandRed font-bold">${shareholderData.percent}%</td>
-                        <td class="px-6 py-4"><span class="px-2 py-1 bg-green-100 text-green-700 rounded-lg text-xs font-bold">نشطة / لها حق التصويت</span></td>
+                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition">
+                        <td class="px-6 py-5 font-bold text-slate-900 dark:text-white">${shareholder.name}</td>
+                        <td class="px-6 py-5">أسهم عادية (Ordinary Shares)</td>
+                        <td class="px-6 py-5 num-font font-bold">${shareholder.shares.toLocaleString()}</td>
+                        <td class="px-6 py-5 text-brandRed font-bold num-font">${shareholder.percent}%</td>
+                        <td class="px-6 py-5">
+                            <span class="px-2 py-1 bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 rounded-lg text-xs font-bold border border-green-200 dark:border-green-800">
+                                نشطة وموثقة
+                            </span>
+                        </td>
                     </tr>
                 `;
-            } else {
-                alert("لم يتم العثور على سجلات مالية لهذا الحساب");
             }
-        });
+        }
     </script>
 </body>
 </html>
