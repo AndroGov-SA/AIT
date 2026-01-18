@@ -28,16 +28,18 @@
         @media print {
             body * { visibility: hidden; }
             #certContainer, #certContainer * { visibility: visible; }
-            #certContainer { position: absolute; left: 0; top: 0; width: 100%; margin: 0; padding: 0; border: none; }
+            #certContainer { position: absolute; left: 0; top: 0; width: 100%; margin: 0; padding: 0; border: none; box-shadow: none; }
             .no-print { display: none !important; }
         }
+        .animate-spin-slow { animation: spin 8s linear infinite; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
     </style>
 </head>
-<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white font-sans">
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white font-sans transition-colors duration-300">
 
     <div id="sidebar-container" class="no-print"></div>
 
-    <div class="lg:mr-72 transition-all duration-300">
+    <div class="main-content-wrapper transition-all duration-300">
         <div id="header-container" class="no-print"></div>
 
         <main class="p-8 max-w-5xl mx-auto">
@@ -47,14 +49,14 @@
                     <h1 class="text-2xl font-bold flex items-center gap-2">
                         <i class="fa-solid fa-file-contract text-brandRed"></i> سجل المساهمين والشهادات
                     </h1>
-                    <p class="text-slate-500 text-sm mt-1">شهادة ملكية إلكترونية معتمدة.</p>
+                    <p class="text-slate-500 text-sm mt-1">شهادة ملكية إلكترونية معتمدة للمساهمين.</p>
                 </div>
                 <button onclick="window.print()" class="px-5 py-2 bg-slate-800 text-white rounded-xl hover:bg-slate-700 transition flex items-center gap-2 shadow-lg">
                     <i class="fa-solid fa-print"></i> طباعة الشهادة
                 </button>
             </div>
 
-            <div id="certContainer" class="bg-white text-slate-800 relative p-10 md:p-16 border-[10px] border-double border-slate-200 shadow-2xl mx-auto max-w-4xl min-h-[600px] flex flex-col justify-between overflow-hidden">
+            <div id="certContainer" class="bg-white text-slate-800 relative p-10 md:p-16 border-[10px] border-double border-slate-200 shadow-2xl mx-auto max-w-4xl min-h-[700px] flex flex-col justify-between overflow-hidden">
                 <div class="absolute inset-0 certificate-pattern pointer-events-none"></div>
                 <div class="absolute top-0 left-0 w-32 h-32 border-t-[20px] border-l-[20px] border-brandRed/20"></div>
                 <div class="absolute bottom-0 right-0 w-32 h-32 border-b-[20px] border-r-[20px] border-brandRed/20"></div>
@@ -72,22 +74,22 @@
                     </p>
                     
                     <h3 id="shName" class="text-3xl font-bold text-brandRed font-serif border-b-2 border-slate-100 inline-block pb-2 px-8">
-                        ...
+                        جاري التحميل...
                     </h3>
 
                     <p class="text-lg text-slate-600">
-                        هو المالك المسجل لـ <span id="shShares" class="font-bold text-slate-900 text-2xl mx-2">...</span> سهماً<br>
+                        هو المالك المسجل لـ <span id="shShares" class="font-bold text-slate-900 text-2xl mx-2">0</span> سهماً<br>
                         بقيمة اسمية قدرها (10 ر.س) للسهم الواحد مدفوعة بالكامل.
                     </p>
 
                     <div class="grid grid-cols-2 gap-8 max-w-lg mx-auto bg-slate-50 p-6 rounded-xl border border-slate-100">
                         <div>
                             <p class="text-xs text-slate-400 uppercase">نسبة الملكية</p>
-                            <p id="shPercent" class="font-bold text-xl">...%</p>
+                            <p id="shPercent" class="font-bold text-xl">0%</p>
                         </div>
                         <div>
                             <p class="text-xs text-slate-400 uppercase">رقم المساهم</p>
-                            <p id="shID" class="font-bold text-xl font-mono text-slate-600">...</p>
+                            <p id="shID" class="font-bold text-xl font-mono text-slate-600">---</p>
                         </div>
                     </div>
                 </div>
@@ -116,7 +118,7 @@
                 </div>
                 
                 <div class="text-[10px] text-center text-slate-300 mt-4 font-mono">
-                    System Generated ID: <span id="certSerial">CERT-2025-XXXX</span>
+                    System Generated ID: <span id="certSerial">CERT-2026-XXXX</span>
                 </div>
             </div>
 
@@ -127,49 +129,52 @@
     <script src="../admin/js/core/i18n.js"></script>
     <script src="../admin/js/services/data-service.js"></script>
     <script src="../admin/js/components/role-switcher.js"></script>
-    
     <script src="../admin/js/components/layout.js"></script>
-    <script src="../admin/js/components/bot.js"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // ننتظر تحميل السكربتات
             const checkLibs = setInterval(() => {
                 if (typeof Layout !== 'undefined' && typeof AppConfig !== 'undefined') {
                     clearInterval(checkLibs);
 
-                    // ✅ الخطوة المهمة: تحديد هوية المستخدم كمساهم
-                    const boardUser = {
+                    // 1. تحديد هوية المستخدم (مساهم)
+                    const currentUser = AppConfig.getCurrentUser() || {
                         id: 'IR_001',
-                        role: 'shareholder', // <--- هذا هو المفتاح الذي سيغير القائمة إلى قائمة المجلس المختصرة
-                        displayName: 'مساهم',
-                        displayTitle: 'مساهم',
-                        avatar: 'https://ui-avatars.com/api/?name=Board&background=random'
+                        role: 'shareholder',
+                        email: 'm.hadyan@androomeda.com' // مثال
                     };
-
-                    // حفظ المستخدم وتشغيل النظام
-                    AppConfig.setCurrentUser(boardUser);
+                    
+                    // ضمان أن الدور مساهم لفتح القائمة الصحيحة
+                    currentUser.role = 'shareholder';
+                    AppConfig.setCurrentUser(currentUser);
+                    
                     Layout.init();
+                    loadCertificateData(currentUser);
                 }
             }, 50);
         });
-    </script>
-    
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const user = JSON.parse(localStorage.getItem('currentUser'));
-            if(!user) return;
 
-            const shData = POLICY_DATA.shareholders.find(s => s.email === user.email);
+        function loadCertificateData(user) {
+            // جلب البيانات من ملف الخدمات أو البيانات المركزية
+            if (typeof POLICY_DATA !== 'undefined' && POLICY_DATA.shareholders) {
+                // البحث عن المساهم إما بالمعرف أو الإيميل
+                const shData = POLICY_DATA.shareholders.find(s => s.id === user.id || s.email === user.email);
 
-            if(shData) {
-                document.getElementById('shName').innerText = shData.name;
-                document.getElementById('shShares').innerText = shData.shares.toLocaleString();
-                document.getElementById('shPercent').innerText = shData.percent + '%';
-                document.getElementById('shID').innerText = shData.id;
-                document.getElementById('certSerial').innerText = `CERT-2025-${shData.id.split('_')[1]}-${Math.floor(Math.random()*9000)+1000}`;
+                if (shData) {
+                    document.getElementById('shName').innerText = shData.name;
+                    document.getElementById('shShares').innerText = shData.shares.toLocaleString();
+                    document.getElementById('shPercent').innerText = shData.percent + '%';
+                    document.getElementById('shID').innerText = shData.id;
+                    
+                    // توليد رقم تسلسلي للشهادة
+                    const datePart = new Date().getFullYear();
+                    const randomPart = Math.floor(Math.random() * 9000) + 1000;
+                    document.getElementById('certSerial').innerText = `CERT-${datePart}-${shData.id.split('_')[1]}-${randomPart}`;
+                }
+            } else {
+                console.error("Policy data not found");
             }
-        });
+        }
     </script>
 </body>
 </html>
