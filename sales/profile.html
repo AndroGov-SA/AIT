@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="pageTitle">ملفي الشخصي | AndroGov</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { brandRed: '#FB4747', brandDark: '#0F172A', moneyGreen: '#10B981', alertOrange: '#F59E0B' },
+                    fontFamily: { sans: ['Tajawal', 'Inter', 'sans-serif'], mono: ['IBM Plex Mono', 'monospace'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        .num-font { font-family: 'IBM Plex Mono', sans-serif; }
+        .glass-header { background: linear-gradient(135deg, #0F172A 0%, #334155 100%); }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300 opacity-0">
+
+    <div id="sidebar-container"></div>
+    
+    <div class="main-content-wrapper transition-all duration-300 flex flex-col min-h-screen rtl:lg:mr-64 ltr:lg:ml-64">
+        
+        <div id="header-container"></div>
+
+        <main class="p-8 space-y-8">
+            
+            <div class="bg-white dark:bg-slate-800 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden relative group">
+                <div class="h-48 glass-header relative">
+                    <div class="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
+                    <div class="absolute bottom-4 left-8 flex gap-4">
+                        <div class="px-3 py-1 bg-white/10 backdrop-blur-sm rounded-lg text-white text-xs border border-white/20">
+                            <i class="fa-solid fa-building"></i> <span data-i18n="lblBranch">الفرع الرئيسي - الرياض</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="px-8 pb-8 flex flex-col lg:flex-row items-end -mt-20 gap-8 relative z-10">
+                    <div class="relative">
+                        <div class="w-40 h-40 rounded-3xl border-4 border-white dark:border-slate-800 overflow-hidden bg-slate-900 shadow-2xl relative group-hover:scale-105 transition-transform duration-300">
+                            <img src="https://ui-avatars.com/api/?name=Fahad+Sales&background=FB4747&color=fff&size=256" class="w-full h-full object-cover">
+                        </div>
+                        <div class="absolute bottom-3 right-[-10px] bg-yellow-400 text-yellow-900 text-[10px] font-bold px-2 py-1 rounded-full shadow-lg border-2 border-white flex items-center gap-1">
+                            <i class="fa-solid fa-star"></i> Top Performer
+                        </div>
+                    </div>
+
+                    <div class="flex-1 mb-2">
+                        <div class="flex items-center gap-3 mb-1">
+                            <h1 class="text-3xl font-bold text-slate-900 dark:text-white" data-i18n="name">فهد المبيعات</h1>
+                            <i class="fa-solid fa-circle-check text-blue-500 text-lg" title="Verified"></i>
+                        </div>
+                        <p class="text-slate-500 text-lg font-medium" data-i18n="role">مدير المبيعات (Sales Manager)</p>
+                        
+                        <div class="flex flex-wrap gap-4 mt-4 text-sm text-slate-500">
+                            <span class="flex items-center gap-2 bg-slate-50 dark:bg-slate-700/50 px-3 py-1.5 rounded-lg border border-slate-100 dark:border-slate-600">
+                                <i class="fa-regular fa-envelope text-brandRed"></i> fahad.s@androgov.com
+                            </span>
+                            <span class="flex items-center gap-2 bg-slate-50 dark:bg-slate-700/50 px-3 py-1.5 rounded-lg border border-slate-100 dark:border-slate-600">
+                                <i class="fa-solid fa-phone text-brandRed"></i> +966 55 123 4567
+                            </span>
+                            <span class="flex items-center gap-2 bg-slate-50 dark:bg-slate-700/50 px-3 py-1.5 rounded-lg border border-slate-100 dark:border-slate-600">
+                                <i class="fa-solid fa-id-card text-brandRed"></i> ID: S-102
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col gap-3 items-end w-full lg:w-auto">
+                        <div class="flex items-center gap-2 bg-green-50 dark:bg-green-900/20 px-3 py-1.5 rounded-lg border border-green-200 dark:border-green-900 cursor-pointer hover:bg-green-100 transition" onclick="toggleStatus()">
+                            <span class="w-2.5 h-2.5 bg-green-500 rounded-full animate-pulse"></span>
+                            <span class="text-xs font-bold text-green-700 dark:text-green-400" id="userStatus" data-i18n="statusAvailable">متاح لاستقبال المكالمات</span>
+                            <i class="fa-solid fa-chevron-down text-[10px] text-green-600"></i>
+                        </div>
+                        <div class="flex gap-3 w-full">
+                            <button class="flex-1 px-5 py-2.5 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-200 rounded-xl text-sm font-bold hover:bg-slate-50 transition shadow-sm">
+                                <i class="fa-solid fa-key"></i> <span data-i18n="btnPass">كلمة المرور</span>
+                            </button>
+                            <button class="flex-1 px-5 py-2.5 bg-brandRed text-white rounded-xl text-sm font-bold shadow-lg shadow-red-500/30 hover:bg-red-700 transition">
+                                <i class="fa-solid fa-pen-to-square"></i> <span data-i18n="btnEdit">تعديل</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                
+                <div class="lg:col-span-2 space-y-6">
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                            <p class="text-xs text-slate-500 mb-1" data-i18n="statTarget">تحقيق المستهدف (Q1)</p>
+                            <div class="flex justify-between items-end">
+                                <h3 class="text-2xl font-bold num-font text-slate-800 dark:text-white">85%</h3>
+                                <span class="text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded font-bold">On Track</span>
+                            </div>
+                            <div class="w-full bg-slate-100 dark:bg-slate-700 h-1.5 rounded-full mt-2 overflow-hidden">
+                                <div class="bg-green-500 h-full" style="width: 85%"></div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                            <p class="text-xs text-slate-500 mb-1" data-i18n="statCommission">العمولة المستحقة</p>
+                            <div class="flex justify-between items-end">
+                                <h3 class="text-2xl font-bold num-font text-brandRed">15,400 <span class="text-sm font-normal text-slate-400">SAR</span></h3>
+                                <i class="fa-solid fa-sack-dollar text-slate-200 text-xl"></i>
+                            </div>
+                            <p class="text-[10px] text-slate-400 mt-2" data-i18n="subCommission">يتم الصرف: 28/02</p>
+                        </div>
+
+                        <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                            <p class="text-xs text-slate-500 mb-1" data-i18n="statCalls">مكالمات هذا الأسبوع</p>
+                            <div class="flex justify-between items-end">
+                                <h3 class="text-2xl font-bold num-font text-blue-600">142</h3>
+                                <span class="text-[10px] text-green-500 font-bold"><i class="fa-solid fa-arrow-up"></i> 12%</span>
+                            </div>
+                            <p class="text-[10px] text-slate-400 mt-2" data-i18n="subCalls">Avg Duration: 4m</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                        <h3 class="font-bold text-sm mb-4 flex items-center gap-2 dark:text-white">
+                            <i class="fa-solid fa-chart-area text-brandRed"></i> <span data-i18n="chartTitle">أداء المبيعات الشخصي (6 أشهر)</span>
+                        </h3>
+                        <div class="h-64 w-full">
+                            <canvas id="performanceChart"></canvas>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="space-y-6">
+                    
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                        <h3 class="font-bold text-sm mb-4 flex items-center gap-2 dark:text-white border-b border-slate-100 dark:border-slate-700 pb-3">
+                            <i class="fa-solid fa-users text-blue-500"></i> <span data-i18n="secTeam">فريقي (المشرف عليهم)</span>
+                        </h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <div class="relative">
+                                        <img src="https://ui-avatars.com/api/?name=Ahmed+S&background=random" class="w-8 h-8 rounded-full">
+                                        <span class="absolute bottom-0 right-0 w-2 h-2 bg-green-500 border-2 border-white dark:border-slate-800 rounded-full"></span>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs font-bold dark:text-white">أحمد سعد</p>
+                                        <p class="text-[10px] text-slate-400">Senior Sales</p>
+                                    </div>
+                                </div>
+                                <span class="text-[10px] font-mono font-bold text-brandRed">92%</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <div class="relative">
+                                        <img src="https://ui-avatars.com/api/?name=Sara+K&background=random" class="w-8 h-8 rounded-full">
+                                        <span class="absolute bottom-0 right-0 w-2 h-2 bg-yellow-500 border-2 border-white dark:border-slate-800 rounded-full"></span>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs font-bold dark:text-white">سارة خالد</p>
+                                        <p class="text-[10px] text-slate-400">Sales Rep</p>
+                                    </div>
+                                </div>
+                                <span class="text-[10px] font-mono font-bold text-brandRed">78%</span>
+                            </div>
+                            <div class="flex items-center justify-between opacity-60">
+                                <div class="flex items-center gap-3">
+                                    <div class="relative">
+                                        <img src="https://ui-avatars.com/api/?name=Omar+F&background=random" class="w-8 h-8 rounded-full">
+                                        <span class="absolute bottom-0 right-0 w-2 h-2 bg-slate-400 border-2 border-white dark:border-slate-800 rounded-full"></span>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs font-bold dark:text-white">عمر فهد</p>
+                                        <p class="text-[10px] text-slate-400">Junior Sales</p>
+                                    </div>
+                                </div>
+                                <span class="text-[10px] font-mono font-bold text-brandRed">--</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                        <h3 class="font-bold text-sm mb-4 flex items-center gap-2 dark:text-white border-b border-slate-100 dark:border-slate-700 pb-3">
+                            <i class="fa-solid fa-briefcase text-slate-400"></i> <span data-i18n="secJob">بيانات الوظيفة</span>
+                        </h3>
+                        <ul class="space-y-4 text-sm">
+                            <li class="flex justify-between items-center">
+                                <span class="text-slate-500" data-i18n="lblDept">القسم</span>
+                                <span class="font-bold dark:text-white">إدارة المبيعات</span>
+                            </li>
+                            <li class="flex justify-between items-center">
+                                <span class="text-slate-500" data-i18n="lblDirect">المدير المباشر</span>
+                                <span class="font-bold dark:text-white">CEO</span>
+                            </li>
+                            <li class="flex justify-between items-center">
+                                <span class="text-slate-500" data-i18n="lblJoin">تاريخ التعيين</span>
+                                <span class="font-bold num-font dark:text-white">01 Jan 2023</span>
+                            </li>
+                            <li class="flex justify-between items-center">
+                                <span class="text-slate-500" data-i18n="lblContract">نوع العقد</span>
+                                <span class="bg-slate-100 dark:bg-slate-700 px-2 py-0.5 rounded text-xs">Full Time</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script src="../admin/js/core/config.js"></script>
+    <script src="../admin/js/core/i18n.js"></script>
+    <script src="../admin/js/services/data-service.js"></script>
+    <script src="../admin/js/components/role-switcher.js"></script>
+    <script src="../admin/js/components/layout.js"></script>
+    <script src="../admin/js/components/bot.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const checkLibs = setInterval(() => {
+                if (typeof Layout !== 'undefined' && typeof AppConfig !== 'undefined') {
+                    clearInterval(checkLibs);
+                    
+                    const salesUser = {
+                        id: 'USR_005',
+                        type: 'sales',
+                        role: 'Sales Manager',
+                        displayName: 'فهد المبيعات',
+                        displayTitle: 'مدير المبيعات',
+                        avatar: 'https://ui-avatars.com/api/?name=Fahad+S&background=random'
+                    };
+
+                    AppConfig.setCurrentUser(salesUser);
+                    Layout.init();
+                }
+            }, 50);
+        });
+
+        const pageContent = {
+            ar: {
+                pageTitle: "ملفي الشخصي | AndroGov",
+                lblBranch: "الفرع الرئيسي - الرياض",
+                name: "فهد المبيعات",
+                role: "مدير المبيعات (Sales Manager)",
+                statusAvailable: "متاح لاستقبال المكالمات",
+                statusBusy: "مشغول (Busy)",
+                btnPass: "كلمة المرور",
+                btnEdit: "تعديل",
+                statTarget: "تحقيق المستهدف (Q1)",
+                statCommission: "العمولة المستحقة",
+                subCommission: "يتم الصرف: 28/02",
+                statCalls: "مكالمات هذا الأسبوع",
+                subCalls: "متوسط المدة: 4د",
+                chartTitle: "أداء المبيعات الشخصي (6 أشهر)",
+                secTeam: "فريقي (المشرف عليهم)",
+                secJob: "بيانات الوظيفة",
+                lblDept: "القسم",
+                lblDirect: "المدير المباشر",
+                lblJoin: "تاريخ التعيين",
+                lblContract: "نوع العقد"
+            },
+            en: {
+                pageTitle: "My Profile | AndroGov",
+                lblBranch: "Main Branch - Riyadh",
+                name: "Fahad Sales",
+                role: "Sales Manager",
+                statusAvailable: "Available for Calls",
+                statusBusy: "Busy",
+                btnPass: "Password",
+                btnEdit: "Edit",
+                statTarget: "Target Achievement (Q1)",
+                statCommission: "Pending Commission",
+                subCommission: "Payout: 28/02",
+                statCalls: "Calls This Week",
+                subCalls: "Avg Duration: 4m",
+                chartTitle: "Personal Sales Performance (6 Months)",
+                secTeam: "My Team",
+                secJob: "Job Details",
+                lblDept: "Department",
+                lblDirect: "Direct Manager",
+                lblJoin: "Joining Date",
+                lblContract: "Contract Type"
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const lang = localStorage.getItem('lang') || 'ar';
+            const dict = pageContent[lang];
+            document.documentElement.lang = lang;
+            document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if(dict[key]) el.innerText = dict[key];
+            });
+
+            initPerfChart();
+        });
+
+        function toggleStatus() {
+            const statusEl = document.getElementById('userStatus');
+            const lang = localStorage.getItem('lang') || 'ar';
+            const dict = pageContent[lang];
+            const current = statusEl.innerText;
+            
+            if (current === dict.statusAvailable) {
+                statusEl.innerText = dict.statusBusy;
+                statusEl.className = "text-xs font-bold text-red-700 dark:text-red-400";
+                statusEl.parentElement.className = "flex items-center gap-2 bg-red-50 dark:bg-red-900/20 px-3 py-1.5 rounded-lg border border-red-200 dark:border-red-900 cursor-pointer hover:bg-red-100 transition";
+                statusEl.previousElementSibling.className = "w-2.5 h-2.5 bg-red-500 rounded-full";
+            } else {
+                statusEl.innerText = dict.statusAvailable;
+                statusEl.className = "text-xs font-bold text-green-700 dark:text-green-400";
+                statusEl.parentElement.className = "flex items-center gap-2 bg-green-50 dark:bg-green-900/20 px-3 py-1.5 rounded-lg border border-green-200 dark:border-green-900 cursor-pointer hover:bg-green-100 transition";
+                statusEl.previousElementSibling.className = "w-2.5 h-2.5 bg-green-500 rounded-full animate-pulse";
+            }
+        }
+
+        function initPerfChart() {
+            const ctx = document.getElementById('performanceChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan'],
+                    datasets: [
+                        {
+                            label: 'Target',
+                            data: [100, 100, 120, 120, 150, 150],
+                            borderColor: '#94A3B8',
+                            borderWidth: 2,
+                            type: 'line',
+                            pointRadius: 0
+                        },
+                        {
+                            label: 'Achieved',
+                            data: [95, 110, 115, 130, 145, 120], // Jan partial
+                            backgroundColor: '#FB4747',
+                            borderRadius: 4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom' } },
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: '#f1f5f9' } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
