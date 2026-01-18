@@ -83,7 +83,10 @@ const Layout = (function() {
         { section: 'govt', items: [
           { key: 'govt', icon: 'fa-passport', link: '../hr/hr_govt.html' },
           { key: 'recruitment', icon: 'fa-user-plus', link: '../hr/hr_recruitment.html' }
-    ]}
+    ]},
+      { section: 'personal', items: [
+        { key: 'profile', icon: 'fa-user-tie', link: '../hr/profile.html' }
+      ]}
   ],
     
     // 3. قائمة الرئيس التنفيذي (CEO)
@@ -107,7 +110,7 @@ const Layout = (function() {
         { key: 'feedback', icon: 'fa-inbox', link: '../ceo/ceo_feedback.html' }
       ]},
       { section: 'personal', items: [
-        { key: 'profile', icon: 'fa-user-tie', link: '../ceo/ceo_profile.html' }
+        { key: 'profile', icon: 'fa-user-tie', link: '../ceo/profile.html' }
       ]}
   ],
     
@@ -143,7 +146,10 @@ const Layout = (function() {
         ]},
       { section: 'config', items: [
         { key: 'settings', icon: 'fa-gears', link: '../finance/fin_settings.html' }
-       ]}
+       ]},
+      { section: 'personal', items: [
+        { key: 'profile', icon: 'fa-user-tie', link: '../finance/profile.html' }
+      ]}
   ],
     
     // 5. قائمة المدير التقني (CTO) 
@@ -168,19 +174,24 @@ const Layout = (function() {
       { section: 'dev', items: [ 
         { key: 'projects', icon: 'fa-code-branch', link: '../cto/cto_projects.html' },
         { key: 'support', icon: 'fa-headset', link: '../cto/cto_support.html' }
-         ]}
+      ]},
+      { section: 'personal', items: [
+        { key: 'profile', icon: 'fa-user-tie', link: '../cto/profile.html' }
+      ]}
   ],
     
     // 6. قائمة المساهمين (shareholder) 
     'shareholder': [
       { section: 'main', items: [
         { key: 'dash', icon: 'fa-chart-pie', link: '../shareholder/index.html' },
-        { key: 'profile', icon: 'fa-id-card', link: '../shareholder/profile.html' },
         { key: 'requests', icon: 'fa-headset', link: '../shareholder/requests.html' },
         { key: 'certificates', icon: 'fa-file-contract', link: '../shareholder/certificates.html' },
         { key: 'dividends', icon: 'fa-hand-holding-dollar', link: '../shareholder/dividends.html' },
         { key: 'voting', icon: 'fa-check-to-slot', link: '../shareholder/voting.html' },
-        ]}
+      ]},
+      { section: 'personal', items: [
+        { key: 'profile', icon: 'fa-user-tie', link: '../shareholder/profile.html' }
+      ]}
   ],
     
     // 7. قائمة المجلس (Board) 
@@ -192,8 +203,11 @@ const Layout = (function() {
         { key: 'meetings', icon: 'fa-calendar-days', link: '../board/meetings.html' },
         { key: 'resolutions', icon: 'fa-file-signature', link: '../board/communication.html' },
         { key: 'finance', icon: 'fa-chart-line', link: '../board/finance.html' }
+      ]},
+      { section: 'personal', items: [
+        { key: 'profile', icon: 'fa-user-tie', link: '../board/profile.html' }
       ]}
-    ],
+  ],
     
     // 8. قائمة اللجان (Committees) 
     'Committees': [
@@ -204,8 +218,11 @@ const Layout = (function() {
         { key: 'meetings', icon: 'fa-calendar-days', link: '../Committees/meetings.html' },
         { key: 'resolutions', icon: 'fa-file-signature', link: '../Committees/communication.html' },
         { key: 'finance', icon: 'fa-chart-line', link: '../Committees/finance.html' }
+      ]},
+      { section: 'personal', items: [
+        { key: 'profile', icon: 'fa-user-tie', link: '../Committees/profile.html' }
       ]}
-    ],
+  ],
     
     // 9. قائمة المبيعات (Sales) 
     'Sales': [
@@ -213,8 +230,11 @@ const Layout = (function() {
         { key: 'dash', icon: 'fa-chart-pie', link: '../Sales/index.html' },
         { key: 'profile', icon: 'fa-id-card', link: '../Sales/profile.html' },
         { key: 'requests', icon: 'fa-headset', link: '../Sales/requests.html' },
-        ]}
-    ],
+        ]},
+      { section: 'personal', items: [
+        { key: 'profile', icon: 'fa-user-tie', link: '../Sales/profile.html' }
+      ]}
+  ],
     
     // --- 10. Internal Audit (Updated Path) ---
     'InternalAudit': [
@@ -228,8 +248,11 @@ const Layout = (function() {
       ]},
       { section: 'departments', items: [
         { key: 'profile', icon: 'fa-id-card', link: '../audit/index.html#profile' }
+      ]},
+      { section: 'personal', items: [
+        { key: 'profile', icon: 'fa-user-tie', link: '../Sales/profile.html' }
       ]}
-    ],
+  ],
     };
     
   const _notifications = [
