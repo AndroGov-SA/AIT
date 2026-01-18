@@ -340,7 +340,7 @@ const Layout = (function() {
           </div>
         </div>
         <div class="p-4">
-          <a href="#" class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 hover:border-brandRed transition group cursor-pointer">
+          <a link: 'profile.html' class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 hover:border-brandRed transition group cursor-pointer">
             <img src="${user.avatar}" class="w-10 h-10 rounded-full border-2 border-white dark:border-slate-600 object-cover shrink-0">
             <div class="overflow-hidden flex-1 min-w-0">
               <p class="text-sm font-bold text-slate-800 dark:text-white truncate group-hover:text-brandRed transition">${user.displayName}</p>
