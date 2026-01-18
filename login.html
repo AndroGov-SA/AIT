@@ -365,15 +365,15 @@
             localStorage.setItem('currentUser', JSON.stringify(user));
 
             // Redirect Logic
-            let redirectUrl = 'employee/dashboard.html';
+            let redirectUrl = 'employee/index.html';
             const type = user.displayType;
 
-            if (type === 'admin') redirectUrl = 'admin/admin.html';
-            else if (type === 'board') redirectUrl = 'admin/board.html';
-            else if (type === 'audit') redirectUrl = 'admin/audit.html';
-            else if (type === 'shareholder') redirectUrl = 'shareholder/dashboard.html';
-            else if (type === 'exec') redirectUrl = 'exec/dashboard.html';
-            else if (type === 'manager') redirectUrl = 'manager/dashboard.html';
+            if (type === 'admin') redirectUrl = 'admin/index.html';
+            else if (type === 'board') redirectUrl = 'board/index.html';
+            else if (type === 'audit') redirectUrl = 'audit/index.html';
+            else if (type === 'shareholder') redirectUrl = 'shareholder/index.html';
+            else if (type === 'exec') redirectUrl = 'exec/index.html';
+            else if (type === 'manager') redirectUrl = 'manager/index.html';
 
             return redirectUrl;
         }
