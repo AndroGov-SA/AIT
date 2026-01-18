@@ -230,6 +230,7 @@ const Layout = (function() {
         { key: 'profile', icon: 'fa-id-card', link: '../audit/index.html#profile' }
       ]}
     ],
+    };
     
   const _notifications = [
     { id: 1, type: 'critical', icon: 'fa-shield-virus', color: 'text-red-500 bg-red-50', titleKey: 'notifications.securityAlert', msgAr: 'محاولة دخول غير مصرح بها.', msgEn: 'Unauthorized login attempt.', time: '2m' },
