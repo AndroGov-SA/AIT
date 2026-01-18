@@ -7,25 +7,36 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
-    <script>tailwind.config = { darkMode: 'class', theme: { extend: { colors: { brandRed: '#FB4747', brandDark: '#1E293B' }, fontFamily: { sans: ['Tajawal', 'sans-serif'] } } } }</script>
+    <script>
+        tailwind.config = { 
+            darkMode: 'class', 
+            theme: { 
+                extend: { 
+                    colors: { brandRed: '#FB4747', brandDark: '#1E293B' }, 
+                    fontFamily: { sans: ['Tajawal', 'sans-serif'] } 
+                } 
+            } 
+        }
+    </script>
 </head>
-<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white font-sans">
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white font-sans transition-colors duration-300">
 
     <div id="sidebar-container"></div>
 
-    <div class="lg:mr-72 transition-all duration-300">
+    <div class="main-content-wrapper transition-all duration-300 flex flex-col min-h-screen rtl:lg:mr-64 ltr:lg:ml-64">
+        
         <div id="header-container"></div>
 
         <main class="p-8 max-w-5xl mx-auto space-y-8">
             
-            <div class="flex items-center justify-between">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4">
                 <div>
                     <h1 class="text-2xl font-bold text-slate-800 dark:text-white flex items-center gap-2">
                         <i class="fa-solid fa-gavel text-brandRed"></i> الجمعيات العمومية
                     </h1>
                     <p class="text-slate-500 text-sm mt-1">إدارة حضورك وتصويتك في اجتماعات الشركة.</p>
                 </div>
-                <span class="px-4 py-2 bg-green-100 text-green-700 rounded-xl text-xs font-bold border border-green-200">
+                <span class="px-4 py-2 bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 rounded-xl text-xs font-bold border border-green-200 dark:border-green-800">
                     <i class="fa-solid fa-circle text-[8px] animate-pulse"></i> الجمعية القادمة: 15 فبراير 2026
                 </span>
             </div>
@@ -35,9 +46,9 @@
                 <div class="p-8">
                     <div class="flex flex-col md:flex-row justify-between gap-6">
                         <div>
-                            <span class="text-xs font-bold text-brandRed bg-red-50 px-3 py-1 rounded-full mb-3 inline-block">الجمعية العامة العادية (41)</span>
+                            <span class="text-xs font-bold text-brandRed bg-red-50 dark:bg-red-900/20 px-3 py-1 rounded-full mb-3 inline-block">الجمعية العامة العادية (41)</span>
                             <h2 class="text-2xl font-bold mb-2">اجتماع الجمعية العامة السنوي لمناقشة القوائم المالية</h2>
-                            <p class="text-slate-500 text-sm leading-relaxed max-w-2xl">
+                            <p class="text-slate-500 dark:text-slate-400 text-sm leading-relaxed max-w-2xl">
                                 سيتم مناقشة تقرير مجلس الإدارة عن السنة المالية المنتهية في 31-12-2025، والتصويت على تعيين مراجع الحسابات، وإبراء ذمة أعضاء المجلس.
                             </p>
                             
@@ -52,12 +63,10 @@
                             <button onclick="openProxyModal()" class="w-full py-3 px-4 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 text-slate-700 dark:text-white rounded-xl font-bold text-sm transition flex items-center justify-center gap-2 border border-slate-200 dark:border-slate-600">
                                 <i class="fa-solid fa-user-check"></i> توكيل شخص آخر
                             </button>
-                            
                             <button onclick="openCorpModal()" class="w-full py-3 px-4 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 text-slate-700 dark:text-white rounded-xl font-bold text-sm transition flex items-center justify-center gap-2 border border-slate-200 dark:border-slate-600">
-                                <i class="fa-solid fa-building-user"></i> تمثيل شركة (Corporate)
+                                <i class="fa-solid fa-building-user"></i> تمثيل شركة
                             </button>
-
-                            <button class="w-full py-3 px-4 bg-brandRed text-white hover:bg-red-700 rounded-xl font-bold text-sm transition flex items-center justify-center gap-2 shadow-lg shadow-red-500/30">
+                            <button onclick="alert('سيتم فتح بوابة التصويت في الموعد المحدد')" class="w-full py-3 px-4 bg-brandRed text-white hover:bg-red-700 rounded-xl font-bold text-sm transition flex items-center justify-center gap-2 shadow-lg shadow-red-500/30">
                                 <i class="fa-solid fa-check-to-slot"></i> التصويت الإلكتروني
                             </button>
                         </div>
@@ -68,9 +77,9 @@
             <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 p-6">
                 <h3 class="font-bold text-lg mb-4">أرشيف الجمعيات</h3>
                 <div class="space-y-4">
-                    <div class="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-700/50 rounded-xl">
+                    <div class="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-700/50 rounded-xl border border-slate-100 dark:border-slate-700">
                         <div class="flex items-center gap-4">
-                            <div class="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-slate-500"><i class="fa-solid fa-file-invoice"></i></div>
+                            <div class="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-600 flex items-center justify-center text-slate-500 dark:text-slate-300"><i class="fa-solid fa-file-invoice"></i></div>
                             <div>
                                 <p class="font-bold text-sm">الجمعية غير العادية (زيادة رأس المال)</p>
                                 <p class="text-xs text-slate-400">10 نوفمبر 2024 • تم الحضور (أصالة)</p>
@@ -84,57 +93,51 @@
         </main>
     </div>
 
-    <div id="proxyModal" class="fixed inset-0 bg-black/50 hidden z-50 flex items-center justify-center backdrop-blur-sm">
-        <div class="bg-white dark:bg-slate-800 w-full max-w-md rounded-3xl p-6 shadow-2xl transform scale-95 transition-transform" id="proxyContent">
+    <div id="proxyModal" class="fixed inset-0 bg-black/50 hidden z-50 flex items-center justify-center backdrop-blur-sm p-4">
+        <div class="bg-white dark:bg-slate-800 w-full max-w-md rounded-3xl p-6 shadow-2xl">
             <div class="flex justify-between items-center mb-6">
-                <h3 class="text-xl font-bold">إصدار توكيل إلكتروني</h3>
-                <button onclick="closeModal('proxyModal')" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center hover:bg-red-100 hover:text-red-500 transition"><i class="fa-solid fa-xmark"></i></button>
+                <h3 class="text-xl font-bold dark:text-white">إصدار توكيل إلكتروني</h3>
+                <button onclick="closeModal('proxyModal')" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center hover:bg-red-100 hover:text-red-500 dark:text-white transition"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            
-            <div class="space-y-4">
+            <div class="space-y-4 text-right">
                 <div>
                     <label class="block text-xs font-bold text-slate-500 mb-2">اسم الوكيل (رباعياً)</label>
-                    <input type="text" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm" placeholder="أدخل اسم الشخص الذي سينوب عنك">
+                    <input type="text" class="w-full p-3 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl text-sm dark:text-white outline-none focus:border-brandRed" placeholder="أدخل اسم الشخص الذي سينوب عنك">
                 </div>
                 <div>
                     <label class="block text-xs font-bold text-slate-500 mb-2">رقم الهوية الوطنية للوكيل</label>
-                    <input type="text" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm" placeholder="10xxxxxxxx">
+                    <input type="text" class="w-full p-3 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl text-sm dark:text-white outline-none focus:border-brandRed" placeholder="10xxxxxxxx">
                 </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-500 mb-2">صيغة التوكيل</label>
-                    <div class="p-3 bg-yellow-50 text-yellow-800 text-xs rounded-xl border border-yellow-100 leading-relaxed">
-                        أوكل أنا الموقع أدناه السيد المذكور أعلاه للحضور والتصويت نيابة عني في اجتماع الجمعية العامة العادية (41) لشركة أندروميدا...
-                    </div>
+                <div class="p-3 bg-yellow-50 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-200 text-xs rounded-xl border border-yellow-100 dark:border-yellow-900/30 leading-relaxed">
+                    أوكل أنا الموقع أدناه السيد المذكور أعلاه للحضور والتصويت نيابة عني في اجتماع الجمعية العامة العادية...
                 </div>
-                
                 <div class="flex gap-3 mt-6">
-                    <button onclick="closeModal('proxyModal')" class="flex-1 py-3 bg-slate-100 text-slate-600 rounded-xl font-bold text-sm">إلغاء</button>
-                    <button class="flex-1 py-3 bg-brandRed text-white rounded-xl font-bold text-sm hover:bg-red-700">إصدار التوكيل</button>
+                    <button onclick="closeModal('proxyModal')" class="flex-1 py-3 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-xl font-bold text-sm">إلغاء</button>
+                    <button onclick="alert('تم إصدار التوكيل بنجاح')" class="flex-1 py-3 bg-brandRed text-white rounded-xl font-bold text-sm hover:bg-red-700">إصدار التوكيل</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="corpModal" class="fixed inset-0 bg-black/50 hidden z-50 flex items-center justify-center backdrop-blur-sm">
+    <div id="corpModal" class="fixed inset-0 bg-black/50 hidden z-50 flex items-center justify-center backdrop-blur-sm p-4">
         <div class="bg-white dark:bg-slate-800 w-full max-w-md rounded-3xl p-6 shadow-2xl">
             <div class="flex justify-between items-center mb-6">
-                <h3 class="text-xl font-bold">تمثيل الشخصية الاعتبارية</h3>
-                <button onclick="closeModal('corpModal')" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+                <h3 class="text-xl font-bold dark:text-white">تمثيل الشخصية الاعتبارية</h3>
+                <button onclick="closeModal('corpModal')" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center dark:text-white"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            
             <div class="space-y-4">
-                <p class="text-xs text-slate-500 bg-blue-50 p-3 rounded-xl border border-blue-100">
-                    <i class="fa-solid fa-info-circle text-blue-500"></i> خاص بالشركات والمؤسسات (مثل شركة بيجي). يرجى إرفاق خطاب التفويض مصدقاً من الغرفة التجارية.
+                <p class="text-xs text-slate-500 dark:text-slate-400 bg-blue-50 dark:bg-blue-900/20 p-3 rounded-xl border border-blue-100 dark:border-blue-900/30">
+                    <i class="fa-solid fa-info-circle text-blue-500"></i> خاص بالشركات والمؤسسات. يرجى إرفاق خطاب التفويض مصدقاً من الغرفة التجارية.
                 </p>
                 <div>
                     <label class="block text-xs font-bold text-slate-500 mb-2">اسم الممثل النظامي</label>
-                    <input type="text" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm" value="صالح السحيباني">
+                    <input type="text" class="w-full p-3 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl text-sm dark:text-white outline-none" value="صالح السحيباني">
                 </div>
-                <div class="border-2 border-dashed border-slate-300 rounded-xl p-6 text-center hover:bg-slate-50 transition cursor-pointer">
+                <div class="border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-xl p-6 text-center hover:bg-slate-50 dark:hover:bg-slate-700/50 transition cursor-pointer">
                     <i class="fa-solid fa-cloud-arrow-up text-3xl text-slate-300 mb-2"></i>
-                    <p class="text-xs font-bold text-slate-500">ارفق خطاب التفويض (PDF)</p>
+                    <p class="text-xs font-bold text-slate-500 dark:text-slate-400">ارفق خطاب التفويض (PDF)</p>
                 </div>
-                <button class="w-full py-3 bg-brandRed text-white rounded-xl font-bold text-sm mt-4">إرسال للمطابقة</button>
+                <button onclick="alert('جاري المراجعة')" class="w-full py-3 bg-brandRed text-white rounded-xl font-bold text-sm mt-4 hover:bg-red-700">إرسال للمطابقة</button>
             </div>
         </div>
     </div>
@@ -143,46 +146,32 @@
     <script src="../admin/js/core/i18n.js"></script>
     <script src="../admin/js/services/data-service.js"></script>
     <script src="../admin/js/components/role-switcher.js"></script>
-    
     <script src="../admin/js/components/layout.js"></script>
-    <script src="../admin/js/components/bot.js"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // ننتظر تحميل السكربتات
             const checkLibs = setInterval(() => {
                 if (typeof Layout !== 'undefined' && typeof AppConfig !== 'undefined') {
                     clearInterval(checkLibs);
 
-                    // ✅ الخطوة المهمة: تحديد هوية المستخدم كمساهم
-                    const boardUser = {
+                    // ✅ تحديد هوية المستخدم كمساهم (Shareholder)
+                    const currentUser = AppConfig.getCurrentUser() || {
                         id: 'IR_001',
-                        role: 'shareholder', // <--- هذا هو المفتاح الذي سيغير القائمة إلى قائمة المجلس المختصرة
-                        displayName: 'مساهم',
-                        displayTitle: 'مساهم',
-                        avatar: 'https://ui-avatars.com/api/?name=Board&background=random'
+                        role: 'shareholder',
+                        displayName: 'المساهم'
                     };
-
-                    // حفظ المستخدم وتشغيل النظام
-                    AppConfig.setCurrentUser(boardUser);
+                    
+                    currentUser.role = 'shareholder';
+                    AppConfig.setCurrentUser(currentUser);
                     Layout.init();
                 }
             }, 50);
         });
-    </script>
-    
-    <script>
-        function openProxyModal() {
-            document.getElementById('proxyModal').classList.remove('hidden');
-        }
-        function openCorpModal() {
-            document.getElementById('corpModal').classList.remove('hidden');
-        }
-        function closeModal(id) {
-            document.getElementById(id).classList.add('hidden');
-        }
+
+        function openProxyModal() { document.getElementById('proxyModal').classList.remove('hidden'); }
+        function openCorpModal() { document.getElementById('corpModal').classList.remove('hidden'); }
+        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
         
-        // إغلاق النافذة عند الضغط خارجها
         window.onclick = function(event) {
             if (event.target.classList.contains('fixed')) {
                 event.target.classList.add('hidden');
