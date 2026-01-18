@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="pageTitle">مسار الصفقات | AndroGov</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { brandRed: '#FB4747', brandDark: '#0F172A', moneyGreen: '#10B981', alertOrange: '#F59E0B' },
+                    fontFamily: { sans: ['Tajawal', 'Inter', 'sans-serif'], en: ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        .num-font { font-family: 'Inter', sans-serif; font-feature-settings: "tnum"; }
+        .kanban-col { min-width: 280px; }
+        .custom-scroll::-webkit-scrollbar { height: 6px; width: 6px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 10px; }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300 opacity-0">
+
+    <div id="sidebar-container"></div>
+    
+    <div class="main-content-wrapper transition-all duration-300 flex flex-col min-h-screen rtl:lg:mr-64 ltr:lg:ml-64">
+        <div id="header-container"></div>
+
+        <main class="p-6 h-[calc(100vh-5rem)] flex flex-col">
+            
+            <div class="flex justify-between items-end mb-6">
+                <div>
+                    <h1 class="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                        <i class="fa-solid fa-tents text-brandRed"></i> <span data-i18n="headerTitle">مسار الصفقات (Pipeline)</span>
+                    </h1>
+                    <p class="text-sm text-slate-500 mt-1" data-i18n="headerDesc">تتبع مراحل الصفقات وسحبها للإغلاق.</p>
+                </div>
+                <button class="px-5 py-2.5 bg-brandRed text-white rounded-xl text-xs font-bold shadow-lg hover:bg-red-700 transition flex items-center gap-2">
+                    <i class="fa-solid fa-plus"></i> <span data-i18n="btnAddDeal">إضافة صفقة</span>
+                </button>
+            </div>
+
+            <div class="flex-1 overflow-x-auto custom-scroll pb-4">
+                <div class="flex gap-6 h-full min-w-max">
+                    
+                    <div class="kanban-col flex flex-col w-72 bg-slate-100 dark:bg-slate-800/50 rounded-2xl p-4 border border-slate-200 dark:border-slate-700">
+                        <div class="flex justify-between items-center mb-4 pb-3 border-b border-slate-200 dark:border-slate-600">
+                            <h3 class="font-bold text-sm dark:text-white flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-slate-400"></span> <span data-i18n="colLead">عميل محتمل (Lead)</span>
+                            </h3>
+                            <span class="text-xs font-bold text-slate-500 num-font">3</span>
+                        </div>
+                        <div class="space-y-3 overflow-y-auto custom-scroll flex-1">
+                            <div class="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 cursor-move hover:shadow-md transition group">
+                                <h4 class="font-bold text-sm mb-1 dark:text-white">مشروع وزارة التعليم</h4>
+                                <p class="text-xs text-slate-500 mb-3">تجهيز قاعات التدريب</p>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-xs font-bold num-font text-brandRed">250K SAR</span>
+                                    <img src="https://ui-avatars.com/api/?name=Ahmed+S&background=random" class="w-6 h-6 rounded-full" title="أحمد سعد">
+                                </div>
+                            </div>
+                            <div class="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 cursor-move hover:shadow-md transition group">
+                                <h4 class="font-bold text-sm mb-1 dark:text-white">تطبيق توصيل طلبات</h4>
+                                <p class="text-xs text-slate-500 mb-3">شركة خدمات لوجستية</p>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-xs font-bold num-font text-brandRed">80K SAR</span>
+                                    <img src="https://ui-avatars.com/api/?name=Fahad+S&background=random" class="w-6 h-6 rounded-full" title="فهد المبيعات">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-3 pt-3 border-t border-slate-200 dark:border-slate-600 text-center">
+                            <p class="text-xs font-bold text-slate-500">Total: <span class="num-font text-slate-700 dark:text-white">330K SAR</span></p>
+                        </div>
+                    </div>
+
+                    <div class="kanban-col flex flex-col w-72 bg-blue-50 dark:bg-slate-800/50 rounded-2xl p-4 border border-blue-100 dark:border-slate-700">
+                        <div class="flex justify-between items-center mb-4 pb-3 border-b border-blue-100 dark:border-slate-600">
+                            <h3 class="font-bold text-sm dark:text-white flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-blue-500"></span> <span data-i18n="colQual">مؤهل (Qualified)</span>
+                            </h3>
+                            <span class="text-xs font-bold text-blue-600 num-font">2</span>
+                        </div>
+                        <div class="space-y-3 overflow-y-auto custom-scroll flex-1">
+                            <div class="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 cursor-move hover:shadow-md transition">
+                                <div class="flex gap-2 mb-2">
+                                    <span class="text-[9px] bg-blue-100 text-blue-700 px-2 py-0.5 rounded font-bold">Hot</span>
+                                </div>
+                                <h4 class="font-bold text-sm mb-1 dark:text-white">توريد سيرفرات</h4>
+                                <p class="text-xs text-slate-500 mb-3">البنك العربي</p>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-xs font-bold num-font text-brandRed">400K SAR</span>
+                                    <img src="https://ui-avatars.com/api/?name=Sara+K&background=random" class="w-6 h-6 rounded-full">
+                                </div>
+                            </div>
+                        </div>
+                         <div class="mt-3 pt-3 border-t border-blue-200 dark:border-slate-600 text-center">
+                            <p class="text-xs font-bold text-slate-500">Total: <span class="num-font text-slate-700 dark:text-white">400K SAR</span></p>
+                        </div>
+                    </div>
+
+                    <div class="kanban-col flex flex-col w-72 bg-yellow-50 dark:bg-slate-800/50 rounded-2xl p-4 border border-yellow-100 dark:border-slate-700">
+                        <div class="flex justify-between items-center mb-4 pb-3 border-b border-yellow-100 dark:border-slate-600">
+                            <h3 class="font-bold text-sm dark:text-white flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-yellow-500"></span> <span data-i18n="colProp">تم الإرسال (Proposal)</span>
+                            </h3>
+                            <span class="text-xs font-bold text-yellow-600 num-font">4</span>
+                        </div>
+                        <div class="space-y-3 overflow-y-auto custom-scroll flex-1">
+                            <div class="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 cursor-move hover:shadow-md transition">
+                                <h4 class="font-bold text-sm mb-1 dark:text-white">صيانة سنوية</h4>
+                                <p class="text-xs text-slate-500 mb-3">مستشفى المملكة</p>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-xs font-bold num-font text-brandRed">120K SAR</span>
+                                    <img src="https://ui-avatars.com/api/?name=Fahad+S&background=random" class="w-6 h-6 rounded-full">
+                                </div>
+                            </div>
+                        </div>
+                         <div class="mt-3 pt-3 border-t border-yellow-200 dark:border-slate-600 text-center">
+                            <p class="text-xs font-bold text-slate-500">Total: <span class="num-font text-slate-700 dark:text-white">120K SAR</span></p>
+                        </div>
+                    </div>
+
+                    <div class="kanban-col flex flex-col w-72 bg-orange-50 dark:bg-slate-800/50 rounded-2xl p-4 border border-orange-100 dark:border-slate-700">
+                        <div class="flex justify-between items-center mb-4 pb-3 border-b border-orange-100 dark:border-slate-600">
+                            <h3 class="font-bold text-sm dark:text-white flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span> <span data-i18n="colNeg">تفاوض (Negotiation)</span>
+                            </h3>
+                            <span class="text-xs font-bold text-orange-600 num-font">1</span>
+                        </div>
+                        <div class="space-y-3 overflow-y-auto custom-scroll flex-1">
+                            <div class="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-md border-l-4 border-l-orange-500 border border-slate-100 dark:border-slate-700 cursor-move hover:shadow-lg transition">
+                                <h4 class="font-bold text-sm mb-1 dark:text-white">منصة الموارد البشرية</h4>
+                                <p class="text-xs text-slate-500 mb-3">شركة المراعي</p>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-xs font-bold num-font text-brandRed">550K SAR</span>
+                                    <img src="https://ui-avatars.com/api/?name=Ahmed+S&background=random" class="w-6 h-6 rounded-full">
+                                </div>
+                            </div>
+                        </div>
+                         <div class="mt-3 pt-3 border-t border-orange-200 dark:border-slate-600 text-center">
+                            <p class="text-xs font-bold text-slate-500">Total: <span class="num-font text-slate-700 dark:text-white">550K SAR</span></p>
+                        </div>
+                    </div>
+
+                    <div class="kanban-col flex flex-col w-72 bg-green-50 dark:bg-slate-800/50 rounded-2xl p-4 border border-green-100 dark:border-slate-700">
+                        <div class="flex justify-between items-center mb-4 pb-3 border-b border-green-100 dark:border-slate-600">
+                            <h3 class="font-bold text-sm dark:text-white flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-green-500"></span> <span data-i18n="colWon">تم الإغلاق (Won)</span>
+                            </h3>
+                            <span class="text-xs font-bold text-green-600 num-font">5</span>
+                        </div>
+                        <div class="space-y-3 overflow-y-auto custom-scroll flex-1">
+                             <div class="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 opacity-75 grayscale hover:grayscale-0 transition">
+                                <h4 class="font-bold text-sm mb-1 dark:text-white">رخص Microsoft 365</h4>
+                                <p class="text-xs text-slate-500 mb-3">شركة الكهرباء</p>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-xs font-bold num-font text-green-600">Completed</span>
+                                    <img src="https://ui-avatars.com/api/?name=Fahad+S&background=random" class="w-6 h-6 rounded-full">
+                                </div>
+                            </div>
+                        </div>
+                         <div class="mt-3 pt-3 border-t border-green-200 dark:border-slate-600 text-center">
+                            <p class="text-xs font-bold text-slate-500">Total: <span class="num-font text-slate-700 dark:text-white">90K SAR</span></p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script src="../admin/js/core/config.js"></script>
+    <script src="../admin/js/core/i18n.js"></script>
+    <script src="../admin/js/services/data-service.js"></script>
+    <script src="../admin/js/components/role-switcher.js"></script>
+    <script src="../admin/js/components/layout.js"></script>
+    <script src="../admin/js/components/bot.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const checkLibs = setInterval(() => {
+                if (typeof Layout !== 'undefined' && typeof AppConfig !== 'undefined') {
+                    clearInterval(checkLibs);
+                    
+                    const salesUser = {
+                        id: 'USR_005',
+                        type: 'sales',
+                        role: 'Sales Manager',
+                        displayName: 'فهد المبيعات',
+                        displayTitle: 'مدير المبيعات',
+                        avatar: 'https://ui-avatars.com/api/?name=Fahad+S&background=random'
+                    };
+
+                    AppConfig.setCurrentUser(salesUser);
+                    Layout.init();
+                }
+            }, 50);
+        });
+        
+        const pageContent = {
+            ar: {
+                pageTitle: "مسار الصفقات | AndroGov",
+                headerTitle: "مسار الصفقات (Pipeline)",
+                headerDesc: "تتبع مراحل الصفقات وسحبها للإغلاق.",
+                btnAddDeal: "إضافة صفقة",
+                colLead: "عميل محتمل (Lead)",
+                colQual: "مؤهل (Qualified)",
+                colProp: "تم الإرسال (Proposal)",
+                colNeg: "تفاوض (Negotiation)",
+                colWon: "تم الإغلاق (Won)"
+            },
+            en: {
+                pageTitle: "Sales Pipeline | AndroGov",
+                headerTitle: "Sales Pipeline",
+                headerDesc: "Track deal stages and drag to close.",
+                btnAddDeal: "Add Deal",
+                colLead: "Lead",
+                colQual: "Qualified",
+                colProp: "Proposal Sent",
+                colNeg: "Negotiation",
+                colWon: "Closed Won"
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const lang = localStorage.getItem('lang') || 'ar';
+            const dict = pageContent[lang];
+            document.documentElement.lang = lang;
+            document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if(dict[key]) el.innerText = dict[key];
+            });
+        });
+    </script>
+</body>
+</html>
