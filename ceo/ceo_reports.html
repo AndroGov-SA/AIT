@@ -29,6 +29,7 @@
     <div id="sidebar-container"></div>
     
     <div class="main-content-wrapper transition-all duration-300 flex flex-col min-h-screen rtl:lg:mr-64 ltr:lg:ml-64">
+        
         <div id="header-container"></div>
 
         <main class="p-8 space-y-8">
@@ -246,17 +247,18 @@
                 if (typeof Layout !== 'undefined' && typeof AppConfig !== 'undefined') {
                     clearInterval(checkLibs);
 
-                    // ✅ الخطوة المهمة: تحديد هوية المستخدم كرئيس تنفيذي
-                    const boardUser = {
+                    // ✅ تعريف هوية المستخدم كرئيس تنفيذي
+                    const ceoUser = {
                         id: 'USR_001',
-                        role: 'CEO', // <--- هذا هو المفتاح الذي سيغير القائمة إلى قائمة الرئيس التنفيذي المختصرة
+                        type: 'ceo', // ⚠️ هذا المفتاح ضروري لفتح قائمة CEO
+                        role: 'CEO',
                         displayName: 'الرئيس التنفيذي',
                         displayTitle: 'الرئيس التنفيذي',
                         avatar: 'https://ui-avatars.com/api/?name=Board&background=random'
                     };
 
                     // حفظ المستخدم وتشغيل النظام
-                    AppConfig.setCurrentUser(boardUser);
+                    AppConfig.setCurrentUser(ceoUser);
                     Layout.init();
                 }
             }, 50);
