@@ -55,30 +55,30 @@ const Layout = (function() {
     // 2. قائمة الموارد البشرية
     'HR': [
         { section: 'main', items: [
-          { key: 'dash', icon: 'fa-chart-pie', link: '../hr_dashboard.html' },
-          { key: 'approvals', icon: 'fa-inbox', link: '../hr_approvals.html' },
-          { key: 'chat', icon: 'fa-comments', link: '../internal_chat.html' }
+          { key: 'dash', icon: 'fa-chart-pie', link: '../hr/hr_dashboard.html' },
+          { key: 'approvals', icon: 'fa-inbox', link: '../hr/hr_approvals.html' },
+          { key: 'chat', icon: 'fa-comments', link: '../hr/internal_chat.html' }
         ]},
         { section: 'workforce', items: [
-          { key: 'employees', icon: 'fa-users', link: '../hr_employees.html' },
-          { key: 'contracts', icon: 'fa-file-contract', link: '../hr_contracts.html' },
-          { key: 'org', icon: 'fa-sitemap', link: '../hr_org.html' }
+          { key: 'employees', icon: 'fa-users', link: '../hr/hr_employees.html' },
+          { key: 'contracts', icon: 'fa-file-contract', link: '../hr/hr_contracts.html' },
+          { key: 'org', icon: 'fa-sitemap', link: '../hr/hr_org.html' }
         ]},
         { section: 'ops', items: [
-          { key: 'attendance', icon: 'fa-fingerprint', link: '../hr_attendance.html' },
-          { key: 'leaves', icon: 'fa-calendar-days', link: '../hr_leaves.html' },
-          { key: 'payroll', icon: 'fa-money-bill-wave', link: '../hr_payroll.html' },
-          { key: 'trips', icon: 'fa-plane-departure', link: '../hr_trips.html' }
+          { key: 'attendance', icon: 'fa-fingerprint', link: '../hr/hr_attendance.html' },
+          { key: 'leaves', icon: 'fa-calendar-days', link: '../hr/hr_leaves.html' },
+          { key: 'payroll', icon: 'fa-money-bill-wave', link: '../hr/hr_payroll.html' },
+          { key: 'trips', icon: 'fa-plane-departure', link: '../hr/hr_trips.html' }
         ]},
         { section: 'admin', items: [
-          { key: 'assets', icon: 'fa-boxes-packing', link: '../hr_assets.html' },
-          { key: 'logistics', icon: 'fa-building-user', link: '../hr_logistics.html' },
-          { key: 'purchases', icon: 'fa-cart-shopping', link: '../hr_purchases.html' },
-          { key: 'partners', icon: 'fa-handshake', link: '../hr_partners.html' }
+          { key: 'assets', icon: 'fa-boxes-packing', link: '../hr/hr_assets.html' },
+          { key: 'logistics', icon: 'fa-building-user', link: '../hr/hr_logistics.html' },
+          { key: 'purchases', icon: 'fa-cart-shopping', link: '../hr/hr_purchases.html' },
+          { key: 'partners', icon: 'fa-handshake', link: '../hr/hr_partners.html' }
         ]},
         { section: 'govt', items: [
-          { key: 'govt', icon: 'fa-passport', link: '../hr_govt.html' },
-          { key: 'recruitment', icon: 'fa-user-plus', link: '../hr_recruitment.html' }
+          { key: 'govt', icon: 'fa-passport', link: '../hr/hr_govt.html' },
+          { key: 'recruitment', icon: 'fa-user-plus', link: '../hr/hr_recruitment.html' }
     ]}
   ],
     
