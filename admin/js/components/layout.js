@@ -225,14 +225,14 @@ const Layout = (function() {
       ]}
     ],
     
-    // --- 9. Sales/Employee ---
-    'Employee': [
+    // --- 9. Sales ---
+    'Sales': [
       { section: 'main', items: [
-        { key: 'dash', icon: 'fa-chart-pie', link: '../employee/index.html' },
-        { key: 'requests', icon: 'fa-headset', link: '../employee/requests.html' }
+        { key: 'dash', icon: 'fa-chart-pie', link: '../Sales/index.html' },
+        { key: 'requests', icon: 'fa-headset', link: '../Sales/requests.html' }
       ]},
       { section: 'personal', items: [
-        { key: 'profile', icon: 'fa-user-tie', link: '../employee/profile.html' }
+        { key: 'profile', icon: 'fa-user-tie', link: '../Sales/profile.html' }
       ]}
     ]
   };
@@ -305,7 +305,7 @@ const Layout = (function() {
         }
         
         // تعيين الدور للمستخدم
-        user.primaryRole = primaryRole || 'employee';
+        user.primaryRole = primaryRole || 'Sales';
         
         console.log('👤 User Profile Loaded:', {
           id: user.id,
@@ -380,7 +380,7 @@ const Layout = (function() {
       'shareholder': 'Shareholder',
       
       // General Staff
-      'manager': 'Employee',
+      'manager': 'Sales',
       'employee': 'Employee',
       'specialist': 'Employee',
       'coordinator': 'Employee',
@@ -400,7 +400,7 @@ const Layout = (function() {
     }
 
     // القائمة الافتراضية
-    menuKey = menuKey || 'Employee';
+    menuKey = menuKey || 'Sales';
 
     console.log('🔍 Sidebar Render:', { 
       userId: user?.id,
