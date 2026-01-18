@@ -1,7 +1,6 @@
 /**
- * AndroGov Authentication Engine v4.5
+ * AndroGov Authentication Engine v4.6 (Fixed Routing)
  * ملف: js/auth.js
- * (Pure JavaScript - Do NOT add script tags here)
  */
 
 class AuthSystem {
@@ -17,7 +16,6 @@ class AuthSystem {
         try {
             console.log("🔄 Initializing AuthSystem...");
             
-            // 1. محاولة العثور على البيانات
             let data = null;
             if (typeof window.SYSTEM_DATA !== 'undefined') {
                 data = window.SYSTEM_DATA;
@@ -46,25 +44,54 @@ class AuthSystem {
         let rawUsers = data.users || [];
         let shareholders = data.shareholders || [];
 
-        // معالجة المستخدمين
         this.users = rawUsers.map(u => {
             let roleRaw = String(u.role || '').toLowerCase();
             let email = u.email ? u.email.toLowerCase().trim() : '';
+            let dept = String(u.department_id || '').toLowerCase();
             
-            // تحديد اسم العرض
+            // تحديد الاسم
             let name = u.name;
             if (typeof u.name === 'object') {
                 const lang = localStorage.getItem('lang') || 'ar';
                 name = u.name[lang] || u.name.ar || u.name.en;
             }
 
-            // تحديد نوع التوجيه
-            let type = 'staff';
-            if (roleRaw.includes('admin') || roleRaw.includes('grc')) type = 'admin';
-            else if (roleRaw.includes('board') || roleRaw.includes('chairman')) type = 'board';
-            else if (roleRaw.includes('audit') || u.department_id === 'DEP_AUDIT') type = 'audit';
-            else if (roleRaw.includes('ceo') || u.is_executive) type = 'exec';
-            else if (roleRaw.includes('shareholder')) type = 'shareholder';
+            // ====================================================
+            // 🛠️ إصلاح منطق تحديد النوع (Routing Fix)
+            // ====================================================
+            let type = 'staff'; // الافتراضي
+
+            // 1. الأدوار القيادية العليا المحددة
+            if (roleRaw.includes('ceo')) {
+                type = 'ceo';
+            } 
+            else if (roleRaw.includes('cfo') || dept.includes('fin')) {
+                type = 'cfo'; // يذهب للمالية
+            }
+            else if (roleRaw.includes('cto') || roleRaw.includes('ncso') || dept.includes('tech')) {
+                type = 'cto'; // يذهب للتقنية
+            }
+            else if (roleRaw.includes('cao') || dept.includes('hr')) {
+                type = 'hr_exec'; // يذهب للموارد البشرية
+            }
+            
+            // 2. أدوار مجلس الإدارة والحوكمة
+            else if (roleRaw.includes('chairman') || roleRaw.includes('board')) {
+                type = 'board';
+            }
+            else if (roleRaw.includes('audit') || dept.includes('audit')) {
+                type = 'audit';
+            }
+            
+            // 3. أدوار المسؤولين (Admins)
+            else if (roleRaw.includes('admin') || roleRaw.includes('grc')) {
+                type = 'admin';
+            }
+            
+            // 4. المساهمين
+            else if (roleRaw.includes('shareholder')) {
+                type = 'shareholder';
+            }
 
             return {
                 id: u.id,
@@ -72,12 +99,12 @@ class AuthSystem {
                 email: email,
                 title: typeof u.title === 'object' ? (u.title.ar || u.title.en) : u.title,
                 role: roleRaw,
-                type: type,
+                type: type, // النوع الجديد المصحح
                 profiles: u.profiles || [] 
             };
         }).filter(u => u.email !== '');
 
-        // إضافة المساهمين غير الموظفين
+        // إضافة المساهمين
         shareholders.forEach(s => {
             const email = s.email ? s.email.toLowerCase().trim() : '';
             if (email && !this.users.find(u => u.email === email)) {
@@ -111,18 +138,26 @@ class AuthSystem {
     }
 
     getRedirectUrl(type) {
+        // ====================================================
+        // 🛠️ توجيه دقيق لكل دور تنفيذي
+        // ====================================================
         switch (type) {
-            case 'admin': return 'admin/index.html';
-            case 'board': return 'board/index.html';
-            case 'audit': return 'audit/index.html';
+            case 'admin':       return 'admin/index.html';
+            
+            case 'ceo':         return 'ceo/index.html';
+            case 'cfo':         return 'finance/index.html'; // المدير المالي
+            case 'cto':         return 'cto/index.html';     // المدير التقني
+            case 'hr_exec':     return 'hr/index.html';      // المدير الإداري/الموارد
+            
+            case 'board':       return 'board/index.html';
+            case 'audit':       return 'audit/index.html';
             case 'shareholder': return 'shareholder/index.html';
-            case 'exec': return 'ceo/index.html';
-            default: return 'employee/index.html';
+            
+            default:            return 'employee/index.html'; // الموظفين العاديين
         }
     }
 
     getUsers() { return this.users; }
-    
     getAvatarColor(u) { return '#64748b'; }
 }
 
