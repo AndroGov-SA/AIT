@@ -18,7 +18,8 @@ const Layout = (function() {
   // ==========================================
   // MENU STRUCTURE
   // ==========================================
-  const _menuStructure = [
+  const _menuDefinitions = { 
+    'Admin': [
     { section: 'main', items: [
       { key: 'dashboard', icon: 'fa-gauge-high', link: 'admin.html' }
     ]},
@@ -49,8 +50,169 @@ const Layout = (function() {
       { key: 'auditLog', icon: 'fa-list-ul', link: 'audit.html' },
       { key: 'settings', icon: 'fa-sliders', link: 'admin_settings.html' }
     ]}
-  ];
-
+  ],
+    
+    // 2. قائمة الموارد البشرية
+    'HR': [
+        { section: 'main', items: [
+          { key: 'dash', icon: 'fa-chart-pie', link: '../hr_dashboard.html' },
+          { key: 'approvals', icon: 'fa-inbox', link: '../hr_approvals.html' },
+          { key: 'chat', icon: 'fa-comments', link: '../internal_chat.html' }
+        ]},
+        { section: 'workforce', items: [
+          { key: 'employees', icon: 'fa-users', link: '../hr_employees.html' },
+          { key: 'contracts', icon: 'fa-file-contract', link: '../hr_contracts.html' },
+          { key: 'org', icon: 'fa-sitemap', link: '../hr_org.html' }
+        ]},
+        { section: 'ops', items: [
+          { key: 'attendance', icon: 'fa-fingerprint', link: '../hr_attendance.html' },
+          { key: 'leaves', icon: 'fa-calendar-days', link: '../hr_leaves.html' },
+          { key: 'payroll', icon: 'fa-money-bill-wave', link: '../hr_payroll.html' },
+          { key: 'trips', icon: 'fa-plane-departure', link: '../hr_trips.html' }
+        ]},
+        { section: 'admin', items: [
+          { key: 'assets', icon: 'fa-boxes-packing', link: '../hr_assets.html' },
+          { key: 'logistics', icon: 'fa-building-user', link: '../hr_logistics.html' },
+          { key: 'purchases', icon: 'fa-cart-shopping', link: '../hr_purchases.html' },
+          { key: 'partners', icon: 'fa-handshake', link: '../hr_partners.html' }
+        ]},
+        { section: 'govt', items: [
+          { key: 'govt', icon: 'fa-passport', link: '../hr_govt.html' },
+          { key: 'recruitment', icon: 'fa-user-plus', link: '../hr_recruitment.html' }
+    ]}
+  ],
+    
+    // 3. قائمة الرئيس التنفيذي (CEO)
+    'CEO': [
+      { section: 'main', items: [
+        { key: 'dash', icon: 'fa-chart-pie', link: '../ceo/ceo_dashboard.html' },
+        { key: 'board', icon: 'fa-gavel', link: '../ceo/ceo_board.html' },
+        { key: 'strategy', icon: 'fa-chess', link: '../ceo/ceo_strategy.html' }
+      ]},
+      { section: 'finance', items: [
+          { key: 'finance', icon: 'fa-chart-line', link: '../ceo/ceo_finance.html' },
+          { key: 'reports', icon: 'fa-file-invoice-dollar', link: '../ceo/ceo_reports.html' }
+      ]},
+      { section: 'governance', items: [
+        { key: 'gov', icon: 'fa-scale-balanced', link: '../ceo/ceo_governance.html' },
+        { key: 'risks', icon: 'fa-triangle-exclamation', link: '../ceo/ceo_risks.html' }
+      ]},
+      { section: 'comm', items: [
+        { key: 'broadcast', icon: 'fa-bullhorn', link: '../ceo/ceo_broadcast.html' },
+        { key: 'chat', icon: 'fa-comments', link: '../ceo/ceo_communication.html' },
+        { key: 'feedback', icon: 'fa-inbox', link: '../ceo/ceo_feedback.html' }
+      ]},
+      { section: 'personal', items: [
+        { key: 'profile', icon: 'fa-user-tie', link: '../ceo/ceo_profile.html' }
+      ]}
+  ],
+    
+    // 4. قائمة المدير المالي (CFO)
+    'CFO': [
+      { section: 'main', items: [
+        { key: 'dash', icon: 'fa-chart-pie', link: '../cfo/cfo_dashboard.html' },
+        { key: 'approvals', icon: 'fa-stamp', link: '../cfo/approvals.html' },
+        { key: 'chat', icon: 'fa-comments', link: '../cfo/internal_chat.html' }
+      ]},
+      { section: 'gl', items: [
+        { key: 'journal', icon: 'fa-book', link: '../cfo/gl_journal.html' },
+        { key: 'coa', icon: 'fa-sitemap', link: '../cfo/gl_coa.html' },
+        { key: 'costCenters', icon: 'fa-layer-group', link: '../cfo/gl_cost_centers.html' }
+        ]},
+      { section: 'ap', items: [
+        { key: 'vendors', icon: 'fa-store', link: '../cfo/ap_vendors.html' },
+        { key: 'bills', icon: 'fa-file-invoice-dollar', link: '../cfo/ap_bills.html' },
+        { key: 'payments', icon: 'fa-money-bill-transfer', link: '../cfo/ap_payments.html' }
+        ]},
+      { section: 'ar', items: [ 
+        { key: 'salesInv', icon: 'fa-file-invoice', link: '../cfo/ar_invoices.html' },
+        { key: 'receipts', icon: 'fa-hand-holding-dollar', link: '../cfo/ar_receipts.html' }
+        ]},
+      { section: 'inventory', items: [
+        { key: 'stock', icon: 'fa-boxes-stacked', link: '../cfo/inv_dashboard.html' },
+        { key: 'assets', icon: 'fa-laptop-code', link: '../cfo/inv_assets.html' }
+       ]},
+      { section:'reporting', items: [
+        { key: 'statements', icon: 'fa-file-pdf', link: '../cfo/rep_statements.html' },
+        { key: 'budget', icon: 'fa-scale-balanced', link: '../cfo/rep_budget.html' },
+        { key: 'tax', icon: 'fa-building-columns', link: '../cfo/rep_tax.html' }
+        ]},
+      { section: 'config', items: [
+        { key: 'settings', icon: 'fa-gears', link: '../cfo/fin_settings.html' }
+       ]}
+  ],
+    
+    // 5. قائمة المدير التقني (CTO) 
+    'CTO': [
+      { section: 'main', items: [
+        { key: 'dash', icon: 'fa-chart-pie', link: '../cto/cto_dashboard.html' },
+        { key: 'monitor', icon: 'fa-desktop', link: '../cto/cto_monitoring.html' }
+      ]},
+      { section: 'telecom', items: [
+        { key: 'pbx', icon: 'fa-phone-volume', link: '../cto/cto_pbx.html' },
+        { key: 'extensions', icon: 'fa-users-viewfinder', link: '../cto/cto_extensions.html' },
+        { key: 'call_logs', icon: 'fa-list-ol', link: '../cto/cto_call_logs.html' }
+      ]},
+      { section: 'infrastructure', items: [
+        { key: 'servers', icon: 'fa-server', link: '../cto/cto_servers.html' },
+        { key: 'assets', icon: 'fa-laptop-code', link: '../cto/cto_assets.html' }
+       ]},
+      { section: 'security', items: [
+        { key: 'soc', icon: 'fa-shield-virus', link: '../cto/cto_soc.html' },
+        { key: 'access', icon: 'fa-id-badge', link: '../cto/cto_iam.html' }
+      ]},
+      { section: 'dev', items: [ 
+        { key: 'projects', icon: 'fa-code-branch', link: '../cto/cto_projects.html' },
+        { key: 'support', icon: 'fa-headset', link: '../cto/cto_support.html' }
+         ]}
+  ],
+    
+    // 6. قائمة المساهمين (IR) 
+    'IR': [
+      { section: 'main', items: [
+        { key: 'dash', icon: 'fa-chart-pie', link: '../IR/dashboard.html' },
+        { key: 'profile', icon: 'fa-id-card', link: '../IR/profile.html' },
+        { key: 'requests', icon: 'fa-headset', link: '../IR/requests.html' },
+        { key: 'certificates', icon: 'fa-file-contract', link: '../IR/certificates.html' },
+        { key: 'dividends', icon: 'fa-hand-holding-dollar', link: '../IR/dividends.html' },
+        { key: 'voting', icon: 'fa-check-to-slot', link: '../IR/voting.html' },
+        ]}
+  ],
+    
+    // 7. قائمة المجلس (Board) 
+    'Board': [
+      { section: 'main', items: [
+        { key: 'dash', icon: 'fa-chart-pie', link: '../board/index.html' }
+      ]},
+      { section: 'governance', items: [
+        { key: 'meetings', icon: 'fa-calendar-days', link: '../board/meetings.html' },
+        { key: 'resolutions', icon: 'fa-file-signature', link: '../board/communication.html' },
+        { key: 'finance', icon: 'fa-chart-line', link: '../board/finance.html' }
+      ]}
+    ],
+    
+    // 8. قائمة اللجان (Committees) 
+    'Committees': [
+      { section: 'main', items: [
+        { key: 'dash', icon: 'fa-chart-pie', link: '../Committees/index.html' }
+      ]},
+      { section: 'governance', items: [
+        { key: 'meetings', icon: 'fa-calendar-days', link: '../Committees/meetings.html' },
+        { key: 'resolutions', icon: 'fa-file-signature', link: '../Committees/communication.html' },
+        { key: 'finance', icon: 'fa-chart-line', link: '../Committees/finance.html' }
+      ]}
+    ],
+    
+    // 9. قائمة المبيعات (Sales) 
+    'Sales': [
+      { section: 'main', items: [
+        { key: 'dash', icon: 'fa-chart-pie', link: '../Sales/dashboard.html' },
+        { key: 'profile', icon: 'fa-id-card', link: '../Sales/profile.html' },
+        { key: 'requests', icon: 'fa-headset', link: '../Sales/requests.html' },
+        ]}
+    ]
+  };
+    
   // ==========================================
   // NOTIFICATIONS (Sample Data)
   // ==========================================
