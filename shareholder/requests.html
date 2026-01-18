@@ -7,13 +7,24 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
-    <script>tailwind.config = { darkMode: 'class', theme: { extend: { colors: { brandRed: '#FB4747', brandDark: '#1E293B' }, fontFamily: { sans: ['Tajawal', 'sans-serif'] } } } }</script>
+    <script>
+        tailwind.config = { 
+            darkMode: 'class', 
+            theme: { 
+                extend: { 
+                    colors: { brandRed: '#FB4747', brandDark: '#1E293B' }, 
+                    fontFamily: { sans: ['Tajawal', 'sans-serif'] } 
+                } 
+            } 
+        }
+    </script>
 </head>
-<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white font-sans">
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white font-sans transition-colors duration-300">
 
     <div id="sidebar-container"></div>
 
-    <div class="lg:mr-72 transition-all duration-300">
+    <div class="main-content-wrapper transition-all duration-300 flex flex-col min-h-screen rtl:lg:mr-64 ltr:lg:ml-64">
+        
         <div id="header-container"></div>
 
         <main class="p-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -24,19 +35,19 @@
                         <i class="fa-solid fa-file-signature text-brandRed"></i> رفع طلب جديد
                     </h3>
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                        <button class="p-4 rounded-xl border border-slate-200 hover:border-brandRed hover:bg-red-50 transition text-center group">
+                        <button onclick="alert('فتح نموذج المطالبة بالأرباح')" class="p-4 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-brandRed hover:bg-red-50 dark:hover:bg-red-900/10 transition text-center group">
                             <i class="fa-solid fa-money-bill-transfer text-2xl text-slate-400 group-hover:text-brandRed mb-2 block"></i>
                             <span class="text-xs font-bold">مطالبة بأرباح</span>
                         </button>
-                        <button class="p-4 rounded-xl border border-slate-200 hover:border-brandRed hover:bg-red-50 transition text-center group">
+                        <button class="p-4 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-brandRed hover:bg-red-50 dark:hover:bg-red-900/10 transition text-center group">
                             <i class="fa-solid fa-file-contract text-2xl text-slate-400 group-hover:text-brandRed mb-2 block"></i>
                             <span class="text-xs font-bold">تحديث شهادة</span>
                         </button>
-                        <button class="p-4 rounded-xl border border-slate-200 hover:border-brandRed hover:bg-red-50 transition text-center group">
+                        <button class="p-4 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-brandRed hover:bg-red-50 dark:hover:bg-red-900/10 transition text-center group">
                             <i class="fa-solid fa-handshake text-2xl text-slate-400 group-hover:text-brandRed mb-2 block"></i>
                             <span class="text-xs font-bold">إشعار تنازل</span>
                         </button>
-                        <button class="p-4 rounded-xl border border-slate-200 hover:border-brandRed hover:bg-red-50 transition text-center group">
+                        <button class="p-4 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-brandRed hover:bg-red-50 dark:hover:bg-red-900/10 transition text-center group">
                             <i class="fa-solid fa-circle-question text-2xl text-slate-400 group-hover:text-brandRed mb-2 block"></i>
                             <span class="text-xs font-bold">استفسار عام</span>
                         </button>
@@ -54,58 +65,41 @@
                             </div>
                             <span class="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-lg text-xs font-bold">قيد المراجعة</span>
                         </div>
-                        <div class="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-700/50 rounded-xl border border-slate-100 dark:border-slate-700">
-                            <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-full bg-green-100 text-green-600 flex items-center justify-center"><i class="fa-solid fa-check"></i></div>
-                                <div>
-                                    <p class="text-sm font-bold">استفسار عن موعد الجمعية</p>
-                                    <p class="text-xs text-slate-400">رقم الطلب #REQ-2025-44 • 15 ديسمبر</p>
-                                </div>
-                            </div>
-                            <span class="px-3 py-1 bg-green-100 text-green-700 rounded-lg text-xs font-bold">مكتمل</span>
-                        </div>
                     </div>
                 </div>
             </div>
 
             <div class="lg:col-span-1">
-                <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 border border-slate-100 dark:border-slate-700 shadow-sm h-full flex flex-col">
+                <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 border border-slate-100 dark:border-slate-700 shadow-sm h-full flex flex-col min-h-[500px]">
                     <div class="mb-4">
                         <h3 class="font-bold text-lg flex items-center gap-2">
-                            <i class="fa-solid fa-comments text-blue-500"></i> تواصل مع علاقات المستثمرين
+                            <i class="fa-solid fa-comments text-blue-500"></i> تواصل مباشر (IR)
                         </h3>
-                        <p class="text-xs text-slate-400 mt-1">فريقنا متاح للرد على استفساراتك خلال أوقات العمل.</p>
+                        <p class="text-xs text-slate-400 mt-1">فريق علاقات المستثمرين متاح للرد الفوري.</p>
                     </div>
 
-                    <div class="flex-1 bg-slate-50 dark:bg-slate-900 rounded-2xl p-4 mb-4 overflow-y-auto space-y-4 max-h-[400px]">
+                    <div id="chatBox" class="flex-1 bg-slate-50 dark:bg-slate-900 rounded-2xl p-4 mb-4 overflow-y-auto space-y-4 max-h-[400px]">
                         <div class="flex gap-3">
-                            <img src="../photo/admin.jpg" class="w-8 h-8 rounded-full">
-                            <div class="bg-white dark:bg-slate-800 p-3 rounded-2xl rounded-tr-none text-xs shadow-sm">
+                            <img src="https://ui-avatars.com/api/?name=IR+Support&background=0F172A&color=fff" class="w-8 h-8 rounded-full">
+                            <div class="bg-white dark:bg-slate-800 p-3 rounded-2xl rounded-tr-none text-xs shadow-sm dark:text-slate-200">
                                 مرحباً بك شريكنا العزيز، كيف يمكننا خدمتك اليوم؟
-                                <div class="text-[10px] text-slate-400 mt-1 text-left">09:00 ص</div>
-                            </div>
-                        </div>
-                        <div class="flex gap-3 flex-row-reverse">
-                            <div class="w-8 h-8 rounded-full bg-brandRed text-white flex items-center justify-center text-xs">أنا</div>
-                            <div class="bg-brandRed text-white p-3 rounded-2xl rounded-tl-none text-xs shadow-sm">
-                                السلام عليكم، هل تم تحديد موعد توزيع أرباح 2025؟
-                                <div class="text-[10px] text-white/70 mt-1 text-right">09:05 ص</div>
+                                <div class="text-[10px] text-slate-400 mt-1">09:00 ص</div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="relative">
-                        <input type="text" placeholder="اكتب رسالتك هنا..." class="w-full p-4 pl-12 bg-slate-50 dark:bg-slate-700 rounded-xl text-sm outline-none focus:ring-2 focus:ring-brandRed">
-                        <button class="absolute left-2 top-2 p-2 bg-brandRed text-white rounded-lg hover:bg-red-700 transition">
+                    <form onsubmit="handleChatSubmit(event)" class="relative">
+                        <input id="chatInput" type="text" placeholder="اكتب رسالتك هنا..." class="w-full p-4 pl-12 bg-slate-50 dark:bg-slate-700 rounded-xl text-sm outline-none focus:ring-2 focus:ring-brandRed dark:text-white">
+                        <button type="submit" class="absolute left-2 top-2 p-2 bg-brandRed text-white rounded-lg hover:bg-red-700 transition">
                             <i class="fa-solid fa-paper-plane text-xs"></i>
                         </button>
-                    </div>
+                    </form>
                     
                     <div class="mt-4 pt-4 border-t border-slate-100 dark:border-slate-700 text-center">
-                        <p class="text-xs text-slate-400 mb-2">أو تواصل معنا عبر:</p>
+                        <p class="text-xs text-slate-400 mb-2">قنوات تواصل إضافية:</p>
                         <div class="flex justify-center gap-4">
-                            <a href="mailto:ir@androomeda.com" class="text-slate-500 hover:text-brandRed text-xs font-bold"><i class="fa-solid fa-envelope"></i> البريد</a>
-                            <a href="tel:920000000" class="text-slate-500 hover:text-brandRed text-xs font-bold"><i class="fa-solid fa-phone"></i> 920000000</a>
+                            <a href="mailto:ir@androomeda.com" class="text-slate-500 hover:text-brandRed text-xs font-bold transition"><i class="fa-solid fa-envelope"></i> البريد</a>
+                            <a href="tel:920000000" class="text-slate-500 hover:text-brandRed text-xs font-bold transition"><i class="fa-solid fa-phone"></i> 92000</a>
                         </div>
                     </div>
                 </div>
@@ -118,32 +112,64 @@
     <script src="../admin/js/core/i18n.js"></script>
     <script src="../admin/js/services/data-service.js"></script>
     <script src="../admin/js/components/role-switcher.js"></script>
-    
     <script src="../admin/js/components/layout.js"></script>
-    <script src="../admin/js/components/bot.js"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // ننتظر تحميل السكربتات
             const checkLibs = setInterval(() => {
                 if (typeof Layout !== 'undefined' && typeof AppConfig !== 'undefined') {
                     clearInterval(checkLibs);
 
-                    // ✅ الخطوة المهمة: تحديد هوية المستخدم كمساهم
-                    const boardUser = {
+                    // ✅ تحديد هوية المستخدم كمساهم (Shareholder)
+                    const currentUser = AppConfig.getCurrentUser() || {
                         id: 'IR_001',
-                        role: 'shareholder', // <--- هذا هو المفتاح الذي سيغير القائمة إلى قائمة المجلس المختصرة
-                        displayName: 'مساهم',
-                        displayTitle: 'مساهم',
-                        avatar: 'https://ui-avatars.com/api/?name=Board&background=random'
+                        role: 'shareholder',
+                        displayName: 'المساهم'
                     };
-
-                    // حفظ المستخدم وتشغيل النظام
-                    AppConfig.setCurrentUser(boardUser);
+                    
+                    currentUser.role = 'shareholder';
+                    AppConfig.setCurrentUser(currentUser);
                     Layout.init();
                 }
             }, 50);
         });
+
+        function handleChatSubmit(e) {
+            e.preventDefault();
+            const input = document.getElementById('chatInput');
+            const chatBox = document.getElementById('chatBox');
+            if (!input.value.trim()) return;
+
+            const time = new Date().toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' });
+            
+            const msgHtml = `
+                <div class="flex gap-3 flex-row-reverse">
+                    <div class="w-8 h-8 rounded-full bg-brandRed text-white flex items-center justify-center text-[10px]">أنا</div>
+                    <div class="bg-brandRed text-white p-3 rounded-2xl rounded-tl-none text-xs shadow-sm">
+                        ${input.value}
+                        <div class="text-[10px] text-white/70 mt-1 text-right">${time}</div>
+                    </div>
+                </div>
+            `;
+
+            chatBox.insertAdjacentHTML('beforeend', msgHtml);
+            input.value = '';
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            // محاكاة رد تلقائي
+            setTimeout(() => {
+                const replyHtml = `
+                    <div class="flex gap-3 animate-pulse">
+                        <img src="https://ui-avatars.com/api/?name=IR+Support&background=0F172A&color=fff" class="w-8 h-8 rounded-full">
+                        <div class="bg-white dark:bg-slate-800 p-3 rounded-2xl rounded-tr-none text-xs shadow-sm dark:text-slate-200 italic">
+                            جاري معالجة استفسارك...
+                        </div>
+                    </div>
+                `;
+                chatBox.insertAdjacentHTML('beforeend', replyHtml);
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }, 1000);
+        }
     </script>
 </body>
 </html>
