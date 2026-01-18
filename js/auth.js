@@ -1,220 +1,141 @@
-/**
- * AndroGov Authentication Engine v4.4 (Aligned with Policy v4.1.0)
- * - يدعم هيكلية البيانات الجديدة (Organization & Governance Schema)
- * - معالجة الأسماء ثنائية اللغة
- * - دعم role_ref
- */
+<script src="js/auth.js"></script> 
 
-class AuthSystem {
-    constructor() {
-        this.users = [];
-        this.isReady = false;
-    }
+  <script>
+    // ==========================================
+    // 1. DATA DEFINITION (Single Source of Truth)
+    // ==========================================
+    // نُبقي البيانات هنا لأنها غير موجودة في ملفات منفصلة في الرفع الخاص بك
+    window.SYSTEM_DATA = {
+        shareholders: [
+            { "id": "SH_001", "name": { "ar": "ورثة محمد بن صالح السحيباني", "en": "Heirs of Mohammed Al-Suhaibani" }, "percent": 35, "type": "Individual", "shares": 210000, "voting": true, "email": "alcaseer@gmail.com" },
+            { "id": "SH_002", "name": { "ar": "هشام بن محمد السحيباني", "en": "Hesham bin Mohammed Al-Suhaibani" }, "percent": 10, "type": "Individual", "shares": 60000, "voting": true, "email": "Hesham@androomeda.com" },
+            // ... (بقية قائمة المساهمين كما هي في ملفك الأصلي)
+        ],
+        users: [
+            { "id": "USR_000", "name": "Abdullah Al-Hawas", "title": "Chairman of the Board", "role": "Chairman", "is_executive": false, "email": "amh400@gmail.com" },
+            { "id": "USR_001", "name": "Hesham Al-Suhaibani", "title": "CEO", "role": "CEO", "is_executive": true, "email": "hesham@androomeda.com" },
+            { "id": "USR_004", "name": "Ayman Al-Maghrabi", "title": "GRCO", "role": "Admin", "email": "amaghrabi@androomeda.com" },
+            // ... (بقية قائمة المستخدمين كما هي في ملفك الأصلي)
+        ]
+    };
 
-    async init() {
-        if (this.isReady) return;
+    // ==========================================
+    // 2. UI LOGIC & TRANSLATIONS
+    // ==========================================
+    const translations = {
+      ar: { 
+        loginTitle: "تسجيل الدخول", 
+        loginSub: "يرجى اختيار صفتك للدخول إلى النظام", 
+        errorCredentials: "بيانات الدخول غير صحيحة",
+        verifying: "جاري التحقق...",
+        // ... (يمكنك إبقاء بقية الترجمات)
+      },
+      en: { 
+        loginTitle: "Sign In", 
+        loginSub: "Please select your role to access", 
+        errorCredentials: "Invalid credentials",
+        verifying: "Verifying...",
+        // ...
+      }
+    };
 
-        try {
-            // محاولة العثور على البيانات سواء كانت Global Variable أو Module
-            let data = null;
-            if (typeof POLICY_DATA !== 'undefined') {
-                data = POLICY_DATA;
-            } else if (typeof module !== 'undefined' && module.exports) {
-                // في حال استخدام CommonJS في بيئة المتصفح (يتطلب إعداد خاص)
-                // هنا نفترض وجود متغير عالمي تم حقنه
-                console.warn("POLICY_DATA not found globally, checking context...");
-            }
+    let lang = localStorage.getItem('lang') || 'ar';
 
-            if (!data) {
-                console.error("Critical Error: System Data is missing.");
-                return;
-            }
-
-            this.processUsers(data);
-            this.isReady = true;
-            console.log(`✅ System Ready: Loaded ${this.users.length} users.`);
-
-        } catch (error) {
-            console.error("Auth Init Error:", error);
-        }
-    }
-
-    processUsers(data) {
-        let rawUsers = [];
-        let shareholders = [];
-
-        // 1. جلب الموظفين (دعم الإصدار الجديد v4.1.0 والقديم)
-        if (data.organization && data.organization.key_personnel) {
-            rawUsers = data.organization.key_personnel;
-        } else if (data.organizational_chart && data.organizational_chart.users_directory) {
-            rawUsers = data.organizational_chart.users_directory;
-        }
-
-        // 2. جلب المساهمين (دعم الإصدار الجديد v4.1.0 والقديم)
-        if (data.governance && data.governance.shareholders) {
-            shareholders = data.governance.shareholders;
-        } else if (data.shareholders) {
-            shareholders = data.shareholders;
-        }
-
-        // 3. معالجة بيانات الموظفين
-        this.users = rawUsers.map(u => {
-            let roles = [];
-            // التعامل مع اختلاف الحقول بين الإصدارات (role vs role_ref)
-            let roleRaw = String(u.role_ref || u.role || '').toLowerCase();
-            let titleRaw = String(u.title || '').toLowerCase();
-            let email = u.email ? u.email.toLowerCase().trim() : '';
-            // التعامل مع الاسم (قد يكون كائن في الإصدار الجديد للمساهمين، لكن الموظفين عادة string)
-            let name = typeof u.name === 'object' ? (u.name.ar || u.name.en) : (u.name || 'Unknown');
-            
-            // --- أ. تحديد الأدوار للصلاحيات (Access Levels) ---
-            
-            // 1. Admin / System Admin
-            if (roleRaw === 'sys_admin' || roleRaw === 'admin' || roleRaw.includes('grc')) roles.push('admin');
-            
-            // 2. Executive (C-Level)
-            if (u.is_executive || roleRaw.includes('ceo') || roleRaw.includes('cfo') || roleRaw.includes('cao')) roles.push('exec');
-            
-            // 3. Board Members
-            if (roleRaw.includes('chairman') || roleRaw.includes('board') || titleRaw.includes('secretary')) roles.push('board');
-
-            // 4. Audit Committee (من الهيكل الجديد)
-            // في v4.1.0 اللجنة معرفة داخل governance.config أو يمكن استنتاجها من role_ref إذا كان هناك دور خاص
-            if (titleRaw.includes('audit committee')) roles.push('audit');
-
-            // 5. Shareholder (Link by Email or ID)
-            const isShareholder = shareholders.find(s => 
-                (s.email && s.email.toLowerCase() === email) || 
-                (s.id === u.id)
-            );
-            if (isShareholder || u.additional_roles?.includes('shareholder')) {
-                roles.push('shareholder');
-            }
-
-            // --- ب. تحديد "نوع العرض" (Display Type) ---
-            let displayType = 'staff';
-
-            if (roles.includes('admin')) displayType = 'admin';
-            else if (roles.includes('board')) displayType = 'board';
-            else if (roles.includes('shareholder') && roles.length === 1) displayType = 'shareholder'; // مساهم فقط
-            else if (roles.includes('exec')) displayType = 'exec';
-            else if (roles.includes('audit')) displayType = 'audit';
-            else if (roleRaw.includes('manager') || roleRaw.includes('director') || roleRaw.includes('head')) displayType = 'manager';
-            else displayType = 'staff';
-
-            if (roles.length === 0) roles.push(displayType);
-
-            return {
-                id: u.id,
-                name: name,
-                email: email,
-                title: u.title,
-                role: roleRaw, // Internal role ref
-                
-                type: displayType,
-                primaryRole: roles[0],
-                accessLevels: roles,
-                avatarColor: this.getAvatarColor(roleRaw)
-            };
-        }).filter(u => u.email !== '');
-
-        // 4. إضافة المساهمين (الذين ليسوا موظفين)
-        shareholders.forEach(s => {
-            const email = s.email ? s.email.toLowerCase().trim() : '';
-            // التحقق من عدم وجوده مسبقاً في قائمة المستخدمين
-            if (!this.users.find(u => u.email === email || u.id === s.id)) {
-                // استخراج الاسم من الكائن ثنائي اللغة
-                const sName = typeof s.name === 'object' ? s.name.ar : s.name;
-                
-                this.users.push({
-                    id: s.id,
-                    name: sName,
-                    email: email,
-                    title: `مساهم (${s.percent}%)`,
-                    type: 'shareholder',
-                    role: 'shareholder',
-                    primaryRole: 'shareholder',
-                    accessLevels: ['shareholder'],
-                    avatarColor: '#fb4747'
-                });
-            }
-        });
-    }
-
-    getAvatarColor(role) {
-        const r = String(role || '').toLowerCase();
-        if (r.includes('admin') || r.includes('sys')) return '#b91c1c';
-        if (r.includes('ceo') || r.includes('chairman')) return '#4267B2';
-        if (r.includes('shareholder')) return '#fb4747';
-        if (r.includes('cfo') || r.includes('finance')) return '#7c3aed';
-        if (r.includes('manager') || r.includes('director')) return '#0ea5e9';
-        return '#64748b';
-    }
-
-    async login(email, password) {
-        if (!this.isReady) await this.init();
-
-        const cleanEmail = email.trim().toLowerCase();
-        const demoPass = "12345678";
-
-        const user = this.users.find(u => u.email === cleanEmail);
+    // عند تحميل الصفحة
+    document.addEventListener('DOMContentLoaded', async () => {
+        applyTheme();
+        applyLang();
         
-        if (!user) throw new Error("المستخدم غير موجود");
-        if (password !== demoPass) throw new Error("كلمة المرور غير صحيحة");
-
-        localStorage.setItem('currentUser', JSON.stringify(user));
-        return this.getRedirectUrl(user.type); // استخدام type للتوجيه الأدق
-    }
-
-    getRedirectUrl(type) {
-        switch (type) {
-            case 'admin': return 'admin/admin.html';
-            case 'board': return 'admin/board.html';
-            case 'audit': return 'admin/audit.html';
-            case 'shareholder': return 'shareholder/dashboard.html';
-            case 'exec': return 'exec/dashboard.html';
-            case 'manager': return 'manager/dashboard.html'; // إذا وجدت صفحة للمدراء
-            default: return 'employee/dashboard.html';
+        // تهيئة نظام المصادقة الخارجي بالبيانات الموجودة هنا
+        if (window.authSystem) {
+            await window.authSystem.init();
+            renderDynamicUsers(); // رسم أيقونات المستخدمين (Demo)
+        } else {
+            console.error("AuthSystem script not loaded!");
         }
-    }
 
-    async getDemoUsers() {
-        if (!this.isReady) await this.init();
-        return this.users;
-    }
-}
+        // ربط زر الدخول
+        document.getElementById('loginForm').addEventListener('submit', handleLoginSubmit);
+    });
 
-// تهيئة النظام
-window.authSystem = new AuthSystem();
-
-// معالج تسجيل الدخول للواجهة
-window.handleLogin = async (e) => {
-    e.preventDefault();
-    const btn = document.querySelector('button[type="submit"]');
-    const originalText = btn ? btn.innerHTML : '';
-    
-    if(btn) {
-        btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> جاري التحقق...';
-        btn.disabled = true;
-    }
-    
-    const errorMsg = document.getElementById('errorMsg');
-    if(errorMsg) errorMsg.classList.add('hidden');
-
-    const emailInput = document.getElementById('email');
-    const passwordInput = document.getElementById('password');
-
-    if (!emailInput || !passwordInput) return;
-
-    try {
-        const redirect = await window.authSystem.login(emailInput.value, passwordInput.value);
-        window.location.href = redirect;
-    } catch (err) {
-        if(document.getElementById('errorText')) document.getElementById('errorText').innerText = err.message;
-        if(errorMsg) errorMsg.classList.remove('hidden');
+    // دالة التعامل مع نموذج الدخول
+    async function handleLoginSubmit(e) {
+        e.preventDefault();
+        
+        const btn = document.querySelector('button[type="submit"]');
+        const btnSpan = btn.querySelector('span');
+        const originalText = btnSpan.innerText;
+        const t = translations[lang] || translations['ar']; // Fallback
+        
+        // UI Loading State
         if(btn) {
-            btn.innerHTML = originalText;
-            btn.disabled = false;
+            btnSpan.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> ${t.verifying}`;
+            btn.disabled = true;
         }
+        
+        const errorMsg = document.getElementById('errorMsg');
+        errorMsg.classList.add('hidden');
+
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        // محاكاة تأخير الشبكة قليلاً
+        setTimeout(async () => {
+            try {
+                // استخدام نظام المصادقة الخارجي الذي أصلحناه
+                const redirectUrl = await window.authSystem.login(email, password);
+                window.location.href = redirectUrl;
+            } catch (err) {
+                console.error(err);
+                if(document.getElementById('errorText')) document.getElementById('errorText').innerText = t.errorCredentials;
+                errorMsg.classList.remove('hidden');
+                if(btn) {
+                    btnSpan.innerHTML = originalText; // إعادة النص الأصلي
+                    btn.disabled = false;
+                }
+            }
+        }, 800);
     }
-};
+
+    // دالة رسم المستخدمين (للوصول السريع Demo)
+    function renderDynamicUsers() {
+        const container = document.getElementById('usersContainer');
+        if (!container || !window.authSystem) return;
+        
+        container.innerHTML = '';
+        const users = window.authSystem.getUsers();
+
+        // تجميع المستخدمين حسب النوع لتبسيط العرض
+        // هذا مجرد مثال مبسط، يمكنك استخدام الكود الأصلي للتجميع إذا رغبت
+        users.slice(0, 10).forEach(u => {
+             // ... يمكنك نسخ منطق توليد HTML للأزرار هنا من الكود القديم ...
+             // للتسهيل، سنستخدم دالة fillDemo الموجودة في النافذة
+        });
+        
+        // إعادة تعريف دالة التعبئة التلقائية
+        window.fillDemo = (email) => {
+            document.getElementById('email').value = email;
+            document.getElementById('password').value = '12345678';
+        };
+    }
+
+    // دوال المظهر واللغة (كما هي في كودك الأصلي)
+    function applyTheme() { /* ... */ }
+    function applyLang() { /* ... */ }
+    window.toggleDarkMode = () => { /* ... */ };
+    window.toggleLanguage = () => { /* ... */ };
+    window.togglePassword = () => {
+        const inp = document.getElementById('password');
+        const icon = document.getElementById('passIcon');
+        if(inp.type === 'password') {
+            inp.type = 'text';
+            icon.classList.replace('fa-eye', 'fa-eye-slash');
+        } else {
+            inp.type = 'password';
+            icon.classList.replace('fa-eye-slash', 'fa-eye');
+        }
+    };
+
+  </script>
+</body>
+</html>
