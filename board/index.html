@@ -27,7 +27,6 @@
         .num-font { font-family: 'Inter', sans-serif; direction: ltr; display: inline-block; }
         .custom-scroll::-webkit-scrollbar { width: 5px; }
         .custom-scroll::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 10px; }
-        /* Animation Classes */
         .fade-in { animation: fadeIn 0.4s ease-out forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
@@ -37,7 +36,7 @@
 
     <div id="sidebar-container"></div>
 
-    <div class="flex-1 flex flex-col h-full relative transition-all duration-300 ltr:md:ml-72 rtl:md:mr-72">
+    <div class="flex-1 flex flex-col h-full relative transition-all duration-300 rtl:md:mr-64 ltr:md:ml-64">
         
         <div id="header-container"></div>
 
@@ -60,25 +59,27 @@
                     <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-brandRed/20 rounded-full blur-3xl"></div>
                 </div>
 
+                
+
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md transition">
                         <div class="flex justify-between mb-4">
-                            <div class="w-10 h-10 bg-red-50 text-red-500 rounded-lg flex items-center justify-center"><i class="fa-solid fa-gavel"></i></div>
-                            <span class="text-[10px] bg-red-50 text-red-600 px-2 py-1 rounded-full font-bold h-fit animate-pulse">عاجل</span>
+                            <div class="w-10 h-10 bg-red-50 dark:bg-red-900/20 text-red-500 rounded-lg flex items-center justify-center"><i class="fa-solid fa-gavel"></i></div>
+                            <span class="text-[10px] bg-red-50 dark:bg-red-900/40 text-red-600 px-2 py-1 rounded-full font-bold h-fit animate-pulse">عاجل</span>
                         </div>
                         <h3 class="text-3xl font-bold num-font">2</h3>
                         <p class="text-xs text-slate-400 mt-1">قرارات بانتظار التصويت</p>
                     </div>
                     <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md transition">
                         <div class="flex justify-between mb-4">
-                            <div class="w-10 h-10 bg-blue-50 text-brandBlue rounded-lg flex items-center justify-center"><i class="fa-solid fa-calendar-check"></i></div>
+                            <div class="w-10 h-10 bg-blue-50 dark:bg-blue-900/20 text-brandBlue rounded-lg flex items-center justify-center"><i class="fa-solid fa-calendar-check"></i></div>
                         </div>
                         <h3 class="text-3xl font-bold num-font">95%</h3>
                         <p class="text-xs text-slate-400 mt-1">نسبة الحضور السنوي</p>
                     </div>
                     <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md transition">
                         <div class="flex justify-between mb-4">
-                            <div class="w-10 h-10 bg-green-50 text-green-600 rounded-lg flex items-center justify-center"><i class="fa-solid fa-chart-line"></i></div>
+                            <div class="w-10 h-10 bg-green-50 dark:bg-green-900/20 text-green-600 rounded-lg flex items-center justify-center"><i class="fa-solid fa-chart-line"></i></div>
                         </div>
                         <h3 class="text-3xl font-bold num-font">14%</h3>
                         <p class="text-xs text-slate-400 mt-1">نمو الأرباح (Q4)</p>
@@ -96,23 +97,24 @@
                 </div>
             </div>
 
-            <div id="view-meetings" class="hidden fade-in">
-                <div class="bg-white dark:bg-slate-800 p-10 rounded-2xl text-center">
-                    <i class="fa-regular fa-calendar-days text-4xl text-slate-300 mb-4"></i>
-                    <h3 class="font-bold text-lg dark:text-white">جدول الاجتماعات</h3>
-                    <p class="text-slate-400 text-sm mt-2">لا توجد اجتماعات مجدولة لهذا الأسبوع.</p>
-                    <button onclick="BoardLayout.switchView('dashboard')" class="mt-4 text-brandRed text-sm hover:underline">العودة للرئيسية</button>
+            <div id="view-meetings" class="hidden fade-in space-y-6">
+                <div class="bg-white dark:bg-slate-800 p-10 rounded-2xl text-center border border-slate-100 dark:border-slate-700">
+                    <i class="fa-regular fa-calendar-days text-5xl text-slate-300 mb-4 block"></i>
+                    <h3 class="font-bold text-xl dark:text-white">جدول الاجتماعات</h3>
+                    <p class="text-slate-400 text-sm mt-2">لا توجد اجتماعات مجدولة حالياً لمجلس الإدارة.</p>
+                    <button onclick="BoardLayout.switchView('dashboard')" class="mt-6 px-6 py-2 bg-slate-100 dark:bg-slate-700 text-brandRed font-bold rounded-xl hover:bg-slate-200 transition">العودة للرئيسية</button>
                 </div>
             </div>
 
-            <div id="view-resolutions" class="hidden fade-in">
-                <div class="bg-white dark:bg-slate-800 p-10 rounded-2xl text-center">
-                    <i class="fa-solid fa-check-to-slot text-4xl text-slate-300 mb-4"></i>
-                    <h3 class="font-bold text-lg dark:text-white">سجل القرارات</h3>
-                    <p class="text-slate-400 text-sm mt-2">جاري تحميل بيانات التصويت...</p>
-                    <button onclick="BoardLayout.switchView('dashboard')" class="mt-4 text-brandRed text-sm hover:underline">العودة للرئيسية</button>
+            <div id="view-resolutions" class="hidden fade-in space-y-6">
+                <div class="bg-white dark:bg-slate-800 p-10 rounded-2xl text-center border border-slate-100 dark:border-slate-700">
+                    <i class="fa-solid fa-check-to-slot text-5xl text-slate-300 mb-4 block"></i>
+                    <h3 class="font-bold text-xl dark:text-white">بوابة التصويت والقرارات</h3>
+                    <p class="text-slate-400 text-sm mt-2">جاري مزامنة بيانات التصويت الإلكتروني...</p>
+                    <button onclick="BoardLayout.switchView('dashboard')" class="mt-6 px-6 py-2 bg-slate-100 dark:bg-slate-700 text-brandRed font-bold rounded-xl hover:bg-slate-200 transition">العودة للرئيسية</button>
                 </div>
             </div>
+
         </main>
     </div>
 
@@ -120,29 +122,30 @@
     <script src="../admin/js/core/i18n.js"></script>
     <script src="../admin/js/services/data-service.js"></script>
     <script src="../admin/js/components/role-switcher.js"></script>
-    
     <script src="../admin/js/components/layout.js"></script>
     <script src="../admin/js/components/bot.js"></script>
 
     <script>
         // ==========================================
-        // 1. Board Logic (Switching Views & Chart)
+        // 1. Board Layout Controller
         // ==========================================
         const BoardLayout = {
             activeView: 'dashboard',
             
             switchView: function(viewId) {
-                // إخفاء الكل
+                // إخفاء كل المشاهد
                 ['dashboard', 'meetings', 'resolutions'].forEach(id => {
-                    document.getElementById(`view-${id}`).classList.add('hidden');
+                    const el = document.getElementById(`view-${id}`);
+                    if(el) el.classList.add('hidden');
                 });
-                // إظهار المطلوب
+
+                // إظهار المشهد المختار
                 const target = document.getElementById(`view-${viewId}`);
                 if(target) {
                     target.classList.remove('hidden');
-                    // إعادة تشغيل الأنيميشن
+                    // تنشيط أنيميشن الدخول
                     target.classList.remove('fade-in');
-                    void target.offsetWidth; // trigger reflow
+                    void target.offsetWidth; 
                     target.classList.add('fade-in');
                 }
                 this.activeView = viewId;
@@ -161,13 +164,13 @@
                                 label: 'قرارات معتمدة',
                                 data: [12, 19, 3, 5, 2, 3],
                                 backgroundColor: '#10B981',
-                                borderRadius: 4
+                                borderRadius: 6
                             },
                             {
-                                label: 'مؤجلة',
-                                data: [2, 3, 20, 5, 1, 4],
+                                label: 'قرارات مؤجلة',
+                                data: [2, 3, 1, 1, 1, 0],
                                 backgroundColor: '#FB4747',
-                                borderRadius: 4
+                                borderRadius: 6
                             }
                         ]
                     },
@@ -175,10 +178,10 @@
                         responsive: true,
                         maintainAspectRatio: false,
                         plugins: {
-                            legend: { position: 'bottom', labels: { font: { family: 'Tajawal' } } }
+                            legend: { position: 'bottom', labels: { font: { family: 'Tajawal', weight: 'bold' } } }
                         },
                         scales: {
-                            y: { beginAtZero: true, grid: { color: '#e2e8f0' } },
+                            y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' } },
                             x: { grid: { display: false } }
                         }
                     }
@@ -187,33 +190,33 @@
         };
 
         // ==========================================
-        // 2. Initialization
+        // 2. Data Initialization
         // ==========================================
         document.addEventListener('DOMContentLoaded', () => {
-            
-            // انتظار تحميل المكتبات الأساسية
             const checkLibs = setInterval(() => {
                 if (typeof Layout !== 'undefined' && typeof AppConfig !== 'undefined') {
                     clearInterval(checkLibs);
 
-                    // ✅ تصحيح: استخدام "type" الصغير لضمان عمل القائمة الجانبية
+                    // ✅ تعريف مستخدم المجلس (الرئيس)
                     const boardUser = {
                         id: 'BRD_001',
-                        type: 'board', // ⚠️ مهم جداً: يجب أن يكون lowercase مطابقاً لـ roleMap
-                        role: 'Board Member',
+                        type: 'board', // ⚠️ هذا النوع هو الذي يفتح قائمة المجلس الجانبية
+                        role: 'Chairman',
                         displayName: 'د. عبدالله الحواس',
                         displayTitle: 'رئيس مجلس الإدارة',
                         avatar: 'https://ui-avatars.com/api/?name=A+H&background=FB4747&color=fff'
                     };
 
-                    // تحديث الاسم في الواجهة
-                    document.getElementById('dashName').innerText = boardUser.displayName;
+                    // تحديث واجهة المستخدم
+                    if(document.getElementById('dashName')) {
+                        document.getElementById('dashName').innerText = boardUser.displayName;
+                    }
 
-                    // تشغيل النظام
+                    // حفظ الجلسة وتشغيل نظام التخطيط
                     AppConfig.setCurrentUser(boardUser);
                     Layout.init();
                     
-                    // تشغيل الشارت
+                    // تشغيل الرسوم البيانية
                     BoardLayout.initChart();
                 }
             }, 50);
