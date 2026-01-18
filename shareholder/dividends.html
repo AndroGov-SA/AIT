@@ -14,11 +14,11 @@
         }
     </script>
 </head>
-<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white font-sans">
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white font-sans transition-colors duration-300">
 
     <div id="sidebar-container"></div>
 
-    <div class="lg:mr-72 transition-all duration-300">
+    <div class="main-content-wrapper transition-all duration-300 flex flex-col min-h-screen rtl:lg:mr-64 ltr:lg:ml-64">
         <div id="header-container"></div>
 
         <main class="p-8 max-w-6xl mx-auto space-y-8">
@@ -40,7 +40,7 @@
                 <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-sm">
                     <p class="text-slate-400 text-xs font-bold uppercase mb-1">توزيعات قيد المعالجة (2025)</p>
                     <h3 class="text-3xl font-extrabold text-slate-800 dark:text-white" id="pendingAmount">...</h3>
-                    <div class="mt-4 flex items-center gap-2 text-xs font-bold text-orange-500 bg-orange-50 px-3 py-1 rounded-full w-fit">
+                    <div class="mt-4 flex items-center gap-2 text-xs font-bold text-orange-500 bg-orange-50 dark:bg-orange-900/20 px-3 py-1 rounded-full w-fit">
                         <i class="fa-solid fa-clock"></i> متوقع الإيداع: 15 مارس
                     </div>
                 </div>
@@ -48,20 +48,22 @@
                 <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-sm">
                     <p class="text-slate-400 text-xs font-bold uppercase mb-1">حساب الإيداع المسجل</p>
                     <div class="flex items-center gap-3 mt-2">
-                        <div class="w-10 h-10 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center"><i class="fa-solid fa-building-columns"></i></div>
+                        <div class="w-10 h-10 bg-blue-50 dark:bg-blue-900/20 text-blue-600 rounded-full flex items-center justify-center"><i class="fa-solid fa-building-columns"></i></div>
                         <div>
                             <p class="font-bold text-sm">SA24 8000 ...</p>
                             <p class="text-[10px] text-slate-400">مصرف الراجحي</p>
                         </div>
                     </div>
-                    <a href="profile.html" class="text-xs text-brandRed font-bold mt-4 block hover:underline">تحديث الحساب <i class="fa-solid fa-arrow-left"></i></a>
+                    <button onclick="alert('سيتم توجيهك لصفحة الملف الشخصي')" class="text-xs text-brandRed font-bold mt-4 block hover:underline">تحديث الحساب <i class="fa-solid fa-arrow-left"></i></button>
                 </div>
             </div>
 
             <div class="bg-white dark:bg-slate-800 rounded-3xl border border-slate-100 dark:border-slate-700 overflow-hidden shadow-sm">
                 <div class="p-6 border-b border-slate-50 dark:border-slate-700 flex justify-between items-center">
                     <h3 class="font-bold text-lg">سجل العمليات التاريخي</h3>
-                    <button class="text-xs bg-slate-100 dark:bg-slate-700 px-3 py-1 rounded-lg hover:bg-slate-200 transition"><i class="fa-solid fa-download"></i> تصدير Excel</button>
+                    <button class="text-xs bg-slate-100 dark:bg-slate-700 px-3 py-1 rounded-lg hover:bg-slate-200 transition">
+                        <i class="fa-solid fa-download"></i> تصدير Excel
+                    </button>
                 </div>
                 
                 <div class="overflow-x-auto">
@@ -77,7 +79,7 @@
                                 <th class="px-6 py-4">الإيصال</th>
                             </tr>
                         </thead>
-                        <tbody id="dividendsBody">
+                        <tbody id="dividendsBody" class="divide-y divide-slate-50 dark:divide-slate-700">
                             </tbody>
                     </table>
                 </div>
@@ -90,94 +92,84 @@
     <script src="../admin/js/core/i18n.js"></script>
     <script src="../admin/js/services/data-service.js"></script>
     <script src="../admin/js/components/role-switcher.js"></script>
-    
     <script src="../admin/js/components/layout.js"></script>
-    <script src="../admin/js/components/bot.js"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // ننتظر تحميل السكربتات
             const checkLibs = setInterval(() => {
                 if (typeof Layout !== 'undefined' && typeof AppConfig !== 'undefined') {
                     clearInterval(checkLibs);
 
-                    // ✅ الخطوة المهمة: تحديد هوية المستخدم كمساهم
-                    const boardUser = {
+                    // 1. تحديد هوية المستخدم (مساهم)
+                    const currentUser = AppConfig.getCurrentUser() || {
                         id: 'IR_001',
-                        role: 'shareholder', // <--- هذا هو المفتاح الذي سيغير القائمة إلى قائمة المجلس المختصرة
-                        displayName: 'مساهم',
-                        displayTitle: 'مساهم',
-                        avatar: 'https://ui-avatars.com/api/?name=Board&background=random'
+                        role: 'shareholder',
+                        email: 'm.hadyan@androomeda.com'
                     };
-
-                    // حفظ المستخدم وتشغيل النظام
-                    AppConfig.setCurrentUser(boardUser);
+                    
+                    currentUser.role = 'shareholder';
+                    AppConfig.setCurrentUser(currentUser);
+                    
                     Layout.init();
+                    loadDividendData(currentUser);
                 }
             }, 50);
         });
-    </script>
-    
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const user = JSON.parse(localStorage.getItem('currentUser'));
-            if(!user) return;
 
-            const shData = POLICY_DATA.shareholders.find(s => s.email === user.email);
+        function loadDividendData(user) {
+            if (typeof POLICY_DATA === 'undefined') return;
 
-            if(shData) {
-                // محاكاة بيانات الأرباح بناءً على عدد أسهم المساهم
-                const shares = shData.shares;
+            const shData = POLICY_DATA.shareholders.find(s => s.id === user.id || s.email === user.email);
+            if (!shData) return;
+
+            const shares = shData.shares;
+            
+            // محاكاة بيانات الأرباح التاريخية
+            const history = [
+                { year: '2025 (نصف سنوي)', type: 'نقدي', perShare: 1.5, date: '2026-03-15', status: 'pending' },
+                { year: '2024 (السنوي)', type: 'نقدي', perShare: 2.0, date: '2025-04-20', status: 'paid' },
+                { year: '2023 (السنوي)', type: 'نقدي', perShare: 1.8, date: '2024-05-10', status: 'paid' },
+                { year: '2022 (السنوي)', type: 'منحة', perShare: 0, note: 'سهم لكل 10 أسهم', date: '2023-06-01', status: 'bonus' }
+            ];
+
+            const tbody = document.getElementById('dividendsBody');
+            let totalPaid = 0;
+            let pending = 0;
+
+            history.forEach(item => {
+                const totalAmount = item.perShare * shares;
+                let statusBadge = '';
                 
-                // تعريف الأرباح التاريخية للشركة (ريال لكل سهم)
-                const history = [
-                    { year: '2025 (نصف سنوي)', type: 'نقدي', perShare: 1.5, date: '2026-03-15', status: 'pending' },
-                    { year: '2024 (السنوي)', type: 'نقدي', perShare: 2.0, date: '2025-04-20', status: 'paid' },
-                    { year: '2023 (السنوي)', type: 'نقدي', perShare: 1.8, date: '2024-05-10', status: 'paid' },
-                    { year: '2022 (السنوي)', type: 'منحة', perShare: 0, note: 'سهم لكل 10 أسهم', date: '2023-06-01', status: 'bonus' }
-                ];
+                if(item.status === 'paid') {
+                    statusBadge = '<span class="px-2 py-1 bg-green-100 text-green-700 rounded-lg text-xs font-bold">تم الإيداع</span>';
+                    totalPaid += totalAmount;
+                } else if (item.status === 'pending') {
+                    statusBadge = '<span class="px-2 py-1 bg-orange-100 text-orange-700 rounded-lg text-xs font-bold">قيد المعالجة</span>';
+                    pending += totalAmount;
+                } else {
+                    statusBadge = '<span class="px-2 py-1 bg-blue-100 text-blue-700 rounded-lg text-xs font-bold">أسهم منحة</span>';
+                }
 
-                const tbody = document.getElementById('dividendsBody');
-                let totalPaid = 0;
-                let pending = 0;
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition">
+                        <td class="px-6 py-4 font-bold text-slate-800 dark:text-slate-200">${item.year}</td>
+                        <td class="px-6 py-4">${item.type}</td>
+                        <td class="px-6 py-4">${item.perShare > 0 ? item.perShare + ' ر.س' : '-'}</td>
+                        <td class="px-6 py-4 font-bold ${item.status === 'pending' ? 'text-orange-500' : 'text-green-600'}">
+                            ${item.perShare > 0 ? totalAmount.toLocaleString() + ' ر.س' : item.note}
+                        </td>
+                        <td class="px-6 py-4 text-slate-500 text-xs">${item.date}</td>
+                        <td class="px-6 py-4">${statusBadge}</td>
+                        <td class="px-6 py-4">
+                            ${item.status === 'paid' ? '<button class="text-slate-400 hover:text-brandRed"><i class="fa-solid fa-file-invoice-dollar"></i></button>' : '-'}
+                        </td>
+                    </tr>
+                `;
+            });
 
-                history.forEach(item => {
-                    const totalAmount = item.perShare * shares;
-                    let statusBadge = '';
-                    
-                    if(item.status === 'paid') {
-                        statusBadge = '<span class="px-2 py-1 bg-green-100 text-green-700 rounded-lg text-xs font-bold">تم الإيداع</span>';
-                        totalPaid += totalAmount;
-                    } else if (item.status === 'pending') {
-                        statusBadge = '<span class="px-2 py-1 bg-orange-100 text-orange-700 rounded-lg text-xs font-bold">قيد المعالجة</span>';
-                        pending += totalAmount;
-                    } else {
-                        statusBadge = '<span class="px-2 py-1 bg-blue-100 text-blue-700 rounded-lg text-xs font-bold">أسهم منحة</span>';
-                    }
-
-                    const row = `
-                        <tr class="border-b border-slate-50 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 transition">
-                            <td class="px-6 py-4 font-bold text-slate-800 dark:text-slate-200">${item.year}</td>
-                            <td class="px-6 py-4">${item.type}</td>
-                            <td class="px-6 py-4">${item.perShare > 0 ? item.perShare + ' ر.س' : '-'}</td>
-                            <td class="px-6 py-4 font-bold ${item.status === 'pending' ? 'text-orange-500' : 'text-green-600'}">
-                                ${item.perShare > 0 ? totalAmount.toLocaleString() + ' ر.س' : item.note}
-                            </td>
-                            <td class="px-6 py-4 text-slate-500 text-xs">${item.date}</td>
-                            <td class="px-6 py-4">${statusBadge}</td>
-                            <td class="px-6 py-4">
-                                ${item.status === 'paid' ? '<button class="text-slate-400 hover:text-brandRed"><i class="fa-solid fa-file-invoice-dollar"></i></button>' : ''}
-                            </td>
-                        </tr>
-                    `;
-                    tbody.innerHTML += row;
-                });
-
-                // تحديث البطاقات العلوية
-                document.getElementById('totalPaid').innerText = totalPaid.toLocaleString() + ' ر.س';
-                document.getElementById('pendingAmount').innerText = pending.toLocaleString() + ' ر.س';
-            }
-        });
+            document.getElementById('totalPaid').innerText = totalPaid.toLocaleString() + ' ر.س';
+            document.getElementById('pendingAmount').innerText = pending.toLocaleString() + ' ر.س';
+        }
     </script>
 </body>
 </html>
