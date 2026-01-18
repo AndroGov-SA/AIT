@@ -21,7 +21,7 @@ const Layout = (function() {
   const _menuDefinitions = { 
     'Admin': [
     { section: 'main', items: [
-      { key: 'dashboard', icon: 'fa-gauge-high', link: 'admin.html' }
+      { key: 'dashboard', icon: 'fa-gauge-high', link: 'index.html' }
     ]},
     { section: 'communication', items: [
       { key: 'chat', icon: 'fa-comments', link: 'admin_chat.html' },
