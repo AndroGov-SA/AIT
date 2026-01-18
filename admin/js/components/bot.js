@@ -104,92 +104,81 @@ const AndroBot = (function() {
   }
 
   // ==========================================
-  // INJECT HTML
+  // INJECT HTML 
   // ==========================================
-  // ==========================================
-  // INJECT HTML (جاهز: نافذة محادثة بدون زر عائم)
-  // ==========================================
-  function _injectHTML() {
-    const lang = AppConfig.getLang();
-    const isRTL = AppConfig.isRTL();
-    // تحديد موقع النافذة (يمين أو يسار)
-    const pos = isRTL ? 'left-6' : 'right-6';
+  function _injectHTML() {
+    const lang = AppConfig.getLang();
+    const isRTL = AppConfig.isRTL();
+    const pos = isRTL ? 'left-6' : 'right-6';
 
-    // 1. كود HTML للنافذة
-    const html = `
-      <div id="andro-bot-container" class="fixed bottom-20 ${pos} z-[100] flex flex-col items-start gap-4 font-sans pointer-events-none" dir="${isRTL ? 'rtl' : 'ltr'}">
-        
-                <div id="chat-window" class="hidden pointer-events-auto bg-white dark:bg-slate-800 w-80 md:w-96 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden flex flex-col transform transition-all duration-300 origin-bottom scale-95 opacity-0" style="height: 500px; max-height: 70vh;">
-          
-                    <div class="bg-gradient-to-r from-brandBlue to-blue-600 p-4 flex justify-between items-center text-white">
-            <div class="flex items-center gap-3">
-              <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
-                <i class="fa-solid fa-robot"></i>
-              </div>
-              <div>
-                <h4 class="font-bold text-sm">${I18n.t('bot.title') || 'المساعد الذكي'}</h4>
-                <p class="text-[10px] text-white/80">AndroGov AI</p>
-              </div>
-            </div>
-            <button id="close-chat-btn" class="text-white/80 hover:text-white transition" title="${I18n.t('bot.close')}">
-              <i class="fa-solid fa-times"></i>
-            </button>
-          </div>
-          
-                    <div id="chat-body" class="flex-1 p-4 bg-slate-50 dark:bg-slate-900/50 overflow-y-auto custom-scroll space-y-3 flex flex-col">
-            <div class="chat-bubble bot">${I18n.t('bot.welcome')}</div>
-            <div class="flex flex-wrap gap-2 mt-2" id="suggestions"></div>
-          </div>
-
-                    <div class="p-3 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 flex gap-2">
-            <input 
-              type="text" 
-              id="chat-input" 
-              placeholder="${I18n.t('bot.placeholder')}"
-              class="flex-1 bg-slate-100 dark:bg-slate-900 border-none rounded-lg text-sm px-4 py-2 focus:ring-2 focus:ring-brandBlue outline-none dark:text-white"
-            >
-            <button id="send-btn" class="w-10 h-10 rounded-lg bg-brandBlue text-white hover:bg-blue-700 transition flex items-center justify-center" title="${I18n.t('bot.send')}">
-              <i class="fa-solid fa-paper-plane"></i>
-            </button>
-          </div>
-        </div>
-      </div>
-    `;
-
-    document.body.insertAdjacentHTML('beforeend', html);
-
-    // 2. كود CSS (مدمج وجاهز)
-    if (!document.getElementById('androbot-styles')) {
-      const styles = `
-        <style id="androbot-styles">
-          /* كلاس الفتح: يظهر النافذة ويعيد حجمها الطبيعي */
-          #chat-window.open { display: flex; transform: scale(1); opacity: 1; pointer-events: auto; }
+    // 1. كود HTML
+    // التغيير هنا: top-20 بدلاً من bottom-20 لتظهر النافذة تحت الهيدر مباشرة
+    const html = `
+      <div id="andro-bot-container" class="fixed top-20 ${pos} z-[100] flex flex-col items-start gap-4 font-sans pointer-events-none" dir="${isRTL ? 'rtl' : 'ltr'}">
+        <div id="chat-window" class="hidden pointer-events-auto bg-white dark:bg-slate-800 w-80 md:w-96 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden flex flex-col transform transition-all duration-300 origin-top scale-95 opacity-0" style="height: 500px; max-height: 70vh;">
           
-          /* فقاعات المحادثة */
+          <div class="bg-gradient-to-r from-brandBlue to-blue-600 p-4 flex justify-between items-center text-white shrink-0">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center"><i class="fa-solid fa-robot"></i></div>
+              <div>
+                <h4 class="font-bold text-sm">${I18n.t('bot.title') || 'المساعد الذكي'}</h4>
+                <p class="text-[10px] text-white/80">AndroGov AI</p>
+              </div>
+            </div>
+            <button id="close-chat-btn" class="text-white/80 hover:text-white transition" title="${I18n.t('bot.close')}">
+              <i class="fa-solid fa-times"></i>
+            </button>
+          </div>
+          
+          <div id="chat-body" class="flex-1 p-4 bg-slate-50 dark:bg-slate-900/50 overflow-y-auto custom-scroll space-y-3 flex flex-col">
+            <div class="chat-bubble bot">${I18n.t('bot.welcome')}</div>
+            <div class="flex flex-wrap gap-2 mt-2" id="suggestions"></div>
+          </div>
+
+          <div class="p-3 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 flex gap-2 shrink-0">
+            <input type="text" id="chat-input" placeholder="${I18n.t('bot.placeholder')}" class="flex-1 bg-slate-100 dark:bg-slate-900 border-none rounded-lg text-sm px-4 py-2 focus:ring-2 focus:ring-brandBlue outline-none dark:text-white">
+            <button id="send-btn" class="w-10 h-10 rounded-lg bg-brandBlue text-white hover:bg-blue-700 transition flex items-center justify-center" title="${I18n.t('bot.send')}">
+              <i class="fa-solid fa-paper-plane"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+
+    document.body.insertAdjacentHTML('beforeend', html);
+
+    // 2. كود CSS
+    if (!document.getElementById('androbot-styles')) {
+      const styles = `
+        <style id="androbot-styles">
+          /* 1. إصلاح التخطيط: flex-direction: column ضروري جداً لترتيب العناصر فوق بعض */
+          #chat-window.open { 
+            display: flex !important; 
+            flex-direction: column !important; 
+            transform: scale(1); 
+            opacity: 1; 
+            pointer-events: auto; 
+          }
+          
+          /* 2. ضمان أن النوافذ الداخلية تأخذ العرض الكامل */
+          #chat-window > div { width: 100%; }
+
           .chat-bubble { max-width: 85%; padding: 10px 14px; border-radius: 12px; font-size: 0.9rem; line-height: 1.5; word-wrap: break-word; animation: bubbleIn 0.3s ease-out; }
-          
-          /* رسائل البوت */
           .chat-bubble.bot { background-color: #f1f5f9; color: #334155; border-bottom-${isRTL ? 'left' : 'right'}-radius: 2px; align-self: flex-start; }
           .dark .chat-bubble.bot { background-color: #334155; color: #f8fafc; }
-          
-          /* رسائل المستخدم */
           .chat-bubble.user { background-color: #4267B2; color: white; border-bottom-${isRTL ? 'right' : 'left'}-radius: 2px; align-self: flex-end; }
-          
-          /* مؤشر الكتابة (Typing...) */
           .typing-indicator { display: flex; align-items: center; gap: 4px; padding: 10px 14px; background-color: #f1f5f9; border-radius: 12px; width: fit-content; align-self: flex-start; }
           .dark .typing-indicator { background-color: #334155; }
           .typing-indicator span { display: inline-block; width: 6px; height: 6px; background-color: #94a3b8; border-radius: 50%; animation: typing 1.4s infinite ease-in-out both; }
           .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
           .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
-          
-          /* الحركات (Animations) */
           @keyframes typing { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
           @keyframes bubbleIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        </style>
-      `;
-      document.head.insertAdjacentHTML('beforeend', styles);
-    }
-  }
+        </style>
+      `;
+      document.head.insertAdjacentHTML('beforeend', styles);
+    }
+  }
 
   // ==========================================
   // CACHE ELEMENTS
