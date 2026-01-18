@@ -1,7 +1,7 @@
 /**
- * AndroGov Layout Engine v7.6 (Final Fixed Version)
+ * AndroGov Layout Engine v7.7 (FINAL - Role Routing Fixed)
  * @file admin/js/components/layout.js
- * @description Complete rewrite with proper menu rendering and role mapping
+ * @description Fixed role detection and menu rendering for all user types
  */
 
 const Layout = (function() {
@@ -182,7 +182,7 @@ const Layout = (function() {
     ],
     
     // --- 6. Shareholder ---
-    'shareholder': [
+    'Shareholder': [
       { section: 'main', items: [
         { key: 'dash', icon: 'fa-chart-pie', link: '../shareholder/index.html' },
         { key: 'requests', icon: 'fa-headset', link: '../shareholder/requests.html' },
@@ -225,15 +225,14 @@ const Layout = (function() {
       ]}
     ],
     
-    // --- 9. Sales ---
-    'Sales': [
+    // --- 9. Sales/Employee ---
+    'Employee': [
       { section: 'main', items: [
-        { key: 'dash', icon: 'fa-chart-pie', link: '../Sales/index.html' },
-        { key: 'profile', icon: 'fa-id-card', link: '../Sales/profile.html' },
-        { key: 'requests', icon: 'fa-headset', link: '../Sales/requests.html' },
+        { key: 'dash', icon: 'fa-chart-pie', link: '../employee/index.html' },
+        { key: 'requests', icon: 'fa-headset', link: '../employee/requests.html' }
       ]},
       { section: 'personal', items: [
-        { key: 'profile', icon: 'fa-user-tie', link: '../Sales/profile.html' }
+        { key: 'profile', icon: 'fa-user-tie', link: '../employee/profile.html' }
       ]}
     ]
   };
@@ -272,11 +271,11 @@ const Layout = (function() {
     _setupEventListeners();
 
     _state.isInitialized = true;
-    console.log('✅ Layout Engine v7.6 initialized');
+    console.log('✅ Layout Engine v7.7 initialized');
   }
 
   // ==========================================
-  // 5. USER PROFILE
+  // 5. USER PROFILE (FIXED)
   // ==========================================
   async function _loadUserProfile() {
     try {
@@ -288,12 +287,41 @@ const Layout = (function() {
       }
 
       if (user) {
+        // ✅ إصلاح: استخراج الدور الأساسي بشكل صحيح
+        let primaryRole = null;
+        
+        // الطريقة 1: من primaryRole مباشرة
+        if (user.primaryRole) {
+          primaryRole = user.primaryRole;
+        }
+        // الطريقة 2: من contexts (الدور الأساسي)
+        else if (user.contexts && Array.isArray(user.contexts)) {
+          const primaryContext = user.contexts.find(c => c.isPrimary) || user.contexts[0];
+          primaryRole = primaryContext?.role;
+        }
+        // الطريقة 3: من role العادي
+        else if (user.role) {
+          primaryRole = user.role;
+        }
+        
+        // تعيين الدور للمستخدم
+        user.primaryRole = primaryRole || 'employee';
+        
+        console.log('👤 User Profile Loaded:', {
+          id: user.id,
+          name: user.displayName || user.name,
+          primaryRole: user.primaryRole,
+          contextsCount: user.contexts?.length || 0
+        });
+        
         _state.currentUser = user;
         AppConfig.setCurrentUser(user);
       } else {
+        // Fallback User
         _state.currentUser = {
           id: 'USR_004',
           role: 'grc_officer',
+          primaryRole: 'grc_officer',
           displayName: AppConfig.getLang() === 'ar' ? 'أيمن المغربي' : 'Ayman Al-Maghrabi',
           displayTitle: AppConfig.getLang() === 'ar' ? 'مسؤول الحوكمة' : 'GRC Officer',
           email: 'amaghrabi@androomeda.com',
@@ -301,7 +329,7 @@ const Layout = (function() {
         };
       }
     } catch (e) {
-      console.warn('⚠️ Could not load user profile:', e);
+      console.error('❌ Error loading user profile:', e);
     }
   }
 
@@ -318,51 +346,68 @@ const Layout = (function() {
     const systemInfo = AppConfig.getSystemInfo();
     const user = _state.currentUser || JSON.parse(localStorage.getItem('currentUser'));
 
-    // ✅ خريطة ربط الأدوار بالقوائم
+    // ✅ خريطة ربط الأدوار بالقوائم (شاملة)
     const roleToMenuMap = {
-      'admin': 'Admin',
+      // Admin & System
       'sys_admin': 'Admin',
       'grc_officer': 'Admin',
       'board_secretary': 'Admin',
       'audit_committee_secretary': 'Admin',
       'investor_relations': 'Admin',
+      'auditor': 'Admin',
       
+      // Executive
       'ceo': 'CEO',
       'vice_chairman': 'CEO',
       
       'cfo': 'CFO',
       
       'cao': 'CAO',
-      'hr_exec': 'CAO',
       
+      // Technical
       'cto': 'CTO',
-      'director': 'CTO',
       'ncso': 'CTO',
+      'director': 'CTO',
       'team_lead': 'CTO',
       
-      'shareholder': 'shareholder',
-      
-      'board_member': 'Board',
+      // Governance
       'chairman': 'Board',
+      'board_member': 'Board',
       
       'audit_committee_chair': 'Committees',
       'audit_committee_member': 'Committees',
       
-      'manager': 'Sales',
-      'employee': 'Sales',
-      'specialist': 'Sales',
-      'support': 'Sales',
-      'coordinator': 'Sales'
+      'shareholder': 'Shareholder',
+      
+      // General Staff
+      'manager': 'Employee',
+      'employee': 'Employee',
+      'specialist': 'Employee',
+      'coordinator': 'Employee',
+      'support': 'Employee',
+      'viewer': 'Employee'
     };
 
-    // ✅ تحديد القائمة الصحيحة
-    let userRole = user?.role || user?.primaryRole || 'grc_officer';
-    let menuKey = roleToMenuMap[userRole] || 'Admin';
-    
+    // ✅ تحديد القائمة الصحيحة (محسّن)
+    let userRole = user?.primaryRole || user?.role || 'employee';
+    let menuKey = roleToMenuMap[userRole];
+
+    // إذا لم نجد القائمة، نحاول استخدام أول context
+    if (!menuKey && user?.contexts && user.contexts.length > 0) {
+      const primaryContext = user.contexts.find(c => c.isPrimary) || user.contexts[0];
+      userRole = primaryContext?.role;
+      menuKey = roleToMenuMap[userRole];
+    }
+
+    // القائمة الافتراضية
+    menuKey = menuKey || 'Employee';
+
     console.log('🔍 Sidebar Render:', { 
+      userId: user?.id,
+      userName: user?.displayName || user?.name,
       userRole, 
-      menuKey, 
-      userName: user?.displayName || user?.name 
+      menuKey,
+      availableMenu: !!_menuDefinitions[menuKey]
     });
     
     const activeMenu = _menuDefinitions[menuKey];
@@ -581,7 +626,9 @@ const Layout = (function() {
     toggleTheme, 
     toggleLang, 
     logout, 
-    getCurrentUser 
+    getCurrentUser,
+    // Expose for debugging
+    _menuDefinitions
   };
 
 })();
