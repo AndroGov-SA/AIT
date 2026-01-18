@@ -69,6 +69,39 @@
 
     <script src="../admin/data/company_policy.js"></script>
     <script src="../admin/js/core/config.js"></script>
-    <script src="../admin/js/components/layout.js"></script>
+    <script src="../admin/js/core/i18n.js"></script>
+    
+    <script src="../admin/js/helpers/policy-helpers.js"></script>
+    <script src="../admin/js/services/data-service.js"></script>
+    <script src="../admin/js/components/role-switcher.js"></script>
+
+    <script src="../admin/js/components/layout.js"></script> 
+    <script src="../admin/js/components/bot.js"></script>
+
+    <script>
+        // كود التهيئة الخاص بصفحة الرئيس التنفيذي
+        document.addEventListener('DOMContentLoaded', () => {
+            const checkLayout = setInterval(() => {
+                if (typeof Layout !== 'undefined' && typeof AppConfig !== 'undefined') {
+                    clearInterval(checkLayout);
+                    
+                    // تعريف المستخدم كـ CEO لهذه الصفحة
+                    const ceoUser = {
+                        id: 'CEO_001',
+                        role: 'CEO', // هذا المفتاح هو الذي يظهر قائمة CEO
+                        displayName: 'Hisham Al-Suhaibani',
+                        displayTitle: 'Chief Executive Officer',
+                        avatar: 'https://ui-avatars.com/api/?name=Hisham&background=random'
+                    };
+                    
+                    AppConfig.setCurrentUser(ceoUser);
+                    Layout.init();
+                    
+                    // تشغيل الرسوم البيانية الخاصة بالصفحة إذا وجدت
+                    if(typeof initChart === 'function') initChart();
+                }
+            }, 100);
+        });
+    </script>
 </body>
 </html>
