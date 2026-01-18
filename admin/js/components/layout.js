@@ -7,7 +7,7 @@ const Layout = (function() {
   
   // ==========================================
   // 1. STATE & CONFIG
-  // ==========================================
+  // ==========================================ب
   let _state = {
     currentUser: null,
     isInitialized: false,
@@ -289,7 +289,7 @@ const Layout = (function() {
           displayName: AppConfig.getLang() === 'ar' ? 'أيمن المغربي' : 'Ayman Al-Maghrabi',
           displayTitle: AppConfig.getLang() === 'ar' ? 'مسؤول الحوكمة' : 'GRC Officer',
           email: 'amaghrabi@androomeda.com',
-          avatar: 'https://androgov-sa.github.io/AIT/photo/grc.png'
+          avatar: '../photo/grc.png'
         };
       }
     } catch (e) {
