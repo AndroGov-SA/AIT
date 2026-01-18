@@ -29,13 +29,16 @@
         .org-container:active {
             cursor: grabbing;
         }
+        .custom-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
     </style>
 </head>
 <body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300 opacity-0">
 
     <div id="sidebar-container"></div>
     
-    <div class="main-content-wrapper transition-all duration-300 flex flex-col min-h-screen">
+    <div class="main-content-wrapper transition-all duration-300 flex flex-col min-h-screen rtl:lg:mr-64 ltr:lg:ml-64">
+        
         <div id="header-container"></div>
 
         <main class="p-6 space-y-6 flex-1 flex flex-col">
@@ -60,7 +63,7 @@
                 </div>
             </div>
 
-            <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 flex-1 relative overflow-hidden flex flex-col">
+            <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 flex-1 relative overflow-hidden flex flex-col min-h-[500px]">
                 <div class="absolute top-4 right-4 z-10 bg-black/50 backdrop-blur text-white text-[10px] px-3 py-1 rounded-full pointer-events-none">
                     <span id="zoomLevel">100%</span>
                 </div>
@@ -94,17 +97,18 @@
                 if (typeof Layout !== 'undefined' && typeof AppConfig !== 'undefined') {
                     clearInterval(checkLibs);
 
-                    // ✅ الخطوة المهمة: تحديد هوية المستخدم كمسؤول موارد بشرية
-                    const boardUser = {
+                    // ✅ تعريف هوية المستخدم كمدير موارد بشرية
+                    const hrUser = {
                         id: 'USR_005',
-                        role: 'CAO', // <--- هذا هو المفتاح الذي سيغير القائمة إلى قائمة موارد بشرية المختصرة
-                        displayName: 'مسؤول موارد بشرية',
-                        displayTitle: 'مسؤول موارد بشرية  ',
-                        avatar: 'https://ui-avatars.com/api/?name=Board&background=random'
+                        type: 'hr', // ⚠️ لفتح قائمة الموارد البشرية
+                        role: 'CAO',
+                        displayName: 'منصور اليامي', 
+                        displayTitle: 'مدير الموارد البشرية والشؤون الإدارية (CAO)',
+                        avatar: 'https://ui-avatars.com/api/?name=Mansour+Y&background=random'
                     };
 
                     // حفظ المستخدم وتشغيل النظام
-                    AppConfig.setCurrentUser(boardUser);
+                    AppConfig.setCurrentUser(hrUser);
                     Layout.init();
                 }
             }, 50);
