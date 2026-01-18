@@ -5,63 +5,126 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#FB4747">
     <title>التواصل والقرارات | AndroGov</title>
+    
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        tailwind.config = { darkMode: 'class', theme: { extend: { colors: { brandRed: '#FB4747', brandBlue: '#4267B2', brandDark: '#1E293B', brandGray: '#F8FAFC' }, fontFamily: { sans: ['Tajawal', 'Inter', 'sans-serif'], en: ['Inter', 'sans-serif'] } } } }
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { brandRed: '#FB4747', brandBlue: '#4267B2', brandDark: '#1E293B', brandGray: '#F8FAFC' },
+                    fontFamily: { sans: ['Tajawal', 'Inter', 'sans-serif'], en: ['Inter', 'sans-serif'] }
+                }
+            }
+        }
     </script>
-    <style>.num-font { font-family: 'Inter', sans-serif; direction: ltr; display: inline-block; } .nav-link.active { background-color: #FB4747; color: white; box-shadow: 0 4px 10px rgba(251, 71, 71, 0.3); } .nav-link:hover:not(.active) { background-color: #F1F5F9; }</style>
+    <style>
+        .num-font { font-family: 'Inter', sans-serif; direction: ltr; display: inline-block; }
+        .custom-scroll::-webkit-scrollbar { width: 5px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 10px; }
+        .fade-in { animation: fadeIn 0.5s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
 </head>
+
 <body class="bg-brandGray dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300 h-screen flex overflow-hidden">
     
     <div id="sidebar-container"></div>
 
     <div class="flex-1 flex flex-col h-full overflow-hidden relative main-content-wrapper ltr:md:ml-72 rtl:md:mr-72">
+        
         <div id="header-container"></div>
 
-        <main class="p-8 space-y-8 overflow-y-auto custom-scroll">
+        <main class="p-8 space-y-8 overflow-y-auto custom-scroll fade-in">
             
+            <div class="flex justify-between items-center">
+                <h2 class="text-2xl font-bold dark:text-white">مركز التواصل والقرارات</h2>
+                <button class="bg-brandBlue text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700 transition"><i class="fa-solid fa-plus"></i> موضوع جديد</button>
+            </div>
+
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                
                 <div>
                     <h3 class="font-bold text-lg mb-4 flex items-center gap-2"><i class="fa-solid fa-file-signature text-brandRed"></i> قرارات بالتمرير</h3>
                     
                     <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border-l-4 border-l-brandRed border border-slate-100 dark:border-slate-700">
                         <div class="flex justify-between mb-4">
-                            <span class="text-xs bg-red-50 text-red-600 px-2 py-1 rounded font-bold">عاجل</span>
-                            <span class="text-xs text-slate-400 font-en">REF: CIR-2026-02</span>
+                            <span class="text-[10px] bg-red-50 text-red-600 px-2 py-1 rounded-full font-bold">عاجل جداً</span>
+                            <span class="text-[10px] text-slate-400 font-en">REF: CIR-2026-02</span>
                         </div>
-                        <h4 class="font-bold text-lg mb-2">تعيين مستشار قانوني</h4>
-                        <p class="text-sm text-slate-500 mb-4">الموافقة على التعاقد مع مكتب "ألفا" للاستشارات القانونية.</p>
+                        <h4 class="font-bold text-lg mb-2 dark:text-white">تعيين مستشار قانوني للمجموعة</h4>
+                        <p class="text-sm text-slate-500 mb-4 leading-relaxed">الموافقة على التعاقد مع مكتب "ألفا" للاستشارات القانونية لتمثيل الشركة في القضايا العمالية والتجارية لمدة عام واحد.</p>
                         
-                        <div class="flex gap-2">
-                            <button onclick="alert('تم التصويت: موافق')" class="flex-1 py-2 bg-green-50 text-green-700 border border-green-200 rounded-lg text-sm font-bold hover:bg-green-600 hover:text-white transition">موافق</button>
-                            <button onclick="alert('تم التصويت: غير موافق')" class="flex-1 py-2 bg-red-50 text-red-700 border border-red-200 rounded-lg text-sm font-bold hover:bg-red-600 hover:text-white transition">غير موافق</button>
+                        <div class="flex gap-3">
+                            <button onclick="voteAction(true)" class="flex-1 py-2.5 bg-green-50 text-green-700 border border-green-200 rounded-xl text-sm font-bold hover:bg-green-600 hover:text-white transition shadow-sm">
+                                <i class="fa-solid fa-check"></i> موافق
+                            </button>
+                            <button onclick="voteAction(false)" class="flex-1 py-2.5 bg-red-50 text-red-700 border border-red-200 rounded-xl text-sm font-bold hover:bg-red-600 hover:text-white transition shadow-sm">
+                                <i class="fa-solid fa-xmark"></i> غير موافق
+                            </button>
+                            <button class="px-4 py-2.5 bg-slate-50 text-slate-600 border border-slate-200 rounded-xl text-sm font-bold hover:bg-slate-200 transition">
+                                <i class="fa-regular fa-comment-dots"></i>
+                            </button>
                         </div>
+                    </div>
+
+                    <div class="mt-4 bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 opacity-75">
+                        <div class="flex justify-between mb-2">
+                            <span class="text-[10px] bg-green-50 text-green-600 px-2 py-1 rounded-full font-bold">تم الاعتماد</span>
+                            <span class="text-[10px] text-slate-400 font-en">REF: CIR-2026-01</span>
+                        </div>
+                        <h4 class="font-bold text-sm mb-1 dark:text-white">اعتماد القوائم المالية الأولية</h4>
+                        <p class="text-xs text-slate-400">تم التصويت بالأغلبية بتاريخ 15 يناير 2026</p>
                     </div>
                 </div>
 
                 <div>
                     <h3 class="font-bold text-lg mb-4 flex items-center gap-2"><i class="fa-solid fa-comments text-brandBlue"></i> نقاشات المجلس</h3>
-                    <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 h-[400px] flex flex-col">
-                        <div class="flex-1 p-4 overflow-y-auto space-y-4">
+                    <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 h-[450px] flex flex-col">
+                        
+                        <div class="flex-1 p-4 overflow-y-auto space-y-4 custom-scroll bg-slate-50/50 dark:bg-slate-900/50">
+                            
                             <div class="flex gap-3">
-                                <img src="../photo/chairman.jpg" class="w-8 h-8 rounded-full">
-                                <div class="bg-slate-100 dark:bg-slate-700 p-3 rounded-lg rounded-tr-none text-xs">
-                                    <p class="font-bold mb-1">رئيس المجلس</p>
-                                    <p>السلام عليكم، أرجو الاطلاع على القرار المرفق.</p>
+                                <img src="https://ui-avatars.com/api/?name=Chairman&background=random" class="w-8 h-8 rounded-full border border-white shadow-sm">
+                                <div>
+                                    <p class="text-[10px] text-slate-400 mb-1 mr-1">رئيس المجلس</p>
+                                    <div class="bg-white dark:bg-slate-700 p-3 rounded-2xl rounded-tr-none text-xs shadow-sm border border-slate-100 dark:border-slate-600">
+                                        <p class="text-slate-700 dark:text-slate-200">السلام عليكم، أرجو من الجميع الاطلاع على ملف المستشار القانوني والتصويت قبل نهاية اليوم للأهمية.</p>
+                                    </div>
+                                    <span class="text-[9px] text-slate-300 mr-1">10:30 AM</span>
                                 </div>
                             </div>
+
                             <div class="flex gap-3 flex-row-reverse">
-                                <img src="../photo/ceo.jpeg" class="w-8 h-8 rounded-full">
-                                <div class="bg-blue-50 text-blue-900 p-3 rounded-lg rounded-tl-none text-xs">
-                                    <p>وعليكم السلام، تم الاطلاع وجاري التصويت.</p>
+                                <img src="https://ui-avatars.com/api/?name=Me&background=FB4747&color=fff" class="w-8 h-8 rounded-full border border-white shadow-sm">
+                                <div>
+                                    <div class="bg-brandBlue text-white p-3 rounded-2xl rounded-tl-none text-xs shadow-md">
+                                        <p>وعليكم السلام، تم الاطلاع على العرض المالي والفني. السعر مناسب جداً مقارنة بالسوق.</p>
+                                    </div>
+                                    <span class="text-[9px] text-slate-300 ml-1 block text-left">10:35 AM</span>
                                 </div>
                             </div>
+
+                             <div class="flex gap-3">
+                                <img src="https://ui-avatars.com/api/?name=CEO&background=random" class="w-8 h-8 rounded-full border border-white shadow-sm">
+                                <div>
+                                    <p class="text-[10px] text-slate-400 mb-1 mr-1">الرئيس التنفيذي</p>
+                                    <div class="bg-white dark:bg-slate-700 p-3 rounded-2xl rounded-tr-none text-xs shadow-sm border border-slate-100 dark:border-slate-600">
+                                        <p class="text-slate-700 dark:text-slate-200">صحيح، ولهم سابقة أعمال ممتازة معنا في قضية العلامة التجارية العام الماضي.</p>
+                                    </div>
+                                    <span class="text-[9px] text-slate-300 mr-1">10:40 AM</span>
+                                </div>
+                            </div>
+
                         </div>
-                        <div class="p-3 border-t border-slate-100 dark:border-slate-700 flex gap-2">
-                            <input type="text" placeholder="اكتب رسالة..." class="flex-1 bg-slate-50 dark:bg-slate-900 border-none rounded-lg px-4 py-2 text-sm">
-                            <button class="bg-brandBlue text-white w-10 h-10 rounded-lg"><i class="fa-solid fa-paper-plane"></i></button>
+
+                        <div class="p-3 border-t border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-b-2xl flex gap-2 items-center">
+                            <button class="text-slate-400 hover:text-brandBlue transition"><i class="fa-solid fa-paperclip"></i></button>
+                            <input type="text" placeholder="اكتب رسالتك هنا..." class="flex-1 bg-slate-50 dark:bg-slate-900 border-none rounded-xl px-4 py-2.5 text-xs focus:ring-1 ring-brandBlue outline-none transition">
+                            <button class="bg-brandBlue text-white w-9 h-9 rounded-xl flex items-center justify-center hover:bg-blue-700 transition shadow-lg shadow-blue-500/30"><i class="fa-solid fa-paper-plane text-xs"></i></button>
                         </div>
                     </div>
                 </div>
@@ -79,22 +142,36 @@
     <script src="../admin/js/components/bot.js"></script>
 
     <script>
+        // دالة التصويت البسيطة للعرض
+        function voteAction(isApprove) {
+            const msg = isApprove ? 'تم تسجيل تصويتك: بالموافقة ✅' : 'تم تسجيل تصويتك: بعدم الموافقة ❌';
+            const color = isApprove ? 'green' : 'red';
+            
+            // إنشاء عنصر إشعار مؤقت
+            const toast = document.createElement('div');
+            toast.className = `fixed bottom-5 left-5 bg-${color}-600 text-white px-6 py-3 rounded-xl shadow-2xl flex items-center gap-3 animate-bounce z-50`;
+            toast.innerHTML = `<i class="fa-solid fa-circle-check"></i> ${msg}`;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => toast.remove(), 3000);
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
-            // ننتظر تحميل السكربتات
+            // انتظار تحميل المكتبات
             const checkLibs = setInterval(() => {
                 if (typeof Layout !== 'undefined' && typeof AppConfig !== 'undefined') {
                     clearInterval(checkLibs);
 
-                    // ✅ الخطوة المهمة: تحديد هوية المستخدم كعضو مجلس
+                    // ✅ تعريف هوية المستخدم (مهم جداً للقوائم)
                     const boardUser = {
                         id: 'BRD_001',
-                        role: 'Board', // <--- هذا هو المفتاح الذي سيغير القائمة إلى قائمة المجلس المختصرة
-                        displayName: 'عضو المجلس',
-                        displayTitle: 'عضو مجلس الإدارة',
-                        avatar: 'https://ui-avatars.com/api/?name=Board&background=random'
+                        type: 'board', // ⚠️ هذا المفتاح (board) يربط مع layout.js
+                        role: 'Board Member',
+                        displayName: 'د. عبدالله الحواس',
+                        displayTitle: 'رئيس مجلس الإدارة',
+                        avatar: 'https://ui-avatars.com/api/?name=A+H&background=FB4747&color=fff'
                     };
 
-                    // حفظ المستخدم وتشغيل النظام
                     AppConfig.setCurrentUser(boardUser);
                     Layout.init();
                 }
