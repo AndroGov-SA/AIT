@@ -1,5 +1,5 @@
 /**
- * AndroGov Authentication Engine v4.6 (Fixed Routing)
+ * AndroGov Authentication Engine v4.7 (Enterprise Routing)
  * ملف: js/auth.js
  */
 
@@ -17,6 +17,7 @@ class AuthSystem {
             console.log("🔄 Initializing AuthSystem...");
             
             let data = null;
+            // التحقق من مصدر البيانات (SYSTEM_DATA أو CompanyPolicy)
             if (typeof window.SYSTEM_DATA !== 'undefined') {
                 data = window.SYSTEM_DATA;
             } else if (typeof window.CompanyPolicy !== 'undefined') {
@@ -27,7 +28,7 @@ class AuthSystem {
             }
 
             if (!data) {
-                console.warn("⚠️ Warning: No global data found yet.");
+                console.warn("⚠️ Warning: No global data found. Make sure login page has SYSTEM_DATA.");
                 return;
             }
 
@@ -49,76 +50,67 @@ class AuthSystem {
             let email = u.email ? u.email.toLowerCase().trim() : '';
             let dept = String(u.department_id || '').toLowerCase();
             
-            // تحديد الاسم
-            let name = u.name;
-            if (typeof u.name === 'object') {
-                const lang = localStorage.getItem('lang') || 'ar';
-                name = u.name[lang] || u.name.ar || u.name.en;
-            }
+            // تحديد النوع (Routing Type)
+            let type = 'staff'; 
 
-            // ====================================================
-            // 🛠️ إصلاح منطق تحديد النوع (Routing Fix)
-            // ====================================================
-            let type = 'staff'; // الافتراضي
-
-            // 1. الأدوار القيادية العليا المحددة
+            // 1. الإدارة العليا (Executive Management)
             if (roleRaw.includes('ceo')) {
                 type = 'ceo';
             } 
             else if (roleRaw.includes('cfo') || dept.includes('fin')) {
-                type = 'cfo'; // يذهب للمالية
+                type = 'cfo';
             }
             else if (roleRaw.includes('cto') || roleRaw.includes('ncso') || dept.includes('tech')) {
-                type = 'cto'; // يذهب للتقنية
+                type = 'cto';
             }
             else if (roleRaw.includes('cao') || dept.includes('hr')) {
-                type = 'hr_exec'; // يذهب للموارد البشرية
+                type = 'hr_exec';
             }
             
-            // 2. أدوار مجلس الإدارة والحوكمة
-            else if (roleRaw.includes('chairman') || roleRaw.includes('board')) {
+            // 2. مثلث الحوكمة (Board, Secretary, Audit)
+            // نضمن توجيه أمين السر مع المجلس في نفس البوابة الموحدة
+            else if (roleRaw.includes('chairman') || roleRaw.includes('board') || roleRaw.includes('secretary')) {
                 type = 'board';
             }
             else if (roleRaw.includes('audit') || dept.includes('audit')) {
                 type = 'audit';
             }
             
-            // 3. أدوار المسؤولين (Admins)
+            // 3. المسؤولين التقنيين (System Admin)
             else if (roleRaw.includes('admin') || roleRaw.includes('grc')) {
                 type = 'admin';
             }
-            
-            // 4. المساهمين
-            else if (roleRaw.includes('shareholder')) {
-                type = 'shareholder';
+
+            // معالجة الاسم متعدد اللغات
+            let displayName = u.name;
+            if (typeof u.name === 'object') {
+                const lang = localStorage.getItem('lang') || 'ar';
+                displayName = u.name[lang] || u.name.ar || u.name.en;
             }
 
             return {
                 id: u.id,
-                name: name,
+                name: displayName,
                 email: email,
                 title: typeof u.title === 'object' ? (u.title.ar || u.title.en) : u.title,
-                role: roleRaw,
-                type: type, // النوع الجديد المصحح
-                profiles: u.profiles || [] 
+                role: roleRaw, // الدور التقني للمقارنة
+                type: type,    // المجلد الموجه إليه
+                avatar: u.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=random`
             };
         }).filter(u => u.email !== '');
 
-        // إضافة المساهمين
+        // 4. إضافة المساهمين
         shareholders.forEach(s => {
             const email = s.email ? s.email.toLowerCase().trim() : '';
             if (email && !this.users.find(u => u.email === email)) {
-                let sName = s.name;
-                if (typeof s.name === 'object') sName = localStorage.getItem('lang') === 'en' ? s.name.en : s.name.ar;
-
+                let sName = (typeof s.name === 'object') ? (s.name.ar || s.name.en) : s.name;
                 this.users.push({
                     id: s.id,
                     name: sName,
                     email: email,
                     title: 'مساهم',
                     role: 'shareholder',
-                    type: 'shareholder',
-                    profiles: []
+                    type: 'shareholder'
                 });
             }
         });
@@ -130,35 +122,29 @@ class AuthSystem {
         const cleanEmail = email.trim().toLowerCase();
         const user = this.users.find(u => u.email === cleanEmail);
         
-        if (!user) throw new Error("المستخدم غير موجود");
-        if (password !== this.demoPass) throw new Error("كلمة المرور غير صحيحة");
+        if (!user) throw new Error("المستخدم غير موجود في قاعدة البيانات");
+        if (password !== this.demoPass) throw new Error("كلمة المرور غير صحيحة (Demo Mode)");
 
+        // حفظ الجلسة
         localStorage.setItem('currentUser', JSON.stringify(user));
         return this.getRedirectUrl(user.type);
     }
 
     getRedirectUrl(type) {
-        // ====================================================
-        // 🛠️ توجيه دقيق لكل دور تنفيذي
-        // ====================================================
         switch (type) {
             case 'admin':       return 'admin/index.html';
-            
             case 'ceo':         return 'ceo/index.html';
-            case 'cfo':         return 'finance/index.html'; // المدير المالي
-            case 'cto':         return 'cto/index.html';     // المدير التقني
-            case 'hr_exec':     return 'hr/index.html';      // المدير الإداري/الموارد
-            
+            case 'cfo':         return 'finance/index.html';
+            case 'cto':         return 'cto/index.html';
+            case 'hr_exec':     return 'hr/index.html';
             case 'board':       return 'board/index.html';
             case 'audit':       return 'audit/index.html';
             case 'shareholder': return 'shareholder/index.html';
-            
-            default:            return 'employee/index.html'; // الموظفين العاديين
+            default:            return 'employee/index.html';
         }
     }
 
     getUsers() { return this.users; }
-    getAvatarColor(u) { return '#64748b'; }
 }
 
 window.authSystem = new AuthSystem();
