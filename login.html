@@ -182,46 +182,58 @@
 
   <script>
     // ==========================================
-    // 1. EMBEDDED DATA (Standalone Mode)
-    // ==========================================
-    const SYSTEM_DATA = {
-        shareholders: [
-            { "id": "SH_001", "name": { "ar": "ورثة محمد بن صالح السحيباني", "en": "Heirs of Mohammed Al-Suhaibani" }, "percent": 35, "type": "Individual", "shares": 210000, "voting": true, "email": "alcaseer@gmail.com" },
-            { "id": "SH_002", "name": { "ar": "هشام بن محمد السحيباني", "en": "Hesham bin Muhammad Al-Sohibani" }, "percent": 10, "type": "Individual", "shares": 60000, "voting": true, "email": "Hesham@androomeda.com" },
-            { "id": "SH_003", "name": { "ar": "وائل بن محمد السحيباني", "en": "Wael bin Mohammed Al Suhaibani" }, "percent": 5, "type": "Individual", "shares": 30000, "voting": true, "email": "W961@live.com" },
-            { "id": "SH_004", "name": { "ar": "هيثم بن محمد السحيباني", "en": "Haitham bin Mohammed Al Suhaibani" }, "percent": 5, "type": "Individual", "shares": 30000, "voting": true, "email": "hmsasis@gmail.com" },
-            { "id": "SH_005", "name": { "ar": "منصور بن حسن اليامي", "en": "Mansour bin Hassan Al-Yami" }, "percent": 5, "type": "Individual", "shares": 30000, "voting": true, "email": "myami@androomeda.com" },
-            { "id": "SH_006", "name": { "ar": "إبراهيم بن حمد السكيتي", "en": "Ibrahim bin Hamad Al Skeiti" }, "percent": 5, "type": "Individual", "shares": 30000, "voting": true, "email": "ihskaity@gmail.com" },
-            { "id": "SH_007", "name": { "ar": "صالح بن عبدالله الوهيبي", "en": "Saleh bin Abdullah Al-Wahibi" }, "percent": 5, "type": "Individual", "shares": 30000, "voting": true, "email": "Saaw4466@yahoo.com" },
-            { "id": "SH_008", "name": { "ar": "عبدالله بن علي الفريجي", "en": "Abdullah bin Ali Al-Fariji" }, "percent": 5, "type": "Individual", "shares": 30000, "voting": true, "email": "a_furaiji@hotmail.com" },
-            { "id": "SH_009", "name": { "ar": "عبدالله بن محمد الحواس", "en": "Abdullah bin Mohammed Al-Hawas" }, "percent": 5, "type": "Individual", "shares": 30000, "voting": true, "email": "amh400@gmail.com" },
-            { "id": "SH_010", "name": { "ar": "شركة بيجي المحدودة", "en": "BG LTD.Company" }, "percent": 15, "type": "Entity", "shares": 90000, "voting": true, "email": "saleh@bgtech.com" },
-            { "id": "SH_011", "name": { "ar": "احمد بن سليمان الجاسر", "en": "Ahmed bin Suleiman Al-Jasser" }, "percent": 5, "type": "Individual", "shares": 30000, "voting": true, "email": "ahmed.jasser@gmail.com" }
-        ],
-        users: [
-            { "id": "USR_000", "name": "Abdullah Al-Hawas", "title": "Chairman of the Board", "department_id": "DEP_EXEC", "role": "Chairman", "is_executive": false, "email": "amh400@gmail.com" },
-            { "id": "USR_001", "name": "Hesham Al-Sohaibani", "title": "CEO & Board Vice Chairman", "department_id": "DEP_EXEC", "role": "CEO", "is_executive": true, "email": "hesham@androomeda.com" },
-            { "id": "USR_002", "name": "Mohammed Al-Bukheiti", "title": "Chief Financial Officer (CFO)", "department_id": "DEP_FIN", "role": "CFO", "is_executive": true, "email": "mtahir@androomeda.com" },
-            { "id": "USR_003", "name": "Hadi Ahmed", "title": "Purchasing & Admin Support Coordinator", "department_id": "DEP_HR", "role": "Coordinator", "email": "hadi@androomeda.com" },
-            { "id": "USR_004", "name": "Ayman Al-Maghrabi", "title": "GRCO / Board Secretary", "department_id": "DEP_GRC", "role": "admin", "is_executive": false, "email": "amaghrabi@androomeda.com" },
-            { "id": "USR_005", "name": "Mansour Al-Yami", "title": "CAO / Board Member", "department_id": "DEP_HR", "role": "CAO", "is_executive": true, "email": "myami@androomeda.com" },
-            { "id": "USR_006", "name": "Dr. Waad Hussein", "title": "Medical Supervisor", "department_id": "DEP_MED", "role": "Manager", "email": "whussain@androomeda.com" },
-            { "id": "USR_007", "name": "Nawaf Al-Sahabi", "title": "Customer Accounts Manager", "department_id": "DEP_SUPPORT", "role": "Team Lead", "email": "nalsahabi@androomeda.com" },
-            { "id": "USR_008", "name": "Al-Hussain Al-Humaidi", "title": "Technical Support Specialist", "department_id": "DEP_SUPPORT", "role": "Specialist", "email": "alhussien@androomeda.com" },
-            { "id": "USR_009", "name": "Meshail Al-Hadyan", "title": "NCSO", "department_id": "DEP_TECH", "role": "Manager", "email": "malhadyan@androomeda.com" },
-            { "id": "USR_010", "name": "Maha Al-Hazzan", "title": "Digital Marketing Specialist", "department_id": "DEP_SALES", "role": "Specialist", "email": "mhizan@androomeda.com" },
-            { "id": "USR_011", "name": "Vacant", "title": "Sales Manager", "department_id": "DEP_SALES", "role": "Manager", "email": "SalesManager@androomeda.com" },
-            { "id": "USR_014", "name": "Abdullah Al-Jubeir", "title": "Office Support", "department_id": "DEP_HR", "role": "Support", "email": "Ajubeir@androomeda.com" },
-            { "id": "USR_015", "name": "Rand Al-Hourani", "title": "Technical Team Lead", "department_id": "DEP_TECH", "role": "Team_Lead", "email": "Rhourani@androomeda.com" },
-            { "id": "USR_020", "name": "Muhammad Akhtar", "title": "Director of Development", "department_id": "DEP_TECH", "role": "Director", "email": "Makhtar@androomeda.com" },
-            { "id": "USR_023", "name": "Software Developers Team", "title": "Software Developers Team", "department_id": "DEP_TECH", "role": "Team", "email": "SDT@androomeda.com" },
-            { "id": "COMM_01", "name": "Mohammed Al-Enezi", "title": "Audit Committee Chairman", "role": "Committee_Member", "email": "mohammedmansour.socpa@gmail.com", "is_executive": false },
-            { "id": "COMM_02", "name": "Adel Sasa", "title": "Audit Committee Member", "role": "Committee_Member", "email": "adel.sasa1@gmail.com", "is_executive": false },
-            { "id": "BRD_003", "name": "Ahmed Al-Suhaibani", "title": "Board & Audit Member", "role": "Board_Member", "email": "a.s.alsuhaibani@microtec.com.sa", "is_executive": false },
-            { "id": "AUD_INT", "name": "Internal Auditor", "title": "Internal Auditor", "role": "Auditor", "email": "InternalAudit@androomeda.com", "is_executive": false },
-            { "id": "AUD_EXT", "name": "External Auditor", "title": "External Auditor (KPMG/EY)", "role": "Auditor", "email": "ExternalAudit@androomeda.com", "is_executive": false }
-        ]
-    };
+// 1. EMBEDDED DATA (Standalone Mode)
+// ==========================================
+// Updated: Corrected formatting, standardized naming, and ensured strict typing consistency.
+
+const SYSTEM_DATA = {
+    shareholders: [
+        // Total Shares: 600,000 | Total Percent: 100%
+        { "id": "SH_001", "name": { "ar": "ورثة محمد بن صالح السحيباني", "en": "Heirs of Mohammed Al-Suhaibani" }, "percent": 35, "type": "Individual", "shares": 210000, "voting": true, "email": "alcaseer@gmail.com" },
+        { "id": "SH_002", "name": { "ar": "هشام بن محمد السحيباني", "en": "Hesham bin Mohammed Al-Suhaibani" }, "percent": 10, "type": "Individual", "shares": 60000, "voting": true, "email": "Hesham@androomeda.com" },
+        { "id": "SH_010", "name": { "ar": "شركة بيجي المحدودة", "en": "BG Company Ltd." }, "percent": 15, "type": "Entity", "shares": 90000, "voting": true, "email": "saleh@bgtech.com" },
+        { "id": "SH_003", "name": { "ar": "وائل بن محمد السحيباني", "en": "Wael bin Mohammed Al-Suhaibani" }, "percent": 5, "type": "Individual", "shares": 30000, "voting": true, "email": "W961@live.com" },
+        { "id": "SH_004", "name": { "ar": "هيثم بن محمد السحيباني", "en": "Haitham bin Mohammed Al-Suhaibani" }, "percent": 5, "type": "Individual", "shares": 30000, "voting": true, "email": "hmsasis@gmail.com" },
+        { "id": "SH_005", "name": { "ar": "منصور بن حسن اليامي", "en": "Mansour bin Hassan Al-Yami" }, "percent": 5, "type": "Individual", "shares": 30000, "voting": true, "email": "myami@androomeda.com" },
+        { "id": "SH_006", "name": { "ar": "إبراهيم بن حمد السكيتي", "en": "Ibrahim bin Hamad Al-Skeiti" }, "percent": 5, "type": "Individual", "shares": 30000, "voting": true, "email": "ihskaity@gmail.com" },
+        { "id": "SH_007", "name": { "ar": "صالح بن عبدالله الوهيبي", "en": "Saleh bin Abdullah Al-Wahibi" }, "percent": 5, "type": "Individual", "shares": 30000, "voting": true, "email": "Saaw4466@yahoo.com" },
+        { "id": "SH_008", "name": { "ar": "عبدالله بن علي الفريجي", "en": "Abdullah bin Ali Al-Fariji" }, "percent": 5, "type": "Individual", "shares": 30000, "voting": true, "email": "a_furaiji@hotmail.com" },
+        { "id": "SH_009", "name": { "ar": "عبدالله بن محمد الحواس", "en": "Abdullah bin Mohammed Al-Hawas" }, "percent": 5, "type": "Individual", "shares": 30000, "voting": true, "email": "amh400@gmail.com" },
+        { "id": "SH_011", "name": { "ar": "احمد بن سليمان الجاسر", "en": "Ahmed bin Suleiman Al-Jasser" }, "percent": 5, "type": "Individual", "shares": 30000, "voting": true, "email": "ahmed.jasser@gmail.com" }
+    ],
+    users: [
+        // Executive Management & Board
+        { "id": "USR_000", "name": "Abdullah Al-Hawas", "title": "Chairman of the Board", "department_id": "DEP_EXEC", "role": "Chairman", "is_executive": false, "email": "amh400@gmail.com" },
+        { "id": "USR_001", "name": "Hesham Al-Suhaibani", "title": "CEO & Board Vice Chairman", "department_id": "DEP_EXEC", "role": "CEO", "is_executive": true, "email": "hesham@androomeda.com" },
+        { "id": "USR_002", "name": "Mohammed Al-Bukheiti", "title": "Chief Financial Officer (CFO)", "department_id": "DEP_FIN", "role": "CFO", "is_executive": true, "email": "mtahir@androomeda.com" },
+        { "id": "USR_005", "name": "Mansour Al-Yami", "title": "CAO / Board Member", "department_id": "DEP_HR", "role": "CAO", "is_executive": true, "email": "myami@androomeda.com" },
+        
+        // Operations & Administration
+        { "id": "USR_004", "name": "Ayman Al-Maghrabi", "title": "GRCO / Board Secretary", "department_id": "DEP_GRC", "role": "Admin", "is_executive": false, "email": "amaghrabi@androomeda.com" },
+        { "id": "USR_003", "name": "Hadi Ahmed", "title": "Purchasing & Admin Support Coordinator", "department_id": "DEP_HR", "role": "Coordinator", "is_executive": false, "email": "hadi@androomeda.com" },
+        { "id": "USR_014", "name": "Abdullah Al-Jubeir", "title": "Office Support", "department_id": "DEP_HR", "role": "Support", "is_executive": false, "email": "Ajubeir@androomeda.com" },
+
+        // Technical & Medical
+        { "id": "USR_006", "name": "Dr. Waad Hussein", "title": "Medical Supervisor", "department_id": "DEP_MED", "role": "Manager", "is_executive": false, "email": "whussain@androomeda.com" },
+        { "id": "USR_009", "name": "Meshail Al-Hadyan", "title": "NCSO", "department_id": "DEP_TECH", "role": "Manager", "is_executive": false, "email": "malhadyan@androomeda.com" },
+        { "id": "USR_020", "name": "Muhammad Akhtar", "title": "Director of Development", "department_id": "DEP_TECH", "role": "Director", "is_executive": false, "email": "Makhtar@androomeda.com" },
+        { "id": "USR_015", "name": "Rand Al-Hourani", "title": "Technical Team Lead", "department_id": "DEP_TECH", "role": "Team_Lead", "is_executive": false, "email": "Rhourani@androomeda.com" },
+        { "id": "USR_023", "name": "Software Developers Team", "title": "Software Developers Team", "department_id": "DEP_TECH", "role": "Team", "is_executive": false, "email": "SDT@androomeda.com" },
+
+        // Support & Sales
+        { "id": "USR_007", "name": "Nawaf Al-Sahabi", "title": "Customer Accounts Manager", "department_id": "DEP_SUPPORT", "role": "Team_Lead", "is_executive": false, "email": "nalsahabi@androomeda.com" },
+        { "id": "USR_008", "name": "Al-Hussain Al-Humaidi", "title": "Technical Support Specialist", "department_id": "DEP_SUPPORT", "role": "Specialist", "is_executive": false, "email": "alhussien@androomeda.com" },
+        { "id": "USR_010", "name": "Maha Al-Hazzan", "title": "Digital Marketing Specialist", "department_id": "DEP_SALES", "role": "Specialist", "is_executive": false, "email": "mhizan@androomeda.com" },
+        { "id": "USR_011", "name": "Vacant", "title": "Sales Manager", "department_id": "DEP_SALES", "role": "Manager", "is_executive": false, "email": "SalesManager@androomeda.com" },
+
+        // Committees & Audit
+        { "id": "COMM_01", "name": "Mohammed Al-Enezi", "title": "Audit Committee Chairman", "role": "Committee_Member", "is_executive": false, "email": "mohammedmansour.socpa@gmail.com" },
+        { "id": "COMM_02", "name": "Adel Sasa", "title": "Audit Committee Member", "role": "Committee_Member", "is_executive": false, "email": "adel.sasa1@gmail.com" },
+        { "id": "BRD_003", "name": "Ahmed Al-Suhaibani", "title": "Board & Audit Member", "role": "Board_Member", "is_executive": false, "email": "a.s.alsuhaibani@microtec.com.sa" },
+        { "id": "AUD_INT", "name": "Internal Auditor", "title": "Internal Auditor", "role": "Auditor", "is_executive": false, "email": "InternalAudit@androomeda.com" },
+        { "id": "AUD_EXT", "name": "External Auditor", "title": "External Auditor (KPMG/EY)", "role": "Auditor", "is_executive": false, "email": "ExternalAudit@androomeda.com" }
+    ]
+};
 
     // ==========================================
     // 2. TRANSLATIONS
