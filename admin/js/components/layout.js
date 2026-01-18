@@ -246,11 +246,8 @@ const Layout = (function() {
         { key: 'findings', icon: 'fa-bug', link: '../audit/index.html#findings' },
         { key: 'reports', icon: 'fa-file-contract', link: '../audit/index.html#reports' }
       ]},
-      { section: 'departments', items: [
-        { key: 'profile', icon: 'fa-id-card', link: '../audit/index.html#profile' }
-      ]},
       { section: 'personal', items: [
-        { key: 'profile', icon: 'fa-user-tie', link: '../Sales/profile.html' }
+        { key: 'profile', icon: 'fa-user-tie', link: '../audit/profile.html' }
       ]}
   ],
     };
