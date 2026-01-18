@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#FB4747">
     <title data-i18n="pageTitle">ملفي الشخصي | AndroGov</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -30,7 +29,8 @@
 
     <div id="sidebar-container"></div>
     
-    <div class="main-content-wrapper transition-all duration-300 flex flex-col min-h-screen">
+    <div class="main-content-wrapper transition-all duration-300 flex flex-col min-h-screen rtl:lg:mr-64 ltr:lg:ml-64">
+        
         <div id="header-container"></div>
 
         <main class="p-8 space-y-8">
@@ -61,7 +61,7 @@
                             <i class="fa-solid fa-circle-check text-blue-500 text-lg" title="Verified"></i>
                             <span class="px-2 py-0.5 bg-brandRed/10 text-brandRed text-[10px] font-bold rounded border border-brandRed/20">C-Level</span>
                         </div>
-                        <p class="text-slate-500 text-lg font-medium" data-i18n="role">مسؤولة التقنية (CTO)</p>
+                        <p class="text-slate-500 text-lg font-medium" data-i18n="role">الرئيس التنفيذي للتقنية (CTO)</p>
                         
                         <div class="flex flex-wrap gap-4 mt-4 text-sm text-slate-500">
                             <span class="flex items-center gap-2 bg-slate-50 dark:bg-slate-700/50 px-3 py-1.5 rounded-lg border border-slate-100 dark:border-slate-600">
@@ -243,17 +243,18 @@
                 if (typeof Layout !== 'undefined' && typeof AppConfig !== 'undefined') {
                     clearInterval(checkLibs);
 
-                    // ✅ الخطوة المهمة: تحديد هوية المستخدم كمسؤول تقني
-                    const boardUser = {
+                    // ✅ تعريف هوية المستخدم كمسؤول تقني
+                    const ctoUser = {
                         id: 'USR_009',
-                        role: 'CTO', // <--- هذا هو المفتاح الذي سيغير القائمة إلى قائمة التقني المختصرة
-                        displayName: 'مسؤول تقني',
-                        displayTitle: 'مسؤول تقني  ',
-                        avatar: 'https://ui-avatars.com/api/?name=Board&background=random'
+                        type: 'cto', // ⚠️ هام جداً
+                        role: 'CTO',
+                        displayName: 'مشاعل الهذيان', // ✅ تم تصحيح الاسم
+                        displayTitle: 'المدير التقني (CTO)',
+                        avatar: 'https://ui-avatars.com/api/?name=Meshail+H&background=random'
                     };
 
                     // حفظ المستخدم وتشغيل النظام
-                    AppConfig.setCurrentUser(boardUser);
+                    AppConfig.setCurrentUser(ctoUser);
                     Layout.init();
                 }
             }, 50);
