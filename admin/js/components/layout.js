@@ -221,41 +221,43 @@ const Layout = (function() {
     { id: 2, type: 'info', icon: 'fa-file-contract', color: 'text-blue-500 bg-blue-50', titleKey: 'notifications.newContract', msgAr: 'عقد توريد بانتظار الاعتماد.', msgEn: 'Supply contract pending approval.', time: '1h' }
   ];
 
-  // ==========================================
-  // INITIALIZATION
+ // ==========================================
+  // 3. INITIALIZATION
   // ==========================================
   async function init() {
     if (_state.isInitialized) return;
 
-    // Initialize AppConfig first
-    AppConfig.init();
+    // Initialize AppConfig
+    if (typeof AppConfig !== 'undefined') AppConfig.init();
 
-    // Load user profile
+    // Load User
     await _loadUserProfile();
 
-    // Initialize RoleSwitcher if user has multiple roles
-    if (_state.currentUser?.id) {
+    // Role Switcher
+    if (_state.currentUser?.id && typeof RoleSwitcher !== 'undefined') {
       RoleSwitcher.init(_state.currentUser.id);
     }
 
-    // Render components
+    // Render UI
     renderSidebar();
     renderHeader();
 
-    // Apply translations
-    I18n.applyToDOM();
+    // ❌❌❌ عطل هذا السطر (ضعه كتعليق) لمنع التعارض مع ترجمة الصفحة الخاصة ❌❌❌
+    // if (typeof I18n !== 'undefined') I18n.applyToDOM();
 
-    // Show body
+    // Show Content & Hide Spinner Forcefully
     document.body.classList.add('loaded');
     document.body.style.opacity = '1';
+    
+    // إخفاء شاشة التحميل فوراً
+    const spinner = document.getElementById('loadingOverlay');
+    if (spinner) spinner.classList.add('hidden');
 
-    // Setup event listeners
+    // Events
     _setupEventListeners();
 
     _state.isInitialized = true;
-    console.log('✅ Layout Engine v7.0 initialized');
-
-    return _state;
+    console.log('✅ Layout Engine Initialized successfully');
   }
 
   // ==========================================
