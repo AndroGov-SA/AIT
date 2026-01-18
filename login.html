@@ -181,59 +181,57 @@
   </main>
 
   <script>
+<script>
     // ==========================================
-// 1. EMBEDDED DATA (Standalone Mode)
-// ==========================================
-// Updated: Corrected formatting, standardized naming, and ensured strict typing consistency.
+    // 1. EMBEDDED DATA (Standalone Mode)
+    // ==========================================
+    const SYSTEM_DATA = {
+        shareholders: [
+            { "id": "SH_001", "name": { "ar": "ورثة محمد بن صالح السحيباني", "en": "Heirs of Mohammed Al-Suhaibani" }, "percent": 35, "type": "Individual", "shares": 210000, "voting": true, "email": "alcaseer@gmail.com" },
+            { "id": "SH_002", "name": { "ar": "هشام بن محمد السحيباني", "en": "Hesham bin Mohammed Al-Suhaibani" }, "percent": 10, "type": "Individual", "shares": 60000, "voting": true, "email": "Hesham@androomeda.com" },
+            { "id": "SH_010", "name": { "ar": "شركة بيجي المحدودة", "en": "BG Company Ltd." }, "percent": 15, "type": "Entity", "shares": 90000, "voting": true, "email": "saleh@bgtech.com" },
+            { "id": "SH_003", "name": { "ar": "وائل بن محمد السحيباني", "en": "Wael bin Mohammed Al-Suhaibani" }, "percent": 5, "type": "Individual", "shares": 30000, "voting": true, "email": "W961@live.com" },
+            { "id": "SH_004", "name": { "ar": "هيثم بن محمد السحيباني", "en": "Haitham bin Mohammed Al-Suhaibani" }, "percent": 5, "type": "Individual", "shares": 30000, "voting": true, "email": "hmsasis@gmail.com" },
+            { "id": "SH_005", "name": { "ar": "منصور بن حسن اليامي", "en": "Mansour bin Hassan Al-Yami" }, "percent": 5, "type": "Individual", "shares": 30000, "voting": true, "email": "myami@androomeda.com" },
+            { "id": "SH_006", "name": { "ar": "إبراهيم بن حمد السكيتي", "en": "Ibrahim bin Hamad Al-Skeiti" }, "percent": 5, "type": "Individual", "shares": 30000, "voting": true, "email": "ihskaity@gmail.com" },
+            { "id": "SH_007", "name": { "ar": "صالح بن عبدالله الوهيبي", "en": "Saleh bin Abdullah Al-Wahibi" }, "percent": 5, "type": "Individual", "shares": 30000, "voting": true, "email": "Saaw4466@yahoo.com" },
+            { "id": "SH_008", "name": { "ar": "عبدالله بن علي الفريجي", "en": "Abdullah bin Ali Al-Fariji" }, "percent": 5, "type": "Individual", "shares": 30000, "voting": true, "email": "a_furaiji@hotmail.com" },
+            { "id": "SH_009", "name": { "ar": "عبدالله بن محمد الحواس", "en": "Abdullah bin Mohammed Al-Hawas" }, "percent": 5, "type": "Individual", "shares": 30000, "voting": true, "email": "amh400@gmail.com" },
+            { "id": "SH_011", "name": { "ar": "احمد بن سليمان الجاسر", "en": "Ahmed bin Suleiman Al-Jasser" }, "percent": 5, "type": "Individual", "shares": 30000, "voting": true, "email": "ahmed.jasser@gmail.com" }
+        ],
+        users: [
+            // Executive Management & Board
+            { "id": "USR_000", "name": "Abdullah Al-Hawas", "title": "Chairman of the Board", "department_id": "DEP_EXEC", "role": "Chairman", "is_executive": false, "email": "amh400@gmail.com" },
+            { "id": "USR_001", "name": "Hesham Al-Suhaibani", "title": "CEO & Board Vice Chairman", "department_id": "DEP_EXEC", "role": "CEO", "is_executive": true, "email": "hesham@androomeda.com" },
+            { "id": "USR_002", "name": "Mohammed Al-Bukheiti", "title": "Chief Financial Officer (CFO)", "department_id": "DEP_FIN", "role": "CFO", "is_executive": true, "email": "mtahir@androomeda.com" },
+            { "id": "USR_005", "name": "Mansour Al-Yami", "title": "CAO / Board Member", "department_id": "DEP_HR", "role": "CAO", "is_executive": true, "email": "myami@androomeda.com" },
+            
+            // Operations & Administration
+            { "id": "USR_004", "name": "Ayman Al-Maghrabi", "title": "GRCO / Board Secretary", "department_id": "DEP_GRC", "role": "Admin", "is_executive": false, "email": "amaghrabi@androomeda.com" },
+            { "id": "USR_003", "name": "Hadi Ahmed", "title": "Purchasing & Admin Support Coordinator", "department_id": "DEP_HR", "role": "Coordinator", "is_executive": false, "email": "hadi@androomeda.com" },
+            { "id": "USR_014", "name": "Abdullah Al-Jubeir", "title": "Office Support", "department_id": "DEP_HR", "role": "Support", "is_executive": false, "email": "Ajubeir@androomeda.com" },
 
-const SYSTEM_DATA = {
-    shareholders: [
-        // Total Shares: 600,000 | Total Percent: 100%
-        { "id": "SH_001", "name": { "ar": "ورثة محمد بن صالح السحيباني", "en": "Heirs of Mohammed Al-Suhaibani" }, "percent": 35, "type": "Individual", "shares": 210000, "voting": true, "email": "alcaseer@gmail.com" },
-        { "id": "SH_002", "name": { "ar": "هشام بن محمد السحيباني", "en": "Hesham bin Mohammed Al-Suhaibani" }, "percent": 10, "type": "Individual", "shares": 60000, "voting": true, "email": "Hesham@androomeda.com" },
-        { "id": "SH_010", "name": { "ar": "شركة بيجي المحدودة", "en": "BG Company Ltd." }, "percent": 15, "type": "Entity", "shares": 90000, "voting": true, "email": "saleh@bgtech.com" },
-        { "id": "SH_003", "name": { "ar": "وائل بن محمد السحيباني", "en": "Wael bin Mohammed Al-Suhaibani" }, "percent": 5, "type": "Individual", "shares": 30000, "voting": true, "email": "W961@live.com" },
-        { "id": "SH_004", "name": { "ar": "هيثم بن محمد السحيباني", "en": "Haitham bin Mohammed Al-Suhaibani" }, "percent": 5, "type": "Individual", "shares": 30000, "voting": true, "email": "hmsasis@gmail.com" },
-        { "id": "SH_005", "name": { "ar": "منصور بن حسن اليامي", "en": "Mansour bin Hassan Al-Yami" }, "percent": 5, "type": "Individual", "shares": 30000, "voting": true, "email": "myami@androomeda.com" },
-        { "id": "SH_006", "name": { "ar": "إبراهيم بن حمد السكيتي", "en": "Ibrahim bin Hamad Al-Skeiti" }, "percent": 5, "type": "Individual", "shares": 30000, "voting": true, "email": "ihskaity@gmail.com" },
-        { "id": "SH_007", "name": { "ar": "صالح بن عبدالله الوهيبي", "en": "Saleh bin Abdullah Al-Wahibi" }, "percent": 5, "type": "Individual", "shares": 30000, "voting": true, "email": "Saaw4466@yahoo.com" },
-        { "id": "SH_008", "name": { "ar": "عبدالله بن علي الفريجي", "en": "Abdullah bin Ali Al-Fariji" }, "percent": 5, "type": "Individual", "shares": 30000, "voting": true, "email": "a_furaiji@hotmail.com" },
-        { "id": "SH_009", "name": { "ar": "عبدالله بن محمد الحواس", "en": "Abdullah bin Mohammed Al-Hawas" }, "percent": 5, "type": "Individual", "shares": 30000, "voting": true, "email": "amh400@gmail.com" },
-        { "id": "SH_011", "name": { "ar": "احمد بن سليمان الجاسر", "en": "Ahmed bin Suleiman Al-Jasser" }, "percent": 5, "type": "Individual", "shares": 30000, "voting": true, "email": "ahmed.jasser@gmail.com" }
-    ],
-    users: [
-        // Executive Management & Board
-        { "id": "USR_000", "name": "Abdullah Al-Hawas", "title": "Chairman of the Board", "department_id": "DEP_EXEC", "role": "Chairman", "is_executive": false, "email": "amh400@gmail.com" },
-        { "id": "USR_001", "name": "Hesham Al-Suhaibani", "title": "CEO & Board Vice Chairman", "department_id": "DEP_EXEC", "role": "CEO", "is_executive": true, "email": "hesham@androomeda.com" },
-        { "id": "USR_002", "name": "Mohammed Al-Bukheiti", "title": "Chief Financial Officer (CFO)", "department_id": "DEP_FIN", "role": "CFO", "is_executive": true, "email": "mtahir@androomeda.com" },
-        { "id": "USR_005", "name": "Mansour Al-Yami", "title": "CAO / Board Member", "department_id": "DEP_HR", "role": "CAO", "is_executive": true, "email": "myami@androomeda.com" },
-        
-        // Operations & Administration
-        { "id": "USR_004", "name": "Ayman Al-Maghrabi", "title": "GRCO / Board Secretary", "department_id": "DEP_GRC", "role": "Admin", "is_executive": false, "email": "amaghrabi@androomeda.com" },
-        { "id": "USR_003", "name": "Hadi Ahmed", "title": "Purchasing & Admin Support Coordinator", "department_id": "DEP_HR", "role": "Coordinator", "is_executive": false, "email": "hadi@androomeda.com" },
-        { "id": "USR_014", "name": "Abdullah Al-Jubeir", "title": "Office Support", "department_id": "DEP_HR", "role": "Support", "is_executive": false, "email": "Ajubeir@androomeda.com" },
+            // Technical & Medical
+            { "id": "USR_006", "name": "Dr. Waad Hussein", "title": "Medical Supervisor", "department_id": "DEP_MED", "role": "Manager", "is_executive": false, "email": "whussain@androomeda.com" },
+            { "id": "USR_009", "name": "Meshail Al-Hadyan", "title": "NCSO", "department_id": "DEP_TECH", "role": "Manager", "is_executive": false, "email": "malhadyan@androomeda.com" },
+            { "id": "USR_020", "name": "Muhammad Akhtar", "title": "Director of Development", "department_id": "DEP_TECH", "role": "Director", "is_executive": false, "email": "Makhtar@androomeda.com" },
+            { "id": "USR_015", "name": "Rand Al-Hourani", "title": "Technical Team Lead", "department_id": "DEP_TECH", "role": "Team_Lead", "is_executive": false, "email": "Rhourani@androomeda.com" },
+            { "id": "USR_023", "name": "Software Developers Team", "title": "Software Developers Team", "department_id": "DEP_TECH", "role": "Team", "is_executive": false, "email": "SDT@androomeda.com" },
 
-        // Technical & Medical
-        { "id": "USR_006", "name": "Dr. Waad Hussein", "title": "Medical Supervisor", "department_id": "DEP_MED", "role": "Manager", "is_executive": false, "email": "whussain@androomeda.com" },
-        { "id": "USR_009", "name": "Meshail Al-Hadyan", "title": "NCSO", "department_id": "DEP_TECH", "role": "Manager", "is_executive": false, "email": "malhadyan@androomeda.com" },
-        { "id": "USR_020", "name": "Muhammad Akhtar", "title": "Director of Development", "department_id": "DEP_TECH", "role": "Director", "is_executive": false, "email": "Makhtar@androomeda.com" },
-        { "id": "USR_015", "name": "Rand Al-Hourani", "title": "Technical Team Lead", "department_id": "DEP_TECH", "role": "Team_Lead", "is_executive": false, "email": "Rhourani@androomeda.com" },
-        { "id": "USR_023", "name": "Software Developers Team", "title": "Software Developers Team", "department_id": "DEP_TECH", "role": "Team", "is_executive": false, "email": "SDT@androomeda.com" },
+            // Support & Sales
+            { "id": "USR_007", "name": "Nawaf Al-Sahabi", "title": "Customer Accounts Manager", "department_id": "DEP_SUPPORT", "role": "Team_Lead", "is_executive": false, "email": "nalsahabi@androomeda.com" },
+            { "id": "USR_008", "name": "Al-Hussain Al-Humaidi", "title": "Technical Support Specialist", "department_id": "DEP_SUPPORT", "role": "Specialist", "is_executive": false, "email": "alhussien@androomeda.com" },
+            { "id": "USR_010", "name": "Maha Al-Hazzan", "title": "Digital Marketing Specialist", "department_id": "DEP_SALES", "role": "Specialist", "is_executive": false, "email": "mhizan@androomeda.com" },
+            { "id": "USR_011", "name": "Vacant", "title": "Sales Manager", "department_id": "DEP_SALES", "role": "Manager", "is_executive": false, "email": "SalesManager@androomeda.com" },
 
-        // Support & Sales
-        { "id": "USR_007", "name": "Nawaf Al-Sahabi", "title": "Customer Accounts Manager", "department_id": "DEP_SUPPORT", "role": "Team_Lead", "is_executive": false, "email": "nalsahabi@androomeda.com" },
-        { "id": "USR_008", "name": "Al-Hussain Al-Humaidi", "title": "Technical Support Specialist", "department_id": "DEP_SUPPORT", "role": "Specialist", "is_executive": false, "email": "alhussien@androomeda.com" },
-        { "id": "USR_010", "name": "Maha Al-Hazzan", "title": "Digital Marketing Specialist", "department_id": "DEP_SALES", "role": "Specialist", "is_executive": false, "email": "mhizan@androomeda.com" },
-        { "id": "USR_011", "name": "Vacant", "title": "Sales Manager", "department_id": "DEP_SALES", "role": "Manager", "is_executive": false, "email": "SalesManager@androomeda.com" },
-
-        // Committees & Audit
-        { "id": "COMM_01", "name": "Mohammed Al-Enezi", "title": "Audit Committee Chairman", "role": "Committee_Member", "is_executive": false, "email": "mohammedmansour.socpa@gmail.com" },
-        { "id": "COMM_02", "name": "Adel Sasa", "title": "Audit Committee Member", "role": "Committee_Member", "is_executive": false, "email": "adel.sasa1@gmail.com" },
-        { "id": "BRD_003", "name": "Ahmed Al-Suhaibani", "title": "Board & Audit Member", "role": "Board_Member", "is_executive": false, "email": "a.s.alsuhaibani@microtec.com.sa" },
-        { "id": "AUD_INT", "name": "Internal Auditor", "title": "Internal Auditor", "role": "Auditor", "is_executive": false, "email": "InternalAudit@androomeda.com" },
-        { "id": "AUD_EXT", "name": "External Auditor", "title": "External Auditor (KPMG/EY)", "role": "Auditor", "is_executive": false, "email": "ExternalAudit@androomeda.com" }
-    ]
-};
+            // Committees & Audit
+            { "id": "COMM_01", "name": "Mohammed Al-Enezi", "title": "Audit Committee Chairman", "role": "Committee_Member", "is_executive": false, "email": "mohammedmansour.socpa@gmail.com" },
+            { "id": "COMM_02", "name": "Adel Sasa", "title": "Audit Committee Member", "role": "Committee_Member", "is_executive": false, "email": "adel.sasa1@gmail.com" },
+            { "id": "BRD_003", "name": "Ahmed Al-Suhaibani", "title": "Board & Audit Member", "role": "Board_Member", "is_executive": false, "email": "a.s.alsuhaibani@microtec.com.sa" },
+            { "id": "AUD_INT", "name": "Internal Auditor", "title": "Internal Auditor", "role": "Auditor", "is_executive": false, "email": "InternalAudit@androomeda.com" },
+            { "id": "AUD_EXT", "name": "External Auditor", "title": "External Auditor (KPMG/EY)", "role": "Auditor", "is_executive": false, "email": "ExternalAudit@androomeda.com" }
+        ]
+    };
 
     // ==========================================
     // 2. TRANSLATIONS
@@ -296,7 +294,7 @@ const SYSTEM_DATA = {
     let lang = localStorage.getItem('lang') || 'ar';
 
     // ==========================================
-    // 3. AUTH ENGINE (Multi-Profile Support)
+    // 3. AUTH ENGINE (Smart Data Merging)
     // ==========================================
     class AuthEngine {
         constructor() {
@@ -305,14 +303,33 @@ const SYSTEM_DATA = {
         }
 
         init() {
-            // 1. نبدأ بقائمة الموظفين المعرفة مسبقاً (SYSTEM_USERS)
-            // نقوم بإنشاء نسخة عميقة لتجنب التعديل على المصدر الأصلي
-            let allUsers = JSON.parse(JSON.stringify(typeof SYSTEM_USERS !== 'undefined' ? SYSTEM_USERS : []));
+            // 1. تحويل بيانات الموظفين المسطحة إلى هيكل Profiles
+            // هذا الإصلاح يضمن توافق البيانات القديمة مع الكود الجديد
+            const rawUsers = SYSTEM_DATA.users;
+            
+            let allUsers = rawUsers.map(u => {
+                // إنشاء ملف وظيفي افتراضي من البيانات الموجودة
+                const defaultProfile = {
+                    profile_id: `PRF_${u.id}`,
+                    title: u.title,
+                    role: u.role,
+                    department_id: u.department_id,
+                    is_executive: u.is_executive || false,
+                    dashboard_view: 'VIEW_DEFAULT'
+                };
 
-            // 2. معالجة المساهمين ودمجهم
-            if (typeof SYSTEM_DATA !== 'undefined' && SYSTEM_DATA.shareholders) {
+                return {
+                    id: u.id,
+                    name: u.name,
+                    email: u.email,
+                    profiles: [defaultProfile] // وضع الملف داخل مصفوفة
+                };
+            });
+
+            // 2. معالجة المساهمين ودمجهم (Multi-Role Logic)
+            if (SYSTEM_DATA.shareholders) {
                 SYSTEM_DATA.shareholders.forEach(sh => {
-                    // البحث هل المساهم موجود مسبقاً كموظف؟
+                    // هل المساهم موظف أيضاً؟
                     let existingUser = allUsers.find(u => u.email.toLowerCase() === sh.email.toLowerCase());
 
                     const shareholderProfile = {
@@ -325,46 +342,37 @@ const SYSTEM_DATA = {
                     };
 
                     if (existingUser) {
-                        // إذا كان موجوداً، نضيف له ملف "مساهم" في قائمة بروفايلاته
-                        if (!existingUser.profiles) existingUser.profiles = [];
-                        // نتأكد من عدم التكرار
-                        if (!existingUser.profiles.find(p => p.role === 'Shareholder')) {
-                            existingUser.profiles.push(shareholderProfile);
-                        }
+                        // إضافة ملف مساهم للموظف الموجود
+                        existingUser.profiles.push(shareholderProfile);
                     } else {
-                        // إذا لم يكن موظفاً، ننشئ له حساب مستخدم جديد
+                        // إنشاء مستخدم جديد للمساهم الصرف
                         allUsers.push({
                             id: sh.id,
-                            name: sh.name.en || sh.name, // نفضل الاسم الانجليزي للاتساق التقني
+                            name: sh.name.en || sh.name,
                             email: sh.email,
-                            profiles: [shareholderProfile] // لديه ملف واحد فقط كمساهم
+                            profiles: [shareholderProfile]
                         });
                     }
                 });
             }
 
-            // 3. حفظ القائمة النهائية للمعالجة
             this.processedUsers = allUsers;
         }
 
         getUsers() { return this.processedUsers; }
 
-        /**
-         * تحديد لون الأفاتار بناءً على الدور الأساسي
-         */
         getAvatarColor(user) {
-            const mainRole = user.profiles[0].role.toUpperCase();
-            if (['ADMIN', 'GRC'].includes(mainRole)) return 'b91c1c'; // Red
-            if (['CEO', 'CHAIRMAN', 'BOARD_MEMBER'].includes(mainRole)) return '4267B2'; // Blue
-            if (['CFO', 'FINANCE'].includes(mainRole)) return '7c3aed'; // Purple
-            if (['SHAREHOLDER'].includes(mainRole)) return '16a34a'; // Green
-            if (['MANAGER', 'DIRECTOR'].includes(mainRole)) return '0ea5e9'; // Cyan
-            return '64748b'; // Grey
+            // نأخذ الدور من الملف الأول
+            const mainRole = (user.profiles && user.profiles[0]) ? user.profiles[0].role.toUpperCase() : 'STAFF';
+            
+            if (['ADMIN', 'GRC'].includes(mainRole)) return 'b91c1c';
+            if (['CEO', 'CHAIRMAN', 'BOARD_MEMBER'].includes(mainRole)) return '4267B2';
+            if (['CFO', 'FINANCE'].includes(mainRole)) return '7c3aed';
+            if (['SHAREHOLDER'].includes(mainRole)) return '16a34a';
+            if (['MANAGER', 'DIRECTOR', 'TEAM_LEAD'].includes(mainRole)) return '0ea5e9';
+            return '64748b';
         }
 
-        /**
-         * عملية تسجيل الدخول
-         */
         login(email, password) {
             const cleanEmail = email.trim().toLowerCase();
             const user = this.processedUsers.find(u => u.email.toLowerCase() === cleanEmail);
@@ -372,25 +380,18 @@ const SYSTEM_DATA = {
             if (!user) throw new Error("invalid_user");
             if (password !== "12345678") throw new Error("invalid_pass");
 
-            // 1. تحديد الملف الشخصي الافتراضي (أول واحد في القائمة)
+            // افتراضياً يدخل بأول ملف (يمكن لاحقاً إضافة شاشة اختيار)
             const activeProfile = user.profiles[0];
 
-            // 2. تجهيز بيانات الجلسة
             const sessionData = {
-                user: user,             // بيانات المستخدم كاملة
-                activeProfile: activeProfile // المنصب الذي سيدخل به الآن
+                user: user,
+                activeProfile: activeProfile
             };
 
-            // 3. الحفظ في المتصفح
             localStorage.setItem('currentUser', JSON.stringify(sessionData));
-
-            // 4. تحديد التوجيه بناءً على الملف النشط
             return this.getRedirectUrl(activeProfile);
         }
 
-        /**
-         * منطق التوجيه الجديد (يعتمد على Profile Role)
-         */
         getRedirectUrl(profile) {
             const role = (profile.role || '').toUpperCase();
             const dept = (profile.department_id || '').toUpperCase();
@@ -401,21 +402,18 @@ const SYSTEM_DATA = {
             if (['COMMITTEE_MEMBER', 'AUDITOR'].includes(role) || dept === 'DEP_AUDIT') return 'audit/index.html';
             if (role === 'SHAREHOLDER') return 'shareholder/index.html';
             
-            // الافتراضي للموظفين والمدراء
             return 'employee/index.html';
         }
     }
 
     // ==========================================
-    // 4. UI LOGIC (Updated for Multi-Profile)
+    // 4. UI LOGIC
     // ==========================================
     const auth = new AuthEngine();
 
     document.addEventListener('DOMContentLoaded', () => {
         applyTheme();
         applyLang();
-        // renderDynamicUsers يتم استدعاؤها داخل applyLang
-        
         document.getElementById('loginForm').addEventListener('submit', handleLogin);
     });
 
@@ -427,7 +425,6 @@ const SYSTEM_DATA = {
         container.innerHTML = '';
         const t = translations[lang];
 
-        // تعريف المجموعات للعرض
         const groups = {
             'ADMIN': { title: t.adminGroup, color: 'text-red-600', icon: 'fa-user-shield' },
             'BOARD': { title: t.boardGroup, color: 'text-brandBlue', icon: 'fa-building-columns' },
@@ -438,8 +435,8 @@ const SYSTEM_DATA = {
             'STAFF': { title: t.staffGroup, color: 'text-slate-500', icon: 'fa-users' }
         };
 
-        // دالة مساعدة لتحديد "نوع العرض" للمستخدم بناءً على منصبه الأول
         const getDisplayType = (user) => {
+            if(!user.profiles || user.profiles.length === 0) return 'STAFF';
             const mainRole = (user.profiles[0].role || '').toUpperCase();
             const dept = (user.profiles[0].department_id || '').toUpperCase();
 
@@ -452,9 +449,7 @@ const SYSTEM_DATA = {
             return 'STAFF';
         };
 
-        // حلقة التكرار لرسم المجموعات
         for (const [groupKey, info] of Object.entries(groups)) {
-            // تصفية المستخدمين الذين ينتمون لهذه المجموعة
             const groupUsers = users.filter(u => getDisplayType(u) === groupKey);
 
             if (groupUsers.length > 0) {
@@ -467,20 +462,18 @@ const SYSTEM_DATA = {
                 `;
                 
                 groupUsers.forEach(u => {
-                    // معالجة الاسم إذا كان كائناً (للمساهمين) أو نصاً
                     let displayName = u.name;
                     if(typeof u.name === 'object') {
                         displayName = lang === 'ar' ? u.name.ar : u.name.en;
                     }
 
-                    // الحصول على المسمى الوظيفي للمنصب الأول
                     const primaryTitle = u.profiles[0].title;
-                    const safeColor = auth.getAvatarColor(u); // دالة داخل الكلاس AuthEngine
+                    const safeColor = auth.getAvatarColor(u);
                     const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=${safeColor}&color=fff&size=64&bold=true`;
                     
-                    // مؤشر إذا كان لديه مناصب متعددة
+                    // شارة تعدد المناصب
                     const multiProfileBadge = u.profiles.length > 1 
-                        ? `<span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full border border-white" title="Multi-Role"></span>` 
+                        ? `<span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full border border-white ring-1 ring-white" title="أدوار متعددة"></span>` 
                         : '';
 
                     sectionHtml += `
@@ -501,7 +494,7 @@ const SYSTEM_DATA = {
         }
     }
 
-    // بقية دوال الواجهة (fillDemo, togglePassword, handleLogin...) كما هي
+    // دوال مساعدة للواجهة
     window.fillDemo = (email) => {
         document.getElementById('email').value = email;
         document.getElementById('password').value = '12345678';
@@ -539,7 +532,6 @@ const SYSTEM_DATA = {
 
         setTimeout(() => {
             try {
-                // استخدام AuthEngine للتحقق والحصول على الرابط
                 const redirect = auth.login(email, password);
                 window.location.href = redirect;
             } catch (err) {
@@ -572,7 +564,6 @@ const SYSTEM_DATA = {
             if(t[key]) el.innerText = t[key];
         });
 
-        // Re-render users to update group titles
         renderDynamicUsers();
     }
 
