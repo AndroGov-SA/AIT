@@ -17,16 +17,8 @@
             darkMode: 'class',
             theme: {
                 extend: {
-                    colors: {
-                        brandRed: '#FB4747',
-                        brandBlue: '#4267B2',
-                        brandDark: '#1E293B',
-                        brandGray: '#F8FAFC'
-                    },
-                    fontFamily: {
-                        sans: ['Tajawal', 'Inter', 'sans-serif'],
-                        en: ['Inter', 'sans-serif']
-                    }
+                    colors: { brandRed: '#FB4747', brandBlue: '#4267B2', brandDark: '#1E293B', brandGray: '#F8FAFC' },
+                    fontFamily: { sans: ['Tajawal', 'Inter', 'sans-serif'], en: ['Inter', 'sans-serif'] }
                 }
             }
         }
@@ -35,26 +27,15 @@
         .num-font { font-family: 'Inter', sans-serif; direction: ltr; display: inline-block; }
         .custom-scroll::-webkit-scrollbar { width: 5px; }
         .custom-scroll::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 10px; }
-        /* Loading Overlay */
-        .loading-overlay {
-            position: fixed; inset: 0; background: #ffffff; z-index: 9999; 
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            transition: opacity 0.5s ease, visibility 0.5s;
-        }
-        .loading-overlay.hidden { opacity: 0; visibility: hidden; }
-        /* Active Link */
-        .nav-item.active { @apply bg-brandRed text-white shadow-lg shadow-red-500/30; }
+        /* Animation Classes */
+        .fade-in { animation: fadeIn 0.4s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
+
 <body class="bg-brandGray dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans h-screen flex overflow-hidden">
 
-    <div id="loadingOverlay" class="loading-overlay">
-        <div class="w-16 h-16 border-4 border-slate-200 border-t-brandRed rounded-full animate-spin"></div>
-        <p class="mt-4 text-sm font-bold text-slate-500">جاري تهيئة النظام...</p>
-        <button onclick="document.getElementById('loadingOverlay').classList.add('hidden')" class="mt-6 text-xs text-red-500 underline opacity-0 animate-pulse" style="animation-delay: 3s; animation-fill-mode: forwards;">اضغط هنا إذا تأخر التحميل</button>
-    </div>
-
-    <div id="sidebar-container" class="hidden md:block"></div>
+    <div id="sidebar-container"></div>
 
     <div class="flex-1 flex flex-col h-full relative transition-all duration-300 ltr:md:ml-72 rtl:md:mr-72">
         
@@ -62,36 +43,40 @@
 
         <main class="flex-1 overflow-y-auto p-6 custom-scroll" id="main-content">
             
-            <div id="view-dashboard" class="space-y-6 animate-fade-in">
+            <div id="view-dashboard" class="space-y-6 fade-in">
                 <div class="bg-gradient-to-r from-slate-900 to-slate-800 rounded-3xl p-8 text-white relative overflow-hidden shadow-xl">
                     <div class="relative z-10">
-                        <h1 class="text-2xl font-bold mb-2">مرحباً، <span id="dashName">...</span> 👋</h1>
+                        <h1 class="text-2xl font-bold mb-2">مرحباً، <span id="dashName">سعادة العضو</span> 👋</h1>
                         <p class="text-slate-300 text-sm opacity-90">ملخص أعمال المجلس واللجان للدورة الحالية.</p>
                         <div class="mt-6 flex gap-3">
-                            <button onclick="BoardLayout.switchView('meetings')" class="bg-brandBlue px-6 py-2 rounded-xl font-bold text-sm shadow-lg hover:bg-blue-600 transition">الاجتماعات</button>
-                            <button onclick="BoardLayout.switchView('resolutions')" class="bg-white/10 px-6 py-2 rounded-xl font-bold text-sm backdrop-blur-md hover:bg-white/20 transition">التصويت</button>
+                            <button onclick="BoardLayout.switchView('meetings')" class="bg-brandBlue px-6 py-2 rounded-xl font-bold text-sm shadow-lg hover:bg-blue-600 transition flex items-center gap-2">
+                                <i class="fa-regular fa-calendar"></i> الاجتماعات
+                            </button>
+                            <button onclick="BoardLayout.switchView('resolutions')" class="bg-white/10 px-6 py-2 rounded-xl font-bold text-sm backdrop-blur-md hover:bg-white/20 transition flex items-center gap-2">
+                                <i class="fa-solid fa-check-to-slot"></i> التصويت
+                            </button>
                         </div>
                     </div>
                     <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-brandRed/20 rounded-full blur-3xl"></div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm">
+                    <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md transition">
                         <div class="flex justify-between mb-4">
                             <div class="w-10 h-10 bg-red-50 text-red-500 rounded-lg flex items-center justify-center"><i class="fa-solid fa-gavel"></i></div>
-                            <span class="text-xs bg-red-50 text-red-600 px-2 py-1 rounded font-bold h-fit">عاجل</span>
+                            <span class="text-[10px] bg-red-50 text-red-600 px-2 py-1 rounded-full font-bold h-fit animate-pulse">عاجل</span>
                         </div>
                         <h3 class="text-3xl font-bold num-font">2</h3>
                         <p class="text-xs text-slate-400 mt-1">قرارات بانتظار التصويت</p>
                     </div>
-                    <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm">
+                    <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md transition">
                         <div class="flex justify-between mb-4">
                             <div class="w-10 h-10 bg-blue-50 text-brandBlue rounded-lg flex items-center justify-center"><i class="fa-solid fa-calendar-check"></i></div>
                         </div>
                         <h3 class="text-3xl font-bold num-font">95%</h3>
                         <p class="text-xs text-slate-400 mt-1">نسبة الحضور السنوي</p>
                     </div>
-                    <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm">
+                    <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md transition">
                         <div class="flex justify-between mb-4">
                             <div class="w-10 h-10 bg-green-50 text-green-600 rounded-lg flex items-center justify-center"><i class="fa-solid fa-chart-line"></i></div>
                         </div>
@@ -101,16 +86,33 @@
                 </div>
 
                 <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm">
-                    <h3 class="font-bold mb-6 dark:text-white">تحليل الأداء</h3>
-                    <div class="h-64 w-full"><canvas id="boardChart"></canvas></div>
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="font-bold dark:text-white">تحليل أداء القرارات</h3>
+                        <button class="text-xs text-slate-400 hover:text-brandRed"><i class="fa-solid fa-download"></i> تصدير</button>
+                    </div>
+                    <div class="h-64 w-full relative">
+                        <canvas id="boardChart"></canvas>
+                    </div>
                 </div>
             </div>
 
-            <div id="view-meetings" class="hidden"><div class="p-10 text-center text-slate-400">جدول الاجتماعات...</div></div>
-            <div id="view-resolutions" class="hidden"><div class="p-10 text-center text-slate-400">القرارات...</div></div>
-            <div id="view-library" class="hidden"><div class="p-10 text-center text-slate-400">المكتبة...</div></div>
-            <div id="view-secretary" class="hidden"><div class="p-10 text-center text-slate-400">أدوات أمانة السر...</div></div>
+            <div id="view-meetings" class="hidden fade-in">
+                <div class="bg-white dark:bg-slate-800 p-10 rounded-2xl text-center">
+                    <i class="fa-regular fa-calendar-days text-4xl text-slate-300 mb-4"></i>
+                    <h3 class="font-bold text-lg dark:text-white">جدول الاجتماعات</h3>
+                    <p class="text-slate-400 text-sm mt-2">لا توجد اجتماعات مجدولة لهذا الأسبوع.</p>
+                    <button onclick="BoardLayout.switchView('dashboard')" class="mt-4 text-brandRed text-sm hover:underline">العودة للرئيسية</button>
+                </div>
+            </div>
 
+            <div id="view-resolutions" class="hidden fade-in">
+                <div class="bg-white dark:bg-slate-800 p-10 rounded-2xl text-center">
+                    <i class="fa-solid fa-check-to-slot text-4xl text-slate-300 mb-4"></i>
+                    <h3 class="font-bold text-lg dark:text-white">سجل القرارات</h3>
+                    <p class="text-slate-400 text-sm mt-2">جاري تحميل بيانات التصويت...</p>
+                    <button onclick="BoardLayout.switchView('dashboard')" class="mt-4 text-brandRed text-sm hover:underline">العودة للرئيسية</button>
+                </div>
+            </div>
         </main>
     </div>
 
@@ -123,24 +125,96 @@
     <script src="../admin/js/components/bot.js"></script>
 
     <script>
+        // ==========================================
+        // 1. Board Logic (Switching Views & Chart)
+        // ==========================================
+        const BoardLayout = {
+            activeView: 'dashboard',
+            
+            switchView: function(viewId) {
+                // إخفاء الكل
+                ['dashboard', 'meetings', 'resolutions'].forEach(id => {
+                    document.getElementById(`view-${id}`).classList.add('hidden');
+                });
+                // إظهار المطلوب
+                const target = document.getElementById(`view-${viewId}`);
+                if(target) {
+                    target.classList.remove('hidden');
+                    // إعادة تشغيل الأنيميشن
+                    target.classList.remove('fade-in');
+                    void target.offsetWidth; // trigger reflow
+                    target.classList.add('fade-in');
+                }
+                this.activeView = viewId;
+            },
+
+            initChart: function() {
+                const ctx = document.getElementById('boardChart');
+                if(!ctx) return;
+                
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو'],
+                        datasets: [
+                            {
+                                label: 'قرارات معتمدة',
+                                data: [12, 19, 3, 5, 2, 3],
+                                backgroundColor: '#10B981',
+                                borderRadius: 4
+                            },
+                            {
+                                label: 'مؤجلة',
+                                data: [2, 3, 20, 5, 1, 4],
+                                backgroundColor: '#FB4747',
+                                borderRadius: 4
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'bottom', labels: { font: { family: 'Tajawal' } } }
+                        },
+                        scales: {
+                            y: { beginAtZero: true, grid: { color: '#e2e8f0' } },
+                            x: { grid: { display: false } }
+                        }
+                    }
+                });
+            }
+        };
+
+        // ==========================================
+        // 2. Initialization
+        // ==========================================
         document.addEventListener('DOMContentLoaded', () => {
-            // ننتظر تحميل السكربتات
+            
+            // انتظار تحميل المكتبات الأساسية
             const checkLibs = setInterval(() => {
                 if (typeof Layout !== 'undefined' && typeof AppConfig !== 'undefined') {
                     clearInterval(checkLibs);
 
-                    // ✅ الخطوة المهمة: تحديد هوية المستخدم كعضو مجلس
+                    // ✅ تصحيح: استخدام "type" الصغير لضمان عمل القائمة الجانبية
                     const boardUser = {
                         id: 'BRD_001',
-                        role: 'Board', // <--- هذا هو المفتاح الذي سيغير القائمة إلى قائمة المجلس المختصرة
-                        displayName: 'عضو المجلس',
-                        displayTitle: 'عضو مجلس الإدارة',
-                        avatar: 'https://ui-avatars.com/api/?name=Board&background=random'
+                        type: 'board', // ⚠️ مهم جداً: يجب أن يكون lowercase مطابقاً لـ roleMap
+                        role: 'Board Member',
+                        displayName: 'د. عبدالله الحواس',
+                        displayTitle: 'رئيس مجلس الإدارة',
+                        avatar: 'https://ui-avatars.com/api/?name=A+H&background=FB4747&color=fff'
                     };
 
-                    // حفظ المستخدم وتشغيل النظام
+                    // تحديث الاسم في الواجهة
+                    document.getElementById('dashName').innerText = boardUser.displayName;
+
+                    // تشغيل النظام
                     AppConfig.setCurrentUser(boardUser);
                     Layout.init();
+                    
+                    // تشغيل الشارت
+                    BoardLayout.initChart();
                 }
             }, 50);
         });
