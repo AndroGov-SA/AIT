@@ -285,6 +285,11 @@ const Layout = (function() {
             </div>
           </div>
 
+          <!-- AndroBot Toggle -->
+          <button onclick="AndroBot.toggle()" class="w-9 h-9 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-brandBlue transition flex items-center justify-center" title="المساعد الذكي">
+          <i class="fa-solid fa-robot"></i>
+          </button>
+
           <!-- Language Toggle -->
           <button onclick="Layout.toggleLang()" class="h-9 px-3 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-xs font-bold text-slate-600 dark:text-white transition" title="${lang === 'ar' ? 'Switch to English' : 'التبديل للعربية'}">
             ${lang === 'ar' ? 'EN' : 'عربي'}
