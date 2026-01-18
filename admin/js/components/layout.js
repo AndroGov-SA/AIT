@@ -1,186 +1,375 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AndroGov | لوحة تحكم الإدارة</title>
+/**
+ * AndroGov Layout Component v2.0
+ * @description Handles Sidebar and Header rendering with Role Switcher integration
+ * @version 2.0.0
+ * @requires AppConfig, I18n, DataService, RoleSwitcher
+ * @file admin/js/components/layout.js
+ */
 
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+const Layout = (function() {
+  // ==========================================
+  // STATE
+  // ==========================================
+  let _state = {
+    isSidebarCollapsed: false,
+    currentUser: null,
+    currentPage: '',
+    isInitialized: false
+  };
 
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: { brandRed: '#FB4747', brandBlue: '#4267B2', brandDark: '#0F172A' },
-                    fontFamily: { sans: ['Tajawal', 'sans-serif'] }
-                }
-            }
-        }
-    </script>
+  // ==========================================
+  // NAVIGATION MENU DATA
+  // ==========================================
+  const _menuData = [
+    {
+      section: { ar: 'الرئيسية', en: 'Main' },
+      items: [
+        { icon: 'fa-gauge-high', labelKey: 'nav.dashboard', href: 'index.html' }
+      ]
+    },
+    {
+      section: { ar: 'التواصل المؤسسي', en: 'Communication' },
+      items: [
+        { icon: 'fa-comments', labelKey: 'nav.chat', href: 'admin_chat.html' },
+        { icon: 'fa-bullhorn', labelKey: 'nav.circulars', href: 'admin_circulars.html' }
+      ]
+    },
+    {
+      section: { ar: 'الحوكمة', en: 'Governance' },
+      items: [
+        { icon: 'fa-users-rectangle', labelKey: 'nav.generalAssembly', href: 'ga.html' },
+        { icon: 'fa-building-columns', labelKey: 'nav.board', href: 'board.html' },
+        { icon: 'fa-people-group', labelKey: 'nav.committees', href: 'committees.html' },
+        { icon: 'fa-id-card', labelKey: 'nav.shareholders', href: 'shareholders.html' }
+      ]
+    },
+    {
+      section: { ar: 'التشغيل', en: 'Operations' },
+      items: [
+        { icon: 'fa-list-check', labelKey: 'nav.tasks', href: 'tasks.html' },
+        { icon: 'fa-sitemap', label: { ar: 'مصفوفة الصلاحيات', en: 'DOA Matrix' }, href: 'doa.html' },
+        { icon: 'fa-book-open', labelKey: 'nav.policies', href: 'policies.html' },
+        { icon: 'fa-scale-balanced', labelKey: 'nav.compliance', href: 'compliance.html' }
+      ]
+    },
+    {
+      section: { ar: 'الإدارات', en: 'Departments' },
+      items: [
+        { icon: 'fa-user-tie', labelKey: 'nav.hr', href: 'hr.html' },
+        { icon: 'fa-money-bill-wave', labelKey: 'nav.finance', href: 'finance.html' },
+        { icon: 'fa-boxes-packing', labelKey: 'nav.procurement', href: 'procurement.html' },
+        { icon: 'fa-shield-cat', labelKey: 'nav.it', href: 'it.html' }
+      ]
+    },
+    {
+      section: { ar: 'النظام', en: 'Admin' },
+      items: [
+        { icon: 'fa-users-gear', labelKey: 'nav.users', href: 'users.html' },
+        { icon: 'fa-list-ul', labelKey: 'nav.auditLog', href: 'audit.html' },
+        { icon: 'fa-sliders', labelKey: 'nav.settings', href: 'admin_settings.html' }
+      ]
+    }
+  ];
 
-    <style>
-        .custom-scroll::-webkit-scrollbar { width: 4px; }
-        .custom-scroll::-webkit-scrollbar-thumb { background-color: #FB4747; border-radius: 10px; }
-        .nav-active { background: rgba(251, 71, 71, 0.1); border-right: 4px solid #FB4747; color: #FB4747 !important; }
-    </style>
-</head>
+  // ==========================================
+  // INITIALIZATION
+  // ==========================================
+  function init() {
+    if (_state.isInitialized) return;
 
-<body class="bg-slate-50 dark:bg-[#0F172A] font-sans h-screen flex overflow-hidden">
+    // Get current user
+    _state.currentUser = AppConfig.getCurrentUser();
+    
+    if (!_state.currentUser) {
+      console.warn('⚠️ Layout: No user logged in');
+      // Don't return - render anyway but with limited info
+    }
 
-    <aside id="main-sidebar" class="fixed top-0 right-0 h-screen w-72 bg-white dark:bg-[#111827] border-l border-slate-200 dark:border-slate-800 z-50 flex flex-col transition-all duration-300">
+    // Detect current page
+    _detectCurrentPage();
+
+    // Render components
+    _renderSidebar();
+    _renderHeader();
+
+    // Setup event listeners
+    _setupEventListeners();
+
+    _state.isInitialized = true;
+    
+    console.log('✅ Layout initialized', {
+      user: _state.currentUser?.displayName || 'Guest',
+      page: _state.currentPage
+    });
+
+    return _state;
+  }
+
+  // ==========================================
+  // DETECT CURRENT PAGE
+  // ==========================================
+  function _detectCurrentPage() {
+    const path = window.location.pathname;
+    const filename = path.substring(path.lastIndexOf('/') + 1);
+    _state.currentPage = filename || 'index.html';
+  }
+
+  // ==========================================
+  // RENDER SIDEBAR
+  // ==========================================
+  function _renderSidebar() {
+    const container = document.getElementById('sidebar-container');
+    if (!container) return;
+
+    const lang = AppConfig.getLang();
+    const isRTL = AppConfig.isRTL();
+
+    let html = `
+      <aside id="main-sidebar" class="fixed top-0 ${isRTL ? 'right-0' : 'left-0'} h-screen w-72 bg-white dark:bg-slate-800 border-${isRTL ? 'l' : 'r'} border-slate-200 dark:border-slate-700 z-50 flex flex-col transition-all duration-300 no-print">
         
-        <div class="h-20 flex items-center px-8 border-b border-slate-100 dark:border-slate-800">
-            <div class="flex items-center gap-3">
-                <i class="fa-solid fa-layer-group text-2xl text-brandRed"></i>
-                <span class="text-xl font-black text-slate-800 dark:text-white italic">AndroGov</span>
-            </div>
+        <!-- Logo -->
+        <div class="h-20 flex items-center px-8 border-b border-slate-100 dark:border-slate-700">
+          <div class="flex items-center gap-3">
+            <i class="fa-solid fa-layer-group text-2xl text-brandRed"></i>
+            <span class="text-xl font-black text-slate-800 dark:text-white italic">AndroGov</span>
+          </div>
         </div>
 
+        <!-- Navigation -->
         <nav class="flex-1 overflow-y-auto custom-scroll py-6 px-4 space-y-1">
-            
-            <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-4 mb-2">الرئيسية</div>
-            <a href="index.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">
-                <i class="fa-solid fa-gauge-high w-5 text-center"></i> <span>لوحة القيادة</span>
-            </a>
+    `;
 
-            <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-4 mt-6 mb-2">التواصل</div>
-            <a href="admin_chat.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">
-                <i class="fa-solid fa-comments w-5 text-center"></i> <span>غرفة الدردشة</span>
-            </a>
-            <a href="admin_circulars.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">
-                <i class="fa-solid fa-bullhorn w-5 text-center"></i> <span>التعاميم المؤسسية</span>
-            </a>
+    // Build menu
+    _menuData.forEach(section => {
+      const sectionLabel = section.section[lang] || section.section.ar;
+      
+      html += `
+        <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-4 mt-6 mb-2">
+          ${sectionLabel}
+        </div>
+      `;
 
-            <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-4 mt-6 mb-2">الحوكمة</div>
-            <a href="ga.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">
-                <i class="fa-solid fa-users-rectangle w-5 text-center"></i> <span>الجمعية العمومية</span>
-            </a>
-            <a href="board.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">
-                <i class="fa-solid fa-building-columns w-5 text-center"></i> <span>مجلس الإدارة</span>
-            </a>
-            <a href="committees.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">
-                <i class="fa-solid fa-people-group w-5 text-center"></i> <span>اللجان</span>
-            </a>
-            <a href="shareholders.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">
-                <i class="fa-solid fa-id-card w-5 text-center"></i> <span>سجل المساهمين</span>
-            </a>
+      section.items.forEach(item => {
+        const label = item.labelKey ? I18n.t(item.labelKey, lang) : (item.label?.[lang] || item.label?.ar || '');
+        const isActive = _state.currentPage === item.href;
+        const activeClass = isActive 
+          ? 'bg-red-50 dark:bg-red-900/20 border-r-4 border-brandRed text-brandRed' 
+          : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700';
 
-            <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-4 mt-6 mb-2">التشغيل</div>
-            <a href="tasks.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">
-                <i class="fa-solid fa-list-check w-5 text-center"></i> <span>المهام والتكليفات</span>
-            </a>
-            <a href="doa.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">
-                <i class="fa-solid fa-sitemap w-5 text-center"></i> <span>مصفوفة الصلاحيات</span>
-            </a>
-            <a href="policies.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">
-                <i class="fa-solid fa-book-open w-5 text-center"></i> <span>السياسات واللوائح</span>
-            </a>
-            <a href="compliance.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">
-                <i class="fa-solid fa-scale-balanced w-5 text-center"></i> <span>الالتزام والرقابة</span>
-            </a>
+        html += `
+          <a href="${item.href}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold ${activeClass} transition-all">
+            <i class="fa-solid ${item.icon} w-5 text-center"></i>
+            <span>${label}</span>
+          </a>
+        `;
+      });
+    });
 
-            <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-4 mt-6 mb-2">الإدارات</div>
-            <a href="hr.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">
-                <i class="fa-solid fa-user-tie w-5 text-center"></i> <span>الموارد البشرية</span>
-            </a>
-            <a href="finance.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">
-                <i class="fa-solid fa-money-bill-wave w-5 text-center"></i> <span>المالية</span>
-            </a>
-            <a href="procurement.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">
-                <i class="fa-solid fa-boxes-packing w-5 text-center"></i> <span>المشتريات</span>
-            </a>
-            <a href="it.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">
-                <i class="fa-solid fa-shield-cat w-5 text-center"></i> <span>تقنية المعلومات</span>
-            </a>
-
-            <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-4 mt-6 mb-2">النظام</div>
-            <a href="users.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">
-                <i class="fa-solid fa-users-gear w-5 text-center"></i> <span>إدارة المستخدمين</span>
-            </a>
-            <a href="audit.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">
-                <i class="fa-solid fa-list-ul w-5 text-center"></i> <span>سجل الأحداث</span>
-            </a>
-            <a href="admin_settings.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">
-                <i class="fa-solid fa-sliders w-5 text-center"></i> <span>الإعدادات</span>
-            </a>
+    html += `
         </nav>
 
-        <div class="p-6 border-t border-slate-100 dark:border-slate-800">
-            <a href="profile.html" class="flex items-center gap-3 group">
-                <img id="userAvatar" src="https://ui-avatars.com/api/?name=Admin&background=FB4747&color=fff" class="w-10 h-10 rounded-xl object-cover border border-slate-200 dark:border-slate-700 group-hover:border-brandRed transition-all">
-                <div class="overflow-hidden">
-                    <p id="userName" class="text-xs font-bold text-slate-800 dark:text-white truncate">أهلاً، المسؤول</p>
-                    <p class="text-[9px] text-slate-400 uppercase font-black">عرض الملف الشخصي</p>
-                </div>
-            </a>
+        <!-- User Profile -->
+        <div class="p-6 border-t border-slate-100 dark:border-slate-700">
+    `;
+
+    if (_state.currentUser) {
+      html += `
+          <a href="profile.html" class="flex items-center gap-3 group">
+            <img src="${_state.currentUser.avatar || 'https://ui-avatars.com/api/?name=User&background=random'}" class="w-10 h-10 rounded-xl object-cover border border-slate-200 dark:border-slate-600 group-hover:border-brandRed transition-all">
+            <div class="overflow-hidden">
+              <p class="text-xs font-bold text-slate-800 dark:text-white truncate">${_state.currentUser.displayName || 'User'}</p>
+              <p class="text-[9px] text-slate-400 uppercase font-black">${I18n.t('nav.profile')}</p>
+            </div>
+          </a>
+      `;
+    } else {
+      html += `
+          <a href="../login.html" class="flex items-center gap-3 px-4 py-2 bg-brandBlue text-white rounded-xl text-sm font-bold hover:bg-blue-700 transition">
+            <i class="fa-solid fa-right-to-bracket"></i>
+            <span>${lang === 'ar' ? 'تسجيل الدخول' : 'Login'}</span>
+          </a>
+      `;
+    }
+
+    html += `
         </div>
-    </aside>
+      </aside>
+    `;
 
-    <div class="flex-1 flex flex-col h-full mr-72 transition-all duration-300">
+    container.innerHTML = html;
+  }
+
+  // ==========================================
+  // RENDER HEADER
+  // ==========================================
+  function _renderHeader() {
+    const container = document.getElementById('header-container');
+    if (!container) return;
+
+    const lang = AppConfig.getLang();
+    const isRTL = AppConfig.isRTL();
+
+    // Get page title from current link
+    const currentMenuItem = _findCurrentMenuItem();
+    const pageTitle = currentMenuItem 
+      ? (currentMenuItem.labelKey ? I18n.t(currentMenuItem.labelKey, lang) : (currentMenuItem.label?.[lang] || currentMenuItem.label?.ar))
+      : 'AndroGov';
+
+    let html = `
+      <header class="h-20 bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-700 flex items-center justify-between px-8 sticky top-0 z-40 no-print">
         
-        <header class="h-20 bg-white/80 dark:bg-[#0F172A]/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-8 sticky top-0 z-40">
-            <div class="flex items-center gap-2">
-                <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">الإدارة العامة</span>
-                <i class="fa-solid fa-chevron-left text-[10px] text-slate-300"></i>
-                <span id="pageTitle" class="text-xs font-black text-brandRed uppercase tracking-widest">لوحة التحكم</span>
-            </div>
+        <!-- Breadcrumb -->
+        <div class="flex items-center gap-2 text-xs">
+          <span class="font-bold text-slate-400 uppercase tracking-widest">${I18n.t('nav.admin')}</span>
+          <i class="fa-solid fa-chevron-${isRTL ? 'left' : 'right'} text-[10px] text-slate-300"></i>
+          <span class="font-black text-brandRed uppercase tracking-widest">${pageTitle}</span>
+        </div>
 
-            <div class="flex items-center gap-4">
-                <button onclick="toggleDarkMode()" class="w-10 h-10 rounded-xl border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">
-                    <i id="themeIcon" class="fa-solid fa-moon"></i>
-                </button>
-                <div class="h-8 w-px bg-slate-200 dark:bg-slate-700 mx-2"></div>
-                <button onclick="handleLogout()" class="flex items-center gap-2 bg-red-50 dark:bg-red-500/10 text-brandRed px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-tighter hover:bg-brandRed hover:text-white transition-all">
-                    <i class="fa-solid fa-power-off"></i> خروج آمن
-                </button>
-            </div>
-        </header>
+        <!-- Actions -->
+        <div class="flex items-center gap-4">
+    `;
 
-        <main class="flex-1 overflow-y-auto p-8 custom-scroll">
-            
-            <div id="content-placeholder">
-                <h1 class="text-3xl font-black text-slate-800 dark:text-white mb-2">مرحباً بك في نظام AndroGov</h1>
-                <p class="text-slate-500 dark:text-slate-400 text-sm">أنت الآن تتصفح بوابة المسؤول العام بكل الصلاحيات الإدارية.</p>
-            </div>
+    // Role Switcher (if user has multiple roles)
+    if (_state.currentUser && typeof RoleSwitcher !== 'undefined') {
+      const contexts = _state.currentUser.contexts || [];
+      if (contexts.length > 1) {
+        html += RoleSwitcher.renderButton();
+      }
+    }
 
-        </main>
-    </div>
+    // Language Toggle
+    html += `
+          <button 
+            onclick="Layout.toggleLanguage()" 
+            class="w-10 h-10 rounded-xl border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all"
+            title="${lang === 'ar' ? 'English' : 'العربية'}"
+          >
+            <span class="font-bold text-sm">${lang === 'ar' ? 'EN' : 'ع'}</span>
+          </button>
+    `;
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // جلب اسم المستخدم من الجلسة
-            const user = JSON.parse(localStorage.getItem('currentUser'));
-            if (user) {
-                document.getElementById('userName').innerText = `أهلاً، ${user.name.split(' ')[0]}`;
-                document.getElementById('userAvatar').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=FB4747&color=fff`;
-            }
+    // Theme Toggle
+    const isDark = AppConfig.isDarkMode();
+    html += `
+          <button 
+            onclick="Layout.toggleTheme()" 
+            class="w-10 h-10 rounded-xl border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all"
+            title="${isDark ? 'Light Mode' : 'Dark Mode'}"
+          >
+            <i class="fa-solid ${isDark ? 'fa-sun' : 'fa-moon'}"></i>
+          </button>
+    `;
 
-            // تفعيل الرابط النشط تلقائياً بناءً على اسم الملف الحالي
-            const currentFile = window.location.pathname.split('/').pop();
-            document.querySelectorAll('nav a').forEach(link => {
-                if (link.getAttribute('href') === currentFile) {
-                    link.classList.add('nav-active');
-                    // تحديث عنوان الصفحة في الهيدر
-                    document.getElementById('pageTitle').innerText = link.querySelector('span').innerText;
-                }
-            });
-        });
+    // Logout
+    if (_state.currentUser) {
+      html += `
+          <div class="h-8 w-px bg-slate-200 dark:bg-slate-700 mx-2"></div>
+          <button 
+            onclick="Layout.logout()" 
+            class="flex items-center gap-2 bg-red-50 dark:bg-red-900/10 text-brandRed px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-tighter hover:bg-brandRed hover:text-white transition-all"
+          >
+            <i class="fa-solid fa-power-off"></i>
+            <span>${lang === 'ar' ? 'خروج' : 'Logout'}</span>
+          </button>
+      `;
+    }
 
-        function handleLogout() {
-            if(confirm('هل أنت متأكد من تسجيل الخروج؟')) {
-                localStorage.removeItem('currentUser');
-                window.location.href = '../login.html';
-            }
+    html += `
+        </div>
+      </header>
+    `;
+
+    container.innerHTML = html;
+  }
+
+  // ==========================================
+  // FIND CURRENT MENU ITEM
+  // ==========================================
+  function _findCurrentMenuItem() {
+    for (const section of _menuData) {
+      for (const item of section.items) {
+        if (item.href === _state.currentPage) {
+          return item;
         }
+      }
+    }
+    return null;
+  }
 
-        function toggleDarkMode() {
-            document.documentElement.classList.toggle('dark');
-            const isDark = document.documentElement.classList.contains('dark');
-            document.getElementById('themeIcon').className = isDark ? 'fa-solid fa-sun text-yellow-400' : 'fa-solid fa-moon';
-        }
-    </script>
-</body>
-</html>
+  // ==========================================
+  // EVENT LISTENERS
+  // ==========================================
+  function _setupEventListeners() {
+    // Listen for language/theme changes
+    window.addEventListener('langChanged', () => {
+      _renderSidebar();
+      _renderHeader();
+    });
+
+    window.addEventListener('themeChanged', () => {
+      // Theme handled by Tailwind classes automatically
+      _renderHeader(); // Update icon
+    });
+
+    window.addEventListener('userChanged', () => {
+      _state.currentUser = AppConfig.getCurrentUser();
+      _renderSidebar();
+      _renderHeader();
+    });
+
+    window.addEventListener('roleChanged', () => {
+      _renderHeader(); // Update role switcher
+    });
+  }
+
+  // ==========================================
+  // PUBLIC METHODS - ACTIONS
+  // ==========================================
+  function toggleLanguage() {
+    AppConfig.toggleLang();
+    location.reload(); // Reload to apply language changes
+  }
+
+  function toggleTheme() {
+    AppConfig.toggleTheme();
+  }
+
+  function logout() {
+    const lang = AppConfig.getLang();
+    const confirmMsg = lang === 'ar' 
+      ? 'هل أنت متأكد من تسجيل الخروج؟' 
+      : 'Are you sure you want to logout?';
+    
+    if (confirm(confirmMsg)) {
+      AppConfig.logout();
+    }
+  }
+
+  function refresh() {
+    _renderSidebar();
+    _renderHeader();
+  }
+
+  // ==========================================
+  // RETURN PUBLIC API
+  // ==========================================
+  return {
+    init,
+    toggleLanguage,
+    toggleTheme,
+    logout,
+    refresh,
+    get state() { return { ..._state }; }
+  };
+})();
+
+// ==========================================
+// GLOBAL EXPORT
+// ==========================================
+if (typeof window !== 'undefined') {
+  window.Layout = Layout;
+}
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = Layout;
+}
