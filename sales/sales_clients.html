@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#FB4747">
+    <title data-i18n="pageTitle">قاعدة العملاء | AndroGov</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { brandRed: '#FB4747', brandDark: '#0F172A', moneyGreen: '#10B981', alertOrange: '#F59E0B' },
+                    fontFamily: { sans: ['Tajawal', 'Inter', 'sans-serif'], en: ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <style>.num-font { font-family: 'Inter', sans-serif; font-feature-settings: "tnum"; }</style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300 opacity-0">
+
+    <div id="sidebar-container"></div>
+    
+    <div class="main-content-wrapper transition-all duration-300 flex flex-col min-h-screen rtl:lg:mr-64 ltr:lg:ml-64">
+        
+        <div id="header-container"></div>
+
+        <main class="p-8 space-y-8">
+            
+            <div class="flex flex-col md:flex-row justify-between items-end gap-6 bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 to-brandRed"></div>
+                
+                <div class="relative z-10">
+                    <h1 class="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2 mb-2">
+                        <i class="fa-solid fa-address-book text-brandRed"></i> <span data-i18n="headerTitle">قاعدة بيانات العملاء (CRM)</span>
+                    </h1>
+                    <p class="text-sm text-slate-500 mt-1 max-w-2xl" data-i18n="headerDesc">إدارة سجلات العملاء، جهات الاتصال، وتصنيف الحسابات.</p>
+                </div>
+                
+                <div class="flex gap-3 relative z-10">
+                    <button class="px-5 py-2.5 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl text-xs font-bold shadow-sm hover:bg-slate-50 transition flex items-center gap-2 text-slate-600 dark:text-white">
+                        <i class="fa-solid fa-cloud-arrow-up"></i> <span data-i18n="btnImport">استيراد (Excel)</span>
+                    </button>
+                    <button onclick="document.getElementById('clientModal').classList.remove('hidden')" class="px-5 py-2.5 bg-brandRed text-white rounded-xl text-xs font-bold shadow-lg shadow-red-500/30 hover:bg-red-700 transition flex items-center gap-2">
+                        <i class="fa-solid fa-user-plus"></i> <span data-i18n="btnAddClient">إضافة عميل</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="statTotal">إجمالي العملاء</p>
+                        <h3 class="text-3xl font-bold num-font text-slate-900 dark:text-white mt-1">154</h3>
+                    </div>
+                    <div class="w-12 h-12 bg-blue-50 dark:bg-blue-900/20 rounded-full flex items-center justify-center text-blue-600 text-xl"><i class="fa-solid fa-building"></i></div>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="statNew">عملاء جدد (هذا الشهر)</p>
+                        <h3 class="text-3xl font-bold num-font text-green-600 mt-1">+12</h3>
+                    </div>
+                    <div class="w-12 h-12 bg-green-50 dark:bg-green-900/20 rounded-full flex items-center justify-center text-green-600 text-xl"><i class="fa-solid fa-user-check"></i></div>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="statActive">عملاء نشطين</p>
+                        <h3 class="text-3xl font-bold num-font text-brandRed mt-1">85%</h3>
+                    </div>
+                    <div class="w-12 h-12 bg-red-50 dark:bg-red-900/20 rounded-full flex items-center justify-center text-brandRed text-xl"><i class="fa-solid fa-chart-pie"></i></div>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-slate-800 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden">
+                <div class="p-5 border-b border-slate-100 dark:border-slate-700 flex flex-col md:flex-row justify-between items-center gap-4">
+                    <div class="relative w-full md:w-64">
+                        <input type="text" placeholder="..." class="w-full bg-slate-50 dark:bg-slate-700 border-none rounded-lg text-xs py-2 px-3 pl-8 text-slate-600 dark:text-white focus:ring-2 focus:ring-brandRed" data-i18n="phSearch">
+                        <i class="fa-solid fa-search absolute top-2.5 left-2.5 text-slate-400 text-xs"></i>
+                    </div>
+                    
+                    <div class="flex gap-2">
+                        <select class="bg-slate-50 dark:bg-slate-700 border-none rounded-lg text-xs py-2 px-3 text-slate-600 dark:text-white focus:ring-2 focus:ring-brandRed outline-none">
+                            <option data-i18n="optAllSectors">كل القطاعات</option>
+                            <option>Government</option>
+                            <option>Private</option>
+                            <option>Retail</option>
+                        </select>
+                        <select class="bg-slate-50 dark:bg-slate-700 border-none rounded-lg text-xs py-2 px-3 text-slate-600 dark:text-white focus:ring-2 focus:ring-brandRed outline-none">
+                            <option data-i18n="optAllStatus">كل الحالات</option>
+                            <option>Customer</option>
+                            <option>Lead</option>
+                            <option>Churned</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-right rtl:text-right ltr:text-left">
+                        <thead class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 text-xs font-bold uppercase">
+                            <tr>
+                                <th class="p-4" data-i18n="colName">اسم العميل</th>
+                                <th class="p-4" data-i18n="colContact">جهة الاتصال</th>
+                                <th class="p-4" data-i18n="colSector">القطاع</th>
+                                <th class="p-4" data-i18n="colStatus">الحالة</th>
+                                <th class="p-4" data-i18n="colRep">مسؤول المبيعات</th>
+                                <th class="p-4 text-center" data-i18n="colAction">إجراء</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 dark:divide-slate-700 dark:text-slate-300">
+                            
+                            <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
+                                <td class="p-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 rounded bg-slate-100 flex items-center justify-center text-slate-500 font-bold">M</div>
+                                        <div>
+                                            <p class="font-bold text-slate-800 dark:text-white">وزارة الشؤون البلدية</p>
+                                            <p class="text-[10px] text-slate-400">Riyadh, SA</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="p-4">
+                                    <p class="text-xs font-bold">أ. محمد العتيبي</p>
+                                    <p class="text-[10px] text-slate-400">IT Director</p>
+                                </td>
+                                <td class="p-4"><span class="bg-slate-100 text-slate-600 px-2 py-1 rounded text-[10px]">Government</span></td>
+                                <td class="p-4"><span class="bg-green-100 text-green-700 px-2 py-1 rounded text-[10px] font-bold">Customer</span></td>
+                                <td class="p-4 text-xs">أحمد سعد</td>
+                                <td class="p-4 text-center">
+                                    <button class="text-slate-400 hover:text-brandRed transition"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                                </td>
+                            </tr>
+
+                            <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
+                                <td class="p-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 rounded bg-blue-100 flex items-center justify-center text-blue-600 font-bold">T</div>
+                                        <div>
+                                            <p class="font-bold text-slate-800 dark:text-white">شركة التقنية المتقدمة</p>
+                                            <p class="text-[10px] text-slate-400">Jeddah, SA</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="p-4">
+                                    <p class="text-xs font-bold">م. خالد السالم</p>
+                                    <p class="text-[10px] text-slate-400">CEO</p>
+                                </td>
+                                <td class="p-4"><span class="bg-slate-100 text-slate-600 px-2 py-1 rounded text-[10px]">Private</span></td>
+                                <td class="p-4"><span class="bg-blue-100 text-blue-700 px-2 py-1 rounded text-[10px] font-bold">Lead</span></td>
+                                <td class="p-4 text-xs">فهد المبيعات</td>
+                                <td class="p-4 text-center">
+                                    <button class="text-slate-400 hover:text-brandRed transition"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                                </td>
+                            </tr>
+
+                            <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
+                                <td class="p-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 rounded bg-orange-100 flex items-center justify-center text-orange-600 font-bold">R</div>
+                                        <div>
+                                            <p class="font-bold text-slate-800 dark:text-white">مجموعة التجزئة الكبرى</p>
+                                            <p class="text-[10px] text-slate-400">Dammam, SA</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="p-4">
+                                    <p class="text-xs font-bold">سارة ناصر</p>
+                                    <p class="text-[10px] text-slate-400">Procurement</p>
+                                </td>
+                                <td class="p-4"><span class="bg-slate-100 text-slate-600 px-2 py-1 rounded text-[10px]">Retail</span></td>
+                                <td class="p-4"><span class="bg-orange-100 text-orange-700 px-2 py-1 rounded text-[10px] font-bold">Opportunity</span></td>
+                                <td class="p-4 text-xs">سارة خالد</td>
+                                <td class="p-4 text-center">
+                                    <button class="text-slate-400 hover:text-brandRed transition"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="p-4 border-t border-slate-100 dark:border-slate-700 flex justify-between items-center text-xs text-slate-500">
+                    <span data-i18n="lblShowing">عرض 1-3 من 154</span>
+                    <div class="flex gap-2">
+                        <button class="px-3 py-1 border rounded hover:bg-slate-50 dark:border-slate-600 dark:hover:bg-slate-700">Previous</button>
+                        <button class="px-3 py-1 border rounded hover:bg-slate-50 dark:border-slate-600 dark:hover:bg-slate-700">Next</button>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <div id="clientModal" class="fixed inset-0 bg-black/60 hidden z-50 flex items-center justify-center backdrop-blur-sm p-4">
+        <div class="bg-white dark:bg-slate-800 w-full max-w-2xl rounded-3xl shadow-2xl p-6 border-t-4 border-brandRed animate-fade-in-up">
+            <div class="flex justify-between items-center mb-6 border-b pb-4 dark:border-slate-700">
+                <h3 class="font-bold text-lg dark:text-white flex items-center gap-2">
+                    <i class="fa-solid fa-building text-brandRed"></i> <span data-i18n="modTitle">إضافة عميل جديد</span>
+                </h3>
+                <button onclick="document.getElementById('clientModal').classList.add('hidden')"><i class="fa-solid fa-xmark text-slate-400 hover:text-red-500"></i></button>
+            </div>
+            
+            <div class="space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblCompName">اسم الشركة / الجهة</label>
+                        <input type="text" class="w-full bg-slate-50 dark:bg-slate-700 border dark:border-slate-600 rounded-xl p-3 text-sm dark:text-white focus:ring-2 focus:ring-brandRed outline-none" placeholder="Company Name">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblSector">القطاع</label>
+                        <select class="w-full bg-slate-50 dark:bg-slate-700 border dark:border-slate-600 rounded-xl p-3 text-sm dark:text-white focus:ring-2 focus:ring-brandRed outline-none">
+                            <option>Government</option>
+                            <option>Private</option>
+                            <option>Non-Profit</option>
+                            <option>Retail</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblContactName">اسم المسؤول</label>
+                        <input type="text" class="w-full bg-slate-50 dark:bg-slate-700 border dark:border-slate-600 rounded-xl p-3 text-sm dark:text-white focus:ring-2 focus:ring-brandRed outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblPosition">المنصب</label>
+                        <input type="text" class="w-full bg-slate-50 dark:bg-slate-700 border dark:border-slate-600 rounded-xl p-3 text-sm dark:text-white focus:ring-2 focus:ring-brandRed outline-none">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblPhone">رقم الهاتف</label>
+                        <input type="text" class="w-full bg-slate-50 dark:bg-slate-700 border dark:border-slate-600 rounded-xl p-3 text-sm dark:text-white focus:ring-2 focus:ring-brandRed outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblEmail">البريد الإلكتروني</label>
+                        <input type="email" class="w-full bg-slate-50 dark:bg-slate-700 border dark:border-slate-600 rounded-xl p-3 text-sm dark:text-white focus:ring-2 focus:ring-brandRed outline-none">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblStatus">الحالة</label>
+                        <select class="w-full bg-slate-50 dark:bg-slate-700 border dark:border-slate-600 rounded-xl p-3 text-sm dark:text-white focus:ring-2 focus:ring-brandRed outline-none">
+                            <option>Lead</option>
+                            <option>Opportunity</option>
+                            <option>Customer</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblAssign">تعيين إلى</label>
+                        <select class="w-full bg-slate-50 dark:bg-slate-700 border dark:border-slate-600 rounded-xl p-3 text-sm dark:text-white focus:ring-2 focus:ring-brandRed outline-none">
+                            <option>Fahad Al-Sales</option>
+                            <option>Ahmed Saad</option>
+                            <option>Sara Khalid</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblNotes">ملاحظات إضافية</label>
+                    <textarea class="w-full bg-slate-50 dark:bg-slate-700 border dark:border-slate-600 rounded-xl p-3 text-sm dark:text-white h-20 focus:ring-2 focus:ring-brandRed outline-none resize-none"></textarea>
+                </div>
+            </div>
+
+            <div class="mt-6 flex justify-end gap-3 pt-4 border-t dark:border-slate-700">
+                <button onclick="document.getElementById('clientModal').classList.add('hidden')" class="px-5 py-2.5 text-slate-500 text-xs font-bold hover:bg-slate-50 rounded-xl dark:hover:bg-slate-700" data-i18n="btnCancel">إلغاء</button>
+                <button onclick="alert('Client Added'); document.getElementById('clientModal').classList.add('hidden')" class="px-6 py-2.5 bg-brandRed text-white rounded-xl text-xs font-bold hover:bg-red-700 shadow-lg shadow-red-500/30 flex items-center gap-2">
+                    <i class="fa-solid fa-save"></i> <span data-i18n="btnSave">حفظ العميل</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../admin/js/core/config.js"></script>
+    <script src="../admin/js/core/i18n.js"></script>
+    <script src="../admin/js/services/data-service.js"></script>
+    <script src="../admin/js/components/role-switcher.js"></script>
+    <script src="../admin/js/components/layout.js"></script>
+    <script src="../admin/js/components/bot.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Wait for scripts
+            const checkLibs = setInterval(() => {
+                if (typeof Layout !== 'undefined' && typeof AppConfig !== 'undefined') {
+                    clearInterval(checkLibs);
+
+                    // ✅ Define User as Sales Manager
+                    const salesUser = {
+                        id: 'USR_005',
+                        type: 'sales', // Key for Sidebar
+                        role: 'Sales Manager',
+                        displayName: 'فهد المبيعات',
+                        displayTitle: 'مدير المبيعات',
+                        avatar: 'https://ui-avatars.com/api/?name=Fahad+S&background=random'
+                    };
+
+                    AppConfig.setCurrentUser(salesUser);
+                    Layout.init();
+                }
+            }, 50);
+        });
+    </script>
+
+    <script>
+        const pageContent = {
+            ar: {
+                pageTitle: "قاعدة العملاء | AndroGov",
+                headerTitle: "قاعدة بيانات العملاء (CRM)",
+                headerDesc: "إدارة سجلات العملاء، جهات الاتصال، وتصنيف الحسابات.",
+                btnImport: "استيراد (Excel)",
+                btnAddClient: "إضافة عميل",
+                statTotal: "إجمالي العملاء",
+                statNew: "عملاء جدد (هذا الشهر)",
+                statActive: "عملاء نشطين",
+                phSearch: "بحث...",
+                optAllSectors: "كل القطاعات",
+                optAllStatus: "كل الحالات",
+                colName: "اسم العميل",
+                colContact: "جهة الاتصال",
+                colSector: "القطاع",
+                colStatus: "الحالة",
+                colRep: "مسؤول المبيعات",
+                colAction: "إجراء",
+                lblShowing: "عرض 1-3 من 154",
+                modTitle: "إضافة عميل جديد",
+                lblCompName: "اسم الشركة / الجهة",
+                lblSector: "القطاع",
+                lblContactName: "اسم المسؤول",
+                lblPosition: "المنصب",
+                lblPhone: "رقم الهاتف",
+                lblEmail: "البريد الإلكتروني",
+                lblStatus: "الحالة",
+                lblAssign: "تعيين إلى",
+                lblNotes: "ملاحظات إضافية",
+                btnCancel: "إلغاء",
+                btnSave: "حفظ العميل"
+            },
+            en: {
+                pageTitle: "Clients | AndroGov",
+                headerTitle: "Client Database (CRM)",
+                headerDesc: "Manage client records, contacts, and account categorization.",
+                btnImport: "Import (Excel)",
+                btnAddClient: "Add Client",
+                statTotal: "Total Clients",
+                statNew: "New Clients (Month)",
+                statActive: "Active Clients",
+                phSearch: "Search...",
+                optAllSectors: "All Sectors",
+                optAllStatus: "All Statuses",
+                colName: "Client Name",
+                colContact: "Contact Person",
+                colSector: "Sector",
+                colStatus: "Status",
+                colRep: "Sales Rep",
+                colAction: "Action",
+                lblShowing: "Showing 1-3 of 154",
+                modTitle: "Add New Client",
+                lblCompName: "Company / Entity Name",
+                lblSector: "Sector",
+                lblContactName: "Contact Name",
+                lblPosition: "Position",
+                lblPhone: "Phone Number",
+                lblEmail: "Email",
+                lblStatus: "Status",
+                lblAssign: "Assign To",
+                lblNotes: "Additional Notes",
+                btnCancel: "Cancel",
+                btnSave: "Save Client"
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const lang = localStorage.getItem('lang') || 'ar';
+            const dict = pageContent[lang];
+            
+            document.documentElement.lang = lang;
+            document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if(dict[key]) {
+                    if(el.tagName === 'INPUT') el.placeholder = dict[key];
+                    else el.innerText = dict[key];
+                }
+            });
+        });
+    </script>
+</body>
+</html>
