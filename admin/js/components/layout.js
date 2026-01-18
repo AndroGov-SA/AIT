@@ -50,7 +50,10 @@ const Layout = (function() {
       { key: 'users', icon: 'fa-users-gear', link: 'users.html' },
       { key: 'auditLog', icon: 'fa-list-ul', link: 'audit.html' },
       { key: 'settings', icon: 'fa-sliders', link: 'admin_settings.html' }
-    ]}
+    ]},
+      { section: 'personal', items: [
+        { key: 'profile', icon: 'fa-user-tie', link: 'profile.html' }
+      ]}
   ],
     
     // 2. قائمة الموارد البشرية
