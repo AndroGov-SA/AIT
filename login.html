@@ -212,7 +212,7 @@
 
             // Technical & Medical
             { "id": "USR_006", "name": "Dr. Waad Hussein", "title": "Medical Supervisor", "department_id": "DEP_MED", "role": "Manager", "is_executive": false, "email": "whussain@androomeda.com" },
-            { "id": "USR_009", "name": "Meshail Al-Hadyan", "title": "NCSO", "department_id": "DEP_TECH", "role": "Manager", "is_executive": false, "email": "malhadyan@androomeda.com" },
+            { "id": "USR_009", "name": "Meshail Al-Hadyan", "title": "NCSO", "department_id": "DEP_TECH", "role": "CTO", "is_executive": false, "email": "malhadyan@androomeda.com" },
             { "id": "USR_020", "name": "Muhammad Akhtar", "title": "Director of Development", "department_id": "DEP_TECH", "role": "Director", "is_executive": false, "email": "Makhtar@androomeda.com" },
             { "id": "USR_015", "name": "Rand Al-Hourani", "title": "Technical Team Lead", "department_id": "DEP_TECH", "role": "Team_Lead", "is_executive": false, "email": "Rhourani@androomeda.com" },
             { "id": "USR_023", "name": "Software Developers Team", "title": "Software Developers Team", "department_id": "DEP_TECH", "role": "Team", "is_executive": false, "email": "SDT@androomeda.com" },
@@ -399,6 +399,7 @@
             if (['CEO'].includes(role)) return 'ceo/index.html';
             if (['CFO'].includes(role)) return 'finance/index.html';
             if (['CAO'].includes(role)) return 'hr/index.html';
+            if (['CTO'].includes(role)) return 'cto/index.html';
             if (['CHAIRMAN', 'BOARD_MEMBER', 'SECRETARY'].includes(role)) return 'board/index.html';
             if (['COMMITTEE_MEMBER', 'AUDITOR'].includes(role) || dept === 'DEP_AUDIT') return 'audit/index.html';
             if (role === 'SHAREHOLDER') return 'shareholder/index.html';
@@ -443,7 +444,7 @@
 
             if (mainRole === 'ADMIN') return 'ADMIN';
             if (['CHAIRMAN', 'BOARD_MEMBER', 'SECRETARY'].includes(mainRole)) return 'BOARD';
-            if (['CEO', 'CFO', 'CAO'].includes(mainRole)) return 'EXEC';
+            if (['CEO', 'CFO', 'CAO', 'CTO'].includes(mainRole)) return 'EXEC';
             if (['COMMITTEE_MEMBER', 'AUDITOR'].includes(mainRole) || dept === 'DEP_AUDIT') return 'AUDIT';
             if (mainRole === 'SHAREHOLDER') return 'SHAREHOLDER';
             if (['DIRECTOR', 'MANAGER', 'TEAM_LEAD'].includes(mainRole)) return 'MANAGEMENT';
