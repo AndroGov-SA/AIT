@@ -1,537 +1,186 @@
-/**
- * AndroGov Layout Engine v7.5 (Final Corrected Version)
- * @file admin/js/components/layout.js
- */
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AndroGov | لوحة تحكم الإدارة</title>
 
-const Layout = (function() {
-  
-  // ==========================================
-  // 1. STATE & CONFIG
-  // ==========================================ب
-  let _state = {
-    currentUser: null,
-    isInitialized: false,
-    sidebarOpen: false
-  };
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-  // ==========================================
-  // 2. MENU DEFINITIONS (القوائم الصحيحة والمسارات النسبية)
-  // ==========================================
-  const _menuDefinitions = {
-    
-    // --- 1. Admin ---
-    'Admin': [
-    { section: 'main', items: [
-      { key: 'dashboard', icon: 'fa-gauge-high', link: '../admin/index.html' }
-    ]},
-    { section: 'communication', items: [
-      { key: 'chat', icon: 'fa-comments', link: '../admin/admin_chat.html' },
-      { key: 'circulars', icon: 'fa-bullhorn', link: '../admin/admin_circulars.html' }
-    ]},
-    { section: 'governance', items: [
-      { key: 'generalAssembly', icon: 'fa-users-rectangle', link: '../admin/ga.html' },
-      { key: 'board', icon: 'fa-building-columns', link: '../admin/board.html' },
-      { key: 'committees', icon: 'fa-people-group', link: '../admin/committees.html' },
-      { key: 'shareholders', icon: 'fa-id-card', link: '../admin/shareholders.html' }
-    ]},
-    { section: 'operations', items: [
-      { key: 'tasks', icon: 'fa-list-check', link: '../admin/tasks.html' },
-      { key: 'doa', icon: 'fa-sitemap', link: '../admin/doa.html' },
-      { key: 'policies', icon: 'fa-book-open', link: '../admin/policies.html' },
-      { key: 'compliance', icon: 'fa-scale-balanced', link: '../admin/compliance.html' }
-    ]},
-    { section: 'departments', items: [
-      { key: 'hr', icon: 'fa-user-tie', link: '../admin/hr.html' },
-      { key: 'finance', icon: 'fa-money-bill-wave', link: '../admin/finance.html' },
-      { key: 'procurement', icon: 'fa-boxes-packing', link: '../admin/procurement.html' },
-      { key: 'it', icon: 'fa-shield-cat', link: '../admin/it.html' }
-    ]},
-    { section: 'admin', items: [
-      { key: 'users', icon: 'fa-users-gear', link: '../admin/users.html' },
-      { key: 'auditLog', icon: 'fa-list-ul', link: '../admin/audit.html' },
-      { key: 'settings', icon: 'fa-sliders', link: '../admin/admin_settings.html' }
-    ]},
-      { section: 'personal', items: [
-        { key: 'profile', icon: 'fa-user-tie', link: '../admin/profile.html' }
-      ]}
-  ],
-    
-    // 2. قائمة الموارد البشرية
-    'CAO': [
-        { section: 'main', items: [
-          { key: 'dash', icon: 'fa-chart-pie', link: '../hr/index.html' },
-          { key: 'approvals', icon: 'fa-inbox', link: '../hr/hr_approvals.html' },
-          { key: 'chat', icon: 'fa-comments', link: '../hr/internal_chat.html' }
-        ]},
-        { section: 'workforce', items: [
-          { key: 'employees', icon: 'fa-users', link: '../hr/hr_employees.html' },
-          { key: 'contracts', icon: 'fa-file-contract', link: '../hr/hr_contracts.html' },
-          { key: 'org', icon: 'fa-sitemap', link: '../hr/hr_org.html' }
-        ]},
-        { section: 'ops', items: [
-          { key: 'attendance', icon: 'fa-fingerprint', link: '../hr/hr_attendance.html' },
-          { key: 'leaves', icon: 'fa-calendar-days', link: '../hr/hr_leaves.html' },
-          { key: 'payroll', icon: 'fa-money-bill-wave', link: '../hr/hr_payroll.html' },
-          { key: 'trips', icon: 'fa-plane-departure', link: '../hr/hr_trips.html' }
-        ]},
-        { section: 'admin', items: [
-          { key: 'assets', icon: 'fa-boxes-packing', link: '../hr/hr_assets.html' },
-          { key: 'logistics', icon: 'fa-building-user', link: '../hr/hr_logistics.html' },
-          { key: 'purchases', icon: 'fa-cart-shopping', link: '../hr/hr_purchases.html' },
-          { key: 'partners', icon: 'fa-handshake', link: '../hr/hr_partners.html' }
-        ]},
-        { section: 'govt', items: [
-          { key: 'govt', icon: 'fa-passport', link: '../hr/hr_govt.html' },
-          { key: 'recruitment', icon: 'fa-user-plus', link: '../hr/hr_recruitment.html' }
-    ]},
-      { section: 'personal', items: [
-        { key: 'profile', icon: 'fa-user-tie', link: '../hr/profile.html' }
-      ]}
-  ],
-    
-    // 3. قائمة الرئيس التنفيذي (CEO)
-    'CEO': [
-      { section: 'main', items: [
-        { key: 'dash', icon: 'fa-chart-pie', link: '../ceo/index.html' },
-        { key: 'board', icon: 'fa-gavel', link: '../ceo/ceo_board.html' },
-        { key: 'strategy', icon: 'fa-chess', link: '../ceo/ceo_strategy.html' }
-      ]},
-      { section: 'finance', items: [
-          { key: 'finance', icon: 'fa-chart-line', link: '../ceo/ceo_finance.html' },
-          { key: 'reports', icon: 'fa-file-invoice-dollar', link: '../ceo/ceo_reports.html' }
-      ]},
-      { section: 'governance', items: [
-        { key: 'gov', icon: 'fa-scale-balanced', link: '../ceo/ceo_governance.html' },
-        { key: 'risks', icon: 'fa-triangle-exclamation', link: '../ceo/ceo_risks.html' }
-      ]},
-      { section: 'comm', items: [
-        { key: 'broadcast', icon: 'fa-bullhorn', link: '../ceo/ceo_broadcast.html' },
-        { key: 'chat', icon: 'fa-comments', link: '../ceo/ceo_communication.html' },
-        { key: 'feedback', icon: 'fa-inbox', link: '../ceo/ceo_feedback.html' }
-      ]},
-      { section: 'personal', items: [
-        { key: 'profile', icon: 'fa-user-tie', link: '../ceo/profile.html' }
-      ]}
-  ],
-    
-    // 4. قائمة المدير المالي (CFO)
-    'CFO': [
-      { section: 'main', items: [
-        { key: 'dash', icon: 'fa-chart-pie', link: '../finance/index.html' },
-        { key: 'approvals', icon: 'fa-stamp', link: '../finance/approvals.html' },
-        { key: 'chat', icon: 'fa-comments', link: '../finance/internal_chat.html' }
-      ]},
-      { section: 'gl', items: [
-        { key: 'journal', icon: 'fa-book', link: '../finance/gl_journal.html' },
-        { key: 'coa', icon: 'fa-sitemap', link: '../finance/gl_coa.html' },
-        { key: 'costCenters', icon: 'fa-layer-group', link: '../finance/gl_cost_centers.html' }
-        ]},
-      { section: 'ap', items: [
-        { key: 'vendors', icon: 'fa-store', link: '../finance/ap_vendors.html' },
-        { key: 'bills', icon: 'fa-file-invoice-dollar', link: '../finance/ap_bills.html' },
-        { key: 'payments', icon: 'fa-money-bill-transfer', link: '../finance/ap_payments.html' }
-        ]},
-      { section: 'ar', items: [ 
-        { key: 'salesInv', icon: 'fa-file-invoice', link: '../finance/ar_invoices.html' },
-        { key: 'receipts', icon: 'fa-hand-holding-dollar', link: '../finance/ar_receipts.html' }
-        ]},
-      { section: 'inventory', items: [
-        { key: 'stock', icon: 'fa-boxes-stacked', link: '../finance/inv_dashboard.html' },
-        { key: 'assets', icon: 'fa-laptop-code', link: '../finance/inv_assets.html' }
-       ]},
-      { section:'reporting', items: [
-        { key: 'statements', icon: 'fa-file-pdf', link: '../finance/rep_statements.html' },
-        { key: 'budget', icon: 'fa-scale-balanced', link: '../finance/rep_budget.html' },
-        { key: 'tax', icon: 'fa-building-columns', link: '../finance/rep_tax.html' }
-        ]},
-      { section: 'config', items: [
-        { key: 'settings', icon: 'fa-gears', link: '../finance/fin_settings.html' }
-       ]},
-      { section: 'personal', items: [
-        { key: 'profile', icon: 'fa-user-tie', link: '../finance/profile.html' }
-      ]}
-  ],
-    
-    // 5. قائمة المدير التقني (CTO) 
-    'CTO': [
-      { section: 'main', items: [
-        { key: 'dash', icon: 'fa-chart-pie', link: '../cto/index.html' },
-        { key: 'monitor', icon: 'fa-desktop', link: '../cto/cto_monitoring.html' }
-      ]},
-      { section: 'telecom', items: [
-        { key: 'pbx', icon: 'fa-phone-volume', link: '../cto/cto_pbx.html' },
-        { key: 'extensions', icon: 'fa-users-viewfinder', link: '../cto/cto_extensions.html' },
-        { key: 'call_logs', icon: 'fa-list-ol', link: '../cto/cto_call_logs.html' }
-      ]},
-      { section: 'infrastructure', items: [
-        { key: 'servers', icon: 'fa-server', link: '../cto/cto_servers.html' },
-        { key: 'assets', icon: 'fa-laptop-code', link: '../cto/cto_assets.html' }
-       ]},
-      { section: 'security', items: [
-        { key: 'soc', icon: 'fa-shield-virus', link: '../cto/cto_soc.html' },
-        { key: 'access', icon: 'fa-id-badge', link: '../cto/cto_iam.html' }
-      ]},
-      { section: 'dev', items: [ 
-        { key: 'projects', icon: 'fa-code-branch', link: '../cto/cto_projects.html' },
-        { key: 'support', icon: 'fa-headset', link: '../cto/cto_support.html' }
-      ]},
-      { section: 'personal', items: [
-        { key: 'profile', icon: 'fa-user-tie', link: '../cto/profile.html' }
-      ]}
-  ],
-    
-    // 6. قائمة المساهمين (shareholder) 
-    'shareholder': [
-      { section: 'main', items: [
-        { key: 'dash', icon: 'fa-chart-pie', link: '../shareholder/index.html' },
-        { key: 'requests', icon: 'fa-headset', link: '../shareholder/requests.html' },
-        { key: 'certificates', icon: 'fa-file-contract', link: '../shareholder/certificates.html' },
-        { key: 'dividends', icon: 'fa-hand-holding-dollar', link: '../shareholder/dividends.html' },
-        { key: 'voting', icon: 'fa-check-to-slot', link: '../shareholder/voting.html' },
-      ]},
-      { section: 'personal', items: [
-        { key: 'profile', icon: 'fa-user-tie', link: '../shareholder/profile.html' }
-      ]}
-  ],
-    
-    // --- 7. أمين سر المساهمين (Shareholder Secretary) ---
-    'shareholder_sec': [
-      { section: 'admin_tools', items: [
-        { key: 'sh_dash', icon: 'fa-gauge-high', link: '../sh_sec/index.html' },
-        { key: 'manage_requests', icon: 'fa-headset', link: '../sh_sec/manage_requests.html' }
-      ]},
-      { section: 'equity_mgmt', items: [
-        { key: 'issue_certs', icon: 'fa-file-signature', link: '../sh_sec/issue_certificates.html' },
-        { key: 'payouts_control', icon: 'fa-money-bill-transfer', link: '../sh_sec/payouts_control.html' }
-      ]},
-      { section: 'assembly_mgmt', items: [
-        { key: 'voting_live', icon: 'fa-check-to-slot', link: '../sh_sec/voting_control.html' },
-        { key: 'sh_registry', icon: 'fa-address-book', link: '../sh_sec/registry.html' }
-      ]},
-      { section: 'personal', items: [{ key: 'profile', icon: 'fa-user-tie', link: '../sh_sec/profile.html' }]}
-    ],
-    
-    // --- 8. أمين سر اللجنة (Committee Secretary) ---
-    // مخصص لأمين سر لجنة المراجعة أو غيرها لإدارة الخطة والتقارير
-    'Committee_Secretary': [
-      { section: 'committee_ops', items: [
-        { key: 'comm_dash', icon: 'fa-users-gear', link: '../audit/index.html' },
-        { key: 'manage_plan', icon: 'fa-list-check', link: '../audit/audit_plan.html' },
-        { key: 'publish_reports', icon: 'fa-file-export', link: '../audit/risk_reports.html' }
-      ]},
-      { section: 'monitoring', items: [
-        { key: 'follow_up', icon: 'fa-clock-rotate-left', link: '../audit/observations.html' }
-      ]},
-      { section: 'personal', items: [{ key: 'profile', icon: 'fa-user-tie', link: '../audit/profile.html' }]}
-    ],
-    
-    // 9. قائمة المجلس (Board) 
-    'Board': [
-      { section: 'main', items: [{ key: 'dash', icon: 'fa-chart-pie', link: '../board/index.html' }]},
-      { section: 'governance', items: [
-        { key: 'meetings', icon: 'fa-calendar-days', link: '../board/meetings.html' },
-        { key: 'resolutions', icon: 'fa-file-signature', link: '../board/communication.html' },
-        { key: 'finance', icon: 'fa-chart-line', link: '../board/finance.html' }
-      ]},
-      { section: 'personal', items: [{ key: 'profile', icon: 'fa-user-tie', link: '../board/profile.html' }]}
-    ],
-    
-    // 10. قائمة اللجان (Committees) 
-    'Committees': [
-      { section: 'main', items: [
-        { key: 'dash', icon: 'fa-chart-pie', link: '../Committees/index.html' }
-      ]},
-      { section: 'governance', items: [
-        { key: 'meetings', icon: 'fa-calendar-days', link: '../Committees/meetings.html' },
-        { key: 'resolutions', icon: 'fa-file-signature', link: '../Committees/communication.html' },
-        { key: 'finance', icon: 'fa-chart-line', link: '../Committees/finance.html' }
-      ]},
-      { section: 'personal', items: [
-        { key: 'profile', icon: 'fa-user-tie', link: '../Committees/profile.html' }
-      ]}
-  ],
-    
-    // 11. قائمة المبيعات (Sales) 
-    'Sales': [
-      { section: 'main', items: [
-        { key: 'dash', icon: 'fa-chart-pie', link: '../Sales/index.html' },
-        { key: 'profile', icon: 'fa-id-card', link: '../Sales/profile.html' },
-        { key: 'requests', icon: 'fa-headset', link: '../Sales/requests.html' },
-        ]},
-      { section: 'personal', items: [
-        { key: 'profile', icon: 'fa-user-tie', link: '../Sales/profile.html' }
-      ]}
-  ],
-    };
-    
-  const _notifications = [
-    { id: 1, type: 'critical', icon: 'fa-shield-virus', color: 'text-red-500 bg-red-50', titleKey: 'notifications.securityAlert', msgAr: 'محاولة دخول غير مصرح بها.', msgEn: 'Unauthorized login attempt.', time: '2m' },
-    { id: 2, type: 'info', icon: 'fa-file-contract', color: 'text-blue-500 bg-blue-50', titleKey: 'notifications.newContract', msgAr: 'عقد توريد بانتظار الاعتماد.', msgEn: 'Supply contract pending approval.', time: '1h' }
-  ];
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { brandRed: '#FB4747', brandBlue: '#4267B2', brandDark: '#0F172A' },
+                    fontFamily: { sans: ['Tajawal', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
 
-// ==========================================
-  // 3. INITIALIZATION
-  // ==========================================
-  async function init() {
-    if (_state.isInitialized) return;
+    <style>
+        .custom-scroll::-webkit-scrollbar { width: 4px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background-color: #FB4747; border-radius: 10px; }
+        .nav-active { background: rgba(251, 71, 71, 0.1); border-right: 4px solid #FB4747; color: #FB4747 !important; }
+    </style>
+</head>
 
-    if (typeof AppConfig !== 'undefined') AppConfig.init();
+<body class="bg-slate-50 dark:bg-[#0F172A] font-sans h-screen flex overflow-hidden">
 
-    await _loadUserProfile();
+    <aside id="main-sidebar" class="fixed top-0 right-0 h-screen w-72 bg-white dark:bg-[#111827] border-l border-slate-200 dark:border-slate-800 z-50 flex flex-col transition-all duration-300">
+        
+        <div class="h-20 flex items-center px-8 border-b border-slate-100 dark:border-slate-800">
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-layer-group text-2xl text-brandRed"></i>
+                <span class="text-xl font-black text-slate-800 dark:text-white italic">AndroGov</span>
+            </div>
+        </div>
 
-    if (_state.currentUser?.id && typeof RoleSwitcher !== 'undefined') {
-      RoleSwitcher.init(_state.currentUser.id);
-    }
-
-    renderSidebar();
-    renderHeader(); // ✅ هذا الاستدعاء سيعمل الآن لأننا أضفنا الدالة
-
-    document.body.classList.add('loaded');
-    document.body.style.opacity = '1';
-    
-    // إخفاء الـ Loading Overlay
-    const overlay = document.getElementById('loadingOverlay');
-    if(overlay) overlay.classList.add('hidden');
-
-    _setupEventListeners();
-
-    _state.isInitialized = true;
-    console.log('✅ Layout Engine v7.6 initialized');
-  }
-
-  // ==========================================
-  // 4. USER PROFILE
-  // ==========================================
-  async function _loadUserProfile() {
-    try {
-      let user = AppConfig.getCurrentUser();
-
-      if (!user && typeof DataService !== 'undefined') {
-        const userId = localStorage.getItem('currentUserId') || 'USR_004';
-        user = DataService.getUserById(userId);
-      }
-
-      if (user) {
-        _state.currentUser = user;
-        AppConfig.setCurrentUser(user);
-      } else {
-        // Fallback User
-        _state.currentUser = {
-          id: 'USR_004',
-          role: 'Admin',
-          displayName: AppConfig.getLang() === 'ar' ? 'أيمن المغربي' : 'Ayman Al-Maghrabi',
-          displayTitle: AppConfig.getLang() === 'ar' ? 'مسؤول الحوكمة' : 'GRC Officer',
-          email: 'amaghrabi@androomeda.com',
-          avatar: '../photo/grc.png'
-        };
-      }
-    } catch (e) {
-      console.warn('⚠️ Could not load user profile:', e);
-    }
-  }
-
-  // ==========================================
-  // 5. RENDER SIDEBAR (Logic Fixed)
-  // ==========================================
-  function renderSidebar() {
-    const container = document.getElementById('sidebar-container');
-    if (!container) return;
-
-    const lang = AppConfig.getLang();
-    const isRTL = AppConfig.isRTL();
-    const currentPath = window.location.pathname.split('/').pop() || 'index.html';
-    const systemInfo = AppConfig.getSystemInfo();
-    const user = _state.currentUser || JSON.parse(localStorage.getItem('currentUser'));
-
-    // ✅ تصحيح: ربط الأنواع القادمة من Auth.js بالقوائم المعرفة في الأعلى
-    const roleMap = {
-        'admin': 'Admin',
-        'ceo': 'CEO',          // كان Admin في السابق، الآن CEO
-        'cfo': 'CFO',          // كان Admin في السابق، الآن CFO
-        'cto': 'CTO',          // كان Admin في السابق، الآن CTO
-        'hr_exec': 'CAO',      // انتبه: سميناها CAO في القائمة بالأعلى
-        'board': 'Board',
-        'audit': 'Audit',
-        'shareholder': 'Shareholder',
-        'staff': 'Employee',
-        'employee': 'Employee'
-    };
-
-    const userType = user?.type || user?.role || 'staff';
-    const menuKey = roleMap[userType] || 'Employee';
-    const activeMenu = _menuDefinitions[menuKey] || _menuDefinitions['Employee'];
-
-    let menuHTML = '';
-    
-    if (activeMenu) {
-        activeMenu.forEach(group => {
-          const sectionLabel = (typeof I18n !== 'undefined') ? (I18n.t(`nav.${group.section}`) || group.section) : group.section;
-          menuHTML += `<div class="px-3 mt-6 mb-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider">${sectionLabel}</div>`;
-          
-          group.items.forEach(item => {
-            const linkPage = item.link.split('/').pop(); 
-            // تحقق مرن من الرابط النشط
-            const isActive = currentPath === linkPage || window.location.href.includes(item.link.replace('..',''));
+        <nav class="flex-1 overflow-y-auto custom-scroll py-6 px-4 space-y-1">
             
-            const label = (typeof I18n !== 'undefined') ? (I18n.t(`nav.${item.key}`) || item.key) : item.key;
-            const baseClass = "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 group";
-            const activeClass = "bg-brandRed text-white shadow-md shadow-red-500/20";
-            const inactiveClass = "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-brandRed";
+            <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-4 mb-2">الرئيسية</div>
+            <a href="index.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">
+                <i class="fa-solid fa-gauge-high w-5 text-center"></i> <span>لوحة القيادة</span>
+            </a>
 
-            menuHTML += `
-              <a href="${item.link}" class="${baseClass} ${isActive ? activeClass : inactiveClass}">
-                <div class="w-6 text-center transition-transform group-hover:scale-110"><i class="fa-solid ${item.icon}"></i></div>
-                <span class="flex-1 truncate">${label}</span>
-              </a>
-            `;
-          });
-        });
-    }
+            <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-4 mt-6 mb-2">التواصل</div>
+            <a href="admin_chat.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">
+                <i class="fa-solid fa-comments w-5 text-center"></i> <span>غرفة الدردشة</span>
+            </a>
+            <a href="admin_circulars.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">
+                <i class="fa-solid fa-bullhorn w-5 text-center"></i> <span>التعاميم المؤسسية</span>
+            </a>
 
-    const roleBadges = (typeof RoleSwitcher !== 'undefined' && RoleSwitcher.hasMultipleRoles()) 
-      ? `<div class="mt-3 flex flex-wrap gap-1">${RoleSwitcher.renderBadges()}</div>` 
-      : '';
+            <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-4 mt-6 mb-2">الحوكمة</div>
+            <a href="ga.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">
+                <i class="fa-solid fa-users-rectangle w-5 text-center"></i> <span>الجمعية العمومية</span>
+            </a>
+            <a href="board.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">
+                <i class="fa-solid fa-building-columns w-5 text-center"></i> <span>مجلس الإدارة</span>
+            </a>
+            <a href="committees.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">
+                <i class="fa-solid fa-people-group w-5 text-center"></i> <span>اللجان</span>
+            </a>
+            <a href="shareholders.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">
+                <i class="fa-solid fa-id-card w-5 text-center"></i> <span>سجل المساهمين</span>
+            </a>
 
-    const displayName = typeof user.name === 'object' ? (lang === 'ar' ? user.name.ar : user.name.en) : user.name;
-    const displayTitle = user.title || user.role;
-    // التأكد من وجود صورة افتراضية إذا كانت فارغة
-    const avatarSrc = (user.avatar && user.avatar.length > 5) ? user.avatar : `https://ui-avatars.com/api/?name=${displayName}&background=random`;
+            <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-4 mt-6 mb-2">التشغيل</div>
+            <a href="tasks.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">
+                <i class="fa-solid fa-list-check w-5 text-center"></i> <span>المهام والتكليفات</span>
+            </a>
+            <a href="doa.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">
+                <i class="fa-solid fa-sitemap w-5 text-center"></i> <span>مصفوفة الصلاحيات</span>
+            </a>
+            <a href="policies.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">
+                <i class="fa-solid fa-book-open w-5 text-center"></i> <span>السياسات واللوائح</span>
+            </a>
+            <a href="compliance.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">
+                <i class="fa-solid fa-scale-balanced w-5 text-center"></i> <span>الالتزام والرقابة</span>
+            </a>
 
-    container.innerHTML = `
-      <aside id="main-sidebar" class="fixed top-0 ${isRTL ? 'right-0 border-l' : 'left-0 border-r'} z-50 h-screen w-72 flex-col hidden md:flex bg-white dark:bg-[#0F172A] border-slate-200 dark:border-slate-800 transition-all duration-300">
-        <div class="h-20 flex items-center px-6 border-b border-slate-100 dark:border-slate-800">
-          <div class="flex items-center gap-3 w-full">
-            <div class="w-10 h-10 rounded-xl bg-brandRed text-white flex items-center justify-center font-bold text-xl shadow-lg shadow-brandRed/20">
-                <i class="fa-solid fa-layer-group"></i>
-            </div>
-            <div class="overflow-hidden">
-              <h1 class="font-bold text-sm text-slate-800 dark:text-white truncate">${systemInfo.name}</h1>
-              <p class="text-[10px] text-slate-500 uppercase tracking-widest truncate">v${systemInfo.version}</p>
-            </div>
-          </div>
-        </div>
-        
-        <div class="p-4">
-          <a href="../admin/profile.html" class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 hover:border-brandRed transition group cursor-pointer">
-             <img src="${avatarSrc}" class="w-10 h-10 rounded-full border-2 border-white dark:border-slate-600 object-cover shrink-0">
-            <div class="overflow-hidden flex-1 min-w-0">
-              <p class="text-sm font-bold text-slate-800 dark:text-white truncate group-hover:text-brandRed transition">${displayName}</p>
-              <p class="text-[10px] text-brandRed font-medium truncate">${displayTitle}</p>
-            </div>
-          </a>
-          ${roleBadges}
-        </div>
+            <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-4 mt-6 mb-2">الإدارات</div>
+            <a href="hr.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">
+                <i class="fa-solid fa-user-tie w-5 text-center"></i> <span>الموارد البشرية</span>
+            </a>
+            <a href="finance.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">
+                <i class="fa-solid fa-money-bill-wave w-5 text-center"></i> <span>المالية</span>
+            </a>
+            <a href="procurement.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">
+                <i class="fa-solid fa-boxes-packing w-5 text-center"></i> <span>المشتريات</span>
+            </a>
+            <a href="it.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">
+                <i class="fa-solid fa-shield-cat w-5 text-center"></i> <span>تقنية المعلومات</span>
+            </a>
 
-        <nav id="sidebar-nav" class="flex-1 overflow-y-auto px-3 py-2 custom-scroll space-y-0.5">
-          ${menuHTML}
+            <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-4 mt-6 mb-2">النظام</div>
+            <a href="users.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">
+                <i class="fa-solid fa-users-gear w-5 text-center"></i> <span>إدارة المستخدمين</span>
+            </a>
+            <a href="audit.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">
+                <i class="fa-solid fa-list-ul w-5 text-center"></i> <span>سجل الأحداث</span>
+            </a>
+            <a href="admin_settings.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">
+                <i class="fa-solid fa-sliders w-5 text-center"></i> <span>الإعدادات</span>
+            </a>
         </nav>
+
+        <div class="p-6 border-t border-slate-100 dark:border-slate-800">
+            <a href="profile.html" class="flex items-center gap-3 group">
+                <img id="userAvatar" src="https://ui-avatars.com/api/?name=Admin&background=FB4747&color=fff" class="w-10 h-10 rounded-xl object-cover border border-slate-200 dark:border-slate-700 group-hover:border-brandRed transition-all">
+                <div class="overflow-hidden">
+                    <p id="userName" class="text-xs font-bold text-slate-800 dark:text-white truncate">أهلاً، المسؤول</p>
+                    <p class="text-[9px] text-slate-400 uppercase font-black">عرض الملف الشخصي</p>
+                </div>
+            </a>
+        </div>
+    </aside>
+
+    <div class="flex-1 flex flex-col h-full mr-72 transition-all duration-300">
         
-        <div class="p-4 text-center text-[10px] text-slate-400 border-t border-slate-100 dark:border-slate-800">
-          ${systemInfo.copyright}
-        </div>
-      </aside>
-    `;
-  }
-
-  // ==========================================
-  // 6. RENDER HEADER (Added because it was missing)
-  // ==========================================
-  function renderHeader() {
-    const container = document.getElementById('header-container');
-    if (!container) return;
-
-    const lang = AppConfig.getLang();
-    const isRTL = AppConfig.isRTL();
-    const isDark = AppConfig.isDarkMode();
-
-    let notifListHTML = _notifications.length > 0 ? _notifications.map(n => `
-      <div class="p-3 border-b border-slate-100 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition cursor-pointer flex gap-3">
-        <div class="w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${n.color}"><i class="fa-solid ${n.icon} text-xs"></i></div>
-        <div class="flex-1 min-w-0">
-          <p class="text-xs font-bold text-slate-800 dark:text-white">${(typeof I18n !== 'undefined') ? I18n.t(n.titleKey) : n.titleKey}</p>
-          <p class="text-[10px] text-slate-500 mt-0.5 truncate">${lang==='ar'?n.msgAr:n.msgEn}</p>
-          <p class="text-[9px] text-slate-400 mt-1">${n.time}</p>
-        </div>
-      </div>
-    `).join('') : `<div class="p-6 text-center text-slate-400 text-xs">No Notifications</div>`;
-
-    const roleSwitcherHTML = (typeof RoleSwitcher !== 'undefined' && RoleSwitcher.hasMultipleRoles()) ? RoleSwitcher.renderButton() : '';
-
-    container.innerHTML = `
-      <header class="h-20 sticky top-0 z-40 flex items-center justify-between px-6 bg-white/80 dark:bg-[#0F172A]/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 transition-all">
-        <div class="flex items-center gap-4">
-          <button onclick="Layout.toggleMobileSidebar()" class="md:hidden text-slate-500 dark:text-slate-200 hover:text-brandRed transition"><i class="fa-solid fa-bars text-xl"></i></button>
-        </div>
-        <div class="flex items-center gap-3">
-          ${roleSwitcherHTML}
-          
-          <button onclick="if(typeof AndroBot !== 'undefined') AndroBot.toggle()" class="w-9 h-9 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-brandBlue transition flex items-center justify-center" title="AI Assistant">
-             <i class="fa-solid fa-robot"></i>
-          </button>
-
-          <div class="relative">
-            <button id="notifBtn" onclick="Layout.toggleNotif()" class="w-9 h-9 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-white transition relative flex items-center justify-center">
-              <i class="fa-regular fa-bell"></i>
-              ${_notifications.length > 0 ? '<span class="absolute top-2 right-2.5 w-2 h-2 bg-brandRed rounded-full border border-white dark:border-slate-800 animate-pulse"></span>' : ''}
-            </button>
-            <div id="notifDropdown" class="hidden absolute top-12 ${isRTL ? 'left-0' : 'right-0'} w-80 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 overflow-hidden z-50">
-              <div class="p-3 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-900/50">
-                <span class="text-xs font-bold dark:text-white">Notifications</span>
-              </div>
-              <div class="max-h-64 overflow-y-auto custom-scroll">${notifListHTML}</div>
+        <header class="h-20 bg-white/80 dark:bg-[#0F172A]/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-8 sticky top-0 z-40">
+            <div class="flex items-center gap-2">
+                <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">الإدارة العامة</span>
+                <i class="fa-solid fa-chevron-left text-[10px] text-slate-300"></i>
+                <span id="pageTitle" class="text-xs font-black text-brandRed uppercase tracking-widest">لوحة التحكم</span>
             </div>
-          </div>
 
-          <button onclick="Layout.toggleLang()" class="h-9 px-3 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-xs font-bold text-slate-600 dark:text-white transition">${lang === 'ar' ? 'EN' : 'عربي'}</button>
-          <button onclick="Layout.toggleTheme()" class="w-9 h-9 rounded-lg border border-slate-200 dark:border-slate-700 flex items-center justify-center hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-yellow-400 transition"><i class="fa-solid ${isDark ? 'fa-sun' : 'fa-moon'}"></i></button>
-          <div class="h-6 w-px bg-slate-200 dark:bg-slate-700 mx-1"></div>
-          <button onclick="Layout.logout()" class="text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-2"><i class="fa-solid fa-power-off"></i> <span class="hidden sm:inline">Logout</span></button>
-        </div>
-      </header>
-    `;
-  }
+            <div class="flex items-center gap-4">
+                <button onclick="toggleDarkMode()" class="w-10 h-10 rounded-xl border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">
+                    <i id="themeIcon" class="fa-solid fa-moon"></i>
+                </button>
+                <div class="h-8 w-px bg-slate-200 dark:bg-slate-700 mx-2"></div>
+                <button onclick="handleLogout()" class="flex items-center gap-2 bg-red-50 dark:bg-red-500/10 text-brandRed px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-tighter hover:bg-brandRed hover:text-white transition-all">
+                    <i class="fa-solid fa-power-off"></i> خروج آمن
+                </button>
+            </div>
+        </header>
 
-  // ==========================================
-  // 7. HELPER FUNCTIONS & EXPORTS
-  // ==========================================
-  function _setupEventListeners() {
-    document.addEventListener('click', (e) => {
-      const notifMenu = document.getElementById('notifDropdown');
-      const notifBtn = document.getElementById('notifBtn');
-      if (notifMenu && !notifMenu.contains(e.target) && !notifBtn?.contains(e.target)) {
-        notifMenu.classList.add('hidden');
-      }
-    });
+        <main class="flex-1 overflow-y-auto p-8 custom-scroll">
+            
+            <div id="content-placeholder">
+                <h1 class="text-3xl font-black text-slate-800 dark:text-white mb-2">مرحباً بك في نظام AndroGov</h1>
+                <p class="text-slate-500 dark:text-slate-400 text-sm">أنت الآن تتصفح بوابة المسؤول العام بكل الصلاحيات الإدارية.</p>
+            </div>
 
-    window.addEventListener('langChanged', () => { renderSidebar(); renderHeader(); if(typeof I18n !== 'undefined') I18n.applyToDOM(); });
-    window.addEventListener('themeChanged', () => renderHeader());
-  }
+        </main>
+    </div>
 
-  function toggleNotif() { document.getElementById('notifDropdown')?.classList.toggle('hidden'); }
-  
-  function toggleMobileSidebar() { 
-    const s = document.getElementById('main-sidebar'); 
-    if(s) { _state.sidebarOpen = !_state.sidebarOpen; s.classList.toggle('hidden', !_state.sidebarOpen); s.classList.toggle('flex', _state.sidebarOpen); } 
-  }
-  
-  function toggleTheme() { AppConfig.toggleTheme(); }
-  
-  function toggleLang() { AppConfig.toggleLang(); location.reload(); }
-  
-  function logout() { 
-      const msg = (typeof I18n !== 'undefined') ? I18n.t('auth.logoutConfirm') : 'Logout?';
-      if(confirm(msg)) window.location.href = '../login.html'; 
-  }
-  
-  function getCurrentUser() { return _state.currentUser; }
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // جلب اسم المستخدم من الجلسة
+            const user = JSON.parse(localStorage.getItem('currentUser'));
+            if (user) {
+                document.getElementById('userName').innerText = `أهلاً، ${user.name.split(' ')[0]}`;
+                document.getElementById('userAvatar').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=FB4747&color=fff`;
+            }
 
-  // Return Public API
-  return { init, renderSidebar, renderHeader, toggleNotif, toggleMobileSidebar, toggleTheme, toggleLang, logout, getCurrentUser };
+            // تفعيل الرابط النشط تلقائياً بناءً على اسم الملف الحالي
+            const currentFile = window.location.pathname.split('/').pop();
+            document.querySelectorAll('nav a').forEach(link => {
+                if (link.getAttribute('href') === currentFile) {
+                    link.classList.add('nav-active');
+                    // تحديث عنوان الصفحة في الهيدر
+                    document.getElementById('pageTitle').innerText = link.querySelector('span').innerText;
+                }
+            });
+        });
 
-})();
+        function handleLogout() {
+            if(confirm('هل أنت متأكد من تسجيل الخروج؟')) {
+                localStorage.removeItem('currentUser');
+                window.location.href = '../login.html';
+            }
+        }
 
-// Auto-Initialize
-document.addEventListener('DOMContentLoaded', Layout.init);
-
-// Global Exposure (Optional for legacy calls)
-if (typeof window !== 'undefined') window.Layout = Layout;
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+            const isDark = document.documentElement.classList.contains('dark');
+            document.getElementById('themeIcon').className = isDark ? 'fa-solid fa-sun text-yellow-400' : 'fa-solid fa-moon';
+        }
+    </script>
+</body>
+</html>
