@@ -27,7 +27,8 @@
 
     <div id="sidebar-container"></div>
     
-    <div class="main-content-wrapper transition-all duration-300 flex flex-col min-h-screen">
+    <div class="main-content-wrapper transition-all duration-300 flex flex-col min-h-screen rtl:lg:mr-64 ltr:lg:ml-64">
+        
         <div id="header-container"></div>
 
         <main class="p-6 space-y-6">
@@ -96,11 +97,6 @@
                     <option data-i18n="filterStatusApproved">معتمد</option>
                     <option data-i18n="filterStatusCompleted">مكتمل</option>
                 </select>
-                <select class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-600 rounded-lg py-2 px-4 text-sm text-slate-600 dark:text-white focus:outline-none">
-                    <option data-i18n="filterTypeAll">كل الأنواع</option>
-                    <option data-i18n="filterTypeInternal">داخلي</option>
-                    <option data-i18n="filterTypeExternal">دولي</option>
-                </select>
             </div>
 
             <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden">
@@ -118,7 +114,6 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100 dark:divide-slate-700 dark:text-slate-300">
-                            
                             <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
                                 <td class="p-4">
                                     <div class="flex items-center gap-3">
@@ -138,45 +133,6 @@
                                     <button class="text-red-600 hover:bg-red-50 p-1.5 rounded transition"><i class="fa-solid fa-xmark"></i></button>
                                 </td>
                             </tr>
-
-                            <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
-                                <td class="p-4">
-                                    <div class="flex items-center gap-3">
-                                        <img src="https://ui-avatars.com/api/?name=Khaled+O&background=random" class="w-8 h-8 rounded-full">
-                                        <span class="font-bold text-xs">خالد العتيبي</span>
-                                    </div>
-                                </td>
-                                <td class="p-4"><span class="flex items-center gap-2"><i class="fa-solid fa-plane text-blue-500"></i> دبي (UAE)</span></td>
-                                <td class="p-4 font-mono text-xs text-slate-500">01-05 Apr</td>
-                                <td class="p-4 text-xs" data-i18n="reasonConf">مؤتمر تقني</td>
-                                <td class="p-4 num-font text-xs">4,200 SAR</td>
-                                <td class="p-4 text-center">
-                                    <span class="bg-green-100 text-green-700 px-2 py-1 rounded text-[10px] font-bold" data-i18n="statusApproved">معتمد</span>
-                                </td>
-                                <td class="p-4 text-center text-slate-300">
-                                    <button class="hover:text-blue-600 transition"><i class="fa-solid fa-ticket"></i></button>
-                                </td>
-                            </tr>
-
-                            <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition opacity-70">
-                                <td class="p-4">
-                                    <div class="flex items-center gap-3">
-                                        <img src="https://ui-avatars.com/api/?name=Sarah+A&background=random" class="w-8 h-8 rounded-full">
-                                        <span class="font-bold text-xs">سارة الأحمد</span>
-                                    </div>
-                                </td>
-                                <td class="p-4"><span class="flex items-center gap-2"><i class="fa-solid fa-location-dot text-red-500"></i> الرياض</span></td>
-                                <td class="p-4 font-mono text-xs text-slate-500">10-12 Feb</td>
-                                <td class="p-4 text-xs" data-i18n="reasonTraining">تدريب</td>
-                                <td class="p-4 num-font text-xs">800 SAR</td>
-                                <td class="p-4 text-center">
-                                    <span class="bg-slate-100 text-slate-600 px-2 py-1 rounded text-[10px] font-bold" data-i18n="statusCompleted">مكتمل</span>
-                                </td>
-                                <td class="p-4 text-center text-slate-300">
-                                    <i class="fa-solid fa-check-double"></i>
-                                </td>
-                            </tr>
-
                         </tbody>
                     </table>
                 </div>
@@ -249,28 +205,26 @@
     <script src="../admin/js/core/i18n.js"></script>
     <script src="../admin/js/services/data-service.js"></script>
     <script src="../admin/js/components/role-switcher.js"></script>
-    
     <script src="../admin/js/components/layout.js"></script>
     <script src="../admin/js/components/bot.js"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // ننتظر تحميل السكربتات
             const checkLibs = setInterval(() => {
                 if (typeof Layout !== 'undefined' && typeof AppConfig !== 'undefined') {
                     clearInterval(checkLibs);
 
-                    // ✅ الخطوة المهمة: تحديد هوية المستخدم كمسؤول موارد بشرية
-                    const boardUser = {
+                    // ✅ تعريف هوية المستخدم كمسؤول موارد بشرية (CAO)
+                    const hrUser = {
                         id: 'USR_005',
-                        role: 'CAO', // <--- هذا هو المفتاح الذي سيغير القائمة إلى قائمة موارد بشرية المختصرة
-                        displayName: 'مسؤول موارد بشرية',
-                        displayTitle: 'مسؤول موارد بشرية  ',
-                        avatar: 'https://ui-avatars.com/api/?name=Board&background=random'
+                        type: 'hr', // ⚠️ هذا المفتاح يضمن تحميل قائمة الموارد البشرية
+                        role: 'CAO',
+                        displayName: 'منصور اليامي', 
+                        displayTitle: 'مدير الموارد البشرية والشؤون الإدارية (CAO)',
+                        avatar: 'https://ui-avatars.com/api/?name=Mansour+Y&background=random'
                     };
 
-                    // حفظ المستخدم وتشغيل النظام
-                    AppConfig.setCurrentUser(boardUser);
+                    AppConfig.setCurrentUser(hrUser);
                     Layout.init();
                 }
             }, 50);
@@ -278,7 +232,6 @@
     </script>
 
     <script>
-        // --- 1. الترجمة ---
         const pageContent = {
             ar: {
                 pageTitle: "الانتدابات | AndroGov",
@@ -307,8 +260,6 @@
                 colStatus: "الحالة",
                 colAction: "الإجراء",
                 reasonClient: "زيارة عميل",
-                reasonConf: "مؤتمر تقني",
-                reasonTraining: "تدريب",
                 statusPending: "معلق",
                 statusApproved: "معتمد",
                 statusCompleted: "مكتمل",
@@ -350,8 +301,6 @@
                 colStatus: "Status",
                 colAction: "Action",
                 reasonClient: "Client Visit",
-                reasonConf: "Tech Conference",
-                reasonTraining: "Training",
                 statusPending: "Pending",
                 statusApproved: "Approved",
                 statusCompleted: "Completed",
@@ -368,12 +317,7 @@
             }
         };
 
-        // --- 2. التشغيل ---
         document.addEventListener('DOMContentLoaded', () => {
-            updatePageLanguage();
-        });
-
-        function updatePageLanguage() {
             const lang = localStorage.getItem('lang') || 'ar';
             const dict = pageContent[lang];
             
@@ -389,7 +333,7 @@
                 const key = el.getAttribute('data-i18n-placeholder');
                 if(dict[key]) el.placeholder = dict[key];
             });
-        }
+        });
     </script>
 </body>
 </html>
