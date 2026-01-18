@@ -38,7 +38,8 @@
 
     <div id="sidebar-container"></div>
     
-    <div class="main-content-wrapper transition-all duration-300 flex flex-col min-h-screen">
+    <div class="main-content-wrapper transition-all duration-300 flex flex-col min-h-screen rtl:lg:mr-64 ltr:lg:ml-64">
+        
         <div id="header-container"></div>
 
         <main class="p-6 space-y-6">
@@ -321,17 +322,18 @@
                 if (typeof Layout !== 'undefined' && typeof AppConfig !== 'undefined') {
                     clearInterval(checkLibs);
 
-                    // ✅ الخطوة المهمة: تحديد هوية المستخدم كمسؤول تقني
-                    const boardUser = {
+                    // ✅ تعريف المستخدم كمدير تقني
+                    const ctoUser = {
                         id: 'USR_009',
-                        role: 'CTO', // <--- هذا هو المفتاح الذي سيغير القائمة إلى قائمة التقني المختصرة
-                        displayName: 'مسؤول تقني',
-                        displayTitle: 'مسؤول تقني  ',
-                        avatar: 'https://ui-avatars.com/api/?name=Board&background=random'
+                        type: 'cto', // ⚠️ هذا هو المفتاح لفتح قائمة CTO
+                        role: 'CTO',
+                        displayName: 'مشاعل الهذيان', // ✅ الاسم المصحح
+                        displayTitle: 'المدير التقني (CTO)',
+                        avatar: 'https://ui-avatars.com/api/?name=Meshail+H&background=random'
                     };
 
                     // حفظ المستخدم وتشغيل النظام
-                    AppConfig.setCurrentUser(boardUser);
+                    AppConfig.setCurrentUser(ctoUser);
                     Layout.init();
                 }
             }, 50);
