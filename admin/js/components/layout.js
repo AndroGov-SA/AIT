@@ -22,37 +22,37 @@ const Layout = (function() {
     // --- 1. Admin ---
     'Admin': [
     { section: 'main', items: [
-      { key: 'dashboard', icon: 'fa-gauge-high', link: '../index.html' }
+      { key: 'dashboard', icon: 'fa-gauge-high', link: '../admin/index.html' }
     ]},
     { section: 'communication', items: [
-      { key: 'chat', icon: 'fa-comments', link: '../admin_chat.html' },
-      { key: 'circulars', icon: 'fa-bullhorn', link: '../admin_circulars.html' }
+      { key: 'chat', icon: 'fa-comments', link: '../admin/admin_chat.html' },
+      { key: 'circulars', icon: 'fa-bullhorn', link: '../admin/admin_circulars.html' }
     ]},
     { section: 'governance', items: [
-      { key: 'generalAssembly', icon: 'fa-users-rectangle', link: '../ga.html' },
-      { key: 'board', icon: 'fa-building-columns', link: '../board.html' },
-      { key: 'committees', icon: 'fa-people-group', link: '../committees.html' },
-      { key: 'shareholders', icon: 'fa-id-card', link: '../shareholders.html' }
+      { key: 'generalAssembly', icon: 'fa-users-rectangle', link: '../admin/ga.html' },
+      { key: 'board', icon: 'fa-building-columns', link: '../admin/board.html' },
+      { key: 'committees', icon: 'fa-people-group', link: '../admin/committees.html' },
+      { key: 'shareholders', icon: 'fa-id-card', link: '../admin/shareholders.html' }
     ]},
     { section: 'operations', items: [
-      { key: 'tasks', icon: 'fa-list-check', link: '../tasks.html' },
-      { key: 'doa', icon: 'fa-sitemap', link: '../doa.html' },
-      { key: 'policies', icon: 'fa-book-open', link: '../policies.html' },
-      { key: 'compliance', icon: 'fa-scale-balanced', link: '../compliance.html' }
+      { key: 'tasks', icon: 'fa-list-check', link: '../admin/tasks.html' },
+      { key: 'doa', icon: 'fa-sitemap', link: '../admin/doa.html' },
+      { key: 'policies', icon: 'fa-book-open', link: '../admin/policies.html' },
+      { key: 'compliance', icon: 'fa-scale-balanced', link: '../admin/compliance.html' }
     ]},
     { section: 'departments', items: [
-      { key: 'hr', icon: 'fa-user-tie', link: '../hr.html' },
-      { key: 'finance', icon: 'fa-money-bill-wave', link: '../finance.html' },
-      { key: 'procurement', icon: 'fa-boxes-packing', link: '../procurement.html' },
-      { key: 'it', icon: 'fa-shield-cat', link: '../it.html' }
+      { key: 'hr', icon: 'fa-user-tie', link: '../admin/hr.html' },
+      { key: 'finance', icon: 'fa-money-bill-wave', link: '../admin/finance.html' },
+      { key: 'procurement', icon: 'fa-boxes-packing', link: '../admin/procurement.html' },
+      { key: 'it', icon: 'fa-shield-cat', link: '../admin/it.html' }
     ]},
     { section: 'admin', items: [
-      { key: 'users', icon: 'fa-users-gear', link: '../users.html' },
-      { key: 'auditLog', icon: 'fa-list-ul', link: '../audit.html' },
-      { key: 'settings', icon: 'fa-sliders', link: '../admin_settings.html' }
+      { key: 'users', icon: 'fa-users-gear', link: '../admin/users.html' },
+      { key: 'auditLog', icon: 'fa-list-ul', link: '../admin/audit.html' },
+      { key: 'settings', icon: 'fa-sliders', link: '../admin/admin_settings.html' }
     ]},
       { section: 'personal', items: [
-        { key: 'profile', icon: 'fa-user-tie', link: '../profile.html' }
+        { key: 'profile', icon: 'fa-user-tie', link: '../admin/profile.html' }
       ]}
   ],
     
