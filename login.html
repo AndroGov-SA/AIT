@@ -296,7 +296,7 @@ const SYSTEM_DATA = {
     let lang = localStorage.getItem('lang') || 'ar';
 
     // ==========================================
-    // 3. AUTH LOGIC (Embedded)
+    // 3. AUTH ENGINE (Multi-Profile Support)
     // ==========================================
     class AuthEngine {
         constructor() {
@@ -305,142 +305,193 @@ const SYSTEM_DATA = {
         }
 
         init() {
-            // 1. Process Employees
-            const employees = SYSTEM_DATA.users.map(u => {
-                let roles = [];
-                let roleRaw = String(u.role || '').toLowerCase();
-                let titleRaw = String(u.title || '').toLowerCase();
-                let name = u.name;
-                
-                // Determine Roles
-                if (roleRaw.includes('admin') || roleRaw.includes('grc')) roles.push('admin');
-                if (u.is_executive || roleRaw.includes('ceo') || roleRaw.includes('cfo') || roleRaw.includes('cao')) roles.push('exec');
-                if (roleRaw.includes('chairman') || roleRaw.includes('board') || titleRaw.includes('secretary')) roles.push('board');
-                if (titleRaw.includes('audit')) roles.push('audit');
-                
-                // Link Shareholder by Email
-                const isShareholder = SYSTEM_DATA.shareholders.find(s => s.email === u.email);
-                if (isShareholder) roles.push('shareholder');
+            // 1. نبدأ بقائمة الموظفين المعرفة مسبقاً (SYSTEM_USERS)
+            // نقوم بإنشاء نسخة عميقة لتجنب التعديل على المصدر الأصلي
+            let allUsers = JSON.parse(JSON.stringify(typeof SYSTEM_USERS !== 'undefined' ? SYSTEM_USERS : []));
 
-                // Determine Display Type
-                let displayType = 'staff';
-                if (roles.includes('admin')) displayType = 'admin';
-                else if (roles.includes('board')) displayType = 'board';
-                else if (roles.includes('exec')) displayType = 'exec';
-                else if (roles.includes('audit')) displayType = 'audit';
-                else if (roleRaw.includes('manager') || roleRaw.includes('director')) displayType = 'manager';
-                else displayType = 'staff';
+            // 2. معالجة المساهمين ودمجهم
+            if (typeof SYSTEM_DATA !== 'undefined' && SYSTEM_DATA.shareholders) {
+                SYSTEM_DATA.shareholders.forEach(sh => {
+                    // البحث هل المساهم موجود مسبقاً كموظف؟
+                    let existingUser = allUsers.find(u => u.email.toLowerCase() === sh.email.toLowerCase());
 
-                return {
-                    ...u,
-                    displayType,
-                    primaryRole: roles[0] || displayType,
-                    avatarColor: this.getAvatarColor(roleRaw)
-                };
-            });
+                    const shareholderProfile = {
+                        profile_id: `PRF_SH_${sh.id}`,
+                        title: lang === 'ar' ? 'مساهم' : 'Shareholder',
+                        role: 'Shareholder',
+                        department_id: 'DEP_SH',
+                        is_executive: false,
+                        dashboard_view: 'VIEW_SHAREHOLDER'
+                    };
 
-            // 2. Process Shareholders (Who are not employees)
-            const pureShareholders = SYSTEM_DATA.shareholders
-                .filter(s => !employees.find(e => e.email === s.email))
-                .map(s => ({
-                    id: s.id,
-                    name: s.name, // Object {ar, en}
-                    email: s.email,
-                    title: `مساهم (${s.percent}%)`,
-                    displayType: 'shareholder',
-                    primaryRole: 'shareholder',
-                    avatarColor: '#fb4747'
-                }));
+                    if (existingUser) {
+                        // إذا كان موجوداً، نضيف له ملف "مساهم" في قائمة بروفايلاته
+                        if (!existingUser.profiles) existingUser.profiles = [];
+                        // نتأكد من عدم التكرار
+                        if (!existingUser.profiles.find(p => p.role === 'Shareholder')) {
+                            existingUser.profiles.push(shareholderProfile);
+                        }
+                    } else {
+                        // إذا لم يكن موظفاً، ننشئ له حساب مستخدم جديد
+                        allUsers.push({
+                            id: sh.id,
+                            name: sh.name.en || sh.name, // نفضل الاسم الانجليزي للاتساق التقني
+                            email: sh.email,
+                            profiles: [shareholderProfile] // لديه ملف واحد فقط كمساهم
+                        });
+                    }
+                });
+            }
 
-            this.processedUsers = [...employees, ...pureShareholders];
-        }
-
-        getAvatarColor(role) {
-            const r = String(role || '').toLowerCase();
-            if (r.includes('admin')) return 'b91c1c';
-            if (r.includes('ceo') || r.includes('chairman')) return '4267B2';
-            if (r.includes('cfo')) return '7c3aed';
-            if (r.includes('manager')) return '0ea5e9';
-            return '64748b';
+            // 3. حفظ القائمة النهائية للمعالجة
+            this.processedUsers = allUsers;
         }
 
         getUsers() { return this.processedUsers; }
 
+        /**
+         * تحديد لون الأفاتار بناءً على الدور الأساسي
+         */
+        getAvatarColor(user) {
+            const mainRole = user.profiles[0].role.toUpperCase();
+            if (['ADMIN', 'GRC'].includes(mainRole)) return 'b91c1c'; // Red
+            if (['CEO', 'CHAIRMAN', 'BOARD_MEMBER'].includes(mainRole)) return '4267B2'; // Blue
+            if (['CFO', 'FINANCE'].includes(mainRole)) return '7c3aed'; // Purple
+            if (['SHAREHOLDER'].includes(mainRole)) return '16a34a'; // Green
+            if (['MANAGER', 'DIRECTOR'].includes(mainRole)) return '0ea5e9'; // Cyan
+            return '64748b'; // Grey
+        }
+
+        /**
+         * عملية تسجيل الدخول
+         */
         login(email, password) {
             const cleanEmail = email.trim().toLowerCase();
-            const user = this.processedUsers.find(u => u.email && u.email.toLowerCase() === cleanEmail);
+            const user = this.processedUsers.find(u => u.email.toLowerCase() === cleanEmail);
             
             if (!user) throw new Error("invalid_user");
             if (password !== "12345678") throw new Error("invalid_pass");
 
-            // Save session
-            localStorage.setItem('currentUser', JSON.stringify(user));
+            // 1. تحديد الملف الشخصي الافتراضي (أول واحد في القائمة)
+            const activeProfile = user.profiles[0];
 
-            // Redirect Logic
-            let redirectUrl = 'employee/index.html';
-            const type = user.displayType;
+            // 2. تجهيز بيانات الجلسة
+            const sessionData = {
+                user: user,             // بيانات المستخدم كاملة
+                activeProfile: activeProfile // المنصب الذي سيدخل به الآن
+            };
 
-            if (type === 'admin') redirectUrl = 'admin/index.html';
-            else if (type === 'board') redirectUrl = 'board/index.html';
-            else if (type === 'audit') redirectUrl = 'audit/index.html';
-            else if (type === 'shareholder') redirectUrl = 'shareholder/index.html';
-            else if (type === 'exec') redirectUrl = 'exec/index.html';
-            else if (type === 'manager') redirectUrl = 'manager/index.html';
+            // 3. الحفظ في المتصفح
+            localStorage.setItem('currentUser', JSON.stringify(sessionData));
 
-            return redirectUrl;
+            // 4. تحديد التوجيه بناءً على الملف النشط
+            return this.getRedirectUrl(activeProfile);
+        }
+
+        /**
+         * منطق التوجيه الجديد (يعتمد على Profile Role)
+         */
+        getRedirectUrl(profile) {
+            const role = (profile.role || '').toUpperCase();
+            const dept = (profile.department_id || '').toUpperCase();
+
+            if (role === 'ADMIN') return 'admin/index.html';
+            if (['CEO'].includes(role)) return 'ceo/index.html';
+            if (['CHAIRMAN', 'BOARD_MEMBER', 'SECRETARY'].includes(role)) return 'board/index.html';
+            if (['COMMITTEE_MEMBER', 'AUDITOR'].includes(role) || dept === 'DEP_AUDIT') return 'audit/index.html';
+            if (role === 'SHAREHOLDER') return 'shareholder/index.html';
+            
+            // الافتراضي للموظفين والمدراء
+            return 'employee/index.html';
         }
     }
 
     // ==========================================
-    // 4. UI LOGIC
+    // 4. UI LOGIC (Updated for Multi-Profile)
     // ==========================================
     const auth = new AuthEngine();
 
     document.addEventListener('DOMContentLoaded', () => {
         applyTheme();
         applyLang();
-        renderDynamicUsers();
-
+        // renderDynamicUsers يتم استدعاؤها داخل applyLang
+        
         document.getElementById('loginForm').addEventListener('submit', handleLogin);
     });
 
     function renderDynamicUsers() {
         const users = auth.getUsers();
         const container = document.getElementById('usersContainer');
+        if (!container) return;
+        
         container.innerHTML = '';
         const t = translations[lang];
 
+        // تعريف المجموعات للعرض
         const groups = {
-            'admin': { title: t.adminGroup, color: 'text-red-600', icon: 'fa-user-shield' },
-            'board': { title: t.boardGroup, color: 'text-brandBlue', icon: 'fa-building-columns' },
-            'shareholder': { title: t.shareholderGroup, color: 'text-green-600', icon: 'fa-hand-holding-dollar' },
-            'exec': { title: t.execGroup, color: 'text-purple-600', icon: 'fa-user-tie' },
-            'audit': { title: t.auditGroup, color: 'text-orange-600', icon: 'fa-scale-balanced' },
-            'manager': { title: t.managerGroup, color: 'text-cyan-600', icon: 'fa-users-gear' },
-            'staff': { title: t.staffGroup, color: 'text-slate-500', icon: 'fa-users' }
+            'ADMIN': { title: t.adminGroup, color: 'text-red-600', icon: 'fa-user-shield' },
+            'BOARD': { title: t.boardGroup, color: 'text-brandBlue', icon: 'fa-building-columns' },
+            'EXEC': { title: t.execGroup, color: 'text-purple-600', icon: 'fa-user-tie' },
+            'AUDIT': { title: t.auditGroup, color: 'text-orange-600', icon: 'fa-scale-balanced' },
+            'SHAREHOLDER': { title: t.shareholderGroup, color: 'text-green-600', icon: 'fa-hand-holding-dollar' },
+            'MANAGEMENT': { title: t.managerGroup, color: 'text-cyan-600', icon: 'fa-users-gear' },
+            'STAFF': { title: t.staffGroup, color: 'text-slate-500', icon: 'fa-users' }
         };
 
-        for (const [type, info] of Object.entries(groups)) {
-            const groupUsers = users.filter(u => u.displayType === type);
+        // دالة مساعدة لتحديد "نوع العرض" للمستخدم بناءً على منصبه الأول
+        const getDisplayType = (user) => {
+            const mainRole = (user.profiles[0].role || '').toUpperCase();
+            const dept = (user.profiles[0].department_id || '').toUpperCase();
+
+            if (mainRole === 'ADMIN') return 'ADMIN';
+            if (['CHAIRMAN', 'BOARD_MEMBER', 'SECRETARY'].includes(mainRole)) return 'BOARD';
+            if (['CEO', 'CFO', 'CAO'].includes(mainRole)) return 'EXEC';
+            if (['COMMITTEE_MEMBER', 'AUDITOR'].includes(mainRole) || dept === 'DEP_AUDIT') return 'AUDIT';
+            if (mainRole === 'SHAREHOLDER') return 'SHAREHOLDER';
+            if (['DIRECTOR', 'MANAGER', 'TEAM_LEAD'].includes(mainRole)) return 'MANAGEMENT';
+            return 'STAFF';
+        };
+
+        // حلقة التكرار لرسم المجموعات
+        for (const [groupKey, info] of Object.entries(groups)) {
+            // تصفية المستخدمين الذين ينتمون لهذه المجموعة
+            const groupUsers = users.filter(u => getDisplayType(u) === groupKey);
+
             if (groupUsers.length > 0) {
-                let sectionHtml = `<div><h4 class="text-[10px] font-bold ${info.color} mb-2 flex items-center gap-1"><i class="fa-solid ${info.icon}"></i> ${info.title}</h4><div class="flex flex-wrap gap-2">`;
+                let sectionHtml = `
+                    <div class="mb-4">
+                        <h4 class="text-[10px] font-bold ${info.color} mb-2 flex items-center gap-1">
+                            <i class="fa-solid ${info.icon}"></i> ${info.title}
+                        </h4>
+                        <div class="flex flex-wrap gap-2">
+                `;
                 
                 groupUsers.forEach(u => {
-                    // Handle bilingual names
+                    // معالجة الاسم إذا كان كائناً (للمساهمين) أو نصاً
                     let displayName = u.name;
                     if(typeof u.name === 'object') {
                         displayName = lang === 'ar' ? u.name.ar : u.name.en;
                     }
 
-                    const safeColor = (u.avatarColor || '64748b').replace('#', '');
+                    // الحصول على المسمى الوظيفي للمنصب الأول
+                    const primaryTitle = u.profiles[0].title;
+                    const safeColor = auth.getAvatarColor(u); // دالة داخل الكلاس AuthEngine
                     const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=${safeColor}&color=fff&size=64&bold=true`;
                     
+                    // مؤشر إذا كان لديه مناصب متعددة
+                    const multiProfileBadge = u.profiles.length > 1 
+                        ? `<span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full border border-white" title="Multi-Role"></span>` 
+                        : '';
+
                     sectionHtml += `
-                        <button type="button" onclick="fillDemo('${u.email}')" class="flex items-center gap-2 px-2 py-1.5 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg hover:border-brandRed hover:shadow-sm transition-all min-w-[140px] text-right group">
-                            <img src="${avatarUrl}" class="w-6 h-6 rounded-full shrink-0 border border-transparent group-hover:border-brandRed transition">
-                            <div class="overflow-hidden">
-                                <p class="text-[9px] font-bold text-slate-700 dark:text-slate-200 truncate w-24 leading-tight">${displayName}</p>
-                                <p class="text-[8px] text-slate-400 truncate w-24">${u.title || type}</p>
+                        <button type="button" onclick="fillDemo('${u.email}')" class="relative flex items-center gap-2 px-2 py-1.5 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg hover:border-brandRed hover:shadow-sm transition-all min-w-[140px] text-right group">
+                            <div class="relative shrink-0">
+                                <img src="${avatarUrl}" class="w-8 h-8 rounded-full border border-transparent group-hover:border-brandRed transition">
+                                ${multiProfileBadge}
+                            </div>
+                            <div class="overflow-hidden text-left">
+                                <p class="text-[9px] font-bold text-slate-700 dark:text-slate-200 truncate w-28 leading-tight">${displayName}</p>
+                                <p class="text-[8px] text-slate-400 truncate w-28">${primaryTitle}</p>
                             </div>
                         </button>`;
                 });
@@ -450,6 +501,7 @@ const SYSTEM_DATA = {
         }
     }
 
+    // بقية دوال الواجهة (fillDemo, togglePassword, handleLogin...) كما هي
     window.fillDemo = (email) => {
         document.getElementById('email').value = email;
         document.getElementById('password').value = '12345678';
@@ -485,12 +537,13 @@ const SYSTEM_DATA = {
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
 
-        // Simulate network delay for UX
         setTimeout(() => {
             try {
+                // استخدام AuthEngine للتحقق والحصول على الرابط
                 const redirect = auth.login(email, password);
                 window.location.href = redirect;
             } catch (err) {
+                console.error(err);
                 if(document.getElementById('errorText')) document.getElementById('errorText').innerText = t.errorCredentials;
                 errorMsg.classList.remove('hidden');
                 if(btn) {
