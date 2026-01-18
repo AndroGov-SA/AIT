@@ -222,6 +222,66 @@ const Layout = (function() {
  // ==========================================
   // 3. INITIALIZATION
   // ==========================================
+  async function init() {
+    if (_state.isInitialized) return;
+
+    if (typeof AppConfig !== 'undefined') AppConfig.init();
+
+    await _loadUserProfile();
+
+    if (_state.currentUser?.id && typeof RoleSwitcher !== 'undefined') {
+      RoleSwitcher.init(_state.currentUser.id);
+    }
+
+    renderSidebar();
+    renderHeader();
+
+    document.body.classList.add('loaded');
+    document.body.style.opacity = '1';
+    
+    // إخفاء الـ Loading Overlay يدوياً للتأكد
+    const overlay = document.getElementById('loadingOverlay');
+    if(overlay) overlay.classList.add('hidden');
+
+    _setupEventListeners();
+
+    _state.isInitialized = true;
+    console.log('✅ Layout Engine v7.6 initialized');
+  }
+
+  // ==========================================
+  // 4. USER PROFILE (Moved Inside Scope)
+  // ==========================================
+  async function _loadUserProfile() {
+    try {
+      let user = AppConfig.getCurrentUser();
+
+      if (!user && typeof DataService !== 'undefined') {
+        const userId = localStorage.getItem('currentUserId') || 'USR_004';
+        user = DataService.getUserById(userId);
+      }
+
+      if (user) {
+        _state.currentUser = user;
+        AppConfig.setCurrentUser(user);
+      } else {
+        _state.currentUser = {
+          id: 'USR_004',
+          role: 'Admin',
+          displayName: AppConfig.getLang() === 'ar' ? 'أيمن المغربي' : 'Ayman Al-Maghrabi',
+          displayTitle: AppConfig.getLang() === 'ar' ? 'مسؤول الحوكمة' : 'GRC Officer',
+          email: 'amaghrabi@androomeda.com',
+          avatar: 'https://androgov-sa.github.io/AIT/photo/grc.png'
+        };
+      }
+    } catch (e) {
+      console.warn('⚠️ Could not load user profile:', e);
+    }
+  }
+
+  // ==========================================
+  // 5. RENDER FUNCTIONS
+  // ==========================================
   function renderSidebar() {
     const container = document.getElementById('sidebar-container');
     if (!container) return;
@@ -295,9 +355,7 @@ const Layout = (function() {
       </aside>
     `;
   }
-  // ==========================================
-  // 5. RENDER HEADER
-  // ==========================================
+
   function renderHeader() {
     const container = document.getElementById('header-container');
     if (!container) return;
@@ -352,8 +410,9 @@ const Layout = (function() {
       </header>
     `;
   }
+
   // ==========================================
-  // 6. UTILS & LISTENERS
+  // 6. HELPER FUNCTIONS & EXPORTS
   // ==========================================
   function _setupEventListeners() {
     document.addEventListener('click', (e) => {
@@ -368,147 +427,31 @@ const Layout = (function() {
     window.addEventListener('themeChanged', () => renderHeader());
   }
 
-  // Public Methods
   function toggleNotif() { document.getElementById('notifDropdown')?.classList.toggle('hidden'); }
+  
   function toggleMobileSidebar() { 
     const s = document.getElementById('main-sidebar'); 
     if(s) { _state.sidebarOpen = !_state.sidebarOpen; s.classList.toggle('hidden', !_state.sidebarOpen); s.classList.toggle('flex', _state.sidebarOpen); } 
   }
+  
   function toggleTheme() { AppConfig.toggleTheme(); }
+  
   function toggleLang() { AppConfig.toggleLang(); location.reload(); }
+  
   function logout() { 
       const msg = (typeof I18n !== 'undefined') ? I18n.t('auth.logoutConfirm') : 'Logout?';
       if(confirm(msg)) window.location.href = '../login.html'; 
   }
+  
   function getCurrentUser() { return _state.currentUser; }
 
+  // Return Public API
   return { init, renderSidebar, renderHeader, toggleNotif, toggleMobileSidebar, toggleTheme, toggleLang, logout, getCurrentUser };
+
 })();
 
-// Auto-Initialize when DOM is ready
+// Auto-Initialize
 document.addEventListener('DOMContentLoaded', Layout.init);
 
-  // ==========================================
-  // USER PROFILE
-  // ==========================================
-  async function _loadUserProfile() {
-    try {
-      // Try to get from AppConfig first
-      let user = AppConfig.getCurrentUser();
-
-      // If not found, try DataService
-      if (!user && typeof DataService !== 'undefined') {
-        // Default user for demo (Ayman)
-        const userId = localStorage.getItem('currentUserId') || 'USR_004';
-        user = DataService.getUserById(userId);
-      }
-
-      if (user) {
-        _state.currentUser = user;
-        AppConfig.setCurrentUser(user);
-      } else {
-        // Fallback user
-        _state.currentUser = {
-          id: 'USR_004',
-          displayName: AppConfig.getLang() === 'ar' ? 'أيمن المغربي' : 'Ayman Al-Maghrabi',
-          displayTitle: AppConfig.getLang() === 'ar' ? 'مسؤول الحوكمة' : 'GRC Officer',
-          email: 'amaghrabi@androomeda.com',
-          avatar: 'https://androgov-sa.github.io/AIT/photo/grc.png'
-        };
-      }
-    } catch (e) {
-      console.warn('⚠️ Could not load user profile:', e);
-    }
-  }
-
-  // ==========================================
-  // PUBLIC METHODS
-  // ==========================================
-
-  function toggleNotif() {
-    const dropdown = document.getElementById('notifDropdown');
-    if (dropdown) dropdown.classList.toggle('hidden');
-  }
-
-  function toggleMobileSidebar() {
-    const sidebar = document.getElementById('main-sidebar');
-    if (sidebar) {
-      _state.sidebarOpen = !_state.sidebarOpen;
-      sidebar.classList.toggle('hidden', !_state.sidebarOpen);
-      sidebar.classList.toggle('flex', _state.sidebarOpen);
-    }
-  }
-
-  function toggleTheme() {
-    AppConfig.toggleTheme();
-    // Re-render to update icons
-    renderHeader();
-  }
-
-  function toggleLang() {
-    AppConfig.toggleLang();
-    // Full page reload to apply all translations
-    location.reload();
-  }
-
- function logout() {
-    const msg = I18n.t('auth.logoutConfirm');
-    if (confirm(msg)) {
-      // 1. تنظيف بيانات المستخدم من المتصفح لضمان تسجيل الخروج
-      localStorage.removeItem('currentUser');
-      localStorage.removeItem('activeContext');
-      
-      // 2. التوجيه إلى الرابط المحدد
-      window.location.href = 'https://androgov-sa.github.io/AIT/login.html';
-    }
-  }
-
-  function getCurrentUser() {
-    return _state.currentUser ? { ..._state.currentUser } : null;
-  }
-
-  function refresh() {
-    renderSidebar();
-    renderHeader();
-    I18n.applyToDOM();
-  }
-
-  // ==========================================
-  // RETURN PUBLIC API
-  // ==========================================
-  return {
-    init,
-    renderSidebar,
-    renderHeader,
-    toggleNotif,
-    toggleMobileSidebar,
-    toggleTheme,
-    toggleLang,
-    logout,
-    getCurrentUser,
-    refresh
-  };
-})();
-
-// ==========================================
-// AUTO INITIALIZE
-// ==========================================
-document.addEventListener('DOMContentLoaded', () => {
-  Layout.init();
-});
-
-// ==========================================
-// GLOBAL EXPORTS (Backward Compatibility)
-// ==========================================
-if (typeof window !== 'undefined') {
-  window.Layout = Layout;
-  // Legacy function names
-  window.changeTheme = Layout.toggleTheme;
-  window.changeLang = Layout.toggleLang;
-  window.doLogout = Layout.logout;
-  window.toggleNotif = Layout.toggleNotif;
-}
-
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = Layout;
-}
+// Global Exposure (Optional for legacy calls)
+if (typeof window !== 'undefined') window.Layout = Layout;
