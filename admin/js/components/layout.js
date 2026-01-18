@@ -1,13 +1,12 @@
 /**
- * AndroGov Layout Engine v7.0 (Refactored)
- * @description Modular layout system with full integration
- * @version 7.0.0
- * @requires AppConfig, I18n, DataService, PolicyHelpers, RoleSwitcher
+ * AndroGov Layout Engine v7.5 (Final Corrected Version)
+ * @file admin/js/components/layout.js
  */
 
 const Layout = (function() {
+  
   // ==========================================
-  // STATE
+  // 1. STATE & CONFIG
   // ==========================================
   let _state = {
     currentUser: null,
@@ -16,9 +15,11 @@ const Layout = (function() {
   };
 
   // ==========================================
-  // MENU STRUCTURE
+  // 2. MENU DEFINITIONS (القوائم الصحيحة والمسارات النسبية)
   // ==========================================
-  const _menuDefinitions = { 
+  const _menuDefinitions = {
+    
+    // --- 1. Admin ---
     'Admin': [
     { section: 'main', items: [
       { key: 'dashboard', icon: 'fa-gauge-high', link: 'index.html' }
@@ -213,9 +214,6 @@ const Layout = (function() {
     ]
   };
     
-  // ==========================================
-  // NOTIFICATIONS (Sample Data)
-  // ==========================================
   const _notifications = [
     { id: 1, type: 'critical', icon: 'fa-shield-virus', color: 'text-red-500 bg-red-50', titleKey: 'notifications.securityAlert', msgAr: 'محاولة دخول غير مصرح بها.', msgEn: 'Unauthorized login attempt.', time: '2m' },
     { id: 2, type: 'info', icon: 'fa-file-contract', color: 'text-blue-500 bg-blue-50', titleKey: 'notifications.newContract', msgAr: 'عقد توريد بانتظار الاعتماد.', msgEn: 'Supply contract pending approval.', time: '1h' }
@@ -224,41 +222,171 @@ const Layout = (function() {
  // ==========================================
   // 3. INITIALIZATION
   // ==========================================
-  async function init() {
-    if (_state.isInitialized) return;
+  function renderSidebar() {
+    const container = document.getElementById('sidebar-container');
+    if (!container) return;
 
-    // Initialize AppConfig
-    if (typeof AppConfig !== 'undefined') AppConfig.init();
+    const lang = AppConfig.getLang();
+    const isRTL = AppConfig.isRTL();
+    const currentPath = window.location.pathname.split('/').pop() || 'admin.html';
+    const systemInfo = AppConfig.getSystemInfo();
+    const user = _state.currentUser;
 
-    // Load User
-    await _loadUserProfile();
+    const userRole = user?.role || 'Admin';
+    const activeMenu = _menuDefinitions[userRole] || _menuDefinitions['Admin'];
 
-    // Role Switcher
-    if (_state.currentUser?.id && typeof RoleSwitcher !== 'undefined') {
-      RoleSwitcher.init(_state.currentUser.id);
+    let menuHTML = '';
+    
+    if (activeMenu) {
+        activeMenu.forEach(group => {
+          const sectionLabel = (typeof I18n !== 'undefined') ? (I18n.t(`nav.${group.section}`) || group.section) : group.section;
+          menuHTML += `<div class="px-3 mt-6 mb-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider">${sectionLabel}</div>`;
+          
+          group.items.forEach(item => {
+            const linkPage = item.link.split('/').pop(); 
+            const isActive = currentPath === linkPage;
+            
+            const label = (typeof I18n !== 'undefined') ? (I18n.t(`nav.${item.key}`) || item.key) : item.key;
+            const baseClass = "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200";
+            const activeClass = "bg-brandRed text-white shadow-md shadow-red-500/20";
+            const inactiveClass = "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-brandRed";
+
+            menuHTML += `
+              <a href="${item.link}" class="${baseClass} ${isActive ? activeClass : inactiveClass}">
+                <div class="w-6 text-center"><i class="fa-solid ${item.icon}"></i></div>
+                <span class="flex-1 truncate">${label}</span>
+              </a>
+            `;
+          });
+        });
     }
 
-    // Render UI
-    renderSidebar();
-    renderHeader();
+    const roleBadges = (typeof RoleSwitcher !== 'undefined' && RoleSwitcher.hasMultipleRoles()) 
+      ? `<div class="mt-3 flex flex-wrap gap-1">${RoleSwitcher.renderBadges()}</div>` 
+      : '';
 
-    // ❌❌❌ عطل هذا السطر (ضعه كتعليق) لمنع التعارض مع ترجمة الصفحة الخاصة ❌❌❌
-    // if (typeof I18n !== 'undefined') I18n.applyToDOM();
-
-    // Show Content & Hide Spinner Forcefully
-    document.body.classList.add('loaded');
-    document.body.style.opacity = '1';
-    
-    // إخفاء شاشة التحميل فوراً
-    const spinner = document.getElementById('loadingOverlay');
-    if (spinner) spinner.classList.add('hidden');
-
-    // Events
-    _setupEventListeners();
-
-    _state.isInitialized = true;
-    console.log('✅ Layout Engine Initialized successfully');
+    container.innerHTML = `
+      <aside id="main-sidebar" class="fixed top-0 ${isRTL ? 'right-0 border-l' : 'left-0 border-r'} z-50 h-screen w-72 flex-col hidden md:flex bg-white dark:bg-[#0F172A] border-slate-200 dark:border-slate-800 transition-all duration-300">
+        <div class="h-20 flex items-center px-6 border-b border-slate-100 dark:border-slate-800">
+          <div class="flex items-center gap-3 w-full">
+            <div class="w-10 h-10 rounded-xl bg-brandRed text-white flex items-center justify-center font-bold text-xl">A</div>
+            <div class="overflow-hidden">
+              <h1 class="font-bold text-sm text-slate-800 dark:text-white truncate">${systemInfo.name}</h1>
+              <p class="text-[10px] text-slate-500 uppercase tracking-widest truncate">v${systemInfo.version}</p>
+            </div>
+          </div>
+        </div>
+        <div class="p-4">
+          <a href="#" class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 hover:border-brandRed transition group cursor-pointer">
+            <img src="${user.avatar}" class="w-10 h-10 rounded-full border-2 border-white dark:border-slate-600 object-cover shrink-0">
+            <div class="overflow-hidden flex-1 min-w-0">
+              <p class="text-sm font-bold text-slate-800 dark:text-white truncate group-hover:text-brandRed transition">${user.displayName}</p>
+              <p class="text-[10px] text-brandRed font-medium truncate">${user.displayTitle}</p>
+            </div>
+          </a>
+          ${roleBadges}
+        </div>
+        <nav id="sidebar-nav" class="flex-1 overflow-y-auto px-3 py-2 custom-scroll space-y-0.5">
+          ${menuHTML}
+        </nav>
+        <div class="p-4 text-center text-[10px] text-slate-400 border-t border-slate-100 dark:border-slate-800">
+          ${systemInfo.copyright}
+        </div>
+      </aside>
+    `;
   }
+  // ==========================================
+  // 5. RENDER HEADER
+  // ==========================================
+  function renderHeader() {
+    const container = document.getElementById('header-container');
+    if (!container) return;
+
+    const lang = AppConfig.getLang();
+    const isRTL = AppConfig.isRTL();
+    const isDark = AppConfig.isDarkMode();
+
+    let notifListHTML = _notifications.length > 0 ? _notifications.map(n => `
+      <div class="p-3 border-b border-slate-100 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition cursor-pointer flex gap-3">
+        <div class="w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${n.color}"><i class="fa-solid ${n.icon} text-xs"></i></div>
+        <div class="flex-1 min-w-0">
+          <p class="text-xs font-bold text-slate-800 dark:text-white">${(typeof I18n !== 'undefined') ? I18n.t(n.titleKey) : n.titleKey}</p>
+          <p class="text-[10px] text-slate-500 mt-0.5 truncate">${lang==='ar'?n.msgAr:n.msgEn}</p>
+          <p class="text-[9px] text-slate-400 mt-1">${n.time}</p>
+        </div>
+      </div>
+    `).join('') : `<div class="p-6 text-center text-slate-400 text-xs">${(typeof I18n !== 'undefined') ? I18n.t('notifications.empty') : 'No Notifications'}</div>`;
+
+    const roleSwitcherHTML = (typeof RoleSwitcher !== 'undefined' && RoleSwitcher.hasMultipleRoles()) ? RoleSwitcher.renderButton() : '';
+
+    container.innerHTML = `
+      <header class="h-20 sticky top-0 z-40 flex items-center justify-between px-6 bg-white/80 dark:bg-[#0F172A]/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 transition-all">
+        <div class="flex items-center gap-4">
+          <button onclick="Layout.toggleMobileSidebar()" class="md:hidden text-slate-500 dark:text-slate-200 hover:text-brandRed transition"><i class="fa-solid fa-bars text-xl"></i></button>
+        </div>
+        <div class="flex items-center gap-3">
+          ${roleSwitcherHTML}
+          
+          <button onclick="if(typeof AndroBot !== 'undefined') AndroBot.toggle()" class="w-9 h-9 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-brandBlue transition flex items-center justify-center" title="${lang==='ar'?'المساعد الذكي':'AI Assistant'}">
+             <i class="fa-solid fa-robot"></i>
+          </button>
+
+          <div class="relative">
+            <button id="notifBtn" onclick="Layout.toggleNotif()" class="w-9 h-9 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-white transition relative flex items-center justify-center">
+              <i class="fa-regular fa-bell"></i>
+              ${_notifications.length > 0 ? '<span class="absolute top-2 right-2.5 w-2 h-2 bg-brandRed rounded-full border border-white dark:border-slate-800 animate-pulse"></span>' : ''}
+            </button>
+            <div id="notifDropdown" class="hidden absolute top-12 ${isRTL ? 'left-0' : 'right-0'} w-80 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 overflow-hidden z-50">
+              <div class="p-3 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-900/50">
+                <span class="text-xs font-bold dark:text-white">${(typeof I18n !== 'undefined') ? I18n.t('notifications.title') : 'Notifications'}</span>
+              </div>
+              <div class="max-h-64 overflow-y-auto custom-scroll">${notifListHTML}</div>
+            </div>
+          </div>
+
+          <button onclick="Layout.toggleLang()" class="h-9 px-3 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-xs font-bold text-slate-600 dark:text-white transition">${lang === 'ar' ? 'EN' : 'عربي'}</button>
+          <button onclick="Layout.toggleTheme()" class="w-9 h-9 rounded-lg border border-slate-200 dark:border-slate-700 flex items-center justify-center hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-yellow-400 transition"><i class="fa-solid ${isDark ? 'fa-sun' : 'fa-moon'}"></i></button>
+          <div class="h-6 w-px bg-slate-200 dark:bg-slate-700 mx-1"></div>
+          <button onclick="Layout.logout()" class="text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-2"><i class="fa-solid fa-power-off"></i> <span class="hidden sm:inline">${(typeof I18n !== 'undefined') ? I18n.t('auth.logout') : 'Logout'}</span></button>
+        </div>
+      </header>
+    `;
+  }
+  // ==========================================
+  // 6. UTILS & LISTENERS
+  // ==========================================
+  function _setupEventListeners() {
+    document.addEventListener('click', (e) => {
+      const notifMenu = document.getElementById('notifDropdown');
+      const notifBtn = document.getElementById('notifBtn');
+      if (notifMenu && !notifMenu.contains(e.target) && !notifBtn?.contains(e.target)) {
+        notifMenu.classList.add('hidden');
+      }
+    });
+
+    window.addEventListener('langChanged', () => { renderSidebar(); renderHeader(); if(typeof I18n !== 'undefined') I18n.applyToDOM(); });
+    window.addEventListener('themeChanged', () => renderHeader());
+  }
+
+  // Public Methods
+  function toggleNotif() { document.getElementById('notifDropdown')?.classList.toggle('hidden'); }
+  function toggleMobileSidebar() { 
+    const s = document.getElementById('main-sidebar'); 
+    if(s) { _state.sidebarOpen = !_state.sidebarOpen; s.classList.toggle('hidden', !_state.sidebarOpen); s.classList.toggle('flex', _state.sidebarOpen); } 
+  }
+  function toggleTheme() { AppConfig.toggleTheme(); }
+  function toggleLang() { AppConfig.toggleLang(); location.reload(); }
+  function logout() { 
+      const msg = (typeof I18n !== 'undefined') ? I18n.t('auth.logoutConfirm') : 'Logout?';
+      if(confirm(msg)) window.location.href = '../login.html'; 
+  }
+  function getCurrentUser() { return _state.currentUser; }
+
+  return { init, renderSidebar, renderHeader, toggleNotif, toggleMobileSidebar, toggleTheme, toggleLang, logout, getCurrentUser };
+})();
+
+// Auto-Initialize when DOM is ready
+document.addEventListener('DOMContentLoaded', Layout.init);
 
   // ==========================================
   // USER PROFILE
@@ -290,243 +418,6 @@ const Layout = (function() {
       }
     } catch (e) {
       console.warn('⚠️ Could not load user profile:', e);
-    }
-  }
-
-  // ==========================================
-  // 4. RENDER SIDEBAR (محدثة لتعمل مع _menuDefinitions)
-  // ==========================================
-  function renderSidebar() {
-    const container = document.getElementById('sidebar-container');
-    if (!container) return;
-
-    const lang = AppConfig.getLang();
-    const isRTL = AppConfig.isRTL();
-    const currentPath = window.location.pathname.split('/').pop() || 'admin.html';
-    const systemInfo = AppConfig.getSystemInfo();
-    const user = _state.currentUser;
-
-    // 1. تحديد الدور (Role Detection)
-    // نأخذ الدور من المستخدم، وإذا لم يوجد نعتبره 'Admin'
-    const userRole = user?.role || 'Admin';
-    
-    // 2. اختيار القائمة المناسبة (Menu Selection)
-    // نحاول جلب قائمة الدور، إذا لم نجدها نعود لقائمة Admin
-    // لاحظ هنا نستخدم _menuDefinitions بدلاً من _menuStructure
-    const activeMenu = _menuDefinitions[userRole] || _menuDefinitions['Admin'];
-
-    // 3. بناء القائمة (Building HTML)
-    let menuHTML = '';
-    
-    // نمر على القائمة المختارة (activeMenu)
-    if (activeMenu) {
-        activeMenu.forEach(group => {
-          const sectionLabel = I18n.t(`nav.${group.section}`) || group.section;
-          menuHTML += `<div class="px-3 mt-6 mb-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider">${sectionLabel}</div>`;
-          
-          group.items.forEach(item => {
-            const linkPage = item.link.split('/').pop(); // نأخذ اسم الملف فقط للمقارنة
-            const isActive = currentPath === linkPage;
-            
-            const label = I18n.t(`nav.${item.key}`) || item.key;
-            const baseClass = "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200";
-            const activeClass = "bg-brandRed text-white shadow-md shadow-red-500/20";
-            const inactiveClass = "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-brandRed";
-
-            menuHTML += `
-              <a href="${item.link}" class="${baseClass} ${isActive ? activeClass : inactiveClass}">
-                <div class="w-6 text-center"><i class="fa-solid ${item.icon}"></i></div>
-                <span class="flex-1 truncate">${label}</span>
-              </a>
-            `;
-          });
-        });
-    }
-
-    // Role Badges
-    const roleBadges = (typeof RoleSwitcher !== 'undefined' && RoleSwitcher.hasMultipleRoles()) 
-      ? `<div class="mt-3 flex flex-wrap gap-1">${RoleSwitcher.renderBadges()}</div>` 
-      : '';
-
-    container.innerHTML = `
-      <aside id="main-sidebar" class="fixed top-0 ${isRTL ? 'right-0 border-l' : 'left-0 border-r'} z-50 h-screen w-72 flex-col hidden md:flex bg-white dark:bg-[#0F172A] border-slate-200 dark:border-slate-800 transition-all duration-300">
-        
-        <div class="h-20 flex items-center px-6 border-b border-slate-100 dark:border-slate-800">
-          <div class="flex items-center gap-3 w-full">
-            <div class="w-10 h-10 rounded-xl bg-brandRed text-white flex items-center justify-center font-bold text-xl">A</div>
-            <div class="overflow-hidden">
-              <h1 class="font-bold text-sm text-slate-800 dark:text-white truncate">${systemInfo.name}</h1>
-              <p class="text-[10px] text-slate-500 uppercase tracking-widest truncate">v${systemInfo.version}</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="p-4">
-          <a href="#" class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 hover:border-brandRed transition group cursor-pointer">
-            <img src="${user.avatar}" class="w-10 h-10 rounded-full border-2 border-white dark:border-slate-600 object-cover shrink-0">
-            <div class="overflow-hidden flex-1 min-w-0">
-              <p class="text-sm font-bold text-slate-800 dark:text-white truncate group-hover:text-brandRed transition">${user.displayName}</p>
-              <p class="text-[10px] text-brandRed font-medium truncate">${user.displayTitle}</p>
-            </div>
-          </a>
-          ${roleBadges}
-        </div>
-
-        <nav id="sidebar-nav" class="flex-1 overflow-y-auto px-3 py-2 custom-scroll space-y-0.5">
-          ${menuHTML}
-        </nav>
-
-        <div class="p-4 text-center text-[10px] text-slate-400 border-t border-slate-100 dark:border-slate-800">
-          ${systemInfo.copyright}
-        </div>
-      </aside>
-    `;
-  }
-
-  // ==========================================
-  // RENDER HEADER
-  // ==========================================
-  function renderHeader() {
-    const container = document.getElementById('header-container');
-    if (!container) return;
-
-    const lang = AppConfig.getLang();
-    const isRTL = AppConfig.isRTL();
-    const isDark = AppConfig.isDarkMode();
-
-    // Notifications HTML
-    let notifListHTML = '';
-    if (_notifications.length > 0) {
-      _notifications.forEach(n => {
-        const title = I18n.t(n.titleKey);
-        const msg = lang === 'ar' ? n.msgAr : n.msgEn;
-        notifListHTML += `
-          <div class="p-3 border-b border-slate-100 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition cursor-pointer flex gap-3">
-            <div class="w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${n.color}">
-              <i class="fa-solid ${n.icon} text-xs"></i>
-            </div>
-            <div class="flex-1 min-w-0">
-              <p class="text-xs font-bold text-slate-800 dark:text-white">${title}</p>
-              <p class="text-[10px] text-slate-500 mt-0.5 truncate">${msg}</p>
-              <p class="text-[9px] text-slate-400 mt-1">${n.time}</p>
-            </div>
-          </div>
-        `;
-      });
-    } else {
-      notifListHTML = `<div class="p-6 text-center text-slate-400 text-xs">${I18n.t('notifications.empty')}</div>`;
-    }
-
-    // Role Switcher button (if user has multiple roles)
-    const roleSwitcherHTML = RoleSwitcher.hasMultipleRoles() ? RoleSwitcher.renderButton() : '';
-
-    container.innerHTML = `
-      <header class="h-20 sticky top-0 z-40 flex items-center justify-between px-6 bg-white/80 dark:bg-[#0F172A]/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 transition-all">
-        
-        <!-- Left Side -->
-        <div class="flex items-center gap-4">
-          <button onclick="Layout.toggleMobileSidebar()" class="md:hidden text-slate-500 dark:text-slate-200 hover:text-brandRed transition">
-            <i class="fa-solid fa-bars text-xl"></i>
-          </button>
-        </div>
-
-        <!-- Right Side -->
-        <div class="flex items-center gap-3">
-          
-          <!-- Role Switcher -->
-          ${roleSwitcherHTML}
-
-          <!-- Notifications -->
-          <div class="relative">
-            <button id="notifBtn" onclick="Layout.toggleNotif()" class="w-9 h-9 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-white transition relative flex items-center justify-center" title="${I18n.t('nav.notifications')}">
-              <i class="fa-regular fa-bell"></i>
-              ${_notifications.length > 0 ? '<span class="absolute top-2 right-2.5 w-2 h-2 bg-brandRed rounded-full border border-white dark:border-slate-800 animate-pulse"></span>' : ''}
-            </button>
-            <div id="notifDropdown" class="hidden absolute top-12 ${isRTL ? 'left-0' : 'right-0'} w-80 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 overflow-hidden z-50">
-              <div class="p-3 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-900/50">
-                <span class="text-xs font-bold dark:text-white">${I18n.t('notifications.title')}</span>
-                <button class="text-[10px] text-brandRed hover:underline">${I18n.t('notifications.markRead')}</button>
-              </div>
-              <div class="max-h-64 overflow-y-auto custom-scroll">${notifListHTML}</div>
-            </div>
-          </div>
-
-          <!-- AndroBot Toggle -->
-          <button onclick="AndroBot.toggle()" class="w-9 h-9 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-brandBlue transition flex items-center justify-center" title="المساعد الذكي">
-          <i class="fa-solid fa-robot"></i>
-          </button>
-
-          <!-- Language Toggle -->
-          <button onclick="Layout.toggleLang()" class="h-9 px-3 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-xs font-bold text-slate-600 dark:text-white transition" title="${lang === 'ar' ? 'Switch to English' : 'التبديل للعربية'}">
-            ${lang === 'ar' ? 'EN' : 'عربي'}
-          </button>
-
-          <!-- Theme Toggle -->
-          <button onclick="Layout.toggleTheme()" class="w-9 h-9 rounded-lg border border-slate-200 dark:border-slate-700 flex items-center justify-center hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-yellow-400 transition" title="${isDark ? 'Light Mode' : 'Dark Mode'}">
-            <i class="fa-solid ${isDark ? 'fa-sun' : 'fa-moon'}"></i>
-          </button>
-
-          <!-- Divider -->
-          <div class="h-6 w-px bg-slate-200 dark:bg-slate-700 mx-1"></div>
-
-          <!-- Logout -->
-          <button onclick="Layout.logout()" class="text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-2" title="${I18n.t('auth.logout')}">
-            <i class="fa-solid fa-power-off"></i>
-            <span class="hidden sm:inline">${I18n.t('auth.logout')}</span>
-          </button>
-        </div>
-      </header>
-    `;
-  }
-
-  // ==========================================
-  // EVENT LISTENERS
-  // ==========================================
-  function _setupEventListeners() {
-    // Close dropdowns on outside click
-    document.addEventListener('click', (e) => {
-      // Notifications dropdown
-      const notifMenu = document.getElementById('notifDropdown');
-      const notifBtn = document.getElementById('notifBtn');
-      if (notifMenu && !notifMenu.contains(e.target) && !notifBtn?.contains(e.target)) {
-        notifMenu.classList.add('hidden');
-      }
-    });
-
-    // Listen for language change
-    window.addEventListener('langChanged', () => {
-      renderSidebar();
-      renderHeader();
-      I18n.applyToDOM();
-    });
-
-    // Listen for theme change
-    window.addEventListener('themeChanged', () => {
-      renderHeader();
-    });
-
-    // Listen for role change
-    window.addEventListener('roleChanged', (e) => {
-      console.log('🔄 Role changed:', e.detail);
-      // You can add custom logic here based on role change
-    });
-
-    // Save sidebar scroll on page unload
-    window.addEventListener('beforeunload', () => {
-      const nav = document.getElementById('sidebar-nav');
-      if (nav) {
-        sessionStorage.setItem('sidebarScroll', nav.scrollTop);
-      }
-    });
-  }
-
-  function _restoreSidebarScroll() {
-    const nav = document.getElementById('sidebar-nav');
-    if (nav) {
-      const savedScroll = sessionStorage.getItem('sidebarScroll');
-      if (savedScroll) {
-        nav.scrollTop = parseInt(savedScroll, 10);
-      }
     }
   }
 
