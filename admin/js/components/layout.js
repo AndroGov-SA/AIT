@@ -1,13 +1,14 @@
 /**
- * AndroGov Layout Engine v7.5 (Final Corrected Version)
+ * AndroGov Layout Engine v7.6 (Final Fixed Version)
  * @file admin/js/components/layout.js
+ * @description Complete rewrite with proper menu rendering and role mapping
  */
 
 const Layout = (function() {
   
   // ==========================================
   // 1. STATE & CONFIG
-  // ==========================================ب
+  // ==========================================
   let _state = {
     currentUser: null,
     isInitialized: false,
@@ -15,81 +16,81 @@ const Layout = (function() {
   };
 
   // ==========================================
-  // 2. MENU DEFINITIONS (القوائم الصحيحة والمسارات النسبية)
+  // 2. MENU DEFINITIONS
   // ==========================================
   const _menuDefinitions = {
     
     // --- 1. Admin ---
     'Admin': [
-    { section: 'main', items: [
-      { key: 'dashboard', icon: 'fa-gauge-high', link: '../admin/index.html' }
-    ]},
-    { section: 'communication', items: [
-      { key: 'chat', icon: 'fa-comments', link: '../admin/admin_chat.html' },
-      { key: 'circulars', icon: 'fa-bullhorn', link: '../admin/admin_circulars.html' }
-    ]},
-    { section: 'governance', items: [
-      { key: 'generalAssembly', icon: 'fa-users-rectangle', link: '../admin/ga.html' },
-      { key: 'board', icon: 'fa-building-columns', link: '../admin/board.html' },
-      { key: 'committees', icon: 'fa-people-group', link: '../admin/committees.html' },
-      { key: 'shareholders', icon: 'fa-id-card', link: '../admin/shareholders.html' }
-    ]},
-    { section: 'operations', items: [
-      { key: 'tasks', icon: 'fa-list-check', link: '../admin/tasks.html' },
-      { key: 'doa', icon: 'fa-sitemap', link: '../admin/doa.html' },
-      { key: 'policies', icon: 'fa-book-open', link: '../admin/policies.html' },
-      { key: 'compliance', icon: 'fa-scale-balanced', link: '../admin/compliance.html' }
-    ]},
-    { section: 'departments', items: [
-      { key: 'hr', icon: 'fa-user-tie', link: '../admin/hr.html' },
-      { key: 'finance', icon: 'fa-money-bill-wave', link: '../admin/finance.html' },
-      { key: 'procurement', icon: 'fa-boxes-packing', link: '../admin/procurement.html' },
-      { key: 'it', icon: 'fa-shield-cat', link: '../admin/it.html' }
-    ]},
-    { section: 'admin', items: [
-      { key: 'users', icon: 'fa-users-gear', link: '../admin/users.html' },
-      { key: 'auditLog', icon: 'fa-list-ul', link: '../admin/audit.html' },
-      { key: 'settings', icon: 'fa-sliders', link: '../admin/admin_settings.html' }
-    ]},
+      { section: 'main', items: [
+        { key: 'dashboard', icon: 'fa-gauge-high', link: '../admin/index.html' }
+      ]},
+      { section: 'communication', items: [
+        { key: 'chat', icon: 'fa-comments', link: '../admin/admin_chat.html' },
+        { key: 'circulars', icon: 'fa-bullhorn', link: '../admin/admin_circulars.html' }
+      ]},
+      { section: 'governance', items: [
+        { key: 'generalAssembly', icon: 'fa-users-rectangle', link: '../admin/ga.html' },
+        { key: 'board', icon: 'fa-building-columns', link: '../admin/board.html' },
+        { key: 'committees', icon: 'fa-people-group', link: '../admin/committees.html' },
+        { key: 'shareholders', icon: 'fa-id-card', link: '../admin/shareholders.html' }
+      ]},
+      { section: 'operations', items: [
+        { key: 'tasks', icon: 'fa-list-check', link: '../admin/tasks.html' },
+        { key: 'doa', icon: 'fa-sitemap', link: '../admin/doa.html' },
+        { key: 'policies', icon: 'fa-book-open', link: '../admin/policies.html' },
+        { key: 'compliance', icon: 'fa-scale-balanced', link: '../admin/compliance.html' }
+      ]},
+      { section: 'departments', items: [
+        { key: 'hr', icon: 'fa-user-tie', link: '../admin/hr.html' },
+        { key: 'finance', icon: 'fa-money-bill-wave', link: '../admin/finance.html' },
+        { key: 'procurement', icon: 'fa-boxes-packing', link: '../admin/procurement.html' },
+        { key: 'it', icon: 'fa-shield-cat', link: '../admin/it.html' }
+      ]},
+      { section: 'admin', items: [
+        { key: 'users', icon: 'fa-users-gear', link: '../admin/users.html' },
+        { key: 'auditLog', icon: 'fa-list-ul', link: '../admin/audit.html' },
+        { key: 'settings', icon: 'fa-sliders', link: '../admin/admin_settings.html' }
+      ]},
       { section: 'personal', items: [
         { key: 'profile', icon: 'fa-user-tie', link: '../admin/profile.html' }
       ]}
-  ],
+    ],
     
-    // 2. قائمة الموارد البشرية
+    // --- 2. CAO (HR) ---
     'CAO': [
-        { section: 'main', items: [
-          { key: 'dash', icon: 'fa-chart-pie', link: '../hr/index.html' },
-          { key: 'approvals', icon: 'fa-inbox', link: '../hr/hr_approvals.html' },
-          { key: 'chat', icon: 'fa-comments', link: '../hr/internal_chat.html' }
-        ]},
-        { section: 'workforce', items: [
-          { key: 'employees', icon: 'fa-users', link: '../hr/hr_employees.html' },
-          { key: 'contracts', icon: 'fa-file-contract', link: '../hr/hr_contracts.html' },
-          { key: 'org', icon: 'fa-sitemap', link: '../hr/hr_org.html' }
-        ]},
-        { section: 'ops', items: [
-          { key: 'attendance', icon: 'fa-fingerprint', link: '../hr/hr_attendance.html' },
-          { key: 'leaves', icon: 'fa-calendar-days', link: '../hr/hr_leaves.html' },
-          { key: 'payroll', icon: 'fa-money-bill-wave', link: '../hr/hr_payroll.html' },
-          { key: 'trips', icon: 'fa-plane-departure', link: '../hr/hr_trips.html' }
-        ]},
-        { section: 'admin', items: [
-          { key: 'assets', icon: 'fa-boxes-packing', link: '../hr/hr_assets.html' },
-          { key: 'logistics', icon: 'fa-building-user', link: '../hr/hr_logistics.html' },
-          { key: 'purchases', icon: 'fa-cart-shopping', link: '../hr/hr_purchases.html' },
-          { key: 'partners', icon: 'fa-handshake', link: '../hr/hr_partners.html' }
-        ]},
-        { section: 'govt', items: [
-          { key: 'govt', icon: 'fa-passport', link: '../hr/hr_govt.html' },
-          { key: 'recruitment', icon: 'fa-user-plus', link: '../hr/hr_recruitment.html' }
-    ]},
+      { section: 'main', items: [
+        { key: 'dash', icon: 'fa-chart-pie', link: '../hr/index.html' },
+        { key: 'approvals', icon: 'fa-inbox', link: '../hr/hr_approvals.html' },
+        { key: 'chat', icon: 'fa-comments', link: '../hr/internal_chat.html' }
+      ]},
+      { section: 'workforce', items: [
+        { key: 'employees', icon: 'fa-users', link: '../hr/hr_employees.html' },
+        { key: 'contracts', icon: 'fa-file-contract', link: '../hr/hr_contracts.html' },
+        { key: 'org', icon: 'fa-sitemap', link: '../hr/hr_org.html' }
+      ]},
+      { section: 'ops', items: [
+        { key: 'attendance', icon: 'fa-fingerprint', link: '../hr/hr_attendance.html' },
+        { key: 'leaves', icon: 'fa-calendar-days', link: '../hr/hr_leaves.html' },
+        { key: 'payroll', icon: 'fa-money-bill-wave', link: '../hr/hr_payroll.html' },
+        { key: 'trips', icon: 'fa-plane-departure', link: '../hr/hr_trips.html' }
+      ]},
+      { section: 'admin', items: [
+        { key: 'assets', icon: 'fa-boxes-packing', link: '../hr/hr_assets.html' },
+        { key: 'logistics', icon: 'fa-building-user', link: '../hr/hr_logistics.html' },
+        { key: 'purchases', icon: 'fa-cart-shopping', link: '../hr/hr_purchases.html' },
+        { key: 'partners', icon: 'fa-handshake', link: '../hr/hr_partners.html' }
+      ]},
+      { section: 'govt', items: [
+        { key: 'govt', icon: 'fa-passport', link: '../hr/hr_govt.html' },
+        { key: 'recruitment', icon: 'fa-user-plus', link: '../hr/hr_recruitment.html' }
+      ]},
       { section: 'personal', items: [
         { key: 'profile', icon: 'fa-user-tie', link: '../hr/profile.html' }
       ]}
-  ],
+    ],
     
-    // 3. قائمة الرئيس التنفيذي (CEO)
+    // --- 3. CEO ---
     'CEO': [
       { section: 'main', items: [
         { key: 'dash', icon: 'fa-chart-pie', link: '../ceo/index.html' },
@@ -97,8 +98,8 @@ const Layout = (function() {
         { key: 'strategy', icon: 'fa-chess', link: '../ceo/ceo_strategy.html' }
       ]},
       { section: 'finance', items: [
-          { key: 'finance', icon: 'fa-chart-line', link: '../ceo/ceo_finance.html' },
-          { key: 'reports', icon: 'fa-file-invoice-dollar', link: '../ceo/ceo_reports.html' }
+        { key: 'finance', icon: 'fa-chart-line', link: '../ceo/ceo_finance.html' },
+        { key: 'reports', icon: 'fa-file-invoice-dollar', link: '../ceo/ceo_reports.html' }
       ]},
       { section: 'governance', items: [
         { key: 'gov', icon: 'fa-scale-balanced', link: '../ceo/ceo_governance.html' },
@@ -112,9 +113,9 @@ const Layout = (function() {
       { section: 'personal', items: [
         { key: 'profile', icon: 'fa-user-tie', link: '../ceo/profile.html' }
       ]}
-  ],
+    ],
     
-    // 4. قائمة المدير المالي (CFO)
+    // --- 4. CFO ---
     'CFO': [
       { section: 'main', items: [
         { key: 'dash', icon: 'fa-chart-pie', link: '../finance/index.html' },
@@ -125,34 +126,34 @@ const Layout = (function() {
         { key: 'journal', icon: 'fa-book', link: '../finance/gl_journal.html' },
         { key: 'coa', icon: 'fa-sitemap', link: '../finance/gl_coa.html' },
         { key: 'costCenters', icon: 'fa-layer-group', link: '../finance/gl_cost_centers.html' }
-        ]},
+      ]},
       { section: 'ap', items: [
         { key: 'vendors', icon: 'fa-store', link: '../finance/ap_vendors.html' },
         { key: 'bills', icon: 'fa-file-invoice-dollar', link: '../finance/ap_bills.html' },
         { key: 'payments', icon: 'fa-money-bill-transfer', link: '../finance/ap_payments.html' }
-        ]},
+      ]},
       { section: 'ar', items: [ 
         { key: 'salesInv', icon: 'fa-file-invoice', link: '../finance/ar_invoices.html' },
         { key: 'receipts', icon: 'fa-hand-holding-dollar', link: '../finance/ar_receipts.html' }
-        ]},
+      ]},
       { section: 'inventory', items: [
         { key: 'stock', icon: 'fa-boxes-stacked', link: '../finance/inv_dashboard.html' },
         { key: 'assets', icon: 'fa-laptop-code', link: '../finance/inv_assets.html' }
-       ]},
+      ]},
       { section:'reporting', items: [
         { key: 'statements', icon: 'fa-file-pdf', link: '../finance/rep_statements.html' },
         { key: 'budget', icon: 'fa-scale-balanced', link: '../finance/rep_budget.html' },
         { key: 'tax', icon: 'fa-building-columns', link: '../finance/rep_tax.html' }
-        ]},
+      ]},
       { section: 'config', items: [
         { key: 'settings', icon: 'fa-gears', link: '../finance/fin_settings.html' }
-       ]},
+      ]},
       { section: 'personal', items: [
         { key: 'profile', icon: 'fa-user-tie', link: '../finance/profile.html' }
       ]}
-  ],
+    ],
     
-    // 5. قائمة المدير التقني (CTO) 
+    // --- 5. CTO ---
     'CTO': [
       { section: 'main', items: [
         { key: 'dash', icon: 'fa-chart-pie', link: '../cto/index.html' },
@@ -166,7 +167,7 @@ const Layout = (function() {
       { section: 'infrastructure', items: [
         { key: 'servers', icon: 'fa-server', link: '../cto/cto_servers.html' },
         { key: 'assets', icon: 'fa-laptop-code', link: '../cto/cto_assets.html' }
-       ]},
+      ]},
       { section: 'security', items: [
         { key: 'soc', icon: 'fa-shield-virus', link: '../cto/cto_soc.html' },
         { key: 'access', icon: 'fa-id-badge', link: '../cto/cto_iam.html' }
@@ -178,9 +179,9 @@ const Layout = (function() {
       { section: 'personal', items: [
         { key: 'profile', icon: 'fa-user-tie', link: '../cto/profile.html' }
       ]}
-  ],
+    ],
     
-    // 6. قائمة المساهمين (shareholder) 
+    // --- 6. Shareholder ---
     'shareholder': [
       { section: 'main', items: [
         { key: 'dash', icon: 'fa-chart-pie', link: '../shareholder/index.html' },
@@ -192,51 +193,24 @@ const Layout = (function() {
       { section: 'personal', items: [
         { key: 'profile', icon: 'fa-user-tie', link: '../shareholder/profile.html' }
       ]}
-  ],
-    
-    // --- 7. أمين سر المساهمين (Shareholder Secretary) ---
-    'shareholder_sec': [
-      { section: 'admin_tools', items: [
-        { key: 'sh_dash', icon: 'fa-gauge-high', link: '../sh_sec/index.html' },
-        { key: 'manage_requests', icon: 'fa-headset', link: '../sh_sec/manage_requests.html' }
-      ]},
-      { section: 'equity_mgmt', items: [
-        { key: 'issue_certs', icon: 'fa-file-signature', link: '../sh_sec/issue_certificates.html' },
-        { key: 'payouts_control', icon: 'fa-money-bill-transfer', link: '../sh_sec/payouts_control.html' }
-      ]},
-      { section: 'assembly_mgmt', items: [
-        { key: 'voting_live', icon: 'fa-check-to-slot', link: '../sh_sec/voting_control.html' },
-        { key: 'sh_registry', icon: 'fa-address-book', link: '../sh_sec/registry.html' }
-      ]},
-      { section: 'personal', items: [{ key: 'profile', icon: 'fa-user-tie', link: '../sh_sec/profile.html' }]}
     ],
     
-    // --- 8. أمين سر اللجنة (Committee Secretary) ---
-    // مخصص لأمين سر لجنة المراجعة أو غيرها لإدارة الخطة والتقارير
-    'Committee_Secretary': [
-      { section: 'committee_ops', items: [
-        { key: 'comm_dash', icon: 'fa-users-gear', link: '../audit/index.html' },
-        { key: 'manage_plan', icon: 'fa-list-check', link: '../audit/audit_plan.html' },
-        { key: 'publish_reports', icon: 'fa-file-export', link: '../audit/risk_reports.html' }
-      ]},
-      { section: 'monitoring', items: [
-        { key: 'follow_up', icon: 'fa-clock-rotate-left', link: '../audit/observations.html' }
-      ]},
-      { section: 'personal', items: [{ key: 'profile', icon: 'fa-user-tie', link: '../audit/profile.html' }]}
-    ],
-    
-    // 9. قائمة المجلس (Board) 
+    // --- 7. Board ---
     'Board': [
-      { section: 'main', items: [{ key: 'dash', icon: 'fa-chart-pie', link: '../board/index.html' }]},
+      { section: 'main', items: [
+        { key: 'dash', icon: 'fa-chart-pie', link: '../board/index.html' }
+      ]},
       { section: 'governance', items: [
         { key: 'meetings', icon: 'fa-calendar-days', link: '../board/meetings.html' },
         { key: 'resolutions', icon: 'fa-file-signature', link: '../board/communication.html' },
         { key: 'finance', icon: 'fa-chart-line', link: '../board/finance.html' }
       ]},
-      { section: 'personal', items: [{ key: 'profile', icon: 'fa-user-tie', link: '../board/profile.html' }]}
+      { section: 'personal', items: [
+        { key: 'profile', icon: 'fa-user-tie', link: '../board/profile.html' }
+      ]}
     ],
     
-    // 10. قائمة اللجان (Committees) 
+    // --- 8. Committees ---
     'Committees': [
       { section: 'main', items: [
         { key: 'dash', icon: 'fa-chart-pie', link: '../Committees/index.html' }
@@ -249,28 +223,31 @@ const Layout = (function() {
       { section: 'personal', items: [
         { key: 'profile', icon: 'fa-user-tie', link: '../Committees/profile.html' }
       ]}
-  ],
+    ],
     
-    // 11. قائمة المبيعات (Sales) 
+    // --- 9. Sales ---
     'Sales': [
       { section: 'main', items: [
         { key: 'dash', icon: 'fa-chart-pie', link: '../Sales/index.html' },
         { key: 'profile', icon: 'fa-id-card', link: '../Sales/profile.html' },
         { key: 'requests', icon: 'fa-headset', link: '../Sales/requests.html' },
-        ]},
+      ]},
       { section: 'personal', items: [
         { key: 'profile', icon: 'fa-user-tie', link: '../Sales/profile.html' }
       ]}
-  ],
-    };
+    ]
+  };
     
+  // ==========================================
+  // 3. NOTIFICATIONS DATA
+  // ==========================================
   const _notifications = [
     { id: 1, type: 'critical', icon: 'fa-shield-virus', color: 'text-red-500 bg-red-50', titleKey: 'notifications.securityAlert', msgAr: 'محاولة دخول غير مصرح بها.', msgEn: 'Unauthorized login attempt.', time: '2m' },
     { id: 2, type: 'info', icon: 'fa-file-contract', color: 'text-blue-500 bg-blue-50', titleKey: 'notifications.newContract', msgAr: 'عقد توريد بانتظار الاعتماد.', msgEn: 'Supply contract pending approval.', time: '1h' }
   ];
 
-// ==========================================
-  // 3. INITIALIZATION
+  // ==========================================
+  // 4. INITIALIZATION
   // ==========================================
   async function init() {
     if (_state.isInitialized) return;
@@ -284,12 +261,11 @@ const Layout = (function() {
     }
 
     renderSidebar();
-    renderHeader(); // ✅ هذا الاستدعاء سيعمل الآن لأننا أضفنا الدالة
+    renderHeader();
 
     document.body.classList.add('loaded');
     document.body.style.opacity = '1';
     
-    // إخفاء الـ Loading Overlay
     const overlay = document.getElementById('loadingOverlay');
     if(overlay) overlay.classList.add('hidden');
 
@@ -300,7 +276,7 @@ const Layout = (function() {
   }
 
   // ==========================================
-  // 4. USER PROFILE
+  // 5. USER PROFILE
   // ==========================================
   async function _loadUserProfile() {
     try {
@@ -315,10 +291,9 @@ const Layout = (function() {
         _state.currentUser = user;
         AppConfig.setCurrentUser(user);
       } else {
-        // Fallback User
         _state.currentUser = {
           id: 'USR_004',
-          role: 'Admin',
+          role: 'grc_officer',
           displayName: AppConfig.getLang() === 'ar' ? 'أيمن المغربي' : 'Ayman Al-Maghrabi',
           displayTitle: AppConfig.getLang() === 'ar' ? 'مسؤول الحوكمة' : 'GRC Officer',
           email: 'amaghrabi@androomeda.com',
@@ -331,7 +306,7 @@ const Layout = (function() {
   }
 
   // ==========================================
-  // 5. RENDER SIDEBAR (Logic Fixed)
+  // 6. RENDER SIDEBAR (FIXED)
   // ==========================================
   function renderSidebar() {
     const container = document.getElementById('sidebar-container');
@@ -343,62 +318,110 @@ const Layout = (function() {
     const systemInfo = AppConfig.getSystemInfo();
     const user = _state.currentUser || JSON.parse(localStorage.getItem('currentUser'));
 
-    // ✅ تصحيح: ربط الأنواع القادمة من Auth.js بالقوائم المعرفة في الأعلى
-    const roleMap = {
-        'admin': 'Admin',
-        'ceo': 'CEO',          // كان Admin في السابق، الآن CEO
-        'cfo': 'CFO',          // كان Admin في السابق، الآن CFO
-        'cto': 'CTO',          // كان Admin في السابق، الآن CTO
-        'hr_exec': 'CAO',      // انتبه: سميناها CAO في القائمة بالأعلى
-        'board': 'Board',
-        'audit': 'Audit',
-        'shareholder': 'Shareholder',
-        'staff': 'Employee',
-        'employee': 'Employee'
+    // ✅ خريطة ربط الأدوار بالقوائم
+    const roleToMenuMap = {
+      'admin': 'Admin',
+      'sys_admin': 'Admin',
+      'grc_officer': 'Admin',
+      'board_secretary': 'Admin',
+      'audit_committee_secretary': 'Admin',
+      'investor_relations': 'Admin',
+      
+      'ceo': 'CEO',
+      'vice_chairman': 'CEO',
+      
+      'cfo': 'CFO',
+      
+      'cao': 'CAO',
+      'hr_exec': 'CAO',
+      
+      'cto': 'CTO',
+      'director': 'CTO',
+      'ncso': 'CTO',
+      'team_lead': 'CTO',
+      
+      'shareholder': 'shareholder',
+      
+      'board_member': 'Board',
+      'chairman': 'Board',
+      
+      'audit_committee_chair': 'Committees',
+      'audit_committee_member': 'Committees',
+      
+      'manager': 'Sales',
+      'employee': 'Sales',
+      'specialist': 'Sales',
+      'support': 'Sales',
+      'coordinator': 'Sales'
     };
 
-    const userType = user?.type || user?.role || 'staff';
-    const menuKey = roleMap[userType] || 'Employee';
-    const activeMenu = _menuDefinitions[menuKey] || _menuDefinitions['Employee'];
+    // ✅ تحديد القائمة الصحيحة
+    let userRole = user?.role || user?.primaryRole || 'grc_officer';
+    let menuKey = roleToMenuMap[userRole] || 'Admin';
+    
+    console.log('🔍 Sidebar Render:', { 
+      userRole, 
+      menuKey, 
+      userName: user?.displayName || user?.name 
+    });
+    
+    const activeMenu = _menuDefinitions[menuKey];
 
+    if (!activeMenu) {
+      console.error('❌ No menu found for:', menuKey);
+      return;
+    }
+
+    // ✅ بناء HTML القائمة
     let menuHTML = '';
     
-    if (activeMenu) {
-        activeMenu.forEach(group => {
-          const sectionLabel = (typeof I18n !== 'undefined') ? (I18n.t(`nav.${group.section}`) || group.section) : group.section;
-          menuHTML += `<div class="px-3 mt-6 mb-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider">${sectionLabel}</div>`;
-          
-          group.items.forEach(item => {
-            const linkPage = item.link.split('/').pop(); 
-            // تحقق مرن من الرابط النشط
-            const isActive = currentPath === linkPage || window.location.href.includes(item.link.replace('..',''));
-            
-            const label = (typeof I18n !== 'undefined') ? (I18n.t(`nav.${item.key}`) || item.key) : item.key;
-            const baseClass = "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 group";
-            const activeClass = "bg-brandRed text-white shadow-md shadow-red-500/20";
-            const inactiveClass = "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-brandRed";
+    activeMenu.forEach(group => {
+      const sectionLabel = (typeof I18n !== 'undefined') 
+        ? (I18n.t(`nav.${group.section}`) || group.section) 
+        : group.section;
+      
+      menuHTML += `<div class="px-3 mt-6 mb-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider">${sectionLabel}</div>`;
+      
+      group.items.forEach(item => {
+        const linkPage = item.link.split('/').pop(); 
+        const isActive = currentPath === linkPage || window.location.href.includes(item.link.replace('..',''));
+        
+        const label = (typeof I18n !== 'undefined') 
+          ? (I18n.t(`nav.${item.key}`) || item.key) 
+          : item.key;
+        
+        const baseClass = "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 group";
+        const activeClass = "bg-brandRed text-white shadow-md shadow-red-500/20";
+        const inactiveClass = "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-brandRed";
 
-            menuHTML += `
-              <a href="${item.link}" class="${baseClass} ${isActive ? activeClass : inactiveClass}">
-                <div class="w-6 text-center transition-transform group-hover:scale-110"><i class="fa-solid ${item.icon}"></i></div>
-                <span class="flex-1 truncate">${label}</span>
-              </a>
-            `;
-          });
-        });
-    }
+        menuHTML += `
+          <a href="${item.link}" class="${baseClass} ${isActive ? activeClass : inactiveClass}">
+            <div class="w-6 text-center transition-transform group-hover:scale-110">
+                <i class="fa-solid ${item.icon}"></i>
+            </div>
+            <span class="flex-1 truncate">${label}</span>
+          </a>
+        `;
+      });
+    });
 
     const roleBadges = (typeof RoleSwitcher !== 'undefined' && RoleSwitcher.hasMultipleRoles()) 
       ? `<div class="mt-3 flex flex-wrap gap-1">${RoleSwitcher.renderBadges()}</div>` 
       : '';
 
-    const displayName = typeof user.name === 'object' ? (lang === 'ar' ? user.name.ar : user.name.en) : user.name;
-    const displayTitle = user.title || user.role;
-    // التأكد من وجود صورة افتراضية إذا كانت فارغة
-    const avatarSrc = (user.avatar && user.avatar.length > 5) ? user.avatar : `https://ui-avatars.com/api/?name=${displayName}&background=random`;
+    const displayName = typeof user.name === 'object' 
+      ? (lang === 'ar' ? user.name.ar : user.name.en) 
+      : (user.displayName || user.name || 'User');
+    
+    const displayTitle = user.displayTitle || user.title || user.role || '';
+    
+    const avatarSrc = (user.avatar && user.avatar.length > 5) 
+      ? user.avatar 
+      : `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=random`;
 
     container.innerHTML = `
       <aside id="main-sidebar" class="fixed top-0 ${isRTL ? 'right-0 border-l' : 'left-0 border-r'} z-50 h-screen w-72 flex-col hidden md:flex bg-white dark:bg-[#0F172A] border-slate-200 dark:border-slate-800 transition-all duration-300">
+        
         <div class="h-20 flex items-center px-6 border-b border-slate-100 dark:border-slate-800">
           <div class="flex items-center gap-3 w-full">
             <div class="w-10 h-10 rounded-xl bg-brandRed text-white flex items-center justify-center font-bold text-xl shadow-lg shadow-brandRed/20">
@@ -434,7 +457,7 @@ const Layout = (function() {
   }
 
   // ==========================================
-  // 6. RENDER HEADER (Added because it was missing)
+  // 7. RENDER HEADER
   // ==========================================
   function renderHeader() {
     const container = document.getElementById('header-container');
@@ -492,7 +515,7 @@ const Layout = (function() {
   }
 
   // ==========================================
-  // 7. HELPER FUNCTIONS & EXPORTS
+  // 8. EVENT LISTENERS
   // ==========================================
   function _setupEventListeners() {
     document.addEventListener('click', (e) => {
@@ -503,35 +526,72 @@ const Layout = (function() {
       }
     });
 
-    window.addEventListener('langChanged', () => { renderSidebar(); renderHeader(); if(typeof I18n !== 'undefined') I18n.applyToDOM(); });
+    window.addEventListener('langChanged', () => { 
+      renderSidebar(); 
+      renderHeader(); 
+      if(typeof I18n !== 'undefined') I18n.applyToDOM(); 
+    });
+    
     window.addEventListener('themeChanged', () => renderHeader());
   }
 
-  function toggleNotif() { document.getElementById('notifDropdown')?.classList.toggle('hidden'); }
+  // ==========================================
+  // 9. HELPER FUNCTIONS
+  // ==========================================
+  function toggleNotif() { 
+    document.getElementById('notifDropdown')?.classList.toggle('hidden'); 
+  }
   
   function toggleMobileSidebar() { 
     const s = document.getElementById('main-sidebar'); 
-    if(s) { _state.sidebarOpen = !_state.sidebarOpen; s.classList.toggle('hidden', !_state.sidebarOpen); s.classList.toggle('flex', _state.sidebarOpen); } 
+    if(s) { 
+      _state.sidebarOpen = !_state.sidebarOpen; 
+      s.classList.toggle('hidden', !_state.sidebarOpen); 
+      s.classList.toggle('flex', _state.sidebarOpen); 
+    } 
   }
   
-  function toggleTheme() { AppConfig.toggleTheme(); }
+  function toggleTheme() { 
+    AppConfig.toggleTheme(); 
+  }
   
-  function toggleLang() { AppConfig.toggleLang(); location.reload(); }
+  function toggleLang() { 
+    AppConfig.toggleLang(); 
+    location.reload(); 
+  }
   
   function logout() { 
-      const msg = (typeof I18n !== 'undefined') ? I18n.t('auth.logoutConfirm') : 'Logout?';
-      if(confirm(msg)) window.location.href = '../login.html'; 
+    const msg = (typeof I18n !== 'undefined') ? I18n.t('auth.logoutConfirm') : 'Logout?';
+    if(confirm(msg)) window.location.href = '../login.html'; 
   }
   
-  function getCurrentUser() { return _state.currentUser; }
+  function getCurrentUser() { 
+    return _state.currentUser; 
+  }
 
-  // Return Public API
-  return { init, renderSidebar, renderHeader, toggleNotif, toggleMobileSidebar, toggleTheme, toggleLang, logout, getCurrentUser };
+  // ==========================================
+  // 10. PUBLIC API
+  // ==========================================
+  return { 
+    init, 
+    renderSidebar, 
+    renderHeader, 
+    toggleNotif, 
+    toggleMobileSidebar, 
+    toggleTheme, 
+    toggleLang, 
+    logout, 
+    getCurrentUser 
+  };
 
 })();
 
-// Auto-Initialize
+// ==========================================
+// AUTO INITIALIZE
+// ==========================================
 document.addEventListener('DOMContentLoaded', Layout.init);
 
-// Global Exposure (Optional for legacy calls)
+// ==========================================
+// GLOBAL EXPORT
+// ==========================================
 if (typeof window !== 'undefined') window.Layout = Layout;
