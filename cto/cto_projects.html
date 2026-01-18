@@ -306,8 +306,37 @@
         </div>
     </div>
 
-    <script src="layout-cto.js"></script>
-    <script src="bot.js"></script>
+    <script src="../admin/js/core/config.js"></script>
+    <script src="../admin/js/core/i18n.js"></script>
+    <script src="../admin/js/services/data-service.js"></script>
+    <script src="../admin/js/components/role-switcher.js"></script>
+    
+    <script src="../admin/js/components/layout.js"></script>
+    <script src="../admin/js/components/bot.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // ننتظر تحميل السكربتات
+            const checkLibs = setInterval(() => {
+                if (typeof Layout !== 'undefined' && typeof AppConfig !== 'undefined') {
+                    clearInterval(checkLibs);
+
+                    // ✅ الخطوة المهمة: تحديد هوية المستخدم كعضو مجلس
+                    const boardUser = {
+                        id: 'BRD_001',
+                        role: 'Board', // <--- هذا هو المفتاح الذي سيغير القائمة إلى قائمة المجلس المختصرة
+                        displayName: 'عضو المجلس',
+                        displayTitle: 'عضو مجلس الإدارة',
+                        avatar: 'https://ui-avatars.com/api/?name=Board&background=random'
+                    };
+
+                    // حفظ المستخدم وتشغيل النظام
+                    AppConfig.setCurrentUser(boardUser);
+                    Layout.init();
+                }
+            }, 50);
+        });
+    </script>
 
     <script>
         const pageContent = {
