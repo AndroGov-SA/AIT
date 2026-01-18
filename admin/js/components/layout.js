@@ -59,7 +59,7 @@ const Layout = (function() {
     // 2. قائمة الموارد البشرية
     'HR': [
         { section: 'main', items: [
-          { key: 'dash', icon: 'fa-chart-pie', link: '../hr/hr_dashboard.html' },
+          { key: 'dash', icon: 'fa-chart-pie', link: '../hr/index.html' },
           { key: 'approvals', icon: 'fa-inbox', link: '../hr/hr_approvals.html' },
           { key: 'chat', icon: 'fa-comments', link: '../hr/internal_chat.html' }
         ]},
@@ -89,7 +89,7 @@ const Layout = (function() {
     // 3. قائمة الرئيس التنفيذي (CEO)
     'CEO': [
       { section: 'main', items: [
-        { key: 'dash', icon: 'fa-chart-pie', link: '../ceo/ceo_dashboard.html' },
+        { key: 'dash', icon: 'fa-chart-pie', link: '../ceo/index.html' },
         { key: 'board', icon: 'fa-gavel', link: '../ceo/ceo_board.html' },
         { key: 'strategy', icon: 'fa-chess', link: '../ceo/ceo_strategy.html' }
       ]},
@@ -114,7 +114,7 @@ const Layout = (function() {
     // 4. قائمة المدير المالي (CFO)
     'CFO': [
       { section: 'main', items: [
-        { key: 'dash', icon: 'fa-chart-pie', link: '../finance/cfo_dashboard.html' },
+        { key: 'dash', icon: 'fa-chart-pie', link: '../finance/index.html' },
         { key: 'approvals', icon: 'fa-stamp', link: '../finance/approvals.html' },
         { key: 'chat', icon: 'fa-comments', link: '../finance/internal_chat.html' }
       ]},
@@ -149,7 +149,7 @@ const Layout = (function() {
     // 5. قائمة المدير التقني (CTO) 
     'CTO': [
       { section: 'main', items: [
-        { key: 'dash', icon: 'fa-chart-pie', link: '../cto/cto_dashboard.html' },
+        { key: 'dash', icon: 'fa-chart-pie', link: '../cto/index.html' },
         { key: 'monitor', icon: 'fa-desktop', link: '../cto/cto_monitoring.html' }
       ]},
       { section: 'telecom', items: [
@@ -174,7 +174,7 @@ const Layout = (function() {
     // 6. قائمة المساهمين (shareholder) 
     'shareholder': [
       { section: 'main', items: [
-        { key: 'dash', icon: 'fa-chart-pie', link: '../shareholder/dashboard.html' },
+        { key: 'dash', icon: 'fa-chart-pie', link: '../shareholder/index.html' },
         { key: 'profile', icon: 'fa-id-card', link: '../shareholder/profile.html' },
         { key: 'requests', icon: 'fa-headset', link: '../shareholder/requests.html' },
         { key: 'certificates', icon: 'fa-file-contract', link: '../shareholder/certificates.html' },
@@ -210,7 +210,7 @@ const Layout = (function() {
     // 9. قائمة المبيعات (Sales) 
     'Sales': [
       { section: 'main', items: [
-        { key: 'dash', icon: 'fa-chart-pie', link: '../Sales/dashboard.html' },
+        { key: 'dash', icon: 'fa-chart-pie', link: '../Sales/index.html' },
         { key: 'profile', icon: 'fa-id-card', link: '../Sales/profile.html' },
         { key: 'requests', icon: 'fa-headset', link: '../Sales/requests.html' },
         ]}
