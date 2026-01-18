@@ -5,27 +5,53 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#FB4747">
     <title>التقارير المالية | AndroGov</title>
+    
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <script>
-        tailwind.config = { darkMode: 'class', theme: { extend: { colors: { brandRed: '#FB4747', brandBlue: '#4267B2', brandDark: '#1E293B', brandGray: '#F8FAFC' }, fontFamily: { sans: ['Tajawal', 'Inter', 'sans-serif'], en: ['Inter', 'sans-serif'] } } } }
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { brandRed: '#FB4747', brandBlue: '#4267B2', brandDark: '#1E293B', brandGray: '#F8FAFC' },
+                    fontFamily: { sans: ['Tajawal', 'Inter', 'sans-serif'], en: ['Inter', 'sans-serif'] }
+                }
+            }
+        }
     </script>
-    <style>.num-font { font-family: 'Inter', sans-serif; direction: ltr; display: inline-block; } .nav-link.active { background-color: #FB4747; color: white; box-shadow: 0 4px 10px rgba(251, 71, 71, 0.3); } .nav-link:hover:not(.active) { background-color: #F1F5F9; }</style>
+    <style>
+        .num-font { font-family: 'Inter', sans-serif; direction: ltr; display: inline-block; }
+        .custom-scroll::-webkit-scrollbar { width: 5px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 10px; }
+        .fade-in { animation: fadeIn 0.5s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
 </head>
+
 <body class="bg-brandGray dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300 h-screen flex overflow-hidden">
     
     <div id="sidebar-container"></div>
 
     <div class="flex-1 flex flex-col h-full overflow-hidden relative main-content-wrapper ltr:md:ml-72 rtl:md:mr-72">
+        
         <div id="header-container"></div>
 
-        <main class="p-8 space-y-8 overflow-y-auto custom-scroll">
+        <main class="p-8 space-y-8 overflow-y-auto custom-scroll fade-in">
             
+            <div class="flex justify-between items-center mb-2">
+                <h2 class="text-2xl font-bold dark:text-white">المركز المالي للشركة</h2>
+                <span class="text-xs bg-green-100 text-green-700 px-3 py-1 rounded-full font-bold">Q4 2025 - نهائي</span>
+            </div>
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-                    <h3 class="font-bold text-lg mb-4 text-slate-800 dark:text-white">ملخص الأداء (Q4)</h3>
+                    <h3 class="font-bold text-lg mb-4 text-slate-800 dark:text-white flex items-center gap-2">
+                        <i class="fa-solid fa-chart-pie text-brandBlue"></i> ملخص الأداء (Q4)
+                    </h3>
                     <div class="space-y-4">
                         <div class="flex justify-between items-center border-b border-slate-50 dark:border-slate-700 pb-2">
                             <span class="text-sm text-slate-500">إجمالي الإيرادات</span>
@@ -43,35 +69,43 @@
                 </div>
 
                 <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-                    <h3 class="font-bold text-lg mb-4 text-slate-800 dark:text-white">التقارير المرفقة</h3>
+                    <h3 class="font-bold text-lg mb-4 text-slate-800 dark:text-white flex items-center gap-2">
+                        <i class="fa-solid fa-paperclip text-brandRed"></i> التقارير المرفقة
+                    </h3>
                     <div class="space-y-3">
-                        <div class="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-700 rounded-lg">
+                        <div class="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-700 rounded-lg group hover:bg-slate-100 dark:hover:bg-slate-600 transition">
                             <div class="flex items-center gap-3">
                                 <i class="fa-solid fa-file-excel text-green-600 text-xl"></i>
                                 <div>
-                                    <p class="text-sm font-bold">تقرير Q4 المالي.xlsx</p>
+                                    <p class="text-sm font-bold group-hover:text-brandBlue transition">تقرير Q4 المالي.xlsx</p>
                                     <p class="text-[10px] text-slate-400">1.2 MB • مدقق</p>
                                 </div>
                             </div>
-                            <button class="text-brandBlue hover:underline text-xs"><i class="fa-solid fa-download"></i></button>
+                            <button class="text-slate-400 hover:text-brandBlue text-sm"><i class="fa-solid fa-download"></i></button>
                         </div>
-                        <div class="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-700 rounded-lg">
+                        <div class="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-700 rounded-lg group hover:bg-slate-100 dark:hover:bg-slate-600 transition">
                             <div class="flex items-center gap-3">
                                 <i class="fa-solid fa-file-pdf text-red-600 text-xl"></i>
                                 <div>
-                                    <p class="text-sm font-bold">تقرير مراجع الحسابات.pdf</p>
+                                    <p class="text-sm font-bold group-hover:text-brandBlue transition">تقرير مراجع الحسابات.pdf</p>
                                     <p class="text-[10px] text-slate-400">2.5 MB • نهائي</p>
                                 </div>
                             </div>
-                            <button class="text-brandBlue hover:underline text-xs"><i class="fa-solid fa-download"></i></button>
+                            <button class="text-slate-400 hover:text-brandBlue text-sm"><i class="fa-solid fa-download"></i></button>
                         </div>
                     </div>
                 </div>
             </div>
 
             <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-                <h3 class="font-bold text-sm mb-4">التدفقات النقدية (2025)</h3>
-                <div class="h-64"><canvas id="finChart"></canvas></div>
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-bold text-sm">التدفقات النقدية (2025)</h3>
+                    <div class="flex gap-2">
+                        <span class="text-[10px] flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-blue-500"></span> وارد</span>
+                        <span class="text-[10px] flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-red-400"></span> صادر</span>
+                    </div>
+                </div>
+                <div class="h-64 w-full relative"><canvas id="finChart"></canvas></div>
             </div>
 
         </main>
@@ -81,32 +115,78 @@
     <script src="../admin/js/core/i18n.js"></script>
     <script src="../admin/js/services/data-service.js"></script>
     <script src="../admin/js/components/role-switcher.js"></script>
-    
     <script src="../admin/js/components/layout.js"></script>
     <script src="../admin/js/components/bot.js"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // ننتظر تحميل السكربتات
+            
+            // انتظار المكتبات
             const checkLibs = setInterval(() => {
                 if (typeof Layout !== 'undefined' && typeof AppConfig !== 'undefined') {
                     clearInterval(checkLibs);
 
-                    // ✅ الخطوة المهمة: تحديد هوية المستخدم كعضو مجلس
+                    // ✅ تعريف هوية العضو لضمان ظهور القائمة الجانبية الصحيحة
                     const boardUser = {
                         id: 'BRD_001',
-                        role: 'Board', // <--- هذا هو المفتاح الذي سيغير القائمة إلى قائمة المجلس المختصرة
-                        displayName: 'عضو المجلس',
-                        displayTitle: 'عضو مجلس الإدارة',
-                        avatar: 'https://ui-avatars.com/api/?name=Board&background=random'
+                        type: 'board', // ⚠️ مهم جداً: يجب أن يكون lowercase (board)
+                        role: 'Board Member', 
+                        displayName: 'د. عبدالله الحواس',
+                        displayTitle: 'رئيس مجلس الإدارة',
+                        avatar: 'https://ui-avatars.com/api/?name=A+H&background=random'
                     };
 
-                    // حفظ المستخدم وتشغيل النظام
                     AppConfig.setCurrentUser(boardUser);
                     Layout.init();
+
+                    // ✅ تشغيل الرسم البياني
+                    initChart();
                 }
             }, 50);
         });
+
+        function initChart() {
+            const ctx = document.getElementById('finChart');
+            if(!ctx) return;
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس'],
+                    datasets: [
+                        {
+                            label: 'إيرادات',
+                            data: [400, 450, 500, 480, 520, 550, 580, 600],
+                            borderColor: '#3B82F6',
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            fill: true,
+                            tension: 0.4
+                        },
+                        {
+                            label: 'مصروفات',
+                            data: [300, 320, 310, 350, 340, 360, 350, 380],
+                            borderColor: '#FB4747',
+                            backgroundColor: 'rgba(251, 71, 71, 0.05)',
+                            fill: true,
+                            tension: 0.4,
+                            borderDash: [5, 5]
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { mode: 'index', intersect: false }
+                    },
+                    scales: {
+                        y: { display: true, grid: { color: '#f1f5f9' } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        }
     </script>
     
 </body>
