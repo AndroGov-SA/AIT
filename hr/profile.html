@@ -31,7 +31,8 @@
 
     <div id="sidebar-container"></div>
     
-    <div class="main-content-wrapper transition-all duration-300 flex flex-col min-h-screen">
+    <div class="main-content-wrapper transition-all duration-300 flex flex-col min-h-screen rtl:lg:mr-64 ltr:lg:ml-64">
+        
         <div id="header-container"></div>
 
         <main class="p-6 space-y-6">
@@ -40,14 +41,14 @@
                 <div class="h-32 bg-gradient-to-r from-slate-800 to-slate-900"></div>
                 <div class="px-6 pb-6 flex flex-col md:flex-row items-end -mt-12 gap-6">
                     <div class="w-24 h-24 rounded-2xl border-4 border-white dark:border-slate-700 overflow-hidden bg-white shadow-md">
-                        <img id="profileImg" src="" class="w-full h-full object-cover">
+                        <img id="profileImg" src="https://ui-avatars.com/api/?name=Mansour+Y&background=FB4747&color=fff" class="w-full h-full object-cover">
                     </div>
                     <div class="flex-1 mb-1">
                         <h1 class="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                            <span id="profileName">...</span>
+                            <span id="profileName">منصور اليامي</span>
                             <i class="fa-solid fa-certificate text-blue-500 text-xs" title="موثق"></i>
                         </h1>
-                        <p class="text-slate-500 text-sm font-medium" id="profileRole">...</p>
+                        <p class="text-slate-500 text-sm font-medium" id="profileRole">مدير الموارد البشرية والشؤون الإدارية</p>
                         <div class="flex gap-4 mt-3 text-xs text-slate-400 font-mono">
                             <span><i class="fa-regular fa-id-card"></i> ID: 1002</span>
                             <span><i class="fa-regular fa-envelope"></i> myami@androomeda.com</span>
@@ -84,15 +85,6 @@
                                 <span class="block text-[9px] text-slate-400">أيام</span>
                             </div>
                         </div>
-                        <div class="mt-4 pt-3 border-t border-slate-50 dark:border-slate-700">
-                            <div class="flex justify-between text-xs mb-1">
-                                <span class="text-slate-500">رصيد التذاكر</span>
-                                <span class="text-slate-800 dark:text-white font-bold">100% (مستحق)</span>
-                            </div>
-                            <div class="w-full bg-slate-100 dark:bg-slate-700 h-1.5 rounded-full overflow-hidden">
-                                <div class="bg-green-500 h-full w-full"></div>
-                            </div>
-                        </div>
                     </div>
 
                     <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 text-sm">
@@ -106,62 +98,52 @@
                                 <span class="text-slate-500">نهاية العقد</span>
                                 <span class="font-bold text-green-600">غير محدد المدة</span>
                             </li>
-                            <li class="flex justify-between border-b border-slate-50 dark:border-slate-700 pb-2">
-                                <span class="text-slate-500">المدير المباشر</span>
-                                <span class="font-bold dark:text-white">الرئيس التنفيذي</span>
-                            </li>
                             <li class="flex justify-between">
                                 <span class="text-slate-500">مقر العمل</span>
-                                <span class="font-bold dark:text-white">الإدارة العامة - الرياض</span>
+                                <span class="font-bold dark:text-white">الرياض - المقر الرئيسي</span>
                             </li>
                         </ul>
                     </div>
                 </div>
 
                 <div class="lg:col-span-2 space-y-6">
-                    
                     <div class="bg-slate-900 rounded-2xl p-6 text-white shadow-lg relative overflow-hidden group">
                         <div class="absolute top-0 left-0 p-4 opacity-10 text-6xl"><i class="fa-solid fa-money-check-dollar"></i></div>
-                        
                         <div class="flex justify-between items-start mb-6 relative z-10">
                             <div>
                                 <h3 class="font-bold text-lg">البيانات المالية (سري)</h3>
                                 <p class="text-xs text-slate-400">مرر الماوس على الأرقام للكشف عنها</p>
                             </div>
-                            <span class="bg-green-500/20 text-green-400 px-2 py-1 rounded text-[10px] border border-green-500/30">نشط في التأمينات</span>
                         </div>
-
-                        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 relative z-10">
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 relative z-10 text-center md:text-right">
                             <div>
                                 <p class="text-xs text-slate-400 mb-1">الراتب الأساسي</p>
-                                <p class="text-xl font-bold font-mono blur-text transition-all duration-300">10,000</p>
+                                <p class="text-xl font-bold font-mono blur-text">10,000</p>
                             </div>
                             <div>
                                 <p class="text-xs text-slate-400 mb-1">بدل السكن</p>
-                                <p class="text-xl font-bold font-mono blur-text transition-all duration-300">2,250</p>
+                                <p class="text-xl font-bold font-mono blur-text">2,500</p>
                             </div>
                             <div>
                                 <p class="text-xs text-slate-400 mb-1">بدل النقل</p>
-                                <p class="text-xl font-bold font-mono blur-text transition-all duration-300">1,500</p>
+                                <p class="text-xl font-bold font-mono blur-text">1,000</p>
                             </div>
                             <div class="border-r border-slate-700 pr-4">
                                 <p class="text-xs text-brandRed font-bold mb-1">إجمالي الحزمة</p>
-                                <p class="text-2xl font-bold font-mono text-brandRed blur-text transition-all duration-300">13,750</p>
+                                <p class="text-2xl font-bold font-mono text-brandRed blur-text">13,500</p>
                             </div>
                         </div>
                     </div>
 
                     <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-                        <div class="p-5 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center">
+                        <div class="p-5 border-b border-slate-100 dark:border-slate-700">
                             <h3 class="font-bold text-slate-800 dark:text-white">طلباتي السابقة</h3>
-                            <span class="text-xs bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded">آخر 6 أشهر</span>
                         </div>
                         <table class="w-full text-sm text-right">
                             <thead class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 text-xs">
                                 <tr>
                                     <th class="p-4">نوع الطلب</th>
                                     <th class="p-4">تاريخ الطلب</th>
-                                    <th class="p-4">المدة/التفاصيل</th>
                                     <th class="p-4 text-center">الحالة</th>
                                 </tr>
                             </thead>
@@ -169,28 +151,13 @@
                                 <tr>
                                     <td class="p-4 font-bold">إجازة سنوية</td>
                                     <td class="p-4 text-xs font-mono">2026-02-15</td>
-                                    <td class="p-4 text-xs">5 أيام</td>
                                     <td class="p-4 text-center"><span class="bg-green-100 text-green-700 px-2 py-1 rounded text-[10px] font-bold">تم الاعتماد</span></td>
-                                </tr>
-                                <tr>
-                                    <td class="p-4 font-bold">تعريف راتب</td>
-                                    <td class="p-4 text-xs font-mono">2026-03-01</td>
-                                    <td class="p-4 text-xs">موجه لبنك الراجحي</td>
-                                    <td class="p-4 text-center"><span class="bg-green-100 text-green-700 px-2 py-1 rounded text-[10px] font-bold">تم الاصدار</span></td>
-                                </tr>
-                                <tr>
-                                    <td class="p-4 font-bold">عهد (لابتوب)</td>
-                                    <td class="p-4 text-xs font-mono">2026-03-10</td>
-                                    <td class="p-4 text-xs">MacBook Pro</td>
-                                    <td class="p-4 text-center"><span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded text-[10px] font-bold">قيد التسليم</span></td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
-
                 </div>
             </div>
-
         </main>
     </div>
 
@@ -203,7 +170,6 @@
                     <select class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-2 text-sm dark:text-white">
                         <option>سنوية (رصيد 24)</option>
                         <option>اضطرارية (رصيد 3)</option>
-                        <option>مرضية</option>
                     </select>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
@@ -219,7 +185,7 @@
             </div>
             <div class="mt-6 flex justify-end gap-3">
                 <button onclick="document.getElementById('vacationModal').classList.add('hidden')" class="px-4 py-2 text-slate-500 text-sm font-bold">إلغاء</button>
-                <button onclick="alert('تم رفع الطلب للمدير المباشر'); document.getElementById('vacationModal').classList.add('hidden')" class="px-6 py-2 bg-brandRed text-white rounded-lg text-sm font-bold hover:bg-red-700">إرسال الطلب</button>
+                <button onclick="alert('تم رفع الطلب بنجاح'); document.getElementById('vacationModal').classList.add('hidden')" class="px-6 py-2 bg-brandRed text-white rounded-lg text-sm font-bold hover:bg-red-700">إرسال الطلب</button>
             </div>
         </div>
     </div>
@@ -228,45 +194,29 @@
     <script src="../admin/js/core/i18n.js"></script>
     <script src="../admin/js/services/data-service.js"></script>
     <script src="../admin/js/components/role-switcher.js"></script>
-    
     <script src="../admin/js/components/layout.js"></script>
     <script src="../admin/js/components/bot.js"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // ننتظر تحميل السكربتات
             const checkLibs = setInterval(() => {
                 if (typeof Layout !== 'undefined' && typeof AppConfig !== 'undefined') {
                     clearInterval(checkLibs);
 
-                    // ✅ الخطوة المهمة: تحديد هوية المستخدم كمسؤول موارد بشرية
-                    const boardUser = {
+                    // ✅ تعريف هوية المستخدم كمدير موارد بشرية (CAO)
+                    const hrUser = {
                         id: 'USR_005',
-                        role: 'CAO', // <--- هذا هو المفتاح الذي سيغير القائمة إلى قائمة موارد بشرية المختصرة
-                        displayName: 'مسؤول موارد بشرية',
-                        displayTitle: 'مسؤول موارد بشرية  ',
-                        avatar: 'https://ui-avatars.com/api/?name=Board&background=random'
+                        type: 'hr', // ⚠️ هذا المفتاح يضمن تحميل قائمة الموارد البشرية
+                        role: 'CAO',
+                        displayName: 'منصور اليامي', 
+                        displayTitle: 'مدير الموارد البشرية والشؤون الإدارية (CAO)',
+                        avatar: 'https://ui-avatars.com/api/?name=Mansour+Y&background=random'
                     };
 
-                    // حفظ المستخدم وتشغيل النظام
-                    AppConfig.setCurrentUser(boardUser);
+                    AppConfig.setCurrentUser(hrUser);
                     Layout.init();
                 }
             }, 50);
-        });
-    </script>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const defaultUser = {
-                name: "منصور اليامي",
-                role: "مدير الشؤون الإدارية والموارد البشرية",
-                avatar: "https://ui-avatars.com/api/?name=Mansour+Y&background=FB4747&color=fff"
-            };
-
-            document.getElementById('profileName').innerText = defaultUser.name;
-            document.getElementById('profileRole').innerText = defaultUser.role;
-            document.getElementById('profileImg').src = defaultUser.avatar;
         });
     </script>
 </body>
