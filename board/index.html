@@ -4,13 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#FB4747">
-    <title id="pageTitle">بوابة المجلس | AndroGov</title>
+    <title>بوابة المجلس | AndroGov</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
         tailwind.config = {
@@ -27,8 +25,6 @@
         .num-font { font-family: 'Inter', sans-serif; direction: ltr; display: inline-block; }
         .custom-scroll::-webkit-scrollbar { width: 5px; }
         .custom-scroll::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 10px; }
-        .fade-in { animation: fadeIn 0.4s ease-out forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 
@@ -40,78 +36,77 @@
         
         <div id="header-container"></div>
 
-        <main class="flex-1 overflow-y-auto p-6 custom-scroll" id="main-content">
+        <main class="flex-1 overflow-y-auto p-6 custom-scroll space-y-6">
             
-            <div id="view-dashboard" class="space-y-6 fade-in">
-                <div class="bg-gradient-to-r from-slate-900 to-slate-800 rounded-3xl p-8 text-white relative overflow-hidden shadow-xl">
-                    <div class="relative z-10">
-                        <h1 class="text-2xl font-bold mb-2">مرحباً، <span id="dashName">سعادة العضو</span> 👋</h1>
-                        <p class="text-slate-300 text-sm opacity-90">ملخص أعمال المجلس واللجان للدورة الحالية.</p>
-                        <div class="mt-6 flex gap-3">
-                            <button onclick="BoardLayout.switchView('meetings')" class="bg-brandBlue px-6 py-2 rounded-xl font-bold text-sm shadow-lg hover:bg-blue-600 transition flex items-center gap-2">
-                                <i class="fa-regular fa-calendar"></i> الاجتماعات
-                            </button>
-                            <button onclick="BoardLayout.switchView('resolutions')" class="bg-white/10 px-6 py-2 rounded-xl font-bold text-sm backdrop-blur-md hover:bg-white/20 transition flex items-center gap-2">
-                                <i class="fa-solid fa-check-to-slot"></i> التصويت
-                            </button>
-                        </div>
+            <div class="bg-slate-900 text-white p-8 rounded-3xl shadow-xl relative overflow-hidden">
+                <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div>
+                        <h1 class="text-2xl font-bold mb-1">مرحباً، <span id="dynamicName">سعادة العضو</span></h1>
+                        <p class="text-slate-400 text-sm" id="dynamicTitle">عضو مجلس الإدارة</p>
                     </div>
-                    <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-brandRed/20 rounded-full blur-3xl"></div>
-                </div>
-
-                
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md transition">
-                        <div class="flex justify-between mb-4">
-                            <div class="w-10 h-10 bg-red-50 dark:bg-red-900/20 text-red-500 rounded-lg flex items-center justify-center"><i class="fa-solid fa-gavel"></i></div>
-                            <span class="text-[10px] bg-red-50 dark:bg-red-900/40 text-red-600 px-2 py-1 rounded-full font-bold h-fit animate-pulse">عاجل</span>
-                        </div>
-                        <h3 class="text-3xl font-bold num-font">2</h3>
-                        <p class="text-xs text-slate-400 mt-1">قرارات بانتظار التصويت</p>
-                    </div>
-                    <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md transition">
-                        <div class="flex justify-between mb-4">
-                            <div class="w-10 h-10 bg-blue-50 dark:bg-blue-900/20 text-brandBlue rounded-lg flex items-center justify-center"><i class="fa-solid fa-calendar-check"></i></div>
-                        </div>
-                        <h3 class="text-3xl font-bold num-font">95%</h3>
-                        <p class="text-xs text-slate-400 mt-1">نسبة الحضور السنوي</p>
-                    </div>
-                    <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md transition">
-                        <div class="flex justify-between mb-4">
-                            <div class="w-10 h-10 bg-green-50 dark:bg-green-900/20 text-green-600 rounded-lg flex items-center justify-center"><i class="fa-solid fa-chart-line"></i></div>
-                        </div>
-                        <h3 class="text-3xl font-bold num-font">14%</h3>
-                        <p class="text-xs text-slate-400 mt-1">نمو الأرباح (Q4)</p>
+                    
+                    <div id="secretaryActions" class="hidden flex gap-2">
+                        <button class="bg-brandRed px-4 py-2 rounded-xl text-xs font-bold shadow-lg hover:bg-red-700 transition">
+                            <i class="fa-solid fa-plus ml-1"></i> إنشاء أجندة اجتماع
+                        </button>
                     </div>
                 </div>
+                <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-brandRed/10 rounded-full blur-3xl"></div>
+            </div>
 
-                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm">
-                    <div class="flex justify-between items-center mb-6">
-                        <h3 class="font-bold dark:text-white">تحليل أداء القرارات</h3>
-                        <button class="text-xs text-slate-400 hover:text-brandRed"><i class="fa-solid fa-download"></i> تصدير</button>
-                    </div>
-                    <div class="h-64 w-full relative">
-                        <canvas id="boardChart"></canvas>
-                    </div>
+            
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <p class="text-[10px] text-slate-400 font-bold uppercase mb-1">حالة القرارات</p>
+                    <h3 class="text-2xl font-bold num-font text-brandRed">2 معلقة</h3>
+                </div>
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <p class="text-[10px] text-slate-400 font-bold uppercase mb-1">الاجتماع القادم</p>
+                    <h3 class="text-2xl font-bold text-blue-600 text-sm">22 فبراير 2026</h3>
+                </div>
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <p class="text-[10px] text-slate-400 font-bold uppercase mb-1">نسبة الحضور</p>
+                    <h3 class="text-2xl font-bold num-font text-green-600">92%</h3>
+                </div>
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <p class="text-[10px] text-slate-400 font-bold uppercase mb-1">الملفات الفنية</p>
+                    <h3 class="text-2xl font-bold num-font text-slate-400">24</h3>
                 </div>
             </div>
 
-            <div id="view-meetings" class="hidden fade-in space-y-6">
-                <div class="bg-white dark:bg-slate-800 p-10 rounded-2xl text-center border border-slate-100 dark:border-slate-700">
-                    <i class="fa-regular fa-calendar-days text-5xl text-slate-300 mb-4 block"></i>
-                    <h3 class="font-bold text-xl dark:text-white">جدول الاجتماعات</h3>
-                    <p class="text-slate-400 text-sm mt-2">لا توجد اجتماعات مجدولة حالياً لمجلس الإدارة.</p>
-                    <button onclick="BoardLayout.switchView('dashboard')" class="mt-6 px-6 py-2 bg-slate-100 dark:bg-slate-700 text-brandRed font-bold rounded-xl hover:bg-slate-200 transition">العودة للرئيسية</button>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="lg:col-span-2">
+                    <div class="bg-white dark:bg-slate-800 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden">
+                        <div class="p-5 border-b border-slate-50 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50">
+                            <h3 class="font-bold text-sm">آخر الملفات المرفوعة للمجلس</h3>
+                        </div>
+                        <div class="p-5 space-y-4">
+                            <div class="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-900/50 rounded-2xl border border-slate-100 dark:border-slate-700">
+                                <div class="flex items-center gap-4">
+                                    <i class="fa-solid fa-file-pdf text-2xl text-brandRed"></i>
+                                    <div>
+                                        <p class="text-xs font-bold">تقرير الحوكمة السنوي - مسودة</p>
+                                        <p class="text-[10px] text-slate-400">رفع بواسطة أمين السر • منذ ساعتين</p>
+                                    </div>
+                                </div>
+                                <button class="text-brandBlue hover:text-brandRed transition"><i class="fa-solid fa-download"></i></button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
 
-            <div id="view-resolutions" class="hidden fade-in space-y-6">
-                <div class="bg-white dark:bg-slate-800 p-10 rounded-2xl text-center border border-slate-100 dark:border-slate-700">
-                    <i class="fa-solid fa-check-to-slot text-5xl text-slate-300 mb-4 block"></i>
-                    <h3 class="font-bold text-xl dark:text-white">بوابة التصويت والقرارات</h3>
-                    <p class="text-slate-400 text-sm mt-2">جاري مزامنة بيانات التصويت الإلكتروني...</p>
-                    <button onclick="BoardLayout.switchView('dashboard')" class="mt-6 px-6 py-2 bg-slate-100 dark:bg-slate-700 text-brandRed font-bold rounded-xl hover:bg-slate-200 transition">العودة للرئيسية</button>
+                <div class="space-y-6">
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700">
+                        <h3 class="font-bold text-sm mb-4">اكتمال التواقيع</h3>
+                        <div class="space-y-3">
+                            <p class="text-[10px] text-slate-500">محضر الاجتماع رقم (41):</p>
+                            <div class="w-full bg-slate-100 dark:bg-slate-700 h-2 rounded-full overflow-hidden">
+                                <div class="bg-green-500 h-full" style="width: 75%"></div>
+                            </div>
+                            <p class="text-[9px] text-right text-slate-400">7 من أصل 9 أعضاء وقعوا</p>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -123,105 +118,38 @@
     <script src="../admin/js/services/data-service.js"></script>
     <script src="../admin/js/components/role-switcher.js"></script>
     <script src="../admin/js/components/layout.js"></script>
-    <script src="../admin/js/components/bot.js"></script>
 
     <script>
-        // ==========================================
-        // 1. Board Layout Controller
-        // ==========================================
-        const BoardLayout = {
-            activeView: 'dashboard',
-            
-            switchView: function(viewId) {
-                // إخفاء كل المشاهد
-                ['dashboard', 'meetings', 'resolutions'].forEach(id => {
-                    const el = document.getElementById(`view-${id}`);
-                    if(el) el.classList.add('hidden');
-                });
-
-                // إظهار المشهد المختار
-                const target = document.getElementById(`view-${viewId}`);
-                if(target) {
-                    target.classList.remove('hidden');
-                    // تنشيط أنيميشن الدخول
-                    target.classList.remove('fade-in');
-                    void target.offsetWidth; 
-                    target.classList.add('fade-in');
-                }
-                this.activeView = viewId;
-            },
-
-            initChart: function() {
-                const ctx = document.getElementById('boardChart');
-                if(!ctx) return;
-                
-                new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو'],
-                        datasets: [
-                            {
-                                label: 'قرارات معتمدة',
-                                data: [12, 19, 3, 5, 2, 3],
-                                backgroundColor: '#10B981',
-                                borderRadius: 6
-                            },
-                            {
-                                label: 'قرارات مؤجلة',
-                                data: [2, 3, 1, 1, 1, 0],
-                                backgroundColor: '#FB4747',
-                                borderRadius: 6
-                            }
-                        ]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: { position: 'bottom', labels: { font: { family: 'Tajawal', weight: 'bold' } } }
-                        },
-                        scales: {
-                            y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' } },
-                            x: { grid: { display: false } }
-                        }
-                    }
-                });
-            }
-        };
-
-        // ==========================================
-        // 2. Data Initialization
-        // ==========================================
         document.addEventListener('DOMContentLoaded', () => {
             const checkLibs = setInterval(() => {
                 if (typeof Layout !== 'undefined' && typeof AppConfig !== 'undefined') {
                     clearInterval(checkLibs);
-
-                    // ✅ تعريف مستخدم المجلس (الرئيس)
-                    const boardUser = {
-                        id: 'BRD_001',
-                        type: 'board', // ⚠️ هذا النوع هو الذي يفتح قائمة المجلس الجانبية
-                        role: 'Chairman',
-                        displayName: 'د. عبدالله الحواس',
-                        displayTitle: 'رئيس مجلس الإدارة',
-                        avatar: 'https://ui-avatars.com/api/?name=A+H&background=FB4747&color=fff'
-                    };
-
-                    // تحديث واجهة المستخدم
-                    if(document.getElementById('dashName')) {
-                        document.getElementById('dashName').innerText = boardUser.displayName;
-                    }
-
-                    // حفظ الجلسة وتشغيل نظام التخطيط
-                    AppConfig.setCurrentUser(boardUser);
-                    Layout.init();
                     
-                    // تشغيل الرسوم البيانية
-                    BoardLayout.initChart();
+                    // 1. قراءة بيانات المستخدم الذي سجل الدخول فعلياً
+                    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+
+                    if (currentUser) {
+                        // 2. تحديث الواجهة ببياناته
+                        document.getElementById('dynamicName').innerText = currentUser.name;
+                        document.getElementById('dynamicTitle').innerText = currentUser.role;
+
+                        // 3. تشغيل الـ Sidebar بناءً على نوعه (board) ليرى الجميع نفس المعلومات
+                        currentUser.type = 'board'; 
+                        AppConfig.setCurrentUser(currentUser);
+                        Layout.init();
+
+                        // 4. إظهار أدوات "أمين السر" فقط إذا كان هو المسجل
+                        // نبحث عن كلمة Secretary أو الاسم المعروف لأمين السر (أيمن)
+                        if (currentUser.role.includes('Secretary') || currentUser.name.includes('أيمن')) {
+                            document.getElementById('secretaryActions').classList.remove('hidden');
+                        }
+                    } else {
+                        // إعادة للتسجيل إذا لم يوجد مستخدم
+                        window.location.href = '../index.html';
+                    }
                 }
             }, 50);
         });
     </script>
-
 </body>
 </html>
