@@ -110,35 +110,35 @@ const Layout = (function() {
     // 4. قائمة المدير المالي (CFO)
     'CFO': [
       { section: 'main', items: [
-        { key: 'dash', icon: 'fa-chart-pie', link: '../cfo/cfo_dashboard.html' },
-        { key: 'approvals', icon: 'fa-stamp', link: '../cfo/approvals.html' },
-        { key: 'chat', icon: 'fa-comments', link: '../cfo/internal_chat.html' }
+        { key: 'dash', icon: 'fa-chart-pie', link: '../finance/cfo_dashboard.html' },
+        { key: 'approvals', icon: 'fa-stamp', link: '../finance/approvals.html' },
+        { key: 'chat', icon: 'fa-comments', link: '../finance/internal_chat.html' }
       ]},
       { section: 'gl', items: [
-        { key: 'journal', icon: 'fa-book', link: '../cfo/gl_journal.html' },
-        { key: 'coa', icon: 'fa-sitemap', link: '../cfo/gl_coa.html' },
-        { key: 'costCenters', icon: 'fa-layer-group', link: '../cfo/gl_cost_centers.html' }
+        { key: 'journal', icon: 'fa-book', link: '../finance/gl_journal.html' },
+        { key: 'coa', icon: 'fa-sitemap', link: '../finance/gl_coa.html' },
+        { key: 'costCenters', icon: 'fa-layer-group', link: '../finance/gl_cost_centers.html' }
         ]},
       { section: 'ap', items: [
-        { key: 'vendors', icon: 'fa-store', link: '../cfo/ap_vendors.html' },
-        { key: 'bills', icon: 'fa-file-invoice-dollar', link: '../cfo/ap_bills.html' },
-        { key: 'payments', icon: 'fa-money-bill-transfer', link: '../cfo/ap_payments.html' }
+        { key: 'vendors', icon: 'fa-store', link: '../finance/ap_vendors.html' },
+        { key: 'bills', icon: 'fa-file-invoice-dollar', link: '../finance/ap_bills.html' },
+        { key: 'payments', icon: 'fa-money-bill-transfer', link: '../finance/ap_payments.html' }
         ]},
       { section: 'ar', items: [ 
-        { key: 'salesInv', icon: 'fa-file-invoice', link: '../cfo/ar_invoices.html' },
-        { key: 'receipts', icon: 'fa-hand-holding-dollar', link: '../cfo/ar_receipts.html' }
+        { key: 'salesInv', icon: 'fa-file-invoice', link: '../finance/ar_invoices.html' },
+        { key: 'receipts', icon: 'fa-hand-holding-dollar', link: '../finance/ar_receipts.html' }
         ]},
       { section: 'inventory', items: [
-        { key: 'stock', icon: 'fa-boxes-stacked', link: '../cfo/inv_dashboard.html' },
-        { key: 'assets', icon: 'fa-laptop-code', link: '../cfo/inv_assets.html' }
+        { key: 'stock', icon: 'fa-boxes-stacked', link: '../finance/inv_dashboard.html' },
+        { key: 'assets', icon: 'fa-laptop-code', link: '../finance/inv_assets.html' }
        ]},
       { section:'reporting', items: [
-        { key: 'statements', icon: 'fa-file-pdf', link: '../cfo/rep_statements.html' },
-        { key: 'budget', icon: 'fa-scale-balanced', link: '../cfo/rep_budget.html' },
-        { key: 'tax', icon: 'fa-building-columns', link: '../cfo/rep_tax.html' }
+        { key: 'statements', icon: 'fa-file-pdf', link: '../finance/rep_statements.html' },
+        { key: 'budget', icon: 'fa-scale-balanced', link: '../finance/rep_budget.html' },
+        { key: 'tax', icon: 'fa-building-columns', link: '../finance/rep_tax.html' }
         ]},
       { section: 'config', items: [
-        { key: 'settings', icon: 'fa-gears', link: '../cfo/fin_settings.html' }
+        { key: 'settings', icon: 'fa-gears', link: '../finance/fin_settings.html' }
        ]}
   ],
     
@@ -167,15 +167,15 @@ const Layout = (function() {
          ]}
   ],
     
-    // 6. قائمة المساهمين (IR) 
-    'IR': [
+    // 6. قائمة المساهمين (shareholder) 
+    'shareholder': [
       { section: 'main', items: [
-        { key: 'dash', icon: 'fa-chart-pie', link: '../IR/dashboard.html' },
-        { key: 'profile', icon: 'fa-id-card', link: '../IR/profile.html' },
-        { key: 'requests', icon: 'fa-headset', link: '../IR/requests.html' },
-        { key: 'certificates', icon: 'fa-file-contract', link: '../IR/certificates.html' },
-        { key: 'dividends', icon: 'fa-hand-holding-dollar', link: '../IR/dividends.html' },
-        { key: 'voting', icon: 'fa-check-to-slot', link: '../IR/voting.html' },
+        { key: 'dash', icon: 'fa-chart-pie', link: '../shareholder/dashboard.html' },
+        { key: 'profile', icon: 'fa-id-card', link: '../shareholder/profile.html' },
+        { key: 'requests', icon: 'fa-headset', link: '../shareholder/requests.html' },
+        { key: 'certificates', icon: 'fa-file-contract', link: '../shareholder/certificates.html' },
+        { key: 'dividends', icon: 'fa-hand-holding-dollar', link: '../shareholder/dividends.html' },
+        { key: 'voting', icon: 'fa-check-to-slot', link: '../shareholder/voting.html' },
         ]}
   ],
     
