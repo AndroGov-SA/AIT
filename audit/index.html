@@ -25,11 +25,13 @@
   </script>
 
   <style>
+    /* Custom Styles */
     ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 20px; }
     .dark ::-webkit-scrollbar-thumb { background-color: #475569; }
     .fade-in { animation: fadeIn 0.3s ease-out forwards; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    
     .modal-overlay { background: rgba(0,0,0,0.6); position: fixed; inset: 0; z-index: 70; display: none; backdrop-filter: blur(4px); }
     .modal-overlay.active { display: block; }
     .modal { position: fixed; inset: 0; z-index: 80; display: none; align-items: center; justify-content: center; pointer-events: none; }
@@ -44,7 +46,9 @@
   <div id="sidebar-container"></div>
 
   <div class="main-content-wrapper ltr:md:ml-72 rtl:md:mr-72 transition-all duration-300 flex flex-col min-h-screen">
+    
     <div id="header-container"></div>
+
     <main class="p-6 md:p-8 flex-1 overflow-y-auto">
         <div id="dynamic-content" class="fade-in"></div>
     </main>
@@ -68,29 +72,48 @@
   <script src="../admin/js/core/i18n.js"></script>
   <script src="../admin/js/services/data-service.js"></script>
   <script src="../admin/js/components/role-switcher.js"></script>
-  <script src="../admin/js/components/layout.js"></script>
+  <script src="../admin/js/components/layout.js"></script> 
   <script src="../admin/js/components/bot.js"></script>
 
   <script>
+    // ==========================================
+    // Internal Audit Module Logic
+    // ==========================================
     const STORE_KEY = "AndroGovAudit_v1";
     let currentView = 'dashboard';
     let auditChart = null;
 
+    // Fake Data for Demo
+    const missionsData = [
+        { id: 'M-001', title: 'تدقيق المصاريف التشغيلية Q1', dept: 'المالية', status: 'completed', progress: 100, date: '2025-01-15' },
+        { id: 'M-002', title: 'مراجعة عقود المشتريات', dept: 'المشتريات', status: 'in-progress', progress: 65, date: '2025-02-20' },
+        { id: 'M-003', title: 'فحص أنظمة الحماية السيبرانية', dept: 'تقنية المعلومات', status: 'planned', progress: 0, date: '2025-03-10' },
+    ];
+
+    const findingsData = [
+        { id: 'F-101', title: 'نقص في توقيعات الاستلام', risk: 'medium', status: 'open' },
+        { id: 'F-102', title: 'تأخر في إغلاق العهد المالية', risk: 'high', status: 'pending' },
+    ];
+
     document.addEventListener('DOMContentLoaded', () => {
+        // ننتظر تحميل Layout.js ثم نقوم بالتهيئة
         const checkSys = setInterval(() => {
             if (typeof Layout !== 'undefined' && typeof AppConfig !== 'undefined') {
                 clearInterval(checkSys);
                 
-                // تعريف المستخدم كمدقق داخلي
-                const auditorUser = {
-                    id: 'AUD_001',
-                    role: 'InternalAudit', 
-                    displayName: 'علي الغامدي',
-                    displayTitle: 'مدقق داخلي أول',
-                    avatar: 'https://ui-avatars.com/api/?name=Ali+G&background=FB4747&color=fff'
-                };
-                
-                AppConfig.setCurrentUser(auditorUser);
+                // التأكد من تحميل المستخدم الحالي، إذا لم يوجد نضع مستخدم افتراضي
+                if(!AppConfig.getCurrentUser()) {
+                     const auditorUser = {
+                        id: 'AUD_001',
+                        role: 'InternalAudit', 
+                        type: 'audit', // هام جداً للتوجيه الجديد
+                        displayName: 'علي الغامدي',
+                        displayTitle: 'مدقق داخلي أول',
+                        avatar: 'https://ui-avatars.com/api/?name=Ali+G&background=FB4747&color=fff'
+                    };
+                    AppConfig.setCurrentUser(auditorUser);
+                }
+
                 Layout.init(); 
 
                 handleRouting();
@@ -107,20 +130,24 @@
     function renderAuditView(view) {
         currentView = view;
         const content = document.getElementById('dynamic-content');
-        if (view === 'dashboard') {
-            content.innerHTML = dashboardHTML();
-            setTimeout(initChart, 50);
-        } else if (view === 'missions') {
-            content.innerHTML = missionsHTML();
-            setTimeout(renderMissionsTable, 0);
-        } else if (view === 'findings') {
-            content.innerHTML = findingsHTML();
-            setTimeout(renderFindingsTable, 0);
-        } else if (view === 'reports') {
-            content.innerHTML = reportsHTML();
-        } else if (view === 'profile') {
-            content.innerHTML = profileHTML();
-        }
+        content.innerHTML = '<div class="flex justify-center p-10"><i class="fa-solid fa-circle-notch fa-spin text-brandRed text-3xl"></i></div>';
+        
+        setTimeout(() => {
+            if (view === 'dashboard') {
+                content.innerHTML = dashboardHTML();
+                initChart();
+            } else if (view === 'missions') {
+                content.innerHTML = missionsHTML();
+                renderMissionsTable();
+            } else if (view === 'findings') {
+                content.innerHTML = findingsHTML();
+                renderFindingsTable();
+            } else if (view === 'reports') {
+                content.innerHTML = reportsHTML();
+            } else if (view === 'profile') {
+                content.innerHTML = profileHTML();
+            }
+        }, 300);
     }
 
     // --- HTML Templates ---
@@ -149,6 +176,61 @@
         `;
     }
 
+    function missionsHTML() { 
+        return `
+        <div class="p-6 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="font-bold text-lg dark:text-white">مهام التدقيق</h3>
+                <button class="bg-brandRed text-white px-4 py-2 rounded-lg text-sm hover:bg-red-700 transition"><i class="fa-solid fa-plus"></i> إضافة مهمة</button>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm text-right">
+                    <thead class="text-xs text-slate-400 uppercase bg-slate-50 dark:bg-slate-700/50">
+                        <tr>
+                            <th class="px-4 py-3 rounded-r-lg">المهمة</th>
+                            <th class="px-4 py-3">القسم</th>
+                            <th class="px-4 py-3">التاريخ</th>
+                            <th class="px-4 py-3">الإنجاز</th>
+                            <th class="px-4 py-3">الحالة</th>
+                            <th class="px-4 py-3 rounded-l-lg"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="missionsTableBody"></tbody>
+                </table>
+            </div>
+        </div>`; 
+    }
+
+    function findingsHTML() { 
+        return `
+        <div class="p-6 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+             <div class="flex justify-between items-center mb-6">
+                <h3 class="font-bold text-lg dark:text-white">سجل الملاحظات</h3>
+                <div class="flex gap-2">
+                    <input type="text" placeholder="بحث..." class="bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-1.5 text-xs outline-none focus:ring-1 ring-brandRed">
+                </div>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm text-right">
+                    <thead class="text-xs text-slate-400 uppercase bg-slate-50 dark:bg-slate-700/50">
+                        <tr>
+                            <th class="px-4 py-3 rounded-r-lg">الملاحظة</th>
+                            <th class="px-4 py-3">درجة المخاطرة</th>
+                            <th class="px-4 py-3">الحالة</th>
+                            <th class="px-4 py-3 rounded-l-lg">إجراء</th>
+                        </tr>
+                    </thead>
+                    <tbody id="findingsTableBody"></tbody>
+                </table>
+            </div>
+        </div>`; 
+    }
+
+    function reportsHTML() { return `<div class="p-10 text-center bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700"><i class="fa-solid fa-file-contract text-4xl text-slate-300 mb-4"></i><h3 class="font-bold text-lg dark:text-white">التقارير</h3><p class="text-slate-500 text-sm mt-2">يمكنك استخراج تقارير الربع السنوي من هنا قريباً.</p></div>`; }
+    
+    function profileHTML() { return `<div class="p-10 text-center bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700"><i class="fa-solid fa-user-circle text-4xl text-slate-300 mb-4"></i><h3 class="font-bold text-lg dark:text-white">الملف الشخصي</h3></div>`; }
+
+    // --- Helpers & Renderers ---
     function statCard(label, val, colors) {
         return `<div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700"><p class="text-xs text-slate-500 font-bold mb-1">${label}</p><h3 class="text-3xl font-extrabold ${colors.split(' ')[0]}">${val}</h3></div>`;
     }
@@ -156,11 +238,6 @@
     function quickBtn(label, icon, action) {
         return `<button onclick="${action}" class="w-full text-start p-3 bg-slate-50 dark:bg-slate-700/50 hover:bg-red-50 dark:hover:bg-slate-700 rounded-lg transition flex items-center gap-3"><div class="w-8 h-8 rounded-lg bg-white dark:bg-slate-600 flex items-center justify-center text-brandRed"><i class="fa-solid ${icon}"></i></div><span class="text-xs font-bold text-slate-700 dark:text-slate-200">${label}</span></button>`;
     }
-
-    function missionsHTML() { return `<div class="p-6 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700"><h3 class="font-bold text-lg dark:text-white mb-4">مهام التدقيق</h3><p class="text-slate-500 text-sm">جدول المهام سيظهر هنا...</p></div>`; }
-    function findingsHTML() { return `<div class="p-6 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700"><h3 class="font-bold text-lg dark:text-white mb-4">سجل الملاحظات</h3><p class="text-slate-500 text-sm">جدول الملاحظات سيظهر هنا...</p></div>`; }
-    function reportsHTML() { return `<div class="p-10 text-center bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700"><i class="fa-solid fa-file-contract text-4xl text-slate-300 mb-4"></i><h3 class="font-bold text-lg dark:text-white">التقارير</h3></div>`; }
-    function profileHTML() { return `<div class="p-10 text-center bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700"><i class="fa-solid fa-user-circle text-4xl text-slate-300 mb-4"></i><h3 class="font-bold text-lg dark:text-white">الملف الشخصي</h3></div>`; }
 
     function initChart() {
         const ctx = document.getElementById('auditChartCanvas');
@@ -170,14 +247,39 @@
             type: 'doughnut',
             data: {
                 labels: ['مكتمل', 'قيد التنفيذ', 'مخطط'],
-                datasets: [{ data: [5, 3, 2], backgroundColor: ['#10B981', '#3B82F6', '#FB4747'], borderWidth: 0 }]
+                datasets: [{ data: [5, 3, 2], backgroundColor: ['#10B981', '#3B82F6', '#e2e8f0'], borderWidth: 0 }]
             },
-            options: { responsive: true, maintainAspectRatio: false, cutout: '75%', plugins: { legend: { position: 'bottom' } } }
+            options: { responsive: true, maintainAspectRatio: false, cutout: '75%', plugins: { legend: { position: 'bottom', labels: { font: { family: 'Tajawal' } } } } }
         });
     }
     
-    function renderMissionsTable() {} // Placeholder
-    function renderFindingsTable() {} // Placeholder
+    function renderMissionsTable() {
+        const tbody = document.getElementById('missionsTableBody');
+        if(!tbody) return;
+        tbody.innerHTML = missionsData.map(m => `
+            <tr class="border-b border-slate-50 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
+                <td class="px-4 py-3 font-bold text-slate-700 dark:text-white">${m.title} <span class="block text-[10px] text-slate-400 font-normal">${m.id}</span></td>
+                <td class="px-4 py-3 text-slate-500 text-xs">${m.dept}</td>
+                <td class="px-4 py-3 text-slate-500 text-xs">${m.date}</td>
+                <td class="px-4 py-3"><div class="w-20 bg-slate-200 rounded-full h-1.5 dark:bg-slate-700"><div class="bg-brandRed h-1.5 rounded-full" style="width: ${m.progress}%"></div></div></td>
+                <td class="px-4 py-3"><span class="px-2 py-1 rounded-md text-[10px] font-bold ${m.status==='completed'?'bg-green-100 text-green-700': m.status==='in-progress'?'bg-blue-100 text-blue-700':'bg-slate-100 text-slate-500'}">${m.status}</span></td>
+                <td class="px-4 py-3"><button class="text-slate-400 hover:text-brandRed"><i class="fa-solid fa-ellipsis-vertical"></i></button></td>
+            </tr>
+        `).join('');
+    }
+
+    function renderFindingsTable() {
+        const tbody = document.getElementById('findingsTableBody');
+        if(!tbody) return;
+        tbody.innerHTML = findingsData.map(f => `
+            <tr class="border-b border-slate-50 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
+                <td class="px-4 py-3 font-bold text-slate-700 dark:text-white">${f.title} <span class="block text-[10px] text-slate-400 font-normal">${f.id}</span></td>
+                <td class="px-4 py-3"><span class="px-2 py-1 rounded-md text-[10px] font-bold ${f.risk==='high'?'bg-red-100 text-red-700':'bg-orange-100 text-orange-700'}">${f.risk}</span></td>
+                <td class="px-4 py-3 text-xs text-slate-500">${f.status}</td>
+                <td class="px-4 py-3"><button class="text-brandRed text-xs font-bold hover:underline">عرض التفاصيل</button></td>
+            </tr>
+        `).join('');
+    }
 
     function closeModal() {
         document.getElementById('modalOverlay').classList.remove('active');
