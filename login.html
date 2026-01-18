@@ -28,16 +28,17 @@
     [dir="ltr"] .dir-rotate { transform: rotate(180deg); }
     [dir="rtl"] .icon-inset { right: .75rem; left: auto; }
     [dir="ltr"] .icon-inset { left: .75rem; right: auto; }
-    [dir="rtl"] .pass-toggle { left: .5rem; right: auto; }
-    [dir="ltr"] .pass-toggle { right: .5rem; left: auto; }
+    
     .users-scroll::-webkit-scrollbar { width: 4px; }
-    .users-scroll::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 10px; }
+    .users-scroll::-webkit-scrollbar-thumb { background-color: #FB4747; border-radius: 10px; }
+    .user-card-btn { transition: all 0.2s ease; }
+    .user-card-btn:hover { transform: translateY(-2px); border-color: #FB4747; box-shadow: 0 4px 12px rgba(251, 71, 71, 0.1); }
   </style>
 </head>
 
 <body class="bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-white min-h-screen flex flex-col lg:flex-row font-sans transition-colors duration-300">
 
-  <aside class="hidden lg:flex w-1/2 bg-slate-900 relative flex-col justify-between p-12 text-white overflow-hidden h-screen sticky top-0">
+  <aside class="hidden lg:flex w-1/3 bg-slate-900 relative flex-col justify-between p-12 text-white overflow-hidden h-screen sticky top-0">
     <div class="absolute inset-0 bg-gradient-to-br from-brandBlue/35 to-slate-900/95"></div>
 
     <div class="relative flex flex-col h-full justify-center">
@@ -46,7 +47,7 @@
              <i class="fa-solid fa-layer-group text-4xl text-brandRed"></i>
         </div>
         <div>
-          <h1 class="text-5xl font-extrabold tracking-tight leading-none">AndroGov</h1>
+          <h1 class="text-4xl font-extrabold tracking-tight leading-none">AndroGov</h1>
           <p class="text-slate-300 mt-2 text-lg font-light" data-i18n="systemDesc">منصة الحوكمة الرقمية الشاملة</p>
         </div>
       </div>
@@ -54,27 +55,21 @@
       <div class="space-y-6 max-w-md">
         <div class="flex items-center gap-4 group cursor-default">
           <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-green-500/20 transition"><i class="fa-solid fa-gavel text-green-400"></i></div>
-          <div>
-            <h3 class="font-bold text-white text-sm" data-i18n="sidebarGovTitle">حوكمة الشركات</h3>
-            <p class="text-[11px] text-slate-400" data-i18n="sidebarGovDesc">إدارة الجمعيات والمجلس واللجان والامتثال.</p>
-          </div>
+          <div><h3 class="font-bold text-white text-sm" data-i18n="sidebarGovTitle">حوكمة الشركات</h3><p class="text-[11px] text-slate-400">إدارة المجلس واللجان والامتثال.</p></div>
         </div>
         <div class="flex items-center gap-4 group cursor-default">
           <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-blue-500/20 transition"><i class="fa-solid fa-briefcase text-blue-400"></i></div>
-          <div>
-            <h3 class="font-bold text-white text-sm" data-i18n="sidebarOpsTitle">العمليات التشغيلية</h3>
-            <p class="text-[11px] text-slate-400" data-i18n="sidebarOpsDesc">الموارد البشرية، المالية، والمشاريع التقنية.</p>
-          </div>
+          <div><h3 class="font-bold text-white text-sm" data-i18n="sidebarOpsTitle">العمليات التشغيلية</h3><p class="text-[11px] text-slate-400">المالية، التقنية، والموارد البشرية.</p></div>
         </div>
       </div>
     </div>
     <div class="relative text-[10px] text-slate-500 flex justify-between">
       <p>© 2026 Andromeda IT.</p>
-      <p>v4.5.0</p>
+      <p>System v10.0 (Enterprise)</p>
     </div>
   </aside>
 
-  <main class="w-full lg:w-1/2 flex flex-col relative bg-slate-50 dark:bg-slate-900 transition-colors duration-300 min-h-screen">
+  <main class="w-full lg:w-2/3 flex flex-col relative bg-slate-50 dark:bg-slate-900 transition-colors duration-300 min-h-screen">
     
     <header class="w-full flex justify-end items-center gap-3 p-6">
         <div class="flex gap-2">
@@ -88,44 +83,22 @@
     </header>
 
     <section class="flex-1 flex flex-col justify-center items-center w-full px-6 py-4">
-      <div class="w-full max-w-md">
+      <div class="w-full max-w-3xl">
         
-        <div class="bg-white dark:bg-slate-800 p-8 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-xl">
-          <div class="text-center mb-8">
-            <h2 class="text-2xl font-extrabold text-slate-800 dark:text-white" data-i18n="loginTitle">تسجيل الدخول</h2>
-            <p class="text-slate-500 dark:text-slate-400 text-xs mt-1" data-i18n="loginSub">أدخل بياناتك للوصول إلى لوحة التحكم</p>
+        <div class="bg-white/90 dark:bg-slate-800/90 backdrop-blur p-8 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-2xl">
+          <div class="text-center mb-6">
+            <h2 class="text-2xl font-extrabold" data-i18n="loginTitle">تسجيل الدخول</h2>
+            <p class="text-slate-500 dark:text-slate-400 text-xs mt-1" data-i18n="loginSub">اختر دورك الوظيفي للوصول السريع</p>
           </div>
 
-          <form id="loginForm" class="space-y-5">
-            <div>
-              <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1.5" data-i18n="emailLabel">البريد الإلكتروني</label>
-              <div class="relative">
-                <div class="absolute inset-y-0 flex items-center pointer-events-none icon-inset"><i class="fa-regular fa-envelope text-slate-400"></i></div>
-                <input type="email" id="email" class="w-full py-3 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-10 focus:ring-2 focus:ring-brandRed/50 outline-none transition-all dark:text-white text-sm" placeholder="name@company.com" required>
+          <form id="loginForm" class="hidden"><input type="email" id="email"><input type="password" id="password" value="12345678"></form>
+
+          <div id="usersContainer" class="max-h-[500px] overflow-y-auto users-scroll space-y-8 pr-2">
               </div>
-            </div>
 
-            <div>
-              <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1.5" data-i18n="passLabel">كلمة المرور</label>
-              <div class="relative">
-                <div class="absolute inset-y-0 flex items-center pointer-events-none icon-inset"><i class="fa-solid fa-lock text-slate-400"></i></div>
-                <input type="password" id="password" class="w-full py-3 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-10 focus:ring-2 focus:ring-brandRed/50 outline-none transition-all dark:text-white text-sm" value="12345678" required>
-                <button type="button" class="absolute inset-y-0 pass-toggle px-3 text-slate-500 hover:text-brandRed" onclick="togglePassword()"><i id="passIcon" class="fa-regular fa-eye"></i></button>
-              </div>
-            </div>
-
-            <button type="submit" class="w-full bg-brandRed hover:bg-red-700 text-white font-bold py-3 rounded-xl transition-all shadow-lg flex justify-center items-center gap-2 text-sm group">
-              <span data-i18n="loginBtn">دخول آمن</span>
-              <i class="fa-solid fa-arrow-left dir-rotate group-hover:-translate-x-1 transition-transform"></i>
-            </button>
-          </form>
-
-          <div class="mt-8 pt-6 border-t border-slate-100 dark:border-slate-700">
-            <p class="text-[10px] text-center text-slate-400 uppercase tracking-widest mb-4" data-i18n="demoTitle">حسابات الوصول السريع</p>
-            <div id="usersContainer" class="max-h-[220px] overflow-y-auto users-scroll space-y-2 pr-1">
-                </div>
+          <div class="mt-8 pt-4 border-t border-slate-100 dark:border-slate-700 text-center">
+              <p class="text-[10px] text-slate-400 italic">يتم توجيه كل مستخدم تلقائياً لمجلد الصلاحيات المخصص له.</p>
           </div>
-
         </div>
       </div>
     </section>
@@ -133,106 +106,95 @@
 
   <script>
     // ==========================================
-    // DATA MODEL
+    // DATA MODEL - 12 الأدوار كاملة
     // ==========================================
     const SYSTEM_USERS = [
-        { name: "هشام السحيباني", role: "CEO", email: "hesham@androomeda.com", path: "admin/index.html" },
-        { name: "منصور اليامي", role: "CAO (HR)", email: "myami@androomeda.com", path: "hr/index.html" },
-        { name: "محمد البخيتي", role: "CFO (Finance)", email: "mtahir@androomeda.com", path: "finance/index.html" },
-        { name: "مشاعل الهذيان", role: "CTO (Tech)", email: "malhadyan@androomeda.com", path: "cto/index.html" },
-        { name: "فهد المبيعات", role: "Sales Manager", email: "SalesManager@androomeda.com", path: "sales/index.html" },
-        { name: "مساهم تجريبي", role: "Shareholder", email: "alcaseer@gmail.com", path: "shareholder/index.html" }
+        { group: "admin", name: "أيمن المغربي", role: "مدير النظام / GRC", email: "amaghrabi@androomeda.com", path: "admin/index.html", type: "Admin", icon: "fa-user-shield", color: "red" },
+        
+        { group: "board", name: "د. عبدالله الحواس", role: "رئيس مجلس الإدارة", email: "chairman@androomeda.com", path: "board/index.html", type: "Board", icon: "fa-building-columns", color: "blue" },
+        { group: "board", name: "أيمن المغربي (سر)", role: "أمين سر المجلس", email: "board_sec@androomeda.com", path: "board/index.html", type: "Board_Secretary", icon: "fa-pen-to-square", color: "blue" },
+        
+        { group: "exec", name: "هشام السحيباني", role: "الرئيس التنفيذي (CEO)", email: "hesham@androomeda.com", path: "ceo/index.html", type: "CEO", icon: "fa-user-tie", color: "purple" },
+        { group: "exec", name: "محمد البخيتي", role: "المدير المالي (CFO)", email: "mtahir@androomeda.com", path: "finance/index.html", type: "CFO", icon: "fa-money-bill-trend-up", color: "purple" },
+        { group: "exec", name: "مشاعل الهذيان", role: "المدير التقني (CTO)", email: "malhadyan@androomeda.com", path: "cto/index.html", type: "CTO", icon: "fa-microchip", color: "purple" },
+        { group: "exec", name: "منصور اليامي", role: "مدير الموارد البشرية (CAO)", email: "myami@androomeda.com", path: "hr/index.html", type: "CAO", icon: "fa-users-gear", color: "purple" },
+
+        { group: "audit", name: "محمد العنزي", role: "رئيس لجنة المراجعة", email: "audit_chair@androomeda.com", path: "audit/index.html", type: "Audit", icon: "fa-shield-halved", color: "orange" },
+        { group: "audit", name: "سارة الأحمد", role: "أمين سر اللجنة", email: "audit_sec@androomeda.com", path: "audit/index.html", type: "Committee_Secretary", icon: "fa-clipboard-list", color: "orange" },
+
+        { group: "sh", name: "وائل السحيباني", role: "مساهم (شريك)", email: "w961@live.com", path: "shareholder/index.html", type: "shareholder", icon: "fa-hand-holding-dollar", color: "green" },
+        { group: "sh", name: "فهد (أمانة المساهمين)", role: "أمين سر المساهمين", email: "IR@androomeda.com", path: "sh_sec/index.html", type: "shareholder_sec", icon: "fa-id-card-clip", color: "green" },
+
+        { group: "sales", name: "فهد المبيعات", role: "Sales Manager", email: "sales@androomeda.com", path: "Sales/index.html", type: "Sales", icon: "fa-chart-line", color: "cyan" }
     ];
 
-    const translations = {
-      ar: { 
-        systemDesc: "منصة الحوكمة الرقمية الشاملة", loginTitle: "تسجيل الدخول", emailLabel: "البريد الإلكتروني", 
-        passLabel: "كلمة المرور", loginBtn: "دخول آمن", demoTitle: "حسابات الوصول السريع", 
-        sidebarGovTitle: "حوكمة الشركات", sidebarOpsTitle: "العمليات التشغيلية"
-      },
-      en: { 
-        systemDesc: "Integrated Digital Governance Platform", loginTitle: "Secure Sign In", emailLabel: "Email Address", 
-        passLabel: "Password", loginBtn: "Login Now", demoTitle: "Quick Access Accounts",
-        sidebarGovTitle: "Governance", sidebarOpsTitle: "Operations"
-      }
+    const groups = {
+        admin: { title: "إدارة النظام", icon: "fa-gears", color: "text-red-500" },
+        board: { title: "مجلس الإدارة", icon: "fa-gavel", color: "text-blue-500" },
+        exec: { title: "الإدارة التنفيذية", icon: "fa-crown", color: "text-purple-500" },
+        audit: { title: "المراجعة والتدقيق", icon: "fa-magnifying-glass-chart", color: "text-orange-500" },
+        sh: { title: "المساهمين", icon: "fa-users", color: "text-green-500" },
+        sales: { title: "المبيعات", icon: "fa-shop", color: "text-cyan-500" }
     };
-
-    let lang = localStorage.getItem('lang') || 'ar';
-
-    // ==========================================
-    // INITIALIZATION
-    // ==========================================
-    document.addEventListener('DOMContentLoaded', () => {
-        applyTheme();
-        applyLang();
-        renderUsers();
-        
-        document.getElementById('loginForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const email = document.getElementById('email').value;
-            const user = SYSTEM_USERS.find(u => u.email === email);
-            
-            if(user) {
-                // Save session (Local Storage)
-                localStorage.setItem('currentUser', JSON.stringify(user));
-                window.location.href = user.path;
-            } else {
-                alert("User not found in demo data.");
-            }
-        });
-    });
 
     function renderUsers() {
         const container = document.getElementById('usersContainer');
-        container.innerHTML = SYSTEM_USERS.map(u => `
-            <button onclick="fillLogin('${u.email}')" class="flex items-center gap-3 p-3 w-full text-right hover:bg-slate-50 dark:hover:bg-slate-700 rounded-xl transition border border-transparent hover:border-slate-100">
-                <div class="w-8 h-8 rounded-full bg-brandRed/10 text-brandRed flex items-center justify-center text-xs font-bold">
-                    ${u.name.charAt(0)}
+        let html = '';
+
+        for (const [key, groupInfo] of Object.entries(groups)) {
+            const users = SYSTEM_USERS.filter(u => u.group === key);
+            if (users.length === 0) continue;
+
+            html += `
+                <div>
+                    <h4 class="text-[10px] font-black uppercase tracking-widest ${groupInfo.color} mb-3 flex items-center gap-2">
+                        <i class="fa-solid ${groupInfo.icon}"></i> ${groupInfo.title}
+                    </h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                        ${users.map(u => `
+                            <button onclick="handleLogin('${u.email}')" class="user-card-btn flex items-center gap-3 p-3 bg-white dark:bg-slate-700 border border-slate-100 dark:border-slate-600 rounded-2xl text-right">
+                                <div class="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-brandRed shadow-inner">
+                                    <i class="fa-solid ${u.icon} text-sm"></i>
+                                </div>
+                                <div class="flex-1 overflow-hidden text-left">
+                                    <p class="text-xs font-bold truncate dark:text-white">${u.name}</p>
+                                    <p class="text-[9px] text-slate-400 font-medium truncate uppercase">${u.role}</p>
+                                </div>
+                            </button>
+                        `).join('')}
+                    </div>
                 </div>
-                <div class="flex-1">
-                    <p class="text-xs font-bold dark:text-white">${u.name}</p>
-                    <p class="text-[10px] text-slate-400">${u.role}</p>
-                </div>
-                <i class="fa-solid fa-chevron-left text-[10px] text-slate-300"></i>
-            </button>
-        `).join('');
+            `;
+        }
+        container.innerHTML = html;
     }
 
-    window.fillLogin = (email) => {
-        document.getElementById('email').value = email;
-    };
+    function handleLogin(email) {
+        const user = SYSTEM_USERS.find(u => u.email === email);
+        if (user) {
+            localStorage.setItem('currentUser', JSON.stringify({
+                name: user.name, role: user.role, type: user.type, email: user.email,
+                avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=FB4747&color=fff`
+            }));
+            window.location.href = user.path;
+        }
+    }
 
-    // UI Helpers
     function toggleDarkMode() {
         document.documentElement.classList.toggle('dark');
         localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
     }
 
     function toggleLanguage() {
-        lang = lang === 'ar' ? 'en' : 'ar';
+        let lang = localStorage.getItem('lang') === 'ar' ? 'en' : 'ar';
         localStorage.setItem('lang', lang);
-        applyLang();
+        location.reload();
     }
 
-    function applyLang() {
-        document.documentElement.lang = lang;
-        document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
-        document.getElementById('langLabel').innerText = lang === 'ar' ? 'EN' : 'AR';
-        const t = translations[lang];
-        document.querySelectorAll('[data-i18n]').forEach(el => {
-            const key = el.getAttribute('data-i18n');
-            if(t[key]) el.innerText = t[key];
-        });
-    }
-
-    function applyTheme() {
+    document.addEventListener('DOMContentLoaded', () => {
         if (localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark');
-    }
-
-    function togglePassword() {
-        const inp = document.getElementById('password');
-        inp.type = inp.type === 'password' ? 'text' : 'password';
-    }
+        renderUsers();
+    });
   </script>
 </body>
 </html>
