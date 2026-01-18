@@ -441,7 +441,9 @@
 
             if (mainRole === 'ADMIN') return 'ADMIN';
             if (['CHAIRMAN', 'BOARD_MEMBER', 'SECRETARY'].includes(mainRole)) return 'BOARD';
-            if (['CEO', 'CFO', 'CAO'].includes(mainRole)) return 'EXEC';
+            if (['CEO'].includes(mainRole)) return 'CEO';
+            if (['CFO'].includes(mainRole)) return 'CFO';
+            if (['CAO'].includes(mainRole)) return 'HR';
             if (['COMMITTEE_MEMBER', 'AUDITOR'].includes(mainRole) || dept === 'DEP_AUDIT') return 'AUDIT';
             if (mainRole === 'SHAREHOLDER') return 'SHAREHOLDER';
             if (['DIRECTOR', 'MANAGER', 'TEAM_LEAD'].includes(mainRole)) return 'MANAGEMENT';
