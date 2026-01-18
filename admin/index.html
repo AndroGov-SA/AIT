@@ -277,12 +277,39 @@
             }, 50);
         });
 
-        // دالة التهيئة الخاصة بالصفحة
-        function initPage() {
-            updateContent();
-            initCharts();
-            renderLogs();
+        // استبدل دالة initPage بهذا الكود المحدث:
+
+function initPage() {
+    updateContent(); // الترجمات
+    
+    // ✅ تحديث البيانات الحية من CompanyPolicy
+    if (typeof DataService !== 'undefined') {
+        const stats = DataService.getShareholdersStats(); // دالة موجودة في data-service.js
+        const company = DataService.getCompanyProfile();
+        
+        // 1. تحديث رأس المال
+        const capitalEl = document.querySelector('[data-i18n="kpiCapital"]')?.nextElementSibling;
+        if(capitalEl && company.capital) {
+            capitalEl.innerHTML = `${company.capital.amount.toLocaleString()} <span class="text-xs font-sans text-slate-400">${company.capital.currency}</span>`;
         }
+
+        // 2. تحديث عدد المساهمين
+        const shCountEl = document.querySelector('[data-i18n="kpiShareholders"]')?.nextElementSibling;
+        if(shCountEl) {
+            shCountEl.innerHTML = `${stats.totalCount} <span class="text-xs font-sans text-slate-400" data-i18n="member">عضو</span>`;
+        }
+
+        // 3. تحديث قائمة المساهمين (النص الصغير)
+        const shListEl = document.querySelector('[data-i18n="shareholdersList"]');
+        if(shListEl) {
+            const topSh = DataService.getMajorShareholders(10).map(s => localStorage.getItem('lang')==='en' ? s.name.en : s.name.ar).join('، ');
+            shListEl.innerText = topSh + '...';
+        }
+    }
+
+    initCharts();
+    renderLogs();
+}
 
         // باقي دوال الصفحة (الترجمة والرسوم البيانية)
         // ... (بقيت كما هي، فقط تم تجميعها تحت دالة initPage) ...
