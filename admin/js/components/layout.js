@@ -57,7 +57,7 @@ const Layout = (function() {
   ],
     
     // 2. قائمة الموارد البشرية
-    'HR': [
+    'CAO': [
         { section: 'main', items: [
           { key: 'dash', icon: 'fa-chart-pie', link: '../hr/index.html' },
           { key: 'approvals', icon: 'fa-inbox', link: '../hr/hr_approvals.html' },
