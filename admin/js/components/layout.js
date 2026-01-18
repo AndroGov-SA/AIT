@@ -216,18 +216,18 @@ const Layout = (function() {
         ]}
     ],
     
-    // 10. قائمة التدقيق الداخلي (Internal Audit)
+    // --- 10. Internal Audit (Updated Path) ---
     'InternalAudit': [
       { section: 'main', items: [
-        { key: 'overview', icon: 'fa-gauge-high', link: 'audit.html#dashboard' }
+        { key: 'overview', icon: 'fa-gauge-high', link: '../audit/index.html#dashboard' }
       ]},
       { section: 'operations', items: [
-        { key: 'missions', icon: 'fa-list-check', link: 'audit.html#missions' },
-        { key: 'findings', icon: 'fa-bug', link: 'audit.html#findings' },
-        { key: 'reports', icon: 'fa-file-contract', link: 'audit.html#reports' }
+        { key: 'missions', icon: 'fa-list-check', link: '../audit/index.html#missions' },
+        { key: 'findings', icon: 'fa-bug', link: '../audit/index.html#findings' },
+        { key: 'reports', icon: 'fa-file-contract', link: '../audit/index.html#reports' }
       ]},
       { section: 'departments', items: [
-        { key: 'profile', icon: 'fa-id-card', link: 'audit.html#profile' }
+        { key: 'profile', icon: 'fa-id-card', link: '../audit/index.html#profile' }
       ]}
     ],
     
