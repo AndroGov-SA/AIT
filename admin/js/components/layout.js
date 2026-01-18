@@ -194,22 +194,49 @@ const Layout = (function() {
       ]}
   ],
     
-    // 7. قائمة المجلس (Board) 
-    'Board': [
-      { section: 'main', items: [
-        { key: 'dash', icon: 'fa-chart-pie', link: '../board/index.html' }
+    // --- 7. أمين سر المساهمين (Shareholder Secretary) ---
+    'shareholder_sec': [
+      { section: 'admin_tools', items: [
+        { key: 'sh_dash', icon: 'fa-gauge-high', link: '../sh_sec/index.html' },
+        { key: 'manage_requests', icon: 'fa-headset', link: '../sh_sec/manage_requests.html' }
       ]},
+      { section: 'equity_mgmt', items: [
+        { key: 'issue_certs', icon: 'fa-file-signature', link: '../sh_sec/issue_certificates.html' },
+        { key: 'payouts_control', icon: 'fa-money-bill-transfer', link: '../sh_sec/payouts_control.html' }
+      ]},
+      { section: 'assembly_mgmt', items: [
+        { key: 'voting_live', icon: 'fa-check-to-slot', link: '../sh_sec/voting_control.html' },
+        { key: 'sh_registry', icon: 'fa-address-book', link: '../sh_sec/registry.html' }
+      ]},
+      { section: 'personal', items: [{ key: 'profile', icon: 'fa-user-tie', link: '../sh_sec/profile.html' }]}
+    ],
+    
+    // --- 8. أمين سر اللجنة (Committee Secretary) ---
+    // مخصص لأمين سر لجنة المراجعة أو غيرها لإدارة الخطة والتقارير
+    'Committee_Secretary': [
+      { section: 'committee_ops', items: [
+        { key: 'comm_dash', icon: 'fa-users-gear', link: '../audit/index.html' },
+        { key: 'manage_plan', icon: 'fa-list-check', link: '../audit/audit_plan.html' },
+        { key: 'publish_reports', icon: 'fa-file-export', link: '../audit/risk_reports.html' }
+      ]},
+      { section: 'monitoring', items: [
+        { key: 'follow_up', icon: 'fa-clock-rotate-left', link: '../audit/observations.html' }
+      ]},
+      { section: 'personal', items: [{ key: 'profile', icon: 'fa-user-tie', link: '../audit/profile.html' }]}
+    ],
+    
+    // 9. قائمة المجلس (Board) 
+    'Board': [
+      { section: 'main', items: [{ key: 'dash', icon: 'fa-chart-pie', link: '../board/index.html' }]},
       { section: 'governance', items: [
         { key: 'meetings', icon: 'fa-calendar-days', link: '../board/meetings.html' },
         { key: 'resolutions', icon: 'fa-file-signature', link: '../board/communication.html' },
         { key: 'finance', icon: 'fa-chart-line', link: '../board/finance.html' }
       ]},
-      { section: 'personal', items: [
-        { key: 'profile', icon: 'fa-user-tie', link: '../board/profile.html' }
-      ]}
-  ],
+      { section: 'personal', items: [{ key: 'profile', icon: 'fa-user-tie', link: '../board/profile.html' }]}
+    ],
     
-    // 8. قائمة اللجان (Committees) 
+    // 10. قائمة اللجان (Committees) 
     'Committees': [
       { section: 'main', items: [
         { key: 'dash', icon: 'fa-chart-pie', link: '../Committees/index.html' }
@@ -224,7 +251,7 @@ const Layout = (function() {
       ]}
   ],
     
-    // 9. قائمة المبيعات (Sales) 
+    // 11. قائمة المبيعات (Sales) 
     'Sales': [
       { section: 'main', items: [
         { key: 'dash', icon: 'fa-chart-pie', link: '../Sales/index.html' },
@@ -233,21 +260,6 @@ const Layout = (function() {
         ]},
       { section: 'personal', items: [
         { key: 'profile', icon: 'fa-user-tie', link: '../Sales/profile.html' }
-      ]}
-  ],
-    
-    // --- 10. Internal Audit (Updated Path) ---
-    'InternalAudit': [
-      { section: 'main', items: [
-        { key: 'overview', icon: 'fa-gauge-high', link: '../audit/index.html#dashboard' }
-      ]},
-      { section: 'operations', items: [
-        { key: 'missions', icon: 'fa-list-check', link: '../audit/index.html#missions' },
-        { key: 'findings', icon: 'fa-bug', link: '../audit/index.html#findings' },
-        { key: 'reports', icon: 'fa-file-contract', link: '../audit/index.html#reports' }
-      ]},
-      { section: 'personal', items: [
-        { key: 'profile', icon: 'fa-user-tie', link: '../audit/profile.html' }
       ]}
   ],
     };
