@@ -1,141 +1,108 @@
-<script src="js/auth.js"></script> 
+<script src="js/auth.js"></script>
 
   <script>
     // ==========================================
-    // 1. DATA DEFINITION (Single Source of Truth)
+    // 1. تعريف البيانات (Data Source)
     // ==========================================
-    // نُبقي البيانات هنا لأنها غير موجودة في ملفات منفصلة في الرفع الخاص بك
     window.SYSTEM_DATA = {
+        // ... (أبقِ بيانات المساهمين والمستخدمين كما هي موجودة لديك حالياً) ...
         shareholders: [
-            { "id": "SH_001", "name": { "ar": "ورثة محمد بن صالح السحيباني", "en": "Heirs of Mohammed Al-Suhaibani" }, "percent": 35, "type": "Individual", "shares": 210000, "voting": true, "email": "alcaseer@gmail.com" },
-            { "id": "SH_002", "name": { "ar": "هشام بن محمد السحيباني", "en": "Hesham bin Mohammed Al-Suhaibani" }, "percent": 10, "type": "Individual", "shares": 60000, "voting": true, "email": "Hesham@androomeda.com" },
-            // ... (بقية قائمة المساهمين كما هي في ملفك الأصلي)
+             { "id": "SH_001", "name": { "ar": "ورثة محمد بن صالح السحيباني", "en": "Heirs..." }, "percent": 35, "email": "alcaseer@gmail.com", /*...*/ },
+             // ... بقية المساهمين
         ],
         users: [
-            { "id": "USR_000", "name": "Abdullah Al-Hawas", "title": "Chairman of the Board", "role": "Chairman", "is_executive": false, "email": "amh400@gmail.com" },
-            { "id": "USR_001", "name": "Hesham Al-Suhaibani", "title": "CEO", "role": "CEO", "is_executive": true, "email": "hesham@androomeda.com" },
-            { "id": "USR_004", "name": "Ayman Al-Maghrabi", "title": "GRCO", "role": "Admin", "email": "amaghrabi@androomeda.com" },
-            // ... (بقية قائمة المستخدمين كما هي في ملفك الأصلي)
+             { "id": "USR_000", "name": "Abdullah Al-Hawas", "role": "Chairman", "email": "amh400@gmail.com", /*...*/ },
+             // ... بقية الموظفين
         ]
     };
 
     // ==========================================
-    // 2. UI LOGIC & TRANSLATIONS
+    // 2. منطق الواجهة (UI Logic)
     // ==========================================
     const translations = {
-      ar: { 
-        loginTitle: "تسجيل الدخول", 
-        loginSub: "يرجى اختيار صفتك للدخول إلى النظام", 
-        errorCredentials: "بيانات الدخول غير صحيحة",
-        verifying: "جاري التحقق...",
-        // ... (يمكنك إبقاء بقية الترجمات)
-      },
-      en: { 
-        loginTitle: "Sign In", 
-        loginSub: "Please select your role to access", 
-        errorCredentials: "Invalid credentials",
-        verifying: "Verifying...",
-        // ...
-      }
+      ar: { loginTitle: "تسجيل الدخول", loginSub: "يرجى اختيار صفتك", verifying: "جاري التحقق...", errorCredentials: "بيانات الدخول غير صحيحة" },
+      en: { loginTitle: "Sign In", loginSub: "Select role", verifying: "Verifying...", errorCredentials: "Invalid credentials" }
     };
 
     let lang = localStorage.getItem('lang') || 'ar';
 
-    // عند تحميل الصفحة
     document.addEventListener('DOMContentLoaded', async () => {
         applyTheme();
         applyLang();
         
-        // تهيئة نظام المصادقة الخارجي بالبيانات الموجودة هنا
+        // تهيئة النظام الخارجي
         if (window.authSystem) {
             await window.authSystem.init();
-            renderDynamicUsers(); // رسم أيقونات المستخدمين (Demo)
+            renderDynamicUsers();
         } else {
-            console.error("AuthSystem script not loaded!");
+            console.error("❌ AuthSystem not loaded! Check js/auth.js path.");
         }
 
-        // ربط زر الدخول
-        document.getElementById('loginForm').addEventListener('submit', handleLoginSubmit);
+        document.getElementById('loginForm').addEventListener('submit', handleLogin);
     });
 
-    // دالة التعامل مع نموذج الدخول
-    async function handleLoginSubmit(e) {
+    // دالة الدخول الجديدة التي تستخدم authSystem
+    async function handleLogin(e) {
         e.preventDefault();
-        
         const btn = document.querySelector('button[type="submit"]');
-        const btnSpan = btn.querySelector('span');
-        const originalText = btnSpan.innerText;
-        const t = translations[lang] || translations['ar']; // Fallback
+        const originalText = btn.innerHTML;
         
-        // UI Loading State
-        if(btn) {
-            btnSpan.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> ${t.verifying}`;
-            btn.disabled = true;
+        // UI Loading
+        btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> ${translations[lang].verifying}`;
+        btn.disabled = true;
+        document.getElementById('errorMsg').classList.add('hidden');
+
+        try {
+            // ✅ استخدام النظام الخارجي للدخول
+            const redirectUrl = await window.authSystem.login(
+                document.getElementById('email').value, 
+                document.getElementById('password').value
+            );
+            window.location.href = redirectUrl;
+        } catch (err) {
+            console.error(err);
+            document.getElementById('errorMsg').classList.remove('hidden');
+            btn.innerHTML = originalText;
+            btn.disabled = false;
         }
-        
-        const errorMsg = document.getElementById('errorMsg');
-        errorMsg.classList.add('hidden');
-
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
-
-        // محاكاة تأخير الشبكة قليلاً
-        setTimeout(async () => {
-            try {
-                // استخدام نظام المصادقة الخارجي الذي أصلحناه
-                const redirectUrl = await window.authSystem.login(email, password);
-                window.location.href = redirectUrl;
-            } catch (err) {
-                console.error(err);
-                if(document.getElementById('errorText')) document.getElementById('errorText').innerText = t.errorCredentials;
-                errorMsg.classList.remove('hidden');
-                if(btn) {
-                    btnSpan.innerHTML = originalText; // إعادة النص الأصلي
-                    btn.disabled = false;
-                }
-            }
-        }, 800);
     }
 
-    // دالة رسم المستخدمين (للوصول السريع Demo)
+    // دالة لعرض مستخدمي الوصول السريع (Demo Users)
     function renderDynamicUsers() {
         const container = document.getElementById('usersContainer');
         if (!container || !window.authSystem) return;
         
         container.innerHTML = '';
-        const users = window.authSystem.getUsers();
+        const users = window.authSystem.getUsers().slice(0, 15); // عرض أول 15 فقط
 
-        // تجميع المستخدمين حسب النوع لتبسيط العرض
-        // هذا مجرد مثال مبسط، يمكنك استخدام الكود الأصلي للتجميع إذا رغبت
-        users.slice(0, 10).forEach(u => {
-             // ... يمكنك نسخ منطق توليد HTML للأزرار هنا من الكود القديم ...
-             // للتسهيل، سنستخدم دالة fillDemo الموجودة في النافذة
+        users.forEach(u => {
+            let name = typeof u.name === 'object' ? (lang==='ar'?u.name.ar:u.name.en) : u.name;
+            let role = u.role || 'User';
+            
+            const btn = document.createElement('button');
+            btn.className = "flex items-center gap-2 p-2 w-full text-right hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition";
+            btn.onclick = () => {
+                document.getElementById('email').value = u.email;
+                document.getElementById('password').value = '12345678';
+            };
+            btn.innerHTML = `
+                <div class="w-8 h-8 rounded-full bg-brandRed/10 text-brandRed flex items-center justify-center text-xs font-bold">
+                    ${name.charAt(0).toUpperCase()}
+                </div>
+                <div class="overflow-hidden">
+                    <p class="text-xs font-bold truncate dark:text-white">${name}</p>
+                    <p class="text-[10px] text-slate-500 truncate">${role}</p>
+                </div>
+            `;
+            container.appendChild(btn);
         });
-        
-        // إعادة تعريف دالة التعبئة التلقائية
-        window.fillDemo = (email) => {
-            document.getElementById('email').value = email;
-            document.getElementById('password').value = '12345678';
-        };
     }
 
-    // دوال المظهر واللغة (كما هي في كودك الأصلي)
-    function applyTheme() { /* ... */ }
-    function applyLang() { /* ... */ }
+    // دوال المظهر (كما هي)
+    function applyTheme() { /* ... كودك السابق ... */ }
+    function applyLang() { /* ... كودك السابق ... */ }
     window.toggleDarkMode = () => { /* ... */ };
     window.toggleLanguage = () => { /* ... */ };
-    window.togglePassword = () => {
-        const inp = document.getElementById('password');
-        const icon = document.getElementById('passIcon');
-        if(inp.type === 'password') {
-            inp.type = 'text';
-            icon.classList.replace('fa-eye', 'fa-eye-slash');
-        } else {
-            inp.type = 'password';
-            icon.classList.replace('fa-eye-slash', 'fa-eye');
-        }
-    };
+    window.togglePassword = () => { /* ... */ };
 
   </script>
-</body>
-</html>
