@@ -27,7 +27,8 @@
 
     <div id="sidebar-container"></div>
     
-    <div class="main-content-wrapper transition-all duration-300 flex flex-col min-h-screen">
+    <div class="main-content-wrapper transition-all duration-300 flex flex-col min-h-screen rtl:lg:mr-64 ltr:lg:ml-64">
+        
         <div id="header-container"></div>
 
         <main class="p-6 space-y-6">
@@ -55,7 +56,7 @@
                         <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="statTotal">إجمالي الشركاء</p>
                         <h3 class="text-2xl font-bold num-font mt-1">18</h3>
                     </div>
-                    <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center"><i class="fa-solid fa-users-viewfinder"></i></div>
+                    <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-lg"><i class="fa-solid fa-users-viewfinder"></i></div>
                 </div>
                 <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-100 dark:border-slate-700 flex items-center justify-between">
                     <div>
@@ -100,7 +101,6 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                
                 <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md transition group">
                     <div class="flex justify-between items-start mb-4">
                         <div class="w-12 h-12 bg-white rounded-lg border border-slate-100 dark:border-slate-600 flex items-center justify-center p-1">
@@ -248,28 +248,26 @@
     <script src="../admin/js/core/i18n.js"></script>
     <script src="../admin/js/services/data-service.js"></script>
     <script src="../admin/js/components/role-switcher.js"></script>
-    
     <script src="../admin/js/components/layout.js"></script>
     <script src="../admin/js/components/bot.js"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // ننتظر تحميل السكربتات
             const checkLibs = setInterval(() => {
                 if (typeof Layout !== 'undefined' && typeof AppConfig !== 'undefined') {
                     clearInterval(checkLibs);
 
-                    // ✅ الخطوة المهمة: تحديد هوية المستخدم كمسؤول موارد بشرية
-                    const boardUser = {
+                    // ✅ تعريف هوية المستخدم كمسؤول موارد بشرية (CAO)
+                    const hrUser = {
                         id: 'USR_005',
-                        role: 'CAO', // <--- هذا هو المفتاح الذي سيغير القائمة إلى قائمة موارد بشرية المختصرة
-                        displayName: 'مسؤول موارد بشرية',
-                        displayTitle: 'مسؤول موارد بشرية  ',
-                        avatar: 'https://ui-avatars.com/api/?name=Board&background=random'
+                        type: 'hr', // ⚠️ هذا المفتاح يضمن تحميل قائمة الموارد البشرية
+                        role: 'CAO',
+                        displayName: 'منصور اليامي', 
+                        displayTitle: 'مدير الموارد البشرية والشؤون الإدارية (CAO)',
+                        avatar: 'https://ui-avatars.com/api/?name=Mansour+Y&background=random'
                     };
 
-                    // حفظ المستخدم وتشغيل النظام
-                    AppConfig.setCurrentUser(boardUser);
+                    AppConfig.setCurrentUser(hrUser);
                     Layout.init();
                 }
             }, 50);
@@ -277,7 +275,7 @@
     </script>
 
     <script>
-        // --- 1. الترجمة ---
+        // --- Translations ---
         const pageContent = {
             ar: {
                 pageTitle: "الشركاء والعلاقات | AndroGov",
@@ -355,12 +353,7 @@
             }
         };
 
-        // --- 2. التشغيل ---
         document.addEventListener('DOMContentLoaded', () => {
-            updatePageLanguage();
-        });
-
-        function updatePageLanguage() {
             const lang = localStorage.getItem('lang') || 'ar';
             const dict = pageContent[lang];
             
@@ -376,7 +369,7 @@
                 const key = el.getAttribute('data-i18n-placeholder');
                 if(dict[key]) el.placeholder = dict[key];
             });
-        }
+        });
     </script>
 </body>
 </html>
