@@ -182,7 +182,7 @@
         </main>
     </div>
 
-    <<script src="../admin/js/core/config.js"></script>
+    <script src="../admin/js/core/config.js"></script>
     <script src="../admin/js/core/i18n.js"></script>
     <script src="../admin/js/services/data-service.js"></script>
     <script src="../admin/js/components/role-switcher.js"></script>
@@ -197,12 +197,12 @@
                 if (typeof Layout !== 'undefined' && typeof AppConfig !== 'undefined') {
                     clearInterval(checkLibs);
 
-                    // ✅ الخطوة المهمة: تحديد هوية المستخدم كعضو مجلس
+                    // ✅ الخطوة المهمة: تحديد هوية المستخدم كمسؤول تقني
                     const boardUser = {
-                        id: 'BRD_001',
-                        role: 'Board', // <--- هذا هو المفتاح الذي سيغير القائمة إلى قائمة المجلس المختصرة
-                        displayName: 'عضو المجلس',
-                        displayTitle: 'عضو مجلس الإدارة',
+                        id: 'USR_009',
+                        role: 'CTO', // <--- هذا هو المفتاح الذي سيغير القائمة إلى قائمة التقني المختصرة
+                        displayName: 'مسؤول تقني',
+                        displayTitle: 'مسؤول تقني  ',
                         avatar: 'https://ui-avatars.com/api/?name=Board&background=random'
                     };
 
