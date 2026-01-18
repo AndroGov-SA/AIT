@@ -5,26 +5,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#FB4747">
     <title>الاجتماعات | AndroGov</title>
+    
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        tailwind.config = { darkMode: 'class', theme: { extend: { colors: { brandRed: '#FB4747', brandBlue: '#4267B2', brandDark: '#1E293B', brandGray: '#F8FAFC' }, fontFamily: { sans: ['Tajawal', 'Inter', 'sans-serif'], en: ['Inter', 'sans-serif'] } } } }
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { brandRed: '#FB4747', brandBlue: '#4267B2', brandDark: '#1E293B', brandGray: '#F8FAFC' },
+                    fontFamily: { sans: ['Tajawal', 'Inter', 'sans-serif'], en: ['Inter', 'sans-serif'] }
+                }
+            }
+        }
     </script>
-    <style>.num-font { font-family: 'Inter', sans-serif; direction: ltr; display: inline-block; } .nav-link.active { background-color: #FB4747; color: white; box-shadow: 0 4px 10px rgba(251, 71, 71, 0.3); } .nav-link:hover:not(.active) { background-color: #F1F5F9; }</style>
+    <style>
+        .num-font { font-family: 'Inter', sans-serif; direction: ltr; display: inline-block; }
+        .custom-scroll::-webkit-scrollbar { width: 5px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 10px; }
+        .fade-in { animation: fadeIn 0.5s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
 </head>
+
 <body class="bg-brandGray dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300 h-screen flex overflow-hidden">
     
     <div id="sidebar-container"></div>
 
     <div class="flex-1 flex flex-col h-full overflow-hidden relative main-content-wrapper ltr:md:ml-72 rtl:md:mr-72">
+        
         <div id="header-container"></div>
 
-        <main class="p-8 space-y-8 overflow-y-auto custom-scroll">
+        <main class="p-8 space-y-8 overflow-y-auto custom-scroll fade-in">
             
             <div class="flex justify-between items-center">
-                <h2 class="text-xl font-bold">جدول الاجتماعات والمحاضر</h2>
-                <button class="px-4 py-2 bg-brandBlue text-white rounded-lg text-xs font-bold shadow-lg">تصدير الجدول</button>
+                <h2 class="text-xl font-bold dark:text-white">جدول الاجتماعات والمحاضر</h2>
+                <button class="px-4 py-2 bg-brandBlue text-white rounded-lg text-xs font-bold shadow-lg hover:bg-blue-700 transition">تصدير الجدول</button>
             </div>
 
             <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden">
@@ -42,18 +60,18 @@
                     <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
                         <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
                             <td class="p-4 font-mono text-xs font-bold text-blue-600">BOD-2026-01</td>
-                            <td class="p-4 font-bold">اجتماع مجلس الإدارة الأول</td>
-                            <td class="p-4 text-xs font-mono">15 Feb 2026 • 10:00 AM</td>
+                            <td class="p-4 font-bold dark:text-white">اجتماع مجلس الإدارة الأول</td>
+                            <td class="p-4 text-xs font-mono text-slate-500">15 Feb 2026 • 10:00 AM</td>
                             <td class="p-4 text-center"><span class="bg-purple-50 text-purple-700 px-2 py-1 rounded text-[10px] font-bold">حضوري</span></td>
                             <td class="p-4 text-center"><span class="bg-blue-50 text-brandBlue px-2 py-1 rounded text-[10px] font-bold">مجدول</span></td>
                             <td class="p-4 text-center">
-                                <button class="text-slate-500 hover:text-brandBlue"><i class="fa-solid fa-eye"></i></button>
+                                <button class="text-slate-500 hover:text-brandBlue transition"><i class="fa-solid fa-eye"></i></button>
                             </td>
                         </tr>
                         <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
                             <td class="p-4 font-mono text-xs font-bold text-slate-500">BOD-2025-04</td>
-                            <td class="p-4 font-bold">اجتماع مجلس الإدارة الرابع</td>
-                            <td class="p-4 text-xs font-mono">20 Dec 2025 • 01:00 PM</td>
+                            <td class="p-4 font-bold dark:text-white">اجتماع مجلس الإدارة الرابع</td>
+                            <td class="p-4 text-xs font-mono text-slate-500">20 Dec 2025 • 01:00 PM</td>
                             <td class="p-4 text-center"><span class="bg-orange-50 text-orange-700 px-2 py-1 rounded text-[10px] font-bold">عن بعد</span></td>
                             <td class="p-4 text-center"><span class="bg-green-50 text-green-700 px-2 py-1 rounded text-[10px] font-bold">منعقد</span></td>
                             <td class="p-4 text-center">
@@ -67,7 +85,7 @@
         </main>
     </div>
 
-   <script src="../admin/js/core/config.js"></script>
+    <script src="../admin/js/core/config.js"></script>
     <script src="../admin/js/core/i18n.js"></script>
     <script src="../admin/js/services/data-service.js"></script>
     <script src="../admin/js/components/role-switcher.js"></script>
@@ -77,21 +95,22 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // ننتظر تحميل السكربتات
+            // انتظار تحميل المكتبات
             const checkLibs = setInterval(() => {
                 if (typeof Layout !== 'undefined' && typeof AppConfig !== 'undefined') {
                     clearInterval(checkLibs);
 
-                    // ✅ الخطوة المهمة: تحديد هوية المستخدم كعضو مجلس
+                    // ✅ تعريف المستخدم بشكل صحيح
                     const boardUser = {
                         id: 'BRD_001',
-                        role: 'Board', // <--- هذا هو المفتاح الذي سيغير القائمة إلى قائمة المجلس المختصرة
-                        displayName: 'عضو المجلس',
-                        displayTitle: 'عضو مجلس الإدارة',
-                        avatar: 'https://ui-avatars.com/api/?name=Board&background=random'
+                        type: 'board', // ⚠️ هام جداً: يربط مع RoleMap في layout.js
+                        role: 'Board Member', 
+                        displayName: 'د. عبدالله الحواس',
+                        displayTitle: 'رئيس مجلس الإدارة',
+                        avatar: 'https://ui-avatars.com/api/?name=A+H&background=random'
                     };
 
-                    // حفظ المستخدم وتشغيل النظام
+                    // حفظ وتشغيل
                     AppConfig.setCurrentUser(boardUser);
                     Layout.init();
                 }
