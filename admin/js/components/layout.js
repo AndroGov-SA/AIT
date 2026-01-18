@@ -292,7 +292,7 @@ const Layout = (function() {
   }
 
   // ==========================================
-  // RENDER SIDEBAR
+  // 4. RENDER SIDEBAR (محدثة لتعمل مع _menuDefinitions)
   // ==========================================
   function renderSidebar() {
     const container = document.getElementById('sidebar-container');
@@ -302,81 +302,83 @@ const Layout = (function() {
     const isRTL = AppConfig.isRTL();
     const currentPath = window.location.pathname.split('/').pop() || 'admin.html';
     const systemInfo = AppConfig.getSystemInfo();
+    const user = _state.currentUser;
 
-    // User display
-    const userName = _state.currentUser?.displayName || '';
-    const userTitle = _state.currentUser?.displayTitle || '';
-    const userAvatar = _state.currentUser?.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=FB4747&color=fff`;
+    // 1. تحديد الدور (Role Detection)
+    // نأخذ الدور من المستخدم، وإذا لم يوجد نعتبره 'Admin'
+    const userRole = user?.role || 'Admin';
+    
+    // 2. اختيار القائمة المناسبة (Menu Selection)
+    // نحاول جلب قائمة الدور، إذا لم نجدها نعود لقائمة Admin
+    // لاحظ هنا نستخدم _menuDefinitions بدلاً من _menuStructure
+    const activeMenu = _menuDefinitions[userRole] || _menuDefinitions['Admin'];
 
-    // Build menu HTML
+    // 3. بناء القائمة (Building HTML)
     let menuHTML = '';
-    _menuStructure.forEach(group => {
-      const sectionLabel = I18n.t(`nav.${group.section}`);
-      menuHTML += `<div class="px-3 mt-6 mb-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider">${sectionLabel}</div>`;
-      
-      group.items.forEach(item => {
-        const isActive = currentPath === item.link;
-        const label = I18n.t(`nav.${item.key}`);
-        const baseClass = "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200";
-        const activeClass = "bg-brandRed text-white shadow-md shadow-red-500/20";
-        const inactiveClass = "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-brandRed";
+    
+    // نمر على القائمة المختارة (activeMenu)
+    if (activeMenu) {
+        activeMenu.forEach(group => {
+          const sectionLabel = I18n.t(`nav.${group.section}`) || group.section;
+          menuHTML += `<div class="px-3 mt-6 mb-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider">${sectionLabel}</div>`;
+          
+          group.items.forEach(item => {
+            const linkPage = item.link.split('/').pop(); // نأخذ اسم الملف فقط للمقارنة
+            const isActive = currentPath === linkPage;
+            
+            const label = I18n.t(`nav.${item.key}`) || item.key;
+            const baseClass = "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200";
+            const activeClass = "bg-brandRed text-white shadow-md shadow-red-500/20";
+            const inactiveClass = "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-brandRed";
 
-        menuHTML += `
-          <a href="${item.link}" class="${baseClass} ${isActive ? activeClass : inactiveClass}">
-            <div class="w-6 text-center"><i class="fa-solid ${item.icon}"></i></div>
-            <span class="flex-1 truncate">${label}</span>
-          </a>
-        `;
-      });
-    });
+            menuHTML += `
+              <a href="${item.link}" class="${baseClass} ${isActive ? activeClass : inactiveClass}">
+                <div class="w-6 text-center"><i class="fa-solid ${item.icon}"></i></div>
+                <span class="flex-1 truncate">${label}</span>
+              </a>
+            `;
+          });
+        });
+    }
 
-    // Role badges for sidebar
-    const roleBadges = RoleSwitcher.hasMultipleRoles() ? `
-      <div class="mt-3 flex flex-wrap gap-1">
-        ${RoleSwitcher.renderBadges()}
-      </div>
-    ` : '';
+    // Role Badges
+    const roleBadges = (typeof RoleSwitcher !== 'undefined' && RoleSwitcher.hasMultipleRoles()) 
+      ? `<div class="mt-3 flex flex-wrap gap-1">${RoleSwitcher.renderBadges()}</div>` 
+      : '';
 
     container.innerHTML = `
       <aside id="main-sidebar" class="fixed top-0 ${isRTL ? 'right-0 border-l' : 'left-0 border-r'} z-50 h-screen w-72 flex-col hidden md:flex bg-white dark:bg-[#0F172A] border-slate-200 dark:border-slate-800 transition-all duration-300">
         
-        <!-- Logo -->
         <div class="h-20 flex items-center px-6 border-b border-slate-100 dark:border-slate-800">
           <div class="flex items-center gap-3 w-full">
-            <img src="https://ait.sa/wp-content/uploads/2024/03/cropped-Square-Logo.png" class="w-10 h-10 rounded-xl bg-white object-contain shrink-0 shadow-sm border border-slate-100 dark:border-slate-700" alt="Logo">
+            <div class="w-10 h-10 rounded-xl bg-brandRed text-white flex items-center justify-center font-bold text-xl">A</div>
             <div class="overflow-hidden">
-              <h1 class="font-bold text-sm text-slate-800 dark:text-white truncate">${systemInfo.name} <span class="font-light">System</span></h1>
+              <h1 class="font-bold text-sm text-slate-800 dark:text-white truncate">${systemInfo.name}</h1>
               <p class="text-[10px] text-slate-500 uppercase tracking-widest truncate">v${systemInfo.version}</p>
             </div>
           </div>
         </div>
 
-        <!-- User Card -->
         <div class="p-4">
-          <a href="${AppConfig.getRoute('profile')}" class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 hover:border-brandRed transition group cursor-pointer">
-            <img src="${userAvatar}" class="w-10 h-10 rounded-full border-2 border-white dark:border-slate-600 object-cover shrink-0" alt="${userName}">
+          <a href="#" class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 hover:border-brandRed transition group cursor-pointer">
+            <img src="${user.avatar}" class="w-10 h-10 rounded-full border-2 border-white dark:border-slate-600 object-cover shrink-0">
             <div class="overflow-hidden flex-1 min-w-0">
-              <p class="text-sm font-bold text-slate-800 dark:text-white truncate group-hover:text-brandRed transition">${userName}</p>
-              <p class="text-[10px] text-brandRed font-medium truncate">${userTitle}</p>
+              <p class="text-sm font-bold text-slate-800 dark:text-white truncate group-hover:text-brandRed transition">${user.displayName}</p>
+              <p class="text-[10px] text-brandRed font-medium truncate">${user.displayTitle}</p>
             </div>
           </a>
           ${roleBadges}
         </div>
 
-        <!-- Navigation -->
         <nav id="sidebar-nav" class="flex-1 overflow-y-auto px-3 py-2 custom-scroll space-y-0.5">
           ${menuHTML}
         </nav>
 
-        <!-- Footer -->
         <div class="p-4 text-center text-[10px] text-slate-400 border-t border-slate-100 dark:border-slate-800">
           ${systemInfo.copyright}
         </div>
       </aside>
     `;
-
-    // Restore scroll position
-    _restoreSidebarScroll();
   }
 
   // ==========================================
