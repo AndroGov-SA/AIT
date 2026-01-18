@@ -397,8 +397,8 @@
 
             if (role === 'ADMIN') return 'admin/index.html';
             if (['CEO'].includes(role)) return 'ceo/index.html';
-            if (['CFO'].includes(role)) return 'FINANCE/index.html';
-            if (['HR'].includes(role)) return 'hr/index.html';
+            if (['CFO'].includes(role)) return 'finance/index.html';
+            if (['CAO'].includes(role)) return 'hr/index.html';
             if (['CHAIRMAN', 'BOARD_MEMBER', 'SECRETARY'].includes(role)) return 'board/index.html';
             if (['COMMITTEE_MEMBER', 'AUDITOR'].includes(role) || dept === 'DEP_AUDIT') return 'audit/index.html';
             if (role === 'SHAREHOLDER') return 'shareholder/index.html';
