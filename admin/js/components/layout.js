@@ -214,8 +214,22 @@ const Layout = (function() {
         { key: 'profile', icon: 'fa-id-card', link: '../Sales/profile.html' },
         { key: 'requests', icon: 'fa-headset', link: '../Sales/requests.html' },
         ]}
-    ]
-  };
+    ],
+    
+    // 10. قائمة التدقيق الداخلي (Internal Audit)
+    'InternalAudit': [
+      { section: 'main', items: [
+        { key: 'overview', icon: 'fa-gauge-high', link: 'audit.html#dashboard' }
+      ]},
+      { section: 'operations', items: [
+        { key: 'missions', icon: 'fa-list-check', link: 'audit.html#missions' },
+        { key: 'findings', icon: 'fa-bug', link: 'audit.html#findings' },
+        { key: 'reports', icon: 'fa-file-contract', link: 'audit.html#reports' }
+      ]},
+      { section: 'departments', items: [
+        { key: 'profile', icon: 'fa-id-card', link: 'audit.html#profile' }
+      ]}
+    ],
     
   const _notifications = [
     { id: 1, type: 'critical', icon: 'fa-shield-virus', color: 'text-red-500 bg-red-50', titleKey: 'notifications.securityAlert', msgAr: 'محاولة دخول غير مصرح بها.', msgEn: 'Unauthorized login attempt.', time: '2m' },
