@@ -307,12 +307,34 @@ const Layout = (function() {
     document.documentElement.lang = lang;
     document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
     
+    // ✅ Fix main content wrapper margins for RTL/LTR
+    const mainContent = document.querySelector('.main-content-wrapper');
+    if (mainContent) {
+      if (lang === 'ar') {
+        mainContent.classList.remove('md:ml-72');
+        mainContent.classList.add('md:mr-72');
+      } else {
+        mainContent.classList.remove('md:mr-72');
+        mainContent.classList.add('md:ml-72');
+      }
+    }
+    
     // Re-render UI
     renderSidebar();
     renderHeader();
     
-    // Trigger custom event for other components
+    // ✅ Trigger event BEFORE updating page content
     window.dispatchEvent(new CustomEvent('languageChanged', { detail: { lang } }));
+    
+    // ✅ Update current page content if updateContent function exists
+    if (typeof window.updateContent === 'function') {
+      setTimeout(() => window.updateContent(), 100);
+    }
+    
+    // ✅ Update I18n if available
+    if (window.I18n && typeof I18n.setLanguage === 'function') {
+      I18n.setLanguage(lang);
+    }
     
     // Show feedback
     if (window.Toast) {
@@ -486,7 +508,7 @@ const Layout = (function() {
       <aside id="main-sidebar" class="fixed top-0 ${isRTL ? 'right-0 border-l' : 'left-0 border-r'} z-50 h-screen w-72 flex flex-col bg-white dark:bg-[#0F172A] border-slate-200 dark:border-slate-800 transition-all duration-300 shadow-2xl">
         
         <!-- Logo -->
-        <div class="h-20 flex items-center px-6 border-b border-slate-100 dark:border-slate-800 shrink-0 bg-gradient-to-r from-slate-50 to-transparent dark:from-slate-900/50">
+        <div class="h-20 flex items-center px-6 border-b border-slate-100 dark:border-slate-800 shrink-0 bg-gradient-to-${isRTL ? 'l' : 'r'} from-slate-50 to-transparent dark:from-slate-900/50">
           <div class="flex items-center gap-3 w-full">
             <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-brandRed to-red-600 text-white flex items-center justify-center font-bold text-xl shadow-lg shadow-brandRed/30">
               <i class="fa-solid fa-layer-group"></i>
