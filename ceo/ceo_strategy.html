@@ -15,199 +15,369 @@
             darkMode: 'class',
             theme: {
                 extend: {
-                    colors: { brandRed: '#FB4747', brandDark: '#0F172A', moneyGreen: '#10B981', alertOrange: '#F59E0B' },
-                    fontFamily: { sans: ['Tajawal', 'Inter', 'sans-serif'], en: ['Inter', 'sans-serif'] }
+                    colors: { 
+                        brandRed: '#FB4747', 
+                        brandDark: '#0F172A',
+                        brandBlue: '#3B82F6',
+                        moneyGreen: '#10B981', 
+                        alertOrange: '#F59E0B' 
+                    },
+                    fontFamily: { 
+                        sans: ['Tajawal', 'Inter', 'sans-serif'], 
+                        en: ['Inter', 'sans-serif'] 
+                    }
                 }
             }
         }
     </script>
-    <style>.num-font { font-family: 'Inter', sans-serif; font-feature-settings: "tnum"; }</style>
+    <style>
+        .num-font { font-family: 'Inter', sans-serif; font-feature-settings: "tnum"; }
+        .custom-scroll::-webkit-scrollbar { width: 6px; }
+        .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 10px; }
+        .custom-scroll::-webkit-scrollbar-thumb:hover { background: #94A3B8; }
+    </style>
 </head>
-<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300 opacity-0">
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300">
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="fixed inset-0 bg-white dark:bg-slate-900 z-[9999] flex items-center justify-center transition-opacity duration-500">
+        <div class="text-center">
+            <div class="w-16 h-16 border-4 border-brandRed border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <p class="text-sm text-slate-600 dark:text-slate-400 font-medium">جاري تحميل الاستراتيجية...</p>
+        </div>
+    </div>
 
     <div id="sidebar-container"></div>
     
-    <div class="main-content-wrapper transition-all duration-300 flex flex-col min-h-screen rtl:lg:mr-64 ltr:lg:ml-64">
+    <div class="main-content-wrapper transition-all duration-300 flex flex-col min-h-screen md:mr-72">
         
         <div id="header-container"></div>
 
         <main class="p-8 space-y-8">
             
+            <!-- Page Header -->
             <div class="flex flex-col md:flex-row justify-between items-end gap-4">
                 <div>
                     <h1 class="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                        <i class="fa-solid fa-chess text-brandRed"></i> <span data-i18n="headerTitle">الاستراتيجية والأهداف (OKRs)</span>
+                        <i class="fa-solid fa-chess text-brandRed"></i> 
+                        <span data-i18n="headerTitle">الاستراتيجية والأهداف (OKRs)</span>
                     </h1>
                     <p class="text-sm text-slate-500 mt-1" data-i18n="headerDesc">متابعة تنفيذ الخطة الاستراتيجية 2026 ومؤشرات الأداء الرئيسية</p>
                 </div>
                 <div class="flex gap-2">
-                    <button class="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold shadow-sm hover:bg-slate-50 transition flex items-center gap-2 text-slate-600 dark:text-white">
-                        <i class="fa-solid fa-presentation-screen"></i> <span data-i18n="btnPresentation">عرض للمجلس</span>
+                    <button onclick="exportPresentation()" class="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold shadow-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition flex items-center gap-2 text-slate-600 dark:text-white">
+                        <i class="fa-solid fa-presentation-screen"></i> 
+                        <span data-i18n="btnPresentation">عرض للمجلس</span>
                     </button>
-                    <button class="px-4 py-2 bg-brandRed text-white rounded-lg text-xs font-bold shadow-lg hover:bg-red-700 transition flex items-center gap-2">
-                        <i class="fa-solid fa-bullseye"></i> <span data-i18n="btnAddGoal">هدف جديد</span>
+                    <button onclick="addNewGoal()" class="px-4 py-2 bg-brandRed text-white rounded-lg text-xs font-bold shadow-lg shadow-red-500/20 hover:bg-red-700 hover:-translate-y-0.5 transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-bullseye"></i> 
+                        <span data-i18n="btnAddGoal">هدف جديد</span>
                     </button>
                 </div>
             </div>
 
+            <!-- Vision Banner -->
             <div class="bg-gradient-to-r from-brandDark to-slate-800 rounded-2xl p-6 text-white shadow-lg relative overflow-hidden">
                 <div class="absolute right-0 top-0 h-full w-1/3 bg-white/5 skew-x-12"></div>
+                <div class="absolute left-0 bottom-0 w-20 h-20 bg-brandRed/20 rounded-full blur-3xl"></div>
                 <div class="relative z-10">
-                    <span class="bg-white/20 px-2 py-1 rounded text-[10px] font-bold uppercase tracking-widest mb-2 inline-block" data-i18n="lblVision">رؤية 2030</span>
-                    <h2 class="text-xl font-bold italic mb-1" data-i18n="valVisionQuote">"الريادة في الحلول التقنية الحكومية المبتكرة"</h2>
-                    <p class="text-xs text-slate-300"><span data-i18n="lblProgress">نسبة تحقيق الرؤية (المرحلة الثانية):</span> <span class="text-green-400 font-bold num-font">65%</span></p>
+                    <div class="flex items-center gap-3 mb-3">
+                        <span class="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-widest border border-white/30" data-i18n="lblVision">رؤية 2030</span>
+                        <span class="text-xs text-slate-300">•</span>
+                        <span class="text-xs text-slate-300" data-i18n="visionPhase">المرحلة الثانية: التوسع والنمو</span>
+                    </div>
+                    <h2 class="text-2xl font-bold italic mb-2" data-i18n="valVisionQuote">"الريادة في الحلول التقنية الحكومية المبتكرة"</h2>
+                    <div class="flex items-center gap-4 mt-4">
+                        <div class="flex-1">
+                            <p class="text-xs text-slate-300 mb-2">
+                                <span data-i18n="lblProgress">نسبة تحقيق الرؤية:</span>
+                            </p>
+                            <div class="w-full bg-slate-700/50 h-2 rounded-full overflow-hidden backdrop-blur-sm">
+                                <div class="bg-gradient-to-r from-green-400 to-green-500 h-full rounded-full shadow-lg" style="width: 65%"></div>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-3xl font-bold text-green-400 num-font">65%</div>
+                            <p class="text-[10px] text-slate-400" data-i18n="progressLabel">إنجاز</p>
+                        </div>
+                    </div>
                 </div>
             </div>
 
+            <!-- Strategic Pillars -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-                    <div class="flex justify-between items-start mb-4">
+                
+                <!-- Pillar 1: Financial Growth -->
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 hover:shadow-md hover:border-blue-200 dark:hover:border-blue-900/50 transition-all group">
+                    <div class="flex justify-between items-start mb-5">
                         <div>
-                            <span class="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded" data-i18n="lblPillar1">الركيزة الأولى</span>
-                            <h3 class="font-bold text-lg mt-1 dark:text-white" data-i18n="pillar1Title">النمو المالي</h3>
+                            <span class="text-[10px] font-bold text-blue-600 bg-blue-50 dark:bg-blue-900/30 px-2 py-1 rounded border border-blue-100 dark:border-blue-900" data-i18n="lblPillar1">الركيزة الأولى</span>
+                            <h3 class="font-bold text-xl mt-2 dark:text-white" data-i18n="pillar1Title">النمو المالي</h3>
+                            <p class="text-xs text-slate-400 mt-1" data-i18n="pillar1Desc">زيادة الإيرادات والربحية</p>
                         </div>
-                        <div class="relative w-12 h-12 flex items-center justify-center rounded-full border-4 border-blue-100 dark:border-blue-900/30 text-blue-600 font-bold text-xs num-font">70%</div>
+                        <div class="relative w-14 h-14 flex items-center justify-center rounded-full border-4 border-blue-100 dark:border-blue-900/30 text-blue-600 font-bold text-sm num-font group-hover:scale-110 transition-transform">
+                            70%
+                        </div>
                     </div>
-                    <ul class="space-y-3 text-sm">
-                        <li class="flex items-center justify-between">
-                            <span class="text-slate-500" data-i18n="kpi1">زيادة الإيرادات 20%</span>
-                            <span class="text-green-600 font-bold text-xs num-font"><i class="fa-solid fa-arrow-up"></i> 15%</span>
-                        </li>
-                        <div class="w-full bg-slate-100 dark:bg-slate-700 h-1.5 rounded-full overflow-hidden">
-                            <div class="bg-blue-500 h-full" style="width: 75%"></div>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm text-slate-600 dark:text-slate-300" data-i18n="kpi1">زيادة الإيرادات 20%</span>
+                                <span class="text-green-600 font-bold text-xs num-font flex items-center gap-1">
+                                    <i class="fa-solid fa-arrow-up"></i> 15%
+                                </span>
+                            </div>
+                            <div class="w-full bg-slate-100 dark:bg-slate-700 h-2 rounded-full overflow-hidden">
+                                <div class="bg-blue-500 h-full rounded-full transition-all duration-500" style="width: 75%"></div>
+                            </div>
+                            <p class="text-[10px] text-slate-400 mt-1" data-i18n="kpi1Progress">75% من الهدف المحقق</p>
                         </div>
-                    </ul>
+
+                        <div class="pt-3 border-t border-slate-100 dark:border-slate-700">
+                            <div class="flex items-center justify-between text-xs">
+                                <span class="text-slate-500" data-i18n="kpi1Owner">المسؤول: CFO</span>
+                                <span class="text-slate-400 num-font" data-i18n="kpi1Deadline">Q4 2026</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-                    <div class="flex justify-between items-start mb-4">
+                <!-- Pillar 2: Operational Excellence -->
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 hover:shadow-md hover:border-purple-200 dark:hover:border-purple-900/50 transition-all group">
+                    <div class="flex justify-between items-start mb-5">
                         <div>
-                            <span class="text-[10px] font-bold text-purple-600 bg-purple-50 px-2 py-1 rounded" data-i18n="lblPillar2">الركيزة الثانية</span>
-                            <h3 class="font-bold text-lg mt-1 dark:text-white" data-i18n="pillar2Title">التميز التشغيلي</h3>
+                            <span class="text-[10px] font-bold text-purple-600 bg-purple-50 dark:bg-purple-900/30 px-2 py-1 rounded border border-purple-100 dark:border-purple-900" data-i18n="lblPillar2">الركيزة الثانية</span>
+                            <h3 class="font-bold text-xl mt-2 dark:text-white" data-i18n="pillar2Title">التميز التشغيلي</h3>
+                            <p class="text-xs text-slate-400 mt-1" data-i18n="pillar2Desc">تحسين الكفاءة والجودة</p>
                         </div>
-                        <div class="relative w-12 h-12 flex items-center justify-center rounded-full border-4 border-purple-100 dark:border-purple-900/30 text-purple-600 font-bold text-xs num-font">85%</div>
+                        <div class="relative w-14 h-14 flex items-center justify-center rounded-full border-4 border-purple-100 dark:border-purple-900/30 text-purple-600 font-bold text-sm num-font group-hover:scale-110 transition-transform">
+                            85%
+                        </div>
                     </div>
-                    <ul class="space-y-3 text-sm">
-                        <li class="flex items-center justify-between">
-                            <span class="text-slate-500" data-i18n="kpi2">أتمتة الخدمات</span>
-                            <span class="text-green-600 font-bold text-xs flex items-center gap-1"><i class="fa-solid fa-check"></i> <span data-i18n="statusDone">مكتمل</span></span>
-                        </li>
-                        <div class="w-full bg-slate-100 dark:bg-slate-700 h-1.5 rounded-full overflow-hidden">
-                            <div class="bg-purple-500 h-full" style="width: 90%"></div>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm text-slate-600 dark:text-slate-300" data-i18n="kpi2">أتمتة الخدمات الرئيسية</span>
+                                <span class="text-green-600 font-bold text-xs flex items-center gap-1">
+                                    <i class="fa-solid fa-check-circle"></i>
+                                    <span data-i18n="statusDone">مكتمل</span>
+                                </span>
+                            </div>
+                            <div class="w-full bg-slate-100 dark:bg-slate-700 h-2 rounded-full overflow-hidden">
+                                <div class="bg-purple-500 h-full rounded-full transition-all duration-500" style="width: 90%"></div>
+                            </div>
+                            <p class="text-[10px] text-slate-400 mt-1" data-i18n="kpi2Progress">90% من الخدمات تمت أتمتتها</p>
                         </div>
-                    </ul>
+
+                        <div class="pt-3 border-t border-slate-100 dark:border-slate-700">
+                            <div class="flex items-center justify-between text-xs">
+                                <span class="text-slate-500" data-i18n="kpi2Owner">المسؤول: COO</span>
+                                <span class="text-slate-400 num-font" data-i18n="kpi2Deadline">Q2 2026</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-                    <div class="flex justify-between items-start mb-4">
+                <!-- Pillar 3: Talent Development -->
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 hover:shadow-md hover:border-orange-200 dark:hover:border-orange-900/50 transition-all group">
+                    <div class="flex justify-between items-start mb-5">
                         <div>
-                            <span class="text-[10px] font-bold text-orange-600 bg-orange-50 px-2 py-1 rounded" data-i18n="lblPillar3">الركيزة الثالثة</span>
-                            <h3 class="font-bold text-lg mt-1 dark:text-white" data-i18n="pillar3Title">تطوير المواهب</h3>
+                            <span class="text-[10px] font-bold text-orange-600 bg-orange-50 dark:bg-orange-900/30 px-2 py-1 rounded border border-orange-100 dark:border-orange-900" data-i18n="lblPillar3">الركيزة الثالثة</span>
+                            <h3 class="font-bold text-xl mt-2 dark:text-white" data-i18n="pillar3Title">تطوير المواهب</h3>
+                            <p class="text-xs text-slate-400 mt-1" data-i18n="pillar3Desc">استقطاب وتنمية الكفاءات</p>
                         </div>
-                        <div class="relative w-12 h-12 flex items-center justify-center rounded-full border-4 border-orange-100 dark:border-orange-900/30 text-orange-600 font-bold text-xs num-font">45%</div>
+                        <div class="relative w-14 h-14 flex items-center justify-center rounded-full border-4 border-orange-100 dark:border-orange-900/30 text-orange-600 font-bold text-sm num-font group-hover:scale-110 transition-transform">
+                            45%
+                        </div>
                     </div>
-                    <ul class="space-y-3 text-sm">
-                        <li class="flex items-center justify-between">
-                            <span class="text-slate-500" data-i18n="kpi3">استقطاب الكفاءات</span>
-                            <span class="text-orange-500 font-bold text-xs" data-i18n="statusDelayed">متأخر</span>
-                        </li>
-                        <div class="w-full bg-slate-100 dark:bg-slate-700 h-1.5 rounded-full overflow-hidden">
-                            <div class="bg-orange-500 h-full" style="width: 45%"></div>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm text-slate-600 dark:text-slate-300" data-i18n="kpi3">استقطاب 50 موظف تقني</span>
+                                <span class="text-orange-500 font-bold text-xs flex items-center gap-1">
+                                    <i class="fa-solid fa-triangle-exclamation"></i>
+                                    <span data-i18n="statusDelayed">متأخر</span>
+                                </span>
+                            </div>
+                            <div class="w-full bg-slate-100 dark:bg-slate-700 h-2 rounded-full overflow-hidden">
+                                <div class="bg-orange-500 h-full rounded-full transition-all duration-500" style="width: 45%"></div>
+                            </div>
+                            <p class="text-[10px] text-slate-400 mt-1" data-i18n="kpi3Progress">22 من 50 موظف تم توظيفهم</p>
                         </div>
-                    </ul>
+
+                        <div class="pt-3 border-t border-slate-100 dark:border-slate-700">
+                            <div class="flex items-center justify-between text-xs">
+                                <span class="text-slate-500" data-i18n="kpi3Owner">المسؤول: CHRO</span>
+                                <span class="text-slate-400 num-font" data-i18n="kpi3Deadline">Q3 2026</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
+            <!-- Strategic Initiatives Table -->
             <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden">
-                <div class="p-5 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center">
-                    <h3 class="font-bold text-slate-900 dark:text-white" data-i18n="secInitiatives">المبادرات الاستراتيجية (Q1-2026)</h3>
-                    <span class="text-xs bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded text-slate-500" data-i18n="lastUpdate">تحديث: اليوم 09:00 ص</span>
+                <div class="p-6 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center">
+                    <div>
+                        <h3 class="font-bold text-lg text-slate-900 dark:text-white flex items-center gap-2">
+                            <i class="fa-solid fa-rocket text-brandRed"></i>
+                            <span data-i18n="secInitiatives">المبادرات الاستراتيجية (Q1-2026)</span>
+                        </h3>
+                        <p class="text-xs text-slate-400 mt-1" data-i18n="initiativesDesc">تتبع تنفيذ المبادرات الرئيسية للربع الأول</p>
+                    </div>
+                    <span class="text-xs bg-slate-100 dark:bg-slate-700 px-3 py-1.5 rounded-lg text-slate-500 border border-slate-200 dark:border-slate-600" data-i18n="lastUpdate">تحديث: اليوم 09:00 ص</span>
                 </div>
-                <table class="w-full text-sm text-right rtl:text-right ltr:text-left">
-                    <thead class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 text-xs font-bold uppercase">
-                        <tr>
-                            <th class="p-4" data-i18n="colInit">المبادرة</th>
-                            <th class="p-4" data-i18n="colOwner">المالك</th>
-                            <th class="p-4" data-i18n="colProgress">الإنجاز</th>
-                            <th class="p-4" data-i18n="colDeadline">الموعد النهائي</th>
-                            <th class="p-4 text-center" data-i18n="colStatus">الحالة</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-100 dark:divide-slate-700 dark:text-slate-300">
-                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
-                            <td class="p-4 font-bold" data-i18n="init1Name">إطلاق المنصة الطبية V2</td>
-                            <td class="p-4 flex items-center gap-2">
-                                <img src="https://ui-avatars.com/api/?name=Director+Dev&background=random" class="w-6 h-6 rounded-full">
-                                <span class="text-xs" data-i18n="ownerDev">مدير التطوير</span>
-                            </td>
-                            <td class="p-4">
-                                <div class="flex items-center gap-2">
-                                    <div class="w-24 bg-slate-100 dark:bg-slate-700 h-1.5 rounded-full overflow-hidden">
-                                        <div class="bg-green-500 h-full" style="width: 80%"></div>
+                
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 dark:text-slate-400 text-xs font-bold uppercase">
+                            <tr>
+                                <th class="p-4 text-right" data-i18n="colInit">المبادرة</th>
+                                <th class="p-4 text-right" data-i18n="colOwner">المالك</th>
+                                <th class="p-4 text-right" data-i18n="colProgress">الإنجاز</th>
+                                <th class="p-4 text-right" data-i18n="colDeadline">الموعد النهائي</th>
+                                <th class="p-4 text-center" data-i18n="colStatus">الحالة</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
+                            
+                            <!-- Initiative 1 -->
+                            <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
+                                <td class="p-4">
+                                    <p class="font-bold dark:text-white" data-i18n="init1Name">إطلاق المنصة الطبية V2</p>
+                                    <p class="text-[10px] text-slate-400 mt-1" data-i18n="init1Desc">نظام متكامل لإدارة المنشآت الصحية</p>
+                                </td>
+                                <td class="p-4">
+                                    <div class="flex items-center gap-2">
+                                        <img src="https://ui-avatars.com/api/?name=Dev+Team&background=3B82F6&color=fff" class="w-8 h-8 rounded-full border-2 border-slate-100 dark:border-slate-600">
+                                        <div>
+                                            <p class="text-xs font-medium dark:text-white" data-i18n="ownerDev">مدير التطوير</p>
+                                            <p class="text-[10px] text-slate-400">Dev Team</p>
+                                        </div>
                                     </div>
-                                    <span class="text-xs font-bold num-font">80%</span>
-                                </div>
-                            </td>
-                            <td class="p-4 num-font text-xs">2026-04-01</td>
-                            <td class="p-4 text-center"><span class="bg-green-100 text-green-700 px-2 py-1 rounded text-[10px] font-bold" data-i18n="statTrack">على المسار</span></td>
-                        </tr>
-                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
-                            <td class="p-4 font-bold" data-i18n="init2Name">الحصول على شهادة ISO 27001</td>
-                            <td class="p-4 flex items-center gap-2">
-                                <img src="https://ui-avatars.com/api/?name=GRCO&background=random" class="w-6 h-6 rounded-full">
-                                <span class="text-xs">GRCO</span>
-                            </td>
-                            <td class="p-4">
-                                <div class="flex items-center gap-2">
-                                    <div class="w-24 bg-slate-100 dark:bg-slate-700 h-1.5 rounded-full overflow-hidden">
-                                        <div class="bg-orange-500 h-full" style="width: 40%"></div>
+                                </td>
+                                <td class="p-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="flex-1">
+                                            <div class="w-full bg-slate-100 dark:bg-slate-700 h-1.5 rounded-full overflow-hidden">
+                                                <div class="bg-green-500 h-full rounded-full" style="width: 80%"></div>
+                                            </div>
+                                        </div>
+                                        <span class="text-xs font-bold num-font dark:text-white">80%</span>
                                     </div>
-                                    <span class="text-xs font-bold num-font">40%</span>
-                                </div>
-                            </td>
-                            <td class="p-4 num-font text-xs">2026-06-30</td>
-                            <td class="p-4 text-center"><span class="bg-orange-100 text-orange-700 px-2 py-1 rounded text-[10px] font-bold" data-i18n="statRisk">خطر تأخير</span></td>
-                        </tr>
-                    </tbody>
-                </table>
+                                </td>
+                                <td class="p-4">
+                                    <div class="text-xs num-font dark:text-slate-300">2026-04-01</div>
+                                    <div class="text-[10px] text-slate-400" data-i18n="days72">72 يوم متبقي</div>
+                                </td>
+                                <td class="p-4 text-center">
+                                    <span class="inline-flex items-center gap-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 px-3 py-1 rounded-lg text-[10px] font-bold border border-green-200 dark:border-green-900">
+                                        <i class="fa-solid fa-check-circle"></i>
+                                        <span data-i18n="statTrack">على المسار</span>
+                                    </span>
+                                </td>
+                            </tr>
+
+                            <!-- Initiative 2 -->
+                            <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
+                                <td class="p-4">
+                                    <p class="font-bold dark:text-white" data-i18n="init2Name">الحصول على شهادة ISO 27001</p>
+                                    <p class="text-[10px] text-slate-400 mt-1" data-i18n="init2Desc">الأمن السيبراني وإدارة أمن المعلومات</p>
+                                </td>
+                                <td class="p-4">
+                                    <div class="flex items-center gap-2">
+                                        <img src="https://ui-avatars.com/api/?name=GRC+Officer&background=F59E0B&color=fff" class="w-8 h-8 rounded-full border-2 border-slate-100 dark:border-slate-600">
+                                        <div>
+                                            <p class="text-xs font-medium dark:text-white">GRCO</p>
+                                            <p class="text-[10px] text-slate-400" data-i18n="grcoTitle">مسؤول GRC</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="p-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="flex-1">
+                                            <div class="w-full bg-slate-100 dark:bg-slate-700 h-1.5 rounded-full overflow-hidden">
+                                                <div class="bg-orange-500 h-full rounded-full" style="width: 40%"></div>
+                                            </div>
+                                        </div>
+                                        <span class="text-xs font-bold num-font dark:text-white">40%</span>
+                                    </div>
+                                </td>
+                                <td class="p-4">
+                                    <div class="text-xs num-font dark:text-slate-300">2026-06-30</div>
+                                    <div class="text-[10px] text-slate-400" data-i18n="days162">162 يوم متبقي</div>
+                                </td>
+                                <td class="p-4 text-center">
+                                    <span class="inline-flex items-center gap-1 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 px-3 py-1 rounded-lg text-[10px] font-bold border border-orange-200 dark:border-orange-900">
+                                        <i class="fa-solid fa-triangle-exclamation"></i>
+                                        <span data-i18n="statRisk">خطر تأخير</span>
+                                    </span>
+                                </td>
+                            </tr>
+
+                            <!-- Initiative 3 -->
+                            <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
+                                <td class="p-4">
+                                    <p class="font-bold dark:text-white" data-i18n="init3Name">توسيع الحصة السوقية</p>
+                                    <p class="text-[10px] text-slate-400 mt-1" data-i18n="init3Desc">اختراق 3 أسواق جغرافية جديدة</p>
+                                </td>
+                                <td class="p-4">
+                                    <div class="flex items-center gap-2">
+                                        <img src="https://ui-avatars.com/api/?name=Sales+VP&background=10B981&color=fff" class="w-8 h-8 rounded-full border-2 border-slate-100 dark:border-slate-600">
+                                        <div>
+                                            <p class="text-xs font-medium dark:text-white" data-i18n="ownerSales">VP المبيعات</p>
+                                            <p class="text-[10px] text-slate-400">Sales Team</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="p-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="flex-1">
+                                            <div class="w-full bg-slate-100 dark:bg-slate-700 h-1.5 rounded-full overflow-hidden">
+                                                <div class="bg-blue-500 h-full rounded-full" style="width: 55%"></div>
+                                            </div>
+                                        </div>
+                                        <span class="text-xs font-bold num-font dark:text-white">55%</span>
+                                    </div>
+                                </td>
+                                <td class="p-4">
+                                    <div class="text-xs num-font dark:text-slate-300">2026-09-30</div>
+                                    <div class="text-[10px] text-slate-400" data-i18n="days254">254 يوم متبقي</div>
+                                </td>
+                                <td class="p-4 text-center">
+                                    <span class="inline-flex items-center gap-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 px-3 py-1 rounded-lg text-[10px] font-bold border border-blue-200 dark:border-blue-900">
+                                        <i class="fa-solid fa-spinner fa-spin"></i>
+                                        <span data-i18n="statProgress">قيد التنفيذ</span>
+                                    </span>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
         </main>
     </div>
 
-    <script src="../admin/js/core/config.js"></script>
-    <script src="../admin/js/core/i18n.js"></script>
-    <script src="../admin/js/services/data-service.js"></script>
-    <script src="../admin/js/components/role-switcher.js"></script>
-    <script src="../admin/js/components/layout.js"></script>
-    <script src="../admin/js/components/bot.js"></script>
+    <!-- Scripts -->
+    <script src="data/company_policy.js"></script>
+    <script src="js/core/config.js"></script>
+    <script src="js/core/i18n.js"></script>
+    <script src="js/services/data-service.js"></script>
+    <script src="js/components/toast.js"></script>
+    <script src="js/components/role-switcher.js"></script>
+    <script src="js/components/layout.js"></script>
+    <script src="js/components/bot.js"></script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // ننتظر تحميل السكربتات
-            const checkLibs = setInterval(() => {
-                if (typeof Layout !== 'undefined' && typeof AppConfig !== 'undefined') {
-                    clearInterval(checkLibs);
-
-                    // ✅ تعريف المستخدم كرئيس تنفيذي
-                    const ceoUser = {
-                        id: 'USR_001',
-                        type: 'ceo', // ⚠️ هذا المفتاح ضروري لفتح قائمة CEO
-                        role: 'CEO',
-                        displayName: 'الرئيس التنفيذي',
-                        displayTitle: 'الرئيس التنفيذي',
-                        avatar: 'https://ui-avatars.com/api/?name=H+S&background=random'
-                    };
-
-                    // حفظ المستخدم وتشغيل النظام
-                    AppConfig.setCurrentUser(ceoUser);
-                    Layout.init();
-                }
-            }, 50);
-        });
-    </script>
-
-    <script>
+        // ==========================================
+        // PAGE TRANSLATIONS
+        // ==========================================
         const pageContent = {
             ar: {
                 pageTitle: "الاستراتيجية | AndroGov",
@@ -216,90 +386,184 @@
                 btnPresentation: "عرض للمجلس",
                 btnAddGoal: "هدف جديد",
                 lblVision: "رؤية 2030",
+                visionPhase: "المرحلة الثانية: التوسع والنمو",
                 valVisionQuote: "\"الريادة في الحلول التقنية الحكومية المبتكرة\"",
-                lblProgress: "نسبة تحقيق الرؤية (المرحلة الثانية):",
+                lblProgress: "نسبة تحقيق الرؤية:",
+                progressLabel: "إنجاز",
+                
                 lblPillar1: "الركيزة الأولى",
                 pillar1Title: "النمو المالي",
+                pillar1Desc: "زيادة الإيرادات والربحية",
                 kpi1: "زيادة الإيرادات 20%",
+                kpi1Progress: "75% من الهدف المحقق",
+                kpi1Owner: "المسؤول: CFO",
+                kpi1Deadline: "Q4 2026",
+                
                 lblPillar2: "الركيزة الثانية",
                 pillar2Title: "التميز التشغيلي",
-                kpi2: "أتمتة الخدمات",
+                pillar2Desc: "تحسين الكفاءة والجودة",
+                kpi2: "أتمتة الخدمات الرئيسية",
+                kpi2Progress: "90% من الخدمات تمت أتمتتها",
+                kpi2Owner: "المسؤول: COO",
+                kpi2Deadline: "Q2 2026",
                 statusDone: "مكتمل",
+                
                 lblPillar3: "الركيزة الثالثة",
                 pillar3Title: "تطوير المواهب",
-                kpi3: "استقطاب الكفاءات",
+                pillar3Desc: "استقطاب وتنمية الكفاءات",
+                kpi3: "استقطاب 50 موظف تقني",
+                kpi3Progress: "22 من 50 موظف تم توظيفهم",
+                kpi3Owner: "المسؤول: CHRO",
+                kpi3Deadline: "Q3 2026",
                 statusDelayed: "متأخر",
+                
                 secInitiatives: "المبادرات الاستراتيجية (Q1-2026)",
+                initiativesDesc: "تتبع تنفيذ المبادرات الرئيسية للربع الأول",
                 lastUpdate: "تحديث: اليوم 09:00 ص",
                 colInit: "المبادرة",
                 colOwner: "المالك",
                 colProgress: "الإنجاز",
                 colDeadline: "الموعد النهائي",
                 colStatus: "الحالة",
+                
                 init1Name: "إطلاق المنصة الطبية V2",
+                init1Desc: "نظام متكامل لإدارة المنشآت الصحية",
                 ownerDev: "مدير التطوير",
+                days72: "72 يوم متبقي",
                 statTrack: "على المسار",
+                
                 init2Name: "الحصول على شهادة ISO 27001",
-                statRisk: "خطر تأخير"
+                init2Desc: "الأمن السيبراني وإدارة أمن المعلومات",
+                grcoTitle: "مسؤول GRC",
+                days162: "162 يوم متبقي",
+                statRisk: "خطر تأخير",
+                
+                init3Name: "توسيع الحصة السوقية",
+                init3Desc: "اختراق 3 أسواق جغرافية جديدة",
+                ownerSales: "VP المبيعات",
+                days254: "254 يوم متبقي",
+                statProgress: "قيد التنفيذ",
+                
+                msgPresentation: "سيتم تصدير عرض تقديمي للمجلس",
+                msgNewGoal: "سيتم فتح نموذج إضافة هدف جديد"
             },
             en: {
                 pageTitle: "Strategy | AndroGov",
                 headerTitle: "Strategy & OKRs",
                 headerDesc: "Tracking 2026 Strategic Plan Execution and KPIs",
-                btnPresentation: "Board Pres.",
+                btnPresentation: "Board Presentation",
                 btnAddGoal: "New Goal",
                 lblVision: "Vision 2030",
+                visionPhase: "Phase 2: Expansion & Growth",
                 valVisionQuote: "\"Leadership in Innovative Government Tech Solutions\"",
-                lblProgress: "Vision Progress (Phase 2):",
+                lblProgress: "Vision Achievement:",
+                progressLabel: "Progress",
+                
                 lblPillar1: "Pillar 1",
                 pillar1Title: "Financial Growth",
+                pillar1Desc: "Increase Revenue & Profitability",
                 kpi1: "Revenue Growth 20%",
+                kpi1Progress: "75% of target achieved",
+                kpi1Owner: "Owner: CFO",
+                kpi1Deadline: "Q4 2026",
+                
                 lblPillar2: "Pillar 2",
                 pillar2Title: "Operational Excellence",
-                kpi2: "Service Automation",
+                pillar2Desc: "Improve Efficiency & Quality",
+                kpi2: "Automate Core Services",
+                kpi2Progress: "90% of services automated",
+                kpi2Owner: "Owner: COO",
+                kpi2Deadline: "Q2 2026",
                 statusDone: "Done",
+                
                 lblPillar3: "Pillar 3",
                 pillar3Title: "Talent Development",
-                kpi3: "Talent Acquisition",
+                pillar3Desc: "Attract & Develop Talents",
+                kpi3: "Recruit 50 Tech Staff",
+                kpi3Progress: "22 of 50 hired",
+                kpi3Owner: "Owner: CHRO",
+                kpi3Deadline: "Q3 2026",
                 statusDelayed: "Delayed",
+                
                 secInitiatives: "Strategic Initiatives (Q1-2026)",
-                lastUpdate: "Update: Today 09:00 AM",
+                initiativesDesc: "Track Q1 key initiatives execution",
+                lastUpdate: "Updated: Today 09:00 AM",
                 colInit: "Initiative",
                 colOwner: "Owner",
                 colProgress: "Progress",
                 colDeadline: "Deadline",
                 colStatus: "Status",
+                
                 init1Name: "Launch Medical Platform V2",
+                init1Desc: "Integrated healthcare facility management",
                 ownerDev: "Dev Director",
+                days72: "72 days left",
                 statTrack: "On Track",
+                
                 init2Name: "Obtain ISO 27001 Certification",
-                statRisk: "At Risk"
+                init2Desc: "Cybersecurity & Information Security",
+                grcoTitle: "GRC Officer",
+                days162: "162 days left",
+                statRisk: "At Risk",
+                
+                init3Name: "Market Share Expansion",
+                init3Desc: "Penetrate 3 new geographic markets",
+                ownerSales: "VP Sales",
+                days254: "254 days left",
+                statProgress: "In Progress",
+                
+                msgPresentation: "Board presentation will be exported",
+                msgNewGoal: "New goal form will open"
             }
         };
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const lang = localStorage.getItem('lang') || 'ar';
+        // ==========================================
+        // UPDATE CONTENT FUNCTION
+        // ==========================================
+        window.updateContent = function() {
+            const lang = Layout.getCurrentLang();
             const dict = pageContent[lang];
             
-            document.documentElement.lang = lang;
-            document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
-
+            document.title = dict.pageTitle;
+            
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
-                if(dict[key]) {
-                    if (el.children.length > 0) {
-                        const icon = el.innerHTML.match(/<i.*><\/i>/);
-                        if (icon) {
-                            el.innerHTML = icon[0] + ' ' + dict[key];
-                        } else {
-                            el.innerText = dict[key];
-                        }
-                    } else {
-                        el.innerText = dict[key];
-                    }
+                if (dict[key]) {
+                    el.textContent = dict[key];
                 }
             });
+        };
+
+        // ==========================================
+        // ACTION FUNCTIONS
+        // ==========================================
+        function exportPresentation() {
+            const lang = Layout.getCurrentLang();
+            const msg = pageContent[lang].msgPresentation;
+            Toast.info(msg);
+        }
+
+        function addNewGoal() {
+            const lang = Layout.getCurrentLang();
+            const msg = pageContent[lang].msgNewGoal;
+            Toast.info(msg);
+        }
+
+        // ==========================================
+        // INITIALIZATION
+        // ==========================================
+        document.addEventListener('DOMContentLoaded', () => {
+            const checkReady = setInterval(() => {
+                if (typeof Layout !== 'undefined') {
+                    clearInterval(checkReady);
+                    updateContent();
+                    console.log('✅ CEO Strategy Page Ready');
+                }
+            }, 50);
         });
+
+        // Listen for language changes
+        window.addEventListener('languageChanged', updateContent);
     </script>
 </body>
 </html>
