@@ -1,566 +1,283 @@
 /**
- * AndroBot v4.0 - AI Governance Assistant
- * @description Fully integrated with AndroGov core system
- * @version 4.0.0
- * @requires AppConfig, I18n, DataService
- * @file admin/js/components/bot.js
+ * AndroBot - AI Assistant for CEO
+ * @file ceo/js/components/bot.js
  */
 
 const AndroBot = (function() {
-  // ==========================================
-  // CONFIGURATION
-  // ==========================================
-  const _config = {
-    apiKey: '', // Empty = demo mode
-    position: 'left', // or 'right' (will auto-adjust for RTL)
-    minQueryLength: 2,
-    maxHistorySize: 50,
-    typingDelay: 800
-  };
+  
+  let _isOpen = false;
+  let _container = null;
+  let _messages = [];
 
-  // ==========================================
-  // STATE
-  // ==========================================
-  let _state = {
-    isOpen: false,
-    isInitialized: false,
-    conversationHistory: [],
-    currentContext: null
-  };
-
-  // ==========================================
-  // DOM ELEMENTS
-  // ==========================================
-  let _elements = {
-    container: null,
-    window: null,
-    body: null,
-    input: null,
-    sendBtn: null,
-    fab: null,
-    suggestions: null
+  const _responses = {
+    ar: {
+      greeting: 'مرحباً! أنا AndroBot، مساعدك الذكي التنفيذي. كيف يمكنني مساعدتك اليوم؟',
+      help: 'يمكنني مساعدتك في:\n• تحليل الأداء المالي\n• مراجعة التقارير الاستراتيجية\n• متابعة المخاطر\n• الإجابة على استفساراتك',
+      financial: 'الأداء المالي للربع الحالي:\n• الإيرادات: 4.2 مليون ريال (+12.5%)\n• المصروفات: 1.8 مليون ريال\n• صافي الربح: 2.4 مليون ريال\n• هامش الربح: 57%',
+      projects: 'المشاريع النشطة: 8 مشاريع\n• 7 مشاريع في الموعد ✓\n• مشروع واحد متأخر (التجارة الإلكترونية)',
+      risk: 'تقييم المخاطر الحالي:\n• المخاطر العالية: 2\n• المخاطر المتوسطة: 5\n• المخاطر المنخفضة: 12',
+      default: 'عذراً، لم أفهم استفسارك. يمكنك سؤالي عن:\n• الأداء المالي\n• المشاريع النشطة\n• المخاطر\n• التقارير'
+    },
+    en: {
+      greeting: 'Hello! I\'m AndroBot, your executive AI assistant. How can I help you today?',
+      help: 'I can help you with:\n• Financial performance analysis\n• Strategic reports review\n• Risk monitoring\n• Answering your questions',
+      financial: 'Current Quarter Financial Performance:\n• Revenue: 4.2M SAR (+12.5%)\n• Expenses: 1.8M SAR\n• Net Profit: 2.4M SAR\n• Net Margin: 57%',
+      projects: 'Active Projects: 8\n• 7 projects on track ✓\n• 1 delayed (E-Commerce Platform)',
+      risk: 'Current Risk Assessment:\n• High Risk: 2\n• Medium Risk: 5\n• Low Risk: 12',
+      default: 'Sorry, I didn\'t understand. You can ask me about:\n• Financial performance\n• Active projects\n• Risks\n• Reports'
+    }
   };
 
   // ==========================================
   // INITIALIZATION
   // ==========================================
+  
   function init() {
-    if (_state.isInitialized) return;
+    if (_container) return;
     
-    // Wait for core modules
-    if (typeof AppConfig === 'undefined' || typeof I18n === 'undefined') {
-      console.warn('⚠️ AndroBot: Waiting for core modules...');
-      setTimeout(init, 100);
-      return;
-    }
+    const lang = localStorage.getItem('lang') || 'ar';
+    const isRTL = lang === 'ar';
 
-    // Detect current page context
-    _detectPageContext();
+    _container = document.createElement('div');
+    _container.id = 'androbot-container';
+    _container.className = 'fixed bottom-6 z-[9999] transition-all duration-300';
+    _container.style[isRTL ? 'left' : 'right'] = '24px';
+    
+    _container.innerHTML = `
+      <!-- Toggle Button -->
+      <button id="androbot-toggle" 
+              class="w-16 h-16 rounded-full bg-gradient-to-br from-brandBlue to-blue-600 text-white shadow-2xl hover:shadow-3xl hover:scale-110 transition-all duration-300 flex items-center justify-center group border-4 border-white dark:border-slate-800">
+        <i class="fa-solid fa-robot text-2xl group-hover:animate-bounce"></i>
+        <span class="absolute -top-1 -${isRTL ? 'left' : 'right'}-1 w-4 h-4 bg-red-500 rounded-full animate-pulse"></span>
+      </button>
 
-    // Inject HTML
-    _injectHTML();
-
-    // Cache elements
-    _cacheElements();
-
-    // Setup event listeners
-    _setupEventListeners();
-
-    // Load context suggestions
-    _loadContextSuggestions();
-
-    _state.isInitialized = true;
-    console.log('✅ AndroBot v4.0 initialized', {
-      context: _state.currentContext,
-      lang: AppConfig.getLang(),
-      dataServiceAvailable: typeof DataService !== 'undefined'
-    });
-  }
-
-  // ==========================================
-  // DETECT PAGE CONTEXT
-  // ==========================================
-  function _detectPageContext() {
-    const path = window.location.pathname.toLowerCase();
-    const title = document.title.toLowerCase();
-
-    if (path.includes('shareholder') || title.includes('مساهم')) {
-      _state.currentContext = 'shareholders';
-    } else if (path.includes('board') || title.includes('مجلس')) {
-      _state.currentContext = 'board';
-    } else if (path.includes('user') || title.includes('مستخدم')) {
-      _state.currentContext = 'users';
-    } else if (path.includes('compliance') || title.includes('امتثال')) {
-      _state.currentContext = 'compliance';
-    } else if (path.includes('committee') || title.includes('لجنة')) {
-      _state.currentContext = 'committees';
-    } else if (path.includes('task') || title.includes('مهام')) {
-      _state.currentContext = 'tasks';
-    } else if (path.includes('policies') || title.includes('سياسات')) {
-      _state.currentContext = 'policies';
-    } else {
-      _state.currentContext = 'general';
-    }
-  }
-
-  // ==========================================
-  // INJECT HTML 
-  // ==========================================
-  function _injectHTML() {
-    const lang = AppConfig.getLang();
-    const isRTL = AppConfig.isRTL();
-    const pos = isRTL ? 'left-6' : 'right-6';
-
-    // 1. كود HTML
-    // التغيير هنا: top-20 بدلاً من bottom-20 لتظهر النافذة تحت الهيدر مباشرة
-    const html = `
-      <div id="andro-bot-container" class="fixed top-20 ${pos} z-[100] flex flex-col items-start gap-4 font-sans pointer-events-none" dir="${isRTL ? 'rtl' : 'ltr'}">
-        <div id="chat-window" class="hidden pointer-events-auto bg-white dark:bg-slate-800 w-80 md:w-96 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden flex flex-col transform transition-all duration-300 origin-top scale-95 opacity-0" style="height: 500px; max-height: 70vh;">
-          
-          <div class="bg-gradient-to-r from-brandBlue to-blue-600 p-4 flex justify-between items-center text-white shrink-0">
-            <div class="flex items-center gap-3">
-              <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center"><i class="fa-solid fa-robot"></i></div>
-              <div>
-                <h4 class="font-bold text-sm">${I18n.t('bot.title') || 'المساعد الذكي'}</h4>
-                <p class="text-[10px] text-white/80">AndroGov AI</p>
-              </div>
+      <!-- Chat Window -->
+      <div id="androbot-chat" 
+           class="absolute bottom-20 ${isRTL ? 'left-0' : 'right-0'} w-96 h-[500px] bg-white dark:bg-slate-800 rounded-3xl shadow-2xl border-2 border-slate-200 dark:border-slate-700 flex flex-col overflow-hidden transform scale-0 origin-bottom-${isRTL ? 'left' : 'right'} transition-all duration-300">
+        
+        <!-- Header -->
+        <div class="bg-gradient-to-r from-brandBlue to-blue-600 p-4 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+              <i class="fa-solid fa-robot text-white text-xl"></i>
             </div>
-            <button id="close-chat-btn" class="text-white/80 hover:text-white transition" title="${I18n.t('bot.close')}">
-              <i class="fa-solid fa-times"></i>
+            <div>
+              <h3 class="font-bold text-white text-sm">AndroBot</h3>
+              <p class="text-[10px] text-white/80">${lang === 'ar' ? 'المساعد الذكي التنفيذي' : 'Executive AI Assistant'}</p>
+            </div>
+          </div>
+          <button onclick="AndroBot.toggle()" class="w-8 h-8 rounded-lg hover:bg-white/10 text-white transition flex items-center justify-center">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <!-- Messages -->
+        <div id="androbot-messages" class="flex-1 p-4 overflow-y-auto custom-scroll space-y-3 bg-slate-50 dark:bg-slate-900">
+          <!-- Messages will be added here -->
+        </div>
+
+        <!-- Input -->
+        <div class="p-4 border-t border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800">
+          <div class="flex gap-2">
+            <input type="text" 
+                   id="androbot-input" 
+                   placeholder="${lang === 'ar' ? 'اكتب سؤالك هنا...' : 'Type your question...'}"
+                   class="flex-1 px-4 py-2.5 rounded-xl border-2 border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:outline-none focus:border-brandBlue transition"
+                   onkeypress="if(event.key==='Enter') AndroBot.sendMessage()">
+            <button onclick="AndroBot.sendMessage()" 
+                    class="w-12 h-12 rounded-xl bg-brandBlue hover:bg-blue-700 text-white shadow-lg transition flex items-center justify-center">
+              <i class="fa-solid fa-paper-plane"></i>
             </button>
           </div>
           
-          <div id="chat-body" class="flex-1 p-4 bg-slate-50 dark:bg-slate-900/50 overflow-y-auto custom-scroll space-y-3 flex flex-col">
-            <div class="chat-bubble bot">${I18n.t('bot.welcome')}</div>
-            <div class="flex flex-wrap gap-2 mt-2" id="suggestions"></div>
-          </div>
-
-          <div class="p-3 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 flex gap-2 shrink-0">
-            <input type="text" id="chat-input" placeholder="${I18n.t('bot.placeholder')}" class="flex-1 bg-slate-100 dark:bg-slate-900 border-none rounded-lg text-sm px-4 py-2 focus:ring-2 focus:ring-brandBlue outline-none dark:text-white">
-            <button id="send-btn" class="w-10 h-10 rounded-lg bg-brandBlue text-white hover:bg-blue-700 transition flex items-center justify-center" title="${I18n.t('bot.send')}">
-              <i class="fa-solid fa-paper-plane"></i>
+          <!-- Quick Actions -->
+          <div class="flex gap-2 mt-3 flex-wrap">
+            <button onclick="AndroBot.quickAsk('financial')" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-700 hover:bg-blue-50 dark:hover:bg-blue-900/20 text-xs font-medium rounded-lg transition border border-slate-200 dark:border-slate-600">
+              ${lang === 'ar' ? '💰 الأداء المالي' : '💰 Finance'}
+            </button>
+            <button onclick="AndroBot.quickAsk('projects')" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-700 hover:bg-blue-50 dark:hover:bg-blue-900/20 text-xs font-medium rounded-lg transition border border-slate-200 dark:border-slate-600">
+              ${lang === 'ar' ? '📊 المشاريع' : '📊 Projects'}
+            </button>
+            <button onclick="AndroBot.quickAsk('risk')" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-700 hover:bg-blue-50 dark:hover:bg-blue-900/20 text-xs font-medium rounded-lg transition border border-slate-200 dark:border-slate-600">
+              ${lang === 'ar' ? '⚠️ المخاطر' : '⚠️ Risks'}
             </button>
           </div>
         </div>
       </div>
     `;
 
-    document.body.insertAdjacentHTML('beforeend', html);
+    document.body.appendChild(_container);
 
-    // 2. كود CSS
-    if (!document.getElementById('androbot-styles')) {
-      const styles = `
-        <style id="androbot-styles">
-          /* 1. إصلاح التخطيط: flex-direction: column ضروري جداً لترتيب العناصر فوق بعض */
-          #chat-window.open { 
-            display: flex !important; 
-            flex-direction: column !important; 
-            transform: scale(1); 
-            opacity: 1; 
-            pointer-events: auto; 
-          }
-          
-          /* 2. ضمان أن النوافذ الداخلية تأخذ العرض الكامل */
-          #chat-window > div { width: 100%; }
-
-          .chat-bubble { max-width: 85%; padding: 10px 14px; border-radius: 12px; font-size: 0.9rem; line-height: 1.5; word-wrap: break-word; animation: bubbleIn 0.3s ease-out; }
-          .chat-bubble.bot { background-color: #f1f5f9; color: #334155; border-bottom-${isRTL ? 'left' : 'right'}-radius: 2px; align-self: flex-start; }
-          .dark .chat-bubble.bot { background-color: #334155; color: #f8fafc; }
-          .chat-bubble.user { background-color: #4267B2; color: white; border-bottom-${isRTL ? 'right' : 'left'}-radius: 2px; align-self: flex-end; }
-          .typing-indicator { display: flex; align-items: center; gap: 4px; padding: 10px 14px; background-color: #f1f5f9; border-radius: 12px; width: fit-content; align-self: flex-start; }
-          .dark .typing-indicator { background-color: #334155; }
-          .typing-indicator span { display: inline-block; width: 6px; height: 6px; background-color: #94a3b8; border-radius: 50%; animation: typing 1.4s infinite ease-in-out both; }
-          .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
-          .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
-          @keyframes typing { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
-          @keyframes bubbleIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        </style>
-      `;
-      document.head.insertAdjacentHTML('beforeend', styles);
-    }
-  }
-
-  // ==========================================
-  // CACHE ELEMENTS
-  // ==========================================
-  function _cacheElements() {
-    _elements = {
-      container: document.getElementById('andro-bot-container'),
-      window: document.getElementById('chat-window'),
-      body: document.getElementById('chat-body'),
-      input: document.getElementById('chat-input'),
-      sendBtn: document.getElementById('send-btn'),
-      fab: document.getElementById('chat-fab'),
-      suggestions: document.getElementById('suggestions')
-    };
-  }
-
-  // ==========================================
-  // EVENT LISTENERS
-  // ==========================================
-  function _setupEventListeners() {
-    _elements.fab?.addEventListener('click', toggle);
-    document.getElementById('close-chat-btn')?.addEventListener('click', toggle);
-    _elements.sendBtn?.addEventListener('click', sendMessage);
-    
-    _elements.input?.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        sendMessage();
-      }
-    });
-
-    // Listen for language change
-    window.addEventListener('langChanged', () => {
-      _updateUI();
-      _loadContextSuggestions();
-    });
-
-    // Listen for theme change (automatically handled by Tailwind dark: classes)
-    window.addEventListener('themeChanged', () => {
-      console.log('🎨 Theme changed, bot UI auto-adapts');
-    });
-
-    // Listen for page navigation
-    window.addEventListener('popstate', () => {
-      _detectPageContext();
-      _loadContextSuggestions();
-    });
-  }
-
-  // ==========================================
-  // TOGGLE CHAT WINDOW
-  // ==========================================
-  function toggle() {
-    _state.isOpen = !_state.isOpen;
-    const win = _elements.window;
-    
-    if (_state.isOpen) {
-        // إظهار العنصر أولاً (لا يزال شفافاً)
-        win.classList.remove('hidden');
-        
-        // تفعيل الترانزيشن بعد لحظة قصيرة جداً ليظهر بشكل ناعم
-        requestAnimationFrame(() => {
-            win.classList.add('open');
-            _elements.input?.focus();
-        });
-    } else {
-        // إزالة كلاس الفتح (يبدأ الاختفاء)
-        win.classList.remove('open');
-        
-        // الانتظار حتى ينتهي الأنيميشن (300ms) ثم إخفاء العنصر تماماً
-        setTimeout(() => {
-            win.classList.add('hidden');
-        }, 300);
-    }
-  }
-
-  // ==========================================
-  // SEND MESSAGE
-  // ==========================================
-  async function sendMessage() {
-    const text = _elements.input?.value?.trim();
-    if (!text || text.length < _config.minQueryLength) return;
-
-    // Add to history
-    _state.conversationHistory.push({ role: 'user', content: text });
-
-    // Show user message
-    _appendMessage(text, 'user');
-    _elements.input.value = '';
-
-    // Show typing
-    _showTyping();
-
-    // Get response (with delay for UX)
+    // Add initial greeting
     setTimeout(() => {
-      _removeTyping();
-      const response = _getResponse(text);
-      _appendMessage(response, 'bot');
-      _state.conversationHistory.push({ role: 'bot', content: response });
-    }, _config.typingDelay);
+      addMessage(_responses[lang].greeting, 'bot');
+    }, 500);
   }
 
   // ==========================================
-  // GET RESPONSE (KNOWLEDGE BASE)
+  // MESSAGES
   // ==========================================
-  function _getResponse(query) {
-    const q = query.toLowerCase();
-    const lang = AppConfig.getLang();
+  
+  function addMessage(text, type = 'user') {
+    const messagesContainer = document.getElementById('androbot-messages');
+    if (!messagesContainer) return;
 
-    // Greetings first
-    if (_matchesPattern(q, ['hello', 'hi', 'مرحبا', 'هلا', 'السلام', 'صباح', 'مساء', 'اهلا'])) {
-      return I18n.t('bot.responses.greeting');
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `flex ${type === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in`;
+
+    const time = new Date().toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' });
+
+    messageDiv.innerHTML = `
+      <div class="max-w-[80%]">
+        ${type === 'bot' ? `
+          <div class="flex items-start gap-2 mb-1">
+            <div class="w-6 h-6 rounded-full bg-brandBlue flex items-center justify-center shrink-0">
+              <i class="fa-solid fa-robot text-white text-xs"></i>
+            </div>
+            <span class="text-[10px] text-slate-400">${time}</span>
+          </div>
+        ` : ''}
+        <div class="px-4 py-3 rounded-2xl ${
+          type === 'user' 
+            ? 'bg-brandBlue text-white rounded-br-none' 
+            : 'bg-white dark:bg-slate-700 text-slate-800 dark:text-white border border-slate-200 dark:border-slate-600 rounded-bl-none'
+        } shadow-sm">
+          <p class="text-sm whitespace-pre-line leading-relaxed">${text}</p>
+        </div>
+        ${type === 'user' ? `
+          <div class="text-left mt-1">
+            <span class="text-[10px] text-slate-400">${time}</span>
+          </div>
+        ` : ''}
+      </div>
+    `;
+
+    messagesContainer.appendChild(messageDiv);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+    _messages.push({ text, type, time });
+  }
+
+  function sendMessage() {
+    const input = document.getElementById('androbot-input');
+    if (!input) return;
+
+    const message = input.value.trim();
+    if (!message) return;
+
+    // Add user message
+    addMessage(message, 'user');
+    input.value = '';
+
+    // Simulate typing
+    const messagesContainer = document.getElementById('androbot-messages');
+    const typingDiv = document.createElement('div');
+    typingDiv.id = 'typing-indicator';
+    typingDiv.className = 'flex justify-start';
+    typingDiv.innerHTML = `
+      <div class="flex items-center gap-2 px-4 py-3 rounded-2xl bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600">
+        <div class="flex gap-1">
+          <span class="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style="animation-delay: 0s"></span>
+          <span class="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></span>
+          <span class="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style="animation-delay: 0.4s"></span>
+        </div>
+      </div>
+    `;
+    messagesContainer.appendChild(typingDiv);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+    // Generate response
+    setTimeout(() => {
+      typingDiv.remove();
+      const response = generateResponse(message);
+      addMessage(response, 'bot');
+    }, 1000);
+  }
+
+  function generateResponse(message) {
+    const lang = localStorage.getItem('lang') || 'ar';
+    const responses = _responses[lang];
+    
+    const lowerMsg = message.toLowerCase();
+    
+    if (lowerMsg.includes('مالي') || lowerMsg.includes('financial') || lowerMsg.includes('revenue') || lowerMsg.includes('ايراد')) {
+      return responses.financial;
     }
-
-    // Try DataService if available
-    if (typeof DataService !== 'undefined') {
-      
-      // === SHAREHOLDERS QUERIES ===
-      if (_matchesPattern(q, ['مساهم', 'ملاك', 'shareholder', 'owner', 'أسهم', 'shares'])) {
-        
-        // Major shareholders
-        if (_matchesPattern(q, ['كبار', 'أكبر', 'major', 'largest', 'top'])) {
-          try {
-            const major = DataService.getMajorShareholders(5);
-            if (major.length > 0) {
-              const top = major[0];
-              return lang === 'ar'
-                ? `أكبر المساهمين هم <b>${top.displayName}</b> بنسبة <b>${top.percent}%</b> (${I18n.formatNumber(top.shares)} سهم).`
-                : `The largest shareholder is <b>${top.displayName}</b> with <b>${top.percent}%</b> (${I18n.formatNumber(top.shares)} shares).`;
-            }
-          } catch (e) {
-            console.warn('DataService error:', e);
-          }
-        }
-
-        // Total count/capital
-        if (_matchesPattern(q, ['عدد', 'إجمالي', 'total', 'count', 'كم', 'how many'])) {
-          try {
-            const stats = DataService.getShareholdersStats();
-            return lang === 'ar'
-              ? `إجمالي عدد المساهمين: <b>${stats.totalCount}</b><br>رأس المال: <b>${I18n.formatCurrency(stats.totalCapital)}</b><br>عدد الأسهم: <b>${I18n.formatNumber(stats.totalShares)}</b>`
-              : `Total shareholders: <b>${stats.totalCount}</b><br>Capital: <b>${I18n.formatCurrency(stats.totalCapital)}</b><br>Total shares: <b>${I18n.formatNumber(stats.totalShares)}</b>`;
-          } catch (e) {
-            console.warn('DataService error:', e);
-          }
-        }
-      }
-
-      // === BOARD QUERIES ===
-      if (_matchesPattern(q, ['مجلس', 'إدارة', 'board', 'director'])) {
-        
-        // Chairman
-        if (_matchesPattern(q, ['رئيس', 'chairman', 'chair'])) {
-          try {
-            const board = DataService.getBoardMembers();
-            const chairman = board.find(m => m.boardRole === 'chairman');
-            if (chairman) {
-              return lang === 'ar'
-                ? `رئيس مجلس الإدارة هو <b>${chairman.displayName}</b><br>${chairman.displayTitle}`
-                : `The Chairman is <b>${chairman.displayName}</b><br>${chairman.displayTitle}`;
-            }
-          } catch (e) {
-            console.warn('DataService error:', e);
-          }
-        }
-
-        // Board members count
-        if (_matchesPattern(q, ['أعضاء', 'members', 'عدد', 'count', 'كم'])) {
-          try {
-            const board = DataService.getBoardMembers();
-            return lang === 'ar'
-              ? `مجلس الإدارة يتكون من <b>${board.length}</b> أعضاء.`
-              : `The Board consists of <b>${board.length}</b> members.`;
-          } catch (e) {
-            console.warn('DataService error:', e);
-          }
-        }
-      }
-
-      // === USERS QUERIES ===
-      if (_matchesPattern(q, ['موظف', 'مستخدم', 'user', 'employee', 'staff'])) {
-        try {
-          const stats = DataService.getSystemStats();
-          return lang === 'ar'
-            ? `إجمالي المستخدمين: <b>${stats.totalUsers}</b><br>الإدارة التنفيذية: <b>${stats.executiveCount}</b><br>أدوار متعددة: <b>${stats.multiRoleUsers}</b>`
-            : `Total users: <b>${stats.totalUsers}</b><br>Executives: <b>${stats.executiveCount}</b><br>Multi-role users: <b>${stats.multiRoleUsers}</b>`;
-        } catch (e) {
-          console.warn('DataService error:', e);
-        }
-      }
-
-      // === DEPARTMENTS QUERIES ===
-      if (_matchesPattern(q, ['قسم', 'إدارة', 'department', 'dept'])) {
-        try {
-          const depts = DataService.getDepartments();
-          return lang === 'ar'
-            ? `عدد الإدارات: <b>${depts.length}</b><br>من أهمها: ${depts.slice(0, 3).map(d => d.displayName).join(' • ')}`
-            : `Total departments: <b>${depts.length}</b><br>Including: ${depts.slice(0, 3).map(d => d.displayName).join(' • ')}`;
-        } catch (e) {
-          console.warn('DataService error:', e);
-        }
-      }
-
-      // === COMPLIANCE QUERIES ===
-      if (_matchesPattern(q, ['امتثال', 'compliance', 'حوكمة', 'governance'])) {
-        return I18n.t('bot.responses.compliance');
-      }
-
-      // === COMPANY INFO ===
-      if (_matchesPattern(q, ['شركة', 'company', 'اندروميدا', 'andromeda'])) {
-        try {
-          const profile = DataService.getCompanyProfile();
-          return lang === 'ar'
-            ? `<b>${profile.name}</b><br>سجل تجاري: ${profile.crNumber}<br>رأس المال: ${profile.capital.formatted}`
-            : `<b>${profile.name}</b><br>CR: ${profile.crNumber}<br>Capital: ${profile.capital.formatted}`;
-        } catch (e) {
-          console.warn('DataService error:', e);
-        }
-      }
+    if (lowerMsg.includes('مشروع') || lowerMsg.includes('مشاريع') || lowerMsg.includes('project')) {
+      return responses.projects;
     }
-
-    // Default fallback
-    return I18n.t('bot.responses.noAnswer');
-  }
-
-  // ==========================================
-  // PATTERN MATCHING HELPER
-  // ==========================================
-  function _matchesPattern(query, patterns) {
-    return patterns.some(p => query.includes(p.toLowerCase()));
-  }
-
-  // ==========================================
-  // APPEND MESSAGE
-  // ==========================================
-  function _appendMessage(html, sender) {
-    const div = document.createElement('div');
-    div.className = `chat-bubble ${sender}`;
-    div.innerHTML = html;
-    _elements.body?.appendChild(div);
-    _elements.body.scrollTop = _elements.body.scrollHeight;
-  }
-
-  // ==========================================
-  // TYPING INDICATOR
-  // ==========================================
-  function _showTyping() {
-    const div = document.createElement('div');
-    div.className = 'typing-indicator';
-    div.id = 'typing-indicator';
-    div.innerHTML = '<span></span><span></span><span></span>';
-    _elements.body?.appendChild(div);
-    _elements.body.scrollTop = _elements.body.scrollHeight;
-  }
-
-  function _removeTyping() {
-    document.getElementById('typing-indicator')?.remove();
-  }
-
-  // ==========================================
-  // CONTEXT SUGGESTIONS
-  // ==========================================
-  function _loadContextSuggestions() {
-    if (!_elements.suggestions) return;
-
-    const lang = AppConfig.getLang();
-    let items = [];
-
-    switch (_state.currentContext) {
-      case 'shareholders':
-        items = [
-          { label: I18n.t('bot.suggestions.majorShareholders'), query: I18n.t('bot.questions.majorShareholders') },
-          { label: I18n.t('bot.suggestions.capital'), query: I18n.t('bot.questions.capital') }
-        ];
-        break;
-
-      case 'board':
-        items = [
-          { label: I18n.t('bot.suggestions.chairman'), query: I18n.t('bot.questions.chairman') },
-          { label: I18n.t('bot.suggestions.boardMembers'), query: I18n.t('bot.questions.boardCount') }
-        ];
-        break;
-
-      case 'users':
-        items = [
-          { label: I18n.t('bot.suggestions.userCount'), query: I18n.t('bot.questions.userCount') },
-          { label: I18n.t('bot.suggestions.roles'), query: I18n.t('bot.questions.availableRoles') }
-        ];
-        break;
-
-      default:
-        items = [
-          { label: I18n.t('bot.suggestions.compliance'), query: I18n.t('bot.questions.complianceRate') },
-          { label: I18n.t('bot.suggestions.shareholders'), query: I18n.t('bot.questions.whoAreShareholders') }
-        ];
+    if (lowerMsg.includes('مخاطر') || lowerMsg.includes('risk')) {
+      return responses.risk;
     }
-
-    _elements.suggestions.innerHTML = items.map(i => `
-      <button 
-        onclick="AndroBot.ask('${i.query.replace(/'/g, "\\'")}')"
-        class="text-xs bg-white dark:bg-slate-700 border border-brandBlue/30 text-brandBlue dark:text-blue-300 px-3 py-1.5 rounded-full hover:bg-blue-50 dark:hover:bg-slate-600 transition"
-      >
-        ${i.label}
-      </button>
-    `).join('');
+    if (lowerMsg.includes('مساعدة') || lowerMsg.includes('help')) {
+      return responses.help;
+    }
+    
+    return responses.default;
   }
 
-  // ==========================================
-  // UPDATE UI (Language Change)
-  // ==========================================
-  function _updateUI() {
-    // Save state
-    const wasOpen = _state.isOpen;
-    const history = [..._state.conversationHistory];
+  function quickAsk(topic) {
+    const lang = localStorage.getItem('lang') || 'ar';
+    const questions = {
+      ar: {
+        financial: 'ما هو الأداء المالي الحالي؟',
+        projects: 'كم عدد المشاريع النشطة؟',
+        risk: 'ما هي المخاطر الحالية؟'
+      },
+      en: {
+        financial: 'What is the current financial performance?',
+        projects: 'How many active projects?',
+        risk: 'What are the current risks?'
+      }
+    };
 
-    // Remove and re-inject
-    _elements.container?.remove();
-    _injectHTML();
-    _cacheElements();
-    _setupEventListeners();
-
-    // Restore state
-    _state.conversationHistory = history;
-    if (wasOpen) {
-      _elements.window?.classList.remove('hidden');
-      _state.isOpen = true;
+    const input = document.getElementById('androbot-input');
+    if (input) {
+      input.value = questions[lang][topic];
+      sendMessage();
     }
   }
+
+  // ==========================================
+  // TOGGLE
+  // ==========================================
+  
+  function toggle() {
+    init();
+    
+    _isOpen = !_isOpen;
+    const chatWindow = document.getElementById('androbot-chat');
+    
+    if (chatWindow) {
+      if (_isOpen) {
+        chatWindow.style.transform = 'scale(1)';
+        chatWindow.style.opacity = '1';
+      } else {
+        chatWindow.style.transform = 'scale(0)';
+        chatWindow.style.opacity = '0';
+      }
+    }
+  }
+
+  // ==========================================
+  // AUTO-INIT
+  // ==========================================
+  
+  document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(init, 1000);
+  });
 
   // ==========================================
   // PUBLIC API
   // ==========================================
+  
   return {
     init,
     toggle,
-    ask(question) {
-      if (!_state.isOpen) toggle();
-      if (_elements.input) {
-        _elements.input.value = question;
-        sendMessage();
-      }
-    },
-    close() {
-      if (_state.isOpen) toggle();
-    },
-    open() {
-      if (!_state.isOpen) toggle();
-    },
-    getState() {
-      return { ..._state };
-    },
-    clearHistory() {
-      _state.conversationHistory = [];
-      if (_elements.body) {
-        _elements.body.innerHTML = `
-          <div class="chat-bubble bot">${I18n.t('bot.welcome')}</div>
-          <div class="flex flex-wrap gap-2 mt-2" id="suggestions"></div>
-        `;
-        _elements.suggestions = document.getElementById('suggestions');
-        _loadContextSuggestions();
-      }
-    }
+    sendMessage,
+    quickAsk
   };
+
 })();
 
-// ==========================================
-// AUTO INITIALIZE
-// ==========================================
-document.addEventListener('DOMContentLoaded', () => {
-  // Wait a bit for other modules to load
-  setTimeout(() => {
-    AndroBot.init();
-  }, 300);
-});
-
-// ==========================================
-// GLOBAL EXPORT
-// ==========================================
-if (typeof window !== 'undefined') {
-  window.AndroBot = AndroBot;
-}
-
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = AndroBot;
-}
+window.AndroBot = AndroBot;
