@@ -440,6 +440,17 @@
                     updateContent();
                     initEquityChart();
                     
+                    // ✅ إخفاء Loading Overlay بعد 300ms
+                    setTimeout(() => {
+                        const overlay = document.getElementById('loadingOverlay');
+                        if (overlay) {
+                            overlay.style.opacity = '0';
+                            setTimeout(() => {
+                                overlay.style.display = 'none';
+                            }, 300);
+                        }
+                    }, 300);
+                    
                     console.log('✅ CEO Board Page Ready');
                 }
             }, 50);
