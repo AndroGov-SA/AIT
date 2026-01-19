@@ -1,7 +1,7 @@
 /**
- * AndroGov Layout Engine v9.0 (Ayman's Multi-Role Integrated Edition)
+ * AndroGov Layout Engine v9.1 (Ayman's Professional Multi-Role Edition)
  * @file admin/js/components/layout.js
- * @description Specialized for Ayman Al-Maghrabi with dynamic role switching
+ * @description specialized for Ayman Al-Maghrabi with robust role-switching logic.
  */
 
 const Layout = (function() {
@@ -11,82 +11,91 @@ const Layout = (function() {
   // ==========================================
   let _state = {
     currentUser: null,
-    activeRole: 'admin', // الدور الافتراضي عند الدخول
+    activeRole: 'admin', 
     isInitialized: false,
     sidebarOpen: false
   };
 
   // ==========================================
-  // 2. MENU DEFINITIONS (Ayman's Roles)
+  // 2. MENU DEFINITIONS (Distributed across Ayman's 5 Roles)
   // ==========================================
   const _menuDefinitions = {
     
     // --- 1. مدير النظام (Admin) ---
+    // مسؤول عن إدارة الحسابات، الإعدادات التقنية، والرقابة الشاملة
     'admin': [
-      { section: 'main', items: [
+      { section: 'system_management', items: [
         { key: 'dashboard', icon: 'fa-gauge-high', link: 'index.html' },
         { key: 'users', icon: 'fa-users-gear', link: 'users.html' },
+        { key: 'it_infrastructure', icon: 'fa-microchip', link: 'it.html' },
         { key: 'settings', icon: 'fa-sliders', link: 'admin_settings.html' }
       ]},
-      { section: 'system_log', items: [
-        { key: 'auditLog', icon: 'fa-terminal', link: 'audit.html' },
-        { key: 'chat', icon: 'fa-comments', link: 'admin_chat.html' }
+      { section: 'system_logs', items: [
+        { key: 'audit_log', icon: 'fa-terminal', link: 'audit.html' },
+        { key: 'chat_internal', icon: 'fa-comments', link: 'admin_chat.html' }
       ]}
     ],
 
     // --- 2. أمين سر مجلس الإدارة (Board Secretary) ---
+    // مسؤول عن اجتماعات المجلس، الجمعية العمومية، والتعاميم الرسمية
     'board_secretary': [
-      { section: 'governance', items: [
-        { key: 'board', icon: 'fa-building-columns', link: 'board.html' },
-        { key: 'ga', icon: 'fa-users-rectangle', link: 'ga.html' }
+      { section: 'board_affairs', items: [
+        { key: 'board_dashboard', icon: 'fa-building-columns', link: 'board.html' },
+        { key: 'committees', icon: 'fa-people-group', link: 'committees.html' },
+        { key: 'general_assembly', icon: 'fa-users-rectangle', link: 'ga.html' }
       ]},
-      { section: 'documentation', items: [
-        { key: 'resolutions', icon: 'fa-file-signature', link: 'admin_circulars.html' },
-        { key: 'policies', icon: 'fa-book-open', link: 'policies.html' }
+      { section: 'official_comms', items: [
+        { key: 'circulars', icon: 'fa-bullhorn', link: 'admin_circulars.html' },
+        { key: 'policies_lib', icon: 'fa-book-open', link: 'policies.html' }
       ]}
     ],
 
     // --- 3. أمين سر لجنة المراجعة (Audit Secretary) ---
+    // مسؤول عن التدقيق، الرقابة المالية، والمهام المرتبطة باللجنة
     'audit_secretary': [
-      { section: 'audit', items: [
-        { key: 'audit_plan', icon: 'fa-calendar-check', link: '../audit/audit_plan.html' },
-        { key: 'observations', icon: 'fa-magnifying-glass-chart', link: '../audit/observations.html' }
+      { section: 'audit_control', items: [
+        { key: 'audit_dashboard', icon: 'fa-magnifying-glass-chart', link: 'audit.html' },
+        { key: 'finance_audit', icon: 'fa-money-bill-trend-up', link: 'finance.html' },
+        { key: 'procurement', icon: 'fa-boxes-packing', link: 'procurement.html' }
       ]},
-      { section: 'risk', items: [
-        { key: 'risk_reports', icon: 'fa-file-shield', link: '../audit/risk_reports.html' }
+      { section: 'task_mgmt', items: [
+        { key: 'tasks_list', icon: 'fa-list-check', link: 'tasks.html' }
       ]}
     ],
 
     // --- 4. مسؤول علاقات المساهمين (Investor Relations) ---
+    // إدارة بيانات المساهمين والملفات الشخصية المرتبطة بهم
     'investor_relations': [
-      { section: 'equity', items: [
-        { key: 'shareholders', icon: 'fa-id-card', link: 'shareholders.html' },
-        { key: 'certificates', icon: 'fa-certificate', link: '../shareholder/certificates.html' }
+      { section: 'shareholders_mgmt', items: [
+        { key: 'shareholders_list', icon: 'fa-id-card', link: 'shareholders.html' },
+        { key: 'ga_portal', icon: 'fa-landmark', link: 'ga.html' }
       ]},
-      { section: 'distributions', items: [
-        { key: 'dividends', icon: 'fa-hand-holding-dollar', link: '../shareholder/dividends.html' }
+      { section: 'profiles', items: [
+        { key: 'my_profile', icon: 'fa-user-circle', link: 'profile.html' }
       ]}
     ],
 
-    // --- 5. مسؤول GRC (Compliance Officer) ---
+    // --- 5. مسؤول الحوكمة والمخاطر والالتزام (GRC Officer) ---
+    // مراقبة الامتثال، مصفوفة الصلاحيات، واللوائح الإدارية
     'grc_officer': [
-      { section: 'compliance', items: [
-        { key: 'compliance', icon: 'fa-scale-balanced', link: 'compliance.html' },
-        { key: 'doa', icon: 'fa-sitemap', link: 'doa.html' }
+      { section: 'compliance_grc', items: [
+        { key: 'compliance_dash', icon: 'fa-scale-balanced', link: 'compliance.html' },
+        { key: 'doa_matrix', icon: 'fa-sitemap', link: 'doa.html' },
+        { key: 'hr_governance', icon: 'fa-user-shield', link: 'hr.html' }
       ]},
-      { section: 'risk_mgmt', items: [
-        { key: 'risk_register', icon: 'fa-triangle-exclamation', link: '../ceo/ceo_risks.html' }
+      { section: 'official_docs', items: [
+        { key: 'policies_mgmt', icon: 'fa-book-open', link: 'policies.html' }
       ]}
     ]
   };
 
-  // مسميات الأدوار للعرض في زر السويتش
+  // مسميات الأدوار لعرضها في زر التبديل (Header Switcher)
   const _roleLabels = {
     'admin': { ar: 'مدير النظام', en: 'System Admin' },
     'board_secretary': { ar: 'أمين سر مجلس الإدارة', en: 'Board Secretary' },
     'audit_secretary': { ar: 'أمين سر لجنة المراجعة', en: 'Audit Secretary' },
     'investor_relations': { ar: 'علاقات المساهمين', en: 'Investor Relations' },
-    'grc_officer': { ar: 'الحوكمة والمخاطر', en: 'GRC Officer' }
+    'grc_officer': { ar: 'مسؤول GRC والامتثال', en: 'GRC Officer' }
   };
     
   // ==========================================
@@ -99,18 +108,26 @@ const Layout = (function() {
     const storedUser = localStorage.getItem('currentUser');
     if (storedUser) {
       _state.currentUser = JSON.parse(storedUser);
-      // إذا كان هناك دور مخزن سابقاً نستخدمه، وإلا نستخدم الأدمن
-      _state.activeRole = localStorage.getItem('activeRole') || 'admin';
+      
+      // ✅ حل مشكلة "عدم الفتح": التحقق من أن الدور المخزن موجود فعلياً في القوائم
+      let savedRole = localStorage.getItem('activeRole');
+      if (savedRole && _menuDefinitions[savedRole]) {
+          _state.activeRole = savedRole;
+      } else {
+          _state.activeRole = 'admin'; // العودة للأدمن كخيار آمن
+          localStorage.setItem('activeRole', 'admin');
+      }
     }
 
     renderSidebar();
     renderHeader();
 
+    // إخفاء شاشة التحميل (Failsafe)
     const overlay = document.getElementById('loadingOverlay');
     if(overlay) overlay.classList.add('hidden');
 
     _state.isInitialized = true;
-    console.log(`✅ Admin Layout Engine Ready - Role: ${_state.activeRole}`);
+    console.log(`✅ Admin Layout Ready - Context: ${_state.activeRole}`);
   }
 
   // ==========================================
@@ -124,16 +141,19 @@ const Layout = (function() {
     const lang = isRTL ? 'ar' : 'en';
     const currentPath = window.location.pathname.split('/').pop() || 'index.html';
 
-    const activeMenu = _menuDefinitions[_state.activeRole];
+    // الحصول على القائمة بناءً على الدور النشط حالياً
+    const activeMenu = _menuDefinitions[_state.activeRole] || _menuDefinitions['admin'];
 
     let menuHTML = '';
     activeMenu.forEach(group => {
-      const sectionLabel = (window.I18n) ? I18n.t(`nav.${group.section}`) : group.section;
+      // محاولة الترجمة عبر I18n أو استخدام اسم القسم الخام
+      const sectionLabel = (window.I18n) ? (I18n.t(`nav.${group.section}`) || group.section) : group.section;
+      
       menuHTML += `<div class="px-3 mt-6 mb-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider">${sectionLabel}</div>`;
       
       group.items.forEach(item => {
         const isActive = currentPath === item.link;
-        const label = (window.I18n) ? I18n.t(`nav.${item.key}`) : item.key;
+        const label = (window.I18n) ? (I18n.t(`nav.${item.key}`) || item.key) : item.key;
         
         const baseClass = "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 group mb-1";
         const activeClass = "bg-brandRed text-white shadow-md shadow-red-500/20";
@@ -191,7 +211,7 @@ const Layout = (function() {
   }
 
   // ==========================================
-  // 5. RENDER HEADER
+  // 5. RENDER HEADER (With Role Switcher)
   // ==========================================
   function renderHeader() {
     const container = document.getElementById('header-container');
@@ -208,7 +228,7 @@ const Layout = (function() {
             <i class="fa-solid fa-bars text-xl"></i>
           </button>
           
-          <!-- Role Switcher Button -->
+          <!-- Role Switcher Tool -->
           <div class="relative group">
             <button class="flex items-center gap-2 px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-bold hover:border-brandRed transition-all">
                 <i class="fa-solid fa-shuffle text-brandRed"></i>
@@ -216,10 +236,10 @@ const Layout = (function() {
                 <i class="fa-solid fa-chevron-down text-[10px] text-slate-400"></i>
             </button>
             <div class="absolute top-full ${isRTL ? 'right-0' : 'left-0'} mt-2 w-64 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 overflow-hidden">
-                <div class="p-3 border-b border-slate-100 dark:border-slate-700 text-[10px] font-bold text-slate-400 uppercase tracking-widest">تبديل الصلاحية</div>
+                <div class="p-3 border-b border-slate-100 dark:border-slate-700 text-[10px] font-bold text-slate-400 uppercase tracking-widest">تبديل بيئة العمل</div>
                 <div class="p-1">
                     ${Object.entries(_roleLabels).map(([roleKey, labels]) => `
-                        <button onclick="Layout.switchRole('${roleKey}')" class="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors ${roleKey === _state.activeRole ? 'text-brandRed font-bold' : 'text-slate-600 dark:text-slate-300'}">
+                        <button onclick="Layout.switchRole('${roleKey}')" class="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors ${roleKey === _state.activeRole ? 'text-brandRed font-bold bg-red-50/50 dark:bg-red-900/10' : 'text-slate-600 dark:text-slate-300'}">
                             <i class="fa-solid ${_getRoleIcon(roleKey)} ${roleKey === _state.activeRole ? 'text-brandRed' : 'text-slate-400'}"></i>
                             <span class="text-xs">${labels[lang]}</span>
                             ${roleKey === _state.activeRole ? '<i class="fa-solid fa-check ms-auto text-[10px]"></i>' : ''}
@@ -268,11 +288,10 @@ const Layout = (function() {
     _state.activeRole = roleKey;
     localStorage.setItem('activeRole', roleKey);
     
-    // إعادة بناء الواجهة
+    // إعادة بناء الواجهة ديناميكياً بدون تحديث الصفحة
     renderSidebar();
     renderHeader();
     
-    // تنبيه بسيط للمستخدم
     console.log(`🔄 Switched workspace to: ${roleKey}`);
   }
 
@@ -290,7 +309,10 @@ const Layout = (function() {
 
   function toggleMobileSidebar() {
       const s = document.getElementById('main-sidebar');
-      if(s) s.classList.toggle('hidden');
+      if(s) {
+          s.classList.toggle('hidden');
+          s.classList.toggle('flex');
+      }
   }
 
   return { init, renderSidebar, renderHeader, toggleTheme, logout, toggleMobileSidebar, switchRole };
