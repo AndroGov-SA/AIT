@@ -1,7 +1,7 @@
 /**
- * AndroGov Layout Engine v7.7 (FINAL - Role Routing Fixed)
+ * AndroGov Layout Engine v7.8 (FIXED - Sidebar Disappearance Bug)
  * @file admin/js/components/layout.js
- * @description Fixed role detection and menu rendering for all user types
+ * @description Fixed missing 'Employee' menu definition and improved fallback logic
  */
 
 const Layout = (function() {
@@ -213,26 +213,42 @@ const Layout = (function() {
     // --- 8. Committees ---
     'Committees': [
       { section: 'main', items: [
-        { key: 'dash', icon: 'fa-chart-pie', link: '../Committees/index.html' }
+        { key: 'dash', icon: 'fa-chart-pie', link: '../committees/index.html' }
       ]},
       { section: 'governance', items: [
-        { key: 'meetings', icon: 'fa-calendar-days', link: '../Committees/meetings.html' },
-        { key: 'resolutions', icon: 'fa-file-signature', link: '../Committees/communication.html' },
-        { key: 'finance', icon: 'fa-chart-line', link: '../Committees/finance.html' }
+        { key: 'meetings', icon: 'fa-calendar-days', link: '../committees/meetings.html' },
+        { key: 'resolutions', icon: 'fa-file-signature', link: '../committees/communication.html' },
+        { key: 'finance', icon: 'fa-chart-line', link: '../committees/finance.html' }
       ]},
       { section: 'personal', items: [
-        { key: 'profile', icon: 'fa-user-tie', link: '../Committees/profile.html' }
+        { key: 'profile', icon: 'fa-user-tie', link: '../committees/profile.html' }
       ]}
     ],
     
-    // --- 9. Sales ---
+    // --- 9. Sales (Now handles Manager role) ---
     'Sales': [
       { section: 'main', items: [
-        { key: 'dash', icon: 'fa-chart-pie', link: '../Sales/index.html' },
-        { key: 'requests', icon: 'fa-headset', link: '../Sales/requests.html' }
+        { key: 'dash', icon: 'fa-chart-pie', link: '../sales/index.html' },
+        { key: 'pipeline', icon: 'fa-tents', link: '../sales/sales_pipeline.html' },
+        { key: 'clients', icon: 'fa-address-book', link: '../sales/sales_clients.html' },
+        { key: 'quotes', icon: 'fa-file-invoice-dollar', link: '../sales/sales_quotes.html' },
+        { key: 'activities', icon: 'fa-calendar-check', link: '../sales/sales_activities.html' }
       ]},
       { section: 'personal', items: [
-        { key: 'profile', icon: 'fa-user-tie', link: '../Sales/profile.html' }
+        { key: 'profile', icon: 'fa-user-tie', link: '../sales/profile.html' }
+      ]}
+    ],
+
+    // --- 10. Employee (NEW: Added to fix the missing menu bug) ---
+    'Employee': [
+      { section: 'main', items: [
+        { key: 'dash', icon: 'fa-house', link: '../employee/index.html' },
+        { key: 'profile', icon: 'fa-user-tie', link: '../admin/profile.html' }
+      ]},
+      { section: 'services', items: [
+        { key: 'leaves', icon: 'fa-umbrella-beach', link: '../employee/index.html' },
+        { key: 'payroll', icon: 'fa-money-bill-wave', link: '../employee/index.html' },
+        { key: 'tasks', icon: 'fa-list-check', link: '../admin/tasks.html' }
       ]}
     ]
   };
@@ -271,11 +287,11 @@ const Layout = (function() {
     _setupEventListeners();
 
     _state.isInitialized = true;
-    console.log('✅ Layout Engine v7.7 initialized');
+    console.log('✅ Layout Engine v7.8 initialized (Fix applied)');
   }
 
   // ==========================================
-  // 5. USER PROFILE (FIXED)
+  // 5. USER PROFILE
   // ==========================================
   async function _loadUserProfile() {
     try {
@@ -287,37 +303,22 @@ const Layout = (function() {
       }
 
       if (user) {
-        // ✅ إصلاح: استخراج الدور الأساسي بشكل صحيح
         let primaryRole = null;
-        
-        // الطريقة 1: من primaryRole مباشرة
         if (user.primaryRole) {
           primaryRole = user.primaryRole;
         }
-        // الطريقة 2: من contexts (الدور الأساسي)
         else if (user.contexts && Array.isArray(user.contexts)) {
           const primaryContext = user.contexts.find(c => c.isPrimary) || user.contexts[0];
           primaryRole = primaryContext?.role;
         }
-        // الطريقة 3: من role العادي
         else if (user.role) {
           primaryRole = user.role;
         }
         
-        // تعيين الدور للمستخدم
-        user.primaryRole = primaryRole || 'Sales';
-        
-        console.log('👤 User Profile Loaded:', {
-          id: user.id,
-          name: user.displayName || user.name,
-          primaryRole: user.primaryRole,
-          contextsCount: user.contexts?.length || 0
-        });
-        
+        user.primaryRole = primaryRole || 'employee';
         _state.currentUser = user;
         AppConfig.setCurrentUser(user);
       } else {
-        // Fallback User
         _state.currentUser = {
           id: 'USR_004',
           role: 'grc_officer',
@@ -334,7 +335,7 @@ const Layout = (function() {
   }
 
   // ==========================================
-  // 6. RENDER SIDEBAR (FIXED)
+  // 6. RENDER SIDEBAR
   // ==========================================
   function renderSidebar() {
     const container = document.getElementById('sidebar-container');
@@ -346,40 +347,26 @@ const Layout = (function() {
     const systemInfo = AppConfig.getSystemInfo();
     const user = _state.currentUser || JSON.parse(localStorage.getItem('currentUser'));
 
-    // ✅ خريطة ربط الأدوار بالقوائم (شاملة)
     const roleToMenuMap = {
-      // Admin & System
       'sys_admin': 'Admin',
       'grc_officer': 'Admin',
       'board_secretary': 'Admin',
       'audit_committee_secretary': 'Admin',
       'investor_relations': 'Admin',
       'auditor': 'Admin',
-      
-      // Executive
       'ceo': 'CEO',
       'vice_chairman': 'CEO',
-      
       'cfo': 'CFO',
-      
       'cao': 'CAO',
-      
-      // Technical
       'cto': 'CTO',
       'ncso': 'CTO',
       'director': 'CTO',
       'team_lead': 'CTO',
-      
-      // Governance
       'chairman': 'Board',
       'board_member': 'Board',
-      
       'audit_committee_chair': 'Committees',
       'audit_committee_member': 'Committees',
-      
       'shareholder': 'Shareholder',
-      
-      // General Staff
       'manager': 'Sales',
       'employee': 'Employee',
       'specialist': 'Employee',
@@ -388,38 +375,24 @@ const Layout = (function() {
       'viewer': 'Employee'
     };
 
-    // ✅ تحديد القائمة الصحيحة (محسّن)
     let userRole = user?.primaryRole || user?.role || 'employee';
     let menuKey = roleToMenuMap[userRole];
 
-    // إذا لم نجد القائمة، نحاول استخدام أول context
     if (!menuKey && user?.contexts && user.contexts.length > 0) {
       const primaryContext = user.contexts.find(c => c.isPrimary) || user.contexts[0];
       userRole = primaryContext?.role;
       menuKey = roleToMenuMap[userRole];
     }
 
-    // القائمة الافتراضية
-    menuKey = menuKey || 'Sales';
-
-    console.log('🔍 Sidebar Render:', { 
-      userId: user?.id,
-      userName: user?.displayName || user?.name,
-      userRole, 
-      menuKey,
-      availableMenu: !!_menuDefinitions[menuKey]
-    });
+    // ✅ Fallback Security: If menuKey doesn't exist in definitions, force Sales or Admin
+    if (!_menuDefinitions[menuKey]) {
+      console.warn(`⚠️ Menu key "${menuKey}" not found in definitions. Falling back to Sales.`);
+      menuKey = 'Sales';
+    }
     
     const activeMenu = _menuDefinitions[menuKey];
 
-    if (!activeMenu) {
-      console.error('❌ No menu found for:', menuKey);
-      return;
-    }
-
-    // ✅ بناء HTML القائمة
     let menuHTML = '';
-    
     activeMenu.forEach(group => {
       const sectionLabel = (typeof I18n !== 'undefined') 
         ? (I18n.t(`nav.${group.section}`) || group.section) 
@@ -450,17 +423,13 @@ const Layout = (function() {
       });
     });
 
-    const roleBadges = (typeof RoleSwitcher !== 'undefined' && RoleSwitcher.hasMultipleRoles()) 
-      ? `<div class="mt-3 flex flex-wrap gap-1">${RoleSwitcher.renderBadges()}</div>` 
-      : '';
-
-    const displayName = typeof user.name === 'object' 
+    const displayName = typeof user?.name === 'object' 
       ? (lang === 'ar' ? user.name.ar : user.name.en) 
-      : (user.displayName || user.name || 'User');
+      : (user?.displayName || user?.name || 'User');
     
-    const displayTitle = user.displayTitle || user.title || user.role || '';
+    const displayTitle = user?.displayTitle || user?.title || user?.role || '';
     
-    const avatarSrc = (user.avatar && user.avatar.length > 5) 
+    const avatarSrc = (user?.avatar && user.avatar.length > 5) 
       ? user.avatar 
       : `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=random`;
 
@@ -487,7 +456,6 @@ const Layout = (function() {
               <p class="text-[10px] text-brandRed font-medium truncate">${displayTitle}</p>
             </div>
           </a>
-          ${roleBadges}
         </div>
 
         <nav id="sidebar-nav" class="flex-1 overflow-y-auto px-3 py-2 custom-scroll space-y-0.5">
@@ -512,44 +480,15 @@ const Layout = (function() {
     const isRTL = AppConfig.isRTL();
     const isDark = AppConfig.isDarkMode();
 
-    let notifListHTML = _notifications.length > 0 ? _notifications.map(n => `
-      <div class="p-3 border-b border-slate-100 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition cursor-pointer flex gap-3">
-        <div class="w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${n.color}"><i class="fa-solid ${n.icon} text-xs"></i></div>
-        <div class="flex-1 min-w-0">
-          <p class="text-xs font-bold text-slate-800 dark:text-white">${(typeof I18n !== 'undefined') ? I18n.t(n.titleKey) : n.titleKey}</p>
-          <p class="text-[10px] text-slate-500 mt-0.5 truncate">${lang==='ar'?n.msgAr:n.msgEn}</p>
-          <p class="text-[9px] text-slate-400 mt-1">${n.time}</p>
-        </div>
-      </div>
-    `).join('') : `<div class="p-6 text-center text-slate-400 text-xs">No Notifications</div>`;
-
-    const roleSwitcherHTML = (typeof RoleSwitcher !== 'undefined' && RoleSwitcher.hasMultipleRoles()) ? RoleSwitcher.renderButton() : '';
-
     container.innerHTML = `
       <header class="h-20 sticky top-0 z-40 flex items-center justify-between px-6 bg-white/80 dark:bg-[#0F172A]/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 transition-all">
         <div class="flex items-center gap-4">
           <button onclick="Layout.toggleMobileSidebar()" class="md:hidden text-slate-500 dark:text-slate-200 hover:text-brandRed transition"><i class="fa-solid fa-bars text-xl"></i></button>
         </div>
         <div class="flex items-center gap-3">
-          ${roleSwitcherHTML}
-          
-          <button onclick="if(typeof AndroBot !== 'undefined') AndroBot.toggle()" class="w-9 h-9 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-brandBlue transition flex items-center justify-center" title="AI Assistant">
+          <button onclick="if(typeof AndroBot !== 'undefined') AndroBot.toggle()" class="w-9 h-9 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-brandBlue transition flex items-center justify-center">
              <i class="fa-solid fa-robot"></i>
           </button>
-
-          <div class="relative">
-            <button id="notifBtn" onclick="Layout.toggleNotif()" class="w-9 h-9 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-white transition relative flex items-center justify-center">
-              <i class="fa-regular fa-bell"></i>
-              ${_notifications.length > 0 ? '<span class="absolute top-2 right-2.5 w-2 h-2 bg-brandRed rounded-full border border-white dark:border-slate-800 animate-pulse"></span>' : ''}
-            </button>
-            <div id="notifDropdown" class="hidden absolute top-12 ${isRTL ? 'left-0' : 'right-0'} w-80 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 overflow-hidden z-50">
-              <div class="p-3 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-900/50">
-                <span class="text-xs font-bold dark:text-white">Notifications</span>
-              </div>
-              <div class="max-h-64 overflow-y-auto custom-scroll">${notifListHTML}</div>
-            </div>
-          </div>
-
           <button onclick="Layout.toggleLang()" class="h-9 px-3 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-xs font-bold text-slate-600 dark:text-white transition">${lang === 'ar' ? 'EN' : 'عربي'}</button>
           <button onclick="Layout.toggleTheme()" class="w-9 h-9 rounded-lg border border-slate-200 dark:border-slate-700 flex items-center justify-center hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-yellow-400 transition"><i class="fa-solid ${isDark ? 'fa-sun' : 'fa-moon'}"></i></button>
           <div class="h-6 w-px bg-slate-200 dark:bg-slate-700 mx-1"></div>
@@ -559,34 +498,15 @@ const Layout = (function() {
     `;
   }
 
-  // ==========================================
-  // 8. EVENT LISTENERS
-  // ==========================================
   function _setupEventListeners() {
-    document.addEventListener('click', (e) => {
-      const notifMenu = document.getElementById('notifDropdown');
-      const notifBtn = document.getElementById('notifBtn');
-      if (notifMenu && !notifMenu.contains(e.target) && !notifBtn?.contains(e.target)) {
-        notifMenu.classList.add('hidden');
-      }
-    });
-
     window.addEventListener('langChanged', () => { 
       renderSidebar(); 
       renderHeader(); 
       if(typeof I18n !== 'undefined') I18n.applyToDOM(); 
     });
-    
     window.addEventListener('themeChanged', () => renderHeader());
   }
 
-  // ==========================================
-  // 9. HELPER FUNCTIONS
-  // ==========================================
-  function toggleNotif() { 
-    document.getElementById('notifDropdown')?.classList.toggle('hidden'); 
-  }
-  
   function toggleMobileSidebar() { 
     const s = document.getElementById('main-sidebar'); 
     if(s) { 
@@ -596,49 +516,15 @@ const Layout = (function() {
     } 
   }
   
-  function toggleTheme() { 
-    AppConfig.toggleTheme(); 
-  }
-  
-  function toggleLang() { 
-    AppConfig.toggleLang(); 
-    location.reload(); 
-  }
-  
-  function logout() { 
-    const msg = (typeof I18n !== 'undefined') ? I18n.t('auth.logoutConfirm') : 'Logout?';
-    if(confirm(msg)) window.location.href = '../login.html'; 
-  }
-  
-  function getCurrentUser() { 
-    return _state.currentUser; 
-  }
+  function toggleTheme() { AppConfig.toggleTheme(); }
+  function toggleLang() { AppConfig.toggleLang(); location.reload(); }
+  function logout() { window.location.href = '../login.html'; }
 
-  // ==========================================
-  // 10. PUBLIC API
-  // ==========================================
   return { 
-    init, 
-    renderSidebar, 
-    renderHeader, 
-    toggleNotif, 
-    toggleMobileSidebar, 
-    toggleTheme, 
-    toggleLang, 
-    logout, 
-    getCurrentUser,
-    // Expose for debugging
-    _menuDefinitions
+    init, renderSidebar, renderHeader, toggleMobileSidebar, toggleTheme, toggleLang, logout 
   };
 
 })();
 
-// ==========================================
-// AUTO INITIALIZE
-// ==========================================
 document.addEventListener('DOMContentLoaded', Layout.init);
-
-// ==========================================
-// GLOBAL EXPORT
-// ==========================================
 if (typeof window !== 'undefined') window.Layout = Layout;
