@@ -430,5 +430,27 @@
     <script src="../js/components/role-switcher.js"></script>
     <script src="../js/components/layout.js"></script>
     <script src="../js/components/bot.js"></script>
+
+    <!-- ✅ Auto-hide Loading Overlay -->
+    <script>
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                const overlay = document.getElementById('loadingOverlay');
+                if (overlay) {
+                    overlay.style.opacity = '0';
+                    setTimeout(() => overlay.remove(), 500);
+                }
+            }, 500);
+        });
+        
+        // Fallback
+        setTimeout(() => {
+            const overlay = document.getElementById('loadingOverlay');
+            if (overlay && overlay.style.display !== 'none') {
+                overlay.style.opacity = '0';
+                setTimeout(() => overlay.remove(), 500);
+            }
+        }, 2000);
+    </script>
 </body>
 </html>
