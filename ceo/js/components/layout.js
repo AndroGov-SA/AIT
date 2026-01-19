@@ -237,14 +237,24 @@ const Layout = (function() {
     if (storedUser) {
       _state.currentUser = JSON.parse(storedUser);
       
-      // Validate Saved Role
-      let savedRole = localStorage.getItem('activeRole');
+      // ✅ Always default to 'ceo' role for CEO users
+      let savedRole = localStorage.getItem('ceo_activeRole'); // Different key for CEO
       if (savedRole && _menuDefinitions[savedRole]) {
         _state.activeRole = savedRole;
       } else {
         _state.activeRole = 'ceo';
-        localStorage.setItem('activeRole', 'ceo');
+        localStorage.setItem('ceo_activeRole', 'ceo');
       }
+    } else {
+      // ✅ Set default CEO user if not logged in
+      _state.currentUser = {
+        id: 'CEO_001',
+        type: 'ceo',
+        displayName: 'هشام السحيباني',
+        displayTitle: 'الرئيس التنفيذي',
+        avatar: 'https://ui-avatars.com/api/?name=CEO&background=DC2626&color=fff&bold=true'
+      };
+      localStorage.setItem('currentUser', JSON.stringify(_state.currentUser));
     }
 
     // Load Notifications
@@ -699,7 +709,7 @@ const Layout = (function() {
     }
     
     _state.activeRole = roleKey;
-    localStorage.setItem('activeRole', roleKey);
+    localStorage.setItem('ceo_activeRole', roleKey); // ✅ Use CEO-specific key
     
     renderSidebar();
     renderHeader();
@@ -712,7 +722,7 @@ const Layout = (function() {
       );
     }
     
-    console.log(`🔄 Role switched to: ${roleKey}`);
+    console.log(`🔄 CEO Role switched to: ${roleKey}`);
   }
 
   function toggleLanguage() {
