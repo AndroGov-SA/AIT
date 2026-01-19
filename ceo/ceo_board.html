@@ -332,15 +332,6 @@
         </main>
     </div>
 
-    <script src="../data/company_policy.js"></script>
-    <script src="../js/core/config.js"></script>
-    <script src="../js/core/i18n.js"></script>
-    <script src="../js/services/data-service.js"></script>
-    <script src="../js/components/toast.js"></script>
-    <script src="../js/components/role-switcher.js"></script>
-    <script src="../js/components/layout.js"></script>
-    <script src="../js/components/bot.js"></script>
-
     <script>
         // ==========================================
         // PAGE CONTENT & TRANSLATIONS
@@ -542,21 +533,21 @@
         // INITIALIZATION
         // ==========================================
         document.addEventListener('DOMContentLoaded', () => {
+            // Force hide loading overlay after 1 second if Layout not ready
+            setTimeout(() => {
+                const overlay = document.getElementById('loadingOverlay');
+                if (overlay) {
+                    overlay.style.opacity = '0';
+                    setTimeout(() => overlay.remove(), 500);
+                }
+            }, 1000);
+            
             const checkReady = setInterval(() => {
                 if (typeof Layout !== 'undefined') {
                     clearInterval(checkReady);
                     
                     updateContent();
                     initEquityChart();
-                    
-                    // Hide loading overlay
-                    setTimeout(() => {
-                        const overlay = document.getElementById('loadingOverlay');
-                        if (overlay) {
-                            overlay.style.opacity = '0';
-                            setTimeout(() => overlay.remove(), 500);
-                        }
-                    }, 500);
                     
                     console.log('✅ CEO Board Page Ready');
                 }
@@ -568,5 +559,15 @@
             updateContent();
         });
     </script>
+    
+    <!-- Load External Scripts -->
+    <script src="../data/company_policy.js"></script>
+    <script src="../js/core/config.js"></script>
+    <script src="../js/core/i18n.js"></script>
+    <script src="../js/services/data-service.js"></script>
+    <script src="../js/components/toast.js"></script>
+    <script src="../js/components/role-switcher.js"></script>
+    <script src="../js/components/layout.js"></script>
+    <script src="../js/components/bot.js"></script>
 </body>
 </html>
