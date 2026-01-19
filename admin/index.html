@@ -3,11 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-i18n="pageTitle">AndroGov | لوحة القيادة</title>
+    <title id="metaTitle">AndroGov | AI Dashboard</title>
     
+    <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- Scripts -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -19,7 +21,7 @@
                     colors: {
                         brandRed: '#FB4747',
                         brandBlue: '#4267B2',
-                        brandDark: '#1E293B',
+                        brandDark: '#0F172A',
                         brandGray: '#F8FAFC'
                     },
                     fontFamily: {
@@ -31,322 +33,392 @@
         }
     </script>
 
-    <link rel="stylesheet" href="css/users.css">
+    <style>
+        .custom-scroll::-webkit-scrollbar { width: 4px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #FB4747; border-radius: 10px; }
+        .ai-gradient { background: linear-gradient(135deg, #FB4747 0%, #4267B2 100%); }
+        .loading-overlay { transition: opacity 0.5s ease-out; }
+        .role-transition { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        [dir="ltr"] .font-sans { font-family: 'Inter', sans-serif; }
+    </style>
 </head>
-<body class="bg-brandGray dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300">
+<body class="bg-brandGray dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300 overflow-x-hidden">
 
     <!-- Loading Overlay -->
-    <div id="loadingOverlay" class="fixed inset-0 bg-white dark:bg-slate-900 z-[9999] flex flex-col items-center justify-center transition-opacity duration-500">
+    <div id="loadingOverlay" class="fixed inset-0 bg-white dark:bg-slate-900 z-[9999] flex flex-col items-center justify-center">
         <div class="w-12 h-12 border-4 border-brandRed border-t-transparent rounded-full animate-spin"></div>
-        <p class="mt-4 text-sm font-bold text-slate-500 dark:text-slate-400">جاري مزامنة بيانات الدور...</p>
+        <p class="mt-4 text-sm font-bold text-slate-500 dark:text-slate-400" data-i18n="syncing">جاري تهيئة نظام أندرو-جوف...</p>
     </div>
 
+    <!-- Sidebar Container -->
     <div id="sidebar-container"></div>
 
     <div class="main-content-wrapper ltr:md:ml-72 rtl:md:mr-72 transition-all duration-300 flex flex-col min-h-screen">
         
+        <!-- Header Container -->
         <div id="header-container"></div>
 
-        <main class="p-6 space-y-6">
+        <main class="p-6 space-y-6 role-transition" id="mainDashboard">
             
-            <!-- Dynamic Alert Box -->
-            <div id="roleAlertBox" class="bg-white dark:bg-slate-800 rounded-2xl p-1 border-r-4 border-orange-500 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4 overflow-hidden">
-                <div class="p-4 flex items-center gap-4">
-                    <div class="w-12 h-12 rounded-full bg-orange-100 dark:bg-orange-500/20 text-orange-600 dark:text-orange-400 flex items-center justify-center text-xl shrink-0">
-                        <i class="fa-solid fa-triangle-exclamation"></i>
+            <!-- Section 1: AI Insight Engine -->
+            <div class="ai-gradient p-0.5 rounded-[2rem] shadow-xl shadow-red-500/10">
+                <div class="bg-white/95 dark:bg-slate-800/95 rounded-[1.9rem] p-6 flex flex-col md:flex-row items-center justify-between gap-6 overflow-hidden relative">
+                    <div class="absolute -right-20 -top-20 w-64 h-64 bg-brandRed/10 rounded-full blur-3xl"></div>
+                    <div class="flex items-center gap-6 z-10">
+                        <div class="w-20 h-20 rounded-3xl ai-gradient flex items-center justify-center text-white text-4xl shadow-lg animate-pulse">
+                            <i class="fa-solid fa-brain"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-2xl font-black dark:text-white" data-i18n="aiWelcome">تحليلات أيمن المغربي الذكية</h2>
+                            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1" id="aiInsightText">تحميل البيانات...</p>
+                        </div>
                     </div>
-                    <div>
-                        <h3 class="font-bold text-lg dark:text-white" id="dynamicAlertTitle">إجراء مطلوب: مراجعة تحديثات النظام</h3>
-                        <p class="text-sm text-slate-500 dark:text-slate-400">
-                            <span data-i18n="alertDesc">بناءً على دورك الحالي، يرجى مراجعة المهام الموكلة إليك لضمان استمرارية العمل.</span> 
-                        </p>
-                    </div>
-                </div>
-                <div class="p-4">
-                    <button class="px-6 py-2 bg-brandRed text-white rounded-lg text-sm font-bold shadow-lg shadow-red-500/20 hover:bg-red-700 transition flex items-center gap-2">
-                        <i class="fa-solid fa-list-check"></i> <span data-i18n="reviewBtn">عرض المهام</span>
+                    <button onclick="runAIAnalysis()" class="z-10 px-8 py-4 bg-slate-900 dark:bg-white dark:text-slate-900 text-white rounded-2xl text-sm font-black hover:scale-105 transition shadow-xl active:scale-95 flex items-center gap-3">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> <span data-i18n="aiUpdate">تحديث التحليل</span>
                     </button>
                 </div>
             </div>
 
-            <!-- KPI Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 hover:shadow-md transition">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase" data-i18n="kpiCapital">رأس المال المصدر</p>
-                            <h3 class="text-2xl font-bold mt-1 font-en" id="val-capital">6,000,000 <span class="text-xs font-sans text-slate-400">SAR</span></h3>
-                        </div>
-                        <div class="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/30 text-blue-600 flex items-center justify-center">
-                            <i class="fa-solid fa-coins"></i>
-                        </div>
-                    </div>
-                    <div class="mt-4 flex items-center gap-2 text-xs text-green-500 font-bold bg-green-50 dark:bg-green-900/20 w-fit px-2 py-1 rounded">
-                        <i class="fa-solid fa-check"></i> <span data-i18n="fullyPaid">مدفوع بالكامل</span>
-                    </div>
-                </div>
-
-                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 hover:shadow-md transition">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase" data-i18n="kpiShareholders">المساهمين</p>
-                            <h3 class="text-2xl font-bold mt-1 font-en" id="val-shareholders">11 <span class="text-xs font-sans text-slate-400" data-i18n="member">عضو</span></h3>
-                        </div>
-                        <div class="w-10 h-10 rounded-xl bg-purple-50 dark:bg-purple-900/30 text-purple-600 flex items-center justify-center">
-                            <i class="fa-solid fa-users"></i>
-                        </div>
-                    </div>
-                    <div class="mt-4 text-xs text-slate-400 truncate w-full" id="sh-list-names">...</div>
-                </div>
-
-                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 hover:shadow-md transition">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase" data-i18n="kpiGov">قرارات بالتمرير</p>
-                            <h3 class="text-2xl font-bold mt-1 font-en text-brandRed">2 <span class="text-xs font-sans text-slate-400" data-i18n="pending">قيد التوقيع</span></h3>
-                        </div>
-                        <div class="w-10 h-10 rounded-xl bg-red-50 dark:bg-red-900/30 text-brandRed flex items-center justify-center">
-                            <i class="fa-solid fa-signature"></i>
-                        </div>
-                    </div>
-                    <div class="mt-4 flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400">
-                        <span class="w-2 h-2 rounded-full bg-brandRed animate-pulse"></span>
-                        <span data-i18n="waitingFor">بانتظار الاعتماد النهائي</span>
-                    </div>
-                </div>
-
-                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 hover:shadow-md transition">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase" data-i18n="kpiComp">نسبة الامتثال</p>
-                            <h3 class="text-2xl font-bold mt-1 font-en text-green-600">92%</h3>
-                        </div>
-                        <div class="w-10 h-10 rounded-xl bg-green-50 dark:bg-green-900/30 text-green-600 flex items-center justify-center">
-                            <i class="fa-solid fa-shield-halved"></i>
-                        </div>
-                    </div>
-                    <div class="w-full bg-slate-100 dark:bg-slate-700 h-1.5 rounded-full mt-5 overflow-hidden">
-                        <div class="bg-green-500 h-full w-[92%]"></div>
-                    </div>
-                </div>
+            <!-- Section 2: KPI Stats (Dynamic) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4" id="statsGrid">
+                <!-- Data populated via JS based on Role -->
             </div>
 
+            <!-- Section 3: Smart Content Grid -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <!-- Ownership Chart -->
-                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-                    <div class="flex justify-between items-center mb-6">
-                        <h3 class="font-bold text-slate-700 dark:text-white flex items-center gap-2">
-                            <i class="fa-solid fa-chart-pie text-brandBlue"></i> <span data-i18n="chartTitle">هيكل الملكية</span>
+                <!-- Task Management -->
+                <div class="lg:col-span-2 bg-white dark:bg-slate-800 p-8 rounded-[2.5rem] shadow-sm border border-slate-100 dark:border-slate-700">
+                    <div class="flex justify-between items-center mb-8">
+                        <h3 class="font-black text-slate-800 dark:text-white text-lg flex items-center gap-3">
+                            <i class="fa-solid fa-list-check text-brandRed"></i> <span data-i18n="tasksTitle">المهام التنفيذية للدور</span>
                         </h3>
-                    </div>
-                    <div class="h-48 relative flex justify-center">
-                        <canvas id="ownershipChart"></canvas>
-                    </div>
-                    <div class="mt-6 space-y-3" id="chartLegend"></div>
-                </div>
-
-                <!-- Committees -->
-                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-                    <h3 class="font-bold text-slate-700 dark:text-white mb-6 flex items-center gap-2">
-                        <i class="fa-solid fa-users-gear text-purple-500"></i> <span data-i18n="commTitle">اللجان والمجلس</span>
-                    </h3>
-                    <div class="space-y-4">
-                        <div class="p-4 bg-slate-50 dark:bg-slate-700/50 rounded-xl border border-slate-100 dark:border-slate-700">
-                            <div class="flex justify-between items-center mb-2">
-                                <h4 class="font-bold text-sm text-slate-800 dark:text-white" data-i18n="auditComm">لجنة المراجعة</h4>
-                                <span class="bg-green-100 text-green-700 text-[10px] px-2 py-0.5 rounded-full font-bold" data-i18n="newCycle">دورة جديدة</span>
-                            </div>
-                            <div class="space-y-2 mt-3 text-xs text-slate-500">
-                                <div class="flex items-center gap-2"><img src="https://ui-avatars.com/api/?name=M&background=random" class="w-5 h-5 rounded-full"> <span>محمد العنزي (رئيس)</span></div>
-                                <div class="flex items-center gap-2"><img src="https://ui-avatars.com/api/?name=A&background=random" class="w-5 h-5 rounded-full"> <span>أحمد السحيباني (عضو)</span></div>
-                            </div>
+                        <div class="flex gap-2">
+                             <span class="px-3 py-1 bg-green-50 dark:bg-green-900/20 text-green-600 text-[10px] font-bold rounded-full border border-green-100 dark:border-green-800 uppercase" data-i18n="statusLive">Live</span>
                         </div>
-                        <div class="flex items-center justify-between p-3 rounded-lg bg-slate-50 dark:bg-slate-700/30">
-                            <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded bg-purple-100 text-purple-600 flex items-center justify-center text-xs"><i class="fa-solid fa-user-tie"></i></div>
-                                <div>
-                                    <p class="text-xs font-bold dark:text-white" data-i18n="boardSec">أمين السر</p>
-                                    <p class="text-[10px] text-slate-400">أيمن بن علي المغربي</p>
-                                </div>
-                            </div>
-                        </div>
+                    </div>
+                    <div class="space-y-4" id="roleTasks">
+                        <!-- Populated based on role -->
                     </div>
                 </div>
 
-                <!-- Tasks -->
-                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 flex flex-col">
-                    <h3 class="font-bold text-slate-700 dark:text-white mb-6 flex items-center gap-2">
-                        <i class="fa-solid fa-list-check text-green-500"></i> <span data-i18n="opsTitle">المهام التشغيلية</span>
+                <!-- Strategic Distribution -->
+                <div class="bg-white dark:bg-slate-800 p-8 rounded-[2.5rem] shadow-sm border border-slate-100 dark:border-slate-700 flex flex-col">
+                    <h3 class="font-black text-slate-800 dark:text-white text-lg mb-8 flex items-center gap-3">
+                        <i class="fa-solid fa-chart-pie text-brandBlue"></i> <span data-i18n="chartTitle">التوزيع الاستراتيجي</span>
                     </h3>
-                    <div class="flex-1 space-y-3 overflow-y-auto max-h-64 pr-2 custom-scroll" id="tasks-container">
-                        <!-- Tasks populated based on role -->
+                    <div class="flex-1 min-h-[250px] relative flex items-center justify-center">
+                        <canvas id="dashboardChart"></canvas>
                     </div>
-                    <button class="mt-4 text-center text-xs text-brandBlue hover:underline" data-i18n="viewAll">عرض كل المهام</button>
+                    <div class="mt-8 space-y-4" id="chartLegend"></div>
                 </div>
             </div>
 
-            <!-- Audit Log Terminal -->
-            <div class="bg-slate-900 rounded-2xl p-5 shadow-lg text-slate-300 font-mono text-xs border border-slate-800">
-                <div class="flex justify-between items-center mb-3 border-b border-slate-700 pb-3">
-                    <span class="flex items-center gap-2 font-bold text-white"><i class="fa-solid fa-terminal text-brandRed"></i> <span data-i18n="auditTitle">سجل النظام المباشر</span></span>
-                    <span class="flex items-center gap-2 text-green-400"><span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span> Live</span>
+            <!-- Section 4: Live Audit Terminal -->
+            <div class="bg-brandDark rounded-[2rem] p-6 shadow-2xl border border-slate-800 font-mono">
+                <div class="flex justify-between items-center mb-4 border-b border-slate-800 pb-4">
+                    <div class="flex items-center gap-3 text-slate-300 text-xs">
+                        <i class="fa-solid fa-terminal text-brandRed"></i> <span data-i18n="logTitle">سجل تدقيق النظام</span>
+                    </div>
+                    <div class="px-2 py-0.5 rounded bg-green-500/10 text-green-500 text-[9px] font-bold">SECURED</div>
                 </div>
-                <div class="space-y-2 h-32 overflow-y-auto custom-scroll" id="audit-log-container"></div>
+                <div class="space-y-2 h-40 overflow-y-auto custom-scroll text-[11px]" id="auditLog"></div>
             </div>
         </main>
     </div>
 
-    <!-- Scripts -->
+    <!-- External Service Mockup -->
     <script src="data/company_policy.js"></script>
-    <script src="js/core/config.js"></script>
-    <script src="js/core/i18n.js"></script>
-    <script src="js/helpers/policy-helpers.js"></script>
     <script src="js/services/data-service.js"></script>
-    <script src="js/components/role-switcher.js"></script>
-    <script src="js/components/layout.js"></script>
+    <!-- We will still include Bot.js as it's a separate component required for the toggle -->
     <script src="js/components/bot.js"></script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const checkSystem = setInterval(() => {
-                if (typeof Layout !== 'undefined' && typeof DataService !== 'undefined') {
-                    clearInterval(checkSystem);
-                    
-                    // ضمان تسجيل دخول أيمن
-                    if (!AppConfig.getCurrentUser()) {
-                        const defaultUser = DataService.getUserById('USR_004');
-                        if (defaultUser) AppConfig.setCurrentUser(defaultUser);
-                    }
+        // ==========================================
+        // 1. TRANSLATION DICTIONARY
+        // ==========================================
+        const langDB = {
+            ar: {
+                syncing: "جاري تهيئة نظام أندرو-جوف...",
+                aiWelcome: "تحليلات أيمن المغربي الذكية",
+                aiUpdate: "تحديث التحليل",
+                tasksTitle: "المهام التنفيذية للدور",
+                chartTitle: "التوزيع الاستراتيجي",
+                logTitle: "سجل تدقيق النظام",
+                statusLive: "مباشر",
+                kpiCap: "رأس المال", kpiSH: "المساهمين", kpiRes: "قرارات", kpiComp: "الامتثال",
+                member: "عضو", SAR: "ر.س", pending: "معلق", logout: "خروج",
+                role_admin: "مدير النظام", role_board: "أمين سر المجلس", role_audit: "أمين سر اللجنة", role_ir: "علاقات المساهمين", role_grc: "مسؤول GRC"
+            },
+            en: {
+                syncing: "Initializing AndroGov...",
+                aiWelcome: "Ayman's AI Insights",
+                aiUpdate: "Refresh Analysis",
+                tasksTitle: "Role Executive Tasks",
+                chartTitle: "Strategic Distribution",
+                logTitle: "System Audit Logs",
+                statusLive: "Live",
+                kpiCap: "Capital", kpiSH: "Shareholders", kpiRes: "Resolutions", kpiComp: "Compliance",
+                member: "Members", SAR: "SAR", pending: "Pending", logout: "Logout",
+                role_admin: "System Admin", role_board: "Board Secretary", role_audit: "Audit Secretary", role_ir: "Investor Relations", role_grc: "GRC Officer"
+            }
+        };
 
-                    Layout.init();
-                    initPage();
+        // ==========================================
+        // 2. CONSOLIDATED LAYOUT & ROLE ENGINE
+        // ==========================================
+        const Layout = (function() {
+            let _state = { user: null, role: 'admin', lang: 'ar', theme: 'light' };
 
-                    // ✅ الاستماع لحدث تغيير الدور لتحديث محتوى الصفحة
-                    window.addEventListener('roleChanged', () => {
-                        console.log("Dashboard: Role change detected, refreshing content...");
-                        initPage();
-                    });
-
-                    document.getElementById('loadingOverlay')?.classList.add('hidden');
-                }
-            }, 50);
-        });
-
-        function initPage() {
-            updateDashboardStats();
-            initCharts();
-            renderLogs();
-            renderRoleSpecificTasks();
-        }
-
-        function updateDashboardStats() {
-            if (typeof DataService === 'undefined') return;
-            
-            const lang = localStorage.getItem('lang') || 'ar';
-            const stats = DataService.getShareholdersStats();
-            const company = DataService.getCompanyProfile();
-            
-            document.getElementById('val-capital').innerHTML = `${company.capital.amount.toLocaleString()} <span class="text-xs font-sans text-slate-400">SAR</span>`;
-            document.getElementById('val-shareholders').innerHTML = `${stats.totalCount} <span class="text-xs font-sans text-slate-400">${lang === 'ar' ? 'عضو' : 'Members'}</span>`;
-            
-            const shNames = DataService.getMajorShareholders(5).map(s => lang === 'ar' ? s.name.ar : s.name.en).join('، ');
-            document.getElementById('sh-list-names').innerText = shNames + '...';
-        }
-
-        function renderRoleSpecificTasks() {
-            const container = document.getElementById('tasks-container');
-            const role = localStorage.getItem('activeRole') || 'admin';
-            const lang = localStorage.getItem('lang') || 'ar';
-            
-            const roleTasks = {
+            const _menus = {
                 'admin': [
-                    { t: "مراجعة سجل الدخول", d: "Security", p: "High" },
-                    { t: "تحديث تراخيص النظام", d: "System", p: "Med" }
+                    { s: 'SYSTEM', items: [{ k: 'Dashboard', i: 'fa-gauge', l: 'index.html' }, { k: 'Users', i: 'fa-users-gear', l: 'users.html' }, { k: 'IT Control', i: 'fa-shield-cat', l: 'it.html' }]},
+                    { s: 'ADMIN', items: [{ k: 'Settings', i: 'fa-sliders', l: 'admin_settings.html' }, { k: 'Audit', i: 'fa-list-ul', l: 'audit.html' }]}
                 ],
                 'board_secretary': [
-                    { t: "تجهيز أجندة اجتماع المجلس", d: "Board", p: "Critical" },
-                    { t: "أرشفة محاضر دورة 2025", d: "Legal", p: "Med" }
+                    { s: 'GOVERNANCE', items: [{ k: 'Board', i: 'fa-building-columns', l: 'board.html' }, { k: 'Assembly', i: 'fa-users-rectangle', l: 'ga.html' }]},
+                    { s: 'OFFICIAL', items: [{ k: 'Circulars', i: 'fa-bullhorn', l: 'admin_circulars.html' }, { k: 'Policies', i: 'fa-book-open', l: 'policies.html' }]}
+                ],
+                'audit_secretary': [
+                    { s: 'CONTROL', items: [{ k: 'Audit Plan', i: 'fa-calendar-check', l: '../audit/audit_plan.html' }, { k: 'Finance', i: 'fa-money-bill-wave', l: 'finance.html' }]}
+                ],
+                'investor_relations': [
+                    { s: 'EQUITY', items: [{ k: 'Shareholders', i: 'fa-id-card', l: 'shareholders.html' }, { k: 'GA Portal', i: 'fa-landmark', l: 'ga.html' }]}
                 ],
                 'grc_officer': [
-                    { t: "تدقيق مصفوفة الصلاحيات", d: "GRC", p: "High" },
-                    { t: "تحديث سجل المخاطر Q1", d: "Compliance", p: "High" }
+                    { s: 'COMPLIANCE', items: [{ k: 'GRC Dash', i: 'fa-scale-balanced', l: 'compliance.html' }, { k: 'DOA Matrix', i: 'fa-sitemap', l: 'doa.html' }]}
                 ]
             };
 
-            const activeTasks = roleTasks[role] || roleTasks['admin'];
-            container.innerHTML = activeTasks.map(task => `
-                <div class="flex gap-3 items-start p-3 rounded-xl bg-slate-50 dark:bg-slate-700/30 border border-slate-100 dark:border-slate-700/50">
-                    <div class="mt-1"><input type="checkbox" class="accent-brandRed w-4 h-4"></div>
-                    <div>
-                        <p class="text-xs font-bold dark:text-white">${task.t}</p>
-                        <span class="inline-block mt-1 bg-blue-100 text-blue-700 text-[9px] px-1.5 py-0.5 rounded">${task.d}</span>
-                        <span class="text-[9px] font-bold ${task.p === 'High' || task.p === 'Critical' ? 'text-red-500' : 'text-slate-400'} ml-2">${task.p}</span>
-                    </div>
-                </div>
-            `).join('');
+            function init() {
+                _state.user = JSON.parse(localStorage.getItem('currentUser')) || { name: 'أيمن المغربي' };
+                _state.role = localStorage.getItem('activeRole') || 'admin';
+                _state.lang = localStorage.getItem('lang') || 'ar';
+                _state.theme = localStorage.getItem('theme') || 'light';
+
+                applyGlobalState();
+                renderSidebar();
+                renderHeader();
+                translateUI();
+            }
+
+            function applyGlobalState() {
+                document.documentElement.dir = _state.lang === 'ar' ? 'rtl' : 'ltr';
+                document.documentElement.lang = _state.lang;
+                document.documentElement.classList.toggle('dark', _state.theme === 'dark');
+            }
+
+            function translateUI() {
+                const dict = langDB[_state.lang];
+                document.querySelectorAll('[data-i18n]').forEach(el => {
+                    const key = el.getAttribute('data-i18n');
+                    if(dict[key]) el.innerText = dict[key];
+                });
+            }
+
+            function renderSidebar() {
+                const cont = document.getElementById('sidebar-container');
+                const menu = _menus[_state.role] || _menus['admin'];
+                const roleKey = `role_${_state.role}`;
+                const roleLabel = langDB[_state.lang][roleKey];
+
+                let html = menu.map(g => `
+                    <div class="px-4 mt-8 mb-2 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">${g.s}</div>
+                    ${g.items.map(i => `
+                        <a href="${i.l}" class="flex items-center gap-4 px-4 py-3 rounded-2xl text-sm font-bold transition-all duration-300 group mb-1 ${window.location.pathname.includes(i.l) ? 'bg-brandRed text-white shadow-lg shadow-red-500/30' : 'text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-brandRed'}">
+                            <div class="w-6 text-center group-hover:scale-125 transition-transform"><i class="fa-solid ${i.i}"></i></div>
+                            <span class="truncate">${i.k}</span>
+                        </a>`).join('')}
+                `).join('');
+
+                cont.innerHTML = `
+                    <aside class="fixed top-0 ${_state.lang === 'ar' ? 'right-0 border-l' : 'left-0 border-r'} z-50 h-screen w-72 flex flex-col bg-white dark:bg-brandDark border-slate-100 dark:border-slate-800 transition-transform duration-300">
+                        <div class="h-24 flex items-center px-8 border-b border-slate-50 dark:border-slate-800/50">
+                            <div class="flex items-center gap-3"><div class="w-12 h-12 rounded-2xl bg-brandRed text-white flex items-center justify-center text-2xl shadow-lg shadow-red-500/20"><i class="fa-solid fa-layer-group"></i></div>
+                            <div><h1 class="font-black text-lg leading-none dark:text-white">AndroGov</h1><p class="text-[9px] text-slate-400 uppercase tracking-widest mt-1">Smart Enterprise</p></div></div>
+                        </div>
+                        <div class="p-4"><div class="flex items-center gap-3 p-4 rounded-3xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700/50">
+                            <img src="../photo/admin.jpg" class="w-12 h-12 rounded-full border-4 border-white dark:border-slate-600 shadow-sm object-cover" onerror="this.src='https://ui-avatars.com/api/?name=Ayman'">
+                            <div class="overflow-hidden flex-1"><p class="text-sm font-black truncate dark:text-white">${_state.user.name}</p><p class="text-[9px] text-brandRed font-black uppercase">${roleLabel}</p></div>
+                        </div></div>
+                        <nav class="flex-1 overflow-y-auto px-4 py-2 custom-scroll">${html}</nav>
+                        <div class="p-6 text-center text-[9px] text-slate-400 font-bold uppercase tracking-tighter">© 2026 Andromeda IT</div>
+                    </aside>`;
+            }
+
+            function renderHeader() {
+                const cont = document.getElementById('header-container');
+                const isRTL = _state.lang === 'ar';
+
+                cont.innerHTML = `
+                    <header class="h-24 sticky top-0 z-40 flex items-center justify-between px-8 bg-white/80 dark:bg-brandDark/90 backdrop-blur-xl border-b border-slate-100 dark:border-slate-800/50">
+                        <div class="flex items-center gap-4">
+                            <!-- Role Switcher -->
+                            <div class="relative group">
+                                <button class="flex items-center gap-3 px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl text-[11px] font-black hover:border-brandRed transition-all">
+                                    <i class="fa-solid fa-shuffle text-brandRed"></i> 
+                                    <span class="hidden sm:inline">${langDB[_state.lang][`role_${_state.role}`]}</span> 
+                                    <i class="fa-solid fa-chevron-down text-[9px] text-slate-400"></i>
+                                </button>
+                                <div class="absolute top-full ${isRTL ? 'right-0' : 'left-0'} mt-3 w-64 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-3xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 overflow-hidden translate-y-2 group-hover:translate-y-0">
+                                    <div class="p-4 border-b border-slate-50 dark:border-slate-700 text-[10px] font-black text-slate-400 uppercase tracking-widest">تبديل بيئة العمل</div>
+                                    <div class="p-2 space-y-1">${Object.entries(langDB[_state.lang]).filter(([k]) => k.startsWith('role_')).map(([k,v]) => `
+                                        <button onclick="Layout.switchRole('${k.replace('role_','')}')" class="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors ${k === 'role_'+_state.role ? 'text-brandRed font-black bg-red-50/50 dark:bg-red-900/10' : 'text-slate-600 dark:text-slate-300'}">
+                                            <i class="fa-solid fa-circle-user text-[10px]"></i> <span class="text-[11px]">${v}</span>
+                                        </button>`).join('')}</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Toolbar Controls -->
+                        <div class="flex items-center gap-3">
+                            <!-- ✅ AI BOT (RESTORED) -->
+                            <button onclick="if(window.AndroBot) AndroBot.toggle()" class="w-11 h-11 rounded-2xl border border-slate-200 dark:border-slate-700 flex items-center justify-center text-brandBlue hover:bg-brandBlue hover:text-white transition-all shadow-sm">
+                                <i class="fa-solid fa-robot text-lg"></i>
+                            </button>
+                            
+                            <!-- Notifications -->
+                            <div class="relative">
+                                <button class="w-11 h-11 rounded-2xl border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all shadow-sm">
+                                    <i class="fa-solid fa-bell"></i>
+                                    <span class="absolute top-2.5 right-2.5 w-2 h-2 bg-brandRed rounded-full border-2 border-white dark:border-slate-800"></span>
+                                </button>
+                            </div>
+
+                            <div class="h-8 w-px bg-slate-100 dark:bg-slate-700 mx-1"></div>
+
+                            <button onclick="Layout.toggleLang()" class="px-4 h-11 rounded-2xl border border-slate-200 dark:border-slate-700 flex items-center justify-center font-black text-xs hover:bg-slate-50 dark:hover:bg-slate-800 transition-all uppercase tracking-tighter">${_state.lang === 'ar' ? 'EN' : 'AR'}</button>
+                            
+                            <button onclick="Layout.toggleTheme()" class="w-11 h-11 rounded-2xl border border-slate-200 dark:border-slate-700 flex items-center justify-center hover:bg-slate-50 dark:hover:bg-slate-800 transition-all text-slate-500">
+                                <i class="fa-solid ${_state.theme === 'dark' ? 'fa-sun text-yellow-500' : 'fa-moon'}"></i>
+                            </button>
+
+                            <button onclick="Layout.logout()" class="w-11 h-11 rounded-2xl bg-red-50 dark:bg-red-900/10 text-brandRed flex items-center justify-center hover:bg-brandRed hover:text-white transition-all shadow-sm">
+                                <i class="fa-solid fa-power-off"></i>
+                            </button>
+                        </div>
+                    </header>`;
+            }
+
+            return { 
+                init, 
+                switchRole: (r) => { localStorage.setItem('activeRole', r); location.reload(); },
+                toggleTheme: () => { 
+                    const newTheme = _state.theme === 'light' ? 'dark' : 'light';
+                    localStorage.setItem('theme', newTheme);
+                    location.reload();
+                },
+                toggleLang: () => { 
+                    const newLang = _state.lang === 'ar' ? 'en' : 'ar';
+                    localStorage.setItem('lang', newLang);
+                    location.reload();
+                },
+                logout: () => { localStorage.removeItem('currentUser'); location.href = '../login.html'; }
+            };
+        })();
+
+        // ==========================================
+        // 3. AI & DASHBOARD DATA LOGIC
+        // ==========================================
+        function runAIAnalysis() {
+            const txt = document.getElementById('aiInsightText');
+            const role = localStorage.getItem('activeRole') || 'admin';
+            const lang = localStorage.getItem('lang') || 'ar';
+            
+            txt.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Thinking...';
+            
+            setTimeout(() => {
+                const data = {
+                    'admin': { ar: "تم تحليل الثغرات: النظام آمن بنسبة 99%. يرجى مراجعة صلاحيات 3 مستخدمين جدد.", en: "Vulnerability analysis complete: System 99% secure. Please review 3 new user permissions." },
+                    'board_secretary': { ar: "تحليل الأجندة: يوجد تداخل في مواعيد 3 أعضاء. أقترح تقديم الاجتماع ساعة واحدة.", en: "Agenda analysis: 3 members have conflicts. Suggest moving meeting 1 hour earlier." },
+                    'grc_officer': { ar: "مؤشر الامتثال: تم رصد تأخير في تحديث لائحة المكافآت. المخاطر المترتبة: منخفضة.", en: "Compliance index: Delay detected in Bonus policy update. Risk level: Low." }
+                };
+                txt.innerText = data[role] ? data[role][lang] : (lang==='ar' ? "تم تحديث البيانات بنجاح." : "Data synchronized successfully.");
+            }, 1200);
         }
 
-        function initCharts() {
-            const ctx = document.getElementById('ownershipChart')?.getContext('2d');
-            if(!ctx) return;
+        function renderDashboard() {
+            const role = localStorage.getItem('activeRole') || 'admin';
+            const lang = localStorage.getItem('lang') || 'ar';
             
-            // Destroy existing chart if any to prevent memory leaks
-            if(window.mainChart) window.mainChart.destroy();
+            // 1. Stats Update
+            const statsGrid = document.getElementById('statsGrid');
+            const stats = [
+                { k: 'kpiCap', v: '6,000,000', u: 'SAR', i: 'fa-coins', c: 'text-blue-500' },
+                { k: 'kpiSH', v: '11', u: 'member', i: 'fa-users', c: 'text-purple-500' },
+                { k: 'kpiRes', v: '2', u: 'pending', i: 'fa-signature', c: 'text-red-500' },
+                { k: 'kpiComp', v: '94.2%', u: '%', i: 'fa-shield-check', c: 'text-green-500' }
+            ];
+            statsGrid.innerHTML = stats.map(s => `
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-50 dark:border-slate-700/50">
+                    <div class="flex justify-between items-start mb-4">
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest" data-i18n="${s.k}">${langDB[lang][s.k]}</p>
+                        <div class="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-900 flex items-center justify-center ${s.c}"><i class="fa-solid ${s.i}"></i></div>
+                    </div>
+                    <h3 class="text-2xl font-black font-en dark:text-white">${s.v} <span class="text-[10px] font-sans text-slate-400">${langDB[lang][s.u] || s.u}</span></h3>
+                </div>`).join('');
 
-            window.mainChart = new Chart(ctx, {
+            // 2. Tasks Update
+            const taskCont = document.getElementById('roleTasks');
+            const roleTasks = {
+                'admin': [{ t: "Audit Logs USR_004", p: "High" }, { t: "Security Patch 10.5", p: "Critical" }],
+                'board_secretary': [{ t: "Draft Dec Minutes", p: "Med" }, { t: "Notify Shareholders", p: "High" }]
+            };
+            const activeTasks = roleTasks[role] || roleTasks['admin'];
+            taskCont.innerHTML = activeTasks.map(t => `
+                <div class="flex gap-4 items-center p-5 rounded-3xl bg-slate-50 dark:bg-slate-900/30 border border-slate-50 dark:border-slate-800 hover:border-brandRed transition-all group">
+                    <div class="w-12 h-12 rounded-2xl bg-white dark:bg-slate-800 flex items-center justify-center text-brandRed shadow-sm group-hover:scale-110 transition-transform"><i class="fa-solid fa-check-double"></i></div>
+                    <div class="flex-1"><p class="text-sm font-black dark:text-white">${t.t}</p><p class="text-[9px] font-bold text-slate-400 uppercase mt-1">Priority: ${t.p}</p></div>
+                    <i class="fa-solid fa-chevron-left rtl:rotate-0 ltr:rotate-180 text-slate-300"></i>
+                </div>`).join('');
+
+            // 3. Chart Legend
+            document.getElementById('chartLegend').innerHTML = `
+                <div class="flex justify-between text-xs font-bold"><span><span class="w-2 h-2 rounded-full bg-brandRed inline-block mr-2"></span> ورثة السحيباني</span> <span>35%</span></div>
+                <div class="flex justify-between text-xs font-bold"><span><span class="w-2 h-2 rounded-full bg-brandBlue inline-block mr-2"></span> شركة بيجي</span> <span>15%</span></div>`;
+        }
+
+        function initChart() {
+            const ctx = document.getElementById('dashboardChart')?.getContext('2d');
+            if(!ctx) return;
+            new Chart(ctx, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Heirs', 'Hesham', 'BG Company', 'Others'],
                     datasets: [{
-                        data: [35, 10, 15, 40],
-                        backgroundColor: ['#FB4747', '#4267B2', '#10B981', '#CBD5E1'],
+                        data: [35, 15, 50],
+                        backgroundColor: ['#FB4747', '#4267B2', '#E2E8F0'],
                         borderWidth: 0
                     }]
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    cutout: '75%',
-                    plugins: { legend: { display: false } }
-                }
+                options: { cutout: '85%', plugins: { legend: { display: false } } }
             });
-
-            // Update Legend
-            const legend = document.getElementById('chartLegend');
-            if(legend) {
-                const labels = ['ورثة محمد السحيباني', 'هشام السحيباني', 'شركة بيجي', 'آخرون'];
-                const values = ['35%', '10%', '15%', '40%'];
-                const colors = ['#FB4747', '#4267B2', '#10B981', '#CBD5E1'];
-                legend.innerHTML = labels.map((l, i) => `
-                    <div class="flex justify-between items-center text-xs">
-                        <span class="flex items-center gap-2 text-slate-600 dark:text-slate-300">
-                            <span class="w-2 h-2 rounded-full" style="background-color: ${colors[i]}"></span> ${l}
-                        </span>
-                        <span class="font-bold">${values[i]}</span>
-                    </div>
-                `).join('');
-            }
         }
 
-        function renderLogs() {
+        function pushLogs() {
             const logs = [
-                { t: "10:45:22", type: "INFO", u: "System", msg: t.logBackup, c: "text-green-400" },
-                { t: "10:42:15", type: "WARN", u: "Hesham", msg: t.logPolicy, c: "text-yellow-400" },
-                { t: "10:30:01", type: "INFO", u: "Ayman", msg: t.logUpload, c: "text-blue-400" },
-                { t: "09:15:00", type: "CRIT", u: "Firewall", msg: t.logFirewall, c: "text-red-400" }
+                { t: "10:45", u: "AI CORE", m: "Analyzing role behavior...", c: "text-blue-400" },
+                { t: "10:42", u: "SECURITY", m: "Login verified USR_004", c: "text-green-400" }
             ];
-            const container = document.getElementById('audit-log-container');
-            if(container) {
-                container.innerHTML = logs.map(log => `
-                    <div class="flex gap-3 p-1">
-                        <span class="text-slate-500 w-16">[${log.t}]</span>
-                        <span class="${log.c} font-bold w-10">${log.type}</span>
-                        <span class="text-white w-16 font-bold">${log.u}</span>
-                        <span class="text-slate-400 truncate">${log.msg}</span>
-                    </div>
-                `).join('');
-            }
+            document.getElementById('auditLog').innerHTML = logs.map(l => `
+                <div class="flex gap-4 p-1 hover:bg-white/5 rounded">
+                    <span class="text-slate-600">[${l.t}]</span>
+                    <span class="${l.c} font-black w-20">${l.u}</span>
+                    <span class="text-slate-400 truncate">${l.m}</span>
+                </div>`).join('');
         }
+
+        // --- Start ---
+        document.addEventListener('DOMContentLoaded', () => {
+            Layout.init();
+            renderDashboard();
+            initChart();
+            runAIAnalysis();
+            pushLogs();
+            
+            setTimeout(() => {
+                document.getElementById('loadingOverlay').style.opacity = '0';
+                setTimeout(() => document.getElementById('loadingOverlay').classList.add('hidden'), 500);
+            }, 800);
+        });
     </script>
 </body>
 </html>
