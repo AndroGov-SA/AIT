@@ -1,8 +1,8 @@
 /**
- * AndroGov Layout Engine v10.0 (Complete Edition - 19 Pages)
+ * AndroGov Layout Engine v10.5 (Complete Edition with Lang + Notifications)
  * @file admin/js/components/layout.js
  * @author Ayman Al-Maghrabi
- * @description Comprehensive role-based navigation covering all admin pages
+ * @description Full-featured layout with language switching and notification center
  */
 
 const Layout = (function() {
@@ -14,11 +14,13 @@ const Layout = (function() {
     currentUser: null,
     activeRole: 'admin', 
     isInitialized: false,
-    sidebarOpen: false
+    sidebarOpen: false,
+    notifications: [],
+    unreadCount: 0
   };
 
   // ==========================================
-  // 2. COMPLETE MENU DEFINITIONS (19 Pages Distributed)
+  // 2. COMPLETE MENU DEFINITIONS (19 Pages)
   // ==========================================
   const _menuDefinitions = {
     
@@ -57,7 +59,7 @@ const Layout = (function() {
     ],
 
     // ═══════════════════════════════════════
-    // 3️⃣ أمين سر لجنة المراجعة (Audit Committee Secretary) - 5 صفحات
+    // 3️⃣ أمين سر لجنة المراجعة (Audit Committee) - 5 صفحات
     // ═══════════════════════════════════════
     'audit_secretary': [
       { section: 'audit_oversight', items: [
@@ -86,7 +88,7 @@ const Layout = (function() {
     ],
 
     // ═══════════════════════════════════════
-    // 5️⃣ مسؤول الحوكمة والمخاطر والالتزام (GRC Officer) - 6 صفحات
+    // 5️⃣ مسؤول الحوكمة والمخاطر (GRC Officer) - 6 صفحات
     // ═══════════════════════════════════════
     'grc_officer': [
       { section: 'grc_compliance', items: [
@@ -104,32 +106,148 @@ const Layout = (function() {
     ]
   };
 
-  // Labels for Role Switcher
+  // Role Labels (Bilingual)
   const _roleLabels = {
     'admin': { 
       ar: 'مدير النظام', 
       en: 'System Admin',
-      desc: 'الإدارة التقنية والرقابة الشاملة'
+      desc: { ar: 'الإدارة التقنية والرقابة الشاملة', en: 'Technical & System Management' }
     },
     'board_secretary': { 
       ar: 'أمين سر مجلس الإدارة', 
       en: 'Board Secretary',
-      desc: 'إدارة المجلس واللجان والجمعيات'
+      desc: { ar: 'إدارة المجلس واللجان والجمعيات', en: 'Board & Committee Management' }
     },
     'audit_secretary': { 
       ar: 'أمين سر لجنة المراجعة', 
       en: 'Audit Committee Secretary',
-      desc: 'الرقابة المالية والتدقيق الداخلي'
+      desc: { ar: 'الرقابة المالية والتدقيق الداخلي', en: 'Financial Audit & Control' }
     },
     'investor_relations': { 
       ar: 'علاقات المساهمين', 
       en: 'Investor Relations',
-      desc: 'إدارة بيانات المستثمرين والملاك'
+      desc: { ar: 'إدارة بيانات المستثمرين والملاك', en: 'Shareholder Data Management' }
     },
     'grc_officer': { 
       ar: 'مسؤول GRC والامتثال', 
       en: 'GRC Officer',
-      desc: 'الحوكمة والمخاطر والالتزام'
+      desc: { ar: 'الحوكمة والمخاطر والالتزام', en: 'Governance, Risk & Compliance' }
+    }
+  };
+
+  // Translation Keys (Fallback)
+  const _translations = {
+    ar: {
+      // Sections
+      core_system: 'النظام الأساسي',
+      infrastructure: 'البنية التحتية',
+      communication: 'الاتصالات',
+      board_operations: 'عمليات المجلس',
+      governance_docs: 'وثائق الحوكمة',
+      audit_oversight: 'الرقابة والتدقيق',
+      compliance_tasks: 'مهام الامتثال',
+      shareholders: 'المساهمين',
+      personal: 'الحساب الشخصي',
+      grc_compliance: 'الحوكمة والامتثال',
+      hr_governance: 'حوكمة الموارد البشرية',
+      workflow: 'سير العمل',
+      
+      // Menu Items
+      dashboard: 'لوحة القيادة',
+      users_mgmt: 'إدارة المستخدمين',
+      admin_settings: 'إعدادات النظام',
+      it_systems: 'الأنظمة التقنية',
+      system_audit: 'سجل التدقيق',
+      internal_chat: 'المحادثات الداخلية',
+      circulars_admin: 'التعاميم الإدارية',
+      board_portal: 'بوابة المجلس',
+      committees_mgmt: 'إدارة اللجان',
+      general_assembly: 'الجمعية العمومية',
+      policies_library: 'مكتبة السياسات',
+      board_circulars: 'تعاميم المجلس',
+      audit_dashboard: 'لوحة التدقيق',
+      financial_review: 'المراجعة المالية',
+      procurement_control: 'إدارة المشتريات',
+      compliance_check: 'فحص الامتثال',
+      task_tracker: 'متابعة المهام',
+      shareholders_db: 'قاعدة المساهمين',
+      ga_access: 'الجمعية العمومية',
+      my_profile: 'الملف الشخصي',
+      ir_circulars: 'التعاميم',
+      compliance_dashboard: 'لوحة الامتثال',
+      doa_authority: 'مصفوفة الصلاحيات',
+      policies_control: 'ضبط السياسات',
+      hr_compliance: 'امتثال الموارد البشرية',
+      audit_reports: 'تقارير التدقيق',
+      grc_tasks: 'مهام GRC',
+      
+      // UI Elements
+      switchWorkspace: 'تبديل بيئة العمل',
+      selectRole: 'اختر الدور المناسب لمهامك الحالية',
+      notifications: 'الإشعارات',
+      noNotifications: 'لا توجد إشعارات جديدة',
+      markAllRead: 'تعليم الكل كمقروء',
+      viewAll: 'عرض الكل',
+      logout: 'تسجيل الخروج',
+      logoutConfirm: 'هل أنت متأكد من تسجيل الخروج؟',
+      poweredBy: 'تطوير',
+      aymanDev: 'أيمن المغربي'
+    },
+    en: {
+      // Sections
+      core_system: 'Core System',
+      infrastructure: 'Infrastructure',
+      communication: 'Communications',
+      board_operations: 'Board Operations',
+      governance_docs: 'Governance Documents',
+      audit_oversight: 'Audit & Oversight',
+      compliance_tasks: 'Compliance Tasks',
+      shareholders: 'Shareholders',
+      personal: 'Personal',
+      grc_compliance: 'GRC & Compliance',
+      hr_governance: 'HR Governance',
+      workflow: 'Workflow',
+      
+      // Menu Items
+      dashboard: 'Dashboard',
+      users_mgmt: 'User Management',
+      admin_settings: 'System Settings',
+      it_systems: 'IT Systems',
+      system_audit: 'Audit Log',
+      internal_chat: 'Internal Chat',
+      circulars_admin: 'Admin Circulars',
+      board_portal: 'Board Portal',
+      committees_mgmt: 'Committees',
+      general_assembly: 'General Assembly',
+      policies_library: 'Policy Library',
+      board_circulars: 'Board Circulars',
+      audit_dashboard: 'Audit Dashboard',
+      financial_review: 'Financial Review',
+      procurement_control: 'Procurement',
+      compliance_check: 'Compliance Check',
+      task_tracker: 'Task Tracker',
+      shareholders_db: 'Shareholders DB',
+      ga_access: 'General Assembly',
+      my_profile: 'My Profile',
+      ir_circulars: 'Circulars',
+      compliance_dashboard: 'Compliance Dashboard',
+      doa_authority: 'DOA Matrix',
+      policies_control: 'Policy Control',
+      hr_compliance: 'HR Compliance',
+      audit_reports: 'Audit Reports',
+      grc_tasks: 'GRC Tasks',
+      
+      // UI Elements
+      switchWorkspace: 'Switch Workspace',
+      selectRole: 'Select the appropriate role for your current tasks',
+      notifications: 'Notifications',
+      noNotifications: 'No new notifications',
+      markAllRead: 'Mark all as read',
+      viewAll: 'View All',
+      logout: 'Logout',
+      logoutConfirm: 'Are you sure you want to logout?',
+      poweredBy: 'Developed by',
+      aymanDev: 'Ayman Almaghrabi'
     }
   };
 
@@ -144,7 +262,7 @@ const Layout = (function() {
     if (storedUser) {
       _state.currentUser = JSON.parse(storedUser);
       
-      // ✅ التحقق من صحة الدور المحفوظ
+      // Validate Saved Role
       let savedRole = localStorage.getItem('activeRole');
       if (savedRole && _menuDefinitions[savedRole]) {
         _state.activeRole = savedRole;
@@ -154,12 +272,16 @@ const Layout = (function() {
       }
     }
 
+    // Load Notifications
+    loadNotifications();
+
+    // Render UI
     renderSidebar();
     renderHeader();
     hideLoadingOverlay();
 
     _state.isInitialized = true;
-    console.log(`✅ AndroGov Layout Ready | Active Role: ${_state.activeRole}`);
+    console.log(`✅ AndroGov Layout Ready | Role: ${_state.activeRole} | Lang: ${getCurrentLang()}`);
   }
 
   function hideLoadingOverlay() {
@@ -170,23 +292,150 @@ const Layout = (function() {
   }
 
   // ==========================================
-  // 4. RENDER SIDEBAR (Enhanced with Badges)
+  // 4. LANGUAGE SYSTEM
+  // ==========================================
+  function getCurrentLang() {
+    return localStorage.getItem('lang') || 'ar';
+  }
+
+  function setLanguage(lang) {
+    if (!['ar', 'en'].includes(lang)) return;
+    
+    localStorage.setItem('lang', lang);
+    
+    // Update HTML attributes
+    document.documentElement.lang = lang;
+    document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+    
+    // Re-render UI
+    renderSidebar();
+    renderHeader();
+    
+    // Trigger custom event for other components
+    window.dispatchEvent(new CustomEvent('languageChanged', { detail: { lang } }));
+    
+    // Show feedback
+    if (window.Toast) {
+      const msg = lang === 'ar' ? 'تم التبديل إلى العربية' : 'Switched to English';
+      Toast.success(msg);
+    }
+    
+    console.log(`🌐 Language changed to: ${lang}`);
+  }
+
+  function t(key) {
+    const lang = getCurrentLang();
+    return _translations[lang]?.[key] || key;
+  }
+
+  // ==========================================
+  // 5. NOTIFICATIONS SYSTEM
+  // ==========================================
+  function loadNotifications() {
+    // Load from localStorage or generate demo data
+    const stored = localStorage.getItem('notifications');
+    if (stored) {
+      _state.notifications = JSON.parse(stored);
+    } else {
+      // Demo Notifications
+      _state.notifications = [
+        {
+          id: 'N001',
+          type: 'approval',
+          icon: 'fa-file-signature',
+          color: 'orange',
+          title: { ar: 'اعتماد مطلوب: الدليل الداخلي', en: 'Approval Required: Internal Manual' },
+          body: { ar: 'مسودة بانتظار الموافقة النهائية', en: 'Draft awaiting final approval' },
+          time: new Date(Date.now() - 1000 * 60 * 15), // 15 min ago
+          read: false,
+          link: 'policies.html'
+        },
+        {
+          id: 'N002',
+          type: 'meeting',
+          icon: 'fa-calendar-check',
+          color: 'blue',
+          title: { ar: 'اجتماع لجنة المراجعة', en: 'Audit Committee Meeting' },
+          body: { ar: 'غداً الساعة 10:00 صباحاً', en: 'Tomorrow at 10:00 AM' },
+          time: new Date(Date.now() - 1000 * 60 * 60 * 2), // 2 hours ago
+          read: false,
+          link: 'committees.html'
+        },
+        {
+          id: 'N003',
+          type: 'task',
+          icon: 'fa-list-check',
+          color: 'green',
+          title: { ar: 'مهمة جديدة: تحديث السجل التجاري', en: 'New Task: Update Commercial Registry' },
+          body: { ar: 'تم تعيينك من قبل منصور اليامي', en: 'Assigned by Mansour Alyami' },
+          time: new Date(Date.now() - 1000 * 60 * 60 * 5), // 5 hours ago
+          read: true,
+          link: 'tasks.html'
+        }
+      ];
+    }
+    
+    _state.unreadCount = _state.notifications.filter(n => !n.read).length;
+  }
+
+  function markNotificationRead(id) {
+    const notif = _state.notifications.find(n => n.id === id);
+    if (notif && !notif.read) {
+      notif.read = true;
+      _state.unreadCount--;
+      saveNotifications();
+      renderHeader(); // Update badge
+    }
+  }
+
+  function markAllRead() {
+    _state.notifications.forEach(n => n.read = true);
+    _state.unreadCount = 0;
+    saveNotifications();
+    renderHeader();
+    
+    if (window.Toast) {
+      Toast.success(t('markAllRead'));
+    }
+  }
+
+  function saveNotifications() {
+    localStorage.setItem('notifications', JSON.stringify(_state.notifications));
+  }
+
+  function getTimeAgo(date) {
+    const lang = getCurrentLang();
+    const seconds = Math.floor((new Date() - date) / 1000);
+    
+    if (seconds < 60) return lang === 'ar' ? 'الآن' : 'Now';
+    if (seconds < 3600) {
+      const mins = Math.floor(seconds / 60);
+      return lang === 'ar' ? `منذ ${mins} دقيقة` : `${mins}m ago`;
+    }
+    if (seconds < 86400) {
+      const hours = Math.floor(seconds / 3600);
+      return lang === 'ar' ? `منذ ${hours} ساعة` : `${hours}h ago`;
+    }
+    const days = Math.floor(seconds / 86400);
+    return lang === 'ar' ? `منذ ${days} يوم` : `${days}d ago`;
+  }
+
+  // ==========================================
+  // 6. RENDER SIDEBAR
   // ==========================================
   function renderSidebar() {
     const container = document.getElementById('sidebar-container');
     if (!container) return;
 
-    const isRTL = document.documentElement.dir === 'rtl';
-    const lang = isRTL ? 'ar' : 'en';
+    const lang = getCurrentLang();
+    const isRTL = lang === 'ar';
     const currentPath = window.location.pathname.split('/').pop() || 'index.html';
 
     const activeMenu = _menuDefinitions[_state.activeRole] || _menuDefinitions['admin'];
 
     let menuHTML = '';
     activeMenu.forEach(group => {
-      const sectionLabel = window.I18n ? 
-        (I18n.t(`nav.${group.section}`) || group.section) : 
-        group.section;
+      const sectionLabel = t(group.section);
       
       menuHTML += `
         <div class="px-3 mt-6 mb-2 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
@@ -196,33 +445,24 @@ const Layout = (function() {
       
       group.items.forEach(item => {
         const isActive = currentPath === item.link;
-        const label = window.I18n ? 
-          (I18n.t(`nav.${item.key}`) || item.key) : 
-          item.key;
+        const label = t(item.key);
         
         const baseClass = "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 group mb-1";
         const activeClass = "bg-gradient-to-r from-brandRed to-red-600 text-white shadow-lg shadow-red-500/30";
         const inactiveClass = "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-brandRed dark:hover:text-red-400";
 
-        // Badge Rendering
         let badgeHTML = '';
         if (item.badge) {
           const badgeStyles = {
-            'core': 'bg-blue-500 text-white',
-            'new': 'bg-green-500 text-white animate-pulse',
-            'tech': 'bg-purple-500 text-white',
-            'primary': 'bg-amber-500 text-white',
-            'assembly': 'bg-indigo-500 text-white',
-            'audit': 'bg-red-500 text-white',
-            'orders': 'bg-orange-500 text-white',
-            'active': 'bg-teal-500 text-white',
-            'investors': 'bg-pink-500 text-white',
-            'grc': 'bg-cyan-500 text-white',
-            'authority': 'bg-violet-500 text-white',
-            'hr': 'bg-emerald-500 text-white'
+            'core': 'bg-blue-500', 'new': 'bg-green-500 animate-pulse', 
+            'tech': 'bg-purple-500', 'primary': 'bg-amber-500', 
+            'assembly': 'bg-indigo-500', 'audit': 'bg-red-500',
+            'orders': 'bg-orange-500', 'active': 'bg-teal-500',
+            'investors': 'bg-pink-500', 'grc': 'bg-cyan-500',
+            'authority': 'bg-violet-500', 'hr': 'bg-emerald-500'
           };
-          const badgeClass = badgeStyles[item.badge] || 'bg-slate-400 text-white';
-          badgeHTML = `<span class="px-1.5 py-0.5 text-[9px] font-bold rounded ${badgeClass} uppercase tracking-wider">${item.badge}</span>`;
+          const badgeClass = badgeStyles[item.badge] || 'bg-slate-400';
+          badgeHTML = `<span class="px-1.5 py-0.5 text-[9px] font-bold rounded ${badgeClass} text-white uppercase tracking-wider">${item.badge}</span>`;
         }
 
         menuHTML += `
@@ -239,14 +479,13 @@ const Layout = (function() {
     });
 
     const user = _state.currentUser;
-    const displayName = user?.displayName || user?.name || 'أيمن المغربي';
+    const displayName = user?.displayName || user?.name || (lang === 'ar' ? 'أيمن المغربي' : 'Ayman Almaghrabi');
     const roleLabel = _roleLabels[_state.activeRole][lang];
-    const roleDesc = _roleLabels[_state.activeRole].desc;
 
     container.innerHTML = `
       <aside id="main-sidebar" class="fixed top-0 ${isRTL ? 'right-0 border-l' : 'left-0 border-r'} z-50 h-screen w-72 flex flex-col bg-white dark:bg-[#0F172A] border-slate-200 dark:border-slate-800 transition-all duration-300 shadow-2xl">
         
-        <!-- Logo Section -->
+        <!-- Logo -->
         <div class="h-20 flex items-center px-6 border-b border-slate-100 dark:border-slate-800 shrink-0 bg-gradient-to-r from-slate-50 to-transparent dark:from-slate-900/50">
           <div class="flex items-center gap-3 w-full">
             <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-brandRed to-red-600 text-white flex items-center justify-center font-bold text-xl shadow-lg shadow-brandRed/30">
@@ -254,12 +493,12 @@ const Layout = (function() {
             </div>
             <div class="overflow-hidden">
               <h1 class="font-bold text-base text-slate-800 dark:text-white truncate">AndroGov</h1>
-              <p class="text-[10px] text-brandRed font-bold uppercase tracking-widest truncate">Enterprise Edition</p>
+              <p class="text-[10px] text-brandRed font-bold uppercase tracking-widest truncate">Enterprise</p>
             </div>
           </div>
         </div>
         
-        <!-- User Profile Card -->
+        <!-- User Card -->
         <div class="p-4 shrink-0">
           <div class="relative group cursor-pointer">
             <div class="flex items-center gap-3 p-3 rounded-xl bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-900 border border-slate-200 dark:border-slate-700 transition-all hover:shadow-md">
@@ -272,51 +511,50 @@ const Layout = (function() {
               </div>
               <i class="fa-solid fa-chevron-down text-slate-400 text-xs"></i>
             </div>
-            <!-- Quick Actions Tooltip -->
             <div class="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 overflow-hidden">
               <a href="profile.html" class="flex items-center gap-3 p-3 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
                 <i class="fa-solid fa-user-circle text-brandRed"></i>
-                <span class="text-xs font-medium">الملف الشخصي</span>
+                <span class="text-xs font-medium">${t('my_profile')}</span>
               </a>
             </div>
           </div>
         </div>
 
-        <!-- Navigation Menu -->
+        <!-- Navigation -->
         <nav id="sidebar-nav" class="flex-1 overflow-y-auto px-3 py-2 space-y-0.5 custom-scroll">
           ${menuHTML}
         </nav>
         
         <!-- Footer -->
         <div class="p-4 text-center border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50">
-          <p class="text-[10px] text-slate-400 font-medium">© 2026 Andromeda IT Company</p>
-          <p class="text-[9px] text-slate-300 dark:text-slate-600 mt-1">Developed by Ayman Al-Maghrabi</p>
+          <p class="text-[10px] text-slate-400 font-medium">© 2026 Andromeda IT</p>
+          <p class="text-[9px] text-slate-300 dark:text-slate-600 mt-1">${t('poweredBy')} ${t('aymanDev')}</p>
         </div>
       </aside>
     `;
   }
 
   // ==========================================
-  // 5. RENDER HEADER (Enhanced Role Switcher)
+  // 7. RENDER HEADER
   // ==========================================
   function renderHeader() {
     const container = document.getElementById('header-container');
     if (!container) return;
 
+    const lang = getCurrentLang();
+    const isRTL = lang === 'ar';
     const isDark = document.documentElement.classList.contains('dark');
-    const isRTL = document.documentElement.dir === 'rtl';
-    const lang = isRTL ? 'ar' : 'en';
 
     container.innerHTML = `
       <header class="h-20 sticky top-0 z-40 flex items-center justify-between px-6 bg-white/90 dark:bg-[#0F172A]/95 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800 shadow-sm transition-all">
         
         <div class="flex items-center gap-4">
-          <!-- Mobile Menu Toggle -->
+          <!-- Mobile Menu -->
           <button onclick="Layout.toggleMobileSidebar()" class="md:hidden text-slate-500 dark:text-slate-200 hover:text-brandRed transition-colors">
             <i class="fa-solid fa-bars text-xl"></i>
           </button>
           
-          <!-- Advanced Role Switcher -->
+          <!-- Role Switcher -->
           <div class="relative group">
             <button class="flex items-center gap-2.5 px-4 py-2.5 bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-900 border-2 border-slate-200 dark:border-slate-700 rounded-xl text-xs font-bold hover:border-brandRed dark:hover:border-red-500 transition-all shadow-sm hover:shadow-md">
               <i class="fa-solid fa-repeat text-brandRed animate-pulse"></i>
@@ -324,14 +562,11 @@ const Layout = (function() {
               <i class="fa-solid fa-chevron-down text-[10px] text-slate-400 transition-transform group-hover:rotate-180"></i>
             </button>
             
-            <!-- Dropdown Menu -->
             <div class="absolute top-full ${isRTL ? 'right-0' : 'left-0'} mt-3 w-80 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 overflow-hidden">
-              
               <div class="p-4 border-b border-slate-100 dark:border-slate-700 bg-gradient-to-r from-brandRed to-red-600">
-                <p class="text-xs font-bold text-white/90 uppercase tracking-widest">تبديل بيئة العمل</p>
-                <p class="text-[10px] text-white/70 mt-1">اختر الدور المناسب لمهامك الحالية</p>
+                <p class="text-xs font-bold text-white/90 uppercase tracking-widest">${t('switchWorkspace')}</p>
+                <p class="text-[10px] text-white/70 mt-1">${t('selectRole')}</p>
               </div>
-              
               <div class="p-2 max-h-96 overflow-y-auto custom-scroll">
                 ${Object.entries(_roleLabels).map(([roleKey, labels]) => `
                   <button onclick="Layout.switchRole('${roleKey}')" 
@@ -339,9 +574,9 @@ const Layout = (function() {
                     <div class="w-10 h-10 rounded-lg ${roleKey === _state.activeRole ? 'bg-brandRed text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-500'} flex items-center justify-center shrink-0">
                       <i class="fa-solid ${_getRoleIcon(roleKey)} text-sm"></i>
                     </div>
-                    <div class="flex-1 text-right">
+                    <div class="flex-1 text-${isRTL ? 'right' : 'left'}">
                       <p class="text-xs font-bold ${roleKey === _state.activeRole ? 'text-brandRed' : 'text-slate-700 dark:text-slate-200'}">${labels[lang]}</p>
-                      <p class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">${labels.desc}</p>
+                      <p class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">${labels.desc[lang]}</p>
                     </div>
                     ${roleKey === _state.activeRole ? '<i class="fa-solid fa-check text-brandRed text-sm"></i>' : ''}
                   </button>
@@ -353,7 +588,73 @@ const Layout = (function() {
 
         <!-- Right Actions -->
         <div class="flex items-center gap-3">
-          <!-- AI Assistant -->
+          
+          <!-- Notifications -->
+          <div class="relative group">
+            <button class="relative w-10 h-10 rounded-xl border-2 border-slate-200 dark:border-slate-700 hover:bg-orange-50 dark:hover:bg-orange-900/20 text-slate-600 dark:text-slate-300 hover:border-orange-400 transition-all flex items-center justify-center">
+              <i class="fa-solid fa-bell"></i>
+              ${_state.unreadCount > 0 ? `
+                <span class="absolute -top-1 -right-1 w-5 h-5 bg-brandRed text-white text-[10px] font-bold rounded-full flex items-center justify-center animate-pulse">
+                  ${_state.unreadCount}
+                </span>
+              ` : ''}
+            </button>
+            
+            <!-- Notifications Dropdown -->
+            <div class="absolute top-full ${isRTL ? 'right-0' : 'left-0'} mt-3 w-96 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 overflow-hidden">
+              <div class="p-4 border-b border-slate-100 dark:border-slate-700 bg-gradient-to-r from-orange-500 to-amber-500 flex justify-between items-center">
+                <div>
+                  <p class="text-sm font-bold text-white">${t('notifications')}</p>
+                  <p class="text-[10px] text-white/80">${_state.unreadCount} ${lang === 'ar' ? 'غير مقروءة' : 'unread'}</p>
+                </div>
+                ${_state.unreadCount > 0 ? `
+                  <button onclick="Layout.markAllRead()" class="text-xs text-white/90 hover:text-white underline">
+                    ${t('markAllRead')}
+                  </button>
+                ` : ''}
+              </div>
+              
+              <div class="max-h-96 overflow-y-auto custom-scroll">
+                ${_state.notifications.length === 0 ? `
+                  <div class="p-8 text-center text-slate-400">
+                    <i class="fa-solid fa-bell-slash text-4xl mb-3"></i>
+                    <p class="text-sm">${t('noNotifications')}</p>
+                  </div>
+                ` : _state.notifications.map(notif => {
+                  const colorStyles = {
+                    orange: 'bg-orange-100 text-orange-600 dark:bg-orange-900/30',
+                    blue: 'bg-blue-100 text-blue-600 dark:bg-blue-900/30',
+                    green: 'bg-green-100 text-green-600 dark:bg-green-900/30',
+                    red: 'bg-red-100 text-red-600 dark:bg-red-900/30'
+                  };
+                  const colorClass = colorStyles[notif.color] || colorStyles.blue;
+                  
+                  return `
+                    <a href="${notif.link}" onclick="Layout.markNotificationRead('${notif.id}')" 
+                       class="flex gap-3 p-4 border-b border-slate-100 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors ${!notif.read ? 'bg-blue-50/30 dark:bg-blue-900/10' : ''}">
+                      <div class="w-10 h-10 rounded-lg ${colorClass} flex items-center justify-center shrink-0">
+                        <i class="fa-solid ${notif.icon}"></i>
+                      </div>
+                      <div class="flex-1 min-w-0">
+                        <p class="text-xs font-bold text-slate-800 dark:text-white truncate">${notif.title[lang]}</p>
+                        <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">${notif.body[lang]}</p>
+                        <p class="text-[10px] text-slate-400 mt-1">${getTimeAgo(new Date(notif.time))}</p>
+                      </div>
+                      ${!notif.read ? '<div class="w-2 h-2 rounded-full bg-brandRed animate-pulse"></div>' : ''}
+                    </a>
+                  `;
+                }).join('')}
+              </div>
+            </div>
+          </div>
+
+          <!-- Language Switcher -->
+          <button onclick="Layout.toggleLanguage()" 
+                  class="w-10 h-10 rounded-xl border-2 border-slate-200 dark:border-slate-700 hover:bg-blue-50 dark:hover:bg-blue-900/20 text-slate-600 dark:text-slate-300 hover:border-blue-400 transition-all flex items-center justify-center font-bold text-xs">
+            ${lang === 'ar' ? 'EN' : 'ع'}
+          </button>
+          
+          <!-- AI Bot -->
           <button onclick="if(window.AndroBot) AndroBot.toggle()" 
                   class="w-10 h-10 rounded-xl border-2 border-slate-200 dark:border-slate-700 hover:bg-blue-50 dark:hover:bg-blue-900/20 text-brandBlue hover:border-blue-400 transition-all flex items-center justify-center group">
             <i class="fa-solid fa-robot group-hover:animate-bounce"></i>
@@ -371,7 +672,7 @@ const Layout = (function() {
           <button onclick="Layout.logout()" 
                   class="text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 border-2 border-transparent hover:border-red-200">
             <i class="fa-solid fa-power-off"></i> 
-            <span class="hidden sm:inline">تسجيل الخروج</span>
+            <span class="hidden sm:inline">${t('logout')}</span>
           </button>
         </div>
       </header>
@@ -379,7 +680,7 @@ const Layout = (function() {
   }
 
   // ==========================================
-  // 6. UTILITY FUNCTIONS
+  // 8. UTILITY FUNCTIONS
   // ==========================================
   
   function _getRoleIcon(roleKey) {
@@ -402,17 +703,24 @@ const Layout = (function() {
     _state.activeRole = roleKey;
     localStorage.setItem('activeRole', roleKey);
     
-    // Dynamic UI Update (No Page Reload)
     renderSidebar();
     renderHeader();
     
-    // Visual Feedback
-    const Toast = window.Toast;
-    if (Toast) {
-      Toast.success(`تم التبديل إلى: ${_roleLabels[roleKey].ar}`);
+    if (window.Toast) {
+      const lang = getCurrentLang();
+      Toast.success(lang === 'ar' ? 
+        `تم التبديل إلى: ${_roleLabels[roleKey].ar}` :
+        `Switched to: ${_roleLabels[roleKey].en}`
+      );
     }
     
     console.log(`🔄 Role switched to: ${roleKey}`);
+  }
+
+  function toggleLanguage() {
+    const currentLang = getCurrentLang();
+    const newLang = currentLang === 'ar' ? 'en' : 'ar';
+    setLanguage(newLang);
   }
 
   function toggleTheme() {
@@ -423,12 +731,21 @@ const Layout = (function() {
     renderHeader();
     
     if (window.Toast) {
-      Toast.info(isDark ? 'تم تفعيل الوضع الليلي' : 'تم تفعيل الوضع النهاري');
+      const lang = getCurrentLang();
+      const msg = lang === 'ar' ?
+        (isDark ? 'تم تفعيل الوضع الليلي' : 'تم تفعيل الوضع النهاري') :
+        (isDark ? 'Dark mode enabled' : 'Light mode enabled');
+      Toast.info(msg);
     }
   }
 
   function logout() {
-    if (confirm('هل أنت متأكد من تسجيل الخروج؟')) {
+    const lang = getCurrentLang();
+    const confirmMsg = lang === 'ar' ? 
+      'هل أنت متأكد من تسجيل الخروج؟' :
+      'Are you sure you want to logout?';
+      
+    if (confirm(confirmMsg)) {
       localStorage.removeItem('currentUser');
       localStorage.removeItem('activeRole');
       window.location.href = '../login.html';
@@ -439,22 +756,28 @@ const Layout = (function() {
     const sidebar = document.getElementById('main-sidebar');
     if (sidebar) {
       sidebar.classList.toggle('-translate-x-full');
+      sidebar.classList.toggle('translate-x-0');
     }
   }
 
   // ==========================================
-  // 7. PUBLIC API
+  // 9. PUBLIC API
   // ==========================================
   return {
     init,
     renderSidebar,
     renderHeader,
     toggleTheme,
+    toggleLanguage,
+    setLanguage,
     logout,
     toggleMobileSidebar,
     switchRole,
+    markNotificationRead,
+    markAllRead,
     getActiveRole: () => _state.activeRole,
-    getAllRoles: () => Object.keys(_menuDefinitions)
+    getCurrentLang,
+    t
   };
 
 })();
