@@ -561,13 +561,13 @@
     </script>
     
     <!-- Load External Scripts -->
-    <script src="../data/company_policy.js"></script>
-    <script src="../js/core/config.js"></script>
-    <script src="../js/core/i18n.js"></script>
-    <script src="../js/services/data-service.js"></script>
-    <script src="../js/components/toast.js"></script>
-    <script src="../js/components/role-switcher.js"></script>
-    <script src="../js/components/layout.js"></script>
-    <script src="../js/components/bot.js"></script>
+    <script src="data/company_policy.js" onerror="console.error('Failed to load company_policy.js')"></script>
+    <script src="js/core/config.js" onerror="console.error('Failed to load config.js')"></script>
+    <script src="js/core/i18n.js" onerror="console.error('Failed to load i18n.js')"></script>
+    <script src="js/services/data-service.js" onerror="console.error('Failed to load data-service.js')"></script>
+    <script src="js/components/toast.js" onerror="console.error('Failed to load toast.js')"></script>
+    <script src="js/components/role-switcher.js" onerror="console.error('Failed to load role-switcher.js')"></script>
+    <script src="js/components/layout.js" onerror="console.error('Failed to load layout.js - THIS IS THE PROBLEM!')"></script>
+    <script src="js/components/bot.js" onerror="console.error('Failed to load bot.js')"></script>
 </body>
 </html>
