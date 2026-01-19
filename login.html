@@ -39,14 +39,17 @@
         .users-scroll::-webkit-scrollbar-thumb { background-color: #FB4747; border-radius: 10px; }
         .glass-effect { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); }
         .dark .glass-effect { background: rgba(30, 41, 59, 0.8); }
+        
+        /* Smooth transitions for theme/lang switch */
+        body { transition: background-color 0.3s, color 0.3s; }
     </style>
 </head>
 
-<body class="bg-slateLight text-slate-800 dark:bg-brandDark dark:text-white min-h-screen font-sans transition-colors duration-300">
+<body class="bg-slateLight text-slate-800 dark:bg-brandDark dark:text-white min-h-screen font-sans overflow-x-hidden">
 
     <div class="min-h-screen flex flex-col lg:flex-row">
         
-        <!-- Left Section: Branding (Hidden on Mobile) -->
+        <!-- Left Section: Branding & Info (Hidden on Mobile) -->
         <aside class="hidden lg:flex w-1/2 bg-slate-900 relative flex-col justify-between p-16 text-white overflow-hidden">
             <div class="absolute inset-0 bg-gradient-to-br from-brandRed/20 to-brandDark opacity-90"></div>
             <div class="absolute -top-24 -left-24 w-96 h-96 bg-brandRed/10 rounded-full blur-3xl"></div>
@@ -59,20 +62,24 @@
                     </div>
                     <div>
                         <h1 class="text-4xl font-black tracking-tight">AndroGov</h1>
-                        <p class="text-slate-400 text-sm font-light uppercase tracking-widest">Enterprise OS</p>
+                        <p class="text-slate-400 text-sm font-light uppercase tracking-widest">Enterprise Operating System</p>
                     </div>
                 </div>
 
-                <div class="space-y-12 max-w-md mt-20">
+                <div class="space-y-12 max-w-md mt-24">
                     <div class="flex gap-6 items-start">
-                        <div class="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center shrink-0 border border-white/10"><i class="fa-solid fa-shield-halved text-xl text-brandRed"></i></div>
+                        <div class="w-14 h-14 rounded-2xl bg-white/10 flex items-center justify-center shrink-0 border border-white/10 shadow-inner">
+                            <i class="fa-solid fa-shield-halved text-2xl text-brandRed"></i>
+                        </div>
                         <div>
                             <h3 class="text-xl font-bold mb-2" data-i18n="sidebarGovTitle">حوكمة ذكية</h3>
                             <p class="text-slate-400 text-sm leading-relaxed" data-i18n="sidebarGovDesc">إدارة متكاملة لمجلس الإدارة، اللجان، والجمعيات العمومية بامتثال تام للأنظمة السعودية.</p>
                         </div>
                     </div>
                     <div class="flex gap-6 items-start">
-                        <div class="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center shrink-0 border border-white/10"><i class="fa-solid fa-chart-pie text-xl text-brandBlue"></i></div>
+                        <div class="w-14 h-14 rounded-2xl bg-white/10 flex items-center justify-center shrink-0 border border-white/10 shadow-inner">
+                            <i class="fa-solid fa-chart-pie text-2xl text-brandBlue"></i>
+                        </div>
                         <div>
                             <h3 class="text-xl font-bold mb-2" data-i18n="sidebarOpsTitle">رقابة مالية مركزية</h3>
                             <p class="text-slate-400 text-sm leading-relaxed" data-i18n="sidebarOpsDesc">لوحات قيادة لحظية للمدراء التنفيذيين لمتابعة التدفقات النقدية والميزانيات التقديرية.</p>
@@ -81,17 +88,19 @@
                 </div>
             </div>
 
-            <div class="relative z-10 flex justify-between items-center text-xs text-slate-500 font-mono">
+            <div class="relative z-10 flex justify-between items-center text-xs text-slate-500 font-mono uppercase tracking-widest">
                 <p>© 2026 Andromeda IT.</p>
-                <p>Version 10.2.0-PRO</p>
+                <p>System Version 10.5.0-PRO</p>
             </div>
         </aside>
 
         <!-- Right Section: Login Form -->
-        <main class="w-full lg:w-1/2 flex flex-col justify-center items-center p-6 md:p-12 relative">
+        <main class="w-full lg:w-1/2 flex flex-col justify-center items-center p-6 md:p-12 relative bg-white dark:bg-brandDark">
             
-            <div class="absolute top-8 right-8 flex gap-3">
-                <button onclick="toggleLanguage()" class="w-10 h-10 rounded-xl glass-effect border border-slate-200 dark:border-slate-700 flex items-center justify-center text-xs font-bold hover:border-brandRed transition-all">
+            <!-- Floating Controls -->
+            <div class="absolute top-8 right-8 flex gap-3 z-20">
+                <button onclick="toggleLanguage()" class="h-10 px-4 rounded-xl glass-effect border border-slate-200 dark:border-slate-700 flex items-center justify-center text-xs font-bold hover:border-brandRed transition-all">
+                    <i class="fa-solid fa-language ml-2 rtl:ml-2 ltr:mr-2"></i>
                     <span id="langLabel">EN</span>
                 </button>
                 <button onclick="toggleDarkMode()" class="w-10 h-10 rounded-xl glass-effect border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-500 hover:text-yellow-500 transition-all">
@@ -100,59 +109,67 @@
             </div>
 
             <div class="w-full max-w-md login-card">
-                <div class="text-center mb-10">
-                    <div class="lg:hidden mb-6 flex justify-center">
-                        <div class="w-16 h-16 rounded-2xl bg-brandRed text-white flex items-center justify-center shadow-lg"><i class="fa-solid fa-layer-group text-3xl"></i></div>
+                <!-- Mobile Logo -->
+                <div class="lg:hidden mb-8 flex flex-col items-center">
+                    <div class="w-16 h-16 rounded-2xl bg-brandRed text-white flex items-center justify-center shadow-lg mb-3">
+                        <i class="fa-solid fa-layer-group text-3xl"></i>
                     </div>
-                    <h2 class="text-3xl font-black dark:text-white" data-i18n="loginTitle">تسجيل الدخول</h2>
-                    <p class="text-slate-500 dark:text-slate-400 mt-2" data-i18n="loginSub">أهلاً بك مجدداً، يرجى إدخال بيانات حسابك</p>
+                    <h1 class="text-2xl font-black text-slate-900 dark:text-white">AndroGov</h1>
                 </div>
 
-                <form id="loginForm" onsubmit="handleManualLogin(event)" class="space-y-5">
-                    <div class="space-y-1.5">
-                        <label class="text-xs font-bold text-slate-500 px-1 uppercase" data-i18n="lblEmail">البريد الإلكتروني</label>
-                        <div class="relative">
-                            <input type="email" id="email" required class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl py-3.5 pr-11 pl-4 text-sm focus:ring-2 focus:ring-brandRed/20 focus:border-brandRed outline-none transition-all dark:text-white" placeholder="name@company.com">
-                            <i class="fa-solid fa-envelope absolute top-4 right-4 text-slate-400"></i>
+                <div class="text-center lg:text-right rtl:lg:text-right ltr:lg:text-left mb-10">
+                    <h2 class="text-3xl font-black dark:text-white" data-i18n="loginTitle">تسجيل الدخول</h2>
+                    <p class="text-slate-500 dark:text-slate-400 mt-2" data-i18n="loginSub">أهلاً بك مجدداً، يرجى إدخال بيانات حسابك للوصول للوحة التحكم</p>
+                </div>
+
+                <form id="loginForm" onsubmit="handleManualLogin(event)" class="space-y-6">
+                    <div class="space-y-2">
+                        <label class="text-xs font-bold text-slate-500 px-1 uppercase tracking-wider" data-i18n="lblEmail">البريد الإلكتروني</label>
+                        <div class="relative group">
+                            <input type="email" id="email" required class="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-2xl py-4 pr-12 pl-4 text-sm focus:ring-4 focus:ring-brandRed/10 focus:border-brandRed outline-none transition-all dark:text-white" placeholder="name@company.com">
+                            <i class="fa-solid fa-envelope absolute top-4 right-4 text-slate-400 group-focus-within:text-brandRed transition-colors"></i>
                         </div>
                     </div>
                     
-                    <div class="space-y-1.5">
+                    <div class="space-y-2">
                         <div class="flex justify-between items-center px-1">
-                            <label class="text-xs font-bold text-slate-500 uppercase" data-i18n="lblPass">كلمة المرور</label>
+                            <label class="text-xs font-bold text-slate-500 uppercase tracking-wider" data-i18n="lblPass">كلمة المرور</label>
                             <a href="#" class="text-[10px] font-bold text-brandRed hover:underline" data-i18n="btnForgot">نسيت كلمة المرور؟</a>
                         </div>
-                        <div class="relative">
-                            <input type="password" id="password" required class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl py-3.5 pr-11 pl-4 text-sm focus:ring-2 focus:ring-brandRed/20 focus:border-brandRed outline-none transition-all dark:text-white" placeholder="••••••••">
-                            <i class="fa-solid fa-lock absolute top-4 right-4 text-slate-400"></i>
+                        <div class="relative group">
+                            <input type="password" id="password" required class="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-2xl py-4 pr-12 pl-4 text-sm focus:ring-4 focus:ring-brandRed/10 focus:border-brandRed outline-none transition-all dark:text-white" placeholder="••••••••">
+                            <i class="fa-solid fa-lock absolute top-4 right-4 text-slate-400 group-focus-within:text-brandRed transition-colors"></i>
                         </div>
                     </div>
 
-                    <div class="flex items-center gap-2 px-1">
-                        <input type="checkbox" id="remember" class="w-4 h-4 rounded text-brandRed focus:ring-brandRed border-slate-300">
-                        <label for="remember" class="text-xs text-slate-500 dark:text-slate-400 cursor-pointer" data-i18n="lblRemember">تذكر دخولي في هذا المتصفح</label>
+                    <div class="flex items-center justify-between px-1">
+                        <label class="flex items-center gap-2 cursor-pointer group">
+                            <input type="checkbox" id="remember" class="w-4 h-4 rounded text-brandRed focus:ring-brandRed border-slate-300">
+                            <span class="text-xs text-slate-500 dark:text-slate-400 group-hover:text-slate-700 transition-colors" data-i18n="lblRemember">تذكر دخولي</span>
+                        </label>
                     </div>
 
-                    <button type="submit" class="w-full bg-brandRed hover:bg-red-700 text-white font-bold py-4 rounded-2xl shadow-lg shadow-red-500/30 transform transition active:scale-[0.98] hover:shadow-xl flex items-center justify-center gap-3">
+                    <button type="submit" class="w-full bg-brandRed hover:bg-red-700 text-white font-bold py-4 rounded-2xl shadow-xl shadow-red-500/30 transform transition active:scale-[0.98] hover:-translate-y-0.5 flex items-center justify-center gap-3">
                         <span data-i18n="btnSubmit">دخول للنظام</span>
                         <i class="fa-solid fa-arrow-left rtl:rotate-0 ltr:rotate-180"></i>
                     </button>
                 </form>
 
-                <div class="mt-10">
+                <div class="mt-12">
                     <div class="relative flex items-center justify-center mb-8">
-                        <div class="flex-grow border-t border-slate-200 dark:border-slate-700"></div>
-                        <span class="flex-shrink mx-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest" data-i18n="lblDemo">أو الدخول التجريبي (Quick Access)</span>
-                        <div class="flex-grow border-t border-slate-200 dark:border-slate-700"></div>
+                        <div class="flex-grow border-t border-slate-100 dark:border-slate-800"></div>
+                        <span class="flex-shrink mx-4 text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]" data-i18n="lblDemo">أو الدخول التجريبي</span>
+                        <div class="flex-grow border-t border-slate-100 dark:border-slate-800"></div>
                     </div>
 
                     <div class="grid grid-cols-2 sm:grid-cols-3 gap-3" id="quickUsers">
-                        <!-- Dynamic Buttons -->
+                        <!-- Dynamic Buttons for Demo Roles -->
                     </div>
                 </div>
 
-                <p class="mt-12 text-center text-[10px] text-slate-400 dark:text-slate-500" data-i18n="footerNote">
-                    يخضع استخدام هذا النظام لسياسات الأمن المعلوماتي لشركة Andromeda IT.
+                <p class="mt-12 text-center text-[10px] text-slate-400 dark:text-slate-500 leading-relaxed" data-i18n="footerNote">
+                    جميع الحقوق محفوظة لشركة اندروميدا لتقنية المعلومات © 2026. <br>
+                    استخدامك للنظام يعني موافقتك على سياسات الخصوصية والأمن السيبراني.
                 </p>
             </div>
         </main>
@@ -160,7 +177,7 @@
 
     <script>
         // ==========================================
-        // DATA MODEL - Bilingual Demo Users
+        // DATA MODEL - التوافق مع محرك التخطيط (Layout Engine)
         // ==========================================
         const SYSTEM_USERS = [
             { id: "USR_004", name: {ar: "أيمن المغربي", en: "Ayman Al-Maghrabi"}, role: "sys_admin", title: {ar: "مدير النظام / GRC", en: "System Admin / GRC"}, email: "amaghrabi@androomeda.com", path: "admin/index.html", icon: "fa-user-shield", color: "#FB4747" },
@@ -179,13 +196,13 @@
             const lang = localStorage.getItem('lang') || 'ar';
             
             container.innerHTML = SYSTEM_USERS.map(u => `
-                <button onclick="handleLogin('${u.email}')" class="flex flex-col items-center gap-2 p-3 bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-2xl hover:border-brandRed dark:hover:border-brandRed hover:shadow-md transition-all group">
-                    <div class="w-10 h-10 rounded-xl flex items-center justify-center text-white shadow-sm transition-transform group-hover:scale-110" style="background-color: ${u.color}">
-                        <i class="fa-solid ${u.icon} text-sm"></i>
+                <button onclick="handleLogin('${u.email}')" class="flex flex-col items-center gap-2 p-4 bg-white dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 rounded-3xl hover:border-brandRed dark:hover:border-brandRed hover:shadow-lg transition-all group">
+                    <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-white shadow-sm transition-transform group-hover:scale-110" style="background-color: ${u.color}">
+                        <i class="fa-solid ${u.icon} text-lg"></i>
                     </div>
                     <div class="text-center overflow-hidden w-full">
                         <p class="text-[10px] font-bold truncate dark:text-white">${u.name[lang]}</p>
-                        <p class="text-[8px] text-slate-400 font-medium truncate uppercase">${u.role.replace('_', ' ')}</p>
+                        <p class="text-[8px] text-slate-400 font-medium truncate uppercase tracking-tighter">${u.role.replace('_', ' ')}</p>
                     </div>
                 </button>
             `).join('');
@@ -205,29 +222,33 @@
             const lang = localStorage.getItem('lang') || 'ar';
             
             if (user) {
+                // تخزين بيانات المستخدم بالشكل المتوافق مع Layout Engine v7.8
                 const userSession = {
                     id: user.id,
                     name: user.name[lang],
                     displayName: user.name[lang],
                     role: user.role,
-                    primaryRole: user.role,
+                    primaryRole: user.role, // هذا الحقل هو الأهم لعمل الـ Sidebar
                     type: user.role,
                     title: user.title[lang],
                     displayTitle: user.title[lang],
                     email: user.email,
-                    avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name[lang])}&background=${user.color.replace('#','')}&color=fff`
+                    avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name[lang])}&background=${user.color.replace('#','')}&color=fff&bold=true`
                 };
 
                 localStorage.setItem('currentUser', JSON.stringify(userSession));
+                localStorage.setItem('currentUserId', user.id);
                 
                 const btn = document.querySelector('button[type="submit"]');
                 if(btn) btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i>';
                 
+                // تحويل المستخدم للمسار الصحيح
                 setTimeout(() => {
                     window.location.href = user.path;
-                }, 800);
+                }, 600);
             } else {
-                alert(lang === 'ar' ? "بيانات الدخول غير صحيحة." : "Invalid login credentials.");
+                const errorMsg = lang === 'ar' ? "بيانات الدخول غير مسجلة في نسخة العرض." : "Credentials not registered in demo version.";
+                alert(errorMsg);
             }
         }
 
@@ -276,29 +297,29 @@
                 sidebarOpsTitle: "رقابة مالية مركزية",
                 sidebarOpsDesc: "لوحات قيادة لحظية للمدراء التنفيذيين لمتابعة التدفقات النقدية والميزانيات التقديرية.",
                 loginTitle: "تسجيل الدخول",
-                loginSub: "أهلاً بك مجدداً، يرجى إدخال بيانات حسابك",
+                loginSub: "أهلاً بك مجدداً، يرجى إدخال بيانات حسابك للوصول للوحة التحكم",
                 lblEmail: "البريد الإلكتروني",
                 lblPass: "كلمة المرور",
                 btnForgot: "نسيت كلمة المرور؟",
-                lblRemember: "تذكر دخولي في هذا المتصفح",
+                lblRemember: "تذكر دخولي",
                 btnSubmit: "دخول للنظام",
-                lblDemo: "أو الدخول التجريبي (Quick Access)",
-                footerNote: "يخضع استخدام هذا النظام لسياسات الأمن المعلوماتي لشركة Andromeda IT."
+                lblDemo: "أو الدخول التجريبي",
+                footerNote: "جميع الحقوق محفوظة لشركة اندروميدا لتقنية المعلومات © 2026. استخدامك للنظام يعني موافقتك على سياسات الخصوصية والأمن السيبراني."
             },
             en: {
                 sidebarGovTitle: "Smart Governance",
-                sidebarGovDesc: "Integrated management for Board, Committees, and General Assemblies with full Saudi compliance.",
+                sidebarGovDesc: "Integrated board, committee, and general assembly management with full Saudi compliance.",
                 sidebarOpsTitle: "Central Financial Control",
-                sidebarOpsDesc: "Real-time dashboards for executives to monitor cash flows and estimated budgets.",
-                loginTitle: "Sign In",
-                loginSub: "Welcome back, please enter your account details",
+                sidebarOpsDesc: "Real-time executive dashboards to monitor cash flows and estimated budgets.",
+                loginTitle: "Account Login",
+                loginSub: "Welcome back, please enter your credentials to access your dashboard",
                 lblEmail: "Email Address",
                 lblPass: "Password",
                 btnForgot: "Forgot password?",
-                lblRemember: "Remember me on this browser",
+                lblRemember: "Remember me",
                 btnSubmit: "Sign In to System",
-                lblDemo: "Or Demo Quick Access",
-                footerNote: "Use of this system is subject to Andromeda IT information security policies."
+                lblDemo: "OR QUICK ACCESS",
+                footerNote: "All Rights Reserved to Andromeda Information Technology © 2026. Use of this system implies agreement to privacy & security policies."
             }
         };
 
