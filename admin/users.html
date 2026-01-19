@@ -43,20 +43,20 @@
         }
     </script>
 
-    <!-- Page Styles -->
-    <link rel="stylesheet" href="css/users.css">
-
     <style>
-        /* Additional inline styles */
-        body {
-            opacity: 0;
-            transition: opacity 0.3s ease;
+        /* ✅ Custom Scrollbar */
+        .custom-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+        .custom-scroll::-webkit-scrollbar-thumb { 
+            background: #CBD5E1; 
+            border-radius: 10px; 
         }
-        body.loaded {
-            opacity: 1;
-        }
+        .custom-scroll::-webkit-scrollbar-thumb:hover { background: #94A3B8; }
         
-        /* Loading Overlay */
+        .dark .custom-scroll::-webkit-scrollbar-thumb { background: #475569; }
+        .dark .custom-scroll::-webkit-scrollbar-thumb:hover { background: #64748B; }
+        
+        /* ✅ Loading Overlay */
         .loading-overlay {
             position: fixed;
             inset: 0;
@@ -68,6 +68,7 @@
             align-items: center;
             justify-content: center;
             gap: 1rem;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
         }
         
         .dark .loading-overlay {
@@ -75,7 +76,9 @@
         }
         
         .loading-overlay.hidden {
-            display: none;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
         }
         
         .spinner {
@@ -90,24 +93,54 @@
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
+        
+        /* ✅ Fade In Animation */
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* ✅ Smooth Transitions */
+        * {
+            transition-property: background-color, border-color, color, fill, stroke, margin, padding;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+            transition-duration: 300ms;
+        }
+        
+        /* ✅ Main Content Wrapper Transition */
+        .main-content-wrapper {
+            transition: margin-left 300ms ease, margin-right 300ms ease;
+        }
+        
+        /* ✅ Sidebar Transition */
+        #main-sidebar {
+            transition: left 300ms ease, right 300ms ease, transform 300ms ease;
+        }
     </style>
 </head>
 
 <body class="bg-brandGray dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans">
 
-    <!-- Loading Overlay -->
+    <!-- ✅ Loading Overlay -->
     <div id="loadingOverlay" class="loading-overlay">
-        <div class="spinner"></div>
-        <p class="text-sm font-bold text-slate-600 dark:text-slate-300">جاري تحميل البيانات...</p>
+        <div class="relative">
+            <div class="w-16 h-16 border-4 border-brandRed/20 border-t-brandRed rounded-full animate-spin"></div>
+            <div class="absolute inset-0 w-16 h-16 border-4 border-transparent border-b-brandBlue rounded-full animate-spin" style="animation-direction: reverse; animation-duration: 0.8s;"></div>
+        </div>
+        <p class="text-sm font-bold text-slate-600 dark:text-slate-300 animate-pulse" data-i18n="users.loading">جاري تحميل البيانات...</p>
     </div>
 
-    <!-- ===== SIDEBAR CONTAINER ===== -->
+    <!-- ✅ Sidebar Container -->
     <div id="sidebar-container" class="no-print"></div>
     
-    <!-- ===== MAIN CONTENT ===== -->
-    <div class="main-content-wrapper ltr:md:ml-72 rtl:md:mr-72 transition-all duration-300 flex flex-col min-h-screen">
+    <!-- ✅ Main Content Wrapper -->
+    <div class="main-content-wrapper md:mr-72 transition-all duration-300 flex flex-col min-h-screen">
         
-        <!-- Header Container -->
+        <!-- ✅ Header Container -->
         <div id="header-container" class="no-print"></div>
 
         <!-- Page Content -->
@@ -123,7 +156,7 @@
 
             <!-- Stats Cards -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="stats-container">
-                <!-- Populated by JS -->
+                <!-- Loading Placeholders -->
                 <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 animate-pulse">
                     <div class="h-4 bg-slate-200 dark:bg-slate-700 rounded w-1/2 mb-3"></div>
                     <div class="h-8 bg-slate-200 dark:bg-slate-700 rounded w-1/3"></div>
@@ -204,7 +237,7 @@
                                     <td colspan="6" class="p-8 text-center">
                                         <div class="flex flex-col items-center gap-3 text-slate-400">
                                             <i class="fa-solid fa-spinner fa-spin text-3xl"></i>
-                                            <p class="text-sm">جاري تحميل المستخدمين...</p>
+                                            <p class="text-sm" data-i18n="users.loadingUsers">جاري تحميل المستخدمين...</p>
                                         </div>
                                     </td>
                                 </tr>
@@ -219,7 +252,7 @@
                         
                         <!-- Roles List -->
                         <div class="lg:col-span-4 lg:border-l border-slate-200 dark:border-slate-700 lg:pl-6 space-y-3 overflow-y-auto custom-scroll max-h-[550px]" id="rolesList">
-                            <!-- Populated by JS -->
+                            <!-- Loading Placeholders -->
                             <div class="p-4 rounded-xl border border-slate-200 dark:border-slate-700 animate-pulse">
                                 <div class="h-4 bg-slate-200 dark:bg-slate-700 rounded w-3/4 mb-2"></div>
                                 <div class="h-3 bg-slate-200 dark:bg-slate-700 rounded w-full"></div>
@@ -237,7 +270,7 @@
                                 <!-- Role Header -->
                                 <div class="flex flex-col md:flex-row justify-between items-start gap-4 mb-6 pb-4 border-b border-slate-200 dark:border-slate-600">
                                     <div>
-                                        <h3 class="font-bold text-xl text-slate-800 dark:text-white mb-1" id="roleDetailName">اختر دوراً من القائمة</h3>
+                                        <h3 class="font-bold text-xl text-slate-800 dark:text-white mb-1" id="roleDetailName" data-i18n="users.selectRole">اختر دوراً من القائمة</h3>
                                         <p class="text-sm text-slate-500 dark:text-slate-400" id="roleDetailDesc">--</p>
                                     </div>
                                     <span id="roleInheritsBadge" class="hidden px-3 py-1.5 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded-full text-xs font-bold whitespace-nowrap">
@@ -252,7 +285,7 @@
                                     <!-- Populated by JS -->
                                     <div class="text-center text-slate-400 py-8">
                                         <i class="fa-solid fa-shield-halved text-4xl mb-3"></i>
-                                        <p class="text-sm">اختر دوراً لعرض الصلاحيات</p>
+                                        <p class="text-sm" data-i18n="users.selectRoleToView">اختر دوراً لعرض الصلاحيات</p>
                                     </div>
                                 </div>
                             </div>
@@ -265,7 +298,7 @@
 
         <!-- Footer -->
         <footer class="p-4 text-center text-xs text-slate-400 border-t border-slate-100 dark:border-slate-800">
-            © 2026 Andromeda IT - AndroGov System v7.0
+            © 2026 Andromeda IT - AndroGov System v10.5
         </footer>
     </div>
 
@@ -278,14 +311,13 @@
     <script src="js/core/config.js"></script>
     <script src="js/core/i18n.js"></script>
     
-    <!-- 3. Helpers (IMPORTANT: Load before services) -->
+    <!-- 3. Helpers -->
     <script src="js/helpers/policy-helpers.js"></script>
     
     <!-- 4. Services -->
     <script src="js/services/data-service.js"></script>
     
     <!-- 5. Components -->
-    <script src="js/components/role-switcher.js"></script>
     <script src="js/components/layout.js"></script>
     <script src="js/components/bot.js"></script>
     
@@ -295,89 +327,97 @@
     <!-- 7. Page Initialization -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            console.log('🚀 DOM loaded, starting initialization...');
+            console.log('🚀 Users page - DOM loaded');
             
-            // Wait for all dependencies to load
+            // ✅ Set initial language and direction
+            const initialLang = localStorage.getItem('lang') || 'ar';
+            document.documentElement.lang = initialLang;
+            document.documentElement.dir = initialLang === 'ar' ? 'rtl' : 'ltr';
+            
+            // ✅ Set initial main content margin
+            const mainContent = document.querySelector('.main-content-wrapper');
+            if (mainContent) {
+                if (initialLang === 'ar') {
+                    mainContent.classList.remove('md:ml-72');
+                    mainContent.classList.add('md:mr-72');
+                } else {
+                    mainContent.classList.remove('md:mr-72');
+                    mainContent.classList.add('md:ml-72');
+                }
+            }
+            
+            // Wait for dependencies
             let attempts = 0;
-            const maxAttempts = 50; // 5 seconds max
+            const maxAttempts = 50;
             
             const checkDependencies = setInterval(() => {
                 attempts++;
                 
-                const hasCompanyPolicy = typeof CompanyPolicy !== 'undefined';
-                const hasPolicyHelpers = typeof PolicyHelpers !== 'undefined';
+                const hasLayout = typeof Layout !== 'undefined';
                 const hasDataService = typeof DataService !== 'undefined';
                 const hasAppConfig = typeof AppConfig !== 'undefined';
-                const hasI18n = typeof I18n !== 'undefined';
-                const hasLayout = typeof Layout !== 'undefined';
                 const hasUsersPage = typeof UsersPage !== 'undefined';
                 
-                console.log(`📊 Dependency check (${attempts}/${maxAttempts}):`, {
-                    CompanyPolicy: hasCompanyPolicy,
-                    PolicyHelpers: hasPolicyHelpers,
-                    DataService: hasDataService,
-                    AppConfig: hasAppConfig,
-                    I18n: hasI18n,
-                    Layout: hasLayout,
-                    UsersPage: hasUsersPage
-                });
-                
-                if (hasCompanyPolicy && hasPolicyHelpers && hasDataService && 
-                    hasAppConfig && hasI18n && hasLayout && hasUsersPage) {
-                    
+                if (hasLayout && hasDataService && hasAppConfig && hasUsersPage) {
                     clearInterval(checkDependencies);
-                    console.log('✅ All dependencies loaded successfully!');
+                    console.log('✅ All dependencies loaded');
                     
-                    // Hide loading overlay
-                    document.getElementById('loadingOverlay')?.classList.add('hidden');
+                    // ✅ Auto-login if needed
+                    if (!AppConfig.getCurrentUser()) {
+                        console.log('⚠️ No user found. Auto-logging...');
+                        const defaultUser = DataService.getUserById('USR_004') || DataService.getUsers()[0];
+                        if (defaultUser) {
+                            AppConfig.setCurrentUser(defaultUser);
+                        }
+                    }
                     
-                    // Initialize page
+                    // ✅ Initialize Layout
+                    Layout.init();
+                    
+                    // ✅ Initialize Page
                     setTimeout(() => {
                         try {
-                            // --- بداية كود الإصلاح: تسجيل دخول تلقائي ---
-                            if (typeof AppConfig !== 'undefined' && !AppConfig.getCurrentUser() && typeof DataService !== 'undefined') {
-                                console.log('⚠️ No user logged in. Auto-logging as Admin...');
-                                const defaultUser = DataService.getUserById('USR_004') || DataService.getUsers()[0];
-                                if (defaultUser) {
-                                    AppConfig.setCurrentUser(defaultUser);
-                                    location.reload();
-                                    return;
-                                }
-                            }
-                            // --- نهاية كود الإصلاح ---
-
-                            console.log('🎯 Initializing UsersPage...');
                             UsersPage.init();
-                            console.log('✅ UsersPage initialized successfully!');
-                            
+                            hideLoading();
+                            console.log('✅ Users page initialized');
                         } catch (error) {
-                            console.error('❌ Error initializing UsersPage:', error);
-                            showErrorMessage('حدث خطأ في تحميل الصفحة. الرجاء إعادة تحميل الصفحة.<br><span class="text-xs text-left" dir="ltr">' + error + '</span>');
+                            console.error('❌ Error initializing:', error);
+                            showErrorMessage('حدث خطأ في تحميل الصفحة');
                         }
-                    }, 100);
+                    }, 300);
                     
                 } else if (attempts >= maxAttempts) {
                     clearInterval(checkDependencies);
-                    console.error('❌ Timeout: Dependencies not loaded after 5 seconds');
-                    
-                    // Show which dependencies failed
-                    const missing = [];
-                    if (!hasCompanyPolicy) missing.push('CompanyPolicy');
-                    if (!hasPolicyHelpers) missing.push('PolicyHelpers');
-                    if (!hasDataService) missing.push('DataService');
-                    if (!hasAppConfig) missing.push('AppConfig');
-                    if (!hasI18n) missing.push('I18n');
-                    if (!hasLayout) missing.push('Layout');
-                    if (!hasUsersPage) missing.push('UsersPage');
-                    
-                    console.error('❌ Missing dependencies:', missing);
-                    showErrorMessage(`فشل تحميل المكونات التالية: ${missing.join(', ')}<br>الرجاء التحقق من وجود الملفات في المسارات الصحيحة.`);
+                    console.error('❌ Timeout: Dependencies not loaded');
+                    showErrorMessage('فشل تحميل مكونات النظام');
                 }
             }, 100);
+            
+            // ✅ Listen for language changes
+            window.addEventListener('languageChanged', (e) => {
+                console.log('🌐 Language changed to:', e.detail.lang);
+                
+                // Update page content
+                if (typeof window.updateUsersContent === 'function') {
+                    window.updateUsersContent();
+                }
+                
+                // Re-initialize page to update UI
+                if (typeof UsersPage !== 'undefined' && UsersPage.init) {
+                    UsersPage.init();
+                }
+            });
         });
         
+        function hideLoading() {
+            const overlay = document.getElementById('loadingOverlay');
+            if (overlay) {
+                overlay.classList.add('hidden');
+            }
+        }
+        
         function showErrorMessage(message) {
-            document.getElementById('loadingOverlay')?.classList.add('hidden');
+            hideLoading();
             
             const tbody = document.getElementById('usersTableBody');
             if (tbody) {
@@ -389,7 +429,7 @@
                                 <p class="text-sm font-bold">${message}</p>
                                 <button onclick="location.reload()" class="mt-4 px-4 py-2 bg-brandRed text-white rounded-lg text-sm font-bold hover:bg-red-700 transition">
                                     <i class="fa-solid fa-rotate-right ml-2"></i>
-                                    إعادة تحميل الصفحة
+                                    إعادة تحميل
                                 </button>
                             </div>
                         </td>
@@ -401,19 +441,42 @@
                 Swal.fire({
                     icon: 'error',
                     title: 'خطأ في التحميل',
-                    html: message,
+                    text: message,
                     confirmButtonText: 'إعادة التحميل',
-                    confirmButtonColor: '#FB4747',
-                    customClass: {
-                        popup: 'dark:bg-slate-800 dark:text-white'
-                    }
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        location.reload();
-                    }
+                    confirmButtonColor: '#FB4747'
                 });
             }
         }
+        
+        // ✅ Expose content update function for Layout to call
+        window.updateUsersContent = function() {
+            const lang = localStorage.getItem('lang') || 'ar';
+            
+            // Update HTML attributes
+            document.documentElement.lang = lang;
+            document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+            
+            // Update main content margin
+            const mainContent = document.querySelector('.main-content-wrapper');
+            if (mainContent) {
+                if (lang === 'ar') {
+                    mainContent.classList.remove('md:ml-72');
+                    mainContent.classList.add('md:mr-72');
+                } else {
+                    mainContent.classList.remove('md:mr-72');
+                    mainContent.classList.add('md:ml-72');
+                }
+            }
+            
+            // Update page title
+            const titles = {
+                ar: 'AndroGov | إدارة المستخدمين والصلاحيات',
+                en: 'AndroGov | Users & Permissions Management'
+            };
+            document.title = titles[lang];
+            
+            console.log(`✅ Users page content updated to: ${lang}`);
+        };
     </script>
 
 </body>
