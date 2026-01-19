@@ -55,11 +55,21 @@
             pointer-events: none;
         }
 
-        /* ✅ Smooth Transitions */
+        /* ✅ Smooth Transitions for all elements */
         * {
-            transition-property: background-color, border-color, color, fill, stroke;
+            transition-property: background-color, border-color, color, fill, stroke, margin, padding;
             transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-            transition-duration: 150ms;
+            transition-duration: 300ms;
+        }
+        
+        /* ✅ Main content wrapper smooth transition */
+        .main-content-wrapper {
+            transition: margin-left 300ms ease, margin-right 300ms ease;
+        }
+        
+        /* ✅ Sidebar smooth transition */
+        #main-sidebar {
+            transition: left 300ms ease, right 300ms ease, transform 300ms ease;
         }
     </style>
 </head>
@@ -77,7 +87,7 @@
     <!-- ✅ Sidebar Container (Rendered by Layout.js) -->
     <div id="sidebar-container"></div>
 
-    <!-- ✅ Main Content Wrapper (with proper RTL/LTR margins) -->
+    <!-- ✅ Main Content Wrapper (with dynamic RTL/LTR margins) -->
     <div class="main-content-wrapper md:mr-72 transition-all duration-300 flex flex-col min-h-screen">
         
         <!-- ✅ Header Container (Rendered by Layout.js) -->
@@ -331,6 +341,23 @@
         // DASHBOARD INITIALIZATION
         // ==========================================
         document.addEventListener('DOMContentLoaded', () => {
+            // ✅ Set initial language direction on page load
+            const initialLang = localStorage.getItem('lang') || 'ar';
+            document.documentElement.lang = initialLang;
+            document.documentElement.dir = initialLang === 'ar' ? 'rtl' : 'ltr';
+            
+            // ✅ Set initial main content margin
+            const mainContent = document.querySelector('.main-content-wrapper');
+            if (mainContent) {
+                if (initialLang === 'ar') {
+                    mainContent.classList.remove('md:ml-72');
+                    mainContent.classList.add('md:mr-72');
+                } else {
+                    mainContent.classList.remove('md:mr-72');
+                    mainContent.classList.add('md:ml-72');
+                }
+            }
+            
             const checkSystem = setInterval(() => {
                 if (typeof Layout !== 'undefined' && typeof AppConfig !== 'undefined') {
                     clearInterval(checkSystem);
@@ -357,6 +384,26 @@
                     }, 300);
                 }
             }, 50);
+            
+            // ✅ Listen for language changes and update content immediately
+            window.addEventListener('languageChanged', (e) => {
+                console.log('🌐 Language changed event received:', e.detail.lang);
+                updateContent();
+                
+                // Re-render charts with new language
+                const chartCanvas = document.getElementById('ownershipChart');
+                if (chartCanvas) {
+                    // Clear old chart
+                    const oldChart = Chart.getChart(chartCanvas);
+                    if (oldChart) oldChart.destroy();
+                    
+                    // Render new chart
+                    initCharts();
+                }
+                
+                // Re-render logs
+                renderLogs();
+            });
         });
 
         function hideLoading() {
@@ -376,6 +423,9 @@
             renderLogs();
             console.log('✅ Dashboard initialized successfully');
         }
+        
+        // ✅ Expose updateContent globally for Layout to call
+        window.updateContent = updateContent;
 
         // ==========================================
         // LIVE DATA UPDATES
@@ -386,26 +436,28 @@
             try {
                 const stats = DataService.getShareholdersStats();
                 const company = DataService.getCompanyProfile();
+                const lang = localStorage.getItem('lang') || 'ar';
                 
                 // Update Capital
                 const capitalEl = document.getElementById('capitalValue');
                 if (capitalEl && company?.capital) {
-                    capitalEl.innerHTML = `${company.capital.amount.toLocaleString()} <span class="text-xs font-sans text-slate-400">${company.capital.currency}</span>`;
+                    const currencyText = lang === 'ar' ? 'ر.س' : 'SAR';
+                    capitalEl.innerHTML = `${company.capital.amount.toLocaleString()} <span class="text-xs font-sans text-slate-400">${currencyText}</span>`;
                 }
 
                 // Update Shareholders Count
                 const shCountEl = document.getElementById('shareholderCount');
                 if (shCountEl && stats) {
-                    shCountEl.innerHTML = `${stats.totalCount} <span class="text-xs font-sans text-slate-400" data-i18n="member">عضو</span>`;
+                    const memberText = lang === 'ar' ? 'عضو' : 'Members';
+                    shCountEl.innerHTML = `${stats.totalCount} <span class="text-xs font-sans text-slate-400">${memberText}</span>`;
                 }
 
                 // Update Shareholders List
                 const shListEl = document.getElementById('shareholdersList');
                 if (shListEl) {
-                    const lang = localStorage.getItem('lang') || 'ar';
                     const topSh = DataService.getMajorShareholders(3)
                         .map(s => lang === 'en' ? s.name.en : s.name.ar)
-                        .join('، ');
+                        .join(lang === 'ar' ? '، ' : ', ');
                     shListEl.innerText = topSh + '...';
                 }
             } catch (error) {
