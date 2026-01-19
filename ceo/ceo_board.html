@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#FB4747">
-    <title data-i18n="pageTitle">شؤون المجلس | AndroGov</title>
+    <title>شؤون المجلس | AndroGov</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -22,11 +22,18 @@
             }
         }
     </script>
-    <style>.num-font { font-family: 'Inter', sans-serif; font-feature-settings: "tnum"; }</style>
+    <style>
+        .num-font { font-family: 'Inter', sans-serif; font-feature-settings: "tnum"; }
+        @keyframes fade-in-up {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in-up { animation: fade-in-up 0.5s ease-out; }
+    </style>
 </head>
 <body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300">
 
-    <!-- ✅ Loading Overlay -->
+    <!-- Loading Overlay -->
     <div id="loadingOverlay" class="fixed inset-0 bg-white dark:bg-slate-900 z-[9999] flex items-center justify-center transition-opacity duration-500">
         <div class="text-center">
             <div class="w-16 h-16 border-4 border-brandRed border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
@@ -42,196 +49,281 @@
 
         <main class="p-8 space-y-8">
             
-            <div class="flex flex-col md:flex-row justify-between items-end gap-6 bg-slate-900 text-white p-6 rounded-3xl shadow-xl relative overflow-hidden">
+            <!-- Page Header -->
+            <div class="flex flex-col md:flex-row justify-between items-end gap-6 bg-gradient-to-br from-slate-900 to-slate-800 dark:from-slate-950 dark:to-slate-900 text-white p-8 rounded-3xl shadow-xl relative overflow-hidden">
                 <div class="absolute -right-10 -top-10 w-40 h-40 bg-brandRed/20 rounded-full blur-3xl"></div>
+                <div class="absolute -left-10 -bottom-10 w-40 h-40 bg-blue-500/10 rounded-full blur-3xl"></div>
                 
                 <div class="relative z-10">
-                    <div class="flex items-center gap-3 mb-2">
-                        <span class="px-2 py-1 bg-white/10 rounded text-[10px] border border-white/20" data-i18n="lblAccess">Boardroom Access</span>
+                    <div class="flex items-center gap-3 mb-3">
+                        <span class="px-3 py-1.5 bg-white/10 rounded-lg text-[10px] border border-white/20 uppercase tracking-wider font-bold">
+                            <i class="fa-solid fa-shield-halved mr-1"></i>
+                            <span data-i18n="lblAccess">Boardroom Access</span>
+                        </span>
                     </div>
-                    <h1 class="text-2xl font-bold flex items-center gap-2">
-                        <i class="fa-solid fa-gavel text-brandRed"></i> <span data-i18n="headerTitle">مجلس الإدارة والمساهمين</span>
+                    <h1 class="text-3xl font-bold flex items-center gap-3 mb-2">
+                        <i class="fa-solid fa-gavel text-brandRed text-4xl"></i> 
+                        <span data-i18n="headerTitle">مجلس الإدارة والمساهمين</span>
                     </h1>
-                    <p class="text-sm text-slate-400 mt-1" data-i18n="headerDesc">بوابة نائب الرئيس لإدارة قرارات المجلس، التصويت، وشؤون الجمعية العمومية.</p>
+                    <p class="text-sm text-slate-300 mt-2 max-w-2xl leading-relaxed" data-i18n="headerDesc">
+                        بوابة نائب الرئيس لإدارة قرارات المجلس، التصويت الإلكتروني، وشؤون الجمعية العمومية.
+                    </p>
                 </div>
                 
                 <div class="flex gap-3 relative z-10">
-                    <button class="px-5 py-2.5 bg-white/10 hover:bg-white/20 border border-white/10 rounded-xl text-xs font-bold transition flex items-center gap-2">
-                        <i class="fa-solid fa-calendar-days"></i> <span data-i18n="btnCalendar">تقويم المجلس</span>
+                    <button class="px-6 py-3 bg-white/10 hover:bg-white/20 border border-white/20 rounded-xl text-sm font-bold transition flex items-center gap-2 backdrop-blur-sm">
+                        <i class="fa-solid fa-calendar-days"></i> 
+                        <span data-i18n="btnCalendar">تقويم المجلس</span>
                     </button>
-                    <button class="px-5 py-2.5 bg-brandRed hover:bg-red-600 text-white rounded-xl text-xs font-bold shadow-lg transition flex items-center gap-2">
-                        <i class="fa-solid fa-plus"></i> <span data-i18n="btnDraftRes">طرح قرار للتصويت</span>
+                    <button class="px-6 py-3 bg-gradient-to-r from-brandRed to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-xl text-sm font-bold shadow-lg shadow-red-500/30 transition flex items-center gap-2">
+                        <i class="fa-solid fa-plus"></i> 
+                        <span data-i18n="btnDraftRes">طرح قرار للتصويت</span>
                     </button>
                 </div>
             </div>
 
+            <!-- KPI Cards -->
             <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700">
-                    <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="kpiRes">قرارات بالتمرير</p>
-                    <div class="flex items-end gap-2 mt-2">
-                        <h3 class="text-3xl font-bold num-font text-slate-900 dark:text-white">2</h3>
-                        <span class="text-[10px] text-brandRed font-bold bg-red-50 dark:bg-red-900/20 px-2 py-0.5 rounded" data-i18n="lblPendingVote">بانتظار تصويتك</span>
+                <!-- Circular Resolutions -->
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 group hover:shadow-lg hover:border-brandRed/30 transition-all duration-300">
+                    <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider" data-i18n="kpiRes">قرارات بالتمرير</p>
+                    <div class="flex items-end gap-3 mt-3">
+                        <h3 class="text-4xl font-bold num-font text-slate-900 dark:text-white">2</h3>
+                        <span class="text-xs text-white bg-brandRed px-2.5 py-1 rounded-lg font-bold mb-1" data-i18n="lblPendingVote">بانتظار تصويتك</span>
+                    </div>
+                    <div class="mt-4 flex items-center gap-2">
+                        <div class="flex-1 h-1.5 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
+                            <div class="h-full bg-brandRed rounded-full" style="width: 40%"></div>
+                        </div>
+                        <span class="text-xs text-slate-400 num-font">40%</span>
                     </div>
                 </div>
-                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700">
-                    <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="kpiMeet">نسبة الحضور</p>
-                    <div class="flex items-end gap-2 mt-2">
-                        <h3 class="text-3xl font-bold num-font text-green-600">100%</h3>
-                        <span class="text-[10px] text-slate-400" data-i18n="lblYear">لعام 2026</span>
+
+                <!-- Attendance -->
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 group hover:shadow-lg hover:border-green-500/30 transition-all duration-300">
+                    <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider" data-i18n="kpiMeet">نسبة الحضور</p>
+                    <div class="flex items-end gap-3 mt-3">
+                        <h3 class="text-4xl font-bold num-font text-green-600">100%</h3>
+                        <span class="text-xs text-slate-400 mb-1" data-i18n="lblYear">لعام 2026</span>
+                    </div>
+                    <div class="mt-4">
+                        <div class="flex justify-between text-xs text-slate-500 mb-1">
+                            <span>Perfect Record</span>
+                            <span class="text-green-600 font-bold">8/8</span>
+                        </div>
                     </div>
                 </div>
-                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700">
-                    <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="kpiShare">سعر السهم (داخلي)</p>
-                    <div class="flex items-end gap-2 mt-2">
-                        <h3 class="text-3xl font-bold num-font text-slate-900 dark:text-white">125 <span class="text-sm font-normal">SAR</span></h3>
-                        <span class="text-[10px] text-green-600 font-bold"><i class="fa-solid fa-arrow-up"></i> 5%</span>
+
+                <!-- Share Price -->
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 group hover:shadow-lg hover:border-blue-500/30 transition-all duration-300">
+                    <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider" data-i18n="kpiShare">سعر السهم (داخلي)</p>
+                    <div class="flex items-end gap-2 mt-3">
+                        <h3 class="text-4xl font-bold num-font text-slate-900 dark:text-white">125</h3>
+                        <span class="text-sm text-slate-400 font-normal mb-1">SAR</span>
+                    </div>
+                    <div class="mt-4 flex items-center gap-2">
+                        <i class="fa-solid fa-arrow-trend-up text-green-500"></i>
+                        <span class="text-xs text-green-600 font-bold num-font">+5% (6 SAR)</span>
                     </div>
                 </div>
-                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700">
-                    <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="kpiMembers">أعضاء المجلس</p>
-                    <div class="flex -space-x-2 rtl:space-x-reverse mt-3">
-                        <img class="w-8 h-8 rounded-full border-2 border-white dark:border-slate-800" src="https://ui-avatars.com/api/?name=Chairman&background=0F172A&color=fff" title="Chairman">
-                        <img class="w-8 h-8 rounded-full border-2 border-white dark:border-slate-800" src="https://ui-avatars.com/api/?name=Hisham+S&background=FB4747&color=fff" title="Vice Chairman">
-                        <img class="w-8 h-8 rounded-full border-2 border-white dark:border-slate-800" src="https://ui-avatars.com/api/?name=Member+1&background=random" title="Member">
-                        <img class="w-8 h-8 rounded-full border-2 border-white dark:border-slate-800" src="https://ui-avatars.com/api/?name=Member+2&background=random" title="Member">
-                        <span class="w-8 h-8 rounded-full border-2 border-white dark:border-slate-800 bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-[10px] font-bold">+3</span>
+
+                <!-- Board Members -->
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 group hover:shadow-lg hover:border-purple-500/30 transition-all duration-300">
+                    <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider" data-i18n="kpiMembers">أعضاء المجلس</p>
+                    <div class="flex -space-x-3 rtl:space-x-reverse mt-4">
+                        <img class="w-10 h-10 rounded-full border-2 border-white dark:border-slate-800 shadow-md" src="https://ui-avatars.com/api/?name=Chairman&background=0F172A&color=fff" title="Chairman">
+                        <img class="w-10 h-10 rounded-full border-2 border-white dark:border-slate-800 shadow-md" src="https://ui-avatars.com/api/?name=VP&background=FB4747&color=fff" title="Vice Chairman">
+                        <img class="w-10 h-10 rounded-full border-2 border-white dark:border-slate-800 shadow-md" src="https://ui-avatars.com/api/?name=Member+1&background=3B82F6&color=fff" title="Member">
+                        <img class="w-10 h-10 rounded-full border-2 border-white dark:border-slate-800 shadow-md" src="https://ui-avatars.com/api/?name=Member+2&background=10B981&color=fff" title="Member">
+                        <span class="w-10 h-10 rounded-full border-2 border-white dark:border-slate-800 bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-xs font-bold shadow-md">+3</span>
                     </div>
+                    <p class="text-xs text-slate-400 mt-3">7 Active Members</p>
                 </div>
             </div>
 
+            <!-- E-Voting Section -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 
                 <div class="lg:col-span-2 bg-white dark:bg-slate-800 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 p-6">
                     <div class="flex justify-between items-center mb-6">
                         <h3 class="font-bold text-lg text-slate-900 dark:text-white flex items-center gap-2">
-                            <i class="fa-solid fa-check-to-slot text-brandRed"></i> <span data-i18n="secVoting">التصويت الإلكتروني (قرارات بالتمرير)</span>
+                            <i class="fa-solid fa-check-to-slot text-brandRed"></i> 
+                            <span data-i18n="secVoting">التصويت الإلكتروني (قرارات بالتمرير)</span>
                         </h3>
                     </div>
 
-                    <div class="space-y-4">
-                        <div class="bg-slate-50 dark:bg-slate-700/30 p-5 rounded-2xl border border-slate-100 dark:border-slate-600 relative overflow-hidden group">
-                            <div class="absolute top-0 left-0 w-1 h-full bg-orange-500"></div>
-                            <div class="flex justify-between items-start mb-2">
-                                <div class="flex items-center gap-2">
-                                    <span class="bg-orange-100 text-orange-700 text-[10px] px-2 py-0.5 rounded font-bold" data-i18n="tagUrgent">عاجل</span>
-                                    <h4 class="font-bold text-slate-800 dark:text-white text-sm" data-i18n="res1Title">اعتماد القوائم المالية الختامية 2025</h4>
+                    <div class="space-y-4" id="votingContainer">
+                        <!-- Resolution 1 - Urgent -->
+                        <div class="bg-slate-50 dark:bg-slate-700/30 p-6 rounded-2xl border-l-4 border-orange-500 hover:shadow-md transition group">
+                            <div class="flex justify-between items-start mb-3">
+                                <div class="flex items-center gap-3">
+                                    <span class="bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 text-xs px-3 py-1 rounded-lg font-bold" data-i18n="tagUrgent">عاجل</span>
+                                    <h4 class="font-bold text-slate-800 dark:text-white text-base" data-i18n="res1Title">اعتماد القوائم المالية الختامية 2025</h4>
                                 </div>
-                                <span class="text-[10px] text-slate-400 num-font flex items-center gap-1"><i class="fa-regular fa-clock"></i> <span data-i18n="res1Time">ينتهي التصويت: غداً 12:00 م</span></span>
+                                <span class="text-xs text-slate-400 num-font flex items-center gap-1">
+                                    <i class="fa-regular fa-clock"></i> 
+                                    <span data-i18n="res1Time">ينتهي غداً 12:00 م</span>
+                                </span>
                             </div>
-                            <p class="text-xs text-slate-500 dark:text-slate-300 mb-4 ml-6 leading-relaxed" data-i18n="res1Desc">بناءً على توصية لجنة المراجعة، يرجى التصويت على اعتماد القوائم المالية المدققة قبل رفعها للجمعية العمومية.</p>
                             
-                            <div class="flex gap-2 mb-4 ml-6">
-                                <a href="#" class="flex items-center gap-2 bg-white dark:bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-600 text-[10px] text-slate-600 dark:text-slate-300 hover:text-brandRed transition">
-                                    <i class="fa-solid fa-file-pdf text-red-500"></i> Financials_2025_Final.pdf
+                            <p class="text-sm text-slate-600 dark:text-slate-300 mb-4 leading-relaxed" data-i18n="res1Desc">
+                                بناءً على توصية لجنة المراجعة، يرجى التصويت على اعتماد القوائم المالية المدققة قبل رفعها للجمعية العمومية.
+                            </p>
+                            
+                            <div class="flex gap-2 mb-4">
+                                <a href="#" class="flex items-center gap-2 bg-white dark:bg-slate-800 px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 text-xs text-slate-600 dark:text-slate-300 hover:text-brandRed hover:border-brandRed transition">
+                                    <i class="fa-solid fa-file-pdf text-red-500"></i> Financials_2025.pdf
                                 </a>
-                                <a href="#" class="flex items-center gap-2 bg-white dark:bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-600 text-[10px] text-slate-600 dark:text-slate-300 hover:text-brandRed transition">
+                                <a href="#" class="flex items-center gap-2 bg-white dark:bg-slate-800 px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 text-xs text-slate-600 dark:text-slate-300 hover:text-brandRed hover:border-brandRed transition">
                                     <i class="fa-solid fa-file-lines text-blue-500"></i> Audit_Report.pdf
                                 </a>
                             </div>
 
-                            <div class="flex gap-3 ml-6">
-                                <button onclick="vote('approve', this)" class="flex-1 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-xs font-bold transition shadow-sm flex items-center justify-center gap-2">
-                                    <i class="fa-solid fa-thumbs-up"></i> <span data-i18n="btnApprove">موافق</span>
+                            <div class="flex gap-3">
+                                <button onclick="vote('approve', this)" class="flex-1 py-3 bg-green-600 hover:bg-green-700 text-white rounded-xl text-sm font-bold transition shadow-sm flex items-center justify-center gap-2">
+                                    <i class="fa-solid fa-thumbs-up"></i> 
+                                    <span data-i18n="btnApprove">موافق</span>
                                 </button>
-                                <button onclick="vote('reject', this)" class="flex-1 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-xs font-bold transition shadow-sm flex items-center justify-center gap-2">
-                                    <i class="fa-solid fa-thumbs-down"></i> <span data-i18n="btnReject">غير موافق</span>
+                                <button onclick="vote('reject', this)" class="flex-1 py-3 bg-red-600 hover:bg-red-700 text-white rounded-xl text-sm font-bold transition shadow-sm flex items-center justify-center gap-2">
+                                    <i class="fa-solid fa-thumbs-down"></i> 
+                                    <span data-i18n="btnReject">غير موافق</span>
                                 </button>
-                                <button onclick="vote('abstain', this)" class="px-4 py-2 bg-slate-200 dark:bg-slate-600 text-slate-600 dark:text-slate-200 hover:bg-slate-300 rounded-lg text-xs font-bold transition">
+                                <button onclick="vote('abstain', this)" class="px-6 py-3 bg-slate-200 dark:bg-slate-600 text-slate-600 dark:text-slate-200 hover:bg-slate-300 dark:hover:bg-slate-500 rounded-xl text-sm font-bold transition">
                                     <span data-i18n="btnAbstain">امتناع</span>
                                 </button>
                             </div>
                         </div>
 
-                        <div class="bg-slate-50 dark:bg-slate-700/30 p-5 rounded-2xl border border-slate-100 dark:border-slate-600 relative overflow-hidden group">
-                            <div class="absolute top-0 left-0 w-1 h-full bg-blue-500"></div>
-                            <div class="flex justify-between items-start mb-2">
-                                <div class="flex items-center gap-2">
-                                    <span class="bg-blue-100 text-blue-700 text-[10px] px-2 py-0.5 rounded font-bold" data-i18n="tagStrat">استراتيجي</span>
-                                    <h4 class="font-bold text-slate-800 dark:text-white text-sm" data-i18n="res2Title">تعيين مراجع خارجي جديد</h4>
+                        <!-- Resolution 2 - Strategic -->
+                        <div class="bg-slate-50 dark:bg-slate-700/30 p-6 rounded-2xl border-l-4 border-blue-500 hover:shadow-md transition group">
+                            <div class="flex justify-between items-start mb-3">
+                                <div class="flex items-center gap-3">
+                                    <span class="bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 text-xs px-3 py-1 rounded-lg font-bold" data-i18n="tagStrat">استراتيجي</span>
+                                    <h4 class="font-bold text-slate-800 dark:text-white text-base" data-i18n="res2Title">تعيين مراجع خارجي جديد</h4>
                                 </div>
-                                <span class="text-[10px] text-slate-400 num-font flex items-center gap-1"><i class="fa-regular fa-clock"></i> <span data-i18n="res2Time">ينتهي التصويت: 3 أيام</span></span>
+                                <span class="text-xs text-slate-400 num-font flex items-center gap-1">
+                                    <i class="fa-regular fa-clock"></i> 
+                                    <span data-i18n="res2Time">3 أيام متبقية</span>
+                                </span>
                             </div>
-                            <p class="text-xs text-slate-500 dark:text-slate-300 mb-4 ml-6" data-i18n="res2Desc">الموافقة على تعيين شركة (PwC) كمراجع خارجي للعام المالي 2026.</p>
                             
-                            <div class="flex gap-3 ml-6">
-                                <button onclick="vote('approve', this)" class="flex-1 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-xs font-bold transition shadow-sm" data-i18n="btnApprove">موافق</button>
-                                <button onclick="vote('reject', this)" class="flex-1 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-xs font-bold transition shadow-sm" data-i18n="btnReject">غير موافق</button>
+                            <p class="text-sm text-slate-600 dark:text-slate-300 mb-4" data-i18n="res2Desc">
+                                الموافقة على تعيين شركة (PwC) كمراجع خارجي للعام المالي 2026.
+                            </p>
+                            
+                            <div class="flex gap-3">
+                                <button onclick="vote('approve', this)" class="flex-1 py-3 bg-green-600 hover:bg-green-700 text-white rounded-xl text-sm font-bold transition" data-i18n="btnApprove">موافق</button>
+                                <button onclick="vote('reject', this)" class="flex-1 py-3 bg-red-600 hover:bg-red-700 text-white rounded-xl text-sm font-bold transition" data-i18n="btnReject">غير موافق</button>
                             </div>
                         </div>
                     </div>
                 </div>
 
+                <!-- Equity Structure -->
                 <div class="bg-white dark:bg-slate-800 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 p-6">
-                    <h3 class="font-bold text-sm text-slate-900 dark:text-white mb-4 flex items-center gap-2">
-                        <i class="fa-solid fa-chart-pie text-brandRed"></i> <span data-i18n="secEquity">هيكل الملكية</span>
+                    <h3 class="font-bold text-base text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-chart-pie text-brandRed"></i> 
+                        <span data-i18n="secEquity">هيكل الملكية</span>
                     </h3>
-                    <div class="h-48 flex justify-center mb-4">
+                    <div class="h-48 flex justify-center mb-6">
                         <canvas id="equityChart"></canvas>
                     </div>
                     <div class="space-y-3">
-                        <div class="flex justify-between items-center text-xs p-2 bg-slate-50 dark:bg-slate-700/50 rounded-lg">
-                            <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-brandRed"></span> <span data-i18n="lblFounders">المؤسسون</span></span>
+                        <div class="flex justify-between items-center text-sm p-3 bg-slate-50 dark:bg-slate-700/50 rounded-xl">
+                            <span class="flex items-center gap-2">
+                                <span class="w-3 h-3 rounded-full bg-brandRed"></span> 
+                                <span data-i18n="lblFounders">المؤسسون</span>
+                            </span>
                             <span class="font-bold num-font">60%</span>
                         </div>
-                        <div class="flex justify-between items-center text-xs p-2 bg-slate-50 dark:bg-slate-700/50 rounded-lg">
-                            <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-blue-500"></span> <span data-i18n="lblInvestors">مستثمرون (A)</span></span>
+                        <div class="flex justify-between items-center text-sm p-3 bg-slate-50 dark:bg-slate-700/50 rounded-xl">
+                            <span class="flex items-center gap-2">
+                                <span class="w-3 h-3 rounded-full bg-blue-500"></span> 
+                                <span data-i18n="lblInvestors">مستثمرون (A)</span>
+                            </span>
                             <span class="font-bold num-font">25%</span>
                         </div>
-                        <div class="flex justify-between items-center text-xs p-2 bg-slate-50 dark:bg-slate-700/50 rounded-lg">
-                            <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-slate-400"></span> <span data-i18n="lblEsop">أسهم موظفين</span></span>
+                        <div class="flex justify-between items-center text-sm p-3 bg-slate-50 dark:bg-slate-700/50 rounded-xl">
+                            <span class="flex items-center gap-2">
+                                <span class="w-3 h-3 rounded-full bg-slate-400"></span> 
+                                <span data-i18n="lblEsop">أسهم موظفين</span>
+                            </span>
                             <span class="font-bold num-font">15%</span>
                         </div>
                     </div>
-                    <button class="w-full mt-4 py-2 border border-slate-200 dark:border-slate-600 rounded-lg text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition" onclick="Toast.info('Opening Shareholders Register')" data-i18n="btnViewRegister">عرض سجل المساهمين</button>
+                    <button class="w-full mt-6 py-3 border-2 border-slate-200 dark:border-slate-600 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 hover:border-brandRed transition" onclick="Toast.info('Opening Shareholders Register')" data-i18n="btnViewRegister">
+                        عرض سجل المساهمين
+                    </button>
                 </div>
 
             </div>
 
+            <!-- Committee Oversight -->
             <div class="bg-white dark:bg-slate-800 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden">
-                <div class="p-5 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center">
-                    <h3 class="font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                        <i class="fa-solid fa-sitemap text-slate-400"></i> <span data-i18n="secComm">إشراف اللجان المنبثقة</span>
+                <div class="p-6 border-b border-slate-100 dark:border-slate-700 bg-gradient-to-r from-slate-50 to-transparent dark:from-slate-900/50">
+                    <h3 class="font-bold text-lg text-slate-900 dark:text-white flex items-center gap-2">
+                        <i class="fa-solid fa-sitemap text-brandRed"></i> 
+                        <span data-i18n="secComm">إشراف اللجان المنبثقة</span>
                     </h3>
                 </div>
+                
                 <div class="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x md:divide-x-reverse divide-slate-100 dark:divide-slate-700">
                     
-                    <div class="p-5 group hover:bg-slate-50 dark:hover:bg-slate-700/30 transition">
-                        <div class="flex justify-between items-start mb-3">
-                            <h4 class="font-bold text-sm text-slate-800 dark:text-white" data-i18n="commAudit">لجنة المراجعة</h4>
-                            <span class="text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded font-bold" data-i18n="lblActive">نشطة</span>
+                    <!-- Audit Committee -->
+                    <div class="p-6 group hover:bg-slate-50 dark:hover:bg-slate-700/30 transition">
+                        <div class="flex justify-between items-start mb-4">
+                            <h4 class="font-bold text-base text-slate-800 dark:text-white" data-i18n="commAudit">لجنة المراجعة</h4>
+                            <span class="text-xs bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 px-2.5 py-1 rounded-lg font-bold" data-i18n="lblActive">نشطة</span>
                         </div>
-                        <p class="text-xs text-slate-500 mb-3"><span data-i18n="lblLastMeet">آخر اجتماع</span>: 2026-02-10</p>
-                        <div class="flex items-center gap-2 mb-3">
-                            <img class="w-6 h-6 rounded-full" src="https://ui-avatars.com/api/?name=Audit+Head&background=random" title="Head">
-                            <span class="text-[10px] text-slate-400">+2 <span data-i18n="lblMembers">أعضاء</span></span>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mb-4">
+                            <span data-i18n="lblLastMeet">آخر اجتماع</span>: 2026-02-10
+                        </p>
+                        <div class="flex items-center gap-3 mb-4">
+                            <img class="w-8 h-8 rounded-full border-2 border-white dark:border-slate-600 shadow" src="https://ui-avatars.com/api/?name=Audit+Head&background=10B981&color=fff" title="Head">
+                            <span class="text-xs text-slate-400">+2 <span data-i18n="lblMembers">أعضاء</span></span>
                         </div>
-                        <button class="text-xs text-brandRed font-bold hover:underline flex items-center gap-1"><span data-i18n="btnMinutes">عرض المحاضر</span> <i class="fa-solid fa-arrow-left rtl:rotate-0 ltr:rotate-180"></i></button>
+                        <button class="text-sm text-brandRed font-bold hover:underline flex items-center gap-2">
+                            <span data-i18n="btnMinutes">عرض المحاضر</span> 
+                            <i class="fa-solid fa-arrow-left rtl:rotate-0 ltr:rotate-180"></i>
+                        </button>
                     </div>
 
-                    <div class="p-5 group hover:bg-slate-50 dark:hover:bg-slate-700/30 transition">
-                        <div class="flex justify-between items-start mb-3">
-                            <h4 class="font-bold text-sm text-slate-800 dark:text-white" data-i18n="commNom">لجنة الترشيحات والمكافآت</h4>
-                            <span class="text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded font-bold" data-i18n="lblActive">نشطة</span>
+                    <!-- Nomination Committee -->
+                    <div class="p-6 group hover:bg-slate-50 dark:hover:bg-slate-700/30 transition">
+                        <div class="flex justify-between items-start mb-4">
+                            <h4 class="font-bold text-base text-slate-800 dark:text-white" data-i18n="commNom">لجنة الترشيحات والمكافآت</h4>
+                            <span class="text-xs bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 px-2.5 py-1 rounded-lg font-bold" data-i18n="lblActive">نشطة</span>
                         </div>
-                        <p class="text-xs text-slate-500 mb-3"><span data-i18n="lblLastMeet">آخر اجتماع</span>: 2026-01-15</p>
-                        <div class="flex items-center gap-2 mb-3">
-                            <img class="w-6 h-6 rounded-full" src="https://ui-avatars.com/api/?name=Nom+Head&background=random" title="Head">
-                            <span class="text-[10px] text-slate-400">+3 <span data-i18n="lblMembers">أعضاء</span></span>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mb-4">
+                            <span data-i18n="lblLastMeet">آخر اجتماع</span>: 2026-01-15
+                        </p>
+                        <div class="flex items-center gap-3 mb-4">
+                            <img class="w-8 h-8 rounded-full border-2 border-white dark:border-slate-600 shadow" src="https://ui-avatars.com/api/?name=Nom+Head&background=3B82F6&color=fff" title="Head">
+                            <span class="text-xs text-slate-400">+3 <span data-i18n="lblMembers">أعضاء</span></span>
                         </div>
-                        <button class="text-xs text-brandRed font-bold hover:underline flex items-center gap-1"><span data-i18n="btnMinutes">عرض المحاضر</span> <i class="fa-solid fa-arrow-left rtl:rotate-0 ltr:rotate-180"></i></button>
+                        <button class="text-sm text-brandRed font-bold hover:underline flex items-center gap-2">
+                            <span data-i18n="btnMinutes">عرض المحاضر</span> 
+                            <i class="fa-solid fa-arrow-left rtl:rotate-0 ltr:rotate-180"></i>
+                        </button>
                     </div>
 
-                    <div class="p-5 group hover:bg-slate-50 dark:hover:bg-slate-700/30 transition">
-                        <div class="flex justify-between items-start mb-3">
-                            <h4 class="font-bold text-sm text-slate-800 dark:text-white" data-i18n="commExec">اللجنة التنفيذية</h4>
-                            <span class="text-[10px] bg-blue-100 text-blue-700 px-2 py-0.5 rounded font-bold" data-i18n="lblChairedByYou">برئاستك</span>
+                    <!-- Executive Committee -->
+                    <div class="p-6 group hover:bg-slate-50 dark:hover:bg-slate-700/30 transition">
+                        <div class="flex justify-between items-start mb-4">
+                            <h4 class="font-bold text-base text-slate-800 dark:text-white" data-i18n="commExec">اللجنة التنفيذية</h4>
+                            <span class="text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 px-2.5 py-1 rounded-lg font-bold" data-i18n="lblChairedByYou">برئاستك</span>
                         </div>
-                        <p class="text-xs text-slate-500 mb-3"><span data-i18n="lblNextMeet">الاجتماع القادم</span>: <span data-i18n="lblNextSun">الأحد القادم</span></p>
-                        <div class="flex items-center gap-2 mb-3">
-                            <img class="w-6 h-6 rounded-full" src="https://ui-avatars.com/api/?name=Hisham+S&background=FB4747&color=fff" title="You">
-                            <span class="text-[10px] text-slate-400">+4 <span data-i18n="lblMembers">أعضاء</span></span>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mb-4">
+                            <span data-i18n="lblNextMeet">الاجتماع القادم</span>: <span data-i18n="lblNextSun">الأحد القادم</span>
+                        </p>
+                        <div class="flex items-center gap-3 mb-4">
+                            <img class="w-8 h-8 rounded-full border-2 border-brandRed shadow" src="https://ui-avatars.com/api/?name=Hisham+S&background=FB4747&color=fff" title="You">
+                            <span class="text-xs text-slate-400">+4 <span data-i18n="lblMembers">أعضاء</span></span>
                         </div>
-                        <button class="text-xs text-brandRed font-bold hover:underline flex items-center gap-1"><span data-i18n="btnAgenda">جدول الأعمال</span> <i class="fa-solid fa-arrow-left rtl:rotate-0 ltr:rotate-180"></i></button>
+                        <button class="text-sm text-brandRed font-bold hover:underline flex items-center gap-2">
+                            <span data-i18n="btnAgenda">جدول الأعمال</span> 
+                            <i class="fa-solid fa-arrow-left rtl:rotate-0 ltr:rotate-180"></i>
+                        </button>
                     </div>
 
                 </div>
@@ -240,12 +332,24 @@
         </main>
     </div>
 
+    <script src="../data/company_policy.js"></script>
+    <script src="../js/core/config.js"></script>
+    <script src="../js/core/i18n.js"></script>
+    <script src="../js/services/data-service.js"></script>
+    <script src="../js/components/toast.js"></script>
+    <script src="../js/components/role-switcher.js"></script>
+    <script src="../js/components/layout.js"></script>
+    <script src="../js/components/bot.js"></script>
+
     <script>
+        // ==========================================
+        // PAGE CONTENT & TRANSLATIONS
+        // ==========================================
         const pageContent = {
             ar: {
                 pageTitle: "شؤون المجلس | AndroGov",
                 headerTitle: "مجلس الإدارة والمساهمين",
-                headerDesc: "بوابة نائب الرئيس لإدارة قرارات المجلس، التصويت، وشؤون الجمعية العمومية.",
+                headerDesc: "بوابة نائب الرئيس لإدارة قرارات المجلس، التصويت الإلكتروني، وشؤون الجمعية العمومية.",
                 btnCalendar: "تقويم المجلس",
                 btnDraftRes: "طرح قرار للتصويت",
                 lblAccess: "صالة المجلس",
@@ -259,10 +363,10 @@
                 tagUrgent: "عاجل",
                 tagStrat: "استراتيجي",
                 res1Title: "اعتماد القوائم المالية الختامية 2025",
-                res1Time: "ينتهي التصويت: غداً 12:00 م",
+                res1Time: "ينتهي غداً 12:00 م",
                 res1Desc: "بناءً على توصية لجنة المراجعة، يرجى التصويت على اعتماد القوائم المالية المدققة قبل رفعها للجمعية العمومية.",
                 res2Title: "تعيين مراجع خارجي جديد",
-                res2Time: "ينتهي التصويت: 3 أيام",
+                res2Time: "3 أيام متبقية",
                 res2Desc: "الموافقة على تعيين شركة (PwC) كمراجع خارجي للعام المالي 2026.",
                 btnApprove: "موافق",
                 btnReject: "غير موافق",
@@ -292,7 +396,7 @@
             en: {
                 pageTitle: "Board Affairs | AndroGov",
                 headerTitle: "Board & Shareholders Affairs",
-                headerDesc: "Vice Chairman portal for managing board resolutions, voting, and General Assembly affairs.",
+                headerDesc: "Vice Chairman portal for managing board resolutions, e-voting, and General Assembly affairs.",
                 btnCalendar: "Board Calendar",
                 btnDraftRes: "Draft Resolution",
                 lblAccess: "Boardroom Access",
@@ -306,10 +410,10 @@
                 tagUrgent: "Urgent",
                 tagStrat: "Strategic",
                 res1Title: "Approval of 2025 Financial Statements",
-                res1Time: "Voting ends: Tomorrow 12:00 PM",
+                res1Time: "Ends Tomorrow 12:00 PM",
                 res1Desc: "Based on Audit Committee recommendation, please vote on approving the audited financials before AGM submission.",
                 res2Title: "Appointment of External Auditor",
-                res2Time: "Voting ends: 3 Days",
+                res2Time: "3 Days Remaining",
                 res2Desc: "Approval to appoint PwC as the external auditor for the fiscal year 2026.",
                 btnApprove: "Approve",
                 btnReject: "Reject",
@@ -321,7 +425,7 @@
                 btnViewRegister: "View Shareholders Register",
                 secComm: "Committee Oversight",
                 commAudit: "Audit Committee",
-                commNom: "Nomination & Remuneration Comm.",
+                commNom: "Nomination & Remuneration",
                 commExec: "Executive Committee",
                 lblActive: "Active",
                 lblLastMeet: "Last Meeting",
@@ -353,10 +457,10 @@
             if(type === 'abstain') { msg = dict.voteAbstain; color = "text-slate-500"; }
 
             parent.innerHTML = `
-                <div class="h-32 flex flex-col items-center justify-center ${color} animate-fade-in-up">
-                    <i class="fa-solid fa-circle-check text-4xl mb-2"></i>
-                    <span class="font-bold">${msg}</span>
-                    <span class="text-xs text-slate-400 mt-1">${dict.voteFooter}</span>
+                <div class="h-40 flex flex-col items-center justify-center ${color} animate-fade-in-up">
+                    <i class="fa-solid fa-circle-check text-5xl mb-3"></i>
+                    <span class="font-bold text-lg">${msg}</span>
+                    <span class="text-sm text-slate-400 mt-2">${dict.voteFooter}</span>
                 </div>
             `;
 
@@ -375,7 +479,6 @@
             const lang = Layout.getCurrentLang();
             const dict = pageContent[lang];
 
-            // Destroy existing chart if it exists
             if (equityChart) {
                 equityChart.destroy();
             }
@@ -388,16 +491,21 @@
                         data: [60, 25, 15],
                         backgroundColor: ['#FB4747', '#3B82F6', '#94A3B8'],
                         borderWidth: 0,
-                        hoverOffset: 4
+                        hoverOffset: 8
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    cutout: '75%',
+                    cutout: '70%',
                     plugins: { 
                         legend: { display: false },
-                        tooltip: { bodyFont: { family: 'Inter' } }
+                        tooltip: { 
+                            bodyFont: { family: 'Inter' },
+                            padding: 12,
+                            backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                            cornerRadius: 8
+                        }
                     }
                 }
             });
@@ -415,30 +523,40 @@
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
                 if (dict[key]) {
-                    // Check if element has icon inside
-                    if (el.querySelector('i')) {
-                        const icon = el.querySelector('i');
-                        el.textContent = dict[key];
-                        el.prepend(icon);
+                    // Preserve icons if they exist
+                    const icon = el.querySelector('i');
+                    if (icon) {
+                        const iconHTML = icon.outerHTML;
+                        el.innerHTML = iconHTML + ' ' + dict[key];
                     } else {
                         el.textContent = dict[key];
                     }
                 }
             });
+            
+            // Re-initialize chart with new language
+            initEquityChart();
         };
 
         // ==========================================
         // INITIALIZATION
         // ==========================================
         document.addEventListener('DOMContentLoaded', () => {
-            // Wait for Layout to be ready
             const checkReady = setInterval(() => {
                 if (typeof Layout !== 'undefined') {
                     clearInterval(checkReady);
                     
-                    // Initialize
                     updateContent();
                     initEquityChart();
+                    
+                    // Hide loading overlay
+                    setTimeout(() => {
+                        const overlay = document.getElementById('loadingOverlay');
+                        if (overlay) {
+                            overlay.style.opacity = '0';
+                            setTimeout(() => overlay.remove(), 500);
+                        }
+                    }, 500);
                     
                     console.log('✅ CEO Board Page Ready');
                 }
@@ -448,39 +566,7 @@
         // Listen for language changes
         window.addEventListener('languageChanged', () => {
             updateContent();
-            initEquityChart();
         });
-    </script>
-
-    <script src="../data/company_policy.js"></script>
-    <script src="../js/core/config.js"></script>
-    <script src="../js/core/i18n.js"></script>
-    <script src="../js/services/data-service.js"></script>
-    <script src="../js/components/toast.js"></script>
-    <script src="../js/components/role-switcher.js"></script>
-    <script src="../js/components/layout.js"></script>
-    <script src="../js/components/bot.js"></script>
-
-    <!-- ✅ Auto-hide Loading Overlay -->
-    <script>
-        window.addEventListener('load', function() {
-            setTimeout(() => {
-                const overlay = document.getElementById('loadingOverlay');
-                if (overlay) {
-                    overlay.style.opacity = '0';
-                    setTimeout(() => overlay.remove(), 500);
-                }
-            }, 500);
-        });
-        
-        // Fallback
-        setTimeout(() => {
-            const overlay = document.getElementById('loadingOverlay');
-            if (overlay && overlay.style.display !== 'none') {
-                overlay.style.opacity = '0';
-                setTimeout(() => overlay.remove(), 500);
-            }
-        }, 2000);
     </script>
 </body>
 </html>
