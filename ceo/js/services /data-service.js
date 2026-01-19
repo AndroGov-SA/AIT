@@ -1,564 +1,278 @@
 /**
- * AndroGov Data Service v2.0
- * @description Centralized data service with CompanyPolicy integration
- * @requires CompanyPolicy, PolicyHelpers (from company_policy.js)
+ * AndroGov CEO Data Service
+ * @file ceo/js/services/data-service.js
  */
 
 const DataService = (function() {
-  // ==========================================
-  // CONFIGURATION
-  // ==========================================
-  const CONFIG = {
-    // GitHub Raw URL (fallback)
-    githubBaseUrl: 'https://raw.githubusercontent.com/androgov-sa/AIT/main/admin/data',
-    // Cache duration: 5 minutes
-    cacheDuration: 5 * 60 * 1000,
-    // Current language
-    lang: localStorage.getItem('lang') || 'ar'
-  };
 
   // ==========================================
-  // CACHE
-  // ==========================================
-  let _cache = {
-    data: null,
-    timestamp: null
-  };
-
-  // ==========================================
-  // PRIVATE METHODS
+  // SAMPLE DATA
   // ==========================================
   
-  /**
-   * Check if CompanyPolicy is loaded
-   */
-  function _isPolicyLoaded() {
-    return typeof CompanyPolicy !== 'undefined' && CompanyPolicy !== null;
-  }
-
-  /**
-   * Check if cache is valid
-   */
-  function _isCacheValid() {
-    return _cache.data && _cache.timestamp && 
-           (Date.now() - _cache.timestamp) < CONFIG.cacheDuration;
-  }
-
-  /**
-   * Get localized value from bilingual object
-   */
-  function _localize(obj, lang = CONFIG.lang) {
-    if (!obj) return '';
-    if (typeof obj === 'string') return obj;
-    return obj[lang] || obj.ar || obj.en || '';
-  }
-
-  /**
-   * Update language setting
-   */
-  function _updateLang() {
-    CONFIG.lang = localStorage.getItem('lang') || 'ar';
-  }
-
-  // ==========================================
-  // PUBLIC API - USERS
-  // ==========================================
-
-  /**
-   * Get all users with processed data
-   * @returns {Array}
-   */
-  function getUsers() {
-    _updateLang();
+  const _data = {
     
-    if (!_isPolicyLoaded()) {
-      console.warn('⚠️ CompanyPolicy not loaded');
-      return [];
-    }
-
-    return CompanyPolicy.users.map(user => {
-      const contexts = PolicyHelpers.getUserContexts(user.id);
-      const primaryContext = contexts.find(c => c.isPrimary) || contexts[0];
-      const shareholderData = PolicyHelpers.getShareholderData(user.id);
-
-      return {
-        ...user,
-        // Localized fields
-        displayName: _localize(user.name),
-        displayTitle: _localize(user.title),
-        displayDept: getDeptName(user.dept),
-        displayRole: primaryContext ? PolicyHelpers.getRoleLabel(primaryContext.role, CONFIG.lang) : '',
-        // Role info
-        primaryRole: primaryContext?.role || user.role,
-        contexts: contexts,
-        contextCount: contexts.length,
-        // Shareholder info
-        isShareholder: !!shareholderData,
-        shareholderData: shareholderData,
-        // Avatar
-        avatar: user.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(_localize(user.name))}&background=${_getRoleColor(primaryContext?.role || user.role)}&color=fff&bold=true`
-      };
-    });
-  }
-
-  /**
-   * Get user by ID
-   * @param {string} userId
-   * @returns {Object|null}
-   */
-  function getUserById(userId) {
-    const users = getUsers();
-    return users.find(u => u.id === userId) || null;
-  }
-
-  /**
-   * Get users by role
-   * @param {string} role
-   * @returns {Array}
-   */
-  function getUsersByRole(role) {
-    return getUsers().filter(u => 
-      u.primaryRole === role || 
-      u.contexts.some(c => c.role === role)
-    );
-  }
-
-  /**
-   * Get users by department
-   * @param {string} deptId
-   * @returns {Array}
-   */
-  function getUsersByDept(deptId) {
-    return getUsers().filter(u => u.dept === deptId);
-  }
-
-  /**
-   * Search users
-   * @param {string} query
-   * @returns {Array}
-   */
-  function searchUsers(query) {
-    if (!query) return getUsers();
-    
-    const q = query.toLowerCase();
-    return getUsers().filter(u => 
-      u.displayName.toLowerCase().includes(q) ||
-      u.email?.toLowerCase().includes(q) ||
-      u.displayRole.toLowerCase().includes(q) ||
-      u.displayDept.toLowerCase().includes(q)
-    );
-  }
-
-  // ==========================================
-  // PUBLIC API - SHAREHOLDERS
-  // ==========================================
-
-  /**
-   * Get all shareholders
-   * @returns {Array}
-   */
-  function getShareholders() {
-    _updateLang();
-    
-    if (!_isPolicyLoaded()) return [];
-
-    return CompanyPolicy.shareholders.map(sh => {
-      // Find linked user if exists
-      const linkedUser = CompanyPolicy.users.find(u => u.email === sh.email);
-      
-      return {
-        ...sh,
-        displayName: _localize(sh.name),
-        displayProxy: sh.proxy ? _localize(sh.proxy) : null,
-        value: sh.shares * CompanyPolicy.capital.shareValue,
-        linkedUserId: linkedUser?.id || null,
-        linkedUser: linkedUser ? {
-          id: linkedUser.id,
-          displayName: _localize(linkedUser.name),
-          displayTitle: _localize(linkedUser.title)
-        } : null
-      };
-    });
-  }
-
-  /**
-   * Get shareholder by ID
-   * @param {string} shareholderId
-   * @returns {Object|null}
-   */
-  function getShareholderById(shareholderId) {
-    return getShareholders().find(s => s.id === shareholderId) || null;
-  }
-
-  /**
-   * Get major shareholders (above threshold)
-   * @param {number} minPercent - default 10%
-   * @returns {Array}
-   */
-  function getMajorShareholders(minPercent = 10) {
-    return getShareholders().filter(s => s.percent >= minPercent);
-  }
-
-  /**
-   * Get shareholders statistics
-   * @returns {Object}
-   */
-  function getShareholdersStats() {
-    const shareholders = getShareholders();
-    const capital = CompanyPolicy.capital;
-
-    return {
-      totalCount: shareholders.length,
-      totalShares: capital.sharesCount,
-      totalCapital: capital.amount,
-      shareValue: capital.shareValue,
-      currency: capital.currency,
-      individualCount: shareholders.filter(s => s.type === 'Individual').length,
-      entityCount: shareholders.filter(s => s.type === 'Entity').length,
-      topShareholder: shareholders.reduce((max, s) => s.percent > max.percent ? s : max, shareholders[0])
-    };
-  }
-
-  // ==========================================
-  // PUBLIC API - DEPARTMENTS
-  // ==========================================
-
-  /**
-   * Get all departments
-   * @returns {Array}
-   */
-  function getDepartments() {
-    _updateLang();
-    
-    if (!_isPolicyLoaded()) return [];
-
-    return CompanyPolicy.departments.map(dept => ({
-      ...dept,
-      displayName: _localize(dept.name),
-      userCount: CompanyPolicy.users.filter(u => u.dept === dept.id).length
-    }));
-  }
-
-  /**
-   * Get department by ID
-   * @param {string} deptId
-   * @returns {Object|null}
-   */
-  function getDeptById(deptId) {
-    return getDepartments().find(d => d.id === deptId) || null;
-  }
-
-  /**
-   * Get department name (helper)
-   * @param {string} deptId
-   * @returns {string}
-   */
-  function getDeptName(deptId) {
-    if (!_isPolicyLoaded()) return deptId;
-    const dept = CompanyPolicy.departments.find(d => d.id === deptId);
-    return dept ? _localize(dept.name) : deptId;
-  }
-
-  // ==========================================
-  // PUBLIC API - ROLES & PERMISSIONS
-  // ==========================================
-
-  /**
-   * Get all roles
-   * @returns {Object}
-   */
-  function getRoles() {
-    _updateLang();
-    
-    if (!_isPolicyLoaded()) return {};
-
-    const roles = {};
-    Object.entries(CompanyPolicy.roles).forEach(([key, role]) => {
-      roles[key] = {
-        ...role,
-        key: key,
-        displayLabel: _localize(role.label),
-        displayDesc: _localize(role.desc)
-      };
-    });
-    return roles;
-  }
-
-  /**
-   * Get role by key
-   * @param {string} roleKey
-   * @returns {Object|null}
-   */
-  function getRoleByKey(roleKey) {
-    const roles = getRoles();
-    return roles[roleKey] || null;
-  }
-
-  /**
-   * Get permissions matrix
-   * @returns {Object}
-   */
-  function getPermissions() {
-    _updateLang();
-    
-    if (!_isPolicyLoaded()) return {};
-
-    const permissions = {};
-    Object.entries(CompanyPolicy.permissions).forEach(([groupKey, group]) => {
-      permissions[groupKey] = {
-        key: groupKey,
-        displayTitle: _localize(group.title),
-        items: group.items.map(item => ({
-          ...item,
-          displayLabel: _localize(item.label)
-        }))
-      };
-    });
-    return permissions;
-  }
-
-  /**
-   * Check if role has specific permission
-   * @param {string} roleKey
-   * @param {string} permissionKey
-   * @returns {boolean}
-   */
-  function hasPermission(roleKey, permissionKey) {
-    if (!_isPolicyLoaded()) return false;
-
-    for (const group of Object.values(CompanyPolicy.permissions)) {
-      const perm = group.items.find(p => p.key === permissionKey);
-      if (perm && PolicyHelpers.hasPermission(roleKey, perm.roles)) {
-        return true;
+    // Financial KPIs
+    financial: {
+      revenue: {
+        ytd: 4200000,
+        target: 5000000,
+        growth: 12.5,
+        trend: [3200000, 3500000, 3800000, 4000000, 4200000, 4500000]
+      },
+      expenses: {
+        current: 1800000,
+        budget: 3000000,
+        saving: -5,
+        trend: [1500000, 1600000, 1700000, 1600000, 1800000, 1900000]
+      },
+      profit: {
+        net: 2400000,
+        margin: 57,
+        growth: 18.2
       }
+    },
+
+    // Projects
+    projects: {
+      active: 8,
+      delayed: 1,
+      onTrack: 7,
+      list: [
+        { id: 'PRJ001', name: 'منصة التجارة الإلكترونية', status: 'delayed', progress: 75, risk: 'high' },
+        { id: 'PRJ002', name: 'تطوير تطبيق الموبايل', status: 'on-track', progress: 85, risk: 'low' },
+        { id: 'PRJ003', name: 'نظام إدارة العملاء', status: 'on-track', progress: 60, risk: 'medium' },
+        { id: 'PRJ004', name: 'البنية التحتية السحابية', status: 'on-track', progress: 90, risk: 'low' },
+        { id: 'PRJ005', name: 'نظام الموارد البشرية', status: 'on-track', progress: 70, risk: 'low' },
+        { id: 'PRJ006', name: 'منصة التحليلات', status: 'on-track', progress: 50, risk: 'medium' },
+        { id: 'PRJ007', name: 'نظام إدارة المخزون', status: 'on-track', progress: 80, risk: 'low' },
+        { id: 'PRJ008', name: 'بوابة الموردين', status: 'on-track', progress: 65, risk: 'medium' }
+      ]
+    },
+
+    // Risks
+    risks: {
+      high: 2,
+      medium: 5,
+      low: 12,
+      list: [
+        { id: 'RSK001', title: 'تأخر مشروع التجارة الإلكترونية', level: 'high', impact: 'high', probability: 'high' },
+        { id: 'RSK002', title: 'نقص الموارد التقنية', level: 'high', impact: 'high', probability: 'medium' },
+        { id: 'RSK003', title: 'تقلبات السوق', level: 'medium', impact: 'medium', probability: 'medium' },
+        { id: 'RSK004', title: 'تحديات الامتثال التنظيمي', level: 'medium', impact: 'high', probability: 'low' }
+      ]
+    },
+
+    // Departments Performance
+    departments: [
+      { name: 'المبيعات والتسويق', progress: 75, target: 8000000, icon: 'fa-chart-line' },
+      { name: 'المنتجات والتقنية', progress: 60, status: 'roadmap', icon: 'fa-code' },
+      { name: 'الموارد البشرية', progress: 90, plan: 'hiring', icon: 'fa-users' }
+    ],
+
+    // Pending Decisions
+    decisions: [
+      {
+        id: 'DEC001',
+        type: 'approval',
+        title: 'شراء خوادم جديدة (CFO)',
+        description: 'طلب اعتماد شراء خوادم Dell PowerEdge لمركز البيانات',
+        amount: 150000,
+        requester: 'CFO',
+        date: new Date(),
+        priority: 'high'
+      },
+      {
+        id: 'DEC002',
+        type: 'contract',
+        title: 'شراكة استراتيجية (Microsoft)',
+        description: 'توقيع مذكرة التفاهم النهائية للتحول الرقمي',
+        document: 'MoU_Final_v2.pdf',
+        requester: 'CTO',
+        date: new Date(Date.now() - 86400000), // Yesterday
+        priority: 'urgent'
+      }
+    ],
+
+    // Board Members
+    boardMembers: [
+      { id: 'BRD001', name: 'عبدالله السلمان', role: 'رئيس المجلس', status: 'independent' },
+      { id: 'BRD002', name: 'هشام السحيباني', role: 'نائب الرئيس', status: 'executive' },
+      { id: 'BRD003', name: 'سارة المطيري', role: 'عضو مجلس', status: 'independent' },
+      { id: 'BRD004', name: 'فهد الغامدي', role: 'عضو مجلس', status: 'non-executive' }
+    ],
+
+    // Shareholders
+    shareholders: {
+      total: 1000000,
+      distribution: [
+        { name: 'مستثمرون مؤسسيون', shares: 400000, percentage: 40 },
+        { name: 'مستثمرون أفراد', shares: 350000, percentage: 35 },
+        { name: 'الإدارة التنفيذية', shares: 150000, percentage: 15 },
+        { name: 'صندوق الاستثمار', shares: 100000, percentage: 10 }
+      ]
+    }
+  };
+
+  // ==========================================
+  // GETTERS
+  // ==========================================
+  
+  function getFinancialData() {
+    return _data.financial;
+  }
+
+  function getProjects() {
+    return _data.projects;
+  }
+
+  function getRisks() {
+    return _data.risks;
+  }
+
+  function getDepartments() {
+    return _data.departments;
+  }
+
+  function getPendingDecisions() {
+    return _data.decisions;
+  }
+
+  function getBoardMembers() {
+    return _data.boardMembers;
+  }
+
+  function getShareholders() {
+    return _data.shareholders;
+  }
+
+  // ==========================================
+  // SPECIFIC QUERIES
+  // ==========================================
+  
+  function getProjectById(id) {
+    return _data.projects.list.find(p => p.id === id);
+  }
+
+  function getRiskById(id) {
+    return _data.risks.list.find(r => r.id === id);
+  }
+
+  function getDelayedProjects() {
+    return _data.projects.list.filter(p => p.status === 'delayed');
+  }
+
+  function getHighRisks() {
+    return _data.risks.list.filter(r => r.level === 'high');
+  }
+
+  // ==========================================
+  // ACTIONS
+  // ==========================================
+  
+  function approveDecision(id) {
+    const decision = _data.decisions.find(d => d.id === id);
+    if (decision) {
+      decision.status = 'approved';
+      decision.approvedAt = new Date();
+      console.log('✅ Decision approved:', id);
+      return true;
     }
     return false;
   }
 
-  /**
-   * Get all permissions for a user (merged from all roles)
-   * @param {string} userId
-   * @returns {Array} Array of permission keys
-   */
-  function getUserPermissions(userId) {
-    if (!_isPolicyLoaded()) return [];
-    return PolicyHelpers.getMergedPermissions(userId);
+  function rejectDecision(id) {
+    const decision = _data.decisions.find(d => d.id === id);
+    if (decision) {
+      decision.status = 'rejected';
+      decision.rejectedAt = new Date();
+      console.log('❌ Decision rejected:', id);
+      return true;
+    }
+    return false;
   }
 
   // ==========================================
-  // PUBLIC API - GOVERNANCE
+  // DASHBOARD SUMMARY
   // ==========================================
-
-  /**
-   * Get governance configuration
-   * @returns {Object}
-   */
-  function getGovernanceConfig() {
-    if (!_isPolicyLoaded()) return {};
-    return CompanyPolicy.governance;
-  }
-
-  /**
-   * Get board members
-   * @returns {Array}
-   */
-  function getBoardMembers() {
-    return getUsers().filter(u => 
-      u.contexts.some(c => c.context === 'board')
-    ).map(u => {
-      const boardContext = u.contexts.find(c => c.context === 'board');
-      return {
-        ...u,
-        boardRole: boardContext?.role,
-        boardRoleLabel: PolicyHelpers.getRoleLabel(boardContext?.role, CONFIG.lang)
-      };
-    });
-  }
-
-  /**
-   * Get audit committee members
-   * @returns {Array}
-   */
-  function getAuditCommitteeMembers() {
-    return getUsers().filter(u => 
-      u.contexts.some(c => c.context === 'audit_committee')
-    ).map(u => {
-      const committeeContext = u.contexts.find(c => c.context === 'audit_committee');
-      return {
-        ...u,
-        committeeRole: committeeContext?.role,
-        committeeRoleLabel: PolicyHelpers.getRoleLabel(committeeContext?.role, CONFIG.lang)
-      };
-    });
-  }
-
-  // ==========================================
-  // PUBLIC API - COMPANY INFO
-  // ==========================================
-
-  /**
-   * Get company identity/profile
-   * @returns {Object}
-   */
-  function getCompanyProfile() {
-    _updateLang();
-    
-    if (!_isPolicyLoaded()) return {};
-
-    const identity = CompanyPolicy.identity;
-    const capital = CompanyPolicy.capital;
-
+  
+  function getDashboardSummary() {
     return {
-      name: _localize(identity.name),
-      legalName: _localize(identity.legalName),
-      website: identity.website,
-      crNumber: identity.crNumber,
-      unifiedNumber: identity.unifiedNumber,
-      establishmentDate: identity.establishmentDate,
-      capital: {
-        ...capital,
-        formatted: `${capital.amount.toLocaleString()} ${capital.currency}`
+      revenue: {
+        value: _data.financial.revenue.ytd,
+        growth: _data.financial.revenue.growth,
+        target: _data.financial.revenue.target,
+        progress: (_data.financial.revenue.ytd / _data.financial.revenue.target) * 100
+      },
+      profit: {
+        value: _data.financial.profit.net,
+        margin: _data.financial.profit.margin,
+        growth: _data.financial.profit.growth
+      },
+      projects: {
+        total: _data.projects.active,
+        delayed: _data.projects.delayed,
+        onTrack: _data.projects.onTrack
+      },
+      risks: {
+        high: _data.risks.high,
+        medium: _data.risks.medium,
+        low: _data.risks.low,
+        total: _data.risks.high + _data.risks.medium + _data.risks.low
       }
     };
   }
 
-  /**
-   * Get HR policies
-   * @returns {Object}
-   */
-  function getHRPolicies() {
-    if (!_isPolicyLoaded()) return {};
-    return CompanyPolicy.hrPolicies;
+  // ==========================================
+  // LOCAL STORAGE SYNC
+  // ==========================================
+  
+  function saveToStorage() {
+    localStorage.setItem('ceo_data', JSON.stringify(_data));
   }
 
-  /**
-   * Get financial authority limits
-   * @returns {Object}
-   */
-  function getFinancialAuthority() {
-    if (!_isPolicyLoaded()) return {};
-    return CompanyPolicy.financialAuthority;
+  function loadFromStorage() {
+    const stored = localStorage.getItem('ceo_data');
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      Object.assign(_data, parsed);
+    }
   }
+
+  // Auto-load on init
+  loadFromStorage();
 
   // ==========================================
-  // PUBLIC API - UTILITIES
+  // PUBLIC API
   // ==========================================
-
-  /**
-   * Get color for role (for avatars/badges)
-   */
-  function _getRoleColor(roleKey) {
-    const colors = {
-      sys_admin: 'EF4444',
-      chairman: '3B82F6',
-      vice_chairman: '3B82F6',
-      board_member: '6366F1',
-      ceo: '8B5CF6',
-      cfo: '8B5CF6',
-      manager: '10B981',
-      employee: '64748B',
-      shareholder: 'F59E0B',
-      grc_officer: 'EC4899',
-      board_secretary: '06B6D4',
-      audit_committee_chair: 'F97316',
-      audit_committee_member: 'F97316',
-      investor_relations: 'F59E0B'
-    };
-    return colors[roleKey] || '64748B';
-  }
-
-  /**
-   * Get system statistics
-   * @returns {Object}
-   */
-  function getSystemStats() {
-    const users = getUsers();
-    const shareholders = getShareholders();
-
-    return {
-      totalUsers: users.length,
-      totalShareholders: shareholders.length,
-      totalDepartments: CompanyPolicy.departments?.length || 0,
-      totalRoles: Object.keys(CompanyPolicy.roles || {}).length,
-      executiveCount: users.filter(u => u.isExecutive).length,
-      multiRoleUsers: users.filter(u => u.contextCount > 1).length
-    };
-  }
-
-  /**
-   * Clear cache
-   */
-  function clearCache() {
-    _cache = { data: null, timestamp: null };
-    console.log('🔄 DataService cache cleared');
-  }
-
-  /**
-   * Check service status
-   * @returns {Object}
-   */
-  function getStatus() {
-    return {
-      policyLoaded: _isPolicyLoaded(),
-      cacheValid: _isCacheValid(),
-      currentLang: CONFIG.lang,
-      version: '2.0.0'
-    };
-  }
-
-  // ==========================================
-  // RETURN PUBLIC API
-  // ==========================================
+  
   return {
-    // Users
-    getUsers,
-    getUserById,
-    getUsersByRole,
-    getUsersByDept,
-    searchUsers,
-
-    // Shareholders
-    getShareholders,
-    getShareholderById,
-    getMajorShareholders,
-    getShareholdersStats,
-
-    // Departments
+    // Getters
+    getFinancialData,
+    getProjects,
+    getRisks,
     getDepartments,
-    getDeptById,
-    getDeptName,
-
-    // Roles & Permissions
-    getRoles,
-    getRoleByKey,
-    getPermissions,
-    hasPermission,
-    getUserPermissions,
-
-    // Governance
-    getGovernanceConfig,
+    getPendingDecisions,
     getBoardMembers,
-    getAuditCommitteeMembers,
-
-    // Company Info
-    getCompanyProfile,
-    getHRPolicies,
-    getFinancialAuthority,
-
-    // Utilities
-    getSystemStats,
-    clearCache,
-    getStatus
+    getShareholders,
+    
+    // Specific Queries
+    getProjectById,
+    getRiskById,
+    getDelayedProjects,
+    getHighRisks,
+    
+    // Actions
+    approveDecision,
+    rejectDecision,
+    
+    // Summary
+    getDashboardSummary,
+    
+    // Storage
+    saveToStorage,
+    loadFromStorage
   };
+
 })();
 
-// ==========================================
-// GLOBAL EXPORT
-// ==========================================
-if (typeof window !== 'undefined') {
-  window.DataService = DataService;
-}
-
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = DataService;
-}
+window.DataService = DataService;
