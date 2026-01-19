@@ -32,45 +32,112 @@
     </script>
 
     <style>
-        .num-font { font-family: 'Inter', sans-serif; font-feature-settings: "tnum"; }
-        .glass-card { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); }
-        .dark .glass-card { background: rgba(30, 41, 59, 0.9); }
-        
-        /* تأثير تمويه الراتب للخصوصية */
-        .salary-blur { filter: blur(5px); transition: filter 0.3s ease; user-select: none; }
-        .salary-container:hover .salary-blur { filter: blur(0); }
-        .salary-overlay { transition: opacity 0.3s ease; }
-        .salary-container:hover .salary-overlay { opacity: 0; }
+        /* ✅ Custom Scrollbar */
+        .custom-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+        .custom-scroll::-webkit-scrollbar-thumb { 
+            background: #CBD5E1; 
+            border-radius: 10px; 
+        }
+        .custom-scroll::-webkit-scrollbar-thumb:hover { background: #94A3B8; }
+        .dark .custom-scroll::-webkit-scrollbar-thumb { background: #475569; }
+        .dark .custom-scroll::-webkit-scrollbar-thumb:hover { background: #64748B; }
 
-        /* Loading Overlay */
+        /* Number Font */
+        .num-font { 
+            font-family: 'Inter', sans-serif; 
+            font-feature-settings: "tnum"; 
+        }
+        
+        /* Glass Card Effect */
+        .glass-card { 
+            background: rgba(255, 255, 255, 0.9); 
+            backdrop-filter: blur(10px); 
+        }
+        .dark .glass-card { 
+            background: rgba(30, 41, 59, 0.9); 
+        }
+        
+        /* ✅ Salary Privacy Blur Effect */
+        .salary-blur { 
+            filter: blur(5px); 
+            transition: filter 0.3s ease; 
+            user-select: none; 
+        }
+        .salary-container:hover .salary-blur { 
+            filter: blur(0); 
+        }
+        .salary-overlay { 
+            transition: opacity 0.3s ease; 
+        }
+        .salary-container:hover .salary-overlay { 
+            opacity: 0; 
+        }
+
+        /* ✅ Loading Overlay */
         .loading-overlay {
-            position: fixed; inset: 0; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(5px);
-            z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem;
+            position: fixed;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(5px);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
         }
-        .dark .loading-overlay { background: rgba(15, 23, 42, 0.9); }
-        .loading-overlay.hidden { display: none; }
-        .spinner {
-            width: 48px; height: 48px; border: 5px solid rgba(66, 103, 178, 0.1);
-            border-top-color: #4267B2; border-radius: 50%; animation: spin 1s linear infinite;
+        .dark .loading-overlay {
+            background: rgba(15, 23, 42, 0.9);
         }
-        @keyframes spin { to { transform: rotate(360deg); } }
+        .loading-overlay.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        
+        /* ✅ Smooth Transitions */
+        * {
+            transition-property: background-color, border-color, color, fill, stroke, margin, padding;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+            transition-duration: 300ms;
+        }
+        
+        /* ✅ Main Content Wrapper Transition */
+        .main-content-wrapper {
+            transition: margin-left 300ms ease, margin-right 300ms ease;
+        }
+        
+        /* ✅ Sidebar Transition */
+        #main-sidebar {
+            transition: left 300ms ease, right 300ms ease, transform 300ms ease;
+        }
     </style>
 </head>
-<body class="bg-brandGray dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300">
+<body class="bg-brandGray dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans">
 
+    <!-- ✅ Loading Overlay -->
     <div id="loadingOverlay" class="loading-overlay">
-        <div class="spinner"></div>
-        <p class="text-sm font-bold text-slate-600 dark:text-slate-300" data-i18n="loading">جاري تحميل الملف الشخصي...</p>
+        <div class="relative">
+            <div class="w-16 h-16 border-4 border-brandRed/20 border-t-brandRed rounded-full animate-spin"></div>
+            <div class="absolute inset-0 w-16 h-16 border-4 border-transparent border-b-brandBlue rounded-full animate-spin" style="animation-direction: reverse; animation-duration: 0.8s;"></div>
+        </div>
+        <p class="text-sm font-bold text-slate-600 dark:text-slate-300 animate-pulse" data-i18n="loading">جاري تحميل الملف الشخصي...</p>
     </div>
 
+    <!-- ✅ Sidebar Container -->
     <div id="sidebar-container"></div>
     
-    <div class="main-content-wrapper ltr:md:ml-72 rtl:md:mr-72 transition-all duration-300 flex flex-col min-h-screen">
+    <!-- ✅ Main Content Wrapper -->
+    <div class="main-content-wrapper md:mr-72 transition-all duration-300 flex flex-col min-h-screen">
         
+        <!-- ✅ Header Container -->
         <div id="header-container"></div>
 
         <main class="p-6 space-y-6">
             
+            <!-- Profile Header Card -->
             <div class="bg-white dark:bg-slate-800 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden relative">
                 <div class="h-32 bg-gradient-to-r from-brandRed to-red-700"></div>
                 
@@ -87,18 +154,29 @@
                         <p class="text-slate-500 dark:text-slate-400 font-medium text-lg" id="profRole">...</p>
                         
                         <div class="flex flex-wrap gap-4 mt-4 text-xs font-mono text-slate-500 dark:text-slate-400">
-                            <span class="flex items-center gap-1 bg-slate-100 dark:bg-slate-700 px-3 py-1 rounded-full"><i class="fa-solid fa-id-badge text-brandRed"></i> ID: <span id="profId">...</span></span>
-                            <span class="flex items-center gap-1 bg-slate-100 dark:bg-slate-700 px-3 py-1 rounded-full"><i class="fa-solid fa-envelope text-brandRed"></i> <span id="profEmail">...</span></span>
-                            <span class="flex items-center gap-1 bg-slate-100 dark:bg-slate-700 px-3 py-1 rounded-full"><i class="fa-solid fa-building text-brandRed"></i> <span id="profDept">...</span></span>
+                            <span class="flex items-center gap-1 bg-slate-100 dark:bg-slate-700 px-3 py-1 rounded-full">
+                                <i class="fa-solid fa-id-badge text-brandRed"></i> 
+                                ID: <span id="profId">...</span>
+                            </span>
+                            <span class="flex items-center gap-1 bg-slate-100 dark:bg-slate-700 px-3 py-1 rounded-full">
+                                <i class="fa-solid fa-envelope text-brandRed"></i> 
+                                <span id="profEmail">...</span>
+                            </span>
+                            <span class="flex items-center gap-1 bg-slate-100 dark:bg-slate-700 px-3 py-1 rounded-full">
+                                <i class="fa-solid fa-building text-brandRed"></i> 
+                                <span id="profDept">...</span>
+                            </span>
                         </div>
                     </div>
 
                     <div class="flex gap-3 mb-2">
-                        <button onclick="openRequestModal('leave')" class="px-5 py-2.5 bg-brandRed text-white rounded-xl text-sm font-bold shadow-lg shadow-red-500/30 hover:bg-red-700 transition flex items-center gap-2">
-                            <i class="fa-solid fa-plane-departure"></i> <span data-i18n="reqLeave">طلب إجازة</span>
+                        <button onclick="openRequestModal('leave')" class="px-5 py-2.5 bg-brandRed text-white rounded-xl text-sm font-bold shadow-lg shadow-red-500/30 hover:bg-red-700 hover:scale-105 transition flex items-center gap-2">
+                            <i class="fa-solid fa-plane-departure"></i> 
+                            <span data-i18n="reqLeave">طلب إجازة</span>
                         </button>
-                        <button onclick="openRequestModal('letter')" class="px-5 py-2.5 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl text-sm font-bold hover:bg-slate-50 transition flex items-center gap-2">
-                            <i class="fa-solid fa-file-contract"></i> <span data-i18n="reqLetter">تعريف راتب</span>
+                        <button onclick="openRequestModal('letter')" class="px-5 py-2.5 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl text-sm font-bold hover:bg-slate-50 dark:hover:bg-slate-600 transition flex items-center gap-2">
+                            <i class="fa-solid fa-file-contract"></i> 
+                            <span data-i18n="reqLetter">تعريف راتب</span>
                         </button>
                     </div>
                 </div>
@@ -106,53 +184,57 @@
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 
+                <!-- Left Column -->
                 <div class="space-y-6">
                     
-                    <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <!-- Leave Balance Card -->
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 hover:shadow-lg transition-shadow">
                         <h3 class="font-bold text-slate-800 dark:text-white mb-4 flex items-center gap-2">
-                            <i class="fa-solid fa-umbrella-beach text-orange-500"></i> <span data-i18n="leaveBal">رصيد الإجازات</span>
+                            <i class="fa-solid fa-umbrella-beach text-orange-500"></i> 
+                            <span data-i18n="leaveBal">رصيد الإجازات</span>
                         </h3>
                         <div class="grid grid-cols-2 gap-4">
-                            <div class="p-4 bg-green-50 dark:bg-green-900/10 rounded-2xl text-center border border-green-100 dark:border-green-900/30">
-                                <p class="text-xs text-green-600 font-bold mb-1" data-i18n="annual">سنوية</p>
-                                <p class="text-3xl font-bold text-green-700 num-font">26</p>
-                                <p class="text-[10px] text-green-600/70" data-i18n="days">يوم</p>
+                            <div class="p-4 bg-green-50 dark:bg-green-900/10 rounded-2xl text-center border border-green-100 dark:border-green-900/30 hover:scale-105 transition-transform">
+                                <p class="text-xs text-green-600 dark:text-green-400 font-bold mb-1" data-i18n="annual">سنوية</p>
+                                <p class="text-3xl font-bold text-green-700 dark:text-green-500 num-font">26</p>
+                                <p class="text-[10px] text-green-600/70 dark:text-green-500/70" data-i18n="days">يوم</p>
                             </div>
-                            <div class="p-4 bg-blue-50 dark:bg-blue-900/10 rounded-2xl text-center border border-blue-100 dark:border-blue-900/30">
-                                <p class="text-xs text-blue-600 font-bold mb-1" data-i18n="emergency">اضطرارية</p>
-                                <p class="text-3xl font-bold text-blue-700 num-font">3</p>
-                                <p class="text-[10px] text-blue-600/70" data-i18n="days">أيام</p>
+                            <div class="p-4 bg-blue-50 dark:bg-blue-900/10 rounded-2xl text-center border border-blue-100 dark:border-blue-900/30 hover:scale-105 transition-transform">
+                                <p class="text-xs text-blue-600 dark:text-blue-400 font-bold mb-1" data-i18n="emergency">اضطرارية</p>
+                                <p class="text-3xl font-bold text-blue-700 dark:text-blue-500 num-font">3</p>
+                                <p class="text-[10px] text-blue-600/70 dark:text-blue-500/70" data-i18n="days">أيام</p>
                             </div>
                         </div>
                         <div class="mt-4 pt-4 border-t border-slate-100 dark:border-slate-700">
-                            <div class="flex justify-between text-xs mb-1 text-slate-500">
+                            <div class="flex justify-between text-xs mb-1 text-slate-500 dark:text-slate-400">
                                 <span data-i18n="ticketEnt">استحقاق التذاكر</span>
-                                <span class="text-green-600 font-bold" data-i18n="eligible">مستحق (عائلة)</span>
+                                <span class="text-green-600 dark:text-green-400 font-bold" data-i18n="eligible">مستحق (عائلة)</span>
                             </div>
                             <div class="w-full bg-slate-100 dark:bg-slate-700 h-1.5 rounded-full overflow-hidden">
-                                <div class="bg-brandRed h-full w-[75%]"></div>
+                                <div class="bg-gradient-to-r from-brandRed to-red-600 h-full w-[75%] transition-all duration-1000"></div>
                             </div>
                             <p class="text-[9px] text-right mt-1 text-slate-400">75%</p>
                         </div>
                     </div>
 
-                    <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <!-- Contract Info Card -->
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 hover:shadow-lg transition-shadow">
                         <h3 class="font-bold text-slate-800 dark:text-white mb-4" data-i18n="contractInfo">بيانات العقد</h3>
                         <ul class="space-y-4 text-sm">
                             <li class="flex justify-between border-b border-slate-50 dark:border-slate-700 pb-2">
-                                <span class="text-slate-500" data-i18n="joinDate">تاريخ المباشرة</span>
+                                <span class="text-slate-500 dark:text-slate-400" data-i18n="joinDate">تاريخ المباشرة</span>
                                 <span class="font-bold num-font dark:text-white">01-03-2019</span>
                             </li>
                             <li class="flex justify-between border-b border-slate-50 dark:border-slate-700 pb-2">
-                                <span class="text-slate-500" data-i18n="contractType">نوع العقد</span>
-                                <span class="font-bold text-green-600" data-i18n="unlimited">غير محدد المدة</span>
+                                <span class="text-slate-500 dark:text-slate-400" data-i18n="contractType">نوع العقد</span>
+                                <span class="font-bold text-green-600 dark:text-green-400" data-i18n="unlimited">غير محدد المدة</span>
                             </li>
                             <li class="flex justify-between border-b border-slate-50 dark:border-slate-700 pb-2">
-                                <span class="text-slate-500" data-i18n="manager">المدير المباشر</span>
+                                <span class="text-slate-500 dark:text-slate-400" data-i18n="manager">المدير المباشر</span>
                                 <span class="font-bold dark:text-white" data-i18n="ceoName">هشام السحيباني (CEO)</span>
                             </li>
                             <li class="flex justify-between">
-                                <span class="text-slate-500" data-i18n="location">موقع العمل</span>
+                                <span class="text-slate-500 dark:text-slate-400" data-i18n="location">موقع العمل</span>
                                 <span class="font-bold dark:text-white" data-i18n="hq">المقر الرئيسي - الرياض</span>
                             </li>
                         </ul>
@@ -160,14 +242,19 @@
 
                 </div>
 
+                <!-- Right Column (2 columns span) -->
                 <div class="lg:col-span-2 space-y-6">
                     
-                    <div class="bg-slate-900 rounded-2xl p-6 text-white shadow-lg salary-container relative overflow-hidden group">
-                        <div class="absolute top-0 right-0 p-4 opacity-50"><i class="fa-solid fa-money-check-dollar text-6xl text-white/10"></i></div>
+                    <!-- Financial Data Card (with Privacy Blur) -->
+                    <div class="bg-slate-900 dark:bg-slate-950 rounded-2xl p-6 text-white shadow-xl salary-container relative overflow-hidden group">
+                        <div class="absolute top-0 right-0 p-4 opacity-50">
+                            <i class="fa-solid fa-money-check-dollar text-6xl text-white/10"></i>
+                        </div>
                         
                         <div class="flex justify-between items-center mb-6 relative z-10">
                             <h3 class="font-bold text-lg flex items-center gap-2">
-                                <i class="fa-solid fa-lock text-brandRed"></i> <span data-i18n="financialData">البيانات المالية</span>
+                                <i class="fa-solid fa-lock text-brandRed"></i> 
+                                <span data-i18n="financialData">البيانات المالية</span>
                             </h3>
                             <span class="text-xs bg-white/20 px-2 py-1 rounded" data-i18n="confidential">خاص وسري</span>
                         </div>
@@ -197,52 +284,60 @@
 
                         <div class="absolute inset-0 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm salary-overlay pointer-events-none">
                             <span class="bg-black/50 px-4 py-2 rounded-full text-xs font-bold flex items-center gap-2 border border-white/20">
-                                <i class="fa-solid fa-eye"></i> <span data-i18n="hoverReveal">ضع المؤشر للكشف</span>
+                                <i class="fa-solid fa-eye"></i> 
+                                <span data-i18n="hoverReveal">ضع المؤشر للكشف</span>
                             </span>
                         </div>
                     </div>
 
-                    <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden">
+                    <!-- Previous Requests Table -->
+                    <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden hover:shadow-lg transition-shadow">
                         <div class="p-6 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center">
                             <h3 class="font-bold text-slate-800 dark:text-white" data-i18n="prevReq">طلباتي السابقة</h3>
                             <button class="text-xs text-brandRed font-bold hover:underline" data-i18n="viewAll">عرض الكل</button>
                         </div>
-                        <table class="w-full text-sm text-right rtl:text-right ltr:text-left">
-                            <thead class="bg-slate-50 dark:bg-slate-700 text-slate-500 text-xs">
+                        <table class="w-full text-sm">
+                            <thead class="bg-slate-50 dark:bg-slate-700 text-slate-500 dark:text-slate-400 text-xs">
                                 <tr>
-                                    <th class="p-4" data-i18n="colReqNo">رقم الطلب</th>
-                                    <th class="p-4" data-i18n="colType">النوع</th>
-                                    <th class="p-4" data-i18n="colDate">تاريخ الطلب</th>
-                                    <th class="p-4" data-i18n="colApp">الموافقات</th>
+                                    <th class="p-4 text-right" data-i18n="colReqNo">رقم الطلب</th>
+                                    <th class="p-4 text-right" data-i18n="colType">النوع</th>
+                                    <th class="p-4 text-right" data-i18n="colDate">تاريخ الطلب</th>
+                                    <th class="p-4 text-right" data-i18n="colApp">الموافقات</th>
                                     <th class="p-4 text-center" data-i18n="colStatus">الحالة</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-100 dark:divide-slate-700 dark:text-slate-300">
-                                <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50">
+                                <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">
                                     <td class="p-4 font-mono text-xs">REQ-1022</td>
                                     <td class="p-4 font-bold" data-i18n="leave5days">إجازة سنوية (5 أيام)</td>
                                     <td class="p-4 font-mono text-xs">2026-02-10</td>
-                                    <td class="p-4 text-xs text-slate-500">Manager &rarr; HR</td>
-                                    <td class="p-4 text-center"><span class="bg-green-100 text-green-700 px-2 py-1 rounded text-[10px] font-bold" data-i18n="approved">معتمد</span></td>
+                                    <td class="p-4 text-xs text-slate-500 dark:text-slate-400">Manager → HR</td>
+                                    <td class="p-4 text-center">
+                                        <span class="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 px-2 py-1 rounded text-[10px] font-bold" data-i18n="approved">معتمد</span>
+                                    </td>
                                 </tr>
-                                <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50">
+                                <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">
                                     <td class="p-4 font-mono text-xs">REQ-1045</td>
                                     <td class="p-4 font-bold" data-i18n="letterReq">خطاب تعريف (بنك الراجحي)</td>
                                     <td class="p-4 font-mono text-xs">2026-03-01</td>
-                                    <td class="p-4 text-xs text-slate-500">HR</td>
-                                    <td class="p-4 text-center"><span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded text-[10px] font-bold" data-i18n="pending">تحت الإجراء</span></td>
+                                    <td class="p-4 text-xs text-slate-500 dark:text-slate-400">HR</td>
+                                    <td class="p-4 text-center">
+                                        <span class="bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 px-2 py-1 rounded text-[10px] font-bold" data-i18n="pending">تحت الإجراء</span>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
 
-                    <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <!-- Attendance Record -->
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 hover:shadow-lg transition-shadow">
                         <div class="flex justify-between items-center mb-4">
                             <h3 class="font-bold text-slate-800 dark:text-white" data-i18n="attendance">سجل الحضور والانصراف (أسبوعي)</h3>
-                            <span class="text-[10px] bg-green-100 text-green-700 px-2 py-1 rounded font-bold" data-i18n="discipline">نسبة الانضباط: 98%</span>
+                            <span class="text-[10px] bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 px-2 py-1 rounded font-bold" data-i18n="discipline">نسبة الانضباط: 98%</span>
                         </div>
                         <div class="grid grid-cols-5 gap-2 text-center" id="attendanceGrid">
-                            </div>
+                            <!-- Populated by JS -->
+                        </div>
                     </div>
 
                 </div>
@@ -251,69 +346,74 @@
         </main>
     </div>
 
+    <!-- Request Modal -->
     <div id="requestModal" class="fixed inset-0 bg-black/60 hidden z-50 flex items-center justify-center backdrop-blur-sm p-4">
-        <div class="bg-white dark:bg-slate-800 w-full max-w-lg rounded-2xl shadow-xl p-6">
+        <div class="bg-white dark:bg-slate-800 w-full max-w-lg rounded-2xl shadow-xl p-6 transform transition-all">
             <div class="flex justify-between items-center mb-6 border-b pb-4 dark:border-slate-700">
                 <h3 class="font-bold text-lg dark:text-white" id="reqModalTitle" data-i18n="modTitle">طلب جديد</h3>
-                <button onclick="document.getElementById('requestModal').classList.add('hidden')"><i class="fa-solid fa-xmark text-slate-400 text-xl"></i></button>
+                <button onclick="document.getElementById('requestModal').classList.add('hidden')" class="hover:bg-slate-100 dark:hover:bg-slate-700 w-8 h-8 rounded-lg transition-colors">
+                    <i class="fa-solid fa-xmark text-slate-400 text-xl"></i>
+                </button>
             </div>
             
             <div class="space-y-4">
                 <div>
-                    <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="modType">نوع الطلب</label>
-                    <input type="text" id="reqType" class="w-full bg-slate-100 dark:bg-slate-700 border-none rounded-lg p-2 text-sm text-slate-500 cursor-not-allowed" readonly>
+                    <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1" data-i18n="modType">نوع الطلب</label>
+                    <input type="text" id="reqType" class="w-full bg-slate-100 dark:bg-slate-700 border-none rounded-lg p-2 text-sm text-slate-500 dark:text-slate-300 cursor-not-allowed" readonly>
                 </div>
                 
                 <div id="leaveFields" class="hidden space-y-4">
                     <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="modFrom">من تاريخ</label>
+                            <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1" data-i18n="modFrom">من تاريخ</label>
                             <input type="date" class="w-full bg-white dark:bg-slate-900 border dark:border-slate-600 rounded-lg p-2 text-sm dark:text-white">
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="modTo">إلى تاريخ</label>
+                            <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1" data-i18n="modTo">إلى تاريخ</label>
                             <input type="date" class="w-full bg-white dark:bg-slate-900 border dark:border-slate-600 rounded-lg p-2 text-sm dark:text-white">
                         </div>
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="modLeaveType">نوع الإجازة</label>
+                        <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1" data-i18n="modLeaveType">نوع الإجازة</label>
                         <select class="w-full bg-white dark:bg-slate-900 border dark:border-slate-600 rounded-lg p-2 text-sm dark:text-white">
-                            <option data-i18n="annual">سنوية (خصم من الرصيد)</option>
+                            <option data-i18n="annualDeduct">سنوية (خصم من الرصيد)</option>
                             <option data-i18n="emergency">اضطرارية</option>
                         </select>
                     </div>
                 </div>
 
                 <div id="letterFields" class="hidden">
-                    <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="modEntity">الجهة الموجه إليها</label>
+                    <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1" data-i18n="modEntity">الجهة الموجه إليها</label>
                     <input type="text" class="w-full bg-white dark:bg-slate-900 border dark:border-slate-600 rounded-lg p-2 text-sm dark:text-white" placeholder="...">
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="modNotes">ملاحظات إضافية</label>
+                    <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1" data-i18n="modNotes">ملاحظات إضافية</label>
                     <textarea class="w-full bg-white dark:bg-slate-900 border dark:border-slate-600 rounded-lg p-2 text-sm h-20 dark:text-white"></textarea>
                 </div>
             </div>
 
             <div class="mt-6 flex justify-end gap-3 pt-4 border-t dark:border-slate-700">
-                <button onclick="document.getElementById('requestModal').classList.add('hidden')" class="px-4 py-2 border rounded-lg text-xs font-bold hover:bg-slate-50 dark:text-white hover:text-black transition" data-i18n="btnCancel">إلغاء</button>
-                <button onclick="alert('تم رفع الطلب بنجاح'); document.getElementById('requestModal').classList.add('hidden')" class="px-6 py-2 bg-brandRed text-white rounded-lg text-xs font-bold hover:bg-red-700 shadow-md" data-i18n="btnSend">إرسال الطلب</button>
+                <button onclick="document.getElementById('requestModal').classList.add('hidden')" class="px-4 py-2 border rounded-lg text-xs font-bold hover:bg-slate-50 dark:hover:bg-slate-700 dark:text-white transition" data-i18n="btnCancel">إلغاء</button>
+                <button onclick="submitRequest()" class="px-6 py-2 bg-brandRed text-white rounded-lg text-xs font-bold hover:bg-red-700 shadow-md hover:shadow-lg transition" data-i18n="btnSend">إرسال الطلب</button>
             </div>
         </div>
     </div>
 
+    <!-- Scripts -->
     <script src="data/company_policy.js"></script>
     <script src="js/core/config.js"></script>
     <script src="js/core/i18n.js"></script>
     <script src="js/helpers/policy-helpers.js"></script>
     <script src="js/services/data-service.js"></script>
-    <script src="js/components/role-switcher.js"></script>
     <script src="js/components/layout.js"></script>
     <script src="js/components/bot.js"></script>
 
     <script>
-        // --- Translation Dictionary ---
-        const t = {
+        // ==========================================
+        // TRANSLATION DICTIONARY
+        // ==========================================
+        const translations = {
             ar: {
                 pageTitle: "ملفي الشخصي | AndroGov",
                 loading: "جاري تحميل الملف الشخصي...",
@@ -359,11 +459,13 @@
                 modFrom: "من تاريخ",
                 modTo: "إلى تاريخ",
                 modLeaveType: "نوع الإجازة",
+                annualDeduct: "سنوية (خصم من الرصيد)",
                 modEntity: "الجهة الموجه إليها",
                 modNotes: "ملاحظات إضافية",
                 btnCancel: "إلغاء",
                 btnSend: "إرسال الطلب",
-                ceoName: "هشام السحيباني (CEO)"
+                ceoName: "هشام السحيباني (CEO)",
+                reqSuccess: "تم رفع الطلب بنجاح"
             },
             en: {
                 pageTitle: "My Profile | AndroGov",
@@ -410,20 +512,45 @@
                 modFrom: "From Date",
                 modTo: "To Date",
                 modLeaveType: "Leave Type",
+                annualDeduct: "Annual (Deducted from Balance)",
                 modEntity: "Directed To",
                 modNotes: "Additional Notes",
                 btnCancel: "Cancel",
                 btnSend: "Send Request",
-                ceoName: "Hesham Al-Suhaibani (CEO)"
+                ceoName: "Hesham Al-Suhaibani (CEO)",
+                reqSuccess: "Request submitted successfully"
             }
         };
 
-        // --- Initialization ---
+        // ==========================================
+        // INITIALIZATION
+        // ==========================================
         document.addEventListener('DOMContentLoaded', () => {
+            console.log('🚀 Profile page - DOM loaded');
+            
+            // ✅ Set initial language
+            const initialLang = localStorage.getItem('lang') || 'ar';
+            document.documentElement.lang = initialLang;
+            document.documentElement.dir = initialLang === 'ar' ? 'rtl' : 'ltr';
+            
+            // ✅ Set initial margin
+            const mainContent = document.querySelector('.main-content-wrapper');
+            if (mainContent) {
+                if (initialLang === 'ar') {
+                    mainContent.classList.remove('md:ml-72');
+                    mainContent.classList.add('md:mr-72');
+                } else {
+                    mainContent.classList.remove('md:mr-72');
+                    mainContent.classList.add('md:ml-72');
+                }
+            }
+            
+            // Wait for dependencies
             const checkSystem = setInterval(() => {
                 if (typeof Layout !== 'undefined' && typeof AppConfig !== 'undefined' && typeof DataService !== 'undefined') {
                     clearInterval(checkSystem);
                     
+                    // Auto-login
                     if (!AppConfig.getCurrentUser()) {
                         const defaultUser = DataService.getUserById('USR_004') || DataService.getUsers()[0];
                         if (defaultUser) {
@@ -431,20 +558,42 @@
                         }
                     }
 
+                    // Initialize
                     Layout.init();
-                    document.getElementById('loadingOverlay')?.classList.add('hidden');
-                    initPage();
+                    
+                    setTimeout(() => {
+                        initPage();
+                        hideLoading();
+                    }, 300);
                 }
             }, 50);
+            
+            // ✅ Listen for language changes
+            window.addEventListener('languageChanged', (e) => {
+                console.log('🌐 Language changed to:', e.detail.lang);
+                updatePageLanguage();
+            });
         });
 
-        // --- Page Functions ---
-        function initPage() {
-            // 1. Update Translations
-            updatePageLanguage();
+        function hideLoading() {
+            const overlay = document.getElementById('loadingOverlay');
+            if (overlay) {
+                overlay.classList.add('hidden');
+            }
+        }
 
-            // 2. Load User Data
+        // ==========================================
+        // PAGE FUNCTIONS
+        // ==========================================
+        function initPage() {
+            updatePageLanguage();
+            loadUserData();
+        }
+
+        function loadUserData() {
             let user = AppConfig.getCurrentUser();
+            
+            // Refresh user data
             if (user && user.id && typeof DataService !== 'undefined') {
                 const freshUser = DataService.getUserById(user.id);
                 if (freshUser) {
@@ -454,16 +603,17 @@
             }
 
             if (user) {
-                // Populate Profile Header
+                // Profile Header
                 document.getElementById('profName').innerText = user.displayName || '---';
                 document.getElementById('profRole').innerText = user.displayTitle || '---';
-                // Fix image path if needed (remove 'admin/' prefix if present in data)
+                
+                // Fix avatar path
                 let avatarPath = user.avatar || '';
-                if(avatarPath && !avatarPath.startsWith('http') && !avatarPath.startsWith('../')) {
-                     // Ensure relative path is correct from admin/ folder
-                     avatarPath = '../' + avatarPath;
+                if (avatarPath && !avatarPath.startsWith('http') && !avatarPath.startsWith('../')) {
+                    avatarPath = '../' + avatarPath;
                 }
-                document.getElementById('profAvatar').src = avatarPath || 'https://ui-avatars.com/api/?name=' + (user.displayName || 'User') + '&background=random';
+                document.getElementById('profAvatar').src = avatarPath || 
+                    'https://ui-avatars.com/api/?name=' + encodeURIComponent(user.displayName || 'User') + '&background=DC2626&color=fff';
                 
                 document.getElementById('profId').innerText = user.id || '---';
                 document.getElementById('profEmail').innerText = user.email || '---';
@@ -473,26 +623,44 @@
 
         function updatePageLanguage() {
             const lang = localStorage.getItem('lang') || 'ar';
-            const dict = t[lang];
+            const dict = translations[lang];
             
-            // Set Direction
+            // Update HTML attributes
             document.documentElement.lang = lang;
             document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+            
+            // Update main content margin
+            const mainContent = document.querySelector('.main-content-wrapper');
+            if (mainContent) {
+                if (lang === 'ar') {
+                    mainContent.classList.remove('md:ml-72');
+                    mainContent.classList.add('md:mr-72');
+                } else {
+                    mainContent.classList.remove('md:mr-72');
+                    mainContent.classList.add('md:ml-72');
+                }
+            }
 
-            // Translate Text Elements
+            // Update page title
+            document.title = dict.pageTitle;
+            
+            // Translate all elements
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
-                if(dict[key]) el.innerText = dict[key];
+                if (dict[key]) el.innerText = dict[key];
             });
 
-            // Update Attendance Grid (Dynamic content)
+            // Update attendance grid
             renderAttendance(lang);
+            
+            console.log(`✅ Profile page updated to: ${lang}`);
         }
 
         function renderAttendance(lang) {
             const container = document.getElementById('attendanceGrid');
-            const days = t[lang].daysWeek;
-            // Static data for demo
+            const days = translations[lang].daysWeek;
+            
+            // Static demo data
             const times = [
                 { in: '07:55', out: '16:05', c: 'green' },
                 { in: '08:00', out: '16:00', c: 'green' },
@@ -502,9 +670,9 @@
             ];
 
             container.innerHTML = days.map((day, i) => `
-                <div class="p-2 bg-slate-50 dark:bg-slate-700 rounded-xl ${times[i].c === 'red' ? 'border border-red-200' : ''}">
+                <div class="p-2 bg-slate-50 dark:bg-slate-700 rounded-xl ${times[i].c === 'red' ? 'border border-red-200 dark:border-red-800' : ''} hover:scale-105 transition-transform">
                     <p class="text-[10px] text-slate-400 mb-1">${day}</p>
-                    <p class="text-xs font-bold text-${times[i].c === 'green' ? 'green-600' : 'red-500'} mb-1">${times[i].in}</p>
+                    <p class="text-xs font-bold text-${times[i].c === 'green' ? 'green-600 dark:text-green-400' : 'red-500 dark:text-red-400'} mb-1">${times[i].in}</p>
                     <p class="text-xs font-bold text-slate-600 dark:text-slate-300">${times[i].out}</p>
                 </div>
             `).join('');
@@ -517,21 +685,33 @@
             const leaveFields = document.getElementById('leaveFields');
             const letterFields = document.getElementById('letterFields');
             const lang = localStorage.getItem('lang') || 'ar';
+            const dict = translations[lang];
 
             modal.classList.remove('hidden');
 
             if (type === 'leave') {
-                title.innerText = t[lang].reqLeave;
-                typeInput.value = t[lang].reqLeave;
+                title.innerText = dict.reqLeave;
+                typeInput.value = dict.reqLeave;
                 leaveFields.classList.remove('hidden');
                 letterFields.classList.add('hidden');
             } else {
-                title.innerText = t[lang].reqLetter;
-                typeInput.value = t[lang].reqLetter;
+                title.innerText = dict.reqLetter;
+                typeInput.value = dict.reqLetter;
                 leaveFields.classList.add('hidden');
                 letterFields.classList.remove('hidden');
             }
         }
+
+        function submitRequest() {
+            const lang = localStorage.getItem('lang') || 'ar';
+            const dict = translations[lang];
+            
+            alert(dict.reqSuccess);
+            document.getElementById('requestModal').classList.add('hidden');
+        }
+
+        // ✅ Expose for Layout to call
+        window.updateProfileContent = updatePageLanguage;
     </script>
 </body>
 </html>
