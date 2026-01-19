@@ -67,15 +67,15 @@
                     <div class="flex gap-6 items-start">
                         <div class="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center shrink-0 border border-white/10"><i class="fa-solid fa-shield-halved text-xl text-brandRed"></i></div>
                         <div>
-                            <h3 class="text-xl font-bold mb-2">حوكمة ذكية</h3>
-                            <p class="text-slate-400 text-sm leading-relaxed">إدارة متكاملة لمجلس الإدارة، اللجان، والجمعيات العمومية بامتثال تام للأنظمة السعودية.</p>
+                            <h3 class="text-xl font-bold mb-2" data-i18n="sidebarGovTitle">حوكمة ذكية</h3>
+                            <p class="text-slate-400 text-sm leading-relaxed" data-i18n="sidebarGovDesc">إدارة متكاملة لمجلس الإدارة، اللجان، والجمعيات العمومية بامتثال تام للأنظمة السعودية.</p>
                         </div>
                     </div>
                     <div class="flex gap-6 items-start">
                         <div class="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center shrink-0 border border-white/10"><i class="fa-solid fa-chart-pie text-xl text-brandBlue"></i></div>
                         <div>
-                            <h3 class="text-xl font-bold mb-2">رقابة مالية مركزية</h3>
-                            <p class="text-slate-400 text-sm leading-relaxed">لوحات قيادة لحظية للمدراء التنفيذيين لمتابعة التدفقات النقدية والميزانيات التقديرية.</p>
+                            <h3 class="text-xl font-bold mb-2" data-i18n="sidebarOpsTitle">رقابة مالية مركزية</h3>
+                            <p class="text-slate-400 text-sm leading-relaxed" data-i18n="sidebarOpsDesc">لوحات قيادة لحظية للمدراء التنفيذيين لمتابعة التدفقات النقدية والميزانيات التقديرية.</p>
                         </div>
                     </div>
                 </div>
@@ -147,11 +147,11 @@
                     </div>
 
                     <div class="grid grid-cols-2 sm:grid-cols-3 gap-3" id="quickUsers">
-                        <!-- Dynamic Buttons for Demo Roles -->
+                        <!-- Dynamic Buttons -->
                     </div>
                 </div>
 
-                <p class="mt-12 text-center text-xs text-slate-400 dark:text-slate-500" data-i18n="footerNote">
+                <p class="mt-12 text-center text-[10px] text-slate-400 dark:text-slate-500" data-i18n="footerNote">
                     يخضع استخدام هذا النظام لسياسات الأمن المعلوماتي لشركة Andromeda IT.
                 </p>
             </div>
@@ -160,15 +160,15 @@
 
     <script>
         // ==========================================
-        // DATA MODEL - مواءمة كاملة مع نظام الصلاحيات
+        // DATA MODEL - Bilingual Demo Users
         // ==========================================
         const SYSTEM_USERS = [
-            { id: "USR_004", name: "أيمن المغربي", role: "sys_admin", title: "مدير النظام / GRC", email: "amaghrabi@androomeda.com", path: "admin/index.html", icon: "fa-user-shield", color: "#FB4747" },
-            { id: "USR_000", name: "عبدالله الحواس", role: "chairman", title: "رئيس مجلس الإدارة", email: "chairman@androomeda.com", path: "board/index.html", icon: "fa-building-columns", color: "#4267B2" },
-            { id: "USR_001", name: "هشام السحيباني", role: "ceo", title: "الرئيس التنفيذي", email: "hesham@androomeda.com", path: "ceo/index.html", icon: "fa-user-tie", color: "#7C3AED" },
-            { id: "USR_002", name: "محمد البخيتي", role: "cfo", title: "المدير المالي", email: "mtahir@androomeda.com", path: "finance/index.html", icon: "fa-money-bill-trend-up", color: "#10B981" },
-            { id: "USR_009", name: "مشاعل الهذيان", role: "cto", title: "المدير التقني", email: "malhadyan@androomeda.com", path: "cto/index.html", icon: "fa-microchip", color: "#06B6D4" },
-            { id: "USR_005", name: "منصور اليامي", role: "cao", title: "مدير الموارد البشرية", email: "myami@androomeda.com", path: "hr/index.html", icon: "fa-users-gear", color: "#F59E0B" }
+            { id: "USR_004", name: {ar: "أيمن المغربي", en: "Ayman Al-Maghrabi"}, role: "sys_admin", title: {ar: "مدير النظام / GRC", en: "System Admin / GRC"}, email: "amaghrabi@androomeda.com", path: "admin/index.html", icon: "fa-user-shield", color: "#FB4747" },
+            { id: "USR_000", name: {ar: "عبدالله الحواس", en: "Abdullah Al-Hawas"}, role: "chairman", title: {ar: "رئيس مجلس الإدارة", en: "Chairman of the Board"}, email: "chairman@androomeda.com", path: "board/index.html", icon: "fa-building-columns", color: "#4267B2" },
+            { id: "USR_001", name: {ar: "هشام السحيباني", en: "Hesham Al-Sohaibani"}, role: "ceo", title: {ar: "الرئيس التنفيذي", en: "Chief Executive Officer"}, email: "hesham@androomeda.com", path: "ceo/index.html", icon: "fa-user-tie", color: "#7C3AED" },
+            { id: "USR_002", name: {ar: "محمد البخيتي", en: "Mohammed Al-Bukhaiti"}, role: "cfo", title: {ar: "المدير المالي", en: "Chief Financial Officer"}, email: "mtahir@androomeda.com", path: "finance/index.html", icon: "fa-money-bill-trend-up", color: "#10B981" },
+            { id: "USR_009", name: {ar: "مشاعل الهذيان", en: "Mashael Al-Hadyan"}, role: "cto", title: {ar: "المدير التقني", en: "Chief Technical Officer"}, email: "malhadyan@androomeda.com", path: "cto/index.html", icon: "fa-microchip", color: "#06B6D4" },
+            { id: "USR_005", name: {ar: "منصور اليامي", en: "Mansour Al-Yami"}, role: "cao", title: {ar: "مدير الموارد البشرية", en: "Chief Admin Officer"}, email: "myami@androomeda.com", path: "hr/index.html", icon: "fa-users-gear", color: "#F59E0B" }
         ];
 
         // ==========================================
@@ -176,13 +176,15 @@
         // ==========================================
         function renderQuickUsers() {
             const container = document.getElementById('quickUsers');
+            const lang = localStorage.getItem('lang') || 'ar';
+            
             container.innerHTML = SYSTEM_USERS.map(u => `
                 <button onclick="handleLogin('${u.email}')" class="flex flex-col items-center gap-2 p-3 bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-2xl hover:border-brandRed dark:hover:border-brandRed hover:shadow-md transition-all group">
                     <div class="w-10 h-10 rounded-xl flex items-center justify-center text-white shadow-sm transition-transform group-hover:scale-110" style="background-color: ${u.color}">
                         <i class="fa-solid ${u.icon} text-sm"></i>
                     </div>
                     <div class="text-center overflow-hidden w-full">
-                        <p class="text-[10px] font-bold truncate dark:text-white">${u.name}</p>
+                        <p class="text-[10px] font-bold truncate dark:text-white">${u.name[lang]}</p>
                         <p class="text-[8px] text-slate-400 font-medium truncate uppercase">${u.role.replace('_', ' ')}</p>
                     </div>
                 </button>
@@ -200,25 +202,24 @@
 
         function handleLogin(email) {
             const user = SYSTEM_USERS.find(u => u.email.toLowerCase() === email.toLowerCase());
+            const lang = localStorage.getItem('lang') || 'ar';
             
             if (user) {
-                // تخزين الكائن بشكل يتوافق مع توقعات layout.js
                 const userSession = {
                     id: user.id,
-                    name: user.name,
-                    displayName: user.name,
-                    role: user.role,         // المفتاح التقني (مثل sys_admin)
-                    primaryRole: user.role,  // ضروري لـ layout.js v7.8
-                    type: user.role,         // لضمان التوافق مع النسخ القديمة
-                    title: user.title,
-                    displayTitle: user.title,
+                    name: user.name[lang],
+                    displayName: user.name[lang],
+                    role: user.role,
+                    primaryRole: user.role,
+                    type: user.role,
+                    title: user.title[lang],
+                    displayTitle: user.title[lang],
                     email: user.email,
-                    avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=${user.color.replace('#','')}&color=fff`
+                    avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name[lang])}&background=${user.color.replace('#','')}&color=fff`
                 };
 
                 localStorage.setItem('currentUser', JSON.stringify(userSession));
                 
-                // إظهار لودر بسيط قبل التحويل
                 const btn = document.querySelector('button[type="submit"]');
                 if(btn) btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i>';
                 
@@ -226,7 +227,7 @@
                     window.location.href = user.path;
                 }, 800);
             } else {
-                alert("بيانات الدخول غير صحيحة في نسخة العرض.");
+                alert(lang === 'ar' ? "بيانات الدخول غير صحيحة." : "Invalid login credentials.");
             }
         }
 
@@ -248,12 +249,32 @@
         function toggleLanguage() {
             let lang = localStorage.getItem('lang') === 'ar' ? 'en' : 'ar';
             localStorage.setItem('lang', lang);
-            location.reload();
+            applyLanguage();
+        }
+
+        function applyLanguage() {
+            const lang = localStorage.getItem('lang') || 'ar';
+            const dict = trans[lang];
+            
+            document.documentElement.lang = lang;
+            document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+            document.getElementById('langLabel').innerText = lang === 'ar' ? 'EN' : 'عربي';
+
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if(dict[key]) el.innerText = dict[key];
+            });
+
+            renderQuickUsers();
         }
 
         // --- Translations ---
         const trans = {
             ar: {
+                sidebarGovTitle: "حوكمة ذكية",
+                sidebarGovDesc: "إدارة متكاملة لمجلس الإدارة، اللجان، والجمعيات العمومية بامتثال تام للأنظمة السعودية.",
+                sidebarOpsTitle: "رقابة مالية مركزية",
+                sidebarOpsDesc: "لوحات قيادة لحظية للمدراء التنفيذيين لمتابعة التدفقات النقدية والميزانيات التقديرية.",
                 loginTitle: "تسجيل الدخول",
                 loginSub: "أهلاً بك مجدداً، يرجى إدخال بيانات حسابك",
                 lblEmail: "البريد الإلكتروني",
@@ -265,12 +286,16 @@
                 footerNote: "يخضع استخدام هذا النظام لسياسات الأمن المعلوماتي لشركة Andromeda IT."
             },
             en: {
+                sidebarGovTitle: "Smart Governance",
+                sidebarGovDesc: "Integrated management for Board, Committees, and General Assemblies with full Saudi compliance.",
+                sidebarOpsTitle: "Central Financial Control",
+                sidebarOpsDesc: "Real-time dashboards for executives to monitor cash flows and estimated budgets.",
                 loginTitle: "Sign In",
-                loginSub: "Welcome back, please enter your details",
+                loginSub: "Welcome back, please enter your account details",
                 lblEmail: "Email Address",
                 lblPass: "Password",
                 btnForgot: "Forgot password?",
-                lblRemember: "Remember me on this device",
+                lblRemember: "Remember me on this browser",
                 btnSubmit: "Sign In to System",
                 lblDemo: "Or Demo Quick Access",
                 footerNote: "Use of this system is subject to Andromeda IT information security policies."
@@ -283,15 +308,7 @@
             updateThemeIcon();
 
             // Lang Init
-            const lang = localStorage.getItem('lang') || 'ar';
-            const dict = trans[lang];
-            document.getElementById('langLabel').innerText = lang === 'ar' ? 'EN' : 'عربي';
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                const key = el.getAttribute('data-i18n');
-                if(dict[key]) el.innerText = dict[key];
-            });
-
-            renderQuickUsers();
+            applyLanguage();
         });
     </script>
 </body>
