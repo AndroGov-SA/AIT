@@ -1,24 +1,16 @@
 /**
  * ============================================================================
- * AndroGov Unified Layout Engine v11.0 - COMPLETE EDITION
+ * AndroGov Unified Layout Engine v11.1 - SHAREHOLDER PORTAL (FIXED)
  * ============================================================================
- * @description Unified layout system for all portals with full feature parity
+ * @description حل مشكلة إعادة التوجيه والتحميل المستمر
  * @author Ayman Al-Maghrabi
- * @features 
- * - ✅ Multi-role support with role switching
- * - ✅ RTL/LTR language switching (Arabic/English)
- * - ✅ Dark/Light theme toggle
- * - ✅ Notifications system with real-time updates
- * - ✅ AI Bot integration ready
- * - ✅ Mobile responsive sidebar
- * - ✅ Consistent UX across all portals
+ * @version 11.1
  */
 
 // ============================================================================
-// CONFIGURATION OBJECT - يتم تخصيصه لكل بوابة
+// CONFIGURATION OBJECT
 // ============================================================================
 const PORTAL_CONFIG = {
-  // 📊 SHAREHOLDER PORTAL
   shareholder: {
     defaultRole: 'shareholder',
     storageKey: 'shareholder_activeRole',
@@ -54,179 +46,24 @@ const PORTAL_CONFIG = {
         ]}
       ]
     }
-  },
+  }
 };
 
 // ============================================================================
-// UNIVERSAL TRANSLATIONS - تطبق على جميع البوابات
+// UNIVERSAL TRANSLATIONS
 // ============================================================================
 const UNIVERSAL_TRANSLATIONS = {
   ar: {
-    // Sections - Common
-    core_system: 'النظام الأساسي',
-    infrastructure: 'البنية التحتية',
-    communication: 'الاتصالات',
-    board_operations: 'عمليات المجلس',
-    governance_docs: 'وثائق الحوكمة',
-    audit_oversight: 'الرقابة والتدقيق',
-    compliance_tasks: 'مهام الامتثال',
-    shareholders: 'المساهمين',
-    personal: 'الحساب الشخصي',
-    grc_compliance: 'الحوكمة والامتثال',
-    hr_governance: 'حوكمة الموارد البشرية',
-    workflow: 'سير العمل',
-    executive_dashboard: 'لوحة القيادة التنفيذية',
-    financial_oversight: 'الرقابة المالية',
-    governance_compliance: 'الحوكمة والامتثال',
-    board_activities: 'أنشطة المجلس',
-    strategic_oversight: 'الإشراف الاستراتيجي',
-    reporting: 'التقارير',
-    shareholder_services: 'خدمات المساهمين',
-    governance_access: 'الوصول للحوكمة',
-    reports_disclosures: 'التقارير والإفصاحات',
-    it_infrastructure: 'البنية التحتية التقنية',
-    telecom_systems: 'أنظمة الاتصالات',
-    ops_governance: 'العمليات والحوكمة',
-    support_personal: 'الدعم والحساب',
-    self_service: 'الخدمات الذاتية',
-    support_docs: 'الدعم والمعرفة',
-    financial_control: 'الرقابة المالية',
-    general_ledger: 'الأستاذ العام',
-    accounts_payable: 'الحسابات الدائنة',
-    accounts_receivable: 'الحسابات المدينة',
-    inventory_assets: 'المخزون والأصول',
-    reports_tax: 'التقارير والضرائب',
-    settings_personal: 'الإعدادات والحساب',
-    audit_overview: 'نظرة عامة',
-    audit_execution: 'تنفيذ التدقيق',
-    committee_overview: 'نظرة عامة للجنة',
-    oversight: 'الإشراف والرقابة',
-    reports_review: 'مراجعة التقارير',
-    sales_overview: 'نظرة عامة',
-    sales_operations: 'عمليات المبيعات',
-    client_management: 'إدارة العملاء',
     shareholder_overview: 'نظرة عامة',
     shareholder_services: 'خدمات المساهمين',
     shareholder_requests: 'الطلبات',
-    hr_control: 'الرقابة الإدارية',
-    hr_operations: 'العمليات اليومية',
-    hr_management: 'إدارة الموارد البشرية',
-    hr_services: 'الخدمات الإدارية',
-    hr_compliance: 'الامتثال والشراكات',
-    
-    // Menu Items - Common
+    personal: 'الحساب الشخصي',
     dashboard: 'لوحة القيادة',
-    users_mgmt: 'إدارة المستخدمين',
-    admin_settings: 'إعدادات النظام',
-    it_systems: 'الأنظمة التقنية',
-    system_audit: 'سجل التدقيق',
-    internal_chat: 'المحادثات الداخلية',
-    circulars_admin: 'التعاميم الإدارية',
-    board_portal: 'بوابة المجلس',
-    committees_mgmt: 'إدارة اللجان',
-    general_assembly: 'الجمعية العمومية',
-    policies_library: 'مكتبة السياسات',
-    board_circulars: 'تعاميم المجلس',
-    audit_dashboard: 'لوحة التدقيق',
-    financial_review: 'المراجعة المالية',
-    procurement_control: 'إدارة المشتريات',
-    compliance_check: 'فحص الامتثال',
-    task_tracker: 'متابعة المهام',
-    shareholders_db: 'قاعدة المساهمين',
-    ga_access: 'الجمعية العمومية',
-    my_profile: 'الملف الشخصي',
-    ir_circulars: 'التعاميم',
-    compliance_dashboard: 'لوحة الامتثال',
-    doa_authority: 'مصفوفة الصلاحيات',
-    policies_control: 'ضبط السياسات',
-    hr_compliance: 'امتثال الموارد البشرية',
-    audit_reports: 'تقارير التدقيق',
-    grc_tasks: 'مهام GRC',
-    executive_overview: 'نظرة تنفيذية شاملة',
-    strategic_planning: 'التخطيط الاستراتيجي',
-    financial_performance: 'الأداء المالي',
-    executive_reports: 'التقارير التنفيذية',
-    governance_framework: 'إطار الحوكمة',
-    risk_management: 'إدارة المخاطر',
-    company_broadcast: 'البث المؤسسي',
-    internal_communication: 'التواصل الداخلي',
-    feedback_center: 'مركز التغذية الراجعة',
-    governance_oversight: 'الإشراف على الحوكمة',
-    strategic_initiatives: 'المبادرات الاستراتيجية',
-    risk_oversight: 'الإشراف على المخاطر',
-    board_reports: 'تقارير المجلس',
-    board_communication: 'تواصل المجلس',
-    my_portfolio: 'محفظتي الاستثمارية',
-    financial_statements: 'القوائم المالية',
-    governance_documents: 'وثائق الحوكمة',
-    board_meetings: 'اجتماعات المجلس',
-    annual_reports: 'التقارير السنوية',
-    announcements: 'الإعلانات',
-    servers: 'إدارة السيرفرات',
-    monitoring: 'مراقبة الأنظمة',
-    soc_ops: 'مركز العمليات الأمنية',
-    pbx_mgmt: 'إدارة السنترال',
-    extensions: 'التحويلات الداخلية',
-    call_logs: 'سجلات المكالمات',
-    iam_access: 'إدارة الهوية والوصول',
-    projects: 'المشاريع التقنية',
-    it_assets: 'الأصول التقنية',
-    it_support: 'الدعم الفني',
-    my_requests: 'طلباتي',
-    salary_slips: 'مسير الرواتب',
-    company_policies: 'السياسات واللوائح',
-    approvals: 'الاعتمادات',
-    gl_journal: 'قيود اليومية',
-    gl_coa: 'دليل الحسابات',
-    gl_cost_centers: 'مراكز التكلفة',
-    ap_bills: 'الفواتير الواردة',
-    ap_payments: 'أوامر الصرف',
-    ap_vendors: 'الموردين',
-    ar_invoices: 'فواتير المبيعات',
-    ar_receipts: 'سندات القبض',
-    inv_dashboard: 'لوحة المخزون',
-    inv_assets: 'سجل الأصول',
-    rep_statements: 'القوائم المالية',
-    rep_budget: 'الموازنة التقديرية',
-    rep_tax: 'الإقرارات الضريبية',
-    fin_settings: 'الإعدادات المالية',
-    annual_audit_plan: 'خطة التدقيق السنوية',
-    observations_log: 'سجل الملاحظات',
-    risk_assessment: 'تقييم المخاطر',
-    compliance_monitoring: 'مراقبة الامتثال',
-    quarterly_reports: 'التقارير الربع سنوية',
-    findings_database: 'قاعدة بيانات النتائج',
-    committee_dashboard: 'لوحة اللجنة',
-    audit_plan_review: 'مراجعة خطة التدقيق',
-    critical_observations: 'الملاحظات الحرجة',
-    risk_reports: 'تقارير المخاطر',
-    compliance_status: 'حالة الامتثال',
-    external_audit: 'التدقيق الخارجي',
-    committee_communication: 'تواصل اللجنة',
-    meetings: 'الاجتماعات',
-    sales_pipeline: 'خط المبيعات',
-    sales_quotes: 'عروض الأسعار',
-    sales_activities: 'أنشطة المبيعات',
-    sales_clients: 'العملاء',
     certificates: 'الشهادات',
     dividends: 'الأرباح الموزعة',
     voting: 'التصويت',
     requests: 'الطلبات',
-    employees: 'الموظفين',
-    attendance: 'الحضور والانصراف',
-    leaves: 'الإجازات',
-    payroll: 'الرواتب',
-    recruitment: 'التوظيف',
-    contracts: 'العقود',
-    org_structure: 'الهيكل التنظيمي',
-    assets: 'الأصول',
-    logistics: 'اللوجستيات',
-    trips: 'الرحلات',
-    purchases: 'المشتريات',
-    govt_affairs: 'الشؤون الحكومية',
-    partners: 'الشراكات',
-    
-    // UI Elements
+    my_profile: 'الملف الشخصي',
     switchWorkspace: 'تبديل بيئة العمل',
     selectRole: 'اختر الدور المناسب لمهامك الحالية',
     notifications: 'الإشعارات',
@@ -239,171 +76,16 @@ const UNIVERSAL_TRANSLATIONS = {
     aymanDev: 'أيمن المغربي'
   },
   en: {
-    // Sections - Common (English translations)
-    core_system: 'Core System',
-    infrastructure: 'Infrastructure',
-    communication: 'Communications',
-    board_operations: 'Board Operations',
-    governance_docs: 'Governance Documents',
-    audit_oversight: 'Audit & Oversight',
-    compliance_tasks: 'Compliance Tasks',
-    shareholders: 'Shareholders',
-    personal: 'Personal',
-    grc_compliance: 'GRC & Compliance',
-    hr_governance: 'HR Governance',
-    workflow: 'Workflow',
-    executive_dashboard: 'Executive Dashboard',
-    financial_oversight: 'Financial Oversight',
-    governance_compliance: 'Governance & Compliance',
-    board_activities: 'Board Activities',
-    strategic_oversight: 'Strategic Oversight',
-    reporting: 'Reporting',
-    shareholder_services: 'Shareholder Services',
-    governance_access: 'Governance Access',
-    reports_disclosures: 'Reports & Disclosures',
-    it_infrastructure: 'IT Infrastructure',
-    telecom_systems: 'Telecom Systems',
-    ops_governance: 'Ops & Governance',
-    support_personal: 'Support & Personal',
-    self_service: 'Self Service',
-    support_docs: 'Support & Docs',
-    financial_control: 'Financial Control',
-    general_ledger: 'Ledger',
-    accounts_payable: 'Accounts Payable',
-    accounts_receivable: 'Accounts Receivable',
-    inventory_assets: 'Inventory & Assets',
-    reports_tax: 'Reports & Tax',
-    settings_personal: 'Settings & Personal',
-    audit_overview: 'Overview',
-    audit_execution: 'Audit Execution',
-    committee_overview: 'Committee Overview',
-    oversight: 'Oversight & Control',
-    reports_review: 'Reports Review',
-    sales_overview: 'Overview',
-    sales_operations: 'Sales Operations',
-    client_management: 'Client Management',
     shareholder_overview: 'Overview',
     shareholder_services: 'Shareholder Services',
     shareholder_requests: 'Requests',
-    hr_control: 'HR Control',
-    hr_operations: 'Daily Operations',
-    hr_management: 'HR Management',
-    hr_services: 'Administrative Services',
-    hr_compliance: 'Compliance & Partnerships',
-    
-    // Menu Items - Common (English translations)
+    personal: 'Personal',
     dashboard: 'Dashboard',
-    users_mgmt: 'User Management',
-    admin_settings: 'System Settings',
-    it_systems: 'IT Systems',
-    system_audit: 'Audit Log',
-    internal_chat: 'Internal Chat',
-    circulars_admin: 'Admin Circulars',
-    board_portal: 'Board Portal',
-    committees_mgmt: 'Committees',
-    general_assembly: 'General Assembly',
-    policies_library: 'Policy Library',
-    board_circulars: 'Board Circulars',
-    audit_dashboard: 'Audit Dashboard',
-    financial_review: 'Financial Review',
-    procurement_control: 'Procurement',
-    compliance_check: 'Compliance Check',
-    task_tracker: 'Task Tracker',
-    shareholders_db: 'Shareholders DB',
-    ga_access: 'General Assembly',
-    my_profile: 'My Profile',
-    ir_circulars: 'Circulars',
-    compliance_dashboard: 'Compliance Dashboard',
-    doa_authority: 'DOA Matrix',
-    policies_control: 'Policy Control',
-    hr_compliance: 'HR Compliance',
-    audit_reports: 'Audit Reports',
-    grc_tasks: 'GRC Tasks',
-    executive_overview: 'Executive Overview',
-    strategic_planning: 'Strategic Planning',
-    financial_performance: 'Financial Performance',
-    executive_reports: 'Executive Reports',
-    governance_framework: 'Governance Framework',
-    risk_management: 'Risk Management',
-    company_broadcast: 'Company Broadcast',
-    internal_communication: 'Internal Communication',
-    feedback_center: 'Feedback Center',
-    governance_oversight: 'Governance Oversight',
-    strategic_initiatives: 'Strategic Initiatives',
-    risk_oversight: 'Risk Oversight',
-    board_reports: 'Board Reports',
-    board_communication: 'Board Communication',
-    my_portfolio: 'My Portfolio',
-    financial_statements: 'Financial Statements',
-    governance_documents: 'Governance Documents',
-    board_meetings: 'Board Meetings',
-    annual_reports: 'Annual Reports',
-    announcements: 'Announcements',
-    servers: 'Servers Mgmt',
-    monitoring: 'System Monitoring',
-    soc_ops: 'SOC Operations',
-    pbx_mgmt: 'PBX Management',
-    extensions: 'Extensions',
-    call_logs: 'Call Logs',
-    iam_access: 'IAM Access',
-    projects: 'IT Projects',
-    it_assets: 'IT Assets',
-    it_support: 'IT Support',
-    my_requests: 'My Requests',
-    salary_slips: 'Pay Slips',
-    company_policies: 'Policies',
-    approvals: 'Approvals',
-    gl_journal: 'GL Journal',
-    gl_coa: 'Chart of Accounts',
-    gl_cost_centers: 'Cost Centers',
-    ap_bills: 'Bills',
-    ap_payments: 'Payments',
-    ap_vendors: 'Vendors',
-    ar_invoices: 'Invoices',
-    ar_receipts: 'Receipts',
-    inv_dashboard: 'Inventory Dashboard',
-    inv_assets: 'Assets',
-    rep_statements: 'Financial Statements',
-    rep_budget: 'Budget',
-    rep_tax: 'Tax Reports',
-    fin_settings: 'Finance Settings',
-    annual_audit_plan: 'Annual Audit Plan',
-    observations_log: 'Observations Log',
-    risk_assessment: 'Risk Assessment',
-    compliance_monitoring: 'Compliance Monitoring',
-    quarterly_reports: 'Quarterly Reports',
-    findings_database: 'Findings Database',
-    committee_dashboard: 'Committee Dashboard',
-    audit_plan_review: 'Audit Plan Review',
-    critical_observations: 'Critical Observations',
-    risk_reports: 'Risk Reports',
-    compliance_status: 'Compliance Status',
-    external_audit: 'External Audit',
-    committee_communication: 'Committee Communication',
-    meetings: 'Meetings',
-    sales_pipeline: 'Sales Pipeline',
-    sales_quotes: 'Quotes',
-    sales_activities: 'Activities',
-    sales_clients: 'Clients',
     certificates: 'Certificates',
     dividends: 'Dividends',
     voting: 'Voting',
     requests: 'Requests',
-    employees: 'Employees',
-    attendance: 'Attendance',
-    leaves: 'Leaves',
-    payroll: 'Payroll',
-    recruitment: 'Recruitment',
-    contracts: 'Contracts',
-    org_structure: 'Organization Structure',
-    assets: 'Assets',
-    logistics: 'Logistics',
-    trips: 'Trips',
-    purchases: 'Purchases',
-    govt_affairs: 'Government Affairs',
-    partners: 'Partners',
-    
-    // UI Elements
+    my_profile: 'My Profile',
     switchWorkspace: 'Switch Workspace',
     selectRole: 'Select the appropriate role for your current tasks',
     notifications: 'Notifications',
@@ -422,22 +104,7 @@ const UNIVERSAL_TRANSLATIONS = {
 // ============================================================================
 const Layout = (function() {
   
-  // Detect portal type from URL (admin, audit, board, ceo, cto, employee, finance, hr, sales, shareholder)
-  const PORTAL_TYPE = (function() {
-    const path = window.location.pathname;
-    if (path.includes('/admin/')) return 'admin';
-    if (path.includes('/audit/')) return 'audit';
-    if (path.includes('/board/')) return 'board';
-    if (path.includes('/ceo/')) return 'ceo';
-    if (path.includes('/cto/')) return 'cto';
-    if (path.includes('/employee/')) return 'employee';
-    if (path.includes('/finance/')) return 'finance';
-    if (path.includes('/hr/')) return 'hr';
-    if (path.includes('/sales/')) return 'sales';
-    if (path.includes('/shareholder/')) return 'shareholder';
-    return 'admin'; // Default fallback
-  })();
-
+  const PORTAL_TYPE = 'shareholder';
   const CONFIG = PORTAL_CONFIG[PORTAL_TYPE];
   
   let _state = {
@@ -463,36 +130,15 @@ const Layout = (function() {
     document.documentElement.lang = lang;
     document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
     
-    const mainContent = document.querySelector('.main-content-wrapper');
-    if (mainContent) {
-      if (lang === 'ar') {
-        mainContent.classList.remove('md:ml-72');
-        mainContent.classList.add('md:mr-72');
-      } else {
-        mainContent.classList.remove('md:mr-72');
-        mainContent.classList.add('md:ml-72');
-      }
-    }
-    
     renderSidebar();
     renderHeader();
     
     window.dispatchEvent(new CustomEvent('languageChanged', { detail: { lang } }));
     
-    if (typeof window.updateContent === 'function') {
-      setTimeout(() => window.updateContent(), 100);
-    }
-    
-    if (window.I18n && typeof I18n.setLanguage === 'function') {
-      I18n.setLanguage(lang);
-    }
-    
     if (window.Toast) {
       const msg = lang === 'ar' ? 'تم التبديل إلى العربية' : 'Switched to English';
       Toast.success(msg);
     }
-    
-    console.log(`🌐 Language changed to: ${lang}`);
   }
 
   function t(key) {
@@ -514,11 +160,11 @@ const Layout = (function() {
           type: 'approval',
           icon: 'fa-file-signature',
           color: 'orange',
-          title: { ar: 'اعتماد مطلوب', en: 'Approval Required' },
-          body: { ar: 'مسودة بانتظار الموافقة النهائية', en: 'Draft awaiting final approval' },
+          title: { ar: 'توزيعات قادمة', en: 'Upcoming Dividends' },
+          body: { ar: 'سيتم إيداع الأرباح في 15 مارس', en: 'Dividends will be deposited on March 15' },
           time: new Date(Date.now() - 1000 * 60 * 15),
           read: false,
-          link: 'policies.html'
+          link: 'dividends.html'
         }
       ];
     }
@@ -602,21 +248,8 @@ const Layout = (function() {
         let badgeHTML = '';
         if (item.badge) {
           const badgeStyles = {
-            'core': 'bg-blue-500', 'new': 'bg-green-500 animate-pulse', 
-            'tech': 'bg-purple-500', 'primary': 'bg-amber-500', 
-            'assembly': 'bg-indigo-500', 'audit': 'bg-red-500',
-            'orders': 'bg-orange-500', 'active': 'bg-teal-500',
-            'investors': 'bg-pink-500', 'grc': 'bg-cyan-500',
-            'authority': 'bg-violet-500', 'hr': 'bg-emerald-500',
-            'live': 'bg-red-500 animate-pulse', 'strategic': 'bg-purple-500',
-            'financial': 'bg-green-500', 'compliance': 'bg-blue-500',
-            'risks': 'bg-orange-500', 'broadcast': 'bg-indigo-500',
-            'board': 'bg-amber-500', 'initiatives': 'bg-violet-500',
-            'portfolio': 'bg-emerald-500', 'cloud': 'bg-sky-500',
-            'security': 'bg-red-600', 'iam': 'bg-purple-600',
-            'tickets': 'bg-orange-600', 'home': 'bg-blue-400',
-            'urgent': 'bg-red-600 animate-pulse', 'important': 'bg-orange-600',
-            'critical': 'bg-red-700'
+            'live': 'bg-red-500 animate-pulse',
+            'vote': 'bg-purple-600 animate-pulse'
           };
           const badgeClass = badgeStyles[item.badge] || 'bg-slate-400';
           badgeHTML = `<span class="px-1.5 py-0.5 text-[9px] font-bold rounded ${badgeClass} text-white uppercase tracking-wider">${item.badge}</span>`;
@@ -636,7 +269,7 @@ const Layout = (function() {
     });
 
     const user = _state.currentUser;
-    const displayName = user?.displayName || user?.name || (lang === 'ar' ? 'أيمن المغربي' : 'Ayman Almaghrabi');
+    const displayName = user?.displayName || user?.name || (lang === 'ar' ? 'مساهم' : 'Shareholder');
     const roleLabel = CONFIG.roles[_state.activeRole][lang];
 
     container.innerHTML = `
@@ -659,14 +292,12 @@ const Layout = (function() {
         <div class="p-4 shrink-0">
           <div class="relative group cursor-pointer">
             <div class="flex items-center gap-3 p-3 rounded-xl bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-900 border border-slate-200 dark:border-slate-700 transition-all hover:shadow-md">
-              <img src="${user?.avatar || '../photo/admin.jpg'}" 
-                   class="w-11 h-11 rounded-full border-2 border-white dark:border-slate-600 object-cover shadow-md" 
-                   onerror="this.src='https://ui-avatars.com/api/?name=User&background=DC2626&color=fff&bold=true'">
+              <img src="${user?.avatar || 'https://ui-avatars.com/api/?name=Shareholder&background=FB4747&color=fff'}" 
+                   class="w-11 h-11 rounded-full border-2 border-white dark:border-slate-600 object-cover shadow-md">
               <div class="overflow-hidden flex-1 min-w-0">
                 <p class="text-sm font-bold text-slate-800 dark:text-white truncate">${displayName}</p>
                 <p class="text-[10px] text-${CONFIG.brandColor} font-bold truncate uppercase tracking-tight">${roleLabel}</p>
               </div>
-              <i class="fa-solid fa-chevron-down text-slate-400 text-xs"></i>
             </div>
             <div class="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 overflow-hidden">
               <a href="profile.html" class="flex items-center gap-3 p-3 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
@@ -702,53 +333,15 @@ const Layout = (function() {
     const isRTL = lang === 'ar';
     const isDark = document.documentElement.classList.contains('dark');
 
-    // Only show role switcher if multiple roles exist
-    const hasMultipleRoles = Object.keys(CONFIG.roles).length > 1;
-
     container.innerHTML = `
       <header class="h-20 sticky top-0 z-40 flex items-center justify-between px-6 bg-white/90 dark:bg-[#0F172A]/95 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800 shadow-sm transition-all">
         
         <div class="flex items-center gap-4">
-          <!-- Mobile Menu -->
           <button onclick="Layout.toggleMobileSidebar()" class="md:hidden text-slate-500 dark:text-slate-200 hover:text-${CONFIG.brandColor} transition-colors">
             <i class="fa-solid fa-bars text-xl"></i>
           </button>
-          
-          ${hasMultipleRoles ? `
-          <!-- Role Switcher -->
-          <div class="relative group">
-            <button class="flex items-center gap-2.5 px-4 py-2.5 bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-900 border-2 border-slate-200 dark:border-slate-700 rounded-xl text-xs font-bold hover:border-${CONFIG.brandColor} dark:hover:border-red-500 transition-all shadow-sm hover:shadow-md">
-              <i class="fa-solid fa-repeat text-${CONFIG.brandColor} animate-pulse"></i>
-              <span class="hidden sm:inline text-slate-700 dark:text-slate-200">${CONFIG.roles[_state.activeRole][lang]}</span>
-              <i class="fa-solid fa-chevron-down text-[10px] text-slate-400 transition-transform group-hover:rotate-180"></i>
-            </button>
-            
-            <div class="absolute top-full ${isRTL ? 'right-0' : 'left-0'} mt-3 w-80 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 overflow-hidden">
-              <div class="p-4 border-b border-slate-100 dark:border-slate-700 bg-gradient-to-r from-${CONFIG.brandColor} to-red-600">
-                <p class="text-xs font-bold text-white/90 uppercase tracking-widest">${t('switchWorkspace')}</p>
-                <p class="text-[10px] text-white/70 mt-1">${t('selectRole')}</p>
-              </div>
-              <div class="p-2 max-h-96 overflow-y-auto custom-scroll">
-                ${Object.entries(CONFIG.roles).map(([roleKey, labels]) => `
-                  <button onclick="Layout.switchRole('${roleKey}')" 
-                          class="w-full flex items-start gap-3 p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition-all ${roleKey === _state.activeRole ? 'bg-red-50 dark:bg-red-900/20 border-2 border-brandRed/30' : 'border-2 border-transparent'} mb-2">
-                    <div class="w-10 h-10 rounded-lg ${roleKey === _state.activeRole ? 'bg-brandRed text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-500'} flex items-center justify-center shrink-0">
-                      <i class="fa-solid ${labels.icon} text-sm"></i>
-                    </div>
-                    <div class="flex-1 text-${isRTL ? 'right' : 'left'}">
-                      <p class="text-xs font-bold ${roleKey === _state.activeRole ? 'text-brandRed' : 'text-slate-700 dark:text-slate-200'}">${labels[lang]}</p>
-                      <p class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">${labels.desc[lang]}</p>
-                    </div>
-                    ${roleKey === _state.activeRole ? '<i class="fa-solid fa-check text-brandRed text-sm"></i>' : ''}
-                  </button>
-                `).join('')}
-              </div>
-            </div>
-          </div>
-          ` : ''}
         </div>
 
-        <!-- Right Actions -->
         <div class="flex items-center gap-3">
           
           <!-- Notifications -->
@@ -762,7 +355,6 @@ const Layout = (function() {
               ` : ''}
             </button>
             
-            <!-- Notifications Dropdown -->
             <div class="absolute top-full ${isRTL ? 'right-0' : 'left-0'} mt-3 w-96 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 overflow-hidden">
               <div class="p-4 border-b border-slate-100 dark:border-slate-700 bg-gradient-to-r from-orange-500 to-amber-500 flex justify-between items-center">
                 <div>
@@ -786,9 +378,7 @@ const Layout = (function() {
                   const colorStyles = {
                     orange: 'bg-orange-100 text-orange-600 dark:bg-orange-900/30',
                     blue: 'bg-blue-100 text-blue-600 dark:bg-blue-900/30',
-                    green: 'bg-green-100 text-green-600 dark:bg-green-900/30',
-                    red: 'bg-red-100 text-red-600 dark:bg-red-900/30',
-                    purple: 'bg-purple-100 text-purple-600 dark:bg-purple-900/30'
+                    green: 'bg-green-100 text-green-600 dark:bg-green-900/30'
                   };
                   const colorClass = colorStyles[notif.color] || colorStyles.blue;
                   
@@ -811,19 +401,13 @@ const Layout = (function() {
             </div>
           </div>
 
-          <!-- Language Switcher -->
+          <!-- Language -->
           <button onclick="Layout.toggleLanguage()" 
                   class="w-10 h-10 rounded-xl border-2 border-slate-200 dark:border-slate-700 hover:bg-blue-50 dark:hover:bg-blue-900/20 text-slate-600 dark:text-slate-300 hover:border-blue-400 transition-all flex items-center justify-center font-bold text-xs">
             ${lang === 'ar' ? 'EN' : 'ع'}
           </button>
           
-          <!-- AI Bot -->
-          <button onclick="if(window.AndroBot) AndroBot.toggle()" 
-                  class="w-10 h-10 rounded-xl border-2 border-slate-200 dark:border-slate-700 hover:bg-blue-50 dark:hover:bg-blue-900/20 text-brandBlue hover:border-blue-400 transition-all flex items-center justify-center group">
-            <i class="fa-solid fa-robot group-hover:animate-bounce"></i>
-          </button>
-          
-          <!-- Theme Toggle -->
+          <!-- Theme -->
           <button onclick="Layout.toggleTheme()" 
                   class="w-10 h-10 rounded-xl border-2 border-slate-200 dark:border-slate-700 flex items-center justify-center hover:bg-amber-50 dark:hover:bg-amber-900/20 text-slate-600 dark:text-yellow-400 hover:border-amber-400 transition-all">
             <i class="fa-solid ${isDark ? 'fa-sun' : 'fa-moon'}"></i>
@@ -846,29 +430,6 @@ const Layout = (function() {
   // UTILITY FUNCTIONS
   // ==========================================
   
-  function switchRole(roleKey) {
-    if (!CONFIG.roles[roleKey]) {
-      console.warn(`⚠️ Invalid role: ${roleKey}`);
-      return;
-    }
-    
-    _state.activeRole = roleKey;
-    localStorage.setItem(CONFIG.storageKey, roleKey);
-    
-    renderSidebar();
-    renderHeader();
-    
-    if (window.Toast) {
-      const lang = getCurrentLang();
-      Toast.success(lang === 'ar' ? 
-        `تم التبديل إلى: ${CONFIG.roles[roleKey].ar}` :
-        `Switched to: ${CONFIG.roles[roleKey].en}`
-      );
-    }
-    
-    console.log(`🔄 Role switched to: ${roleKey}`);
-  }
-
   function toggleLanguage() {
     const currentLang = getCurrentLang();
     const newLang = currentLang === 'ar' ? 'en' : 'ar';
@@ -881,34 +442,28 @@ const Layout = (function() {
     const isDark = html.classList.contains('dark');
     localStorage.setItem('theme', isDark ? 'dark' : 'light');
     renderHeader();
-    
-    if (window.Toast) {
-      const lang = getCurrentLang();
-      const msg = lang === 'ar' ?
-        (isDark ? 'تم تفعيل الوضع الليلي' : 'تم تفعيل الوضع النهاري') :
-        (isDark ? 'Dark mode enabled' : 'Light mode enabled');
-      Toast.info(msg);
-    }
   }
 
   function logout() {
     const lang = getCurrentLang();
-    const confirmMsg = lang === 'ar' ? 
-      'هل أنت متأكد من تسجيل الخروج؟' :
-      'Are you sure you want to logout?';
+    const confirmMsg = t('logoutConfirm');
       
     if (confirm(confirmMsg)) {
-      localStorage.removeItem('currentUser');
-      localStorage.removeItem(CONFIG.storageKey);
+      localStorage.clear();
+      sessionStorage.clear();
       window.location.href = '../login.html';
     }
   }
 
   function toggleMobileSidebar() {
+    _state.sidebarOpen = !_state.sidebarOpen;
     const sidebar = document.getElementById('main-sidebar');
     if (sidebar) {
-      sidebar.classList.toggle('-translate-x-full');
-      sidebar.classList.toggle('translate-x-0');
+      if (_state.sidebarOpen) {
+        sidebar.classList.remove('-translate-x-full');
+      } else {
+        sidebar.classList.add('-translate-x-full');
+      }
     }
   }
 
@@ -923,42 +478,48 @@ const Layout = (function() {
   // INITIALIZATION
   // ==========================================
   async function init() {
-    if (_state.isInitialized) return;
+    if (_state.isInitialized) {
+      console.log('⚠️ Layout already initialized');
+      return;
+    }
 
-    // Load User Data
+    console.log('🚀 Initializing Layout...');
+
+    // Load User
     const storedUser = localStorage.getItem('currentUser');
     if (storedUser) {
-      _state.currentUser = JSON.parse(storedUser);
-      
-      // Validate Saved Role
-      let savedRole = localStorage.getItem(CONFIG.storageKey);
-      if (savedRole && CONFIG.roles[savedRole]) {
-        _state.activeRole = savedRole;
-      } else {
-        _state.activeRole = CONFIG.defaultRole;
-        localStorage.setItem(CONFIG.storageKey, CONFIG.defaultRole);
+      try {
+        _state.currentUser = JSON.parse(storedUser);
+      } catch (e) {
+        console.error('❌ Error parsing user:', e);
       }
-    } else {
-      // Set default user if not logged in
+    }
+    
+    if (!_state.currentUser) {
       _state.currentUser = {
-        id: 'USR_001',
+        id: 'SH_USER_001',
         type: PORTAL_TYPE,
-        displayName: getCurrentLang() === 'ar' ? 'أيمن المغربي' : 'Ayman Almaghrabi',
-        avatar: 'https://ui-avatars.com/api/?name=User&background=DC2626&color=fff&bold=true'
+        displayName: getCurrentLang() === 'ar' ? 'مساهم' : 'Shareholder',
+        avatar: 'https://ui-avatars.com/api/?name=Shareholder&background=FB4747&color=fff',
+        role: 'shareholder',
+        email: 'm.hadyan@androomeda.com'
       };
       localStorage.setItem('currentUser', JSON.stringify(_state.currentUser));
     }
 
+    // Ensure role
+    _state.activeRole = CONFIG.defaultRole;
+
     // Load Notifications
     loadNotifications();
 
-    // Render UI
+    // Render
     renderSidebar();
     renderHeader();
     hideLoadingOverlay();
 
     _state.isInitialized = true;
-    console.log(`✅ AndroGov ${PORTAL_TYPE.toUpperCase()} Layout Ready | Role: ${_state.activeRole} | Lang: ${getCurrentLang()}`);
+    console.log(`✅ Layout Ready | Role: ${_state.activeRole}`);
   }
 
   // ==========================================
@@ -973,10 +534,8 @@ const Layout = (function() {
     setLanguage,
     logout,
     toggleMobileSidebar,
-    switchRole,
     markNotificationRead,
     markAllRead,
-    getActiveRole: () => _state.activeRole,
     getCurrentLang,
     t
   };
