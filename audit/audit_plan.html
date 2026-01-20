@@ -3,15 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#FB4747">
     <title data-i18n="pageTitle">خطة التدقيق السنوية | AndroGov</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
+
     <script>
         tailwind.config = {
             darkMode: 'class',
             theme: {
                 extend: {
-                    colors: { brandRed: '#FB4747', brandBlue: '#4267B2', brandDark: '#0F172A' },
+                    colors: { 
+                        brandRed: '#FB4747', 
+                        brandBlue: '#4267B2', 
+                        brandDark: '#0F172A', 
+                        brandGray: '#F8FAFC' 
+                    },
                     fontFamily: { sans: ['Tajawal', 'Inter', 'sans-serif'] }
                 }
             }
@@ -26,7 +35,8 @@
         .shadow-glow { box-shadow: 0 10px 15px -3px rgba(251, 71, 71, 0.3); }
     </style>
 </head>
-<body class="bg-slate-50 dark:bg-[#0F172A] text-slate-800 dark:text-slate-100 font-sans h-screen flex overflow-hidden">
+
+<body class="bg-brandGray dark:bg-[#0F172A] text-slate-800 dark:text-slate-100 font-sans h-screen flex overflow-hidden">
 
     <!-- ✅ Loading Overlay -->
     <div id="loadingOverlay" class="fixed inset-0 bg-white dark:bg-[#0F172A] z-[9999] flex items-center justify-center transition-opacity duration-500">
@@ -35,14 +45,17 @@
             <p class="text-sm text-slate-600 dark:text-slate-400 font-bold" data-i18n="loading">جاري تهيئة محرك الحوكمة والاشعارات...</p>
         </div>
     </div>
-    
+
+    <!-- ✅ Sidebar Area -->
     <div id="sidebar-container"></div>
-    
-    <!-- تم تصحيح الكلاسات هنا لتناسب w-72 -->
-    <div class="main-content-wrapper flex-1 flex flex-col h-full transition-all duration-300 md:mr-72">
-        <div id="header-container"></div>
+
+    <!-- ✅ Main Wrapper -->
+    <div class="main-content-wrapper flex-1 flex flex-col h-full relative overflow-hidden md:mr-72">
         
+        <div id="header-container"></div>
+
         <main class="flex-1 overflow-y-auto p-6 custom-scroll space-y-6">
+            
             <div class="flex justify-between items-center">
                 <h1 class="text-xl font-bold flex items-center gap-3">
                     <i class="fa-solid fa-calendar-check text-brandRed"></i>
@@ -85,7 +98,10 @@
         </main>
     </div>
 
-    <!-- ✅ AndroGov Engine Script (Fully Integrated & Fixed) -->
+    <!-- ✅ 1. Linking External Bot Component (جسر ربط المساعد الذكي) -->
+    <script src="audit/js/components/bot.js"></script>
+
+    <!-- ✅ 2. AndroGov Engine Script -->
     <script>
         const Layout = (function() {
             // 1. STATE MANAGEMENT
@@ -148,7 +164,7 @@
                 
                 let html = `
                 <aside id="main-sidebar" class="fixed top-0 ${lang === 'ar' ? 'right-0 border-l' : 'left-0 border-r'} z-50 h-screen w-72 bg-white dark:bg-[#0F172A] border-slate-200 dark:border-slate-800 flex flex-col shadow-2xl transition-all duration-300">
-                    <div class="h-20 flex items-center px-6 border-b border-slate-100 dark:border-slate-800 bg-gradient-to-r from-slate-50 to-transparent dark:from-slate-800/20">
+                    <div class="h-20 flex items-center px-6 border-b border-slate-100 dark:border-slate-800">
                         <div class="w-12 h-12 bg-gradient-to-br from-brandRed to-red-600 rounded-[14px] flex items-center justify-center text-white shadow-glow transition-transform hover:rotate-3">
                             <i class="fa-solid fa-layer-group text-xl"></i>
                         </div>
@@ -276,11 +292,14 @@
                     setLanguage(lang);
                     
                     // Initialization Protocol
-                    document.getElementById('loadingOverlay').classList.add('opacity-0');
-                    setTimeout(() => {
-                        document.getElementById('loadingOverlay').classList.add('hidden');
-                        _state.isInitialized = true;
-                    }, 500);
+                    const overlay = document.getElementById('loadingOverlay');
+                    if (overlay) {
+                        overlay.classList.add('opacity-0');
+                        setTimeout(() => {
+                            overlay.classList.add('hidden');
+                            _state.isInitialized = true;
+                        }, 500);
+                    }
                     console.log("💎 AndroGov Layout Engine v10.5 Active");
                 },
                 getCurrentLang,
