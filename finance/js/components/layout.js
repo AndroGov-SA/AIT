@@ -1,7 +1,7 @@
 /**
- * AndroGov Layout Engine v10.5 (Finance/ERP Edition)
+ * AndroGov Layout Engine v10.5 (Finance Full Edition)
  * @file finance/js/components/layout.js
- * FIXED: Full Features (Bot + Notifications) + Stable Navigation
+ * FIXED: Full Features (Bot + Notifications) + All 18 Pages Navigation
  */
 
 const Layout = (function() {
@@ -14,6 +14,7 @@ const Layout = (function() {
     unreadCount: 0
   };
 
+  // مصفوفة الـ 18 صفحة مالية (تم ضبط الروابط لتكون مباشرة)
   const _menuDefinitions = {
     'CFO': [
       { section: 'financial_control', items: [
@@ -61,45 +62,42 @@ const Layout = (function() {
       ar_receipts: 'سندات القبض', inv_dashboard: 'لوحة المخزون', inv_assets: 'سجل الأصول',
       rep_statements: 'القوائم المالية', rep_budget: 'الموازنة التقديرية', rep_tax: 'الإقرارات الضريبية',
       fin_settings: 'الإعدادات المالية', my_profile: 'الملف الشخصي', notifications: 'الإشعارات',
-      markAllRead: 'تعليم الكل كمقروء', logout: 'خروج', logoutConfirm: 'هل تريد الخروج؟',
-      poweredBy: 'تطوير', aymanDev: 'أيمن المغربي'
+      markAllRead: 'تعليم الكل كمقروء', logout: 'خروج', logoutConfirm: 'هل تريد الخروج؟', poweredBy: 'تطوير', aymanDev: 'أيمن المغربي'
     },
     en: {
         financial_control: 'Control', general_ledger: 'Ledger', dashboard: 'Dashboard', approvals: 'Approvals',
         notifications: 'Notifications', markAllRead: 'Mark all as read', logout: 'Logout', logoutConfirm: 'Exit?'
-        // ... الإكمال التلقائي لبقية الترجمات
     }
   };
 
   function getCurrentLang() { return localStorage.getItem('lang') || 'ar'; }
   function t(key) { return _translations[getCurrentLang()]?.[key] || key; }
 
-  // 1. نظام الإشعارات (تم إعادته)
+  // إعادة ميزة الإشعارات الأصلية
   function loadNotifications() {
     const stored = localStorage.getItem('notifications');
     _state.notifications = stored ? JSON.parse(stored) : [
-      { id: 'F1', icon: 'fa-file-invoice-dollar', color: 'orange', title: { ar: 'فاتورة معلقة', en: 'Pending Bill' }, body: { ar: 'مورد "أرامكو" بانتظار الاعتماد', en: 'Bill needs approval' }, time: new Date(), read: false, link: 'approvals.html' }
+      { id: 'F1', icon: 'fa-file-invoice-dollar', color: 'orange', title: { ar: 'اعتماد مالي مطلوب', en: 'Approval Needed' }, body: { ar: 'فاتورة مورد بانتظار موافقتك', en: 'Invoice awaiting your sign' }, time: new Date(), read: false, link: 'approvals.html' }
     ];
     _state.unreadCount = _state.notifications.filter(n => !n.read).length;
   }
 
-  // 2. بناء الشريط الجانبي مع إصلاح الروابط
   function renderSidebar() {
     const container = document.getElementById('sidebar-container');
     if (!container) return;
     const lang = getCurrentLang();
     const isRTL = lang === 'ar';
     const currentPath = window.location.pathname.split('/').pop() || 'index.html';
+    const activeMenu = _menuDefinitions['CFO'];
 
     let menuHTML = '';
-    _menuDefinitions['CFO'].forEach(group => {
+    activeMenu.forEach(group => {
       menuHTML += `<div class="px-3 mt-6 mb-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider">${t(group.section)}</div>`;
       group.items.forEach(item => {
-        // تنظيف الرابط لضمان المقارنة الصحيحة
         const isActive = currentPath === item.link;
         menuHTML += `
           <a href="${item.link}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all group mb-1 ${isActive ? 'bg-gradient-to-r from-brandRed to-red-600 text-white shadow-lg shadow-red-500/30' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-brandRed'}">
-            <div class="w-5 text-center"><i class="fa-solid ${item.icon}"></i></div>
+            <div class="w-5 text-center transition-transform group-hover:scale-110"><i class="fa-solid ${item.icon}"></i></div>
             <span class="flex-1 truncate">${t(item.key)}</span>
             ${item.badge ? `<span class="px-1.5 py-0.5 text-[9px] font-bold rounded bg-amber-500 text-white uppercase">${item.badge}</span>` : ''}
           </a>`;
@@ -121,11 +119,10 @@ const Layout = (function() {
           </div>
         </div>
         <nav class="flex-1 overflow-y-auto px-3 py-2 custom-scroll">${menuHTML}</nav>
-        <div class="p-4 text-center border-t border-slate-100 dark:border-slate-800"><p class="text-[10px] text-slate-400 font-medium">© 2026 ERP Finance System</p></div>
+        <div class="p-4 text-center border-t border-slate-100 dark:border-slate-800 bg-slate-50/50"><p class="text-[10px] text-slate-400 font-medium">© 2026 ERP Finance System</p></div>
       </aside>`;
   }
 
-  // 3. بناء الهيدر (إعادة البوت والإشعارات)
   function renderHeader() {
     const container = document.getElementById('header-container');
     if (!container) return;
@@ -137,7 +134,7 @@ const Layout = (function() {
       <header class="h-20 sticky top-0 z-40 flex items-center justify-between px-6 bg-white/90 dark:bg-[#0F172A]/95 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800 shadow-sm">
         <div class="flex items-center gap-4">
           <button onclick="Layout.toggleMobileSidebar()" class="md:hidden text-slate-500"><i class="fa-solid fa-bars text-xl"></i></button>
-          <div class="px-4 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-[11px] font-bold text-slate-600 dark:text-slate-300"><i class="fa-solid fa-lock text-brandRed mr-2"></i> SECURE_FINANCE_v10.5</div>
+          <div class="px-4 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-[11px] font-bold text-slate-600 dark:text-slate-300"><i class="fa-solid fa-lock text-brandRed mr-2"></i> FINANCE_SECURE_v10.5</div>
         </div>
 
         <div class="flex items-center gap-3">
@@ -153,21 +150,16 @@ const Layout = (function() {
                 </div>
                 <div class="max-h-64 overflow-y-auto">
                     ${_state.notifications.map(n => `
-                    <a href="${n.link}" class="flex gap-3 p-4 border-b border-slate-50 dark:border-slate-700 hover:bg-slate-50">
+                    <a href="${n.link}" onclick="Layout.markNotificationRead('${n.id}')" class="flex gap-3 p-4 border-b border-slate-50 dark:border-slate-700 hover:bg-slate-50">
                         <div class="w-8 h-8 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center"><i class="fa-solid ${n.icon}"></i></div>
-                        <div class="flex-1 min-w-0">
-                            <p class="text-xs font-bold text-slate-800 dark:text-white">${n.title[lang]}</p>
-                            <p class="text-[10px] text-slate-500 truncate">${n.body[lang]}</p>
-                        </div>
+                        <div class="flex-1 min-w-0"><p class="text-xs font-bold text-slate-800 dark:text-white">${n.title[lang]}</p><p class="text-[10px] text-slate-500 truncate">${n.body[lang]}</p></div>
                     </a>`).join('')}
                 </div>
             </div>
           </div>
 
           <button onclick="Layout.toggleLanguage()" class="w-10 h-10 rounded-xl border-2 border-slate-200 dark:border-slate-700 font-bold text-xs">${lang === 'ar' ? 'EN' : 'ع'}</button>
-          
           <button onclick="if(window.AndroBot) AndroBot.toggle()" class="w-10 h-10 rounded-xl border-2 border-slate-200 dark:border-slate-700 text-brandBlue flex items-center justify-center group"><i class="fa-solid fa-robot group-hover:animate-bounce"></i></button>
-          
           <button onclick="Layout.toggleTheme()" class="w-10 h-10 rounded-xl border-2 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-yellow-400 flex items-center justify-center"><i class="fa-solid ${isDark ? 'fa-sun' : 'fa-moon'}"></i></button>
           <div class="h-8 w-px bg-slate-200 dark:bg-slate-700 mx-1"></div>
           <button onclick="Layout.logout()" class="text-red-500 hover:bg-red-50 px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2"><i class="fa-solid fa-power-off"></i> <span>${t('logout')}</span></button>
@@ -186,6 +178,7 @@ const Layout = (function() {
     document.body.classList.remove('opacity-0');
     document.body.style.opacity = '1';
     _state.isInitialized = true;
+    console.log("✅ Finance Engine Ready: All Features Active.");
   }
 
   function toggleLanguage() { localStorage.setItem('lang', getCurrentLang() === 'ar' ? 'en' : 'ar'); location.reload(); }
@@ -197,7 +190,7 @@ const Layout = (function() {
   return { init, toggleTheme, toggleLanguage, logout, toggleMobileSidebar, markAllRead };
 })();
 
-// تشغيل فوري
+// التشغيل الفوري
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', Layout.init);
 } else {
