@@ -1,597 +1,570 @@
-/**
- * AndroGov HR Layout Engine v1.0
- * @file hr/js/components/layout.js
- * @author Ayman Al-Maghrabi
- * @description HR layout with role support
- */
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#FB4747">
+    <title data-i18n="pageTitle">لوحة القيادة - الموارد البشرية | AndroGov</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-const Layout = (function() {
-// ==========================================
-// 1. STATE & CONFIG
-// ==========================================
-let _state = {
-currentUser: null,
-activeRole: 'hr_manager',
-isInitialized: false,
-sidebarOpen: false,
-notifications: [],
-unreadCount: 0
-};
-// ==========================================
-// 2. ROLE LABELS
-// ==========================================
-const _roleLabels = {
-'hr_manager': {
-ar: 'مدير الموارد البشرية',
-en: 'HR Manager',
-desc: { ar: 'الإشراف على شؤون الموظفين', en: 'Employee Affairs Supervision' }
-}
-};
-// ==========================================
-// 3. MENU DEFINITIONS
-// ==========================================
-const _menuDefinitions = {
-'hr_manager': [
-{ section: 'hr_control', items: [
-{ key: 'dashboard', icon: 'fa-chart-pie', link: 'index.html', badge: 'live' },
-{ key: 'approvals', icon: 'fa-file-signature', link: 'hr_approvals.html', badge: 'urgent' },
-{ key: 'internal_chat', icon: 'fa-comments', link: 'internal_chat.html', badge: null }
-]},
-{ section: 'hr_operations', items: [
-{ key: 'employees', icon: 'fa-users', link: 'hr_employees.html', badge: null },
-{ key: 'attendance', icon: 'fa-calendar-check', link: 'hr_attendance.html', badge: null },
-{ key: 'leaves', icon: 'fa-umbrella-beach', link: 'hr_leaves.html', badge: null },
-{ key: 'payroll', icon: 'fa-money-bill-wave', link: 'hr_payroll.html', badge: null }
-]},
-{ section: 'hr_management', items: [
-{ key: 'recruitment', icon: 'fa-user-plus', link: 'hr_recruitment.html', badge: null },
-{ key: 'contracts', icon: 'fa-file-contract', link: 'hr_contracts.html', badge: null },
-{ key: 'org_structure', icon: 'fa-sitemap', link: 'hr_org.html', badge: null }
-]},
-{ section: 'hr_services', items: [
-{ key: 'assets', icon: 'fa-box', link: 'hr_assets.html', badge: null },
-{ key: 'logistics', icon: 'fa-truck', link: 'hr_logistics.html', badge: null },
-{ key: 'trips', icon: 'fa-plane', link: 'hr_trips.html', badge: null },
-{ key: 'purchases', icon: 'fa-shopping-cart', link: 'hr_purchases.html', badge: null }
-]},
-{ section: 'hr_compliance', items: [
-{ key: 'govt_affairs', icon: 'fa-landmark', link: 'hr_govt.html', badge: null },
-{ key: 'partners', icon: 'fa-handshake', link: 'hr_partners.html', badge: null }
-]},
-{ section: 'personal', items: [
-{ key: 'my_profile', icon: 'fa-user-circle', link: 'profile.html', badge: null }
-]}
-]
-};
-// ==========================================
-// 4. TRANSLATIONS
-// ==========================================
-const _translations = {
-ar: {
-// Sections
-hr_control: 'لوحة التحكم',
-hr_operations: 'العمليات اليومية',
-hr_management: 'الإدارة',
-hr_services: 'الخدمات الإدارية',
-hr_compliance: 'الامتثال والشراكات',
-personal: 'الحساب الشخصي',
-  // Menu Items
-  dashboard: 'لوحة القيادة',
-  approvals: 'الاعتمادات',
-  internal_chat: 'المحادثات الداخلية',
-  employees: 'الموظفون',
-  attendance: 'الحضور والانصراف',
-  leaves: 'الإجازات',
-  payroll: 'الرواتب',
-  recruitment: 'التوظيف',
-  contracts: 'العقود',
-  org_structure: 'الهيكل التنظيمي',
-  assets: 'العهد',
-  logistics: 'اللوجستيات',
-  trips: 'السفر',
-  purchases: 'المشتريات',
-  govt_affairs: 'الشؤون الحكومية',
-  partners: 'الشراكات',
-  my_profile: 'الملف الشخصي',
-  
-  // UI Elements
-  switchWorkspace: 'تبديل بيئة العمل',
-  selectRole: 'اختر الدور المناسب',
-  notifications: 'الإشعارات',
-  noNotifications: 'لا توجد إشعارات',
-  markAllRead: 'تعليم الكل كمقروء',
-  viewAll: 'عرض الكل',
-  logout: 'تسجيل الخروج',
-  logoutConfirm: 'هل أنت متأكد؟',
-  poweredBy: 'تطوير',
-  aymanDev: 'أيمن المغربي'
-},
-en: {
-  // Sections
-  hr_control: 'Control Panel',
-  hr_operations: 'Daily Operations',
-  hr_management: 'Management',
-  hr_services: 'Administrative Services',
-  hr_compliance: 'Compliance & Partnerships',
-  personal: 'Personal',
-  
-  // Menu Items
-  dashboard: 'Dashboard',
-  approvals: 'Approvals',
-  internal_chat: 'Internal Chat',
-  employees: 'Employees',
-  attendance: 'Attendance',
-  leaves: 'Leaves',
-  payroll: 'Payroll',
-  recruitment: 'Recruitment',
-  contracts: 'Contracts',
-  org_structure: 'Org Structure',
-  assets: 'Assets',
-  logistics: 'Logistics',
-  trips: 'Trips',
-  purchases: 'Purchases',
-  govt_affairs: 'Government Affairs',
-  partners: 'Partners',
-  my_profile: 'My Profile',
-  
-  // UI Elements
-  switchWorkspace: 'Switch Workspace',
-  selectRole: 'Select Role',
-  notifications: 'Notifications',
-  noNotifications: 'No Notifications',
-  markAllRead: 'Mark All Read',
-  viewAll: 'View All',
-  logout: 'Logout',
-  logoutConfirm: 'Are you sure?',
-  poweredBy: 'Developed by',
-  aymanDev: 'Ayman Almaghrabi'
-}
-};
-// ==========================================
-// 5. INITIALIZATION
-// ==========================================
-async function init() {
-if (_state.isInitialized) return;
-// Load User Data
-const storedUser = localStorage.getItem('currentUser');
-if (storedUser) {
-  _state.currentUser = JSON.parse(storedUser);
-  
-  let savedRole = localStorage.getItem('hr_activeRole');
-  if (savedRole && _menuDefinitions[savedRole]) {
-    _state.activeRole = savedRole;
-  } else {
-    _state.activeRole = 'hr_manager';
-    localStorage.setItem('hr_activeRole', 'hr_manager');
-  }
-} else {
-  _state.currentUser = {
-    id: 'USR_005',
-    type: 'hr',
-    displayName: 'منصور اليامي',
-    displayTitle: 'مدير الشؤون الإدارية',
-    avatar: 'https://ui-avatars.com/api/?name=HR&background=DC2626&color=fff&bold=true'
-  };
-  localStorage.setItem('currentUser', JSON.stringify(_state.currentUser));
-}
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+    tailwind.config = {
+        darkMode: 'class',
+        theme: {
+            extend: {
+                colors: { 
+                    brandRed: '#FB4747',
+                    brandBlue: '#4267B2', 
+                    brandDark: '#0F172A', 
+                    moneyGreen: '#10B981', 
+                    alertOrange: '#F59E0B' 
+                },
+                fontFamily: { 
+                    sans: ['Tajawal', 'Inter', 'sans-serif'], 
+                    en: ['Inter', 'sans-serif'] 
+                }
+            }
+        }
+    }
+</script>
 
-loadNotifications();
-renderSidebar();
-renderHeader();
-hideLoadingOverlay();
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-_state.isInitialized = true;
-console.log(`✅ HR Layout Ready | Role: ${_state.activeRole} | Lang: ${getCurrentLang()}`);
-}
-function hideLoadingOverlay() {
-const overlay = document.getElementById('loadingOverlay');
-if (overlay) {
-setTimeout(() => overlay.classList.add('hidden'), 300);
-}
-}
-// ==========================================
-// 6. LANGUAGE SYSTEM
-// ==========================================
-function getCurrentLang() {
-return localStorage.getItem('lang') || 'ar';
-}
-function setLanguage(lang) {
-if (!['ar', 'en'].includes(lang)) return;
-localStorage.setItem('lang', lang);
-document.documentElement.lang = lang;
-document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
-
-const mainContent = document.querySelector('.main-content-wrapper');
-if (mainContent) {
-  if (lang === 'ar') {
-    mainContent.classList.remove('md:ml-72');
-    mainContent.classList.add('md:mr-72');
-  } else {
-    mainContent.classList.remove('md:mr-72');
-    mainContent.classList.add('md:ml-72');
-  }
-}
-
-renderSidebar();
-renderHeader();
-
-window.dispatchEvent(new CustomEvent('languageChanged', { detail: { lang } }));
-
-if (typeof window.updateContent === 'function') {
-  setTimeout(() => window.updateContent(), 100);
-}
-
-if (window.I18n && typeof I18n.setLanguage === 'function') {
-  I18n.setLanguage(lang);
-}
-
-if (window.Toast) {
-  const msg = lang === 'ar' ? 'تم التبديل إلى العربية' : 'Switched to English';
-  Toast.success(msg);
-}
-
-console.log(`🌐 Language changed to: ${lang}`);
-}
-function t(key) {
-const lang = getCurrentLang();
-return _translations[lang]?.[key] || key;
-}
-// ==========================================
-// 7. NOTIFICATIONS SYSTEM
-// ==========================================
-function loadNotifications() {
-const stored = localStorage.getItem('hr_notifications');
-if (stored) {
-_state.notifications = JSON.parse(stored);
-} else {
-_state.notifications = [
-{
-id: 'HR001',
-type: 'leave',
-icon: 'fa-umbrella-beach',
-color: 'blue',
-title: { ar: 'طلب إجازة جديد', en: 'New Leave Request' },
-body: { ar: 'خالد العتيبي - 5 أيام', en: 'Khalid - 5 days' },
-time: new Date(Date.now() - 1000 * 60 * 30),
-read: false,
-link: 'hr_approvals.html'
-},
-{
-id: 'HR002',
-type: 'payroll',
-icon: 'fa-money-bill-wave',
-color: 'green',
-title: { ar: 'موعد الرواتب', en: 'Payroll Due' },
-body: { ar: 'يستحق في: 27 الشهر', en: 'Due on: 27th' },
-time: new Date(Date.now() - 1000 * 60 * 60 * 3),
-read: false,
-link: 'hr_payroll.html'
-},
-{
-id: 'HR003',
-type: 'alert',
-icon: 'fa-triangle-exclamation',
-color: 'orange',
-title: { ar: 'تنبيه: انتهاء إقامة', en: 'Alert: Iqama Expiry' },
-body: { ar: 'محمد خان - 3 أيام', en: 'Mohammed Khan - 3 days' },
-time: new Date(Date.now() - 1000 * 60 * 60 * 6),
-read: true,
-link: 'hr_govt.html'
-}
-];
-}
-_state.unreadCount = _state.notifications.filter(n => !n.read).length;
-}
-function markNotificationRead(id) {
-const notif = _state.notifications.find(n => n.id === id);
-if (notif && !notif.read) {
-notif.read = true;
-_state.unreadCount--;
-saveNotifications();
-renderHeader();
-}
-}
-function markAllRead() {
-_state.notifications.forEach(n => n.read = true);
-_state.unreadCount = 0;
-saveNotifications();
-renderHeader();
-if (window.Toast) {
-  Toast.success(t('markAllRead'));
-}
-}
-function saveNotifications() {
-localStorage.setItem('hr_notifications', JSON.stringify(_state.notifications));
-}
-function getTimeAgo(date) {
-const lang = getCurrentLang();
-const seconds = Math.floor((new Date() - date) / 1000);
-if (seconds < 60) return lang === 'ar' ? 'الآن' : 'Now';
-if (seconds < 3600) {
-  const mins = Math.floor(seconds / 60);
-  return lang === 'ar' ? `منذ ${mins} دقيقة` : `${mins}m ago`;
-}
-if (seconds < 86400) {
-  const hours = Math.floor(seconds / 3600);
-  return lang === 'ar' ? `منذ ${hours} ساعة` : `${hours}h ago`;
-}
-const days = Math.floor(seconds / 86400);
-return lang === 'ar' ? `منذ ${days} يوم` : `${days}d ago`;
-}
-// ==========================================
-// 8. RENDER SIDEBAR
-// ==========================================
-function renderSidebar() {
-const container = document.getElementById('sidebar-container');
-if (!container) return;
-const lang = getCurrentLang();
-const isRTL = lang === 'ar';
-const currentPath = window.location.pathname.split('/').pop() || 'index.html';
-
-const activeMenu = _menuDefinitions[_state.activeRole] || _menuDefinitions['hr_manager'];
-
-let menuHTML = '';
-activeMenu.forEach(group => {
-  const sectionLabel = t(group.section);
-  
-  menuHTML += `
-    <div class="px-3 mt-6 mb-2 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
-      ${sectionLabel}
-    </div>
-  `;
-  
-  group.items.forEach(item => {
-    const isActive = currentPath === item.link;
-    const label = t(item.key);
+<!-- Custom Styles -->
+<style>
+    .num-font { 
+        font-family: 'Inter', sans-serif; 
+        font-feature-settings: "tnum"; 
+    }
     
-    const baseClass = "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 group mb-1";
-    const activeClass = "bg-gradient-to-r from-brandRed to-red-600 text-white shadow-lg shadow-red-500/30";
-    const inactiveClass = "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-brandRed dark:hover:text-red-400";
-
-    let badgeHTML = '';
-    if (item.badge) {
-      const badgeStyles = {
-        'live': 'bg-red-500 animate-pulse',
-        'urgent': 'bg-orange-500'
-      };
-      const badgeClass = badgeStyles[item.badge] || 'bg-slate-400';
-      badgeHTML = `<span class="px-1.5 py-0.5 text-[9px] font-bold rounded ${badgeClass} text-white uppercase tracking-wider">${item.badge}</span>`;
+    .custom-scroll::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+    }
+    
+    .custom-scroll::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    
+    .custom-scroll::-webkit-scrollbar-thumb {
+        background: #CBD5E1;
+        border-radius: 3px;
+    }
+    
+    .custom-scroll::-webkit-scrollbar-thumb:hover {
+        background: #94A3B8;
+    }
+    
+    .stats-card {
+        animation: fadeInUp 0.5s ease-out;
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .animate-fade-in {
+        animation: fadeIn 0.3s ease-out;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
     }
 
-    menuHTML += `
-      <a href="${item.link}" class="${baseClass} ${isActive ? activeClass : inactiveClass}">
-        <div class="w-5 text-center transition-transform group-hover:scale-110">
-          <i class="fa-solid ${item.icon}"></i>
-        </div>
-        <span class="flex-1 truncate">${label}</span>
-        ${badgeHTML}
-        ${isActive ? '<div class="w-1.5 h-1.5 rounded-full bg-white"></div>' : ''}
-      </a>
-    `;
-  });
-});
-
-const user = _state.currentUser;
-const displayName = user?.displayName || 'مدير الموارد البشرية';
-const roleLabel = _roleLabels[_state.activeRole][lang];
-
-container.innerHTML = `
-  <aside id="main-sidebar" class="fixed top-0 ${isRTL ? 'right-0 border-l' : 'left-0 border-r'} z-50 h-screen w-72 flex flex-col bg-white dark:bg-[#0F172A] border-slate-200 dark:border-slate-800 transition-all duration-300 shadow-2xl">
+    /* Loading Overlay */
+    #loadingOverlay {
+        transition: opacity 0.3s ease;
+    }
     
-    <!-- Logo -->
-    <div class="h-20 flex items-center px-6 border-b border-slate-100 dark:border-slate-800 shrink-0 bg-gradient-to-${isRTL ? 'l' : 'r'} from-slate-50 to-transparent dark:from-slate-900/50">
-      <div class="flex items-center gap-3 w-full">
-        <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-brandRed to-red-600 text-white flex items-center justify-center font-bold text-xl shadow-lg shadow-brandRed/30">
-          <i class="fa-solid fa-users"></i>
-        </div>
-        <div class="overflow-hidden">
-          <h1 class="font-bold text-base text-slate-800 dark:text-white truncate">AndroGov</h1>
-          <p class="text-[10px] text-brandRed font-bold uppercase tracking-widest truncate">HR Portal</p>
-        </div>
-      </div>
+    #loadingOverlay.hidden {
+        opacity: 0;
+        pointer-events: none;
+    }
+</style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300">
+<!-- Loading Overlay -->
+<div id="loadingOverlay" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[9999] flex items-center justify-center">
+    <div class="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-2xl text-center">
+        <div class="w-16 h-16 border-4 border-brandRed border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+        <p class="text-sm font-bold text-slate-600 dark:text-slate-300">جاري التحميل...</p>
     </div>
-    
-    <!-- User Card -->
-    <div class="p-4 shrink-0">
-      <div class="relative group cursor-pointer">
-        <div class="flex items-center gap-3 p-3 rounded-xl bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-900 border border-slate-200 dark:border-slate-700 transition-all hover:shadow-md">
-          <img src="${user?.avatar || '../photo/admin.jpg'}" 
-               class="w-11 h-11 rounded-full border-2 border-white dark:border-slate-600 object-cover shadow-md" 
-               onerror="this.src='https://ui-avatars.com/api/?name=HR&background=DC2626&color=fff&bold=true'">
-          <div class="overflow-hidden flex-1 min-w-0">
-            <p class="text-sm font-bold text-slate-800 dark:text-white truncate">${displayName}</p>
-            <p class="text-[10px] text-brandRed font-bold truncate uppercase tracking-tight">${roleLabel}</p>
-          </div>
-          <i class="fa-solid fa-chevron-down text-slate-400 text-xs"></i>
-        </div>
-        <div class="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 overflow-hidden">
-          <a href="profile.html" class="flex items-center gap-3 p-3 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
-            <i class="fa-solid fa-user-circle text-brandRed"></i>
-            <span class="text-xs font-medium">${t('my_profile')}</span>
-          </a>
-        </div>
-      </div>
-    </div>
+</div>
 
-    <!-- Navigation -->
-    <nav id="sidebar-nav" class="flex-1 overflow-y-auto px-3 py-2 space-y-0.5 custom-scroll">
-      ${menuHTML}
-    </nav>
-    
-    <!-- Footer -->
-    <div class="p-4 text-center border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50">
-      <p class="text-[10px] text-slate-400 font-medium">© 2026 Andromeda IT</p>
-      <p class="text-[9px] text-slate-300 dark:text-slate-600 mt-1">${t('poweredBy')} ${t('aymanDev')}</p>
-    </div>
-  </aside>
-`;
-}
-// ==========================================
-// 9. RENDER HEADER
-// ==========================================
-function renderHeader() {
-const container = document.getElementById('header-container');
-if (!container) return;
-const lang = getCurrentLang();
-const isRTL = lang === 'ar';
-const isDark = document.documentElement.classList.contains('dark');
+<!-- Sidebar Container -->
+<div id="sidebar-container"></div>
 
-container.innerHTML = `
-  <header class="h-20 sticky top-0 z-40 flex items-center justify-between px-6 bg-white/90 dark:bg-[#0F172A]/95 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800 shadow-sm transition-all">
+<!-- Main Content -->
+<div class="main-content-wrapper transition-all duration-300 flex flex-col min-h-screen md:mr-72">
     
-    <div class="flex items-center gap-4">
-      <button onclick="Layout.toggleMobileSidebar()" class="md:hidden text-slate-500 dark:text-slate-200 hover:text-brandRed transition-colors">
-        <i class="fa-solid fa-bars text-xl"></i>
-      </button>
-    </div>
+    <!-- Header Container -->
+    <div id="header-container"></div>
 
-    <div class="flex items-center gap-3">
-      
-      <!-- Notifications -->
-      <div class="relative group">
-        <button class="relative w-10 h-10 rounded-xl border-2 border-slate-200 dark:border-slate-700 hover:bg-orange-50 dark:hover:bg-orange-900/20 text-slate-600 dark:text-slate-300 hover:border-orange-400 transition-all flex items-center justify-center">
-          <i class="fa-solid fa-bell"></i>
-          ${_state.unreadCount > 0 ? `
-            <span class="absolute -top-1 -right-1 w-5 h-5 bg-brandRed text-white text-[10px] font-bold rounded-full flex items-center justify-center animate-pulse">
-              ${_state.unreadCount}
-            </span>
-          ` : ''}
-        </button>
+    <!-- Page Content -->
+    <main class="p-6 space-y-6 flex-1">
         
-        <div class="absolute top-full ${isRTL ? 'right-0' : 'left-0'} mt-3 w-96 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 overflow-hidden">
-          <div class="p-4 border-b border-slate-100 dark:border-slate-700 bg-gradient-to-r from-orange-500 to-amber-500 flex justify-between items-center">
+        <!-- Page Header -->
+        <div class="flex flex-col md:flex-row justify-between items-end gap-4">
             <div>
-              <p class="text-sm font-bold text-white">${t('notifications')}</p>
-              <p class="text-[10px] text-white/80">${_state.unreadCount} ${lang === 'ar' ? 'غير مقروءة' : 'unread'}</p>
+                <h1 class="text-2xl font-bold text-slate-900 dark:text-white" data-i18n="headerTitle">الموارد البشرية والشؤون الإدارية</h1>
+                <div class="flex items-center gap-2 mt-2">
+                    <span class="px-2 py-0.5 rounded bg-green-100 text-green-700 text-[10px] font-bold border border-green-200 flex items-center gap-1">
+                        <i class="fa-solid fa-check-circle"></i> <span data-i18n="badgeNitaqat">نطاقات: بلاتيني</span>
+                    </span>
+                    <span class="px-2 py-0.5 rounded bg-blue-100 text-blue-700 text-[10px] font-bold border border-blue-200 flex items-center gap-1">
+                        <i class="fa-solid fa-building"></i> <span data-i18n="badgeOffice">المكاتب: مكتملة</span>
+                    </span>
+                    <span class="px-2 py-0.5 rounded bg-purple-100 text-purple-700 text-[10px] font-bold border border-purple-200 flex items-center gap-1">
+                        <i class="fa-solid fa-calendar-day"></i> <span id="currentDate"></span>
+                    </span>
+                </div>
             </div>
-            ${_state.unreadCount > 0 ? `
-              <button onclick="Layout.markAllRead()" class="text-xs text-white/90 hover:text-white underline">
-                ${t('markAllRead')}
-              </button>
-            ` : ''}
-          </div>
-          
-          <div class="max-h-96 overflow-y-auto custom-scroll">
-            ${_state.notifications.length === 0 ? `
-              <div class="p-8 text-center text-slate-400">
-                <i class="fa-solid fa-bell-slash text-4xl mb-3"></i>
-                <p class="text-sm">${t('noNotifications')}</p>
-              </div>
-            ` : _state.notifications.map(notif => {
-              const colorStyles = {
-                purple: 'bg-purple-100 text-purple-600 dark:bg-purple-900/30',
-                green: 'bg-green-100 text-green-600 dark:bg-green-900/30',
-                orange: 'bg-orange-100 text-orange-600 dark:bg-orange-900/30',
-                blue: 'bg-blue-100 text-blue-600 dark:bg-blue-900/30'
-              };
-              const colorClass = colorStyles[notif.color] || colorStyles.blue;
-              
-              return `
-                <a href="${notif.link}" onclick="Layout.markNotificationRead('${notif.id}')" 
-                   class="flex gap-3 p-4 border-b border-slate-100 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors ${!notif.read ? 'bg-blue-50/30 dark:bg-blue-900/10' : ''}">
-                  <div class="w-10 h-10 rounded-lg ${colorClass} flex items-center justify-center shrink-0">
-                    <i class="fa-solid ${notif.icon}"></i>
-                  </div>
-                  <div class="flex-1 min-w-0">
-                    <p class="text-xs font-bold text-slate-800 dark:text-white truncate">${notif.title[lang]}</p>
-                    <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">${notif.body[lang]}</p>
-                    <p class="text-[10px] text-slate-400 mt-1">${getTimeAgo(new Date(notif.time))}</p>
-                  </div>
-                  ${!notif.read ? '<div class="w-2 h-2 rounded-full bg-brandRed animate-pulse"></div>' : ''}
-                </a>
-              `;
-            }).join('')}
-          </div>
+            <div class="flex gap-3">
+                <button onclick="openPurchaseModal()" class="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold shadow-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition flex items-center gap-2">
+                    <i class="fa-solid fa-cart-plus text-slate-400"></i> <span data-i18n="btnPurchase">طلب شراء (إداري)</span>
+                </button>
+                <button onclick="openEmployeeModal()" class="px-4 py-2 bg-brandRed text-white rounded-lg text-xs font-bold shadow-lg shadow-red-500/30 hover:bg-red-700 transition flex items-center gap-2">
+                    <i class="fa-solid fa-user-plus"></i> <span data-i18n="btnNewEmp">موظف جديد</span>
+                </button>
+            </div>
         </div>
-      </div>
 
-      <button onclick="Layout.toggleLanguage()" 
-              class="w-10 h-10 rounded-xl border-2 border-slate-200 dark:border-slate-700 hover:bg-blue-50 dark:hover:bg-blue-900/20 text-slate-600 dark:text-slate-300 hover:border-blue-400 transition-all flex items-center justify-center font-bold text-xs">
-        ${lang === 'ar' ? 'EN' : 'ع'}
-      </button>
-      
-      <button onclick="if(window.AndroBot) AndroBot.toggle()" 
-              class="w-10 h-10 rounded-xl border-2 border-slate-200 dark:border-slate-700 hover:bg-blue-50 dark:hover:bg-blue-900/20 text-brandBlue hover:border-blue-400 transition-all flex items-center justify-center group">
-        <i class="fa-solid fa-robot group-hover:animate-bounce"></i>
-      </button>
-      
-      <button onclick="Layout.toggleTheme()" 
-              class="w-10 h-10 rounded-xl border-2 border-slate-200 dark:border-slate-700 flex items-center justify-center hover:bg-amber-50 dark:hover:bg-amber-900/20 text-slate-600 dark:text-yellow-400 hover:border-amber-400 transition-all">
-        <i class="fa-solid ${isDark ? 'fa-sun' : 'fa-moon'}"></i>
-      </button>
-      
-      <div class="h-8 w-px bg-slate-200 dark:bg-slate-700 mx-2"></div>
-      
-      <button onclick="Layout.logout()" 
-              class="text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 border-2 border-transparent hover:border-red-200">
-        <i class="fa-solid fa-power-off"></i> 
-        <span class="hidden sm:inline">${t('logout')}</span>
-      </button>
-    </div>
-  </header>
-`;
-}
-// ==========================================
-// 10. UTILITY FUNCTIONS
-// ==========================================
-function toggleLanguage() {
-const currentLang = getCurrentLang();
-const newLang = currentLang === 'ar' ? 'en' : 'ar';
-setLanguage(newLang);
-}
-function toggleTheme() {
-const html = document.documentElement;
-html.classList.toggle('dark');
-const isDark = html.classList.contains('dark');
-localStorage.setItem('theme', isDark ? 'dark' : 'light');
-renderHeader();
-if (window.Toast) {
-  const lang = getCurrentLang();
-  const msg = lang === 'ar' ?
-    (isDark ? 'تم تفعيل الوضع الليلي' : 'تم تفعيل الوضع النهاري') :
-    (isDark ? 'Dark mode enabled' : 'Light mode enabled');
-  Toast.info(msg);
-}
-}
-function logout() {
-const lang = getCurrentLang();
-const confirmMsg = lang === 'ar' ?
-'هل أنت متأكد من تسجيل الخروج؟' :
-'Are you sure you want to logout?';
-if (confirm(confirmMsg)) {
-  localStorage.removeItem('currentUser');
-  localStorage.removeItem('activeRole');
-  window.location.href = '../login.html';
-}
-}
-function toggleMobileSidebar() {
-const sidebar = document.getElementById('main-sidebar');
-if (sidebar) {
-sidebar.classList.toggle('-translate-x-full');
-sidebar.classList.toggle('translate-x-0');
-}
-}
-// ==========================================
-// 11. PUBLIC API
-// ==========================================
-return {
-init,
-renderSidebar,
-renderHeader,
-toggleTheme,
-toggleLanguage,
-setLanguage,
-logout,
-toggleMobileSidebar,
-markNotificationRead,
-markAllRead,
-getActiveRole: () => _state.activeRole,
-getCurrentLang,
-t
-};
-})();
-document.addEventListener('DOMContentLoaded', () => {
-Layout.init();
-});
-window.Layout = Layout;
+        <!-- KPI Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <!-- Total Employees -->
+            <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 hover:shadow-md transition stats-card">
+                <div class="flex justify-between items-start mb-3">
+                    <div>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase" data-i18n="kpiEmp">إجمالي الموظفين</p>
+                        <h3 class="text-3xl font-bold num-font mt-1 text-slate-800 dark:text-white">45</h3>
+                    </div>
+                    <div class="w-12 h-12 rounded-xl bg-red-50 dark:bg-red-900/20 flex items-center justify-center">
+                        <i class="fa-solid fa-users text-brandRed text-xl"></i>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 text-[10px]">
+                    <span class="flex items-center gap-1 text-green-600 font-bold">
+                        <i class="fa-solid fa-passport"></i> <span data-i18n="kpiEmpSub">78% توطين</span>
+                    </span>
+                    <span class="text-slate-300 dark:text-slate-600">|</span>
+                    <span class="text-slate-500">35 سعودي • 10 مقيم</span>
+                </div>
+            </div>
+
+            <!-- Payroll -->
+            <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 hover:shadow-md transition stats-card">
+                <div class="flex justify-between items-start mb-3">
+                    <div>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase" data-i18n="kpiPay">الرواتب (المتوقع)</p>
+                        <h3 class="text-3xl font-bold num-font mt-1 text-slate-800 dark:text-white">320K <span class="text-sm font-normal text-slate-400">SAR</span></h3>
+                    </div>
+                    <div class="w-12 h-12 rounded-xl bg-green-50 dark:bg-green-900/20 flex items-center justify-center">
+                        <i class="fa-solid fa-money-bill-wave text-green-600 text-xl"></i>
+                    </div>
+                </div>
+                <p class="text-[10px] text-slate-500 dark:text-slate-400" data-i18n="kpiPaySub">يستحق في: 27 الشهر الجاري</p>
+            </div>
+
+            <!-- Government Alerts -->
+            <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 hover:shadow-md transition stats-card">
+                <div class="flex justify-between items-start mb-3">
+                    <div>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase" data-i18n="kpiGov">تنبيهات حكومية</p>
+                        <h3 class="text-3xl font-bold num-font mt-1 text-alertOrange">3</h3>
+                    </div>
+                    <div class="w-12 h-12 rounded-xl bg-orange-50 dark:bg-orange-900/20 flex items-center justify-center">
+                        <i class="fa-solid fa-triangle-exclamation text-alertOrange text-xl"></i>
+                    </div>
+                </div>
+                <p class="text-[10px] text-slate-500 dark:text-slate-400" data-i18n="kpiGovSub">انتهاء إقامة / رخص</p>
+            </div>
+
+            <!-- Assets -->
+            <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 hover:shadow-md transition stats-card">
+                <div class="flex justify-between items-start mb-3">
+                    <div>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase" data-i18n="kpiAsset">العهد المسلمة</p>
+                        <h3 class="text-3xl font-bold num-font mt-1 text-slate-800 dark:text-white">85</h3>
+                    </div>
+                    <div class="w-12 h-12 rounded-xl bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center">
+                        <i class="fa-solid fa-laptop-code text-blue-600 text-xl"></i>
+                    </div>
+                </div>
+                <p class="text-[10px] text-slate-500 dark:text-slate-400" data-i18n="kpiAssetSub">سيارات: 5 | أجهزة: 80</p>
+            </div>
+        </div>
+
+        <!-- Main Content Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            
+            <!-- Critical Alerts -->
+            <div class="lg:col-span-2 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-bold text-slate-800 dark:text-white flex items-center gap-2">
+                        <i class="fa-solid fa-bell text-brandRed"></i> 
+                        <span data-i18n="titleAlerts">التنبيهات الحرجة (30 يوم)</span>
+                    </h3>
+                    <span class="text-[10px] bg-red-50 dark:bg-red-900/20 text-red-600 px-2 py-1 rounded-full font-bold">3 تنبيهات</span>
+                </div>
+                <div class="space-y-3">
+                    <!-- Alert 1 -->
+                    <div class="flex items-center justify-between p-4 bg-red-50 dark:bg-red-900/10 rounded-xl border border-red-100 dark:border-red-900/30 hover:shadow-md transition">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 rounded-full bg-white dark:bg-slate-700 flex items-center justify-center text-red-500 border-2 border-red-200 dark:border-red-800">
+                                <i class="fa-solid fa-id-card text-xl"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm font-bold text-slate-800 dark:text-white" data-i18n="alert1Title">تجديد إقامة (محمد خان)</p>
+                                <p class="text-[11px] text-red-600 font-medium" data-i18n="alert1Time">تنتهي خلال 3 أيام</p>
+                            </div>
+                        </div>
+                        <button onclick="handleAlert('muqeem')" class="px-4 py-2 bg-white dark:bg-slate-700 border border-red-200 dark:border-red-800 rounded-lg text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 font-bold text-xs transition flex items-center gap-2" data-i18n="btnAction">
+                            <i class="fa-solid fa-external-link-alt"></i> إجراء
+                        </button>
+                    </div>
+
+                    <!-- Alert 2 -->
+                    <div class="flex items-center justify-between p-4 bg-orange-50 dark:bg-orange-900/10 rounded-xl border border-orange-100 dark:border-orange-900/30 hover:shadow-md transition">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 rounded-full bg-white dark:bg-slate-700 flex items-center justify-center text-orange-500 border-2 border-orange-200 dark:border-orange-800">
+                                <i class="fa-solid fa-car text-xl"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm font-bold text-slate-800 dark:text-white">تأمين مركبة (CAR-001)</p>
+                                <p class="text-[11px] text-orange-600 font-medium">ينتهي خلال 15 يوم</p>
+                            </div>
+                        </div>
+                        <button onclick="handleAlert('insurance')" class="px-4 py-2 bg-white dark:bg-slate-700 border border-orange-200 dark:border-orange-800 rounded-lg text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-900/20 font-bold text-xs transition flex items-center gap-2">
+                            <i class="fa-solid fa-bell"></i> تذكير
+                        </button>
+                    </div>
+
+                    <!-- Alert 3 -->
+                    <div class="flex items-center justify-between p-4 bg-yellow-50 dark:bg-yellow-900/10 rounded-xl border border-yellow-100 dark:border-yellow-900/30 hover:shadow-md transition">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 rounded-full bg-white dark:bg-slate-700 flex items-center justify-center text-yellow-600 border-2 border-yellow-200 dark:border-yellow-800">
+                                <i class="fa-solid fa-file-contract text-xl"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm font-bold text-slate-800 dark:text-white">انتهاء عقد (أحمد السالم)</p>
+                                <p class="text-[11px] text-yellow-600 font-medium">ينتهي خلال 28 يوم</p>
+                            </div>
+                        </div>
+                        <button onclick="handleAlert('contract')" class="px-4 py-2 bg-white dark:bg-slate-700 border border-yellow-200 dark:border-yellow-800 rounded-lg text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/20 font-bold text-xs transition flex items-center gap-2">
+                            <i class="fa-solid fa-pen"></i> مراجعة
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Daily Attendance -->
+            <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-6">
+                <h3 class="font-bold text-slate-800 dark:text-white mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-clock text-brandBlue"></i>
+                    <span data-i18n="titleAtt">الانضباط اليومي</span>
+                </h3>
+                <div class="relative h-48 flex justify-center items-center mb-6">
+                    <canvas id="attendanceChart"></canvas>
+                </div>
+                <div class="grid grid-cols-3 gap-3 text-center">
+                    <div class="p-3 bg-green-50 dark:bg-green-900/20 rounded-xl border border-green-100 dark:border-green-800">
+                        <p class="text-2xl font-bold text-green-600 num-font">40</p>
+                        <p class="text-[10px] text-green-600 font-medium mt-1">حاضر</p>
+                    </div>
+                    <div class="p-3 bg-red-50 dark:bg-red-900/20 rounded-xl border border-red-100 dark:border-red-800">
+                        <p class="text-2xl font-bold text-red-600 num-font">3</p>
+                        <p class="text-[10px] text-red-600 font-medium mt-1">متأخر</p>
+                    </div>
+                    <div class="p-3 bg-slate-50 dark:bg-slate-700 rounded-xl border border-slate-100 dark:border-slate-600">
+                        <p class="text-2xl font-bold text-slate-600 dark:text-slate-300 num-font">2</p>
+                        <p class="text-[10px] text-slate-600 dark:text-slate-400 font-medium mt-1">غائب</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pending Approvals -->
+        <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden">
+            <div class="p-5 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-gradient-to-r from-slate-50 to-transparent dark:from-slate-900/50">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-brandRed/10 flex items-center justify-center">
+                        <i class="fa-solid fa-file-signature text-brandRed"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-slate-800 dark:text-white" data-i18n="titleReqs">طلبات بانتظار اعتمادك</h3>
+                        <p class="text-[10px] text-slate-500 dark:text-slate-400">تتطلب موافقة فورية</p>
+                    </div>
+                </div>
+                <span class="bg-brandRed text-white text-xs px-3 py-1.5 rounded-full font-bold" data-i18n="reqCount">4 طلبات</span>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 dark:text-slate-400 text-xs font-bold uppercase border-b border-slate-200 dark:border-slate-700">
+                        <tr>
+                            <th class="p-4 text-right" data-i18n="colType">نوع الطلب</th>
+                            <th class="p-4 text-right" data-i18n="colReq">المقدم</th>
+                            <th class="p-4 text-right" data-i18n="colDetails">التفاصيل</th>
+                            <th class="p-4 text-right" data-i18n="colDate">التاريخ</th>
+                            <th class="p-4 text-center" data-i18n="colAction">الإجراء</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 dark:divide-slate-700" id="reqTable">
+                        <!-- Request 1 -->
+                        <tr id="req-1" class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition group">
+                            <td class="p-4">
+                                <span class="inline-flex items-center gap-1.5 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 px-2.5 py-1 rounded-lg text-xs font-bold" data-i18n="typeVac">
+                                    <i class="fa-solid fa-umbrella-beach"></i> إجازة سنوية
+                                </span>
+                            </td>
+                            <td class="p-4">
+                                <div class="flex items-center gap-2">
+                                    <img src="https://ui-avatars.com/api/?name=Khalid&background=4267B2&color=fff" class="w-8 h-8 rounded-full">
+                                    <span class="font-bold text-slate-800 dark:text-white">خالد العتيبي</span>
+                                </div>
+                            </td>
+                            <td class="p-4 text-slate-600 dark:text-slate-300" data-i18n="detVac">5 أيام (رصيد متبقي: 12)</td>
+                            <td class="p-4 text-slate-500 dark:text-slate-400 font-mono text-xs">2026-01-10</td>
+                            <td class="p-4">
+                                <div class="flex justify-center gap-2">
+                                    <button onclick="approveRequest('req-1')" class="w-9 h-9 rounded-lg bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 hover:bg-green-200 dark:hover:bg-green-900/50 transition flex items-center justify-center" title="موافقة">
+                                        <i class="fa-solid fa-check"></i>
+                                    </button>
+                                    <button onclick="rejectRequest('req-1')" class="w-9 h-9 rounded-lg bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-900/50 transition flex items-center justify-center" title="رفض">
+                                        <i class="fa-solid fa-xmark"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Request 2 -->
+                        <tr id="req-2" class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition group">
+                            <td class="p-4">
+                                <span class="inline-flex items-center gap-1.5 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400 px-2.5 py-1 rounded-lg text-xs font-bold">
+                                    <i class="fa-solid fa-plane"></i> سفر عمل
+                                </span>
+                            </td>
+                            <td class="p-4">
+                                <div class="flex items-center gap-2">
+                                    <img src="https://ui-avatars.com/api/?name=Sara&background=9333EA&color=fff" class="w-8 h-8 rounded-full">
+                                    <span class="font-bold text-slate-800 dark:text-white">سارة المطيري</span>
+                                </div>
+                            </td>
+                            <td class="p-4 text-slate-600 dark:text-slate-300">دبي - مؤتمر الموارد البشرية (3 أيام)</td>
+                            <td class="p-4 text-slate-500 dark:text-slate-400 font-mono text-xs">2026-01-15</td>
+                            <td class="p-4">
+                                <div class="flex justify-center gap-2">
+                                    <button onclick="approveRequest('req-2')" class="w-9 h-9 rounded-lg bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 hover:bg-green-200 dark:hover:bg-green-900/50 transition flex items-center justify-center">
+                                        <i class="fa-solid fa-check"></i>
+                                    </button>
+                                    <button onclick="rejectRequest('req-2')" class="w-9 h-9 rounded-lg bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-900/50 transition flex items-center justify-center">
+                                        <i class="fa-solid fa-xmark"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Request 3 -->
+                        <tr id="req-3" class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition group">
+                            <td class="p-4">
+                                <span class="inline-flex items-center gap-1.5 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 px-2.5 py-1 rounded-lg text-xs font-bold">
+                                    <i class="fa-solid fa-shopping-cart"></i> مشتريات
+                                </span>
+                            </td>
+                            <td class="p-4">
+                                <div class="flex items-center gap-2">
+                                    <img src="https://ui-avatars.com/api/?name=Ahmed&background=F59E0B&color=fff" class="w-8 h-8 rounded-full">
+                                    <span class="font-bold text-slate-800 dark:text-white">أحمد السالم</span>
+                                </div>
+                            </td>
+                            <td class="p-4 text-slate-600 dark:text-slate-300">أثاث مكتبي - 15,000 ريال</td>
+                            <td class="p-4 text-slate-500 dark:text-slate-400 font-mono text-xs">2026-01-12</td>
+                            <td class="p-4">
+                                <div class="flex justify-center gap-2">
+                                    <button onclick="approveRequest('req-3')" class="w-9 h-9 rounded-lg bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 hover:bg-green-200 dark:hover:bg-green-900/50 transition flex items-center justify-center">
+                                        <i class="fa-solid fa-check"></i>
+                                    </button>
+                                    <button onclick="rejectRequest('req-3')" class="w-9 h-9 rounded-lg bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-900/50 transition flex items-center justify-center">
+                                        <i class="fa-solid fa-xmark"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Request 4 -->
+                        <tr id="req-4" class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition group">
+                            <td class="p-4">
+                                <span class="inline-flex items-center gap-1.5 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 px-2.5 py-1 rounded-lg text-xs font-bold">
+                                    <i class="fa-solid fa-user-plus"></i> توظيف
+                                </span>
+                            </td>
+                            <td class="p-4">
+                                <div class="flex items-center gap-2">
+                                    <img src="https://ui-avatars.com/api/?name=Fatima&background=10B981&color=fff" class="w-8 h-8 rounded-full">
+                                    <span class="font-bold text-slate-800 dark:text-white">فاطمة القحطاني</span>
+                                </div>
+                            </td>
+                            <td class="p-4 text-slate-600 dark:text-slate-300">مطور برمجيات - راتب: 12,000 ريال</td>
+                            <td class="p-4 text-slate-500 dark:text-slate-400 font-mono text-xs">2026-01-18</td>
+                            <td class="p-4">
+                                <div class="flex justify-center gap-2">
+                                    <button onclick="approveRequest('req-4')" class="w-9 h-9 rounded-lg bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 hover:bg-green-200 dark:hover:bg-green-900/50 transition flex items-center justify-center">
+                                        <i class="fa-solid fa-check"></i>
+                                    </button>
+                                    <button onclick="rejectRequest('req-4')" class="w-9 h-9 rounded-lg bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-900/50 transition flex items-center justify-center">
+                                        <i class="fa-solid fa-xmark"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<!-- Scripts - ORDER MATTERS! -->
+<script src="data/company_policy.js"></script>
+<script src="js/helpers/policy-helpers.js"></script>
+<script src="js/core/config.js"></script>
+<script src="js/core/i18n.js"></script>
+<script src="js/components/toast.js"></script>
+<script src="js/components/layout.js"></script>
+<script src="js/components/bot.js"></script>
+
+<!-- Page Initialization -->
+<script>
+    // Set current date
+    function updateCurrentDate() {
+        const dateEl = document.getElementById('currentDate');
+        if (dateEl) {
+            const lang = localStorage.getItem('lang') || 'ar';
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const date = new Date().toLocaleDateString(lang === 'ar' ? 'ar-SA' : 'en-US', options);
+            dateEl.textContent = date;
+        }
+    }
+
+    // Initialize Attendance Chart
+    function initAttendanceChart() {
+        const ctx = document.getElementById('attendanceChart');
+        if (!ctx) return;
+
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['حاضر', 'متأخر', 'غائب'],
+                datasets: [{
+                    data: [40, 3, 2],
+                    backgroundColor: ['#10B981', '#EF4444', '#CBD5E1'],
+                    borderWidth: 0,
+                    borderRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { 
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                        padding: 12,
+                        titleFont: { size: 14, weight: 'bold' },
+                        bodyFont: { size: 13 },
+                        borderColor: 'rgba(148, 163, 184, 0.2)',
+                        borderWidth: 1
+                    }
+                },
+                cutout: '70%'
+            }
+        });
+    }
+
+    // Handle Alerts
+    function handleAlert(type) {
+        const messages = {
+            'muqeem': 'فتح منصة مقيم...',
+            'insurance': 'إرسال تذكير للقسم المالي...',
+            'contract': 'فتح نموذج تجديد العقد...'
+        };
+        
+        if (window.Toast) {
+            Toast.info(messages[type] || 'جاري المعالجة...');
+        }
+    }
+
+    // Approve Request
+    function approveRequest(id) {
+        const row = document.getElementById(id);
+        if (row) {
+            row.style.backgroundColor = 'rgba(16, 185, 129, 0.1)';
+            setTimeout(() => {
+                row.style.opacity = '0';
+                setTimeout(() => row.remove(), 300);
+            }, 500);
+            
+            if (window.Toast) {
+                Toast.success('تمت الموافقة على الطلب بنجاح');
+            }
+        }
+    }
+
+    // Reject Request
+    function rejectRequest(id) {
+        const row = document.getElementById(id);
+        if (row) {
+            row.style.backgroundColor = 'rgba(239, 68, 68, 0.1)';
+            setTimeout(() => {
+                row.style.opacity = '0';
+                setTimeout(() => row.remove(), 300);
+            }, 500);
+            
+            if (window.Toast) {
+                Toast.warning('تم رفض الطلب');
+            }
+        }
+    }
+
+    // Open Modals
+    function openEmployeeModal() {
+        if (window.Toast) {
+            Toast.info('فتح نموذج إضافة موظف جديد...');
+        }
+        // Here you would open actual modal
+    }
+
+    function openPurchaseModal() {
+        if (window.Toast) {
+            Toast.info('فتح نموذج طلب شراء...');
+        }
+        // Here you would open actual modal
+    }
+
+    // Main Initialization
+    document.addEventListener('DOMContentLoaded', () => {
+        updateCurrentDate();
+        initAttendanceChart();
+        
+        // Update date every minute
+        setInterval(updateCurrentDate, 60000);
+        
+        console.log('✅ HR Dashboard Initialized');
+    });
+</script>
+</body>
+</html>
 </artifact>
