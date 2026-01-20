@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#FB4747">
-    <title>التقارير المالية | AndroGov</title>
+    <title data-i18n="pageTitle">التقارير المالية | AndroGov</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -43,42 +43,49 @@
         <main class="p-8 space-y-8 overflow-y-auto custom-scroll fade-in">
             
             <div class="flex justify-between items-center mb-2">
-                <h2 class="text-2xl font-bold dark:text-white">المركز المالي للشركة</h2>
-                <span class="text-xs bg-green-100 text-green-700 px-3 py-1 rounded-full font-bold">Q4 2025 - نهائي</span>
+                <div>
+                    <h2 class="text-2xl font-bold dark:text-white" data-i18n="title">المركز المالي للشركة</h2>
+                    <p class="text-sm text-slate-500 mt-1" data-i18n="subtitle">نظرة شاملة على الأداء المالي</p>
+                </div>
+                <span class="text-xs bg-green-100 text-green-700 px-3 py-1 rounded-full font-bold" data-i18n="quarter">Q4 2025 - نهائي</span>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Performance Summary -->
                 <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
                     <h3 class="font-bold text-lg mb-4 text-slate-800 dark:text-white flex items-center gap-2">
-                        <i class="fa-solid fa-chart-pie text-brandBlue"></i> ملخص الأداء (Q4)
+                        <i class="fa-solid fa-chart-pie text-brandBlue"></i> 
+                        <span data-i18n="summaryTitle">ملخص الأداء (Q4)</span>
                     </h3>
                     <div class="space-y-4">
                         <div class="flex justify-between items-center border-b border-slate-50 dark:border-slate-700 pb-2">
-                            <span class="text-sm text-slate-500">إجمالي الإيرادات</span>
-                            <span class="font-bold num-font text-brandBlue">5,200,000 SAR</span>
+                            <span class="text-sm text-slate-500" data-i18n="revenue">إجمالي الإيرادات</span>
+                            <span class="font-bold num-font text-brandBlue">5,200,000 <span class="text-xs text-slate-400">SAR</span></span>
                         </div>
                         <div class="flex justify-between items-center border-b border-slate-50 dark:border-slate-700 pb-2">
-                            <span class="text-sm text-slate-500">صافي الربح</span>
-                            <span class="font-bold num-font text-green-600">1,850,000 SAR</span>
+                            <span class="text-sm text-slate-500" data-i18n="profit">صافي الربح</span>
+                            <span class="font-bold num-font text-green-600">1,850,000 <span class="text-xs text-slate-400">SAR</span></span>
                         </div>
                         <div class="flex justify-between items-center">
-                            <span class="text-sm text-slate-500">هامش الربح</span>
-                            <span class="font-bold num-font text-slate-800 dark:text-white">35%</span>
+                            <span class="text-sm text-slate-500" data-i18n="margin">هامش الربح</span>
+                            <span class="font-bold num-font text-slate-800 dark:text-white">35.6%</span>
                         </div>
                     </div>
                 </div>
 
+                <!-- Attached Reports -->
                 <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
                     <h3 class="font-bold text-lg mb-4 text-slate-800 dark:text-white flex items-center gap-2">
-                        <i class="fa-solid fa-paperclip text-brandRed"></i> التقارير المرفقة
+                        <i class="fa-solid fa-paperclip text-brandRed"></i> 
+                        <span data-i18n="reportsTitle">التقارير المرفقة</span>
                     </h3>
                     <div class="space-y-3">
                         <div class="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-700 rounded-lg group hover:bg-slate-100 dark:hover:bg-slate-600 transition">
                             <div class="flex items-center gap-3">
                                 <i class="fa-solid fa-file-excel text-green-600 text-xl"></i>
                                 <div>
-                                    <p class="text-sm font-bold group-hover:text-brandBlue transition">تقرير Q4 المالي.xlsx</p>
-                                    <p class="text-[10px] text-slate-400">1.2 MB • مدقق</p>
+                                    <p class="text-sm font-bold group-hover:text-brandBlue transition" data-i18n="file1">تقرير Q4 المالي.xlsx</p>
+                                    <p class="text-[10px] text-slate-400">1.2 MB • <span data-i18n="audited">مدقق</span></p>
                                 </div>
                             </div>
                             <button class="text-slate-400 hover:text-brandBlue text-sm"><i class="fa-solid fa-download"></i></button>
@@ -87,8 +94,8 @@
                             <div class="flex items-center gap-3">
                                 <i class="fa-solid fa-file-pdf text-red-600 text-xl"></i>
                                 <div>
-                                    <p class="text-sm font-bold group-hover:text-brandBlue transition">تقرير مراجع الحسابات.pdf</p>
-                                    <p class="text-[10px] text-slate-400">2.5 MB • نهائي</p>
+                                    <p class="text-sm font-bold group-hover:text-brandBlue transition" data-i18n="file2">تقرير مراجع الحسابات.pdf</p>
+                                    <p class="text-[10px] text-slate-400">2.5 MB • <span data-i18n="final">نهائي</span></p>
                                 </div>
                             </div>
                             <button class="text-slate-400 hover:text-brandBlue text-sm"><i class="fa-solid fa-download"></i></button>
@@ -97,79 +104,161 @@
                 </div>
             </div>
 
+            <!-- Cash Flow Chart -->
             <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
                 <div class="flex justify-between items-center mb-4">
-                    <h3 class="font-bold text-sm">التدفقات النقدية (2025)</h3>
+                    <h3 class="font-bold text-sm" data-i18n="chartTitle">التدفقات النقدية (2025)</h3>
                     <div class="flex gap-2">
-                        <span class="text-[10px] flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-blue-500"></span> وارد</span>
-                        <span class="text-[10px] flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-red-400"></span> صادر</span>
+                        <span class="text-[10px] flex items-center gap-1">
+                            <span class="w-2 h-2 rounded-full bg-blue-500"></span> 
+                            <span data-i18n="incoming">وارد</span>
+                        </span>
+                        <span class="text-[10px] flex items-center gap-1">
+                            <span class="w-2 h-2 rounded-full bg-red-400"></span> 
+                            <span data-i18n="outgoing">صادر</span>
+                        </span>
                     </div>
                 </div>
                 <div class="h-64 w-full relative"><canvas id="finChart"></canvas></div>
             </div>
 
+            <!-- Key Metrics -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 p-6 rounded-2xl border border-blue-200 dark:border-blue-800">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-10 h-10 rounded-lg bg-blue-500 text-white flex items-center justify-center">
+                            <i class="fa-solid fa-arrow-trend-up"></i>
+                        </div>
+                        <p class="text-xs font-bold text-blue-700 dark:text-blue-300 uppercase" data-i18n="growth">النمو السنوي</p>
+                    </div>
+                    <h4 class="text-3xl font-bold num-font text-blue-700 dark:text-blue-400">+12.5%</h4>
+                    <p class="text-[10px] text-blue-600 dark:text-blue-400 mt-1" data-i18n="growthDesc">مقارنة بـ Q4 2024</p>
+                </div>
+
+                <div class="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 p-6 rounded-2xl border border-green-200 dark:border-green-800">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-10 h-10 rounded-lg bg-green-500 text-white flex items-center justify-center">
+                            <i class="fa-solid fa-coins"></i>
+                        </div>
+                        <p class="text-xs font-bold text-green-700 dark:text-green-300 uppercase" data-i18n="ebitda">EBITDA</p>
+                    </div>
+                    <h4 class="text-3xl font-bold num-font text-green-700 dark:text-green-400">2.1M</h4>
+                    <p class="text-[10px] text-green-600 dark:text-green-400 mt-1" data-i18n="ebitdaDesc">هامش 40.4%</p>
+                </div>
+
+                <div class="bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-900/20 dark:to-orange-800/20 p-6 rounded-2xl border border-orange-200 dark:border-orange-800">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-10 h-10 rounded-lg bg-orange-500 text-white flex items-center justify-center">
+                            <i class="fa-solid fa-scale-balanced"></i>
+                        </div>
+                        <p class="text-xs font-bold text-orange-700 dark:text-orange-300 uppercase" data-i18n="equity">حقوق الملكية</p>
+                    </div>
+                    <h4 class="text-3xl font-bold num-font text-orange-700 dark:text-orange-400">15.3M</h4>
+                    <p class="text-[10px] text-orange-600 dark:text-orange-400 mt-1" data-i18n="equityDesc">نسبة الديون 0.32</p>
+                </div>
+            </div>
+
         </main>
     </div>
 
+    <!-- Scripts -->
     <script src="../admin/js/core/config.js"></script>
-    <script src="../admin/js/core/i18n.js"></script>
     <script src="../admin/js/services/data-service.js"></script>
-    <script src="../admin/js/components/role-switcher.js"></script>
-    <script src="../admin/js/components/layout.js"></script>
-    <script src="../admin/js/components/bot.js"></script>
+    <script src="js/components/toast.js"></script>
+    <script src="js/components/layout.js"></script>
+    <script src="js/components/bot.js"></script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            
-            // انتظار المكتبات
-            const checkLibs = setInterval(() => {
-                if (typeof Layout !== 'undefined' && typeof AppConfig !== 'undefined') {
-                    clearInterval(checkLibs);
+        // ==========================================
+        // PAGE TRANSLATIONS
+        // ==========================================
+        const pageContent = {
+            ar: {
+                pageTitle: "التقارير المالية | AndroGov",
+                title: "المركز المالي للشركة",
+                subtitle: "نظرة شاملة على الأداء المالي",
+                quarter: "Q4 2025 - نهائي",
+                summaryTitle: "ملخص الأداء (Q4)",
+                revenue: "إجمالي الإيرادات",
+                profit: "صافي الربح",
+                margin: "هامش الربح",
+                reportsTitle: "التقارير المرفقة",
+                file1: "تقرير Q4 المالي.xlsx",
+                audited: "مدقق",
+                file2: "تقرير مراجع الحسابات.pdf",
+                final: "نهائي",
+                chartTitle: "التدفقات النقدية (2025)",
+                incoming: "وارد",
+                outgoing: "صادر",
+                growth: "النمو السنوي",
+                growthDesc: "مقارنة بـ Q4 2024",
+                ebitda: "EBITDA",
+                ebitdaDesc: "هامش 40.4%",
+                equity: "حقوق الملكية",
+                equityDesc: "نسبة الديون 0.32"
+            },
+            en: {
+                pageTitle: "Financial Reports | AndroGov",
+                title: "Company Financial Position",
+                subtitle: "Comprehensive Financial Performance Overview",
+                quarter: "Q4 2025 - Final",
+                summaryTitle: "Performance Summary (Q4)",
+                revenue: "Total Revenue",
+                profit: "Net Profit",
+                margin: "Profit Margin",
+                reportsTitle: "Attached Reports",
+                file1: "Q4 Financial Report.xlsx",
+                audited: "Audited",
+                file2: "Auditor's Report.pdf",
+                final: "Final",
+                chartTitle: "Cash Flow (2025)",
+                incoming: "Inflow",
+                outgoing: "Outflow",
+                growth: "Annual Growth",
+                growthDesc: "vs Q4 2024",
+                ebitda: "EBITDA",
+                ebitdaDesc: "Margin 40.4%",
+                equity: "Equity",
+                equityDesc: "Debt Ratio 0.32"
+            }
+        };
 
-                    // ✅ تعريف هوية العضو لضمان ظهور القائمة الجانبية الصحيحة
-                    const boardUser = {
-                        id: 'BRD_001',
-                        type: 'board', // ⚠️ مهم جداً: يجب أن يكون lowercase (board)
-                        role: 'Board Member', 
-                        displayName: 'د. عبدالله الحواس',
-                        displayTitle: 'رئيس مجلس الإدارة',
-                        avatar: 'https://ui-avatars.com/api/?name=A+H&background=random'
-                    };
-
-                    AppConfig.setCurrentUser(boardUser);
-                    Layout.init();
-
-                    // ✅ تشغيل الرسم البياني
-                    initChart();
-                }
-            }, 50);
-        });
-
+        // ==========================================
+        // CHART INITIALIZATION
+        // ==========================================
         function initChart() {
             const ctx = document.getElementById('finChart');
             if(!ctx) return;
 
+            const lang = Layout.getCurrentLang();
+
             new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس'],
+                    labels: lang === 'ar' 
+                        ? ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس']
+                        : ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
                     datasets: [
                         {
-                            label: 'إيرادات',
+                            label: lang === 'ar' ? 'إيرادات' : 'Revenue',
                             data: [400, 450, 500, 480, 520, 550, 580, 600],
                             borderColor: '#3B82F6',
                             backgroundColor: 'rgba(59, 130, 246, 0.1)',
                             fill: true,
-                            tension: 0.4
+                            tension: 0.4,
+                            pointRadius: 5,
+                            pointHoverRadius: 7
                         },
                         {
-                            label: 'مصروفات',
+                            label: lang === 'ar' ? 'مصروفات' : 'Expenses',
                             data: [300, 320, 310, 350, 340, 360, 350, 380],
                             borderColor: '#FB4747',
                             backgroundColor: 'rgba(251, 71, 71, 0.05)',
                             fill: true,
                             tension: 0.4,
-                            borderDash: [5, 5]
+                            borderDash: [5, 5],
+                            pointRadius: 5,
+                            pointHoverRadius: 7
                         }
                     ]
                 },
@@ -177,16 +266,90 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
-                        legend: { display: false },
-                        tooltip: { mode: 'index', intersect: false }
+                        legend: { 
+                            display: true,
+                            position: 'top',
+                            align: 'end'
+                        },
+                        tooltip: { 
+                            mode: 'index', 
+                            intersect: false,
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': ' + context.parsed.y + 'K';
+                                }
+                            }
+                        }
                     },
                     scales: {
-                        y: { display: true, grid: { color: '#f1f5f9' } },
+                        y: { 
+                            display: true, 
+                            grid: { color: '#f1f5f9' },
+                            ticks: {
+                                callback: function(value) {
+                                    return value + 'K';
+                                }
+                            }
+                        },
                         x: { grid: { display: false } }
                     }
                 }
             });
         }
+
+        // ==========================================
+        // UPDATE CONTENT FUNCTION
+        // ==========================================
+        window.updateContent = function() {
+            const lang = Layout.getCurrentLang();
+            const dict = pageContent[lang];
+            
+            document.title = dict.pageTitle;
+            
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (dict[key]) {
+                    el.textContent = dict[key];
+                }
+            });
+
+            // Re-init chart with new language
+            const canvas = document.getElementById('finChart');
+            if (canvas) {
+                const chartInstance = Chart.getChart(canvas);
+                if (chartInstance) {
+                    chartInstance.destroy();
+                }
+                initChart();
+            }
+        };
+
+        // ==========================================
+        // INITIALIZATION
+        // ==========================================
+        document.addEventListener('DOMContentLoaded', () => {
+            const checkLibs = setInterval(() => {
+                if (typeof Layout !== 'undefined' && typeof AppConfig !== 'undefined') {
+                    clearInterval(checkLibs);
+
+                    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+
+                    if (currentUser) {
+                        AppConfig.setCurrentUser(currentUser);
+                        Layout.init();
+                        updateContent();
+                        initChart();
+                    } else {
+                        window.location.href = '../index.html';
+                    }
+                }
+            }, 50);
+        });
+
+        // Listen for language changes
+        window.addEventListener('languageChanged', () => {
+            updateContent();
+        });
     </script>
     
 </body>
