@@ -12,7 +12,7 @@ const Layout = (function() {
   // ==========================================
   let _state = {
     currentUser: null,
-    activeRole: 'finance_admin', 
+    activeRole: 'CFO', 
     isInitialized: false,
     sidebarOpen: false,
     notifications: [],
@@ -23,7 +23,7 @@ const Layout = (function() {
   // 2. FINANCE MENU DEFINITIONS (18 Pages)
   // ==========================================
   const _menuDefinitions = {
-    'finance_admin': [
+    'CFO': [
       { section: 'financial_control', items: [
         { key: 'dashboard', icon: 'fa-chart-pie', link: 'index.html', badge: 'live' },
         { key: 'approvals', icon: 'fa-file-signature', link: 'approvals.html', badge: 'urgent' },
