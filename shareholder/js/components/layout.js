@@ -395,6 +395,135 @@ const PORTAL_CONFIG = {
     }
   },
 
+  // 💼 SALES PORTAL
+  sales: {
+    defaultRole: 'sales_manager',
+    storageKey: 'sales_activeRole',
+    notificationKey: 'sales_notifications',
+    brandIcon: 'fa-chart-line',
+    brandName: 'Sales',
+    brandColor: 'brandRed',
+    
+    roles: {
+      'sales_manager': { 
+        ar: 'مدير المبيعات', 
+        en: 'Sales Manager',
+        desc: { ar: 'إدارة المبيعات والعملاء', en: 'Sales & Client Management' },
+        icon: 'fa-chart-line'
+      }
+    },
+
+    menus: {
+      'sales_manager': [
+        { section: 'sales_overview', items: [
+          { key: 'dashboard', icon: 'fa-gauge-high', link: 'index.html', badge: 'live' }
+        ]},
+        { section: 'sales_operations', items: [
+          { key: 'sales_pipeline', icon: 'fa-filter', link: 'sales_pipeline.html', badge: 'active' },
+          { key: 'sales_quotes', icon: 'fa-file-invoice-dollar', link: 'sales_quotes.html', badge: null },
+          { key: 'sales_activities', icon: 'fa-calendar-days', link: 'sales_activities.html', badge: null }
+        ]},
+        { section: 'client_management', items: [
+          { key: 'sales_clients', icon: 'fa-users', link: 'sales_clients.html', badge: 'clients' }
+        ]},
+        { section: 'personal', items: [
+          { key: 'my_profile', icon: 'fa-user-circle', link: 'profile.html', badge: null }
+        ]}
+      ]
+    }
+  },
+
+  // 📊 SHAREHOLDER PORTAL
+  shareholder: {
+    defaultRole: 'shareholder',
+    storageKey: 'shareholder_activeRole',
+    notificationKey: 'shareholder_notifications',
+    brandIcon: 'fa-building-columns',
+    brandName: 'Shareholder',
+    brandColor: 'brandRed',
+    
+    roles: {
+      'shareholder': { 
+        ar: 'مساهم', 
+        en: 'Shareholder',
+        desc: { ar: 'بوابة المساهمين', en: 'Shareholder Portal' },
+        icon: 'fa-user-tie'
+      }
+    },
+
+    menus: {
+      'shareholder': [
+        { section: 'shareholder_overview', items: [
+          { key: 'dashboard', icon: 'fa-gauge-high', link: 'index.html', badge: 'live' }
+        ]},
+        { section: 'shareholder_services', items: [
+          { key: 'certificates', icon: 'fa-certificate', link: 'certificates.html', badge: null },
+          { key: 'dividends', icon: 'fa-money-bill-trend-up', link: 'dividends.html', badge: null },
+          { key: 'voting', icon: 'fa-check-to-slot', link: 'voting.html', badge: 'vote' }
+        ]},
+        { section: 'shareholder_requests', items: [
+          { key: 'requests', icon: 'fa-inbox', link: 'requests.html', badge: null }
+        ]},
+        { section: 'personal', items: [
+          { key: 'my_profile', icon: 'fa-user-circle', link: 'profile.html', badge: null }
+        ]}
+      ]
+    }
+  },
+
+  // 👥 HR PORTAL
+  hr: {
+    defaultRole: 'hr_manager',
+    storageKey: 'hr_activeRole',
+    notificationKey: 'hr_notifications',
+    brandIcon: 'fa-users',
+    brandName: 'HR',
+    brandColor: 'brandRed',
+    
+    roles: {
+      'hr_manager': {
+        ar: 'مسؤول الموارد البشرية', 
+        en: 'HR Manager',
+        desc: { ar: 'الإشراف الإداري وشؤون الموظفين', en: 'Administrative supervision and personnel affairs' },
+        icon: 'fa-user-tie'
+      }
+    },
+
+    menus: {
+      'hr_manager': [
+        { section: 'hr_control', items: [
+          { key: 'dashboard', icon: 'fa-chart-pie', link: 'index.html', badge: 'live' },
+          { key: 'approvals', icon: 'fa-file-signature', link: 'hr_approvals.html', badge: 'urgent' },
+          { key: 'internal_chat', icon: 'fa-comments', link: 'internal_chat.html', badge: null }
+        ]},
+        { section: 'hr_operations', items: [
+          { key: 'employees', icon: 'fa-users', link: 'hr_employees.html', badge: null },
+          { key: 'attendance', icon: 'fa-calendar-check', link: 'hr_attendance.html', badge: null },
+          { key: 'leaves', icon: 'fa-umbrella-beach', link: 'hr_leaves.html', badge: null },
+          { key: 'payroll', icon: 'fa-money-bill-wave', link: 'hr_payroll.html', badge: null }
+        ]},
+        { section: 'hr_management', items: [
+          { key: 'recruitment', icon: 'fa-user-plus', link: 'hr_recruitment.html', badge: null },
+          { key: 'contracts', icon: 'fa-file-contract', link: 'hr_contracts.html', badge: null },
+          { key: 'org_structure', icon: 'fa-sitemap', link: 'hr_org.html', badge: null }
+        ]},
+        { section: 'hr_services', items: [
+          { key: 'assets', icon: 'fa-box', link: 'hr_assets.html', badge: null },
+          { key: 'logistics', icon: 'fa-truck', link: 'hr_logistics.html', badge: null },
+          { key: 'trips', icon: 'fa-plane', link: 'hr_trips.html', badge: null },
+          { key: 'purchases', icon: 'fa-shopping-cart', link: 'hr_purchases.html', badge: null }
+        ]},
+        { section: 'hr_compliance', items: [
+          { key: 'govt_affairs', icon: 'fa-landmark', link: 'hr_govt.html', badge: null },
+          { key: 'partners', icon: 'fa-handshake', link: 'hr_partners.html', badge: null }
+        ]},
+        { section: 'personal', items: [
+          { key: 'my_profile', icon: 'fa-user-circle', link: 'profile.html', badge: null }
+        ]}
+      ]
+    }
+  },
+
   // 💰 FINANCE PORTAL
   finance: {
     defaultRole: 'CFO',
@@ -497,6 +626,17 @@ const UNIVERSAL_TRANSLATIONS = {
     committee_overview: 'نظرة عامة للجنة',
     oversight: 'الإشراف والرقابة',
     reports_review: 'مراجعة التقارير',
+    sales_overview: 'نظرة عامة',
+    sales_operations: 'عمليات المبيعات',
+    client_management: 'إدارة العملاء',
+    shareholder_overview: 'نظرة عامة',
+    shareholder_services: 'خدمات المساهمين',
+    shareholder_requests: 'الطلبات',
+    hr_control: 'الرقابة الإدارية',
+    hr_operations: 'العمليات اليومية',
+    hr_management: 'إدارة الموارد البشرية',
+    hr_services: 'الخدمات الإدارية',
+    hr_compliance: 'الامتثال والشراكات',
     
     // Menu Items - Common
     dashboard: 'لوحة القيادة',
@@ -588,6 +728,27 @@ const UNIVERSAL_TRANSLATIONS = {
     external_audit: 'التدقيق الخارجي',
     committee_communication: 'تواصل اللجنة',
     meetings: 'الاجتماعات',
+    sales_pipeline: 'خط المبيعات',
+    sales_quotes: 'عروض الأسعار',
+    sales_activities: 'أنشطة المبيعات',
+    sales_clients: 'العملاء',
+    certificates: 'الشهادات',
+    dividends: 'الأرباح الموزعة',
+    voting: 'التصويت',
+    requests: 'الطلبات',
+    employees: 'الموظفين',
+    attendance: 'الحضور والانصراف',
+    leaves: 'الإجازات',
+    payroll: 'الرواتب',
+    recruitment: 'التوظيف',
+    contracts: 'العقود',
+    org_structure: 'الهيكل التنظيمي',
+    assets: 'الأصول',
+    logistics: 'اللوجستيات',
+    trips: 'الرحلات',
+    purchases: 'المشتريات',
+    govt_affairs: 'الشؤون الحكومية',
+    partners: 'الشراكات',
     
     // UI Elements
     switchWorkspace: 'تبديل بيئة العمل',
@@ -642,6 +803,17 @@ const UNIVERSAL_TRANSLATIONS = {
     committee_overview: 'Committee Overview',
     oversight: 'Oversight & Control',
     reports_review: 'Reports Review',
+    sales_overview: 'Overview',
+    sales_operations: 'Sales Operations',
+    client_management: 'Client Management',
+    shareholder_overview: 'Overview',
+    shareholder_services: 'Shareholder Services',
+    shareholder_requests: 'Requests',
+    hr_control: 'HR Control',
+    hr_operations: 'Daily Operations',
+    hr_management: 'HR Management',
+    hr_services: 'Administrative Services',
+    hr_compliance: 'Compliance & Partnerships',
     
     // Menu Items - Common (English translations)
     dashboard: 'Dashboard',
@@ -733,6 +905,27 @@ const UNIVERSAL_TRANSLATIONS = {
     external_audit: 'External Audit',
     committee_communication: 'Committee Communication',
     meetings: 'Meetings',
+    sales_pipeline: 'Sales Pipeline',
+    sales_quotes: 'Quotes',
+    sales_activities: 'Activities',
+    sales_clients: 'Clients',
+    certificates: 'Certificates',
+    dividends: 'Dividends',
+    voting: 'Voting',
+    requests: 'Requests',
+    employees: 'Employees',
+    attendance: 'Attendance',
+    leaves: 'Leaves',
+    payroll: 'Payroll',
+    recruitment: 'Recruitment',
+    contracts: 'Contracts',
+    org_structure: 'Organization Structure',
+    assets: 'Assets',
+    logistics: 'Logistics',
+    trips: 'Trips',
+    purchases: 'Purchases',
+    govt_affairs: 'Government Affairs',
+    partners: 'Partners',
     
     // UI Elements
     switchWorkspace: 'Switch Workspace',
@@ -753,7 +946,7 @@ const UNIVERSAL_TRANSLATIONS = {
 // ============================================================================
 const Layout = (function() {
   
-  // Detect portal type from URL (admin, audit, board, ceo, cto, employee, finance)
+  // Detect portal type from URL (admin, audit, board, ceo, cto, employee, finance, hr, sales, shareholder)
   const PORTAL_TYPE = (function() {
     const path = window.location.pathname;
     if (path.includes('/admin/')) return 'admin';
@@ -763,6 +956,9 @@ const Layout = (function() {
     if (path.includes('/cto/')) return 'cto';
     if (path.includes('/employee/')) return 'employee';
     if (path.includes('/finance/')) return 'finance';
+    if (path.includes('/hr/')) return 'hr';
+    if (path.includes('/sales/')) return 'sales';
+    if (path.includes('/shareholder/')) return 'shareholder';
     return 'admin'; // Default fallback
   })();
 
