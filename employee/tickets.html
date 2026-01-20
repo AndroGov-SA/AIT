@@ -1,21 +1,93 @@
-<main class="p-8">
-    <div class="flex justify-between items-center mb-8">
-        <h1 class="text-2xl font-bold dark:text-white">تذاكر الدعم الفني</h1>
-        <div class="flex gap-2">
-            <span class="bg-blue-50 text-blue-600 px-4 py-1 rounded-lg text-sm font-bold">نشط: 5</span>
-            <span class="bg-green-50 text-green-600 px-4 py-1 rounded-lg text-sm font-bold">مكتمل: 128</span>
-        </div>
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تذاكر الدعم الفني | AndroGov</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: { extend: { colors: { brandRed: '#FB4747', brandDark: '#1E293B' }, fontFamily: { sans: ['Tajawal', 'sans-serif'] } } }
+        }
+    </script>
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-200 font-sans opacity-0 transition-opacity duration-500">
+
+    <div id="sidebar-container"></div>
+
+    <div class="main-content-wrapper lg:mr-72 transition-all duration-300">
+        <div id="header-container"></div>
+
+        <main class="p-8 space-y-6">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h1 class="text-2xl font-bold dark:text-white">تذاكر الدعم الفني</h1>
+                    <p class="text-sm text-slate-500">إدارة وحل المشكلات التقنية الواردة</p>
+                </div>
+                <div class="flex gap-3">
+                    <span class="bg-orange-100 text-orange-700 px-4 py-2 rounded-xl text-xs font-bold border border-orange-200">5 معلقة</span>
+                    <span class="bg-green-100 text-green-700 px-4 py-2 rounded-xl text-xs font-bold border border-green-200">128 مكتملة</span>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <div class="bg-white dark:bg-slate-900 p-5 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-md transition group relative overflow-hidden">
+                    <div class="absolute right-0 top-0 bottom-0 w-1.5 bg-orange-500"></div>
+                    <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                        <div class="flex gap-4 items-center">
+                            <div class="w-12 h-12 bg-orange-50 dark:bg-orange-900/20 rounded-2xl flex items-center justify-center text-orange-600">
+                                <i class="fa-solid fa-microchip text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold dark:text-white">عطل في طابعة إدارة الموارد البشرية</h4>
+                                <p class="text-xs text-slate-500 mt-1">بواسطة: منصور اليامي | الأولوية: <span class="text-orange-500 font-bold">عالية</span></p>
+                            </div>
+                        </div>
+                        <div class="flex gap-2 w-full md:w-auto">
+                            <button class="flex-1 md:flex-none bg-brandRed text-white px-5 py-2 rounded-xl text-xs font-bold hover:bg-red-700 transition">استلام المهمة</button>
+                            <button class="flex-1 md:flex-none bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 px-5 py-2 rounded-xl text-xs font-bold">التفاصيل</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-slate-900 p-5 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-md transition group relative overflow-hidden">
+                    <div class="absolute right-0 top-0 bottom-0 w-1.5 bg-blue-500"></div>
+                    <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                        <div class="flex gap-4 items-center">
+                            <div class="w-12 h-12 bg-blue-50 dark:bg-blue-900/20 rounded-2xl flex items-center justify-center text-blue-600">
+                                <i class="fa-solid fa-shield-halved text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold dark:text-white">تحديث صلاحيات الوصول (VPN)</h4>
+                                <p class="text-xs text-slate-500 mt-1">بواسطة: سارة العمري | الأولوية: <span class="text-blue-500 font-bold">متوسطة</span></p>
+                            </div>
+                        </div>
+                        <div class="flex gap-2 w-full md:w-auto">
+                            <button class="flex-1 md:flex-none bg-brandRed text-white px-5 py-2 rounded-xl text-xs font-bold hover:bg-red-700 transition">استلام المهمة</button>
+                            <button class="flex-1 md:flex-none bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 px-5 py-2 rounded-xl text-xs font-bold">التفاصيل</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
     </div>
 
-    <div class="space-y-4">
-        <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border-r-4 border-brandRed shadow-sm flex justify-between items-center">
-            <div>
-                <h4 class="font-bold dark:text-white">مشكلة في تسجيل الدخول (بوابة المدير)</h4>
-                <p class="text-xs text-slate-500 mt-1">بواسطة: مشاعل الهذيان | منذ ساعتين</p>
-            </div>
-            <button class="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 px-4 py-2 rounded-lg text-xs font-bold hover:bg-brandRed hover:text-white transition">
-                عرض التفاصيل
-            </button>
-        </div>
-    </div>
-</main>
+    <script src="data/company_policy.js"></script>
+    <script src="js/core/config.js"></script>
+    <script src="js/core/i18n.js"></script>
+    <script src="js/helpers/policy-helpers.js"></script>
+    <script src="js/services/data-service.js"></script>
+    <script src="js/components/role-switcher.js"></script>
+    <script src="js/components/layout.js"></script>
+    <script src="js/components/bot.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof Layout !== 'undefined') Layout.init();
+            document.body.classList.remove('opacity-0');
+        });
+    </script>
+</body>
+</html>
