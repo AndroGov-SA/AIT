@@ -1,678 +1,571 @@
 /**
- * ==========================================
- * Andromeda IT Company - Board Portal Policy Database
- * @file board/data/company_policy.js
- * @version 4.0.0 - Real Data Integration
- * @description Comprehensive company policy with actual Andromeda IT data
- * ==========================================
+ * AndroGov Audit Layout Engine v1.0
+ * @file audit/js/components/layout.js
+ * @author Ayman Al-Maghrabi
+ * @description Audit portal layout with specialized menu
  */
 
-const CompanyPolicy = {
+const Layout = (function() {
   
   // ==========================================
-  // 1. COMPANY INFORMATION
+  // 1. STATE & CONFIG
   // ==========================================
-  
-  company: {
-    nameAr: 'شركة اندروميدا لتقنية المعلومات',
-    nameEn: 'Andromeda Information Technology Company',
-    crNumber: '1010987654',
-    taxNumber: '300123456789003',
-    established: '2015-03-15',
-    website: 'https://andromeda-it.com',
-    fiscalYearEnd: '12-31',
-    headquarters: {
-      ar: 'الرياض، المملكة العربية السعودية',
-      en: 'Riyadh, Saudi Arabia'
+  let _state = {
+    currentUser: null,
+    isInitialized: false,
+    sidebarOpen: false,
+    notifications: [],
+    unreadCount: 0
+  };
+
+  // ==========================================
+  // 2. AUDIT MENU DEFINITION
+  // ==========================================
+  const _auditMenu = [
+    { 
+      section: 'audit_overview', 
+      items: [
+        { key: 'audit_dashboard', icon: 'fa-shield-halved', link: 'index.html', badge: 'live' },
+        { key: 'audit_plan', icon: 'fa-calendar-check', link: 'audit_plan.html', badge: null }
+      ]
     },
-    industry: {
-      ar: 'تقنية المعلومات والحلول الرقمية',
-      en: 'Information Technology & Digital Solutions'
+    { 
+      section: 'audit_activities', 
+      items: [
+        { key: 'observations', icon: 'fa-clipboard-list', link: 'observations.html', badge: 'important' },
+        { key: 'risk_reports', icon: 'fa-chart-line', link: 'risk_reports.html', badge: null }
+      ]
+    },
+    { 
+      section: 'compliance', 
+      items: [
+        { key: 'compliance_check', icon: 'fa-list-check', link: 'compliance.html', badge: null },
+        { key: 'internal_controls', icon: 'fa-shield-check', link: 'controls.html', badge: null }
+      ]
+    },
+    { 
+      section: 'reports', 
+      items: [
+        { key: 'quarterly_reports', icon: 'fa-file-chart-column', link: 'reports.html', badge: null },
+        { key: 'findings_log', icon: 'fa-book', link: 'findings.html', badge: null }
+      ]
     }
-  },
+  ];
 
-  // ==========================================
-  // 2. CAPITAL STRUCTURE (REAL DATA)
-  // ==========================================
-  
-  capital: {
-    amount: 6000000,
-    currency: "SAR",
-    sharesCount: 600000,
-    shareValue: 10,
-    status: "fully_paid"
-  },
-
-  // ==========================================
-  // 3. SHAREHOLDERS (REAL DATA - 11 SHAREHOLDERS)
-  // ==========================================
-  
-  shareholders: [
-    { 
-      id: "SH_001", 
-      name: { ar: "ورثة محمد بن صالح السحيباني", en: "Heirs of Mohammed Al-Suhaibani" }, 
-      percent: 35, 
-      shares: 210000, 
-      type: "Individual", 
-      voting: true, 
-      email: "alcaseer@gmail.com", 
-      proxy: { ar: "وائل السحيباني", en: "Wael Al-Suhaibani" } 
+  // Translation Keys
+  const _translations = {
+    ar: {
+      // Sections
+      audit_overview: 'نظرة عامة',
+      audit_activities: 'أنشطة التدقيق',
+      compliance: 'الامتثال',
+      reports: 'التقارير',
+      
+      // Menu Items
+      audit_dashboard: 'لوحة التحكم',
+      audit_plan: 'خطة التدقيق السنوية',
+      observations: 'سجل الملاحظات',
+      risk_reports: 'تقارير المخاطر',
+      compliance_check: 'فحص الامتثال',
+      internal_controls: 'الضوابط الداخلية',
+      quarterly_reports: 'التقارير الربع سنوية',
+      findings_log: 'سجل النتائج',
+      
+      // UI Elements
+      notifications: 'الإشعارات',
+      noNotifications: 'لا توجد إشعارات جديدة',
+      markAllRead: 'تعليم الكل كمقروء',
+      logout: 'تسجيل الخروج',
+      logoutConfirm: 'هل أنت متأكد من تسجيل الخروج؟',
+      poweredBy: 'تطوير',
+      aymanDev: 'أيمن المغربي'
     },
-    { 
-      id: "SH_002", 
-      name: { ar: "هشام بن محمد السحيباني", en: "Hesham Al-Sohaibani" }, 
-      percent: 10, 
-      shares: 60000, 
-      type: "Individual", 
-      voting: true, 
-      email: "hesham@androomeda.com", 
-      proxy: null 
-    },
-    { 
-      id: "SH_003", 
-      name: { ar: "وائل بن محمد السحيباني", en: "Wael Al-Suhaibani" }, 
-      percent: 5, 
-      shares: 30000, 
-      type: "Individual", 
-      voting: true, 
-      email: "w961@live.com", 
-      proxy: null 
-    },
-    { 
-      id: "SH_004", 
-      name: { ar: "هيثم بن محمد السحيباني", en: "Haitham Al-Suhaibani" }, 
-      percent: 5, 
-      shares: 30000, 
-      type: "Individual", 
-      voting: true, 
-      email: "hmsasis@gmail.com", 
-      proxy: null 
-    },
-    { 
-      id: "SH_005", 
-      name: { ar: "منصور بن حسن اليامي", en: "Mansour Al-Yami" }, 
-      percent: 5, 
-      shares: 30000, 
-      type: "Individual", 
-      voting: true, 
-      email: "myami@androomeda.com", 
-      proxy: null 
-    },
-    { 
-      id: "SH_006", 
-      name: { ar: "إبراهيم بن حمد السكيتي", en: "Ibrahim Al-Skeiti" }, 
-      percent: 5, 
-      shares: 30000, 
-      type: "Individual", 
-      voting: true, 
-      email: "ihskaity@gmail.com", 
-      proxy: null 
-    },
-    { 
-      id: "SH_007", 
-      name: { ar: "صالح بن عبدالله الوهيبي", en: "Saleh Al-Wahibi" }, 
-      percent: 5, 
-      shares: 30000, 
-      type: "Individual", 
-      voting: true, 
-      email: "saaw4466@yahoo.com", 
-      proxy: null 
-    },
-    { 
-      id: "SH_008", 
-      name: { ar: "عبدالله بن علي الفريجي", en: "Abdullah Al-Fariji" }, 
-      percent: 5, 
-      shares: 30000, 
-      type: "Individual", 
-      voting: true, 
-      email: "a_furaiji@hotmail.com", 
-      proxy: null 
-    },
-    { 
-      id: "SH_009", 
-      name: { ar: "عبدالله بن محمد الحواس", en: "Abdullah Al-Hawas" }, 
-      percent: 5, 
-      shares: 30000, 
-      type: "Individual", 
-      voting: true, 
-      email: "amh400@gmail.com", 
-      proxy: null 
-    },
-    { 
-      id: "SH_010", 
-      name: { ar: "شركة بيجي المحدودة", en: "BG LTD Company" }, 
-      percent: 15, 
-      shares: 90000, 
-      type: "Entity", 
-      voting: true, 
-      email: "saleh@bgtech.com", 
-      proxy: { ar: "صالح السحيباني", en: "Saleh Al-Suhaibani" } 
-    },
-    { 
-      id: "SH_011", 
-      name: { ar: "أحمد بن سليمان الجاسر", en: "Ahmed Al-Jasser" }, 
-      percent: 5, 
-      shares: 30000, 
-      type: "Individual", 
-      voting: true, 
-      email: "ahmed.jasser@gmail.com", 
-      proxy: null 
+    en: {
+      // Sections
+      audit_overview: 'Overview',
+      audit_activities: 'Audit Activities',
+      compliance: 'Compliance',
+      reports: 'Reports',
+      
+      // Menu Items
+      audit_dashboard: 'Dashboard',
+      audit_plan: 'Annual Audit Plan',
+      observations: 'Observations Log',
+      risk_reports: 'Risk Reports',
+      compliance_check: 'Compliance Check',
+      internal_controls: 'Internal Controls',
+      quarterly_reports: 'Quarterly Reports',
+      findings_log: 'Findings Log',
+      
+      // UI Elements
+      notifications: 'Notifications',
+      noNotifications: 'No new notifications',
+      markAllRead: 'Mark all as read',
+      logout: 'Logout',
+      logoutConfirm: 'Are you sure you want to logout?',
+      poweredBy: 'Developed by',
+      aymanDev: 'Ayman Almaghrabi'
     }
-  ],
+  };
 
   // ==========================================
-  // 4. USERS & EMPLOYEES (REAL DATA)
+  // 3. INITIALIZATION
   // ==========================================
-  
-  users: [
-    // Board & Executives
-    { 
-      id: "USR_000", 
-      name: { ar: "عبدالله الحواس", en: "Abdullah Al-Hawas" }, 
-      title: { ar: "رئيس مجلس الإدارة", en: "Chairman of the Board" }, 
-      dept: "DEP_EXEC", 
-      role: "chairman", 
-      email: "amh400@gmail.com", 
-      isExecutive: false, 
-      isShareholder: true,
-      avatar: "https://ui-avatars.com/api/?name=Abdullah+AlHawas&background=FB4747&color=fff"
-    },
-    { 
-      id: "USR_001", 
-      name: { ar: "هشام السحيباني", en: "Hesham Al-Sohaibani" }, 
-      title: { ar: "الرئيس التنفيذي ونائب رئيس المجلس", en: "CEO & Board Vice Chairman" }, 
-      dept: "DEP_EXEC", 
-      role: "ceo", 
-      additionalRoles: ["vice_chairman"], 
-      email: "hesham@androomeda.com", 
-      isExecutive: true, 
-      isShareholder: true,
-      avatar: "../photo/ceo.jpeg"
-    },
-    { 
-      id: "USR_002", 
-      name: { ar: "محمد البخيتي", en: "Mohammed Al-Bukheiti" }, 
-      title: { ar: "المدير المالي", en: "Chief Financial Officer (CFO)" }, 
-      dept: "DEP_FIN", 
-      role: "cfo", 
-      email: "mtahir@androomeda.com", 
-      isExecutive: true,
-      avatar: "https://ui-avatars.com/api/?name=Mohammed+AlBukheiti&background=4267B2&color=fff"
-    },
-    { 
-      id: "BRD_003", 
-      name: { ar: "أحمد السحيباني", en: "Ahmed Al-Suhaibani" }, 
-      title: { ar: "عضو مجلس الإدارة وعضو لجنة المراجعة", en: "Board & Audit Member" }, 
-      dept: "DEP_EXEC", 
-      role: "board_member", 
-      additionalRoles: ["audit_committee_member"], 
-      email: "a.s.alsuhaibani@microtec.com.sa", 
-      isExecutive: false, 
-      isShareholder: true,
-      avatar: "https://ui-avatars.com/api/?name=Ahmed+AlSuhaibani&background=10B981&color=fff"
-    },
-    { 
-      id: "USR_005", 
-      name: { ar: "منصور اليامي", en: "Mansour Al-Yami" }, 
-      title: { ar: "المدير الإداري وعضو المجلس", en: "CAO / Board Member" }, 
-      dept: "DEP_HR", 
-      role: "cao", 
-      additionalRoles: ["board_member"], 
-      email: "myami@androomeda.com", 
-      isExecutive: true, 
-      isShareholder: true,
-      avatar: "https://ui-avatars.com/api/?name=Mansour+AlYami&background=F59E0B&color=fff"
-    },
-    
-    // Managers & Directors
-    { 
-      id: "USR_004", 
-      name: { ar: "أيمن المغربي", en: "Ayman Al-Maghrabi" }, 
-      title: { ar: "مسؤول الحوكمة والمخاطر والالتزام / أمين سر المجلس", en: "GRCO / Board Secretary" }, 
-      dept: "DEP_GRC", 
-      role: "grc_officer", 
-      email: "amaghrabi@androomeda.com", 
-      isExecutive: false, 
-      avatar: "../photo/grc.png" 
-    },
-    { 
-      id: "USR_020", 
-      name: { ar: "محمد أختر", en: "Muhammad Akhtar" }, 
-      title: { ar: "مدير التطوير", en: "Director of Development" }, 
-      dept: "DEP_TECH", 
-      role: "director", 
-      email: "makhtar@androomeda.com",
-      avatar: "https://ui-avatars.com/api/?name=Muhammad+Akhtar&background=8B5CF6&color=fff"
-    },
-    { 
-      id: "USR_009", 
-      name: { ar: "مشاعل الهديان", en: "Meshail Al-Hadyan" }, 
-      title: { ar: "مسؤول الأمن السيبراني الوطني", en: "NCSO" }, 
-      dept: "DEP_TECH", 
-      role: "ncso", 
-      email: "malhadyan@androomeda.com",
-      avatar: "https://ui-avatars.com/api/?name=Meshail+AlHadyan&background=EC4899&color=fff"
-    },
-    { 
-      id: "USR_007", 
-      name: { ar: "نواف الصحابي", en: "Nawaf Al-Sahabi" }, 
-      title: { ar: "مدير حسابات العملاء", en: "Customer Accounts Manager" }, 
-      dept: "DEP_SUPPORT", 
-      role: "manager", 
-      email: "nalsahabi@androomeda.com",
-      avatar: "https://ui-avatars.com/api/?name=Nawaf+AlSahabi&background=14B8A6&color=fff"
-    },
-    { 
-      id: "USR_006", 
-      name: { ar: "د. وعد حسين", en: "Dr. Waad Hussein" }, 
-      title: { ar: "المشرف الطبي", en: "Medical Supervisor" }, 
-      dept: "DEP_MED", 
-      role: "manager", 
-      email: "whussain@androomeda.com",
-      avatar: "https://ui-avatars.com/api/?name=Waad+Hussein&background=F43F5E&color=fff"
-    },
-    
-    // Team Leads & Coordinators
-    { 
-      id: "USR_015", 
-      name: { ar: "رند الحوراني", en: "Rand Al-Hourani" }, 
-      title: { ar: "قائد الفريق التقني", en: "Technical Team Lead" }, 
-      dept: "DEP_TECH", 
-      role: "team_lead", 
-      email: "rhourani@androomeda.com", 
-      isTeamLead: true,
-      avatar: "https://ui-avatars.com/api/?name=Rand+AlHourani&background=A855F7&color=fff"
-    },
-    { 
-      id: "USR_003", 
-      name: { ar: "هادي أحمد", en: "Hadi Ahmed" }, 
-      title: { ar: "منسق المشتريات والدعم الإداري", en: "Purchasing & Admin Support Coordinator" }, 
-      dept: "DEP_HR", 
-      role: "coordinator", 
-      email: "hadi@androomeda.com",
-      avatar: "https://ui-avatars.com/api/?name=Hadi+Ahmed&background=06B6D4&color=fff"
-    },
-    
-    // Specialists & Support
-    { 
-      id: "USR_008", 
-      name: { ar: "الحسين الحميدي", en: "Al-Hussain Al-Humaidi" }, 
-      title: { ar: "أخصائي دعم تقني", en: "Technical Support Specialist" }, 
-      dept: "DEP_SUPPORT", 
-      role: "specialist", 
-      email: "alhussien@androomeda.com",
-      avatar: "https://ui-avatars.com/api/?name=AlHussain+AlHumaidi&background=84CC16&color=fff"
-    },
-    { 
-      id: "USR_010", 
-      name: { ar: "مها الحزان", en: "Maha Al-Hazzan" }, 
-      title: { ar: "أخصائية تسويق رقمي", en: "Digital Marketing Specialist" }, 
-      dept: "DEP_SALES", 
-      role: "specialist", 
-      email: "mhizan@androomeda.com",
-      avatar: "https://ui-avatars.com/api/?name=Maha+AlHazzan&background=F472B6&color=fff"
-    },
-    { 
-      id: "USR_014", 
-      name: { ar: "عبدالله الجبير", en: "Abdullah Al-Jubeir" }, 
-      title: { ar: "دعم مكتبي", en: "Office Support" }, 
-      dept: "DEP_HR", 
-      role: "support", 
-      email: "ajubeir@androomeda.com",
-      avatar: "https://ui-avatars.com/api/?name=Abdullah+AlJubeir&background=64748B&color=fff"
-    },
-    
-    // Teams & Vacant Positions
-    { 
-      id: "USR_023", 
-      name: { ar: "فريق المطورين", en: "Software Developers Team" }, 
-      title: { ar: "فريق المطورين", en: "Software Developers Team" }, 
-      dept: "DEP_TECH", 
-      role: "employee", 
-      email: "SDT@androomeda.com", 
-      isGroup: true,
-      avatar: "https://ui-avatars.com/api/?name=Dev+Team&background=6366F1&color=fff"
-    },
-    { 
-      id: "USR_011", 
-      name: { ar: "شاغر", en: "Vacant" }, 
-      title: { ar: "مدير المبيعات", en: "Sales Manager" }, 
-      dept: "DEP_SALES", 
-      role: "manager", 
-      email: "SalesManager@androomeda.com", 
-      status: "inactive",
-      avatar: "https://ui-avatars.com/api/?name=Vacant&background=94A3B8&color=fff"
-    },
-    
-    // Committee Members (External)
-    { 
-      id: "COMM_01", 
-      name: { ar: "محمد العنزي", en: "Mohammed Al-Enezi" }, 
-      title: { ar: "رئيس لجنة المراجعة", en: "Audit Committee Chairman" }, 
-      dept: "DEP_AUDIT", 
-      role: "audit_committee_chair", 
-      email: "mohammedmansour.socpa@gmail.com", 
-      isExternal: true,
-      avatar: "https://ui-avatars.com/api/?name=Mohammed+AlEnezi&background=059669&color=fff"
-    },
-    { 
-      id: "COMM_02", 
-      name: { ar: "عادل سعسع", en: "Adel Sasa" }, 
-      title: { ar: "عضو لجنة المراجعة", en: "Audit Committee Member" }, 
-      dept: "DEP_AUDIT", 
-      role: "audit_committee_member", 
-      email: "adel.sasa1@gmail.com", 
-      isExternal: true,
-      avatar: "https://ui-avatars.com/api/?name=Adel+Sasa&background=0891B2&color=fff"
-    },
-    
-    // Auditors
-    { 
-      id: "AUD_INT", 
-      name: { ar: "المدقق الداخلي", en: "Internal Auditor" }, 
-      title: { ar: "المدقق الداخلي", en: "Internal Auditor" }, 
-      dept: "DEP_AUDIT", 
-      role: "auditor", 
-      email: "InternalAudit@androomeda.com", 
-      isExternal: false,
-      avatar: "https://ui-avatars.com/api/?name=Internal+Auditor&background=7C3AED&color=fff"
-    },
-    { 
-      id: "AUD_EXT", 
-      name: { ar: "المدقق الخارجي", en: "External Auditor" }, 
-      title: { ar: "المدقق الخارجي (KPMG/EY)", en: "External Auditor (KPMG/EY)" }, 
-      dept: "DEP_AUDIT", 
-      role: "auditor", 
-      email: "ExternalAudit@androomeda.com", 
-      isExternal: true,
-      avatar: "https://ui-avatars.com/api/?name=External+Auditor&background=DC2626&color=fff"
-    },
-    
-    // Shareholders (Users with shareholder role only)
-    { id: "SH_USER_001", name: { ar: "ورثة محمد بن صالح السحيباني", en: "Heirs of Mohammed Al-Suhaibani" }, title: { ar: "مساهم رئيسي", en: "Major Shareholder" }, dept: "DEP_EXEC", role: "shareholder", email: "alcaseer@gmail.com", isShareholder: true, avatar: "https://ui-avatars.com/api/?name=Heirs&background=F97316&color=fff" },
-    { id: "SH_USER_003", name: { ar: "وائل بن محمد السحيباني", en: "Wael Al-Suhaibani" }, title: { ar: "مساهم", en: "Shareholder" }, dept: "DEP_EXEC", role: "shareholder", email: "w961@live.com", isShareholder: true, avatar: "https://ui-avatars.com/api/?name=Wael&background=EAB308&color=fff" },
-    { id: "SH_USER_004", name: { ar: "هيثم بن محمد السحيباني", en: "Haitham Al-Suhaibani" }, title: { ar: "مساهم", en: "Shareholder" }, dept: "DEP_EXEC", role: "shareholder", email: "hmsasis@gmail.com", isShareholder: true, avatar: "https://ui-avatars.com/api/?name=Haitham&background=84CC16&color=fff" },
-    { id: "SH_USER_006", name: { ar: "إبراهيم بن حمد السكيتي", en: "Ibrahim Al-Skeiti" }, title: { ar: "مساهم", en: "Shareholder" }, dept: "DEP_EXEC", role: "shareholder", email: "ihskaity@gmail.com", isShareholder: true, avatar: "https://ui-avatars.com/api/?name=Ibrahim&background=22C55E&color=fff" },
-    { id: "SH_USER_007", name: { ar: "صالح بن عبدالله الوهيبي", en: "Saleh Al-Wahibi" }, title: { ar: "مساهم", en: "Shareholder" }, dept: "DEP_EXEC", role: "shareholder", email: "saaw4466@yahoo.com", isShareholder: true, avatar: "https://ui-avatars.com/api/?name=Saleh&background=14B8A6&color=fff" },
-    { id: "SH_USER_008", name: { ar: "عبدالله بن علي الفريجي", en: "Abdullah Al-Fariji" }, title: { ar: "مساهم", en: "Shareholder" }, dept: "DEP_EXEC", role: "shareholder", email: "a_furaiji@hotmail.com", isShareholder: true, avatar: "https://ui-avatars.com/api/?name=Abdullah&background=06B6D4&color=fff" },
-    { id: "SH_USER_010", name: { ar: "شركة بيجي المحدودة", en: "BG LTD Company" }, title: { ar: "مساهم (شركة)", en: "Shareholder (Entity)" }, dept: "DEP_EXEC", role: "shareholder", email: "saleh@bgtech.com", isShareholder: true, avatar: "https://ui-avatars.com/api/?name=BG+LTD&background=3B82F6&color=fff" },
-    { id: "SH_USER_011", name: { ar: "أحمد بن سليمان الجاسر", en: "Ahmed Al-Jasser" }, title: { ar: "مساهم", en: "Shareholder" }, dept: "DEP_EXEC", role: "shareholder", email: "ahmed.jasser@gmail.com", isShareholder: true, avatar: "https://ui-avatars.com/api/?name=Ahmed&background=8B5CF6&color=fff" }
-  ],
+  async function init() {
+    if (_state.isInitialized) return;
 
-  // ==========================================
-  // 5. USER ROLES MAPPING (REAL DATA)
-  // ==========================================
-  
-  userRolesMap: [
-    // أيمن المغربي - 5 أدوار
-    { 
-      userId: "USR_004", 
-      contexts: [
-        { context: "system", role: "sys_admin", label: { ar: "إدارة النظام", en: "System Administration" }, isPrimary: true },
-        { context: "board", role: "board_secretary", label: { ar: "مجلس الإدارة", en: "Board of Directors" } },
-        { context: "audit_committee", role: "audit_committee_secretary", label: { ar: "لجنة المراجعة", en: "Audit Committee" } },
-        { context: "shareholders", role: "investor_relations", label: { ar: "علاقات المساهمين", en: "Investor Relations" } },
-        { context: "governance", role: "grc_officer", label: { ar: "الحوكمة والالتزام", en: "GRC" } }
-      ]
-    },
-    // هشام السحيباني
-    { 
-      userId: "USR_001", 
-      contexts: [
-        { context: "executive", role: "ceo", label: { ar: "الإدارة التنفيذية", en: "Executive Management" }, isPrimary: true },
-        { context: "board", role: "vice_chairman", label: { ar: "مجلس الإدارة", en: "Board of Directors" } },
-        { context: "shareholders", role: "shareholder", label: { ar: "المساهمين", en: "Shareholders" }, shareholderId: "SH_002" }
-      ]
-    },
-    // عبدالله الحواس
-    { 
-      userId: "USR_000", 
-      contexts: [
-        { context: "board", role: "chairman", label: { ar: "مجلس الإدارة", en: "Board of Directors" }, isPrimary: true },
-        { context: "shareholders", role: "shareholder", label: { ar: "المساهمين", en: "Shareholders" }, shareholderId: "SH_009" }
-      ]
-    },
-    // منصور اليامي
-    { 
-      userId: "USR_005", 
-      contexts: [
-        { context: "executive", role: "cao", label: { ar: "الإدارة التنفيذية", en: "Executive Management" }, isPrimary: true },
-        { context: "board", role: "board_member", label: { ar: "مجلس الإدارة", en: "Board of Directors" } },
-        { context: "shareholders", role: "shareholder", label: { ar: "المساهمين", en: "Shareholders" }, shareholderId: "SH_005" }
-      ]
-    },
-    // أحمد السحيباني
-    { 
-      userId: "BRD_003", 
-      contexts: [
-        { context: "board", role: "board_member", label: { ar: "مجلس الإدارة", en: "Board of Directors" }, isPrimary: true },
-        { context: "audit_committee", role: "audit_committee_member", label: { ar: "لجنة المراجعة", en: "Audit Committee" } },
-        { context: "shareholders", role: "shareholder", label: { ar: "المساهمين", en: "Shareholders" }, shareholderId: "SH_011" }
-      ]
-    },
-    // محمد العنزي
-    { 
-      userId: "COMM_01", 
-      contexts: [
-        { context: "audit_committee", role: "audit_committee_chair", label: { ar: "لجنة المراجعة", en: "Audit Committee" }, isPrimary: true }
-      ]
-    },
-    // عادل سعسع
-    { 
-      userId: "COMM_02", 
-      contexts: [
-        { context: "audit_committee", role: "audit_committee_member", label: { ar: "لجنة المراجعة", en: "Audit Committee" }, isPrimary: true }
-      ]
-    },
-    // Shareholders Mapping
-    { userId: "SH_USER_001", contexts: [{ context: "shareholders", role: "shareholder", label: { ar: "المساهمين", en: "Shareholders" }, shareholderId: "SH_001", isPrimary: true }] },
-    { userId: "SH_USER_003", contexts: [{ context: "shareholders", role: "shareholder", label: { ar: "المساهمين", en: "Shareholders" }, shareholderId: "SH_003", isPrimary: true }] },
-    { userId: "SH_USER_004", contexts: [{ context: "shareholders", role: "shareholder", label: { ar: "المساهمين", en: "Shareholders" }, shareholderId: "SH_004", isPrimary: true }] },
-    { userId: "SH_USER_006", contexts: [{ context: "shareholders", role: "shareholder", label: { ar: "المساهمين", en: "Shareholders" }, shareholderId: "SH_006", isPrimary: true }] },
-    { userId: "SH_USER_007", contexts: [{ context: "shareholders", role: "shareholder", label: { ar: "المساهمين", en: "Shareholders" }, shareholderId: "SH_007", isPrimary: true }] },
-    { userId: "SH_USER_008", contexts: [{ context: "shareholders", role: "shareholder", label: { ar: "المساهمين", en: "Shareholders" }, shareholderId: "SH_008", isPrimary: true }] },
-    { userId: "SH_USER_010", contexts: [{ context: "shareholders", role: "shareholder", label: { ar: "المساهمين", en: "Shareholders" }, shareholderId: "SH_010", isPrimary: true }] },
-    { userId: "SH_USER_011", contexts: [{ context: "shareholders", role: "shareholder", label: { ar: "المساهمين", en: "Shareholders" }, shareholderId: "SH_011", isPrimary: true }] }
-  ],
-
-  // ==========================================
-  // 6. GOVERNANCE (REAL DATA)
-  // ==========================================
-  
-  governance: {
-    board: {
-      totalSeats: 4,
-      termYears: 4,
-      currentTermStart: "2025-01-01",
-      currentTermEnd: "2029-01-01",
-      minMeetingsPerYear: 4
-    },
-    quorum: {
-      OGA: { firstMeeting: 25, secondMeeting: 0, decisionThreshold: 50 },
-      EGA: { firstMeeting: 50, secondMeeting: 25, thirdMeeting: 0, decisionThreshold: 66.6 },
-      Board: { minMembers: 3, decisionThreshold: 51 }
-    },
-    remuneration: {
-      currency: "SAR",
-      boardMeetingFee: 2000,
-      auditCommitteeFee: 1500,
-      secretaryFee: 1000,
-      annualCapPerMember: 500000,
-      travelPolicy: "Business Class for non-residents"
-    },
-    committees: [
-      { 
-        id: "COMM_AUDIT", 
-        name: { ar: "لجنة المراجعة", en: "Audit Committee" }, 
-        required: true, 
-        minMembers: 3,
-        chair: "COMM_01",
-        members: ["COMM_01", "COMM_02", "BRD_003"],
-        secretary: "USR_004"
-      }
-    ],
-    policies: {
-      codeOfConduct: { version: '2.1', lastUpdated: '2025-01-01' },
-      conflictOfInterest: { version: '2.0', lastUpdated: '2025-12-10' },
-      disclosure: { version: '2.0', lastUpdated: '2025-11-20' },
-      remuneration: { version: '1.8', lastUpdated: '2025-10-05' }
+    // Load User Data
+    const storedUser = localStorage.getItem('currentUser');
+    if (storedUser) {
+      _state.currentUser = JSON.parse(storedUser);
+    } else {
+      // Set default audit user
+      _state.currentUser = {
+        id: 'AUD_001',
+        type: 'audit',
+        displayName: 'المدقق الداخلي',
+        displayTitle: 'مدير التدقيق الداخلي',
+        avatar: 'https://ui-avatars.com/api/?name=Auditor&background=7C3AED&color=fff&bold=true'
+      };
+      localStorage.setItem('currentUser', JSON.stringify(_state.currentUser));
     }
-  },
 
-  // ==========================================
-  // 7. COMPANY ACTIVITIES (REAL DATA)
-  // ==========================================
-  
-  activities: [
-    { code: "432134", name: { ar: "تركيب وصيانة الأجهزة الأمنية", en: "Security Systems Installation & Maintenance" }, category: "Security" },
-    { code: "451030", name: { ar: "مزادات السيارات والمعدات", en: "Vehicle & Equipment Auctions" }, category: "Auctions" },
-    { code: "464956", name: { ar: "البيع بالجملة للأجهزة والمعدات والمستلزمات الطبية", en: "Wholesale of Medical Equipment & Supplies" }, category: "Medical" },
-    { code: "465101", name: { ar: "البيع بالجملة للحواسيب ومستلزماتها يشمل بيع الطابعات وأحبارها", en: "Wholesale of Computers & Accessories" }, category: "Sales" },
-    { code: "465102", name: { ar: "البيع بالجملة للبرمجيات ويشمل الاستيراد", en: "Wholesale of Software (Including Import)" }, category: "Sales" },
-    { code: "465933", name: { ar: "البيع بالجملة للأجهزة الأمنية", en: "Wholesale of Security Devices" }, category: "Security" },
-    { code: "465934", name: { ar: "البيع بالجملة للمعدات والتجهيزات الأمنية (للمنافسات الحكومية فقط)", en: "Wholesale of Security Equipment (Government Tenders Only)" }, category: "Security" },
-    { code: "469061", name: { ar: "البيع بالجملة لأجهزة ولوازم الكيماويات والمختبرات", en: "Wholesale of Lab Chemicals & Equipment" }, category: "Medical" },
-    { code: "474110", name: { ar: "البيع بالتجزئة للحواسيب وملحقاتها يشمل الطابعات وأحبارها", en: "Retail of Computers & Accessories" }, category: "Retail" },
-    { code: "474152", name: { ar: "بيع البرمجيات غير المعدة بناء على الطلب", en: "Retail of Off-the-Shelf Software" }, category: "IT" },
-    { code: "477336", name: { ar: "البيع بالتجزئة للأجهزة الأمنية", en: "Retail of Security Devices" }, category: "Security" },
-    { code: "479940", name: { ar: "المزادات في غير المحلات", en: "Non-Store Auctions" }, category: "Auctions" },
-    { code: "620102", name: { ar: "تصميم وبرمجة البرمجيات الخاصة", en: "Custom Software Development" }, category: "IT" },
-    { code: "682010", name: { ar: "الوساطة العقارية", en: "Real Estate Brokerage" }, category: "RealEstate" },
-    { code: "682044", name: { ar: "المزادات العقارية", en: "Real Estate Auctions" }, category: "RealEstate" },
-    { code: "731013", name: { ar: "تقديم خدمات تسويقية نيابةً عن الغير", en: "Marketing Services on Behalf of Others" }, category: "Marketing" },
-    { code: "749036", name: { ar: "أنشطة خدمات استشارات في مجال تنظيم الأجهزة الطبية", en: "Consulting for Medical Device Regulation" }, category: "Medical" },
-    { code: "869027", name: { ar: "مراكز الخدمات الطبية المنزلية", en: "Home Healthcare Centers" }, category: "Medical" },
-    { code: "869037", name: { ar: "مراكز الرعاية عن بعد والطب الإتصالي", en: "Telehealth Centers" }, category: "Medical" }
-  ],
+    // Load Notifications
+    loadNotifications();
 
-  // ==========================================
-  // 8. MEETINGS & MINUTES
-  // ==========================================
-  
-  meetings: [
-    {
-      id: 'BOD-2026-03',
-      title: { ar: 'اجتماع مجلس الإدارة الثالث', en: 'Third Board Meeting' },
-      date: '2026-03-15',
-      time: '10:00',
-      type: 'in-person',
-      status: 'scheduled',
-      location: { ar: 'مقر الشركة الرئيسي', en: 'Company Headquarters' }
-    },
-    {
-      id: 'BOD-2026-02',
-      title: { ar: 'اجتماع مجلس الإدارة الثاني', en: 'Second Board Meeting' },
-      date: '2026-02-22',
-      time: '19:30',
-      type: 'in-person',
-      status: 'scheduled'
-    },
-    {
-      id: 'BOD-2026-01',
-      title: { ar: 'اجتماع مجلس الإدارة الأول', en: 'First Board Meeting' },
-      date: '2026-01-20',
-      time: '13:00',
-      type: 'remote',
-      status: 'completed',
-      attendanceRate: 0.89,
-      decisions: 5
-    }
-  ],
+    // Render UI
+    renderSidebar();
+    renderHeader();
+    hideLoadingOverlay();
 
-  // ==========================================
-  // 9. FINANCIAL PERFORMANCE
-  // ==========================================
-  
-  financialPerformance: {
-    currentQuarter: {
-      period: 'Q4 2025',
-      revenue: 5200000,
-      expenses: 3350000,
-      netProfit: 1850000,
-      profitMargin: 35.6,
-      ebitda: 2100000,
-      ebitdaMargin: 40.4
-    },
-    
-    kpis: {
-      revenueGrowth: 12.5,
-      profitGrowth: 18.2,
-      debtToEquity: 0.32,
-      currentRatio: 2.1
-    }
-  },
-
-  // ==========================================
-  // 10. HELPER FUNCTIONS
-  // ==========================================
-  
-  getUserById(id) {
-    return this.users.find(u => u.id === id);
-  },
-
-  getUserByEmail(email) {
-    return this.users.find(u => u.email === email);
-  },
-
-  getShareholderById(id) {
-    return this.shareholders.find(s => s.id === id);
-  },
-
-  getBoardMembers() {
-    return this.users.filter(u => 
-      ['chairman', 'vice_chairman', 'board_member'].includes(u.role) ||
-      u.additionalRoles?.includes('board_member') ||
-      u.additionalRoles?.includes('vice_chairman')
-    );
-  },
-
-  getExecutives() {
-    return this.users.filter(u => u.isExecutive === true);
-  },
-
-  getShareholderUsers() {
-    return this.users.filter(u => u.isShareholder === true);
-  },
-
-  getUserContexts(userId) {
-    const mapping = this.userRolesMap.find(m => m.userId === userId);
-    return mapping ? mapping.contexts : [];
-  },
-
-  getMeetingById(id) {
-    return this.meetings.find(m => m.id === id);
-  },
-
-  getUpcomingMeetings() {
-    const today = new Date();
-    return this.meetings.filter(m => 
-      m.status === 'scheduled' && new Date(m.date) >= today
-    );
-  },
-
-  getCompletedMeetings() {
-    return this.meetings.filter(m => m.status === 'completed');
-  },
-
-  getShareholderStatistics() {
-    return {
-      totalShareholders: this.shareholders.length,
-      individualShareholders: this.shareholders.filter(s => s.type === 'Individual').length,
-      entityShareholders: this.shareholders.filter(s => s.type === 'Entity').length,
-      totalShares: this.capital.sharesCount,
-      largestShareholder: this.shareholders.reduce((max, s) => s.percent > max.percent ? s : max)
-    };
+    _state.isInitialized = true;
+    console.log(`✅ AndroGov Audit Layout Ready | Lang: ${getCurrentLang()}`);
   }
-};
 
-// Make available globally
-if (typeof window !== 'undefined') {
-  window.CompanyPolicy = CompanyPolicy;
-}
+  function hideLoadingOverlay() {
+    const overlay = document.getElementById('loadingOverlay');
+    if (overlay) {
+      setTimeout(() => overlay.classList.add('hidden'), 300);
+    }
+  }
 
-// For Node.js environments
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = CompanyPolicy;
-}
+  // ==========================================
+  // 4. LANGUAGE SYSTEM
+  // ==========================================
+  function getCurrentLang() {
+    return localStorage.getItem('lang') || 'ar';
+  }
 
-console.log('✅ Andromeda Board Company Policy Data Loaded Successfully (v4.0.0)');
+  function setLanguage(lang) {
+    if (!['ar', 'en'].includes(lang)) return;
+    
+    localStorage.setItem('lang', lang);
+    
+    // Update HTML attributes
+    document.documentElement.lang = lang;
+    document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+    
+    // Re-render UI
+    renderSidebar();
+    renderHeader();
+    
+    // Trigger event BEFORE updating page content
+    window.dispatchEvent(new CustomEvent('languageChanged', { detail: { lang } }));
+    
+    // Update current page content if updateContent function exists
+    if (typeof window.updateContent === 'function') {
+      setTimeout(() => window.updateContent(), 100);
+    }
+    
+    // Show feedback
+    if (window.Toast) {
+      const msg = lang === 'ar' ? 'تم التبديل إلى العربية' : 'Switched to English';
+      Toast.success(msg);
+    }
+    
+    console.log(`🌐 Language changed to: ${lang}`);
+  }
+
+  function t(key) {
+    const lang = getCurrentLang();
+    return _translations[lang]?.[key] || key;
+  }
+
+  // ==========================================
+  // 5. NOTIFICATIONS SYSTEM
+  // ==========================================
+  function loadNotifications() {
+    const stored = localStorage.getItem('audit_notifications');
+    if (stored) {
+      _state.notifications = JSON.parse(stored);
+    } else {
+      // Demo Audit Notifications
+      _state.notifications = [
+        {
+          id: 'AUD001',
+          type: 'observation',
+          icon: 'fa-triangle-exclamation',
+          color: 'red',
+          title: { ar: 'ملاحظة عالية المخاطر جديدة', en: 'New High-Risk Observation' },
+          body: { ar: 'تجاوز صلاحيات في قسم المشتريات', en: 'Authority breach in Procurement' },
+          time: new Date(Date.now() - 1000 * 60 * 30),
+          read: false,
+          link: 'observations.html'
+        },
+        {
+          id: 'AUD002',
+          type: 'plan',
+          icon: 'fa-calendar-check',
+          color: 'blue',
+          title: { ar: 'تحديث خطة التدقيق Q2', en: 'Q2 Audit Plan Update' },
+          body: { ar: 'تم إضافة 3 مهام جديدة', en: '3 new tasks added' },
+          time: new Date(Date.now() - 1000 * 60 * 60 * 2),
+          read: false,
+          link: 'audit_plan.html'
+        },
+        {
+          id: 'AUD003',
+          type: 'report',
+          icon: 'fa-file-chart-column',
+          color: 'green',
+          title: { ar: 'تقرير ربع سنوي جاهز', en: 'Quarterly Report Ready' },
+          body: { ar: 'تم الانتهاء من مراجعة Q1 2026', en: 'Q1 2026 review completed' },
+          time: new Date(Date.now() - 1000 * 60 * 60 * 5),
+          read: true,
+          link: 'reports.html'
+        }
+      ];
+    }
+    
+    _state.unreadCount = _state.notifications.filter(n => !n.read).length;
+  }
+
+  function markNotificationRead(id) {
+    const notif = _state.notifications.find(n => n.id === id);
+    if (notif && !notif.read) {
+      notif.read = true;
+      _state.unreadCount--;
+      saveNotifications();
+      renderHeader();
+    }
+  }
+
+  function markAllRead() {
+    _state.notifications.forEach(n => n.read = true);
+    _state.unreadCount = 0;
+    saveNotifications();
+    renderHeader();
+    
+    if (window.Toast) {
+      Toast.success(t('markAllRead'));
+    }
+  }
+
+  function saveNotifications() {
+    localStorage.setItem('audit_notifications', JSON.stringify(_state.notifications));
+  }
+
+  function getTimeAgo(date) {
+    const lang = getCurrentLang();
+    const seconds = Math.floor((new Date() - date) / 1000);
+    
+    if (seconds < 60) return lang === 'ar' ? 'الآن' : 'Now';
+    if (seconds < 3600) {
+      const mins = Math.floor(seconds / 60);
+      return lang === 'ar' ? `منذ ${mins} دقيقة` : `${mins}m ago`;
+    }
+    if (seconds < 86400) {
+      const hours = Math.floor(seconds / 3600);
+      return lang === 'ar' ? `منذ ${hours} ساعة` : `${hours}h ago`;
+    }
+    const days = Math.floor(seconds / 86400);
+    return lang === 'ar' ? `منذ ${days} يوم` : `${days}d ago`;
+  }
+
+  // ==========================================
+  // 6. RENDER SIDEBAR
+  // ==========================================
+  function renderSidebar() {
+    const container = document.getElementById('sidebar-container');
+    if (!container) return;
+
+    const lang = getCurrentLang();
+    const isRTL = lang === 'ar';
+    const currentPath = window.location.pathname.split('/').pop() || 'index.html';
+
+    let menuHTML = '';
+    _auditMenu.forEach(group => {
+      const sectionLabel = t(group.section);
+      
+      menuHTML += `
+        <div class="px-3 mt-6 mb-2 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
+          ${sectionLabel}
+        </div>
+      `;
+      
+      group.items.forEach(item => {
+        const isActive = currentPath === item.link;
+        const label = t(item.key);
+        
+        const baseClass = "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 group mb-1";
+        const activeClass = "bg-gradient-to-r from-purple-600 to-purple-700 text-white shadow-lg shadow-purple-500/30";
+        const inactiveClass = "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-purple-600 dark:hover:text-purple-400";
+
+        let badgeHTML = '';
+        if (item.badge) {
+          const badgeStyles = {
+            'live': 'bg-red-500 animate-pulse',
+            'important': 'bg-orange-500',
+            'new': 'bg-green-500'
+          };
+          const badgeClass = badgeStyles[item.badge] || 'bg-slate-400';
+          badgeHTML = `<span class="px-1.5 py-0.5 text-[9px] font-bold rounded ${badgeClass} text-white uppercase tracking-wider">${item.badge}</span>`;
+        }
+
+        menuHTML += `
+          <a href="${item.link}" class="${baseClass} ${isActive ? activeClass : inactiveClass}">
+            <div class="w-5 text-center transition-transform group-hover:scale-110">
+              <i class="fa-solid ${item.icon}"></i>
+            </div>
+            <span class="flex-1 truncate">${label}</span>
+            ${badgeHTML}
+            ${isActive ? '<div class="w-1.5 h-1.5 rounded-full bg-white"></div>' : ''}
+          </a>
+        `;
+      });
+    });
+
+    const user = _state.currentUser;
+    const displayName = user?.displayName || (lang === 'ar' ? 'المدقق الداخلي' : 'Internal Auditor');
+    const displayTitle = user?.displayTitle || (lang === 'ar' ? 'مدير التدقيق' : 'Audit Manager');
+
+    container.innerHTML = `
+      <aside id="main-sidebar" class="fixed top-0 ${isRTL ? 'right-0 border-l' : 'left-0 border-r'} z-50 h-screen w-64 flex flex-col bg-white dark:bg-[#0F172A] border-slate-200 dark:border-slate-800 transition-all duration-300 shadow-2xl">
+        
+        <!-- Logo -->
+        <div class="h-20 flex items-center px-6 border-b border-slate-100 dark:border-slate-800 shrink-0 bg-gradient-to-${isRTL ? 'l' : 'r'} from-slate-50 to-transparent dark:from-slate-900/50">
+          <div class="flex items-center gap-3 w-full">
+            <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-purple-600 to-purple-700 text-white flex items-center justify-center font-bold text-xl shadow-lg shadow-purple-500/30">
+              <i class="fa-solid fa-shield-halved"></i>
+            </div>
+            <div class="overflow-hidden">
+              <h1 class="font-bold text-base text-slate-800 dark:text-white truncate">AndroGov</h1>
+              <p class="text-[10px] text-purple-600 font-bold uppercase tracking-widest truncate">Audit</p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- User Card -->
+        <div class="p-4 shrink-0">
+          <div class="relative group cursor-pointer">
+            <div class="flex items-center gap-3 p-3 rounded-xl bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-900 border border-slate-200 dark:border-slate-700 transition-all hover:shadow-md">
+              <img src="${user?.avatar || 'https://ui-avatars.com/api/?name=Auditor&background=7C3AED&color=fff&bold=true'}" 
+                   class="w-11 h-11 rounded-full border-2 border-white dark:border-slate-600 object-cover shadow-md">
+              <div class="overflow-hidden flex-1 min-w-0">
+                <p class="text-sm font-bold text-slate-800 dark:text-white truncate">${displayName}</p>
+                <p class="text-[10px] text-purple-600 font-bold truncate uppercase tracking-tight">${displayTitle}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Navigation -->
+        <nav id="sidebar-nav" class="flex-1 overflow-y-auto px-3 py-2 space-y-0.5 custom-scroll">
+          ${menuHTML}
+        </nav>
+        
+        <!-- Footer -->
+        <div class="p-4 text-center border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50">
+          <p class="text-[10px] text-slate-400 font-medium">© 2026 Andromeda IT</p>
+          <p class="text-[9px] text-slate-300 dark:text-slate-600 mt-1">${t('poweredBy')} ${t('aymanDev')}</p>
+        </div>
+      </aside>
+    `;
+  }
+
+  // ==========================================
+  // 7. RENDER HEADER
+  // ==========================================
+  function renderHeader() {
+    const container = document.getElementById('header-container');
+    if (!container) return;
+
+    const lang = getCurrentLang();
+    const isRTL = lang === 'ar';
+    const isDark = document.documentElement.classList.contains('dark');
+
+    container.innerHTML = `
+      <header class="h-20 sticky top-0 z-40 flex items-center justify-between px-6 bg-white/90 dark:bg-[#0F172A]/95 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800 shadow-sm transition-all">
+        
+        <div class="flex items-center gap-4">
+          <!-- Mobile Menu -->
+          <button onclick="Layout.toggleMobileSidebar()" class="md:hidden text-slate-500 dark:text-slate-200 hover:text-purple-600 transition-colors">
+            <i class="fa-solid fa-bars text-xl"></i>
+          </button>
+          
+          <div class="flex items-center gap-2 px-3 py-2 bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-xl">
+            <i class="fa-solid fa-shield-halved text-purple-600"></i>
+            <span class="text-xs font-bold text-purple-600">${lang === 'ar' ? 'مركز التدقيق' : 'Audit Center'}</span>
+          </div>
+        </div>
+
+        <!-- Right Actions -->
+        <div class="flex items-center gap-3">
+          
+          <!-- Notifications -->
+          <div class="relative group">
+            <button class="relative w-10 h-10 rounded-xl border-2 border-slate-200 dark:border-slate-700 hover:bg-orange-50 dark:hover:bg-orange-900/20 text-slate-600 dark:text-slate-300 hover:border-orange-400 transition-all flex items-center justify-center">
+              <i class="fa-solid fa-bell"></i>
+              ${_state.unreadCount > 0 ? `
+                <span class="absolute -top-1 -right-1 w-5 h-5 bg-brandRed text-white text-[10px] font-bold rounded-full flex items-center justify-center animate-pulse">
+                  ${_state.unreadCount}
+                </span>
+              ` : ''}
+            </button>
+            
+            <!-- Notifications Dropdown -->
+            <div class="absolute top-full ${isRTL ? 'right-0' : 'left-0'} mt-3 w-96 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 overflow-hidden">
+              <div class="p-4 border-b border-slate-100 dark:border-slate-700 bg-gradient-to-r from-purple-600 to-purple-700 flex justify-between items-center">
+                <div>
+                  <p class="text-sm font-bold text-white">${t('notifications')}</p>
+                  <p class="text-[10px] text-white/80">${_state.unreadCount} ${lang === 'ar' ? 'غير مقروءة' : 'unread'}</p>
+                </div>
+                ${_state.unreadCount > 0 ? `
+                  <button onclick="Layout.markAllRead()" class="text-xs text-white/90 hover:text-white underline">
+                    ${t('markAllRead')}
+                  </button>
+                ` : ''}
+              </div>
+              
+              <div class="max-h-96 overflow-y-auto custom-scroll">
+                ${_state.notifications.length === 0 ? `
+                  <div class="p-8 text-center text-slate-400">
+                    <i class="fa-solid fa-bell-slash text-4xl mb-3"></i>
+                    <p class="text-sm">${t('noNotifications')}</p>
+                  </div>
+                ` : _state.notifications.map(notif => {
+                  const colorStyles = {
+                    red: 'bg-red-100 text-red-600 dark:bg-red-900/30',
+                    blue: 'bg-blue-100 text-blue-600 dark:bg-blue-900/30',
+                    green: 'bg-green-100 text-green-600 dark:bg-green-900/30',
+                    purple: 'bg-purple-100 text-purple-600 dark:bg-purple-900/30'
+                  };
+                  const colorClass = colorStyles[notif.color] || colorStyles.blue;
+                  
+                  return `
+                    <a href="${notif.link}" onclick="Layout.markNotificationRead('${notif.id}')" 
+                       class="flex gap-3 p-4 border-b border-slate-100 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors ${!notif.read ? 'bg-purple-50/30 dark:bg-purple-900/10' : ''}">
+                      <div class="w-10 h-10 rounded-lg ${colorClass} flex items-center justify-center shrink-0">
+                        <i class="fa-solid ${notif.icon}"></i>
+                      </div>
+                      <div class="flex-1 min-w-0">
+                        <p class="text-xs font-bold text-slate-800 dark:text-white truncate">${notif.title[lang]}</p>
+                        <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">${notif.body[lang]}</p>
+                        <p class="text-[10px] text-slate-400 mt-1">${getTimeAgo(new Date(notif.time))}</p>
+                      </div>
+                      ${!notif.read ? '<div class="w-2 h-2 rounded-full bg-purple-600 animate-pulse"></div>' : ''}
+                    </a>
+                  `;
+                }).join('')}
+              </div>
+            </div>
+          </div>
+
+          <!-- Language Switcher -->
+          <button onclick="Layout.toggleLanguage()" 
+                  class="w-10 h-10 rounded-xl border-2 border-slate-200 dark:border-slate-700 hover:bg-blue-50 dark:hover:bg-blue-900/20 text-slate-600 dark:text-slate-300 hover:border-blue-400 transition-all flex items-center justify-center font-bold text-xs">
+            ${lang === 'ar' ? 'EN' : 'ع'}
+          </button>
+          
+          <!-- Theme Toggle -->
+          <button onclick="Layout.toggleTheme()" 
+                  class="w-10 h-10 rounded-xl border-2 border-slate-200 dark:border-slate-700 flex items-center justify-center hover:bg-amber-50 dark:hover:bg-amber-900/20 text-slate-600 dark:text-yellow-400 hover:border-amber-400 transition-all">
+            <i class="fa-solid ${isDark ? 'fa-sun' : 'fa-moon'}"></i>
+          </button>
+          
+          <div class="h-8 w-px bg-slate-200 dark:bg-slate-700 mx-2"></div>
+          
+          <!-- Logout -->
+          <button onclick="Layout.logout()" 
+                  class="text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 border-2 border-transparent hover:border-red-200">
+            <i class="fa-solid fa-power-off"></i> 
+            <span class="hidden sm:inline">${t('logout')}</span>
+          </button>
+        </div>
+      </header>
+    `;
+  }
+
+  // ==========================================
+  // 8. UTILITY FUNCTIONS
+  // ==========================================
+
+  function toggleLanguage() {
+    const currentLang = getCurrentLang();
+    const newLang = currentLang === 'ar' ? 'en' : 'ar';
+    setLanguage(newLang);
+  }
+
+  function toggleTheme() {
+    const html = document.documentElement;
+    html.classList.toggle('dark');
+    const isDark = html.classList.contains('dark');
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    renderHeader();
+    
+    if (window.Toast) {
+      const lang = getCurrentLang();
+      const msg = lang === 'ar' ?
+        (isDark ? 'تم تفعيل الوضع الليلي' : 'تم تفعيل الوضع النهاري') :
+        (isDark ? 'Dark mode enabled' : 'Light mode enabled');
+      Toast.info(msg);
+    }
+  }
+
+  function logout() {
+    const lang = getCurrentLang();
+    const confirmMsg = lang === 'ar' ? 
+      'هل أنت متأكد من تسجيل الخروج؟' :
+      'Are you sure you want to logout?';
+      
+    if (confirm(confirmMsg)) {
+      localStorage.removeItem('currentUser');
+      window.location.href = '../login.html';
+    }
+  }
+
+  function toggleMobileSidebar() {
+    const sidebar = document.getElementById('main-sidebar');
+    if (sidebar) {
+      sidebar.classList.toggle('-translate-x-full');
+      sidebar.classList.toggle('translate-x-0');
+    }
+  }
+
+  // ==========================================
+  // 9. PUBLIC API
+  // ==========================================
+  return {
+    init,
+    renderSidebar,
+    renderHeader,
+    toggleTheme,
+    toggleLanguage,
+    setLanguage,
+    logout,
+    toggleMobileSidebar,
+    markNotificationRead,
+    markAllRead,
+    getCurrentLang,
+    t
+  };
+
+})();
+
+// Auto-Initialize
+document.addEventListener('DOMContentLoaded', () => {
+  Layout.init();
+});
+
+// Global Exposure
+window.Layout = Layout;
