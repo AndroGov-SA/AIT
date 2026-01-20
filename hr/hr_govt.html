@@ -251,35 +251,43 @@
         </div>
     </div>
 
-    <script src="../admin/js/core/config.js"></script>
-    <script src="../admin/js/core/i18n.js"></script>
-    <script src="../admin/js/services/data-service.js"></script>
-    <script src="../admin/js/components/role-switcher.js"></script>
-    <script src="../admin/js/components/layout.js"></script>
-    <script src="../admin/js/components/bot.js"></script>
+    <script src="data/company_policy.js"></script>
+    <script src="js/core/i18n.js"></script>
+    <script src="js/components/layout.js"></script>
+    <script src="js/components/bot.js"></script>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const checkLibs = setInterval(() => {
-                if (typeof Layout !== 'undefined' && typeof AppConfig !== 'undefined') {
-                    clearInterval(checkLibs);
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // 1. إعداد بيانات المستخدم لتتوافق مع محرك v10.5
+        const ctoUser = {
+            id: 'USR_005',
+            name: 'منصور اليامي  ',
+            displayName: 'مدير الشؤون الادارية ',
+            role: 'CAO', // هذا هو المفتاح الذي يبحث عنه المحرك لفتح القائمة
+            avatar: 'https://ui-avatars.com/api/?name=Meshail+AlHadyan&background=FB4747&color=fff'
+        };
+        
+        // 2. تخزين البيانات في الـ LocalStorage لضمان استمرارية المحرك
+        localStorage.setItem('currentUser', JSON.stringify(ctoUser));
+        localStorage.setItem('activeRole', 'CAO');
 
-                    // ✅ تعريف هوية المستخدم كمدير موارد بشرية
-                    const hrUser = {
-                        id: 'USR_005',
-                        type: 'hr', // ⚠️ لفتح قائمة الموارد البشرية
-                        role: 'CAO',
-                        displayName: 'منصور اليامي', 
-                        displayTitle: 'مدير الموارد البشرية والشؤون الإدارية (CAO)',
-                        avatar: 'https://ui-avatars.com/api/?name=Mansour+Y&background=random'
-                    };
+        // 3. التأكد من وجود الوضع الليلي المفضل
+        if (!localStorage.getItem('theme')) {
+            localStorage.setItem('theme', 'light');
+        }
 
-                    AppConfig.setCurrentUser(hrUser);
-                    Layout.init();
-                }
-            }, 50);
-        });
-    </script>
+        // 4. تشغيل المحرك
+        if (typeof Layout !== 'undefined') {
+            Layout.init();
+            
+            // إظهار الصفحة بعد التحميل (لأن الـ body له opacity-0)
+            document.body.style.opacity = '1';
+            console.log("🚀 CAO Layout Engine v10.5 Started Successfully");
+        } else {
+            console.error("❌ Layout.js file not found! Check your script paths.");
+        }
+    });
+</script>
 
     <script>
         const pageContent = {
