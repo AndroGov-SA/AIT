@@ -228,399 +228,367 @@
         </main>
     </div>
 
-    <!-- حذف جميع السكربتات القديمة واستبدالها بهذا -->
-<script>
-// ==========================================
-// AppConfig - Simplified Version
-// ==========================================
-const AppConfig = {
-  setCurrentUser: function(user) {
-    this.currentUser = user;
-    localStorage.setItem('currentUser', JSON.stringify(user));
-  },
-  getCurrentUser: function() {
-    const stored = localStorage.getItem('currentUser');
-    return stored ? JSON.parse(stored) : null;
-  }
-};
+    </main>
+  </div>
 
-// ==========================================
-// Layout System - Complete
-// ==========================================
-const Layout = (function() {
-  
-  let _state = {
-    currentUser: null,
-    activeRole: 'cto',
-    isInitialized: false,
-    notifications: [],
-    unreadCount: 0
-  };
-
-  const _menuDefinitions = {
-    'cto': [
-      { section: 'tech_dashboard', items: [
-        { key: 'tech_overview', icon: 'fa-gauge-high', link: 'index.html', badge: 'live' },
-        { key: 'system_monitoring', icon: 'fa-desktop', link: 'cto_monitoring.html', badge: 'monitoring' }
-      ]},
-      { section: 'infrastructure', items: [
-        { key: 'servers_management', icon: 'fa-server', link: 'cto_servers.html', badge: null },
-        { key: 'it_assets', icon: 'fa-laptop-code', link: 'cto_assets.html', badge: 'assets' }
-      ]},
-      { section: 'security', items: [
-        { key: 'soc_center', icon: 'fa-shield-halved', link: 'cto_soc.html', badge: 'security' },
-        { key: 'iam_management', icon: 'fa-id-badge', link: 'cto_iam.html', badge: null }
-      ]},
-      { section: 'telecom', items: [
-        { key: 'pbx_dashboard', icon: 'fa-phone-volume', link: 'cto_pbx.html', badge: 'pbx' },
-        { key: 'extensions', icon: 'fa-users-viewfinder', link: 'cto_extensions.html', badge: null },
-        { key: 'call_logs', icon: 'fa-list-ol', link: 'cto_call_logs.html', badge: null }
-      ]},
-      { section: 'development', items: [
-        { key: 'dev_projects', icon: 'fa-code-branch', link: 'cto_projects.html', badge: 'devops' },
-        { key: 'tech_support', icon: 'fa-headset', link: 'cto_support.html', badge: null }
-      ]},
-      { section: 'personal', items: [
-        { key: 'my_profile', icon: 'fa-user-circle', link: 'profile.html', badge: null }
-      ]}
-    ]
-  };
-
+  <!-- ==========================================
+       نظام Layout الكامل + Translations
+       ========================================== -->
   <script>
-        const pageContent = {
-            ar: {
-                pageTitle: "ملفي الشخصي | AndroGov",
-                lblLocation: "المبنى الرقمي - الدور 4",
-                name: "مشاعل الهذيان",
-                role: "الرئيس التنفيذي للتقنية (CTO)",
-                statusAvailable: "متاح للعمل",
-                statusBusy: "مشغول (Busy)",
-                btnPass: "الأمان",
-                btnEdit: "تعديل",
-                statProjects: "مشروع نشط",
-                statTeam: "عضو بالفريق",
-                secContract: "بيانات العقد",
-                lblType: "المسمى الوظيفي",
-                valTitle: "CTO",
-                lblStart: "تاريخ الانضمام",
-                lblDept: "الإدارة",
-                valDept: "تقنية المعلومات",
-                lblDirect: "المرجع المباشر",
-                valManager: "الرئيس التنفيذي (CEO)",
-                titleDelegation: "سجل التفويض (Acting For)",
-                descDelegation: "إدارة الصلاحيات الممنوحة لمدراء الإدارات التقنية",
-                btnAddDelegate: "تفويض جديد",
-                colPerson: "المفوض له",
-                colScope: "الصلاحية",
-                colPeriod: "الفترة",
-                colStatus: "الحالة",
-                nameDel1: "فيصل العتيبي",
-                scopeDel1: "صلاحية إعادة تشغيل السيرفرات",
-                periodStanding: "دائم",
-                statusActive: "نشط",
-                nameDel2: "سارة العمري",
-                scopeDel2: "اعتماد نشر التحديثات (Deploy)",
-                titleActivity: "النشاط الأخير",
-                act1Title: "الموافقة على خطة التحول السحابي",
-                act1Desc: "تم اعتماد الميزانية الخاصة بمشروع AWS Migration.",
-                time1: "09:30 ص",
-                act2Title: "تسجيل الدخول للنظام",
-                time2: "08:15 ص"
-            },
-            en: {
-                pageTitle: "My Profile | AndroGov",
-                lblLocation: "Digital Building - Floor 4",
-                name: "Mashael Alhadyan",
-                role: "Chief Technology Officer (CTO)",
-                statusAvailable: "Available",
-                statusBusy: "Busy",
-                btnPass: "Security",
-                btnEdit: "Edit",
-                statProjects: "Active Projects",
-                statTeam: "Team Members",
-                secContract: "Contract Details",
-                lblType: "Job Title",
-                valTitle: "CTO",
-                lblStart: "Joining Date",
-                lblDept: "Department",
-                valDept: "Information Technology",
-                lblDirect: "Direct Manager",
-                valManager: "Chief Executive Officer (CEO)",
-                titleDelegation: "Delegation Log",
-                descDelegation: "Manage powers delegated to IT managers",
-                btnAddDelegate: "New Delegate",
-                colPerson: "Delegate To",
-                colScope: "Scope",
-                colPeriod: "Period",
-                colStatus: "Status",
-                nameDel1: "Faisal Al-Otaibi",
-                scopeDel1: "Server Reboot Authority",
-                periodStanding: "Standing",
-                statusActive: "Active",
-                nameDel2: "Sara Al-Amri",
-                scopeDel2: "Approve Deployment",
-                titleActivity: "Recent Activity",
-                act1Title: "Approved Cloud Migration Plan",
-                act1Desc: "Budget approved for AWS Migration project.",
-                time1: "09:30 AM",
-                act2Title: "System Login",
-                time2: "08:15 AM"
-            }
-        };
+  // AppConfig
+  const AppConfig = {
+    setCurrentUser: function(user) {
+      this.currentUser = user;
+      localStorage.setItem('currentUser', JSON.stringify(user));
+    },
+    getCurrentUser: function() {
+      const stored = localStorage.getItem('currentUser');
+      return stored ? JSON.parse(stored) : null;
+    }
   };
 
-  function getCurrentLang() {
-    return localStorage.getItem('lang') || 'ar';
-  }
+  // Layout System
+  const Layout = (function() {
+    let _state = {
+      currentUser: null,
+      activeRole: 'cto',
+      isInitialized: false,
+      notifications: [],
+      unreadCount: 0
+    };
 
-  function t(key) {
-    const lang = getCurrentLang();
-    return _translations[lang]?.[key] || key;
-  }
+    const _menuDefinitions = {
+      'cto': [
+        { section: 'tech_dashboard', items: [
+          { key: 'tech_overview', icon: 'fa-gauge-high', link: 'index.html', badge: 'live' },
+          { key: 'system_monitoring', icon: 'fa-desktop', link: 'cto_monitoring.html', badge: 'monitoring' }
+        ]},
+        { section: 'infrastructure', items: [
+          { key: 'servers_management', icon: 'fa-server', link: 'cto_servers.html', badge: null },
+          { key: 'it_assets', icon: 'fa-laptop-code', link: 'cto_assets.html', badge: 'assets' }
+        ]},
+        { section: 'security', items: [
+          { key: 'soc_center', icon: 'fa-shield-halved', link: 'cto_soc.html', badge: 'security' },
+          { key: 'iam_management', icon: 'fa-id-badge', link: 'cto_iam.html', badge: null }
+        ]},
+        { section: 'telecom', items: [
+          { key: 'pbx_dashboard', icon: 'fa-phone-volume', link: 'cto_pbx.html', badge: 'pbx' },
+          { key: 'extensions', icon: 'fa-users-viewfinder', link: 'cto_extensions.html', badge: null },
+          { key: 'call_logs', icon: 'fa-list-ol', link: 'cto_call_logs.html', badge: null }
+        ]},
+        { section: 'development', items: [
+          { key: 'dev_projects', icon: 'fa-code-branch', link: 'cto_projects.html', badge: 'devops' },
+          { key: 'tech_support', icon: 'fa-headset', link: 'cto_support.html', badge: null }
+        ]},
+        { section: 'personal', items: [
+          { key: 'my_profile', icon: 'fa-user-circle', link: 'profile.html', badge: null }
+        ]}
+      ]
+    };
 
-  function loadNotifications() {
-    const stored = localStorage.getItem('cto_notifications');
-    if (stored) {
-      _state.notifications = JSON.parse(stored);
-    } else {
-      _state.notifications = [
-        {
-          id: 'CTO001',
-          type: 'server',
-          icon: 'fa-server',
-          color: 'orange',
-          title: { ar: 'تحذير: حمل زائد على الخادم', en: 'Warning: Server High Load' },
-          body: { ar: 'WEB-LBS-01 يستهلك 88% من الموارد', en: 'WEB-LBS-01 using 88% resources' },
-          time: new Date(Date.now() - 1000 * 60 * 30),
-          read: false,
-          link: 'cto_monitoring.html'
-        }
-      ];
+    const _translations = {
+      ar: {
+        tech_dashboard: 'لوحة القيادة التقنية',
+        infrastructure: 'البنية التحتية',
+        security: 'الأمن السيبراني',
+        telecom: 'الاتصالات',
+        development: 'التطوير والدعم',
+        personal: 'الحساب الشخصي',
+        tech_overview: 'نظرة تقنية شاملة',
+        system_monitoring: 'مراقبة الأنظمة',
+        servers_management: 'إدارة السيرفرات',
+        it_assets: 'الأصول التقنية',
+        soc_center: 'مركز الأمن (SOC)',
+        iam_management: 'إدارة الهوية (IAM)',
+        pbx_dashboard: 'لوحة السنترال',
+        extensions: 'التحويلات',
+        call_logs: 'سجل المكالمات',
+        dev_projects: 'المشاريع البرمجية',
+        tech_support: 'الدعم الفني',
+        my_profile: 'الملف الشخصي',
+        notifications: 'الإشعارات',
+        logout: 'تسجيل الخروج',
+        logoutConfirm: 'هل أنت متأكد من تسجيل الخروج؟',
+        poweredBy: 'تطوير',
+        aymanDev: 'أيمن المغربي',
+        cto_role: 'المدير التقني'
+      },
+      en: {
+        tech_dashboard: 'Tech Dashboard',
+        infrastructure: 'Infrastructure',
+        security: 'Cybersecurity',
+        telecom: 'Telecommunications',
+        development: 'Development & Support',
+        personal: 'Personal',
+        tech_overview: 'Technical Overview',
+        system_monitoring: 'System Monitoring',
+        servers_management: 'Servers Management',
+        it_assets: 'IT Assets',
+        soc_center: 'SOC Center',
+        iam_management: 'IAM Management',
+        pbx_dashboard: 'PBX Dashboard',
+        extensions: 'Extensions',
+        call_logs: 'Call Logs',
+        dev_projects: 'Dev Projects',
+        tech_support: 'Tech Support',
+        my_profile: 'My Profile',
+        notifications: 'Notifications',
+        logout: 'Logout',
+        logoutConfirm: 'Are you sure you want to logout?',
+        poweredBy: 'Developed by',
+        aymanDev: 'Ayman Almaghrabi',
+        cto_role: 'Chief Technology Officer'
+      }
+    };
+
+    function getCurrentLang() { return localStorage.getItem('lang') || 'ar'; }
+    function t(key) { return _translations[getCurrentLang()]?.[key] || key; }
+
+    function renderSidebar() {
+      const container = document.getElementById('sidebar-container');
+      if (!container) return;
+
+      const lang = getCurrentLang();
+      const isRTL = lang === 'ar';
+      const currentPath = window.location.pathname.split('/').pop() || 'index.html';
+
+      let menuHTML = '';
+      _menuDefinitions['cto'].forEach(group => {
+        menuHTML += `<div class="px-3 mt-6 mb-2 text-[10px] font-bold text-slate-400 uppercase">${t(group.section)}</div>`;
+        group.items.forEach(item => {
+          const isActive = currentPath === item.link;
+          const activeClass = isActive ? "bg-gradient-to-r from-brandRed to-red-600 text-white shadow-lg" : "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800";
+          menuHTML += `
+            <a href="${item.link}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition mb-1 ${activeClass}">
+              <i class="fa-solid ${item.icon}"></i>
+              <span class="flex-1">${t(item.key)}</span>
+            </a>`;
+        });
+      });
+
+      const user = _state.currentUser;
+      container.innerHTML = `
+        <aside id="main-sidebar" class="fixed top-0 ${isRTL ? 'right-0' : 'left-0'} z-50 h-screen w-72 flex flex-col bg-white dark:bg-[#0F172A] border-${isRTL ? 'l' : 'r'} border-slate-200 dark:border-slate-800 shadow-2xl">
+          <div class="h-20 flex items-center px-6 border-b border-slate-100 dark:border-slate-800">
+            <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-brandRed to-red-600 text-white flex items-center justify-center text-xl shadow-lg">
+              <i class="fa-solid fa-microchip"></i>
+            </div>
+            <div class="ml-3">
+              <h1 class="font-bold text-slate-800 dark:text-white">AndroGov</h1>
+              <p class="text-[10px] text-brandRed font-bold">TECHNICAL</p>
+            </div>
+          </div>
+          <div class="p-4">
+            <div class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+              <img src="${user?.avatar}" class="w-11 h-11 rounded-full border-2 border-white dark:border-slate-600">
+              <div class="flex-1">
+                <p class="text-sm font-bold dark:text-white">${user?.displayName}</p>
+                <p class="text-[10px] text-brandRed font-bold">${t('cto_role')}</p>
+              </div>
+            </div>
+          </div>
+          <nav class="flex-1 overflow-y-auto px-3 py-2">${menuHTML}</nav>
+          <div class="p-4 text-center border-t border-slate-100 dark:border-slate-800">
+            <p class="text-[10px] text-slate-400">© 2026 Andromeda IT</p>
+            <p class="text-[9px] text-slate-300 mt-1">${t('poweredBy')} ${t('aymanDev')}</p>
+          </div>
+        </aside>`;
     }
-    _state.unreadCount = _state.notifications.filter(n => !n.read).length;
-  }
 
-  function getTimeAgo(date) {
-    const lang = getCurrentLang();
-    const seconds = Math.floor((new Date() - date) / 1000);
-    if (seconds < 60) return lang === 'ar' ? 'الآن' : 'Now';
-    if (seconds < 3600) {
-      const mins = Math.floor(seconds / 60);
-      return lang === 'ar' ? `منذ ${mins} دقيقة` : `${mins}m ago`;
+    function renderHeader() {
+      const container = document.getElementById('header-container');
+      if (!container) return;
+
+      const lang = getCurrentLang();
+      const isDark = document.documentElement.classList.contains('dark');
+
+      container.innerHTML = `
+        <header class="h-20 sticky top-0 z-40 flex items-center justify-between px-6 bg-white/90 dark:bg-[#0F172A]/95 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800">
+          <div class="flex items-center gap-2.5 px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-xl">
+            <i class="fa-solid fa-microchip text-brandRed"></i>
+            <span class="text-xs font-bold dark:text-slate-200">${t('cto_role')}</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <button onclick="Layout.toggleLanguage()" class="w-10 h-10 rounded-xl border-2 border-slate-200 dark:border-slate-700 hover:bg-blue-50 transition flex items-center justify-center font-bold text-xs">
+              ${lang === 'ar' ? 'EN' : 'ع'}
+            </button>
+            <button onclick="Layout.toggleTheme()" class="w-10 h-10 rounded-xl border-2 border-slate-200 dark:border-slate-700 transition flex items-center justify-center">
+              <i class="fa-solid ${isDark ? 'fa-sun' : 'fa-moon'}"></i>
+            </button>
+            <button onclick="Layout.logout()" class="text-red-500 hover:bg-red-50 px-4 py-2 rounded-xl text-xs font-bold transition">
+              <i class="fa-solid fa-power-off"></i>
+              <span class="hidden sm:inline">${t('logout')}</span>
+            </button>
+          </div>
+        </header>`;
     }
-    const hours = Math.floor(seconds / 3600);
-    return lang === 'ar' ? `منذ ${hours} ساعة` : `${hours}h ago`;
-  }
 
-  function renderSidebar() {
-    const container = document.getElementById('sidebar-container');
-    if (!container) return;
+    function init() {
+      if (_state.isInitialized) return;
+      _state.currentUser = AppConfig.getCurrentUser();
+      renderSidebar();
+      renderHeader();
+      document.body.style.opacity = '1';
+      _state.isInitialized = true;
+      console.log('✅ Profile Layout Ready');
+    }
 
-    const lang = getCurrentLang();
-    const isRTL = lang === 'ar';
-    const currentPath = window.location.pathname.split('/').pop() || 'index.html';
-    const activeMenu = _menuDefinitions['cto'];
+    function toggleLanguage() {
+      const newLang = getCurrentLang() === 'ar' ? 'en' : 'ar';
+      localStorage.setItem('lang', newLang);
+      document.documentElement.lang = newLang;
+      document.documentElement.dir = newLang === 'ar' ? 'rtl' : 'ltr';
+      location.reload(); // Reload to apply translations
+    }
 
-    let menuHTML = '';
-    activeMenu.forEach(group => {
-      const sectionLabel = t(group.section);
-      menuHTML += `<div class="px-3 mt-6 mb-2 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">${sectionLabel}</div>`;
+    function toggleTheme() {
+      document.documentElement.classList.toggle('dark');
+      localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+      renderHeader();
+    }
+
+    function logout() {
+      if (confirm(t('logoutConfirm'))) {
+        localStorage.clear();
+        window.location.href = '../login.html';
+      }
+    }
+
+    return { init, toggleLanguage, toggleTheme, logout };
+  })();
+
+  // Initialize
+  document.addEventListener('DOMContentLoaded', () => {
+    AppConfig.setCurrentUser({
+      id: 'USR_009',
+      type: 'cto',
+      role: 'CTO',
+      displayName: 'مشاعل الهديان',
+      displayTitle: 'المدير التقني (CTO)',
+      avatar: 'https://ui-avatars.com/api/?name=Meshail+H&background=FB4747&color=fff'
+    });
+    Layout.init();
+  });
+
+  window.Layout = Layout;
+  window.AppConfig = AppConfig;
+  </script>
+
+  <!-- Page-specific Translations & Functions -->
+  <script>
+    const pageContent = {
+      ar: {
+        pageTitle: "ملفي الشخصي | AndroGov",
+        lblLocation: "المبنى الرقمي - الدور 4",
+        name: "مشاعل الهديان",
+        role: "الرئيس التنفيذي للتقنية (CTO)",
+        statusAvailable: "متاح للعمل",
+        statusBusy: "مشغول (Busy)",
+        btnPass: "الأمان",
+        btnEdit: "تعديل",
+        statProjects: "مشروع نشط",
+        statTeam: "عضو بالفريق",
+        secContract: "بيانات العقد",
+        lblType: "المسمى الوظيفي",
+        valTitle: "CTO",
+        lblStart: "تاريخ الانضمام",
+        lblDept: "الإدارة",
+        valDept: "تقنية المعلومات",
+        lblDirect: "المرجع المباشر",
+        valManager: "الرئيس التنفيذي (CEO)",
+        titleDelegation: "سجل التفويض (Acting For)",
+        descDelegation: "إدارة الصلاحيات الممنوحة لمدراء الإدارات التقنية",
+        btnAddDelegate: "تفويض جديد",
+        colPerson: "المفوض له",
+        colScope: "الصلاحية",
+        colPeriod: "الفترة",
+        colStatus: "الحالة",
+        nameDel1: "فيصل العتيبي",
+        scopeDel1: "صلاحية إعادة تشغيل السيرفرات",
+        periodStanding: "دائم",
+        statusActive: "نشط",
+        nameDel2: "سارة العمري",
+        scopeDel2: "اعتماد نشر التحديثات (Deploy)",
+        titleActivity: "النشاط الأخير",
+        act1Title: "الموافقة على خطة التحول السحابي",
+        act1Desc: "تم اعتماد الميزانية الخاصة بمشروع AWS Migration.",
+        time1: "09:30 ص",
+        act2Title: "تسجيل الدخول للنظام",
+        time2: "08:15 ص"
+      },
+      en: {
+        pageTitle: "My Profile | AndroGov",
+        lblLocation: "Digital Building - Floor 4",
+        name: "Mashael Alhadyan",
+        role: "Chief Technology Officer (CTO)",
+        statusAvailable: "Available",
+        statusBusy: "Busy",
+        btnPass: "Security",
+        btnEdit: "Edit",
+        statProjects: "Active Projects",
+        statTeam: "Team Members",
+        secContract: "Contract Details",
+        lblType: "Job Title",
+        valTitle: "CTO",
+        lblStart: "Joining Date",
+        lblDept: "Department",
+        valDept: "Information Technology",
+        lblDirect: "Direct Manager",
+        valManager: "Chief Executive Officer (CEO)",
+        titleDelegation: "Delegation Log",
+        descDelegation: "Manage powers delegated to IT managers",
+        btnAddDelegate: "New Delegate",
+        colPerson: "Delegate To",
+        colScope: "Scope",
+        colPeriod: "Period",
+        colStatus: "Status",
+        nameDel1: "Faisal Al-Otaibi",
+        scopeDel1: "Server Reboot Authority",
+        periodStanding: "Standing",
+        statusActive: "Active",
+        nameDel2: "Sara Al-Amri",
+        scopeDel2: "Approve Deployment",
+        titleActivity: "Recent Activity",
+        act1Title: "Approved Cloud Migration Plan",
+        act1Desc: "Budget approved for AWS Migration project.",
+        time1: "09:30 AM",
+        act2Title: "System Login",
+        time2: "08:15 AM"
+      }
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const lang = localStorage.getItem('lang') || 'ar';
+      const dict = pageContent[lang];
       
-      group.items.forEach(item => {
-        const isActive = currentPath === item.link;
-        const label = t(item.key);
-        const baseClass = "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 group mb-1";
-        const activeClass = "bg-gradient-to-r from-brandRed to-red-600 text-white shadow-lg shadow-red-500/30";
-        const inactiveClass = "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-brandRed";
+      document.documentElement.lang = lang;
+      document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
 
-        let badgeHTML = '';
-        if (item.badge) {
-          const badgeStyles = { 'live': 'bg-red-500 animate-pulse', 'monitoring': 'bg-orange-500', 'assets': 'bg-blue-500', 'security': 'bg-purple-500', 'pbx': 'bg-green-500', 'devops': 'bg-indigo-500' };
-          const badgeClass = badgeStyles[item.badge] || 'bg-slate-400';
-          badgeHTML = `<span class="px-1.5 py-0.5 text-[9px] font-bold rounded ${badgeClass} text-white uppercase">${item.badge}</span>`;
-        }
-
-        menuHTML += `
-          <a href="${item.link}" class="${baseClass} ${isActive ? activeClass : inactiveClass}">
-            <div class="w-5 text-center transition-transform group-hover:scale-110"><i class="fa-solid ${item.icon}"></i></div>
-            <span class="flex-1 truncate">${label}</span>
-            ${badgeHTML}
-            ${isActive ? '<div class="w-1.5 h-1.5 rounded-full bg-white"></div>' : ''}
-          </a>`;
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if(dict[key]) el.innerText = dict[key];
       });
     });
 
-    const user = _state.currentUser;
-    const displayName = user?.displayName || 'مشاعل الهديان';
-    const roleLabel = t('cto_role');
-
-    container.innerHTML = `
-      <aside id="main-sidebar" class="fixed top-0 ${isRTL ? 'right-0 border-l' : 'left-0 border-r'} z-50 h-screen w-72 flex flex-col bg-white dark:bg-[#0F172A] border-slate-200 dark:border-slate-800 transition-all duration-300 shadow-2xl">
-        <div class="h-20 flex items-center px-6 border-b border-slate-100 dark:border-slate-800 shrink-0">
-          <div class="flex items-center gap-3 w-full">
-            <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-brandRed to-red-600 text-white flex items-center justify-center font-bold text-xl shadow-lg">
-              <i class="fa-solid fa-microchip"></i>
-            </div>
-            <div class="overflow-hidden">
-              <h1 class="font-bold text-base text-slate-800 dark:text-white truncate">AndroGov</h1>
-              <p class="text-[10px] text-brandRed font-bold uppercase tracking-widest truncate">Technical</p>
-            </div>
-          </div>
-        </div>
-        
-        <div class="p-4 shrink-0">
-          <div class="flex items-center gap-3 p-3 rounded-xl bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-900 border border-slate-200 dark:border-slate-700">
-            <img src="${user?.avatar || 'https://ui-avatars.com/api/?name=CTO&background=EC4899&color=fff'}" class="w-11 h-11 rounded-full border-2 border-white dark:border-slate-600 object-cover shadow-md">
-            <div class="overflow-hidden flex-1 min-w-0">
-              <p class="text-sm font-bold text-slate-800 dark:text-white truncate">${displayName}</p>
-              <p class="text-[10px] text-brandRed font-bold truncate uppercase">${roleLabel}</p>
-            </div>
-          </div>
-        </div>
-
-        <nav id="sidebar-nav" class="flex-1 overflow-y-auto px-3 py-2 space-y-0.5">${menuHTML}</nav>
-        
-        <div class="p-4 text-center border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50">
-          <p class="text-[10px] text-slate-400 font-medium">© 2026 Andromeda IT</p>
-          <p class="text-[9px] text-slate-300 dark:text-slate-600 mt-1">${t('poweredBy')} ${t('aymanDev')}</p>
-        </div>
-      </aside>`;
-  }
-
-  function renderHeader() {
-    const container = document.getElementById('header-container');
-    if (!container) return;
-
-    const lang = getCurrentLang();
-    const isRTL = lang === 'ar';
-    const isDark = document.documentElement.classList.contains('dark');
-
-    const notifHTML = _state.notifications.length === 0 ? `
-      <div class="p-8 text-center text-slate-400">
-        <i class="fa-solid fa-bell-slash text-4xl mb-3"></i>
-        <p class="text-sm">${t('noNotifications')}</p>
-      </div>` : _state.notifications.map(n => `
-        <a href="${n.link}" class="flex gap-3 p-4 border-b border-slate-100 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition ${!n.read ? 'bg-blue-50/30' : ''}">
-          <div class="w-10 h-10 rounded-lg bg-${n.color}-100 text-${n.color}-600 flex items-center justify-center shrink-0">
-            <i class="fa-solid ${n.icon}"></i>
-          </div>
-          <div class="flex-1 min-w-0">
-            <p class="text-xs font-bold text-slate-800 dark:text-white truncate">${n.title[lang]}</p>
-            <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">${n.body[lang]}</p>
-            <p class="text-[10px] text-slate-400 mt-1">${getTimeAgo(new Date(n.time))}</p>
-          </div>
-          ${!n.read ? '<div class="w-2 h-2 rounded-full bg-brandRed animate-pulse"></div>' : ''}
-        </a>`).join('');
-
-    container.innerHTML = `
-      <header class="h-20 sticky top-0 z-40 flex items-center justify-between px-6 bg-white/90 dark:bg-[#0F172A]/95 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800 shadow-sm">
-        <div class="flex items-center gap-4">
-          <div class="hidden sm:flex items-center gap-2.5 px-4 py-2.5 bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-900 border-2 border-slate-200 dark:border-slate-700 rounded-xl shadow-sm">
-            <i class="fa-solid fa-microchip text-brandRed"></i>
-            <span class="text-xs font-bold text-slate-700 dark:text-slate-200">${t('cto_role')}</span>
-          </div>
-        </div>
-
-        <div class="flex items-center gap-3">
-          <div class="relative group">
-            <button class="relative w-10 h-10 rounded-xl border-2 border-slate-200 dark:border-slate-700 hover:bg-orange-50 text-slate-600 dark:text-slate-300 transition flex items-center justify-center">
-              <i class="fa-solid fa-bell"></i>
-              ${_state.unreadCount > 0 ? `<span class="absolute -top-1 -right-1 w-5 h-5 bg-brandRed text-white text-[10px] font-bold rounded-full flex items-center justify-center animate-pulse">${_state.unreadCount}</span>` : ''}
-            </button>
-            <div class="absolute top-full ${isRTL ? 'right-0' : 'left-0'} mt-3 w-96 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 overflow-hidden">
-              <div class="p-4 border-b border-slate-100 dark:border-slate-700 bg-gradient-to-r from-orange-500 to-amber-500">
-                <p class="text-sm font-bold text-white">${t('notifications')}</p>
-              </div>
-              <div class="max-h-96 overflow-y-auto">${notifHTML}</div>
-            </div>
-          </div>
-
-          <button onclick="Layout.toggleLanguage()" class="w-10 h-10 rounded-xl border-2 border-slate-200 dark:border-slate-700 hover:bg-blue-50 text-slate-600 dark:text-slate-300 transition flex items-center justify-center font-bold text-xs">
-            ${lang === 'ar' ? 'EN' : 'ع'}
-          </button>
-          
-          <button onclick="Layout.toggleTheme()" class="w-10 h-10 rounded-xl border-2 border-slate-200 dark:border-slate-700 flex items-center justify-center hover:bg-amber-50 text-slate-600 dark:text-yellow-400 transition">
-            <i class="fa-solid ${isDark ? 'fa-sun' : 'fa-moon'}"></i>
-          </button>
-          
-          <button onclick="Layout.logout()" class="text-red-500 hover:bg-red-50 px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2">
-            <i class="fa-solid fa-power-off"></i> 
-            <span class="hidden sm:inline">${t('logout')}</span>
-          </button>
-        </div>
-      </header>`;
-  }
-
-  function init() {
-    if (_state.isInitialized) return;
-
-    const storedUser = localStorage.getItem('currentUser');
-    if (storedUser) {
-      _state.currentUser = JSON.parse(storedUser);
-    } else {
-      _state.currentUser = {
-        id: 'USR_009',
-        type: 'cto',
-        role: 'CTO',
-        displayName: 'مشاعل الهديان',
-        displayTitle: 'المدير التقني (CTO)',
-        avatar: 'https://ui-avatars.com/api/?name=Meshail+H&background=EC4899&color=fff'
-      };
+    function toggleStatus() {
+      const statusEl = document.getElementById('userStatus');
+      const lang = localStorage.getItem('lang') || 'ar';
+      const dict = pageContent[lang];
+      const current = statusEl.innerText;
+      
+      if (current === dict.statusAvailable) {
+        statusEl.innerText = dict.statusBusy;
+        statusEl.className = "text-xs font-bold text-red-700 dark:text-red-400";
+        statusEl.parentElement.className = "flex items-center gap-2 bg-red-50 dark:bg-red-900/20 px-3 py-1.5 rounded-lg border border-red-200 dark:border-red-900 cursor-pointer hover:bg-red-100 transition";
+        statusEl.previousElementSibling.className = "w-2.5 h-2.5 bg-red-500 rounded-full";
+      } else {
+        statusEl.innerText = dict.statusAvailable;
+        statusEl.className = "text-xs font-bold text-green-700 dark:text-green-400";
+        statusEl.parentElement.className = "flex items-center gap-2 bg-green-50 dark:bg-green-900/20 px-3 py-1.5 rounded-lg border border-green-200 dark:border-green-900 cursor-pointer hover:bg-green-100 transition";
+        statusEl.previousElementSibling.className = "w-2.5 h-2.5 bg-green-500 rounded-full animate-pulse";
+      }
     }
+  </script>
 
-    loadNotifications();
-    renderSidebar();
-    renderHeader();
-    document.body.style.opacity = '1';
-    _state.isInitialized = true;
-    console.log('✅ AndroGov CTO Layout Ready');
-  }
-
-  function toggleLanguage() {
-    const currentLang = getCurrentLang();
-    const newLang = currentLang === 'ar' ? 'en' : 'ar';
-    localStorage.setItem('lang', newLang);
-    document.documentElement.lang = newLang;
-    document.documentElement.dir = newLang === 'ar' ? 'rtl' : 'ltr';
-    renderSidebar();
-    renderHeader();
-  }
-
-  function toggleTheme() {
-    document.documentElement.classList.toggle('dark');
-    const isDark = document.documentElement.classList.contains('dark');
-    localStorage.setItem('theme', isDark ? 'dark' : 'light');
-    renderHeader();
-  }
-
-  function logout() {
-    if (confirm(t('logoutConfirm'))) {
-      localStorage.removeItem('currentUser');
-      window.location.href = '../login.html';
-    }
-  }
-
-  return { init, toggleLanguage, toggleTheme, logout, t };
-})();
-
-// ==========================================
-// Initialize on Load
-// ==========================================
-document.addEventListener('DOMContentLoaded', () => {
-  const ctoUser = {
-    id: 'USR_009',
-    type: 'cto',
-    role: 'CTO',
-    displayName: 'مشاعل الهديان',
-    displayTitle: 'المدير التقني (CTO)',
-    avatar: 'https://ui-avatars.com/api/?name=Meshail+H&background=EC4899&color=fff'
-  };
-  AppConfig.setCurrentUser(ctoUser);
-  Layout.init();
-});
-
-window.Layout = Layout;
-window.AppConfig = AppConfig;
-</script>
 </body>
 </html>
