@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#FB4747">
-    <title>بوابة التدقيق والمراجعة | AndroGov</title>
+    <title data-i18n="pageTitle">بوابة التدقيق والمراجعة | AndroGov</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -32,6 +32,14 @@
 
 <body class="bg-brandGray dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans h-screen flex overflow-hidden">
 
+    <!-- ✅ Loading Overlay -->
+    <div id="loadingOverlay" class="fixed inset-0 bg-white dark:bg-slate-900 z-[9999] flex items-center justify-center transition-opacity duration-500">
+        <div class="text-center">
+            <div class="w-16 h-16 border-4 border-brandRed border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <p class="text-sm text-slate-600 dark:text-slate-400 font-medium" data-i18n="loading">جاري تحميل مركز التدقيق...</p>
+        </div>
+    </div>
+
     <div id="sidebar-container"></div>
 
     <div class="flex-1 flex flex-col h-full relative transition-all duration-300 rtl:md:mr-64 ltr:md:ml-64">
@@ -40,71 +48,75 @@
 
         <main class="flex-1 overflow-y-auto p-6 custom-scroll space-y-6">
             
+            <!-- Banner -->
             <div class="bg-slate-900 text-white p-8 rounded-3xl shadow-xl relative overflow-hidden border-b-4 border-brandRed">
                 <div class="relative z-10 flex flex-col md:flex-row justify-between items-center gap-4">
                     <div>
                         <h1 class="text-2xl font-bold mb-1 flex items-center gap-3">
-                            <i class="fa-solid fa-shield-halved text-brandRed"></i> مركز الرقابة والتدقيق الداخلي
+                            <i class="fa-solid fa-shield-halved text-brandRed"></i> 
+                            <span data-i18n="title">مركز الرقابة والتدقيق الداخلي</span>
                         </h1>
-                        <p class="text-slate-400 text-sm">متابعة خطة التدقيق السنوية، المخاطر، والامتثال للوائح.</p>
+                        <p class="text-slate-400 text-sm" data-i18n="subtitle">متابعة خطة التدقيق السنوية، المخاطر، والامتثال للوائح.</p>
                     </div>
                     <button class="bg-white/10 hover:bg-white/20 px-5 py-2.5 rounded-2xl text-sm font-bold backdrop-blur-md transition border border-white/10">
-                        <i class="fa-solid fa-file-export ml-1"></i> تقرير ربع سنوي جديد
+                        <i class="fa-solid fa-file-export ml-1"></i> <span data-i18n="btnReport">تقرير ربع سنوي جديد</span>
                     </button>
                 </div>
             </div>
 
-            
-
+            <!-- Stats -->
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-                    <p class="text-[10px] text-slate-400 font-bold uppercase mb-1">ملاحظات مفتوحة</p>
+                    <p class="text-[10px] text-slate-400 font-bold uppercase mb-1" data-i18n="statObservations">ملاحظات مفتوحة</p>
                     <h3 class="text-2xl font-bold num-font text-red-600">08</h3>
                 </div>
                 <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-                    <p class="text-[10px] text-slate-400 font-bold uppercase mb-1">نسبة إنجاز خطة التدقيق</p>
+                    <p class="text-[10px] text-slate-400 font-bold uppercase mb-1" data-i18n="statProgress">نسبة إنجاز خطة التدقيق</p>
                     <h3 class="text-2xl font-bold num-font text-blue-600">65%</h3>
                 </div>
                 <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-                    <p class="text-[10px] text-slate-400 font-bold uppercase mb-1">عمليات تدقيق جارية</p>
+                    <p class="text-[10px] text-slate-400 font-bold uppercase mb-1" data-i18n="statOngoing">عمليات تدقيق جارية</p>
                     <h3 class="text-2xl font-bold num-font text-orange-500">2</h3>
                 </div>
                 <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-                    <p class="text-[10px] text-slate-400 font-bold uppercase mb-1">التزام الإدارات بالردود</p>
+                    <p class="text-[10px] text-slate-400 font-bold uppercase mb-1" data-i18n="statCompliance">التزام الإدارات بالردود</p>
                     <h3 class="text-2xl font-bold num-font text-green-600">89%</h3>
                 </div>
             </div>
 
+            <!-- Main Grid -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- High Risk Observations -->
                 <div class="lg:col-span-2">
                     <div class="bg-white dark:bg-slate-800 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden">
                         <div class="p-5 border-b border-slate-50 dark:border-slate-700 flex justify-between items-center">
-                            <h3 class="font-bold text-sm">ملاحظات تدقيق عالية المخاطر</h3>
-                            <button class="text-[10px] text-brandBlue font-bold">عرض الكل</button>
+                            <h3 class="font-bold text-sm" data-i18n="titleHighRisk">ملاحظات تدقيق عالية المخاطر</h3>
+                            <button class="text-[10px] text-brandBlue font-bold" data-i18n="btnViewAll">عرض الكل</button>
                         </div>
                         <div class="p-5 space-y-4">
                             <div class="flex items-start justify-between p-4 bg-red-50/50 dark:bg-red-900/10 rounded-2xl border border-red-100 dark:border-red-900/30">
                                 <div class="flex gap-4">
                                     <div class="mt-1"><i class="fa-solid fa-triangle-exclamation text-red-500"></i></div>
                                     <div>
-                                        <p class="text-xs font-bold text-red-800 dark:text-red-400">تجاوز صلاحيات التعميد المالي</p>
-                                        <p class="text-[10px] text-slate-500 mt-1">قسم المشتريات - مخالفة للائحة الصلاحيات المالية.</p>
+                                        <p class="text-xs font-bold text-red-800 dark:text-red-400" data-i18n="obs1Title">تجاوز صلاحيات التعميد المالي</p>
+                                        <p class="text-[10px] text-slate-500 mt-1" data-i18n="obs1Desc">قسم المشتريات - مخالفة للائحة الصلاحيات المالية.</p>
                                     </div>
                                 </div>
-                                <span class="text-[9px] bg-red-500 text-white px-2 py-0.5 rounded-full font-bold">بانتظار رد CFO</span>
+                                <span class="text-[9px] bg-red-500 text-white px-2 py-0.5 rounded-full font-bold" data-i18n="obs1Status">بانتظار رد CFO</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
+                <!-- Risk Map -->
                 <div class="space-y-6">
                     <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700">
-                        <h3 class="font-bold text-sm mb-4">خارطة المخاطر (2026)</h3>
+                        <h3 class="font-bold text-sm mb-4" data-i18n="titleRiskMap">خارطة المخاطر (2026)</h3>
                         <div class="space-y-4">
                             <div>
                                 <div class="flex justify-between text-[10px] mb-1">
-                                    <span>المخاطر التشغيلية</span>
-                                    <span class="text-orange-500 font-bold">متوسط</span>
+                                    <span data-i18n="risk1">المخاطر التشغيلية</span>
+                                    <span class="text-orange-500 font-bold" data-i18n="riskMedium">متوسط</span>
                                 </div>
                                 <div class="w-full bg-slate-100 dark:bg-slate-700 h-1.5 rounded-full">
                                     <div class="bg-orange-400 h-full rounded-full" style="width: 50%"></div>
@@ -112,8 +124,8 @@
                             </div>
                             <div>
                                 <div class="flex justify-between text-[10px] mb-1">
-                                    <span>المخاطر السيبرانية</span>
-                                    <span class="text-red-500 font-bold">عالي</span>
+                                    <span data-i18n="risk2">المخاطر السيبرانية</span>
+                                    <span class="text-red-500 font-bold" data-i18n="riskHigh">عالي</span>
                                 </div>
                                 <div class="w-full bg-slate-100 dark:bg-slate-700 h-1.5 rounded-full">
                                     <div class="bg-red-500 h-full rounded-full" style="width: 85%"></div>
@@ -127,6 +139,7 @@
         </main>
     </div>
 
+    <!-- Scripts -->
     <script src="../admin/js/core/config.js"></script>
     <script src="../admin/js/core/i18n.js"></script>
     <script src="../admin/js/services/data-service.js"></script>
@@ -134,6 +147,74 @@
     <script src="../admin/js/components/layout.js"></script>
 
     <script>
+        // ==========================================
+        // PAGE TRANSLATIONS
+        // ==========================================
+        const pageContent = {
+            ar: {
+                pageTitle: "بوابة التدقيق والمراجعة | AndroGov",
+                loading: "جاري تحميل مركز التدقيق...",
+                title: "مركز الرقابة والتدقيق الداخلي",
+                subtitle: "متابعة خطة التدقيق السنوية، المخاطر، والامتثال للوائح.",
+                btnReport: "تقرير ربع سنوي جديد",
+                statObservations: "ملاحظات مفتوحة",
+                statProgress: "نسبة إنجاز خطة التدقيق",
+                statOngoing: "عمليات تدقيق جارية",
+                statCompliance: "التزام الإدارات بالردود",
+                titleHighRisk: "ملاحظات تدقيق عالية المخاطر",
+                btnViewAll: "عرض الكل",
+                obs1Title: "تجاوز صلاحيات التعميد المالي",
+                obs1Desc: "قسم المشتريات - مخالفة للائحة الصلاحيات المالية.",
+                obs1Status: "بانتظار رد CFO",
+                titleRiskMap: "خارطة المخاطر (2026)",
+                risk1: "المخاطر التشغيلية",
+                riskMedium: "متوسط",
+                risk2: "المخاطر السيبرانية",
+                riskHigh: "عالي"
+            },
+            en: {
+                pageTitle: "Audit & Review Portal | AndroGov",
+                loading: "Loading Audit Center...",
+                title: "Internal Audit & Control Center",
+                subtitle: "Monitor annual audit plan, risks, and regulatory compliance.",
+                btnReport: "New Quarterly Report",
+                statObservations: "Open Observations",
+                statProgress: "Audit Plan Progress",
+                statOngoing: "Ongoing Audits",
+                statCompliance: "Departments Response Rate",
+                titleHighRisk: "High-Risk Audit Observations",
+                btnViewAll: "View All",
+                obs1Title: "Financial Authorization Breach",
+                obs1Desc: "Procurement Department - Violation of financial authority policy.",
+                obs1Status: "Awaiting CFO Response",
+                titleRiskMap: "Risk Map (2026)",
+                risk1: "Operational Risks",
+                riskMedium: "Medium",
+                risk2: "Cyber Risks",
+                riskHigh: "High"
+            }
+        };
+
+        // ==========================================
+        // UPDATE CONTENT FUNCTION
+        // ==========================================
+        window.updateContent = function() {
+            const lang = Layout.getCurrentLang();
+            const dict = pageContent[lang];
+            
+            document.title = dict.pageTitle;
+            
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (dict[key]) {
+                    el.textContent = dict[key];
+                }
+            });
+        };
+
+        // ==========================================
+        // INITIALIZATION
+        // ==========================================
         document.addEventListener('DOMContentLoaded', () => {
             const checkLibs = setInterval(() => {
                 if (typeof Layout !== 'undefined' && typeof AppConfig !== 'undefined') {
@@ -146,11 +227,19 @@
                         currentUser.type = 'audit'; 
                         AppConfig.setCurrentUser(currentUser);
                         Layout.init();
+                        
+                        // تحديث المحتوى
+                        updateContent();
                     } else {
                         window.location.href = '../index.html';
                     }
                 }
             }, 50);
+        });
+
+        // Listen for language changes
+        window.addEventListener('languageChanged', () => {
+            updateContent();
         });
     </script>
 </body>
