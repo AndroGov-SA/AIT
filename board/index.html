@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#FB4747">
-    <title>بوابة المجلس | AndroGov</title>
+    <title data-i18n="pageTitle">بوابة المجلس | AndroGov</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -25,87 +25,134 @@
         .num-font { font-family: 'Inter', sans-serif; direction: ltr; display: inline-block; }
         .custom-scroll::-webkit-scrollbar { width: 5px; }
         .custom-scroll::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 10px; }
+        .fade-in { animation: fadeIn 0.5s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 
 <body class="bg-brandGray dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans h-screen flex overflow-hidden">
 
+    <!-- ✅ Loading Overlay -->
+    <div id="loadingOverlay" class="fixed inset-0 bg-white dark:bg-slate-900 z-[9999] flex items-center justify-center transition-opacity duration-500">
+        <div class="text-center">
+            <div class="w-16 h-16 border-4 border-brandRed border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <p class="text-sm text-slate-600 dark:text-slate-400 font-medium" data-i18n="loading">جاري تحميل بوابة المجلس...</p>
+        </div>
+    </div>
+
     <div id="sidebar-container"></div>
 
-    <div class="flex-1 flex flex-col h-full relative transition-all duration-300 rtl:md:mr-64 ltr:md:ml-64">
+    <div class="flex-1 flex flex-col h-full relative transition-all duration-300 rtl:md:mr-72 ltr:md:ml-72 main-content-wrapper">
         
         <div id="header-container"></div>
 
-        <main class="flex-1 overflow-y-auto p-6 custom-scroll space-y-6">
+        <main class="flex-1 overflow-y-auto p-6 custom-scroll space-y-6 fade-in">
             
+            <!-- Welcome Banner -->
             <div class="bg-slate-900 text-white p-8 rounded-3xl shadow-xl relative overflow-hidden">
                 <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                     <div>
-                        <h1 class="text-2xl font-bold mb-1">مرحباً، <span id="dynamicName">سعادة العضو</span></h1>
+                        <h1 class="text-2xl font-bold mb-1">
+                            <span data-i18n="welcome">مرحباً،</span> 
+                            <span id="dynamicName">سعادة العضو</span>
+                        </h1>
                         <p class="text-slate-400 text-sm" id="dynamicTitle">عضو مجلس الإدارة</p>
                     </div>
                     
                     <div id="secretaryActions" class="hidden flex gap-2">
                         <button class="bg-brandRed px-4 py-2 rounded-xl text-xs font-bold shadow-lg hover:bg-red-700 transition">
-                            <i class="fa-solid fa-plus ml-1"></i> إنشاء أجندة اجتماع
+                            <i class="fa-solid fa-plus ml-1"></i> <span data-i18n="btnNewAgenda">إنشاء أجندة اجتماع</span>
                         </button>
                     </div>
                 </div>
                 <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-brandRed/10 rounded-full blur-3xl"></div>
             </div>
 
-            
-
+            <!-- Stats Cards -->
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-                    <p class="text-[10px] text-slate-400 font-bold uppercase mb-1">حالة القرارات</p>
-                    <h3 class="text-2xl font-bold num-font text-brandRed">2 معلقة</h3>
+                    <p class="text-[10px] text-slate-400 font-bold uppercase mb-1" data-i18n="statDecisions">حالة القرارات</p>
+                    <h3 class="text-2xl font-bold num-font text-brandRed">2 <span class="text-sm text-slate-500" data-i18n="statPending">معلقة</span></h3>
                 </div>
                 <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-                    <p class="text-[10px] text-slate-400 font-bold uppercase mb-1">الاجتماع القادم</p>
-                    <h3 class="text-2xl font-bold text-blue-600 text-sm">22 فبراير 2026</h3>
+                    <p class="text-[10px] text-slate-400 font-bold uppercase mb-1" data-i18n="statMeeting">الاجتماع القادم</p>
+                    <h3 class="text-2xl font-bold text-blue-600 text-sm">22 <span data-i18n="statFeb">فبراير</span> 2026</h3>
                 </div>
                 <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-                    <p class="text-[10px] text-slate-400 font-bold uppercase mb-1">نسبة الحضور</p>
+                    <p class="text-[10px] text-slate-400 font-bold uppercase mb-1" data-i18n="statAttendance">نسبة الحضور</p>
                     <h3 class="text-2xl font-bold num-font text-green-600">92%</h3>
                 </div>
                 <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-                    <p class="text-[10px] text-slate-400 font-bold uppercase mb-1">الملفات الفنية</p>
+                    <p class="text-[10px] text-slate-400 font-bold uppercase mb-1" data-i18n="statFiles">الملفات الفنية</p>
                     <h3 class="text-2xl font-bold num-font text-slate-400">24</h3>
                 </div>
             </div>
 
+            <!-- Main Content Grid -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                
+                <!-- Recent Files -->
                 <div class="lg:col-span-2">
                     <div class="bg-white dark:bg-slate-800 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden">
                         <div class="p-5 border-b border-slate-50 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50">
-                            <h3 class="font-bold text-sm">آخر الملفات المرفوعة للمجلس</h3>
+                            <h3 class="font-bold text-sm" data-i18n="titleRecentFiles">آخر الملفات المرفوعة للمجلس</h3>
                         </div>
                         <div class="p-5 space-y-4">
-                            <div class="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-900/50 rounded-2xl border border-slate-100 dark:border-slate-700">
+                            <div class="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-900/50 rounded-2xl border border-slate-100 dark:border-slate-700 group hover:border-brandRed transition">
                                 <div class="flex items-center gap-4">
                                     <i class="fa-solid fa-file-pdf text-2xl text-brandRed"></i>
                                     <div>
-                                        <p class="text-xs font-bold">تقرير الحوكمة السنوي - مسودة</p>
-                                        <p class="text-[10px] text-slate-400">رفع بواسطة أمين السر • منذ ساعتين</p>
+                                        <p class="text-xs font-bold" data-i18n="file1">تقرير الحوكمة السنوي - مسودة</p>
+                                        <p class="text-[10px] text-slate-400" data-i18n="file1Sub">رفع بواسطة أمين السر • منذ ساعتين</p>
                                     </div>
                                 </div>
-                                <button class="text-brandBlue hover:text-brandRed transition"><i class="fa-solid fa-download"></i></button>
+                                <button class="text-brandBlue hover:text-brandRed transition">
+                                    <i class="fa-solid fa-download"></i>
+                                </button>
+                            </div>
+
+                            <div class="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-900/50 rounded-2xl border border-slate-100 dark:border-slate-700 group hover:border-brandRed transition">
+                                <div class="flex items-center gap-4">
+                                    <i class="fa-solid fa-file-excel text-2xl text-green-600"></i>
+                                    <div>
+                                        <p class="text-xs font-bold" data-i18n="file2">القوائم المالية الربع سنوية</p>
+                                        <p class="text-[10px] text-slate-400" data-i18n="file2Sub">تم الإعتماد • منذ يوم واحد</p>
+                                    </div>
+                                </div>
+                                <button class="text-brandBlue hover:text-brandRed transition">
+                                    <i class="fa-solid fa-download"></i>
+                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
 
+                <!-- Signature Progress -->
                 <div class="space-y-6">
                     <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700">
-                        <h3 class="font-bold text-sm mb-4">اكتمال التواقيع</h3>
+                        <h3 class="font-bold text-sm mb-4" data-i18n="titleSignatures">اكتمال التواقيع</h3>
                         <div class="space-y-3">
-                            <p class="text-[10px] text-slate-500">محضر الاجتماع رقم (41):</p>
+                            <p class="text-[10px] text-slate-500" data-i18n="signatureDesc">محضر الاجتماع رقم (41):</p>
                             <div class="w-full bg-slate-100 dark:bg-slate-700 h-2 rounded-full overflow-hidden">
-                                <div class="bg-green-500 h-full" style="width: 75%"></div>
+                                <div class="bg-green-500 h-full transition-all duration-1000" style="width: 75%"></div>
                             </div>
-                            <p class="text-[9px] text-right text-slate-400">7 من أصل 9 أعضاء وقعوا</p>
+                            <p class="text-[9px] text-right text-slate-400 num-font" data-i18n="signatureCount">7 من أصل 9 أعضاء وقعوا</p>
                         </div>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-brandRed to-red-600 p-6 rounded-3xl shadow-xl text-white">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center">
+                                <i class="fa-solid fa-bell"></i>
+                            </div>
+                            <h3 class="font-bold" data-i18n="titleReminder">تذكير هام</h3>
+                        </div>
+                        <p class="text-sm text-white/90 leading-relaxed" data-i18n="reminderText">
+                            يرجى المصادقة على قرار التمرير الخاص بتعيين المستشار القانوني قبل نهاية اليوم.
+                        </p>
+                        <button onclick="window.location.href='communication.html'" class="w-full mt-4 py-2.5 bg-white text-brandRed rounded-xl text-xs font-bold hover:bg-slate-50 transition">
+                            <span data-i18n="btnReview">مراجعة القرار</span> <i class="fa-solid fa-arrow-left mr-1"></i>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -113,13 +160,86 @@
         </main>
     </div>
 
+    <!-- Scripts -->
     <script src="../admin/js/core/config.js"></script>
-    <script src="../admin/js/core/i18n.js"></script>
     <script src="../admin/js/services/data-service.js"></script>
-    <script src="../admin/js/components/role-switcher.js"></script>
-    <script src="../admin/js/components/layout.js"></script>
+    <script src="js/components/toast.js"></script>
+    <script src="js/components/layout.js"></script>
+    <script src="js/components/bot.js"></script>
 
     <script>
+        // ==========================================
+        // PAGE TRANSLATIONS
+        // ==========================================
+        const pageContent = {
+            ar: {
+                pageTitle: "بوابة المجلس | AndroGov",
+                loading: "جاري تحميل بوابة المجلس...",
+                welcome: "مرحباً،",
+                btnNewAgenda: "إنشاء أجندة اجتماع",
+                statDecisions: "حالة القرارات",
+                statPending: "معلقة",
+                statMeeting: "الاجتماع القادم",
+                statFeb: "فبراير",
+                statAttendance: "نسبة الحضور",
+                statFiles: "الملفات الفنية",
+                titleRecentFiles: "آخر الملفات المرفوعة للمجلس",
+                file1: "تقرير الحوكمة السنوي - مسودة",
+                file1Sub: "رفع بواسطة أمين السر • منذ ساعتين",
+                file2: "القوائم المالية الربع سنوية",
+                file2Sub: "تم الإعتماد • منذ يوم واحد",
+                titleSignatures: "اكتمال التواقيع",
+                signatureDesc: "محضر الاجتماع رقم (41):",
+                signatureCount: "7 من أصل 9 أعضاء وقعوا",
+                titleReminder: "تذكير هام",
+                reminderText: "يرجى المصادقة على قرار التمرير الخاص بتعيين المستشار القانوني قبل نهاية اليوم.",
+                btnReview: "مراجعة القرار"
+            },
+            en: {
+                pageTitle: "Board Portal | AndroGov",
+                loading: "Loading Board Portal...",
+                welcome: "Welcome,",
+                btnNewAgenda: "Create Meeting Agenda",
+                statDecisions: "Decision Status",
+                statPending: "Pending",
+                statMeeting: "Next Meeting",
+                statFeb: "February",
+                statAttendance: "Attendance Rate",
+                statFiles: "Technical Files",
+                titleRecentFiles: "Recent Files Uploaded to Board",
+                file1: "Annual Governance Report - Draft",
+                file1Sub: "Uploaded by Secretary • 2 hours ago",
+                file2: "Quarterly Financial Statements",
+                file2Sub: "Approved • 1 day ago",
+                titleSignatures: "Signature Completion",
+                signatureDesc: "Meeting Minutes No. (41):",
+                signatureCount: "7 out of 9 members signed",
+                titleReminder: "Important Reminder",
+                reminderText: "Please approve the circular resolution for legal advisor appointment by end of day.",
+                btnReview: "Review Decision"
+            }
+        };
+
+        // ==========================================
+        // UPDATE CONTENT FUNCTION
+        // ==========================================
+        window.updateContent = function() {
+            const lang = Layout.getCurrentLang();
+            const dict = pageContent[lang];
+            
+            document.title = dict.pageTitle;
+            
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (dict[key]) {
+                    el.textContent = dict[key];
+                }
+            });
+        };
+
+        // ==========================================
+        // INITIALIZATION
+        // ==========================================
         document.addEventListener('DOMContentLoaded', () => {
             const checkLibs = setInterval(() => {
                 if (typeof Layout !== 'undefined' && typeof AppConfig !== 'undefined') {
@@ -130,25 +250,31 @@
 
                     if (currentUser) {
                         // 2. تحديث الواجهة ببياناته
-                        document.getElementById('dynamicName').innerText = currentUser.name;
-                        document.getElementById('dynamicTitle').innerText = currentUser.role;
+                        document.getElementById('dynamicName').innerText = currentUser.name || currentUser.displayName;
+                        document.getElementById('dynamicTitle').innerText = currentUser.role || currentUser.displayTitle;
 
-                        // 3. تشغيل الـ Sidebar بناءً على نوعه (board) ليرى الجميع نفس المعلومات
-                        currentUser.type = 'board'; 
+                        // 3. تشغيل الـ Layout
                         AppConfig.setCurrentUser(currentUser);
                         Layout.init();
 
                         // 4. إظهار أدوات "أمين السر" فقط إذا كان هو المسجل
-                        // نبحث عن كلمة Secretary أو الاسم المعروف لأمين السر (أيمن)
-                        if (currentUser.role.includes('Secretary') || currentUser.name.includes('أيمن')) {
+                        if (currentUser.role && (currentUser.role.includes('Secretary') || currentUser.role.includes('أمين'))) {
                             document.getElementById('secretaryActions').classList.remove('hidden');
                         }
+
+                        // 5. تحديث المحتوى
+                        updateContent();
                     } else {
                         // إعادة للتسجيل إذا لم يوجد مستخدم
                         window.location.href = '../index.html';
                     }
                 }
             }, 50);
+        });
+
+        // Listen for language changes
+        window.addEventListener('languageChanged', () => {
+            updateContent();
         });
     </script>
 </body>
