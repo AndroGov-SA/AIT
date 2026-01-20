@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#FB4747">
+    <title data-i18n="pageTitle">وثائق الحوكمة | AndroGov</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { brandRed: '#FB4747', brandBlue: '#4267B2', brandDark: '#1E293B', brandGray: '#F8FAFC' },
+                    fontFamily: { sans: ['Tajawal', 'Inter', 'sans-serif'], en: ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        .num-font { font-family: 'Inter', sans-serif; direction: ltr; display: inline-block; }
+        .custom-scroll::-webkit-scrollbar { width: 5px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 10px; }
+        .fade-in { animation: fadeIn 0.5s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+
+<body class="bg-brandGray dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300 h-screen flex overflow-hidden">
+    
+    <div id="sidebar-container"></div>
+
+    <div class="flex-1 flex flex-col h-full overflow-hidden relative main-content-wrapper rtl:md:mr-72 ltr:md:ml-72 transition-all duration-300">
+        
+        <div id="header-container"></div>
+
+        <main class="p-8 space-y-8 overflow-y-auto custom-scroll fade-in">
+            
+            <!-- Page Header -->
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <h2 class="text-2xl font-bold dark:text-white" data-i18n="title">مكتبة وثائق الحوكمة</h2>
+                    <p class="text-sm text-slate-500 mt-1" data-i18n="subtitle">السياسات، اللوائح، والأطر الحاكمة للشركة</p>
+                </div>
+                <div class="flex gap-2">
+                    <button class="px-4 py-2 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-lg text-xs font-bold hover:bg-slate-200 dark:hover:bg-slate-600 transition flex items-center gap-2">
+                        <i class="fa-solid fa-search"></i> 
+                        <span data-i18n="btnSearch">بحث</span>
+                    </button>
+                    <button class="px-4 py-2 bg-brandBlue text-white rounded-lg text-xs font-bold shadow-lg hover:bg-blue-700 transition flex items-center gap-2">
+                        <i class="fa-solid fa-download"></i> 
+                        <span data-i18n="btnDownloadAll">تنزيل الكل</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-lg bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-brandBlue">
+                            <i class="fa-solid fa-file-contract"></i>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-slate-400 font-bold uppercase" data-i18n="statPolicies">السياسات</p>
+                            <h3 class="text-2xl font-bold num-font text-brandBlue">12</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-lg bg-purple-50 dark:bg-purple-900/20 flex items-center justify-center text-purple-600">
+                            <i class="fa-solid fa-gavel"></i>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-slate-400 font-bold uppercase" data-i18n="statRegulations">اللوائح</p>
+                            <h3 class="text-2xl font-bold num-font text-purple-600">8</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-lg bg-green-50 dark:bg-green-900/20 flex items-center justify-center text-green-600">
+                            <i class="fa-solid fa-shield-halved"></i>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-slate-400 font-bold uppercase" data-i18n="statFrameworks">الأطر</p>
+                            <h3 class="text-2xl font-bold num-font text-green-600">5</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-lg bg-orange-50 dark:bg-orange-900/20 flex items-center justify-center text-orange-600">
+                            <i class="fa-solid fa-clock-rotate-left"></i>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-slate-400 font-bold uppercase" data-i18n="statLastUpdate">آخر تحديث</p>
+                            <h3 class="text-sm font-bold text-orange-600" data-i18n="statUpdateDate">15 يناير</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Documents Categories -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                
+                <!-- Core Policies -->
+                <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden">
+                    <div class="p-5 border-b border-slate-50 dark:border-slate-700 bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20">
+                        <h3 class="font-bold text-sm flex items-center gap-2 text-blue-700 dark:text-blue-400">
+                            <i class="fa-solid fa-book"></i>
+                            <span data-i18n="corePolicies">السياسات الأساسية</span>
+                        </h3>
+                    </div>
+                    <div class="p-4 space-y-3" id="corePoliciesList">
+                        <!-- Will be populated by JS -->
+                    </div>
+                </div>
+
+                <!-- Committee Bylaws -->
+                <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden">
+                    <div class="p-5 border-b border-slate-50 dark:border-slate-700 bg-gradient-to-r from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20">
+                        <h3 class="font-bold text-sm flex items-center gap-2 text-purple-700 dark:text-purple-400">
+                            <i class="fa-solid fa-users-gear"></i>
+                            <span data-i18n="committeeBylaws">لوائح اللجان</span>
+                        </h3>
+                    </div>
+                    <div class="p-4 space-y-3" id="committeeBylawsList">
+                        <!-- Will be populated by JS -->
+                    </div>
+                </div>
+
+                <!-- Frameworks & Codes -->
+                <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden">
+                    <div class="p-5 border-b border-slate-50 dark:border-slate-700 bg-gradient-to-r from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20">
+                        <h3 class="font-bold text-sm flex items-center gap-2 text-green-700 dark:text-green-400">
+                            <i class="fa-solid fa-clipboard-check"></i>
+                            <span data-i18n="frameworks">الأطر والمدونات</span>
+                        </h3>
+                    </div>
+                    <div class="p-4 space-y-3" id="frameworksList">
+                        <!-- Will be populated by JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Regulatory Compliance -->
+            <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden">
+                <div class="p-5 border-b border-slate-50 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50">
+                    <h3 class="font-bold text-sm flex items-center gap-2">
+                        <i class="fa-solid fa-scale-balanced text-brandRed"></i>
+                        <span data-i18n="complianceTitle">الامتثال التنظيمي</span>
+                    </h3>
+                </div>
+                <div class="p-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="p-4 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-100 dark:border-slate-700">
+                            <div class="flex items-start gap-3">
+                                <div class="w-10 h-10 rounded-lg bg-green-100 dark:bg-green-900/30 text-green-600 flex items-center justify-center shrink-0">
+                                    <i class="fa-solid fa-circle-check"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-sm mb-1" data-i18n="comp1Title">نظام الشركات السعودي</h4>
+                                    <p class="text-[10px] text-slate-500 mb-2" data-i18n="comp1Desc">الامتثال الكامل - آخر مراجعة 15 يناير 2026</p>
+                                    <span class="text-[9px] bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 px-2 py-0.5 rounded font-bold" data-i18n="compliant">متوافق</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="p-4 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-100 dark:border-slate-700">
+                            <div class="flex items-start gap-3">
+                                <div class="w-10 h-10 rounded-lg bg-green-100 dark:bg-green-900/30 text-green-600 flex items-center justify-center shrink-0">
+                                    <i class="fa-solid fa-circle-check"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-sm mb-1" data-i18n="comp2Title">نظام حماية البيانات الشخصية</h4>
+                                    <p class="text-[10px] text-slate-500 mb-2" data-i18n="comp2Desc">الامتثال الكامل - آخر مراجعة 10 يناير 2026</p>
+                                    <span class="text-[9px] bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 px-2 py-0.5 rounded font-bold" data-i18n="compliant">متوافق</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="p-4 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-100 dark:border-slate-700">
+                            <div class="flex items-start gap-3">
+                                <div class="w-10 h-10 rounded-lg bg-orange-100 dark:bg-orange-900/30 text-orange-600 flex items-center justify-center shrink-0">
+                                    <i class="fa-solid fa-clock"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-sm mb-1" data-i18n="comp3Title">ضوابط الأمن السيبراني</h4>
+                                    <p class="text-[10px] text-slate-500 mb-2" data-i18n="comp3Desc">قيد المراجعة - متوقع الاكتمال 30 أبريل 2026</p>
+                                    <span class="text-[9px] bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400 px-2 py-0.5 rounded font-bold" data-i18n="inProgress">قيد التنفيذ</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="p-4 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-100 dark:border-slate-700">
+                            <div class="flex items-start gap-3">
+                                <div class="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 text-blue-600 flex items-center justify-center shrink-0">
+                                    <i class="fa-solid fa-award"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-sm mb-1">ISO 27001 - <span data-i18n="infoSecurity">أمن المعلومات</span></h4>
+                                    <p class="text-[10px] text-slate-500 mb-2" data-i18n="isoDesc">شهادة سارية حتى 30 يونيو 2026</p>
+                                    <span class="text-[9px] bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 px-2 py-0.5 rounded font-bold" data-i18n="certified">معتمد</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../admin/js/core/config.js"></script>
+    <script src="../admin/js/services/data-service.js"></script>
+    <script src="js/components/toast.js"></script>
+    <script src="js/components/layout.js"></script>
+    <script src="js/components/bot.js"></script>
+
+    <script>
+        // ==========================================
+        // PAGE TRANSLATIONS
+        // ==========================================
+        const pageContent = {
+            ar: {
+                pageTitle: "وثائق الحوكمة | AndroGov",
+                title: "مكتبة وثائق الحوكمة",
+                subtitle: "السياسات، اللوائح، والأطر الحاكمة للشركة",
+                btnSearch: "بحث",
+                btnDownloadAll: "تنزيل الكل",
+                statPolicies: "السياسات",
+                statRegulations: "اللوائح",
+                statFrameworks: "الأطر",
+                statLastUpdate: "آخر تحديث",
+                statUpdateDate: "15 يناير",
+                corePolicies: "السياسات الأساسية",
+                committeeBylaws: "لوائح اللجان",
+                frameworks: "الأطر والمدونات",
+                complianceTitle: "الامتثال التنظيمي",
+                comp1Title: "نظام الشركات السعودي",
+                comp1Desc: "الامتثال الكامل - آخر مراجعة 15 يناير 2026",
+                comp2Title: "نظام حماية البيانات الشخصية",
+                comp2Desc: "الامتثال الكامل - آخر مراجعة 10 يناير 2026",
+                comp3Title: "ضوابط الأمن السيبراني",
+                comp3Desc: "قيد المراجعة - متوقع الاكتمال 30 أبريل 2026",
+                infoSecurity: "أمن المعلومات",
+                isoDesc: "شهادة سارية حتى 30 يونيو 2026",
+                compliant: "متوافق",
+                inProgress: "قيد التنفيذ",
+                certified: "معتمد",
+                version: "الإصدار",
+                lastUpdated: "آخر تحديث"
+            },
+            en: {
+                pageTitle: "Governance Documents | AndroGov",
+                title: "Governance Documents Library",
+                subtitle: "Policies, Regulations, and Governing Frameworks",
+                btnSearch: "Search",
+                btnDownloadAll: "Download All",
+                statPolicies: "Policies",
+                statRegulations: "Regulations",
+                statFrameworks: "Frameworks",
+                statLastUpdate: "Last Update",
+                statUpdateDate: "Jan 15",
+                corePolicies: "Core Policies",
+                committeeBylaws: "Committee Bylaws",
+                frameworks: "Frameworks & Codes",
+                complianceTitle: "Regulatory Compliance",
+                comp1Title: "Saudi Companies Law",
+                comp1Desc: "Full compliance - Last review Jan 15, 2026",
+                comp2Title: "Personal Data Protection Law",
+                comp2Desc: "Full compliance - Last review Jan 10, 2026",
+                comp3Title: "Cybersecurity Controls",
+                comp3Desc: "Under review - Expected completion Apr 30, 2026",
+                infoSecurity: "Information Security",
+                isoDesc: "Certificate valid until June 30, 2026",
+                compliant: "Compliant",
+                inProgress: "In Progress",
+                certified: "Certified",
+                version: "Version",
+                lastUpdated: "Last Updated"
+            }
+        };
+
+        // ==========================================
+        // DOCUMENTS DATA
+        // ==========================================
+        const documentsData = {
+            corePolicies: [
+                { 
+                    name: { ar: 'سياسة الحوكمة المؤسسية', en: 'Corporate Governance Policy' },
+                    version: '3.2',
+                    date: '2026-01-15',
+                    icon: 'fa-building-columns',
+                    color: 'blue'
+                },
+                { 
+                    name: { ar: 'سياسة تضارب المصالح', en: 'Conflict of Interest Policy' },
+                    version: '2.1',
+                    date: '2025-12-10',
+                    icon: 'fa-handshake-slash',
+                    color: 'red'
+                },
+                { 
+                    name: { ar: 'سياسة الإفصاح والشفافية', en: 'Disclosure & Transparency Policy' },
+                    version: '2.0',
+                    date: '2025-11-20',
+                    icon: 'fa-eye',
+                    color: 'green'
+                },
+                { 
+                    name: { ar: 'سياسة المكافآت والتعويضات', en: 'Remuneration Policy' },
+                    version: '1.8',
+                    date: '2025-10-05',
+                    icon: 'fa-coins',
+                    color: 'orange'
+                }
+            ],
+            committeeBylaws: [
+                { 
+                    name: { ar: 'لائحة لجنة المراجعة', en: 'Audit Committee Bylaws' },
+                    version: '2.5',
+                    date: '2026-01-10',
+                    icon: 'fa-magnifying-glass-chart',
+                    color: 'purple'
+                },
+                { 
+                    name: { ar: 'لائحة لجنة الترشيحات والمكافآت', en: 'Nomination & Remuneration Committee' },
+                    version: '2.0',
+                    date: '2025-12-15',
+                    icon: 'fa-user-check',
+                    color: 'blue'
+                },
+                { 
+                    name: { ar: 'لائحة اللجنة التنفيذية', en: 'Executive Committee Bylaws' },
+                    version: '1.9',
+                    date: '2025-11-30',
+                    icon: 'fa-users-gear',
+                    color: 'red'
+                }
+            ],
+            frameworks: [
+                { 
+                    name: { ar: 'إطار إدارة المخاطر المؤسسية', en: 'Enterprise Risk Management Framework' },
+                    version: '3.0',
+                    date: '2026-01-05',
+                    icon: 'fa-shield-halved',
+                    color: 'orange'
+                },
+                { 
+                    name: { ar: 'مدونة قواعد السلوك المهني', en: 'Code of Conduct' },
+                    version: '2.1',
+                    date: '2025-12-20',
+                    icon: 'fa-scale-balanced',
+                    color: 'green'
+                },
+                { 
+                    name: { ar: 'إطار الرقابة الداخلية', en: 'Internal Control Framework' },
+                    version: '2.3',
+                    date: '2025-11-10',
+                    icon: 'fa-clipboard-check',
+                    color: 'blue'
+                }
+            ]
+        };
+
+        // ==========================================
+        // RENDER DOCUMENTS
+        // ==========================================
+        function renderDocuments() {
+            const lang = Layout.getCurrentLang();
+            const dict = pageContent[lang];
+
+            // Render Core Policies
+            const coreList = document.getElementById('corePoliciesList');
+            if (coreList) {
+                coreList.innerHTML = documentsData.corePolicies.map(doc => createDocumentCard(doc, lang, dict)).join('');
+            }
+
+            // Render Committee Bylaws
+            const committeeList = document.getElementById('committeeBylawsList');
+            if (committeeList) {
+                committeeList.innerHTML = documentsData.committeeBylaws.map(doc => createDocumentCard(doc, lang, dict)).join('');
+            }
+
+            // Render Frameworks
+            const frameworksList = document.getElementById('frameworksList');
+            if (frameworksList) {
+                frameworksList.innerHTML = documentsData.frameworks.map(doc => createDocumentCard(doc, lang, dict)).join('');
+            }
+        }
+
+        function createDocumentCard(doc, lang, dict) {
+            const colorClasses = {
+                blue: 'text-blue-600 bg-blue-50 dark:bg-blue-900/20',
+                red: 'text-red-600 bg-red-50 dark:bg-red-900/20',
+                green: 'text-green-600 bg-green-50 dark:bg-green-900/20',
+                orange: 'text-orange-600 bg-orange-50 dark:bg-orange-900/20',
+                purple: 'text-purple-600 bg-purple-50 dark:bg-purple-900/20'
+            };
+
+            return `
+                <div class="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-100 dark:border-slate-700 hover:border-brandBlue dark:hover:border-brandBlue transition group cursor-pointer">
+                    <div class="flex items-center gap-3 flex-1 min-w-0">
+                        <div class="w-10 h-10 rounded-lg ${colorClasses[doc.color]} flex items-center justify-center shrink-0 group-hover:scale-110 transition">
+                            <i class="fa-solid ${doc.icon}"></i>
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <h4 class="text-xs font-bold text-slate-800 dark:text-white truncate group-hover:text-brandBlue transition">
+                                ${doc.name[lang]}
+                            </h4>
+                            <div class="flex items-center gap-2 mt-1">
+                                <span class="text-[9px] text-slate-400">
+                                    ${dict.version} <span class="num-font">${doc.version}</span>
+                                </span>
+                                <span class="text-slate-300">•</span>
+                                <span class="text-[9px] text-slate-400 num-font">${doc.date}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="w-8 h-8 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 text-slate-400 hover:text-brandBlue hover:border-brandBlue transition flex items-center justify-center opacity-0 group-hover:opacity-100">
+                        <i class="fa-solid fa-download text-xs"></i>
+                    </button>
+                </div>
+            `;
+        }
+
+        // ==========================================
+        // UPDATE CONTENT FUNCTION
+        // ==========================================
+        window.updateContent = function() {
+            const lang = Layout.getCurrentLang();
+            const dict = pageContent[lang];
+            
+            document.title = dict.pageTitle;
+            
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (dict[key]) {
+                    el.textContent = dict[key];
+                }
+            });
+
+            // Re-render documents with new language
+            renderDocuments();
+        };
+
+        // ==========================================
+        // INITIALIZATION
+        // ==========================================
+        document.addEventListener('DOMContentLoaded', () => {
+            const checkLibs = setInterval(() => {
+                if (typeof Layout !== 'undefined' && typeof AppConfig !== 'undefined') {
+                    clearInterval(checkLibs);
+
+                    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+
+                    if (currentUser) {
+                        AppConfig.setCurrentUser(currentUser);
+                        Layout.init();
+                        updateContent();
+                    } else {
+                        window.location.href = '../index.html';
+                    }
+                }
+            }, 50);
+        });
+
+        // Listen for language changes
+        window.addEventListener('languageChanged', () => {
+            updateContent();
+        });
+    </script>
+</body>
+</html>
