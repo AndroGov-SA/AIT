@@ -1,8 +1,8 @@
 /**
- * AndroGov CEO Layout Engine v1.0
- * @file ceo/js/components/layout.js
+ * AndroGov Audit Layout Engine v1.0
+ * @file audit/js/components/layout.js
  * @author Ayman Al-Maghrabi
- * @description Executive layout with multi-role support (CEO + Board VP + Shareholder)
+ * @description Audit portal layout - Internal Auditor & Audit Committee
  */
 
 const Layout = (function() {
@@ -12,7 +12,7 @@ const Layout = (function() {
   // ==========================================
   let _state = {
     currentUser: null,
-    activeRole: 'ceo', 
+    activeRole: 'internal_auditor', 
     isInitialized: false,
     sidebarOpen: false,
     notifications: [],
@@ -20,30 +20,26 @@ const Layout = (function() {
   };
 
   // ==========================================
-  // 2. COMPLETE MENU DEFINITIONS (3 Roles)
+  // 2. AUDIT MENU DEFINITIONS (2 Roles)
   // ==========================================
   const _menuDefinitions = {
     
     // ═══════════════════════════════════════
-    // 1️⃣ الرئيس التنفيذي (Chief Executive Officer)
+    // 1️⃣ المدقق الداخلي (Internal Auditor)
     // ═══════════════════════════════════════
-    'ceo': [
-      { section: 'executive_dashboard', items: [
-        { key: 'executive_overview', icon: 'fa-gauge-high', link: 'index.html', badge: 'live' },
-        { key: 'strategic_planning', icon: 'fa-chess-board', link: 'ceo_strategy.html', badge: 'strategic' }
+    'internal_auditor': [
+      { section: 'audit_overview', items: [
+        { key: 'audit_dashboard', icon: 'fa-shield-halved', link: 'index.html', badge: 'live' },
+        { key: 'annual_audit_plan', icon: 'fa-calendar-check', link: 'audit_plan.html', badge: null }
       ]},
-      { section: 'financial_oversight', items: [
-        { key: 'financial_performance', icon: 'fa-chart-line', link: 'ceo_finance.html', badge: 'financial' },
-        { key: 'executive_reports', icon: 'fa-file-chart-column', link: 'ceo_reports.html', badge: null }
+      { section: 'audit_execution', items: [
+        { key: 'observations_log', icon: 'fa-clipboard-list', link: 'observations.html', badge: 'important' },
+        { key: 'risk_assessment', icon: 'fa-triangle-exclamation', link: 'risk_reports.html', badge: 'risks' },
+        { key: 'compliance_monitoring', icon: 'fa-list-check', link: 'compliance.html', badge: null }
       ]},
-      { section: 'governance_compliance', items: [
-        { key: 'governance_framework', icon: 'fa-scale-balanced', link: 'ceo_governance.html', badge: 'compliance' },
-        { key: 'risk_management', icon: 'fa-shield-halved', link: 'ceo_risks.html', badge: 'risks' }
-      ]},
-      { section: 'communication', items: [
-        { key: 'company_broadcast', icon: 'fa-tower-broadcast', link: 'ceo_broadcast.html', badge: 'broadcast' },
-        { key: 'internal_communication', icon: 'fa-comments', link: 'ceo_communication.html', badge: null },
-        { key: 'feedback_center', icon: 'fa-message-dots', link: 'ceo_feedback.html', badge: 'active' }
+      { section: 'reporting', items: [
+        { key: 'quarterly_reports', icon: 'fa-file-chart-column', link: 'reports.html', badge: null },
+        { key: 'findings_database', icon: 'fa-database', link: 'findings.html', badge: null }
       ]},
       { section: 'personal', items: [
         { key: 'my_profile', icon: 'fa-user-circle', link: 'profile.html', badge: null }
@@ -51,111 +47,76 @@ const Layout = (function() {
     ],
 
     // ═══════════════════════════════════════
-    // 2️⃣ نائب رئيس مجلس الإدارة (Board Vice President)
+    // 2️⃣ لجنة المراجعة (Audit Committee)
     // ═══════════════════════════════════════
-    'board_vp': [
-      { section: 'board_activities', items: [
-        { key: 'board_portal', icon: 'fa-building-columns', link: 'ceo_board.html', badge: 'board' },
-        { key: 'governance_oversight', icon: 'fa-gavel', link: 'ceo_governance.html', badge: null }
+    'audit_committee': [
+      { section: 'committee_overview', items: [
+        { key: 'committee_dashboard', icon: 'fa-building-columns', link: 'index.html', badge: 'live' },
+        { key: 'audit_plan_review', icon: 'fa-calendar-check', link: 'audit_plan.html', badge: null }
       ]},
-      { section: 'strategic_oversight', items: [
-        { key: 'strategic_initiatives', icon: 'fa-lightbulb', link: 'ceo_strategy.html', badge: 'initiatives' },
-        { key: 'risk_oversight', icon: 'fa-triangle-exclamation', link: 'ceo_risks.html', badge: null }
+      { section: 'oversight', items: [
+        { key: 'critical_observations', icon: 'fa-exclamation-triangle', link: 'observations.html', badge: 'critical' },
+        { key: 'risk_reports', icon: 'fa-chart-line', link: 'risk_reports.html', badge: null },
+        { key: 'compliance_status', icon: 'fa-shield-check', link: 'compliance.html', badge: null }
       ]},
-      { section: 'reporting', items: [
-        { key: 'board_reports', icon: 'fa-file-lines', link: 'ceo_reports.html', badge: null },
-        { key: 'financial_review', icon: 'fa-money-bill-trend-up', link: 'ceo_finance.html', badge: null }
+      { section: 'reports_review', items: [
+        { key: 'audit_reports', icon: 'fa-file-lines', link: 'reports.html', badge: null },
+        { key: 'external_audit', icon: 'fa-building', link: 'external_audit.html', badge: null }
       ]},
       { section: 'communication', items: [
-        { key: 'board_communication', icon: 'fa-envelope', link: 'ceo_communication.html', badge: null }
-      ]}
-    ],
-
-    // ═══════════════════════════════════════
-    // 3️⃣ مساهم (Shareholder)
-    // ═══════════════════════════════════════
-    'shareholder': [
-      { section: 'shareholder_services', items: [
-        { key: 'my_portfolio', icon: 'fa-briefcase', link: 'index.html', badge: 'portfolio' },
-        { key: 'financial_statements', icon: 'fa-file-invoice-dollar', link: 'ceo_finance.html', badge: null }
-      ]},
-      { section: 'governance_access', items: [
-        { key: 'governance_documents', icon: 'fa-folder-open', link: 'ceo_governance.html', badge: null },
-        { key: 'board_meetings', icon: 'fa-calendar-days', link: 'ceo_board.html', badge: null }
-      ]},
-      { section: 'reports_disclosures', items: [
-        { key: 'annual_reports', icon: 'fa-book', link: 'ceo_reports.html', badge: null },
-        { key: 'announcements', icon: 'fa-bullhorn', link: 'ceo_broadcast.html', badge: null }
-      ]},
-      { section: 'personal', items: [
-        { key: 'my_profile', icon: 'fa-id-card', link: 'profile.html', badge: null }
+        { key: 'committee_communication', icon: 'fa-comments', link: 'communication.html', badge: null }
       ]}
     ]
   };
 
   // Role Labels (Bilingual)
   const _roleLabels = {
-    'ceo': { 
-      ar: 'الرئيس التنفيذي', 
-      en: 'Chief Executive Officer',
-      desc: { ar: 'القيادة التنفيذية والإدارة الاستراتيجية', en: 'Executive Leadership & Strategic Management' }
+    'internal_auditor': { 
+      ar: 'المدقق الداخلي', 
+      en: 'Internal Auditor',
+      desc: { ar: 'إجراء عمليات التدقيق والمراجعة الداخلية', en: 'Conduct internal audit and review operations' }
     },
-    'board_vp': { 
-      ar: 'نائب رئيس المجلس', 
-      en: 'Board Vice President',
-      desc: { ar: 'الإشراف على أعمال المجلس والحوكمة', en: 'Board Oversight & Governance' }
-    },
-    'shareholder': { 
-      ar: 'مساهم', 
-      en: 'Shareholder',
-      desc: { ar: 'الوصول للتقارير والبيانات المالية', en: 'Access to Reports & Financial Data' }
+    'audit_committee': { 
+      ar: 'لجنة المراجعة', 
+      en: 'Audit Committee',
+      desc: { ar: 'الإشراف على التدقيق والامتثال', en: 'Oversight of audit and compliance' }
     }
   };
 
   // Translation Keys
   const _translations = {
     ar: {
-      // Sections - CEO
-      executive_dashboard: 'لوحة القيادة التنفيذية',
-      financial_oversight: 'الرقابة المالية',
-      governance_compliance: 'الحوكمة والامتثال',
-      communication: 'الاتصالات',
+      // Sections - Internal Auditor
+      audit_overview: 'نظرة عامة',
+      audit_execution: 'تنفيذ التدقيق',
+      reporting: 'التقارير',
       personal: 'الحساب الشخصي',
       
-      // Sections - Board VP
-      board_activities: 'أنشطة المجلس',
-      strategic_oversight: 'الإشراف الاستراتيجي',
-      reporting: 'التقارير',
+      // Sections - Audit Committee
+      committee_overview: 'نظرة عامة للجنة',
+      oversight: 'الإشراف والرقابة',
+      reports_review: 'مراجعة التقارير',
+      communication: 'الاتصالات',
       
-      // Sections - Shareholder
-      shareholder_services: 'خدمات المساهمين',
-      governance_access: 'الوصول للحوكمة',
-      reports_disclosures: 'التقارير والإفصاحات',
-      
-      // Menu Items
-      executive_overview: 'نظرة تنفيذية شاملة',
-      strategic_planning: 'التخطيط الاستراتيجي',
-      financial_performance: 'الأداء المالي',
-      executive_reports: 'التقارير التنفيذية',
-      governance_framework: 'إطار الحوكمة',
-      risk_management: 'إدارة المخاطر',
-      company_broadcast: 'البث المؤسسي',
-      internal_communication: 'التواصل الداخلي',
-      feedback_center: 'مركز التغذية الراجعة',
+      // Menu Items - Internal Auditor
+      audit_dashboard: 'لوحة التدقيق',
+      annual_audit_plan: 'خطة التدقيق السنوية',
+      observations_log: 'سجل الملاحظات',
+      risk_assessment: 'تقييم المخاطر',
+      compliance_monitoring: 'مراقبة الامتثال',
+      quarterly_reports: 'التقارير الربع سنوية',
+      findings_database: 'قاعدة بيانات النتائج',
       my_profile: 'الملف الشخصي',
-      board_portal: 'بوابة المجلس',
-      governance_oversight: 'الإشراف على الحوكمة',
-      strategic_initiatives: 'المبادرات الاستراتيجية',
-      risk_oversight: 'الإشراف على المخاطر',
-      board_reports: 'تقارير المجلس',
-      financial_review: 'المراجعة المالية',
-      board_communication: 'تواصل المجلس',
-      my_portfolio: 'محفظتي الاستثمارية',
-      financial_statements: 'القوائم المالية',
-      governance_documents: 'وثائق الحوكمة',
-      board_meetings: 'اجتماعات المجلس',
-      annual_reports: 'التقارير السنوية',
-      announcements: 'الإعلانات',
+      
+      // Menu Items - Audit Committee
+      committee_dashboard: 'لوحة اللجنة',
+      audit_plan_review: 'مراجعة خطة التدقيق',
+      critical_observations: 'الملاحظات الحرجة',
+      risk_reports: 'تقارير المخاطر',
+      compliance_status: 'حالة الامتثال',
+      audit_reports: 'تقارير التدقيق',
+      external_audit: 'التدقيق الخارجي',
+      committee_communication: 'تواصل اللجنة',
       
       // UI Elements
       switchWorkspace: 'تبديل بيئة العمل',
@@ -170,47 +131,37 @@ const Layout = (function() {
       aymanDev: 'أيمن المغربي'
     },
     en: {
-      // Sections - CEO
-      executive_dashboard: 'Executive Dashboard',
-      financial_oversight: 'Financial Oversight',
-      governance_compliance: 'Governance & Compliance',
-      communication: 'Communications',
+      // Sections - Internal Auditor
+      audit_overview: 'Overview',
+      audit_execution: 'Audit Execution',
+      reporting: 'Reporting',
       personal: 'Personal',
       
-      // Sections - Board VP
-      board_activities: 'Board Activities',
-      strategic_oversight: 'Strategic Oversight',
-      reporting: 'Reporting',
+      // Sections - Audit Committee
+      committee_overview: 'Committee Overview',
+      oversight: 'Oversight & Control',
+      reports_review: 'Reports Review',
+      communication: 'Communications',
       
-      // Sections - Shareholder
-      shareholder_services: 'Shareholder Services',
-      governance_access: 'Governance Access',
-      reports_disclosures: 'Reports & Disclosures',
-      
-      // Menu Items
-      executive_overview: 'Executive Overview',
-      strategic_planning: 'Strategic Planning',
-      financial_performance: 'Financial Performance',
-      executive_reports: 'Executive Reports',
-      governance_framework: 'Governance Framework',
-      risk_management: 'Risk Management',
-      company_broadcast: 'Company Broadcast',
-      internal_communication: 'Internal Communication',
-      feedback_center: 'Feedback Center',
+      // Menu Items - Internal Auditor
+      audit_dashboard: 'Audit Dashboard',
+      annual_audit_plan: 'Annual Audit Plan',
+      observations_log: 'Observations Log',
+      risk_assessment: 'Risk Assessment',
+      compliance_monitoring: 'Compliance Monitoring',
+      quarterly_reports: 'Quarterly Reports',
+      findings_database: 'Findings Database',
       my_profile: 'My Profile',
-      board_portal: 'Board Portal',
-      governance_oversight: 'Governance Oversight',
-      strategic_initiatives: 'Strategic Initiatives',
-      risk_oversight: 'Risk Oversight',
-      board_reports: 'Board Reports',
-      financial_review: 'Financial Review',
-      board_communication: 'Board Communication',
-      my_portfolio: 'My Portfolio',
-      financial_statements: 'Financial Statements',
-      governance_documents: 'Governance Documents',
-      board_meetings: 'Board Meetings',
-      annual_reports: 'Annual Reports',
-      announcements: 'Announcements',
+      
+      // Menu Items - Audit Committee
+      committee_dashboard: 'Committee Dashboard',
+      audit_plan_review: 'Audit Plan Review',
+      critical_observations: 'Critical Observations',
+      risk_reports: 'Risk Reports',
+      compliance_status: 'Compliance Status',
+      audit_reports: 'Audit Reports',
+      external_audit: 'External Audit',
+      committee_communication: 'Committee Communication',
       
       // UI Elements
       switchWorkspace: 'Switch Workspace',
@@ -237,22 +188,22 @@ const Layout = (function() {
     if (storedUser) {
       _state.currentUser = JSON.parse(storedUser);
       
-      // ✅ Always default to 'ceo' role for CEO users
-      let savedRole = localStorage.getItem('ceo_activeRole'); // Different key for CEO
+      // ✅ Always default to 'internal_auditor' role for audit users
+      let savedRole = localStorage.getItem('audit_activeRole');
       if (savedRole && _menuDefinitions[savedRole]) {
         _state.activeRole = savedRole;
       } else {
-        _state.activeRole = 'ceo';
-        localStorage.setItem('ceo_activeRole', 'ceo');
+        _state.activeRole = 'internal_auditor';
+        localStorage.setItem('audit_activeRole', 'internal_auditor');
       }
     } else {
-      // ✅ Set default CEO user if not logged in
+      // ✅ Set default audit user if not logged in
       _state.currentUser = {
-        id: 'CEO_001',
-        type: 'ceo',
-        displayName: 'هشام السحيباني',
-        displayTitle: 'الرئيس التنفيذي',
-        avatar: 'https://ui-avatars.com/api/?name=CEO&background=DC2626&color=fff&bold=true'
+        id: 'AUD_001',
+        type: 'audit',
+        displayName: 'المدقق الداخلي',
+        displayTitle: 'مدير التدقيق الداخلي',
+        avatar: 'https://ui-avatars.com/api/?name=Auditor&background=7C3AED&color=fff&bold=true'
       };
       localStorage.setItem('currentUser', JSON.stringify(_state.currentUser));
     }
@@ -266,7 +217,7 @@ const Layout = (function() {
     hideLoadingOverlay();
 
     _state.isInitialized = true;
-    console.log(`✅ AndroGov CEO Layout Ready | Role: ${_state.activeRole} | Lang: ${getCurrentLang()}`);
+    console.log(`✅ AndroGov Audit Layout Ready | Role: ${_state.activeRole} | Lang: ${getCurrentLang()}`);
   }
 
   function hideLoadingOverlay() {
@@ -339,44 +290,44 @@ const Layout = (function() {
   // 5. NOTIFICATIONS SYSTEM
   // ==========================================
   function loadNotifications() {
-    const stored = localStorage.getItem('ceo_notifications');
+    const stored = localStorage.getItem('audit_notifications');
     if (stored) {
       _state.notifications = JSON.parse(stored);
     } else {
-      // Demo CEO Notifications
+      // Demo Audit Notifications
       _state.notifications = [
         {
-          id: 'CEO001',
-          type: 'strategic',
-          icon: 'fa-chess-knight',
-          color: 'purple',
-          title: { ar: 'مراجعة الخطة الاستراتيجية Q2', en: 'Q2 Strategic Plan Review' },
-          body: { ar: 'اجتماع مجلس الإدارة يوم الأربعاء', en: 'Board meeting on Wednesday' },
+          id: 'AUD001',
+          type: 'observation',
+          icon: 'fa-triangle-exclamation',
+          color: 'red',
+          title: { ar: 'ملاحظة عالية المخاطر جديدة', en: 'New High-Risk Observation' },
+          body: { ar: 'تجاوز صلاحيات في قسم المشتريات', en: 'Authority breach in Procurement' },
           time: new Date(Date.now() - 1000 * 60 * 30),
           read: false,
-          link: 'ceo_strategy.html'
+          link: 'observations.html'
         },
         {
-          id: 'CEO002',
-          type: 'financial',
-          icon: 'fa-chart-line',
-          color: 'green',
-          title: { ar: 'تقرير الأداء المالي الشهري', en: 'Monthly Financial Performance Report' },
-          body: { ar: 'نمو بنسبة 15% عن الشهر السابق', en: '15% growth from last month' },
-          time: new Date(Date.now() - 1000 * 60 * 60 * 3),
+          id: 'AUD002',
+          type: 'plan',
+          icon: 'fa-calendar-check',
+          color: 'blue',
+          title: { ar: 'تحديث خطة التدقيق Q2', en: 'Q2 Audit Plan Update' },
+          body: { ar: 'تم إضافة 3 مهام جديدة', en: '3 new tasks added' },
+          time: new Date(Date.now() - 1000 * 60 * 60 * 2),
           read: false,
-          link: 'ceo_finance.html'
+          link: 'audit_plan.html'
         },
         {
-          id: 'CEO003',
-          type: 'risk',
-          icon: 'fa-triangle-exclamation',
-          color: 'orange',
-          title: { ar: 'تنبيه مخاطر: مراجعة الامتثال', en: 'Risk Alert: Compliance Review' },
-          body: { ar: 'يتطلب اهتمام فوري من الإدارة التنفيذية', en: 'Requires immediate executive attention' },
-          time: new Date(Date.now() - 1000 * 60 * 60 * 6),
+          id: 'AUD003',
+          type: 'report',
+          icon: 'fa-file-chart-column',
+          color: 'green',
+          title: { ar: 'تقرير ربع سنوي جاهز', en: 'Quarterly Report Ready' },
+          body: { ar: 'تم الانتهاء من مراجعة Q1 2026', en: 'Q1 2026 review completed' },
+          time: new Date(Date.now() - 1000 * 60 * 60 * 5),
           read: true,
-          link: 'ceo_risks.html'
+          link: 'reports.html'
         }
       ];
     }
@@ -406,7 +357,7 @@ const Layout = (function() {
   }
 
   function saveNotifications() {
-    localStorage.setItem('ceo_notifications', JSON.stringify(_state.notifications));
+    localStorage.setItem('audit_notifications', JSON.stringify(_state.notifications));
   }
 
   function getTimeAgo(date) {
@@ -437,7 +388,7 @@ const Layout = (function() {
     const isRTL = lang === 'ar';
     const currentPath = window.location.pathname.split('/').pop() || 'index.html';
 
-    const activeMenu = _menuDefinitions[_state.activeRole] || _menuDefinitions['ceo'];
+    const activeMenu = _menuDefinitions[_state.activeRole] || _menuDefinitions['internal_auditor'];
 
     let menuHTML = '';
     activeMenu.forEach(group => {
@@ -454,22 +405,16 @@ const Layout = (function() {
         const label = t(item.key);
         
         const baseClass = "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 group mb-1";
-        const activeClass = "bg-gradient-to-r from-brandRed to-red-600 text-white shadow-lg shadow-red-500/30";
-        const inactiveClass = "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-brandRed dark:hover:text-red-400";
+        const activeClass = "bg-gradient-to-r from-purple-600 to-purple-700 text-white shadow-lg shadow-purple-500/30";
+        const inactiveClass = "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-purple-600 dark:hover:text-purple-400";
 
         let badgeHTML = '';
         if (item.badge) {
           const badgeStyles = {
             'live': 'bg-red-500 animate-pulse',
-            'strategic': 'bg-purple-500',
-            'financial': 'bg-green-500',
-            'compliance': 'bg-blue-500',
-            'risks': 'bg-orange-500',
-            'broadcast': 'bg-indigo-500',
-            'active': 'bg-teal-500',
-            'board': 'bg-amber-500',
-            'initiatives': 'bg-violet-500',
-            'portfolio': 'bg-emerald-500'
+            'important': 'bg-orange-500',
+            'risks': 'bg-red-500',
+            'critical': 'bg-red-600'
           };
           const badgeClass = badgeStyles[item.badge] || 'bg-slate-400';
           badgeHTML = `<span class="px-1.5 py-0.5 text-[9px] font-bold rounded ${badgeClass} text-white uppercase tracking-wider">${item.badge}</span>`;
@@ -489,21 +434,21 @@ const Layout = (function() {
     });
 
     const user = _state.currentUser;
-    const displayName = user?.displayName || user?.name || (lang === 'ar' ? 'أيمن المغربي' : 'Ayman Almaghrabi');
+    const displayName = user?.displayName || user?.name || (lang === 'ar' ? 'المدقق الداخلي' : 'Internal Auditor');
     const roleLabel = _roleLabels[_state.activeRole][lang];
 
     container.innerHTML = `
-      <aside id="main-sidebar" class="fixed top-0 ${isRTL ? 'right-0 border-l' : 'left-0 border-r'} z-50 h-screen w-72 flex flex-col bg-white dark:bg-[#0F172A] border-slate-200 dark:border-slate-800 transition-all duration-300 shadow-2xl">
+      <aside id="main-sidebar" class="fixed top-0 ${isRTL ? 'right-0 border-l' : 'left-0 border-r'} z-50 h-screen w-64 flex flex-col bg-white dark:bg-[#0F172A] border-slate-200 dark:border-slate-800 transition-all duration-300 shadow-2xl">
         
         <!-- Logo -->
         <div class="h-20 flex items-center px-6 border-b border-slate-100 dark:border-slate-800 shrink-0 bg-gradient-to-${isRTL ? 'l' : 'r'} from-slate-50 to-transparent dark:from-slate-900/50">
           <div class="flex items-center gap-3 w-full">
-            <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-brandRed to-red-600 text-white flex items-center justify-center font-bold text-xl shadow-lg shadow-brandRed/30">
-              <i class="fa-solid fa-crown"></i>
+            <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-purple-600 to-purple-700 text-white flex items-center justify-center font-bold text-xl shadow-lg shadow-purple-500/30">
+              <i class="fa-solid fa-shield-halved"></i>
             </div>
             <div class="overflow-hidden">
               <h1 class="font-bold text-base text-slate-800 dark:text-white truncate">AndroGov</h1>
-              <p class="text-[10px] text-brandRed font-bold uppercase tracking-widest truncate">Executive</p>
+              <p class="text-[10px] text-purple-600 font-bold uppercase tracking-widest truncate">Audit</p>
             </div>
           </div>
         </div>
@@ -512,18 +457,18 @@ const Layout = (function() {
         <div class="p-4 shrink-0">
           <div class="relative group cursor-pointer">
             <div class="flex items-center gap-3 p-3 rounded-xl bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-900 border border-slate-200 dark:border-slate-700 transition-all hover:shadow-md">
-              <img src="${user?.avatar || '../photo/admin.jpg'}" 
+              <img src="${user?.avatar || 'https://ui-avatars.com/api/?name=Auditor&background=7C3AED&color=fff&bold=true'}" 
                    class="w-11 h-11 rounded-full border-2 border-white dark:border-slate-600 object-cover shadow-md" 
-                   onerror="this.src='https://ui-avatars.com/api/?name=CEO&background=DC2626&color=fff&bold=true'">
+                   onerror="this.src='https://ui-avatars.com/api/?name=Auditor&background=7C3AED&color=fff&bold=true'">
               <div class="overflow-hidden flex-1 min-w-0">
                 <p class="text-sm font-bold text-slate-800 dark:text-white truncate">${displayName}</p>
-                <p class="text-[10px] text-brandRed font-bold truncate uppercase tracking-tight">${roleLabel}</p>
+                <p class="text-[10px] text-purple-600 font-bold truncate uppercase tracking-tight">${roleLabel}</p>
               </div>
               <i class="fa-solid fa-chevron-down text-slate-400 text-xs"></i>
             </div>
             <div class="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 overflow-hidden">
               <a href="profile.html" class="flex items-center gap-3 p-3 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
-                <i class="fa-solid fa-user-circle text-brandRed"></i>
+                <i class="fa-solid fa-user-circle text-purple-600"></i>
                 <span class="text-xs font-medium">${t('my_profile')}</span>
               </a>
             </div>
@@ -560,35 +505,35 @@ const Layout = (function() {
         
         <div class="flex items-center gap-4">
           <!-- Mobile Menu -->
-          <button onclick="Layout.toggleMobileSidebar()" class="md:hidden text-slate-500 dark:text-slate-200 hover:text-brandRed transition-colors">
+          <button onclick="Layout.toggleMobileSidebar()" class="md:hidden text-slate-500 dark:text-slate-200 hover:text-purple-600 transition-colors">
             <i class="fa-solid fa-bars text-xl"></i>
           </button>
           
           <!-- Role Switcher -->
           <div class="relative group">
-            <button class="flex items-center gap-2.5 px-4 py-2.5 bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-900 border-2 border-slate-200 dark:border-slate-700 rounded-xl text-xs font-bold hover:border-brandRed dark:hover:border-red-500 transition-all shadow-sm hover:shadow-md">
-              <i class="fa-solid fa-repeat text-brandRed animate-pulse"></i>
+            <button class="flex items-center gap-2.5 px-4 py-2.5 bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-900 border-2 border-slate-200 dark:border-slate-700 rounded-xl text-xs font-bold hover:border-purple-600 dark:hover:border-purple-500 transition-all shadow-sm hover:shadow-md">
+              <i class="fa-solid fa-repeat text-purple-600 animate-pulse"></i>
               <span class="hidden sm:inline text-slate-700 dark:text-slate-200">${_roleLabels[_state.activeRole][lang]}</span>
               <i class="fa-solid fa-chevron-down text-[10px] text-slate-400 transition-transform group-hover:rotate-180"></i>
             </button>
             
             <div class="absolute top-full ${isRTL ? 'right-0' : 'left-0'} mt-3 w-80 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 overflow-hidden">
-              <div class="p-4 border-b border-slate-100 dark:border-slate-700 bg-gradient-to-r from-brandRed to-red-600">
+              <div class="p-4 border-b border-slate-100 dark:border-slate-700 bg-gradient-to-r from-purple-600 to-purple-700">
                 <p class="text-xs font-bold text-white/90 uppercase tracking-widest">${t('switchWorkspace')}</p>
                 <p class="text-[10px] text-white/70 mt-1">${t('selectRole')}</p>
               </div>
               <div class="p-2 max-h-96 overflow-y-auto custom-scroll">
                 ${Object.entries(_roleLabels).map(([roleKey, labels]) => `
                   <button onclick="Layout.switchRole('${roleKey}')" 
-                          class="w-full flex items-start gap-3 p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition-all ${roleKey === _state.activeRole ? 'bg-red-50 dark:bg-red-900/20 border-2 border-brandRed/30' : 'border-2 border-transparent'} mb-2">
-                    <div class="w-10 h-10 rounded-lg ${roleKey === _state.activeRole ? 'bg-brandRed text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-500'} flex items-center justify-center shrink-0">
+                          class="w-full flex items-start gap-3 p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition-all ${roleKey === _state.activeRole ? 'bg-purple-50 dark:bg-purple-900/20 border-2 border-purple-600/30' : 'border-2 border-transparent'} mb-2">
+                    <div class="w-10 h-10 rounded-lg ${roleKey === _state.activeRole ? 'bg-purple-600 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-500'} flex items-center justify-center shrink-0">
                       <i class="fa-solid ${_getRoleIcon(roleKey)} text-sm"></i>
                     </div>
                     <div class="flex-1 text-${isRTL ? 'right' : 'left'}">
-                      <p class="text-xs font-bold ${roleKey === _state.activeRole ? 'text-brandRed' : 'text-slate-700 dark:text-slate-200'}">${labels[lang]}</p>
+                      <p class="text-xs font-bold ${roleKey === _state.activeRole ? 'text-purple-600' : 'text-slate-700 dark:text-slate-200'}">${labels[lang]}</p>
                       <p class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">${labels.desc[lang]}</p>
                     </div>
-                    ${roleKey === _state.activeRole ? '<i class="fa-solid fa-check text-brandRed text-sm"></i>' : ''}
+                    ${roleKey === _state.activeRole ? '<i class="fa-solid fa-check text-purple-600 text-sm"></i>' : ''}
                   </button>
                 `).join('')}
               </div>
@@ -612,7 +557,7 @@ const Layout = (function() {
             
             <!-- Notifications Dropdown -->
             <div class="absolute top-full ${isRTL ? 'right-0' : 'left-0'} mt-3 w-96 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 overflow-hidden">
-              <div class="p-4 border-b border-slate-100 dark:border-slate-700 bg-gradient-to-r from-orange-500 to-amber-500 flex justify-between items-center">
+              <div class="p-4 border-b border-slate-100 dark:border-slate-700 bg-gradient-to-r from-purple-600 to-purple-700 flex justify-between items-center">
                 <div>
                   <p class="text-sm font-bold text-white">${t('notifications')}</p>
                   <p class="text-[10px] text-white/80">${_state.unreadCount} ${lang === 'ar' ? 'غير مقروءة' : 'unread'}</p>
@@ -632,16 +577,16 @@ const Layout = (function() {
                   </div>
                 ` : _state.notifications.map(notif => {
                   const colorStyles = {
-                    purple: 'bg-purple-100 text-purple-600 dark:bg-purple-900/30',
+                    red: 'bg-red-100 text-red-600 dark:bg-red-900/30',
+                    blue: 'bg-blue-100 text-blue-600 dark:bg-blue-900/30',
                     green: 'bg-green-100 text-green-600 dark:bg-green-900/30',
-                    orange: 'bg-orange-100 text-orange-600 dark:bg-orange-900/30',
-                    blue: 'bg-blue-100 text-blue-600 dark:bg-blue-900/30'
+                    purple: 'bg-purple-100 text-purple-600 dark:bg-purple-900/30'
                   };
                   const colorClass = colorStyles[notif.color] || colorStyles.blue;
                   
                   return `
                     <a href="${notif.link}" onclick="Layout.markNotificationRead('${notif.id}')" 
-                       class="flex gap-3 p-4 border-b border-slate-100 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors ${!notif.read ? 'bg-blue-50/30 dark:bg-blue-900/10' : ''}">
+                       class="flex gap-3 p-4 border-b border-slate-100 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors ${!notif.read ? 'bg-purple-50/30 dark:bg-purple-900/10' : ''}">
                       <div class="w-10 h-10 rounded-lg ${colorClass} flex items-center justify-center shrink-0">
                         <i class="fa-solid ${notif.icon}"></i>
                       </div>
@@ -650,7 +595,7 @@ const Layout = (function() {
                         <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">${notif.body[lang]}</p>
                         <p class="text-[10px] text-slate-400 mt-1">${getTimeAgo(new Date(notif.time))}</p>
                       </div>
-                      ${!notif.read ? '<div class="w-2 h-2 rounded-full bg-brandRed animate-pulse"></div>' : ''}
+                      ${!notif.read ? '<div class="w-2 h-2 rounded-full bg-purple-600 animate-pulse"></div>' : ''}
                     </a>
                   `;
                 }).join('')}
@@ -662,12 +607,6 @@ const Layout = (function() {
           <button onclick="Layout.toggleLanguage()" 
                   class="w-10 h-10 rounded-xl border-2 border-slate-200 dark:border-slate-700 hover:bg-blue-50 dark:hover:bg-blue-900/20 text-slate-600 dark:text-slate-300 hover:border-blue-400 transition-all flex items-center justify-center font-bold text-xs">
             ${lang === 'ar' ? 'EN' : 'ع'}
-          </button>
-          
-          <!-- AI Bot -->
-          <button onclick="if(window.AndroBot) AndroBot.toggle()" 
-                  class="w-10 h-10 rounded-xl border-2 border-slate-200 dark:border-slate-700 hover:bg-blue-50 dark:hover:bg-blue-900/20 text-brandBlue hover:border-blue-400 transition-all flex items-center justify-center group">
-            <i class="fa-solid fa-robot group-hover:animate-bounce"></i>
           </button>
           
           <!-- Theme Toggle -->
@@ -695,9 +634,8 @@ const Layout = (function() {
   
   function _getRoleIcon(roleKey) {
     const icons = {
-      'ceo': 'fa-crown',
-      'board_vp': 'fa-user-tie',
-      'shareholder': 'fa-chart-pie'
+      'internal_auditor': 'fa-shield-halved',
+      'audit_committee': 'fa-building-columns'
     };
     return icons[roleKey] || 'fa-user';
   }
@@ -709,7 +647,7 @@ const Layout = (function() {
     }
     
     _state.activeRole = roleKey;
-    localStorage.setItem('ceo_activeRole', roleKey); // ✅ Use CEO-specific key
+    localStorage.setItem('audit_activeRole', roleKey);
     
     renderSidebar();
     renderHeader();
@@ -722,7 +660,7 @@ const Layout = (function() {
       );
     }
     
-    console.log(`🔄 CEO Role switched to: ${roleKey}`);
+    console.log(`🔄 Audit Role switched to: ${roleKey}`);
   }
 
   function toggleLanguage() {
@@ -755,7 +693,7 @@ const Layout = (function() {
       
     if (confirm(confirmMsg)) {
       localStorage.removeItem('currentUser');
-      localStorage.removeItem('activeRole');
+      localStorage.removeItem('audit_activeRole');
       window.location.href = '../login.html';
     }
   }
