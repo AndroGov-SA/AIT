@@ -1,8 +1,8 @@
 /**
- * AndroGov CEO Layout Engine v1.0
- * @file ceo/js/components/layout.js
+ * AndroGov sales Layout Engine v1.0
+ * @file sales/js/components/layout.js
  * @author Ayman Al-Maghrabi
- * @description Executive layout with multi-role support (CEO + Board VP + Shareholder)
+ * @description Executive layout with multi-role support
  */
 
 const Layout = (function() {
@@ -12,7 +12,7 @@ const Layout = (function() {
   // ==========================================
   let _state = {
     currentUser: null,
-    activeRole: 'ceo', 
+    activeRole: 'sales', 
     isInitialized: false,
     sidebarOpen: false,
     notifications: [],
@@ -20,211 +20,405 @@ const Layout = (function() {
   };
 
   // ==========================================
-  // 2. COMPLETE MENU DEFINITIONS (3 Roles)
+  // 2. COMPLETE MENU DEFINITIONS 
   // ==========================================
   const _menuDefinitions = {
     
-    // ═══════════════════════════════════════
-    // 1️⃣ الرئيس التنفيذي (Chief Executive Officer)
-    // ═══════════════════════════════════════
-    'ceo': [
-      { section: 'executive_dashboard', items: [
-        { key: 'executive_overview', icon: 'fa-gauge-high', link: 'index.html', badge: 'live' },
-        { key: 'strategic_planning', icon: 'fa-chess-board', link: 'ceo_strategy.html', badge: 'strategic' }
-      ]},
-      { section: 'financial_oversight', items: [
-        { key: 'financial_performance', icon: 'fa-chart-line', link: 'ceo_finance.html', badge: 'financial' },
-        { key: 'executive_reports', icon: 'fa-file-chart-column', link: 'ceo_reports.html', badge: null }
-      ]},
-      { section: 'governance_compliance', items: [
-        { key: 'governance_framework', icon: 'fa-scale-balanced', link: 'ceo_governance.html', badge: 'compliance' },
-        { key: 'risk_management', icon: 'fa-shield-halved', link: 'ceo_risks.html', badge: 'risks' }
-      ]},
-      { section: 'communication', items: [
-        { key: 'company_broadcast', icon: 'fa-tower-broadcast', link: 'ceo_broadcast.html', badge: 'broadcast' },
-        { key: 'internal_communication', icon: 'fa-comments', link: 'ceo_communication.html', badge: null },
-        { key: 'feedback_center', icon: 'fa-message-dots', link: 'ceo_feedback.html', badge: 'active' }
-      ]},
-      { section: 'personal', items: [
-        { key: 'my_profile', icon: 'fa-user-circle', link: 'profile.html', badge: null }
-      ]}
-    ],
-
-    // ═══════════════════════════════════════
-    // 2️⃣ نائب رئيس مجلس الإدارة (Board Vice President)
-    // ═══════════════════════════════════════
-    'board_vp': [
-      { section: 'board_activities', items: [
-        { key: 'board_portal', icon: 'fa-building-columns', link: 'ceo_board.html', badge: 'board' },
-        { key: 'governance_oversight', icon: 'fa-gavel', link: 'ceo_governance.html', badge: null }
-      ]},
-      { section: 'strategic_oversight', items: [
-        { key: 'strategic_initiatives', icon: 'fa-lightbulb', link: 'ceo_strategy.html', badge: 'initiatives' },
-        { key: 'risk_oversight', icon: 'fa-triangle-exclamation', link: 'ceo_risks.html', badge: null }
-      ]},
-      { section: 'reporting', items: [
-        { key: 'board_reports', icon: 'fa-file-lines', link: 'ceo_reports.html', badge: null },
-        { key: 'financial_review', icon: 'fa-money-bill-trend-up', link: 'ceo_finance.html', badge: null }
-      ]},
-      { section: 'communication', items: [
-        { key: 'board_communication', icon: 'fa-envelope', link: 'ceo_communication.html', badge: null }
-      ]}
-    ],
-
-    // ═══════════════════════════════════════
-    // 3️⃣ مساهم (Shareholder)
-    // ═══════════════════════════════════════
-    'shareholder': [
-      { section: 'shareholder_services', items: [
-        { key: 'my_portfolio', icon: 'fa-briefcase', link: 'index.html', badge: 'portfolio' },
-        { key: 'financial_statements', icon: 'fa-file-invoice-dollar', link: 'ceo_finance.html', badge: null }
-      ]},
-      { section: 'governance_access', items: [
-        { key: 'governance_documents', icon: 'fa-folder-open', link: 'ceo_governance.html', badge: null },
-        { key: 'board_meetings', icon: 'fa-calendar-days', link: 'ceo_board.html', badge: null }
-      ]},
-      { section: 'reports_disclosures', items: [
-        { key: 'annual_reports', icon: 'fa-book', link: 'ceo_reports.html', badge: null },
-        { key: 'announcements', icon: 'fa-bullhorn', link: 'ceo_broadcast.html', badge: null }
-      ]},
-      { section: 'personal', items: [
-        { key: 'my_profile', icon: 'fa-id-card', link: 'profile.html', badge: null }
-      ]}
-    ]
-  };
-
-  // Role Labels (Bilingual)
-  const _roleLabels = {
-    'ceo': { 
-      ar: 'الرئيس التنفيذي', 
-      en: 'Chief Executive Officer',
-      desc: { ar: 'القيادة التنفيذية والإدارة الاستراتيجية', en: 'Executive Leadership & Strategic Management' }
+    // 💼 SALES PORTAL
+  sales: {
+    defaultRole: 'sales_manager',
+    storageKey: 'sales_activeRole',
+    notificationKey: 'sales_notifications',
+    brandIcon: 'fa-chart-line',
+    brandName: 'Sales',
+    brandColor: 'brandRed',
+    
+    roles: {
+      'sales_manager': { 
+        ar: 'مدير المبيعات', 
+        en: 'Sales Manager',
+        desc: { ar: 'إدارة المبيعات والعملاء', en: 'Sales & Client Management' },
+        icon: 'fa-chart-line'
+      }
     },
-    'board_vp': { 
-      ar: 'نائب رئيس المجلس', 
-      en: 'Board Vice President',
-      desc: { ar: 'الإشراف على أعمال المجلس والحوكمة', en: 'Board Oversight & Governance' }
-    },
-    'shareholder': { 
-      ar: 'مساهم', 
-      en: 'Shareholder',
-      desc: { ar: 'الوصول للتقارير والبيانات المالية', en: 'Access to Reports & Financial Data' }
+
+    menus: {
+      'sales_manager': [
+        { section: 'sales_overview', items: [
+          { key: 'dashboard', icon: 'fa-gauge-high', link: 'index.html', badge: 'live' }
+        ]},
+        { section: 'sales_operations', items: [
+          { key: 'sales_pipeline', icon: 'fa-filter', link: 'sales_pipeline.html', badge: 'active' },
+          { key: 'sales_quotes', icon: 'fa-file-invoice-dollar', link: 'sales_quotes.html', badge: null },
+          { key: 'sales_activities', icon: 'fa-calendar-days', link: 'sales_activities.html', badge: null }
+        ]},
+        { section: 'client_management', items: [
+          { key: 'sales_clients', icon: 'fa-users', link: 'sales_clients.html', badge: 'clients' }
+        ]},
+        { section: 'personal', items: [
+          { key: 'my_profile', icon: 'fa-user-circle', link: 'profile.html', badge: null }
+        ]}
+      ]
     }
-  };
+  },
 
   // Translation Keys
-  const _translations = {
-    ar: {
-      // Sections - CEO
-      executive_dashboard: 'لوحة القيادة التنفيذية',
-      financial_oversight: 'الرقابة المالية',
-      governance_compliance: 'الحوكمة والامتثال',
-      communication: 'الاتصالات',
-      personal: 'الحساب الشخصي',
-      
-      // Sections - Board VP
-      board_activities: 'أنشطة المجلس',
-      strategic_oversight: 'الإشراف الاستراتيجي',
-      reporting: 'التقارير',
-      
-      // Sections - Shareholder
-      shareholder_services: 'خدمات المساهمين',
-      governance_access: 'الوصول للحوكمة',
-      reports_disclosures: 'التقارير والإفصاحات',
-      
-      // Menu Items
-      executive_overview: 'نظرة تنفيذية شاملة',
-      strategic_planning: 'التخطيط الاستراتيجي',
-      financial_performance: 'الأداء المالي',
-      executive_reports: 'التقارير التنفيذية',
-      governance_framework: 'إطار الحوكمة',
-      risk_management: 'إدارة المخاطر',
-      company_broadcast: 'البث المؤسسي',
-      internal_communication: 'التواصل الداخلي',
-      feedback_center: 'مركز التغذية الراجعة',
-      my_profile: 'الملف الشخصي',
-      board_portal: 'بوابة المجلس',
-      governance_oversight: 'الإشراف على الحوكمة',
-      strategic_initiatives: 'المبادرات الاستراتيجية',
-      risk_oversight: 'الإشراف على المخاطر',
-      board_reports: 'تقارير المجلس',
-      financial_review: 'المراجعة المالية',
-      board_communication: 'تواصل المجلس',
-      my_portfolio: 'محفظتي الاستثمارية',
-      financial_statements: 'القوائم المالية',
-      governance_documents: 'وثائق الحوكمة',
-      board_meetings: 'اجتماعات المجلس',
-      annual_reports: 'التقارير السنوية',
-      announcements: 'الإعلانات',
-      
-      // UI Elements
-      switchWorkspace: 'تبديل بيئة العمل',
-      selectRole: 'اختر الدور المناسب لمهامك الحالية',
-      notifications: 'الإشعارات',
-      noNotifications: 'لا توجد إشعارات جديدة',
-      markAllRead: 'تعليم الكل كمقروء',
-      viewAll: 'عرض الكل',
-      logout: 'تسجيل الخروج',
-      logoutConfirm: 'هل أنت متأكد من تسجيل الخروج؟',
-      poweredBy: 'تطوير',
-      aymanDev: 'أيمن المغربي'
-    },
-    en: {
-      // Sections - CEO
-      executive_dashboard: 'Executive Dashboard',
-      financial_oversight: 'Financial Oversight',
-      governance_compliance: 'Governance & Compliance',
-      communication: 'Communications',
-      personal: 'Personal',
-      
-      // Sections - Board VP
-      board_activities: 'Board Activities',
-      strategic_oversight: 'Strategic Oversight',
-      reporting: 'Reporting',
-      
-      // Sections - Shareholder
-      shareholder_services: 'Shareholder Services',
-      governance_access: 'Governance Access',
-      reports_disclosures: 'Reports & Disclosures',
-      
-      // Menu Items
-      executive_overview: 'Executive Overview',
-      strategic_planning: 'Strategic Planning',
-      financial_performance: 'Financial Performance',
-      executive_reports: 'Executive Reports',
-      governance_framework: 'Governance Framework',
-      risk_management: 'Risk Management',
-      company_broadcast: 'Company Broadcast',
-      internal_communication: 'Internal Communication',
-      feedback_center: 'Feedback Center',
-      my_profile: 'My Profile',
-      board_portal: 'Board Portal',
-      governance_oversight: 'Governance Oversight',
-      strategic_initiatives: 'Strategic Initiatives',
-      risk_oversight: 'Risk Oversight',
-      board_reports: 'Board Reports',
-      financial_review: 'Financial Review',
-      board_communication: 'Board Communication',
-      my_portfolio: 'My Portfolio',
-      financial_statements: 'Financial Statements',
-      governance_documents: 'Governance Documents',
-      board_meetings: 'Board Meetings',
-      annual_reports: 'Annual Reports',
-      announcements: 'Announcements',
-      
-      // UI Elements
-      switchWorkspace: 'Switch Workspace',
-      selectRole: 'Select the appropriate role for your current tasks',
-      notifications: 'Notifications',
-      noNotifications: 'No new notifications',
-      markAllRead: 'Mark all as read',
-      viewAll: 'View All',
-      logout: 'Logout',
-      logoutConfirm: 'Are you sure you want to logout?',
-      poweredBy: 'Developed by',
-      aymanDev: 'Ayman Almaghrabi'
+  const UNIVERSAL_TRANSLATIONS = {
+  ar: {
+    // Sections - Common
+    core_system: 'النظام الأساسي',
+    infrastructure: 'البنية التحتية',
+    communication: 'الاتصالات',
+    board_operations: 'عمليات المجلس',
+    governance_docs: 'وثائق الحوكمة',
+    audit_oversight: 'الرقابة والتدقيق',
+    compliance_tasks: 'مهام الامتثال',
+    shareholders: 'المساهمين',
+    personal: 'الحساب الشخصي',
+    grc_compliance: 'الحوكمة والامتثال',
+    hr_governance: 'حوكمة الموارد البشرية',
+    workflow: 'سير العمل',
+    executive_dashboard: 'لوحة القيادة التنفيذية',
+    financial_oversight: 'الرقابة المالية',
+    governance_compliance: 'الحوكمة والامتثال',
+    board_activities: 'أنشطة المجلس',
+    strategic_oversight: 'الإشراف الاستراتيجي',
+    reporting: 'التقارير',
+    shareholder_services: 'خدمات المساهمين',
+    governance_access: 'الوصول للحوكمة',
+    reports_disclosures: 'التقارير والإفصاحات',
+    it_infrastructure: 'البنية التحتية التقنية',
+    telecom_systems: 'أنظمة الاتصالات',
+    ops_governance: 'العمليات والحوكمة',
+    support_personal: 'الدعم والحساب',
+    self_service: 'الخدمات الذاتية',
+    support_docs: 'الدعم والمعرفة',
+    financial_control: 'الرقابة المالية',
+    general_ledger: 'الأستاذ العام',
+    accounts_payable: 'الحسابات الدائنة',
+    accounts_receivable: 'الحسابات المدينة',
+    inventory_assets: 'المخزون والأصول',
+    reports_tax: 'التقارير والضرائب',
+    settings_personal: 'الإعدادات والحساب',
+    audit_overview: 'نظرة عامة',
+    audit_execution: 'تنفيذ التدقيق',
+    committee_overview: 'نظرة عامة للجنة',
+    oversight: 'الإشراف والرقابة',
+    reports_review: 'مراجعة التقارير',
+    sales_overview: 'نظرة عامة',
+    sales_operations: 'عمليات المبيعات',
+    client_management: 'إدارة العملاء',
+    shareholder_overview: 'نظرة عامة',
+    shareholder_services: 'خدمات المساهمين',
+    shareholder_requests: 'الطلبات',
+    hr_control: 'الرقابة الإدارية',
+    hr_operations: 'العمليات اليومية',
+    hr_management: 'إدارة الموارد البشرية',
+    hr_services: 'الخدمات الإدارية',
+    hr_compliance: 'الامتثال والشراكات',
+    
+    // Menu Items - Common
+    dashboard: 'لوحة القيادة',
+    users_mgmt: 'إدارة المستخدمين',
+    admin_settings: 'إعدادات النظام',
+    it_systems: 'الأنظمة التقنية',
+    system_audit: 'سجل التدقيق',
+    internal_chat: 'المحادثات الداخلية',
+    circulars_admin: 'التعاميم الإدارية',
+    board_portal: 'بوابة المجلس',
+    committees_mgmt: 'إدارة اللجان',
+    general_assembly: 'الجمعية العمومية',
+    policies_library: 'مكتبة السياسات',
+    board_circulars: 'تعاميم المجلس',
+    audit_dashboard: 'لوحة التدقيق',
+    financial_review: 'المراجعة المالية',
+    procurement_control: 'إدارة المشتريات',
+    compliance_check: 'فحص الامتثال',
+    task_tracker: 'متابعة المهام',
+    shareholders_db: 'قاعدة المساهمين',
+    ga_access: 'الجمعية العمومية',
+    my_profile: 'الملف الشخصي',
+    ir_circulars: 'التعاميم',
+    compliance_dashboard: 'لوحة الامتثال',
+    doa_authority: 'مصفوفة الصلاحيات',
+    policies_control: 'ضبط السياسات',
+    hr_compliance: 'امتثال الموارد البشرية',
+    audit_reports: 'تقارير التدقيق',
+    grc_tasks: 'مهام GRC',
+    executive_overview: 'نظرة تنفيذية شاملة',
+    strategic_planning: 'التخطيط الاستراتيجي',
+    financial_performance: 'الأداء المالي',
+    executive_reports: 'التقارير التنفيذية',
+    governance_framework: 'إطار الحوكمة',
+    risk_management: 'إدارة المخاطر',
+    company_broadcast: 'البث المؤسسي',
+    internal_communication: 'التواصل الداخلي',
+    feedback_center: 'مركز التغذية الراجعة',
+    governance_oversight: 'الإشراف على الحوكمة',
+    strategic_initiatives: 'المبادرات الاستراتيجية',
+    risk_oversight: 'الإشراف على المخاطر',
+    board_reports: 'تقارير المجلس',
+    board_communication: 'تواصل المجلس',
+    my_portfolio: 'محفظتي الاستثمارية',
+    financial_statements: 'القوائم المالية',
+    governance_documents: 'وثائق الحوكمة',
+    board_meetings: 'اجتماعات المجلس',
+    annual_reports: 'التقارير السنوية',
+    announcements: 'الإعلانات',
+    servers: 'إدارة السيرفرات',
+    monitoring: 'مراقبة الأنظمة',
+    soc_ops: 'مركز العمليات الأمنية',
+    pbx_mgmt: 'إدارة السنترال',
+    extensions: 'التحويلات الداخلية',
+    call_logs: 'سجلات المكالمات',
+    iam_access: 'إدارة الهوية والوصول',
+    projects: 'المشاريع التقنية',
+    it_assets: 'الأصول التقنية',
+    it_support: 'الدعم الفني',
+    my_requests: 'طلباتي',
+    salary_slips: 'مسير الرواتب',
+    company_policies: 'السياسات واللوائح',
+    approvals: 'الاعتمادات',
+    gl_journal: 'قيود اليومية',
+    gl_coa: 'دليل الحسابات',
+    gl_cost_centers: 'مراكز التكلفة',
+    ap_bills: 'الفواتير الواردة',
+    ap_payments: 'أوامر الصرف',
+    ap_vendors: 'الموردين',
+    ar_invoices: 'فواتير المبيعات',
+    ar_receipts: 'سندات القبض',
+    inv_dashboard: 'لوحة المخزون',
+    inv_assets: 'سجل الأصول',
+    rep_statements: 'القوائم المالية',
+    rep_budget: 'الموازنة التقديرية',
+    rep_tax: 'الإقرارات الضريبية',
+    fin_settings: 'الإعدادات المالية',
+    annual_audit_plan: 'خطة التدقيق السنوية',
+    observations_log: 'سجل الملاحظات',
+    risk_assessment: 'تقييم المخاطر',
+    compliance_monitoring: 'مراقبة الامتثال',
+    quarterly_reports: 'التقارير الربع سنوية',
+    findings_database: 'قاعدة بيانات النتائج',
+    committee_dashboard: 'لوحة اللجنة',
+    audit_plan_review: 'مراجعة خطة التدقيق',
+    critical_observations: 'الملاحظات الحرجة',
+    risk_reports: 'تقارير المخاطر',
+    compliance_status: 'حالة الامتثال',
+    external_audit: 'التدقيق الخارجي',
+    committee_communication: 'تواصل اللجنة',
+    meetings: 'الاجتماعات',
+    sales_pipeline: 'خط المبيعات',
+    sales_quotes: 'عروض الأسعار',
+    sales_activities: 'أنشطة المبيعات',
+    sales_clients: 'العملاء',
+    certificates: 'الشهادات',
+    dividends: 'الأرباح الموزعة',
+    voting: 'التصويت',
+    requests: 'الطلبات',
+    employees: 'الموظفين',
+    attendance: 'الحضور والانصراف',
+    leaves: 'الإجازات',
+    payroll: 'الرواتب',
+    recruitment: 'التوظيف',
+    contracts: 'العقود',
+    org_structure: 'الهيكل التنظيمي',
+    assets: 'الأصول',
+    logistics: 'اللوجستيات',
+    trips: 'الرحلات',
+    purchases: 'المشتريات',
+    govt_affairs: 'الشؤون الحكومية',
+    partners: 'الشراكات',
+    
+    // UI Elements
+    switchWorkspace: 'تبديل بيئة العمل',
+    selectRole: 'اختر الدور المناسب لمهامك الحالية',
+    notifications: 'الإشعارات',
+    noNotifications: 'لا توجد إشعارات جديدة',
+    markAllRead: 'تعليم الكل كمقروء',
+    viewAll: 'عرض الكل',
+    logout: 'تسجيل الخروج',
+    logoutConfirm: 'هل أنت متأكد من تسجيل الخروج؟',
+    poweredBy: 'تطوير',
+    aymanDev: 'أيمن المغربي'
+  },
+  en: {
+    // Sections - Common (English translations)
+    core_system: 'Core System',
+    infrastructure: 'Infrastructure',
+    communication: 'Communications',
+    board_operations: 'Board Operations',
+    governance_docs: 'Governance Documents',
+    audit_oversight: 'Audit & Oversight',
+    compliance_tasks: 'Compliance Tasks',
+    shareholders: 'Shareholders',
+    personal: 'Personal',
+    grc_compliance: 'GRC & Compliance',
+    hr_governance: 'HR Governance',
+    workflow: 'Workflow',
+    executive_dashboard: 'Executive Dashboard',
+    financial_oversight: 'Financial Oversight',
+    governance_compliance: 'Governance & Compliance',
+    board_activities: 'Board Activities',
+    strategic_oversight: 'Strategic Oversight',
+    reporting: 'Reporting',
+    shareholder_services: 'Shareholder Services',
+    governance_access: 'Governance Access',
+    reports_disclosures: 'Reports & Disclosures',
+    it_infrastructure: 'IT Infrastructure',
+    telecom_systems: 'Telecom Systems',
+    ops_governance: 'Ops & Governance',
+    support_personal: 'Support & Personal',
+    self_service: 'Self Service',
+    support_docs: 'Support & Docs',
+    financial_control: 'Financial Control',
+    general_ledger: 'Ledger',
+    accounts_payable: 'Accounts Payable',
+    accounts_receivable: 'Accounts Receivable',
+    inventory_assets: 'Inventory & Assets',
+    reports_tax: 'Reports & Tax',
+    settings_personal: 'Settings & Personal',
+    audit_overview: 'Overview',
+    audit_execution: 'Audit Execution',
+    committee_overview: 'Committee Overview',
+    oversight: 'Oversight & Control',
+    reports_review: 'Reports Review',
+    sales_overview: 'Overview',
+    sales_operations: 'Sales Operations',
+    client_management: 'Client Management',
+    shareholder_overview: 'Overview',
+    shareholder_services: 'Shareholder Services',
+    shareholder_requests: 'Requests',
+    hr_control: 'HR Control',
+    hr_operations: 'Daily Operations',
+    hr_management: 'HR Management',
+    hr_services: 'Administrative Services',
+    hr_compliance: 'Compliance & Partnerships',
+    
+    // Menu Items - Common (English translations)
+    dashboard: 'Dashboard',
+    users_mgmt: 'User Management',
+    admin_settings: 'System Settings',
+    it_systems: 'IT Systems',
+    system_audit: 'Audit Log',
+    internal_chat: 'Internal Chat',
+    circulars_admin: 'Admin Circulars',
+    board_portal: 'Board Portal',
+    committees_mgmt: 'Committees',
+    general_assembly: 'General Assembly',
+    policies_library: 'Policy Library',
+    board_circulars: 'Board Circulars',
+    audit_dashboard: 'Audit Dashboard',
+    financial_review: 'Financial Review',
+    procurement_control: 'Procurement',
+    compliance_check: 'Compliance Check',
+    task_tracker: 'Task Tracker',
+    shareholders_db: 'Shareholders DB',
+    ga_access: 'General Assembly',
+    my_profile: 'My Profile',
+    ir_circulars: 'Circulars',
+    compliance_dashboard: 'Compliance Dashboard',
+    doa_authority: 'DOA Matrix',
+    policies_control: 'Policy Control',
+    hr_compliance: 'HR Compliance',
+    audit_reports: 'Audit Reports',
+    grc_tasks: 'GRC Tasks',
+    executive_overview: 'Executive Overview',
+    strategic_planning: 'Strategic Planning',
+    financial_performance: 'Financial Performance',
+    executive_reports: 'Executive Reports',
+    governance_framework: 'Governance Framework',
+    risk_management: 'Risk Management',
+    company_broadcast: 'Company Broadcast',
+    internal_communication: 'Internal Communication',
+    feedback_center: 'Feedback Center',
+    governance_oversight: 'Governance Oversight',
+    strategic_initiatives: 'Strategic Initiatives',
+    risk_oversight: 'Risk Oversight',
+    board_reports: 'Board Reports',
+    board_communication: 'Board Communication',
+    my_portfolio: 'My Portfolio',
+    financial_statements: 'Financial Statements',
+    governance_documents: 'Governance Documents',
+    board_meetings: 'Board Meetings',
+    annual_reports: 'Annual Reports',
+    announcements: 'Announcements',
+    servers: 'Servers Mgmt',
+    monitoring: 'System Monitoring',
+    soc_ops: 'SOC Operations',
+    pbx_mgmt: 'PBX Management',
+    extensions: 'Extensions',
+    call_logs: 'Call Logs',
+    iam_access: 'IAM Access',
+    projects: 'IT Projects',
+    it_assets: 'IT Assets',
+    it_support: 'IT Support',
+    my_requests: 'My Requests',
+    salary_slips: 'Pay Slips',
+    company_policies: 'Policies',
+    approvals: 'Approvals',
+    gl_journal: 'GL Journal',
+    gl_coa: 'Chart of Accounts',
+    gl_cost_centers: 'Cost Centers',
+    ap_bills: 'Bills',
+    ap_payments: 'Payments',
+    ap_vendors: 'Vendors',
+    ar_invoices: 'Invoices',
+    ar_receipts: 'Receipts',
+    inv_dashboard: 'Inventory Dashboard',
+    inv_assets: 'Assets',
+    rep_statements: 'Financial Statements',
+    rep_budget: 'Budget',
+    rep_tax: 'Tax Reports',
+    fin_settings: 'Finance Settings',
+    annual_audit_plan: 'Annual Audit Plan',
+    observations_log: 'Observations Log',
+    risk_assessment: 'Risk Assessment',
+    compliance_monitoring: 'Compliance Monitoring',
+    quarterly_reports: 'Quarterly Reports',
+    findings_database: 'Findings Database',
+    committee_dashboard: 'Committee Dashboard',
+    audit_plan_review: 'Audit Plan Review',
+    critical_observations: 'Critical Observations',
+    risk_reports: 'Risk Reports',
+    compliance_status: 'Compliance Status',
+    external_audit: 'External Audit',
+    committee_communication: 'Committee Communication',
+    meetings: 'Meetings',
+    sales_pipeline: 'Sales Pipeline',
+    sales_quotes: 'Quotes',
+    sales_activities: 'Activities',
+    sales_clients: 'Clients',
+    certificates: 'Certificates',
+    dividends: 'Dividends',
+    voting: 'Voting',
+    requests: 'Requests',
+    employees: 'Employees',
+    attendance: 'Attendance',
+    leaves: 'Leaves',
+    payroll: 'Payroll',
+    recruitment: 'Recruitment',
+    contracts: 'Contracts',
+    org_structure: 'Organization Structure',
+    assets: 'Assets',
+    logistics: 'Logistics',
+    trips: 'Trips',
+    purchases: 'Purchases',
+    govt_affairs: 'Government Affairs',
+    partners: 'Partners',
+    
+    // UI Elements
+    switchWorkspace: 'Switch Workspace',
+    selectRole: 'Select the appropriate role for your current tasks',
+    notifications: 'Notifications',
+    noNotifications: 'No new notifications',
+    markAllRead: 'Mark all as read',
+    viewAll: 'View All',
+    logout: 'Logout',
+    logoutConfirm: 'Are you sure you want to logout?',
+    poweredBy: 'Developed by',
+    aymanDev: 'Ayman Almaghrabi
     }
-  };
+};
 
   // ==========================================
   // 3. INITIALIZATION
@@ -237,22 +431,22 @@ const Layout = (function() {
     if (storedUser) {
       _state.currentUser = JSON.parse(storedUser);
       
-      // ✅ Always default to 'ceo' role for CEO users
-      let savedRole = localStorage.getItem('ceo_activeRole'); // Different key for CEO
+      // ✅ Always default to 'sales' role for sales users
+      let savedRole = localStorage.getItem('sales_activeRole'); // Different key for sales
       if (savedRole && _menuDefinitions[savedRole]) {
         _state.activeRole = savedRole;
       } else {
-        _state.activeRole = 'ceo';
-        localStorage.setItem('ceo_activeRole', 'ceo');
+        _state.activeRole = 'sales';
+        localStorage.setItem('sales_activeRole', 'sales');
       }
     } else {
-      // ✅ Set default CEO user if not logged in
+      // ✅ Set default sales user if not logged in
       _state.currentUser = {
-        id: 'CEO_001',
-        type: 'ceo',
-        displayName: 'هشام السحيباني',
-        displayTitle: 'الرئيس التنفيذي',
-        avatar: 'https://ui-avatars.com/api/?name=CEO&background=DC2626&color=fff&bold=true'
+        id: 'USR_011',
+        type: 'sales',
+        displayName: 'شاغر',
+        displayTitle: 'مدير المبيعات',
+        avatar: 'https://ui-avatars.com/api/?name=sales&background=DC2626&color=fff&bold=true'
       };
       localStorage.setItem('currentUser', JSON.stringify(_state.currentUser));
     }
@@ -266,7 +460,7 @@ const Layout = (function() {
     hideLoadingOverlay();
 
     _state.isInitialized = true;
-    console.log(`✅ AndroGov CEO Layout Ready | Role: ${_state.activeRole} | Lang: ${getCurrentLang()}`);
+    console.log(`✅ AndroGov sales Layout Ready | Role: ${_state.activeRole} | Lang: ${getCurrentLang()}`);
   }
 
   function hideLoadingOverlay() {
@@ -339,14 +533,14 @@ const Layout = (function() {
   // 5. NOTIFICATIONS SYSTEM
   // ==========================================
   function loadNotifications() {
-    const stored = localStorage.getItem('ceo_notifications');
+    const stored = localStorage.getItem('sales_notifications');
     if (stored) {
       _state.notifications = JSON.parse(stored);
     } else {
-      // Demo CEO Notifications
+      // Demo sales Notifications
       _state.notifications = [
         {
-          id: 'CEO001',
+          id: 'USR_010',
           type: 'strategic',
           icon: 'fa-chess-knight',
           color: 'purple',
@@ -354,10 +548,10 @@ const Layout = (function() {
           body: { ar: 'اجتماع مجلس الإدارة يوم الأربعاء', en: 'Board meeting on Wednesday' },
           time: new Date(Date.now() - 1000 * 60 * 30),
           read: false,
-          link: 'ceo_strategy.html'
+          link: 'sales_strategy.html'
         },
         {
-          id: 'CEO002',
+          id: 'USR_009',
           type: 'financial',
           icon: 'fa-chart-line',
           color: 'green',
@@ -365,10 +559,10 @@ const Layout = (function() {
           body: { ar: 'نمو بنسبة 15% عن الشهر السابق', en: '15% growth from last month' },
           time: new Date(Date.now() - 1000 * 60 * 60 * 3),
           read: false,
-          link: 'ceo_finance.html'
+          link: 'sales_finance.html'
         },
         {
-          id: 'CEO003',
+          id: 'USR_008',
           type: 'risk',
           icon: 'fa-triangle-exclamation',
           color: 'orange',
@@ -376,7 +570,7 @@ const Layout = (function() {
           body: { ar: 'يتطلب اهتمام فوري من الإدارة التنفيذية', en: 'Requires immediate executive attention' },
           time: new Date(Date.now() - 1000 * 60 * 60 * 6),
           read: true,
-          link: 'ceo_risks.html'
+          link: 'sales_risks.html'
         }
       ];
     }
@@ -406,7 +600,7 @@ const Layout = (function() {
   }
 
   function saveNotifications() {
-    localStorage.setItem('ceo_notifications', JSON.stringify(_state.notifications));
+    localStorage.setItem('sales_notifications', JSON.stringify(_state.notifications));
   }
 
   function getTimeAgo(date) {
@@ -437,7 +631,7 @@ const Layout = (function() {
     const isRTL = lang === 'ar';
     const currentPath = window.location.pathname.split('/').pop() || 'index.html';
 
-    const activeMenu = _menuDefinitions[_state.activeRole] || _menuDefinitions['ceo'];
+    const activeMenu = _menuDefinitions[_state.activeRole] || _menuDefinitions['sales'];
 
     let menuHTML = '';
     activeMenu.forEach(group => {
@@ -514,7 +708,7 @@ const Layout = (function() {
             <div class="flex items-center gap-3 p-3 rounded-xl bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-900 border border-slate-200 dark:border-slate-700 transition-all hover:shadow-md">
               <img src="${user?.avatar || '../photo/admin.jpg'}" 
                    class="w-11 h-11 rounded-full border-2 border-white dark:border-slate-600 object-cover shadow-md" 
-                   onerror="this.src='https://ui-avatars.com/api/?name=CEO&background=DC2626&color=fff&bold=true'">
+                   onerror="this.src='https://ui-avatars.com/api/?name=sales&background=DC2626&color=fff&bold=true'">
               <div class="overflow-hidden flex-1 min-w-0">
                 <p class="text-sm font-bold text-slate-800 dark:text-white truncate">${displayName}</p>
                 <p class="text-[10px] text-brandRed font-bold truncate uppercase tracking-tight">${roleLabel}</p>
@@ -695,7 +889,7 @@ const Layout = (function() {
   
   function _getRoleIcon(roleKey) {
     const icons = {
-      'ceo': 'fa-crown',
+      'sales': 'fa-crown',
       'board_vp': 'fa-user-tie',
       'shareholder': 'fa-chart-pie'
     };
@@ -709,7 +903,7 @@ const Layout = (function() {
     }
     
     _state.activeRole = roleKey;
-    localStorage.setItem('ceo_activeRole', roleKey); // ✅ Use CEO-specific key
+    localStorage.setItem('sales_activeRole', roleKey); // ✅ Use sales-specific key
     
     renderSidebar();
     renderHeader();
@@ -722,7 +916,7 @@ const Layout = (function() {
       );
     }
     
-    console.log(`🔄 CEO Role switched to: ${roleKey}`);
+    console.log(`🔄 sales Role switched to: ${roleKey}`);
   }
 
   function toggleLanguage() {
