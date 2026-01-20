@@ -9,107 +9,113 @@
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
-            theme: { extend: { colors: { brandRed: '#FB4747', brandDark: '#1E293B' }, fontFamily: { sans: ['Tajawal', 'sans-serif'] } } }
+            darkMode: 'class',
+            theme: { 
+                extend: { 
+                    colors: { brandRed: '#FB4747', brandDark: '#1E293B' }, 
+                    fontFamily: { sans: ['Tajawal', 'sans-serif'] } 
+                } 
+            }
         }
     </script>
 </head>
-<body class="bg-slate-50 text-slate-800 font-sans">
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-200 font-sans opacity-0 transition-opacity duration-500">
 
     <div id="sidebar-container"></div>
 
-    <div class="lg:mr-72 transition-all duration-300">
+    <div class="main-content-wrapper lg:mr-72 transition-all duration-300">
         <div id="header-container"></div>
 
         <main class="p-8 space-y-8">
             
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm relative overflow-hidden group hover:border-brandRed/30 transition">
-                    <div class="absolute -left-6 -top-6 w-24 h-24 bg-red-50 rounded-full group-hover:scale-125 transition-transform duration-500"></div>
+                <div class="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm relative overflow-hidden group hover:border-brandRed/30 transition">
+                    <div class="absolute -left-6 -top-6 w-24 h-24 bg-red-50 dark:bg-red-900/10 rounded-full group-hover:scale-125 transition-transform duration-500"></div>
                     <div class="relative z-10">
                         <div class="flex justify-between items-start mb-4">
                             <div>
                                 <p class="text-slate-400 text-xs font-bold uppercase tracking-wider">رصيد الإجازات</p>
-                                <h3 class="text-3xl font-extrabold text-slate-800 mt-1">21 <span class="text-sm text-slate-400 font-medium">يوم</span></h3>
+                                <h3 class="text-3xl font-extrabold text-slate-800 dark:text-white mt-1">21 <span class="text-sm text-slate-400 font-medium">يوم</span></h3>
                             </div>
-                            <div class="w-10 h-10 rounded-xl bg-red-50 text-brandRed flex items-center justify-center"><i class="fa-solid fa-umbrella-beach"></i></div>
+                            <div class="w-10 h-10 rounded-xl bg-red-50 dark:bg-red-900/20 text-brandRed flex items-center justify-center"><i class="fa-solid fa-umbrella-beach"></i></div>
                         </div>
-                        <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-                            <div class="bg-brandRed h-full w-[70%]" style="width: 70%"></div>
+                        <div class="w-full bg-slate-100 dark:bg-slate-800 h-2 rounded-full overflow-hidden">
+                            <div class="bg-brandRed h-full" style="width: 70%"></div>
                         </div>
                         <p class="text-[10px] text-slate-400 mt-2 text-left">تم استهلاك 9 أيام</p>
                     </div>
                 </div>
 
-                <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm relative overflow-hidden group hover:border-green-200 transition">
-                    <div class="absolute -left-6 -top-6 w-24 h-24 bg-green-50 rounded-full group-hover:scale-125 transition-transform duration-500"></div>
+                <div class="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm relative overflow-hidden group hover:border-green-200 transition">
+                    <div class="absolute -left-6 -top-6 w-24 h-24 bg-green-50 dark:bg-green-900/10 rounded-full group-hover:scale-125 transition-transform duration-500"></div>
                     <div class="relative z-10">
                         <div class="flex justify-between items-start mb-4">
                             <div>
                                 <p class="text-slate-400 text-xs font-bold uppercase tracking-wider">الراتب القادم</p>
-                                <h3 class="text-3xl font-extrabold text-slate-800 mt-1">27 <span class="text-sm text-slate-400 font-medium">يناير</span></h3>
+                                <h3 class="text-3xl font-extrabold text-slate-800 dark:text-white mt-1">27 <span class="text-sm text-slate-400 font-medium">يناير</span></h3>
                             </div>
-                            <div class="w-10 h-10 rounded-xl bg-green-50 text-green-600 flex items-center justify-center"><i class="fa-solid fa-calendar-check"></i></div>
+                            <div class="w-10 h-10 rounded-xl bg-green-50 dark:bg-green-900/20 text-green-600 flex items-center justify-center"><i class="fa-solid fa-calendar-check"></i></div>
                         </div>
-                        <p class="text-xs text-green-600 font-bold bg-green-50 inline-block px-2 py-1 rounded-lg">متبقي 14 يوم</p>
+                        <p class="text-xs text-green-600 font-bold bg-green-50 dark:bg-green-900/30 inline-block px-2 py-1 rounded-lg">متبقي 14 يوم</p>
                     </div>
                 </div>
 
-                <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm relative overflow-hidden group hover:border-orange-200 transition">
-                    <div class="absolute -left-6 -top-6 w-24 h-24 bg-orange-50 rounded-full group-hover:scale-125 transition-transform duration-500"></div>
+                <div class="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm relative overflow-hidden group hover:border-orange-200 transition">
+                    <div class="absolute -left-6 -top-6 w-24 h-24 bg-orange-50 dark:bg-orange-900/10 rounded-full group-hover:scale-125 transition-transform duration-500"></div>
                     <div class="relative z-10">
                         <div class="flex justify-between items-start mb-4">
                             <div>
                                 <p class="text-slate-400 text-xs font-bold uppercase tracking-wider">طلبات معلقة</p>
-                                <h3 class="text-3xl font-extrabold text-slate-800 mt-1">2 <span class="text-sm text-slate-400 font-medium">طلب</span></h3>
+                                <h3 class="text-3xl font-extrabold text-slate-800 dark:text-white mt-1">2 <span class="text-sm text-slate-400 font-medium">طلب</span></h3>
                             </div>
-                            <div class="w-10 h-10 rounded-xl bg-orange-50 text-orange-500 flex items-center justify-center"><i class="fa-solid fa-clock-rotate-left"></i></div>
+                            <div class="w-10 h-10 rounded-xl bg-orange-50 dark:bg-orange-900/20 text-orange-500 flex items-center justify-center"><i class="fa-solid fa-clock-rotate-left"></i></div>
                         </div>
-                        <a href="my_requests.html" class="text-xs text-orange-500 font-bold hover:underline">متابعة الطلبات <i class="fa-solid fa-arrow-left mr-1"></i></a>
+                        <a href="requests.html" class="text-xs text-orange-500 font-bold hover:underline">متابعة الطلبات <i class="fa-solid fa-arrow-left mr-1"></i></a>
                     </div>
                 </div>
             </div>
 
             <div>
-                <h3 class="font-bold text-lg text-slate-800 mb-4 flex items-center gap-2"><i class="fa-solid fa-bolt text-yellow-500"></i> إجراءات سريعة</h3>
+                <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-4 flex items-center gap-2"><i class="fa-solid fa-bolt text-yellow-500"></i> إجراءات سريعة</h3>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <button class="bg-white p-4 rounded-2xl border border-slate-100 hover:border-brandRed hover:shadow-lg hover:-translate-y-1 transition-all group text-center">
-                        <div class="w-12 h-12 rounded-full bg-slate-50 group-hover:bg-red-50 text-slate-500 group-hover:text-brandRed mx-auto flex items-center justify-center text-xl transition-colors mb-3">
+                    <button class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-100 dark:border-slate-800 hover:border-brandRed hover:shadow-lg hover:-translate-y-1 transition-all group text-center">
+                        <div class="w-12 h-12 rounded-full bg-slate-50 dark:bg-slate-800 group-hover:bg-red-50 text-slate-500 group-hover:text-brandRed mx-auto flex items-center justify-center text-xl transition-colors mb-3">
                             <i class="fa-solid fa-plus"></i>
                         </div>
-                        <span class="text-sm font-bold text-slate-700">طلب إجازة</span>
+                        <span class="text-sm font-bold text-slate-700 dark:text-slate-300">طلب إجازة</span>
                     </button>
                     
-                    <button class="bg-white p-4 rounded-2xl border border-slate-100 hover:border-blue-200 hover:shadow-lg hover:-translate-y-1 transition-all group text-center">
-                        <div class="w-12 h-12 rounded-full bg-slate-50 group-hover:bg-blue-50 text-slate-500 group-hover:text-blue-500 mx-auto flex items-center justify-center text-xl transition-colors mb-3">
+                    <button class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-100 dark:border-slate-800 hover:border-blue-200 hover:shadow-lg hover:-translate-y-1 transition-all group text-center">
+                        <div class="w-12 h-12 rounded-full bg-slate-50 dark:bg-slate-800 group-hover:bg-blue-50 text-slate-500 group-hover:text-blue-500 mx-auto flex items-center justify-center text-xl transition-colors mb-3">
                             <i class="fa-solid fa-file-contract"></i>
                         </div>
-                        <span class="text-sm font-bold text-slate-700">تعريف راتب</span>
+                        <span class="text-sm font-bold text-slate-700 dark:text-slate-300">تعريف راتب</span>
                     </button>
 
-                    <button class="bg-white p-4 rounded-2xl border border-slate-100 hover:border-purple-200 hover:shadow-lg hover:-translate-y-1 transition-all group text-center">
-                        <div class="w-12 h-12 rounded-full bg-slate-50 group-hover:bg-purple-50 text-slate-500 group-hover:text-purple-500 mx-auto flex items-center justify-center text-xl transition-colors mb-3">
+                    <button class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-100 dark:border-slate-800 hover:border-purple-200 hover:shadow-lg hover:-translate-y-1 transition-all group text-center">
+                        <div class="w-12 h-12 rounded-full bg-slate-50 dark:bg-slate-800 group-hover:bg-purple-50 text-slate-500 group-hover:text-purple-500 mx-auto flex items-center justify-center text-xl transition-colors mb-3">
                             <i class="fa-solid fa-laptop-medical"></i>
                         </div>
-                        <span class="text-sm font-bold text-slate-700">دعم فني</span>
+                        <span class="text-sm font-bold text-slate-700 dark:text-slate-300">دعم فني</span>
                     </button>
 
-                    <button class="bg-white p-4 rounded-2xl border border-slate-100 hover:border-green-200 hover:shadow-lg hover:-translate-y-1 transition-all group text-center">
-                        <div class="w-12 h-12 rounded-full bg-slate-50 group-hover:bg-green-50 text-slate-500 group-hover:text-green-500 mx-auto flex items-center justify-center text-xl transition-colors mb-3">
+                    <button class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-100 dark:border-slate-800 hover:border-green-200 hover:shadow-lg hover:-translate-y-1 transition-all group text-center">
+                        <div class="w-12 h-12 rounded-full bg-slate-50 dark:bg-slate-800 group-hover:bg-green-50 text-slate-500 group-hover:text-green-500 mx-auto flex items-center justify-center text-xl transition-colors mb-3">
                             <i class="fa-solid fa-receipt"></i>
                         </div>
-                        <span class="text-sm font-bold text-slate-700">رفع مطالبة</span>
+                        <span class="text-sm font-bold text-slate-700 dark:text-slate-300">رفع مطالبة</span>
                     </button>
                 </div>
             </div>
 
-            <div class="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
-                <div class="p-6 border-b border-slate-50 flex justify-between items-center">
-                    <h3 class="font-bold text-lg text-slate-800">آخر النشاطات</h3>
+            <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden">
+                <div class="p-6 border-b border-slate-50 dark:border-slate-800 flex justify-between items-center">
+                    <h3 class="font-bold text-lg text-slate-800 dark:text-white">آخر النشاطات</h3>
                     <button class="text-xs text-brandRed font-bold hover:underline">عرض الكل</button>
                 </div>
                 <div class="overflow-x-auto">
-                    <table class="w-full text-sm text-left rtl:text-right text-slate-500">
-                        <thead class="text-xs text-slate-400 uppercase bg-slate-50">
+                    <table class="w-full text-sm text-right rtl:text-right text-slate-500 dark:text-slate-400">
+                        <thead class="text-xs text-slate-400 uppercase bg-slate-50 dark:bg-slate-800/50">
                             <tr>
                                 <th scope="col" class="px-6 py-3">نوع الطلب</th>
                                 <th scope="col" class="px-6 py-3">تاريخ التقديم</th>
@@ -117,22 +123,22 @@
                                 <th scope="col" class="px-6 py-3">الحالة</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr class="bg-white border-b border-slate-50 hover:bg-slate-50 transition">
-                                <td class="px-6 py-4 font-bold text-slate-800 flex items-center gap-2">
+                        <tbody class="divide-y divide-slate-50 dark:divide-slate-800">
+                            <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition">
+                                <td class="px-6 py-4 font-bold text-slate-800 dark:text-white flex items-center gap-2">
                                     <div class="w-2 h-2 rounded-full bg-purple-500"></div> إجازة سنوية
                                 </td>
                                 <td class="px-6 py-4">2026-01-10</td>
                                 <td class="px-6 py-4">منصور اليامي (HR)</td>
-                                <td class="px-6 py-4"><span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded-lg text-xs font-bold">قيد المراجعة</span></td>
+                                <td class="px-6 py-4"><span class="bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 px-2 py-1 rounded-lg text-xs font-bold">قيد المراجعة</span></td>
                             </tr>
-                            <tr class="bg-white border-b border-slate-50 hover:bg-slate-50 transition">
-                                <td class="px-6 py-4 font-bold text-slate-800 flex items-center gap-2">
+                            <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition">
+                                <td class="px-6 py-4 font-bold text-slate-800 dark:text-white flex items-center gap-2">
                                     <div class="w-2 h-2 rounded-full bg-blue-500"></div> تعريف راتب
                                 </td>
                                 <td class="px-6 py-4">2026-01-05</td>
                                 <td class="px-6 py-4">النظام (آلي)</td>
-                                <td class="px-6 py-4"><span class="bg-green-100 text-green-700 px-2 py-1 rounded-lg text-xs font-bold">مكتمل</span></td>
+                                <td class="px-6 py-4"><span class="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 px-2 py-1 rounded-lg text-xs font-bold">مكتمل</span></td>
                             </tr>
                         </tbody>
                     </table>
@@ -142,6 +148,35 @@
         </main>
     </div>
 
-    <script src="layout-emp.js"></script>
+    <script src="employee/js/components/layout.js"></script>
+    <script src="js/components/bot.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // 1. تعريف هوية الحسين الحميدي
+            const empUser = {
+                id: 'EMP_88',
+                type: 'employee', // المفتاح المطلوب لفتح قائمة الموظف في layout.js
+                displayName: 'الحسين الحميدي',
+                role: 'Technical Support',
+                avatar: 'https://ui-avatars.com/api/?name=AlHussain+H&background=FB4747&color=fff'
+            };
+
+            // 2. تخزين البيانات في المتصفح
+            localStorage.setItem('currentUser', JSON.stringify(empUser));
+            localStorage.setItem('activeRole', 'employee');
+
+            // 3. تشغيل المحرك v10.5
+            if (typeof Layout !== 'undefined') {
+                Layout.init();
+                // إظهار الجسم بعد تحميل التنسيقات
+                document.body.classList.remove('opacity-0');
+                console.log("✅ Employee Portal Initialized for: Al-Hussain");
+            } else {
+                // في حال عدم وجود ملف السكريبت، نظهر الصفحة على أي حال
+                document.body.classList.remove('opacity-0');
+            }
+        });
+    </script>
 </body>
 </html>
