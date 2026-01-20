@@ -73,9 +73,9 @@
                             <span data-i18n="welcome">مرحباً،</span> 
                             <span id="dynamicName" class="text-brandRed font-black">سعادة رئيس المجلس</span>
                         </h1>
-                        <p class="text-slate-400 text-base" id="dynamicTitle">رئيس مجلس الإدارة - شركة اندروميدا لتقنية المعلومات</p>
+                        <p class="text-slate-400 text-base" id="dynamicTitle" data-i18n="chairmanTitle">رئيس مجلس الإدارة - شركة اندروميدا لتقنية المعلومات</p>
                     </div>
-                    <div id="secretaryActions" class="hidden flex gap-3">
+                    <div id="chairmanActions" class="flex gap-3">
                         <button class="bg-brandRed px-6 py-3 rounded-2xl text-sm font-bold shadow-lg shadow-brandRed/30 hover:bg-red-700 transition flex items-center gap-2">
                             <i class="fa-solid fa-signature"></i> <span data-i18n="btnChairmanSign">اعتماد القرارات المعلقة</span>
                         </button>
@@ -120,7 +120,7 @@
                                 <i class="fa-solid fa-scroll text-brandRed"></i>
                                 <span data-i18n="titleRecentFiles">وثائق ومحاضر بانتظار الاعتماد</span>
                             </h3>
-                            <button class="text-[10px] font-bold text-brandBlue uppercase tracking-widest hover:underline">سجل القرارات</button>
+                            <button class="text-[10px] font-bold text-brandBlue uppercase tracking-widest hover:underline" data-i18n="btnDecisionLog">سجل القرارات</button>
                         </div>
                         <div class="p-6 space-y-4">
                             <!-- File 1 -->
@@ -131,11 +131,11 @@
                                     </div>
                                     <div>
                                         <p class="text-sm font-bold text-slate-800 dark:text-white" data-i18n="file1">قرار تمرير رقم (251222001) - تشكيل لجنة المراجعة</p>
-                                        <p class="text-[10px] text-slate-400 mt-1">الموعد النهائي للتوقيع: اليوم <span class="num-font text-red-500 font-bold">18:00</span></p>
+                                        <p class="text-[10px] text-slate-400 mt-1"><span data-i18n="deadlineLabel">الموعد النهائي للتوقيع:</span> <span data-i18n="today">اليوم</span> <span class="num-font text-red-500 font-bold">18:00</span></p>
                                     </div>
                                 </div>
                                 <div class="flex gap-2">
-                                    <button class="bg-brandRed text-white px-4 py-2 rounded-xl text-[10px] font-bold shadow-sm hover:scale-105 transition-all">توقيع الآن</button>
+                                    <button class="bg-brandRed text-white px-4 py-2 rounded-xl text-[10px] font-bold shadow-sm hover:scale-105 transition-all" data-i18n="btnSignNow">توقيع الآن</button>
                                 </div>
                             </div>
                         </div>
@@ -167,13 +167,13 @@
                                 <div class="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/20 shadow-lg">
                                     <i class="fa-solid fa-robot text-xl"></i>
                                 </div>
-                                <h3 class="font-extrabold text-lg tracking-tight">AndroBot الذكي</h3>
+                                <h3 class="font-extrabold text-lg tracking-tight" data-i18n="botTitle">AndroBot الذكي</h3>
                             </div>
-                            <p class="text-sm text-white/90 leading-relaxed font-medium">
+                            <p class="text-sm text-white/90 leading-relaxed font-medium" data-i18n="aiReminderMsg">
                                 سعادة الرئيس، بناءً على تحليل سجلات الحوكمة، هناك "تعارض مصالح" محتمل في البند الثالث من أجندة الاجتماع القادم. هل تود استعراض التفاصيل؟
                             </p>
                             <button onclick="AndroBot.toggle()" class="w-full mt-6 py-3.5 bg-white text-brandBlue rounded-2xl text-xs font-black uppercase tracking-widest shadow-xl hover:scale-[1.02] transition-all flex items-center justify-center gap-3">
-                                <span>استعراض تحليل التعارض</span> 
+                                <span data-i18n="btnAiAnalysis">استعراض تحليل التعارض</span> 
                                 <i class="fa-solid fa-magnifying-glass-chart"></i>
                             </button>
                         </div>
@@ -202,10 +202,10 @@
                         <button onclick="AndroBot.toggle()"><i class="fa-solid fa-xmark"></i></button>
                     </div>
                     <div id="bot-messages" class="flex-1 p-5 overflow-y-auto bg-slate-50/50 dark:bg-slate-900/50 custom-scroll space-y-4">
-                        <div class="text-right"><div class="inline-block p-3 rounded-2xl rounded-tr-none bg-white dark:bg-slate-800 shadow-sm border border-slate-100 dark:border-slate-700 text-[11px] leading-relaxed">أهلاً بك سعادة الرئيس، أنا مساعدك الذكي. لقد قمت بتحليل كافة وثائق الاجتماع القادم للتأكد من مطابقتها لنظام الشركات الجديد.</div></div>
+                        <div class="text-right" id="botGreetingMsg"></div>
                     </div>
                     <div class="p-4 border-t border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800">
-                        <input type="text" placeholder="اطلب تحليلاً أو استفساراً..." class="w-full px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-[10px] outline-none focus:border-brandBlue transition-all">
+                        <input type="text" id="botInput" placeholder="اطلب تحليلاً أو استفساراً..." class="w-full px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-[10px] outline-none focus:border-brandBlue transition-all">
                     </div>
                 </div>
                 <button onclick="AndroBot.toggle()" class="w-16 h-16 rounded-[22px] bg-gradient-to-br from-brandBlue to-blue-700 text-white shadow-2xl flex items-center justify-center border-4 border-white dark:border-slate-800 hover:scale-110 active:scale-95 transition-all">
@@ -213,10 +213,27 @@
                     <span class="absolute -top-1 -right-1 w-4 h-4 bg-green-500 border-2 border-white dark:border-slate-800 rounded-full"></span>
                 </button>`;
             document.body.appendChild(_container);
+            updateBotLang();
         }
+
+        function updateBotLang() {
+            const lang = localStorage.getItem('lang') || 'ar';
+            const msgEl = document.getElementById('botGreetingMsg');
+            const inputEl = document.getElementById('botInput');
+            if (msgEl) {
+                msgEl.innerHTML = `<div class="inline-block p-3 rounded-2xl rounded-tr-none bg-white dark:bg-slate-800 shadow-sm border border-slate-100 dark:border-slate-700 text-[11px] leading-relaxed">
+                    ${lang === 'ar' ? 'أهلاً بك سعادة الرئيس، أنا مساعدك الذكي. لقد قمت بتحليل كافة وثائق الاجتماع القادم للتأكد من مطابقتها لنظام الشركات الجديد.' : 'Welcome Mr. Chairman, I am your smart assistant. I have analyzed all documents for the upcoming meeting to ensure compliance with the new Companies Law.'}
+                </div>`;
+            }
+            if (inputEl) {
+                inputEl.placeholder = lang === 'ar' ? 'اطلب تحليلاً أو استفساراً...' : 'Request analysis or inquiry...';
+            }
+        }
+
         return {
             toggle: function() {
                 _init();
+                updateBotLang();
                 _isOpen = !_isOpen;
                 const chat = document.getElementById('bot-chat');
                 if (_isOpen) {
@@ -226,7 +243,8 @@
                     chat.classList.add('opacity-0', 'scale-90', 'pointer-events-none');
                     chat.classList.remove('opacity-100', 'scale-100');
                 }
-            }
+            },
+            updateBotLang
         };
     })();
     </script>
@@ -237,7 +255,7 @@
         // ══ STATE & CONFIG ══
         let _state = {
             currentUser: null,
-            activeRole: 'chairman', // تم التعديل لدور الرئيس
+            activeRole: 'chairman', 
             theme: localStorage.getItem('theme') || 'light',
             isInitialized: false,
             sidebarOpen: false,
@@ -314,23 +332,23 @@
             let html = `
             <aside id="main-sidebar" class="fixed top-0 ${isRTL ? 'right-0 border-l' : 'left-0 border-r'} z-50 h-screen w-72 bg-white dark:bg-[#0F172A] border-slate-200 dark:border-slate-800 flex flex-col shadow-2xl transition-all duration-300">
                 <div class="h-20 flex items-center px-6 border-b border-slate-100 dark:border-slate-800 bg-gradient-to-r from-slate-50 to-transparent dark:from-slate-900/50">
-                    <div class="w-12 h-12 bg-gradient-to-br from-brandRed to-red-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-brandRed/30"><i class="fa-solid fa-layer-group text-xl"></i></div>
-                    <div class="mx-4"><h1 class="font-black text-slate-800 dark:text-white leading-tight">AndroGov</h1><p class="text-[9px] text-brandRed font-bold uppercase tracking-widest">Enterprise</p></div>
+                    <div class="w-12 h-12 bg-gradient-to-br from-brandRed to-red-600 rounded-xl flex items-center justify-center text-white shadow-glow"><i class="fa-solid fa-layer-group text-xl"></i></div>
+                    <div class="mx-4"><h1 class="font-black text-slate-800 dark:text-white leading-tight text-xl tracking-tight text-right">AndroGov</h1><p class="text-[9px] text-brandRed font-bold uppercase tracking-widest text-right">Enterprise</p></div>
                 </div>
                 <div class="p-4"><div class="flex items-center gap-3 p-3 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm">
                     <img src="https://ui-avatars.com/api/?name=Chairman&background=DC2626&color=fff&bold=true" class="w-10 h-10 rounded-full border-2 border-white shadow-sm">
-                    <div class="overflow-hidden"><p class="text-xs font-bold truncate text-slate-800 dark:text-white">${_state.currentUser?.name || 'سعادة الرئيس'}</p><p class="text-[9px] text-brandRed font-bold uppercase truncate">${_roleLabels[_state.activeRole][lang]}</p></div>
+                    <div class="overflow-hidden text-right"><p class="text-xs font-bold truncate text-slate-800 dark:text-white">${_state.currentUser?.name || 'سعادة الرئيس'}</p><p class="text-[9px] text-brandRed font-bold uppercase truncate">${_roleLabels[_state.activeRole][lang]}</p></div>
                 </div></div>
                 <nav class="flex-1 overflow-y-auto p-5 custom-scroll space-y-1">`;
 
             menu.forEach(sec => {
-                html += `<div class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest px-3 mt-8 mb-3">${t(sec.section)}</div>`;
+                html += `<div class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest px-3 mt-8 mb-3 text-right">${t(sec.section)}</div>`;
                 sec.items.forEach(item => {
                     const isActive = currentPath === item.link;
                     html += `
                     <a href="${item.link}" class="flex items-center gap-4 px-4 py-3 rounded-2xl text-[13px] font-bold transition-all group ${isActive ? 'bg-gradient-to-r from-brandRed to-red-600 text-white shadow-glow' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'}">
                         <i class="fa-solid ${item.icon} w-5 text-center transition-transform group-hover:scale-110"></i>
-                        <span class="flex-1 truncate">${t(item.key)}</span>
+                        <span class="flex-1 truncate text-right">${t(item.key)}</span>
                         ${isActive ? '<div class="active-dot"></div>' : ''}
                         ${item.badge ? `<span class="bg-blue-500 text-white text-[8px] px-1.5 py-0.5 rounded font-black uppercase animate-pulse">${item.badge}</span>` : ''}
                     </a>`;
@@ -365,14 +383,14 @@
                         </button>
                         <div class="absolute top-full ${isRTL ? 'left-0' : 'right-0'} mt-3 w-80 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-[2rem] shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 overflow-hidden glass-effect">
                             <div class="p-5 border-b border-slate-100 dark:border-slate-700 bg-gradient-to-r from-orange-500 to-amber-500 flex justify-between items-center text-white">
-                                <span class="text-xs font-black uppercase tracking-widest">${t('notifications')}</span>
+                                <span class="text-xs font-black uppercase tracking-widest text-right">${t('notifications')}</span>
                                 <button onclick="Layout.markAllRead()" class="text-[10px] underline font-bold">${t('markAllRead')}</button>
                             </div>
                             <div class="max-h-80 overflow-y-auto custom-scroll text-right">
                                 ${_state.notifications.map(n => `
                                     <div class="flex gap-4 p-5 border-b border-slate-50 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50 cursor-pointer transition-colors ${!n.read ? 'bg-orange-50/20' : ''}">
                                         <div class="w-10 h-10 rounded-xl bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 flex items-center justify-center shrink-0 border border-red-100 dark:border-red-900/50"><i class="fa-solid ${n.icon}"></i></div>
-                                        <div class="flex-1 min-w-0">
+                                        <div class="flex-1 min-w-0 text-right">
                                             <p class="text-[11px] font-black text-slate-800 dark:text-white truncate tracking-tight">${n.title[lang]}</p>
                                             <p class="text-[10px] text-slate-500 dark:text-slate-400 mt-1 leading-snug">${n.body[lang]}</p>
                                         </div>
@@ -387,6 +405,21 @@
             </header>`;
         }
 
+        function setLanguage(lang) {
+            localStorage.setItem('lang', lang);
+            document.documentElement.lang = lang;
+            document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+            const wrapper = document.querySelector('.main-content-wrapper');
+            if (wrapper) {
+                if (lang === 'ar') { wrapper.classList.remove('md:ml-72'); wrapper.classList.add('md:mr-72'); }
+                else { wrapper.classList.remove('md:mr-72'); wrapper.classList.add('md:ml-72'); }
+            }
+            renderSidebar(); 
+            renderHeader();
+            AndroBot.updateBotLang();
+            window.dispatchEvent(new CustomEvent('languageChanged', { detail: { lang } }));
+        }
+
         return {
             init: function() {
                 applyTheme();
@@ -399,15 +432,7 @@
             },
             syncLayout: function() {
                 const lang = getCurrentLang();
-                document.documentElement.lang = lang;
-                document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
-                const wrapper = document.querySelector('.main-content-wrapper');
-                if (wrapper) {
-                    if (lang === 'ar') { wrapper.classList.remove('md:ml-72'); wrapper.classList.add('md:mr-72'); }
-                    else { wrapper.classList.remove('md:mr-72'); wrapper.classList.add('md:ml-72'); }
-                }
-                renderSidebar(); renderHeader();
-                window.dispatchEvent(new CustomEvent('languageChanged', { detail: { lang } }));
+                setLanguage(lang);
             },
             toggleLanguage: function() { localStorage.setItem('lang', getCurrentLang() === 'ar' ? 'en' : 'ar'); this.syncLayout(); },
             toggleTheme,
@@ -416,15 +441,80 @@
         };
     })();
 
+    // ==========================================
+    // UI CONTENT TRANSLATION LAYER
+    // ==========================================
+    const pageContent = {
+        ar: { 
+            pageTitle: "بوابة رئيس المجلس | AndroGov", 
+            welcome: "مرحباً،", 
+            chairmanTitle: "رئيس مجلس الإدارة - شركة اندروميدا لتقنية المعلومات",
+            btnChairmanSign: "اعتماد القرارات المعلقة",
+            statDecisions: "قرارات بانتظار توقيعكم", 
+            statPending: "عاجل", 
+            statMeeting: "الجلسة القادمة", 
+            statFeb: "فبراير", 
+            statAttendance: "اكتمال النصاب", 
+            statFiles: "تقارير اللجان", 
+            titleRecentFiles: "وثائق ومحاضر بانتظار الاعتماد", 
+            btnDecisionLog: "سجل القرارات",
+            file1: "قرار تمرير رقم (251222001) - تشكيل لجنة المراجعة", 
+            deadlineLabel: "الموعد النهائي للتوقيع:",
+            today: "اليوم",
+            btnSignNow: "توقيع الآن",
+            titleSignatures: "حالة تواقيع الأعضاء", 
+            signatureDesc: "محضر الاجتماع رقم (41):", 
+            signatureCount: "تم توقيع 7 من أصل 9 أعضاء",
+            botTitle: "AndroBot الذكي",
+            aiReminderMsg: "سعادة الرئيس، بناءً على تحليل سجلات الحوكمة، هناك 'تعارض مصالح' محتمل في البند الثالث من أجندة الاجتماع القادم. هل تود استعراض التفاصيل؟",
+            btnAiAnalysis: "استعراض تحليل التعارض"
+        },
+        en: { 
+            pageTitle: "Chairman Portal | AndroGov", 
+            welcome: "Welcome,", 
+            chairmanTitle: "Chairman of the Board - Andromeda IT",
+            btnChairmanSign: "Approve Pending Decisions",
+            statDecisions: "Decisions Awaiting Your Signature", 
+            statPending: "Urgent", 
+            statMeeting: "Next Session", 
+            statFeb: "February", 
+            statAttendance: "Quorum Status", 
+            statFiles: "Committee Reports", 
+            titleRecentFiles: "Documents Awaiting Approval", 
+            btnDecisionLog: "Decision Log",
+            file1: "Circular Resolution #251222001 - Audit Committee Formation", 
+            deadlineLabel: "Signature Deadline:",
+            today: "Today",
+            btnSignNow: "Sign Now",
+            titleSignatures: "Member Signature Status", 
+            signatureDesc: "Meeting Minutes #41:", 
+            signatureCount: "7 out of 9 members signed",
+            botTitle: "Smart AndroBot",
+            aiReminderMsg: "Mr. Chairman, based on governance log analysis, there is a potential 'conflict of interest' in item 3 of the next agenda. Would you like to review the details?",
+            btnAiAnalysis: "Review Conflict Analysis"
+        }
+    };
+
+    function updateUI() {
+        const lang = Layout.getCurrentLang();
+        const dict = pageContent[lang];
+        if (!dict) return;
+        document.title = dict.pageTitle;
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            if (dict[key]) el.textContent = dict[key];
+        });
+    }
+
     // ══ BOOTSTRAP ══
     document.addEventListener('DOMContentLoaded', () => {
-        const user = JSON.parse(localStorage.getItem('currentUser')) || { name: 'سعادة رئيس المجلس الموقر', role: 'رئيس مجلس الإدارة' };
-        document.getElementById('dynamicName').innerText = user.name;
-        document.getElementById('dynamicTitle').innerText = user.role;
-        // إظهار إجراءات التوقيع والاعتماد للرئيس
-        if (user.role.includes('رئيس')) document.getElementById('secretaryActions').classList.remove('hidden');
+        const user = JSON.parse(localStorage.getItem('currentUser')) || { name: 'سعادة رئيس المجلس', role: 'Chairman' };
+        document.getElementById('dynamicName').innerText = (localStorage.getItem('lang') === 'en') ? 'Mr. Chairman' : user.name;
         Layout.init();
+        updateUI();
     });
+
+    window.addEventListener('languageChanged', updateUI);
     </script>
 </body>
 </html>
