@@ -1,21 +1,26 @@
 /**
- * Andromeda IT Company Policy Database
- * @file ceo/data/company_policy.js
+ * ==========================================
+ * Andromeda IT Company - Board Portal Policy Database
+ * @file board/data/company_policy.js
+ * @version 4.0.0 - Real Data Integration
+ * @description Comprehensive company policy with actual Andromeda IT data
+ * ==========================================
  */
 
 const CompanyPolicy = {
   
   // ==========================================
-  // COMPANY INFORMATION
+  // 1. COMPANY INFORMATION
   // ==========================================
   
   company: {
-    nameAr: 'شركة أندروميدا لتقنية المعلومات',
+    nameAr: 'شركة اندروميدا لتقنية المعلومات',
     nameEn: 'Andromeda Information Technology Company',
     crNumber: '1010987654',
     taxNumber: '300123456789003',
     established: '2015-03-15',
-    capital: 10000000,
+    website: 'https://andromeda-it.com',
+    fiscalYearEnd: '12-31',
     headquarters: {
       ar: 'الرياض، المملكة العربية السعودية',
       en: 'Riyadh, Saudi Arabia'
@@ -27,290 +32,647 @@ const CompanyPolicy = {
   },
 
   // ==========================================
-  // GOVERNANCE POLICIES
+  // 2. CAPITAL STRUCTURE (REAL DATA)
+  // ==========================================
+  
+  capital: {
+    amount: 6000000,
+    currency: "SAR",
+    sharesCount: 600000,
+    shareValue: 10,
+    status: "fully_paid"
+  },
+
+  // ==========================================
+  // 3. SHAREHOLDERS (REAL DATA - 11 SHAREHOLDERS)
+  // ==========================================
+  
+  shareholders: [
+    { 
+      id: "SH_001", 
+      name: { ar: "ورثة محمد بن صالح السحيباني", en: "Heirs of Mohammed Al-Suhaibani" }, 
+      percent: 35, 
+      shares: 210000, 
+      type: "Individual", 
+      voting: true, 
+      email: "alcaseer@gmail.com", 
+      proxy: { ar: "وائل السحيباني", en: "Wael Al-Suhaibani" } 
+    },
+    { 
+      id: "SH_002", 
+      name: { ar: "هشام بن محمد السحيباني", en: "Hesham Al-Sohaibani" }, 
+      percent: 10, 
+      shares: 60000, 
+      type: "Individual", 
+      voting: true, 
+      email: "hesham@androomeda.com", 
+      proxy: null 
+    },
+    { 
+      id: "SH_003", 
+      name: { ar: "وائل بن محمد السحيباني", en: "Wael Al-Suhaibani" }, 
+      percent: 5, 
+      shares: 30000, 
+      type: "Individual", 
+      voting: true, 
+      email: "w961@live.com", 
+      proxy: null 
+    },
+    { 
+      id: "SH_004", 
+      name: { ar: "هيثم بن محمد السحيباني", en: "Haitham Al-Suhaibani" }, 
+      percent: 5, 
+      shares: 30000, 
+      type: "Individual", 
+      voting: true, 
+      email: "hmsasis@gmail.com", 
+      proxy: null 
+    },
+    { 
+      id: "SH_005", 
+      name: { ar: "منصور بن حسن اليامي", en: "Mansour Al-Yami" }, 
+      percent: 5, 
+      shares: 30000, 
+      type: "Individual", 
+      voting: true, 
+      email: "myami@androomeda.com", 
+      proxy: null 
+    },
+    { 
+      id: "SH_006", 
+      name: { ar: "إبراهيم بن حمد السكيتي", en: "Ibrahim Al-Skeiti" }, 
+      percent: 5, 
+      shares: 30000, 
+      type: "Individual", 
+      voting: true, 
+      email: "ihskaity@gmail.com", 
+      proxy: null 
+    },
+    { 
+      id: "SH_007", 
+      name: { ar: "صالح بن عبدالله الوهيبي", en: "Saleh Al-Wahibi" }, 
+      percent: 5, 
+      shares: 30000, 
+      type: "Individual", 
+      voting: true, 
+      email: "saaw4466@yahoo.com", 
+      proxy: null 
+    },
+    { 
+      id: "SH_008", 
+      name: { ar: "عبدالله بن علي الفريجي", en: "Abdullah Al-Fariji" }, 
+      percent: 5, 
+      shares: 30000, 
+      type: "Individual", 
+      voting: true, 
+      email: "a_furaiji@hotmail.com", 
+      proxy: null 
+    },
+    { 
+      id: "SH_009", 
+      name: { ar: "عبدالله بن محمد الحواس", en: "Abdullah Al-Hawas" }, 
+      percent: 5, 
+      shares: 30000, 
+      type: "Individual", 
+      voting: true, 
+      email: "amh400@gmail.com", 
+      proxy: null 
+    },
+    { 
+      id: "SH_010", 
+      name: { ar: "شركة بيجي المحدودة", en: "BG LTD Company" }, 
+      percent: 15, 
+      shares: 90000, 
+      type: "Entity", 
+      voting: true, 
+      email: "saleh@bgtech.com", 
+      proxy: { ar: "صالح السحيباني", en: "Saleh Al-Suhaibani" } 
+    },
+    { 
+      id: "SH_011", 
+      name: { ar: "أحمد بن سليمان الجاسر", en: "Ahmed Al-Jasser" }, 
+      percent: 5, 
+      shares: 30000, 
+      type: "Individual", 
+      voting: true, 
+      email: "ahmed.jasser@gmail.com", 
+      proxy: null 
+    }
+  ],
+
+  // ==========================================
+  // 4. USERS & EMPLOYEES (REAL DATA)
+  // ==========================================
+  
+  users: [
+    // Board & Executives
+    { 
+      id: "USR_000", 
+      name: { ar: "عبدالله الحواس", en: "Abdullah Al-Hawas" }, 
+      title: { ar: "رئيس مجلس الإدارة", en: "Chairman of the Board" }, 
+      dept: "DEP_EXEC", 
+      role: "chairman", 
+      email: "amh400@gmail.com", 
+      isExecutive: false, 
+      isShareholder: true,
+      avatar: "https://ui-avatars.com/api/?name=Abdullah+AlHawas&background=FB4747&color=fff"
+    },
+    { 
+      id: "USR_001", 
+      name: { ar: "هشام السحيباني", en: "Hesham Al-Sohaibani" }, 
+      title: { ar: "الرئيس التنفيذي ونائب رئيس المجلس", en: "CEO & Board Vice Chairman" }, 
+      dept: "DEP_EXEC", 
+      role: "ceo", 
+      additionalRoles: ["vice_chairman"], 
+      email: "hesham@androomeda.com", 
+      isExecutive: true, 
+      isShareholder: true,
+      avatar: "../photo/ceo.jpeg"
+    },
+    { 
+      id: "USR_002", 
+      name: { ar: "محمد البخيتي", en: "Mohammed Al-Bukheiti" }, 
+      title: { ar: "المدير المالي", en: "Chief Financial Officer (CFO)" }, 
+      dept: "DEP_FIN", 
+      role: "cfo", 
+      email: "mtahir@androomeda.com", 
+      isExecutive: true,
+      avatar: "https://ui-avatars.com/api/?name=Mohammed+AlBukheiti&background=4267B2&color=fff"
+    },
+    { 
+      id: "BRD_003", 
+      name: { ar: "أحمد السحيباني", en: "Ahmed Al-Suhaibani" }, 
+      title: { ar: "عضو مجلس الإدارة وعضو لجنة المراجعة", en: "Board & Audit Member" }, 
+      dept: "DEP_EXEC", 
+      role: "board_member", 
+      additionalRoles: ["audit_committee_member"], 
+      email: "a.s.alsuhaibani@microtec.com.sa", 
+      isExecutive: false, 
+      isShareholder: true,
+      avatar: "https://ui-avatars.com/api/?name=Ahmed+AlSuhaibani&background=10B981&color=fff"
+    },
+    { 
+      id: "USR_005", 
+      name: { ar: "منصور اليامي", en: "Mansour Al-Yami" }, 
+      title: { ar: "المدير الإداري وعضو المجلس", en: "CAO / Board Member" }, 
+      dept: "DEP_HR", 
+      role: "cao", 
+      additionalRoles: ["board_member"], 
+      email: "myami@androomeda.com", 
+      isExecutive: true, 
+      isShareholder: true,
+      avatar: "https://ui-avatars.com/api/?name=Mansour+AlYami&background=F59E0B&color=fff"
+    },
+    
+    // Managers & Directors
+    { 
+      id: "USR_004", 
+      name: { ar: "أيمن المغربي", en: "Ayman Al-Maghrabi" }, 
+      title: { ar: "مسؤول الحوكمة والمخاطر والالتزام / أمين سر المجلس", en: "GRCO / Board Secretary" }, 
+      dept: "DEP_GRC", 
+      role: "grc_officer", 
+      email: "amaghrabi@androomeda.com", 
+      isExecutive: false, 
+      avatar: "../photo/grc.png" 
+    },
+    { 
+      id: "USR_020", 
+      name: { ar: "محمد أختر", en: "Muhammad Akhtar" }, 
+      title: { ar: "مدير التطوير", en: "Director of Development" }, 
+      dept: "DEP_TECH", 
+      role: "director", 
+      email: "makhtar@androomeda.com",
+      avatar: "https://ui-avatars.com/api/?name=Muhammad+Akhtar&background=8B5CF6&color=fff"
+    },
+    { 
+      id: "USR_009", 
+      name: { ar: "مشاعل الهديان", en: "Meshail Al-Hadyan" }, 
+      title: { ar: "مسؤول الأمن السيبراني الوطني", en: "NCSO" }, 
+      dept: "DEP_TECH", 
+      role: "ncso", 
+      email: "malhadyan@androomeda.com",
+      avatar: "https://ui-avatars.com/api/?name=Meshail+AlHadyan&background=EC4899&color=fff"
+    },
+    { 
+      id: "USR_007", 
+      name: { ar: "نواف الصحابي", en: "Nawaf Al-Sahabi" }, 
+      title: { ar: "مدير حسابات العملاء", en: "Customer Accounts Manager" }, 
+      dept: "DEP_SUPPORT", 
+      role: "manager", 
+      email: "nalsahabi@androomeda.com",
+      avatar: "https://ui-avatars.com/api/?name=Nawaf+AlSahabi&background=14B8A6&color=fff"
+    },
+    { 
+      id: "USR_006", 
+      name: { ar: "د. وعد حسين", en: "Dr. Waad Hussein" }, 
+      title: { ar: "المشرف الطبي", en: "Medical Supervisor" }, 
+      dept: "DEP_MED", 
+      role: "manager", 
+      email: "whussain@androomeda.com",
+      avatar: "https://ui-avatars.com/api/?name=Waad+Hussein&background=F43F5E&color=fff"
+    },
+    
+    // Team Leads & Coordinators
+    { 
+      id: "USR_015", 
+      name: { ar: "رند الحوراني", en: "Rand Al-Hourani" }, 
+      title: { ar: "قائد الفريق التقني", en: "Technical Team Lead" }, 
+      dept: "DEP_TECH", 
+      role: "team_lead", 
+      email: "rhourani@androomeda.com", 
+      isTeamLead: true,
+      avatar: "https://ui-avatars.com/api/?name=Rand+AlHourani&background=A855F7&color=fff"
+    },
+    { 
+      id: "USR_003", 
+      name: { ar: "هادي أحمد", en: "Hadi Ahmed" }, 
+      title: { ar: "منسق المشتريات والدعم الإداري", en: "Purchasing & Admin Support Coordinator" }, 
+      dept: "DEP_HR", 
+      role: "coordinator", 
+      email: "hadi@androomeda.com",
+      avatar: "https://ui-avatars.com/api/?name=Hadi+Ahmed&background=06B6D4&color=fff"
+    },
+    
+    // Specialists & Support
+    { 
+      id: "USR_008", 
+      name: { ar: "الحسين الحميدي", en: "Al-Hussain Al-Humaidi" }, 
+      title: { ar: "أخصائي دعم تقني", en: "Technical Support Specialist" }, 
+      dept: "DEP_SUPPORT", 
+      role: "specialist", 
+      email: "alhussien@androomeda.com",
+      avatar: "https://ui-avatars.com/api/?name=AlHussain+AlHumaidi&background=84CC16&color=fff"
+    },
+    { 
+      id: "USR_010", 
+      name: { ar: "مها الحزان", en: "Maha Al-Hazzan" }, 
+      title: { ar: "أخصائية تسويق رقمي", en: "Digital Marketing Specialist" }, 
+      dept: "DEP_SALES", 
+      role: "specialist", 
+      email: "mhizan@androomeda.com",
+      avatar: "https://ui-avatars.com/api/?name=Maha+AlHazzan&background=F472B6&color=fff"
+    },
+    { 
+      id: "USR_014", 
+      name: { ar: "عبدالله الجبير", en: "Abdullah Al-Jubeir" }, 
+      title: { ar: "دعم مكتبي", en: "Office Support" }, 
+      dept: "DEP_HR", 
+      role: "support", 
+      email: "ajubeir@androomeda.com",
+      avatar: "https://ui-avatars.com/api/?name=Abdullah+AlJubeir&background=64748B&color=fff"
+    },
+    
+    // Teams & Vacant Positions
+    { 
+      id: "USR_023", 
+      name: { ar: "فريق المطورين", en: "Software Developers Team" }, 
+      title: { ar: "فريق المطورين", en: "Software Developers Team" }, 
+      dept: "DEP_TECH", 
+      role: "employee", 
+      email: "SDT@androomeda.com", 
+      isGroup: true,
+      avatar: "https://ui-avatars.com/api/?name=Dev+Team&background=6366F1&color=fff"
+    },
+    { 
+      id: "USR_011", 
+      name: { ar: "شاغر", en: "Vacant" }, 
+      title: { ar: "مدير المبيعات", en: "Sales Manager" }, 
+      dept: "DEP_SALES", 
+      role: "manager", 
+      email: "SalesManager@androomeda.com", 
+      status: "inactive",
+      avatar: "https://ui-avatars.com/api/?name=Vacant&background=94A3B8&color=fff"
+    },
+    
+    // Committee Members (External)
+    { 
+      id: "COMM_01", 
+      name: { ar: "محمد العنزي", en: "Mohammed Al-Enezi" }, 
+      title: { ar: "رئيس لجنة المراجعة", en: "Audit Committee Chairman" }, 
+      dept: "DEP_AUDIT", 
+      role: "audit_committee_chair", 
+      email: "mohammedmansour.socpa@gmail.com", 
+      isExternal: true,
+      avatar: "https://ui-avatars.com/api/?name=Mohammed+AlEnezi&background=059669&color=fff"
+    },
+    { 
+      id: "COMM_02", 
+      name: { ar: "عادل سعسع", en: "Adel Sasa" }, 
+      title: { ar: "عضو لجنة المراجعة", en: "Audit Committee Member" }, 
+      dept: "DEP_AUDIT", 
+      role: "audit_committee_member", 
+      email: "adel.sasa1@gmail.com", 
+      isExternal: true,
+      avatar: "https://ui-avatars.com/api/?name=Adel+Sasa&background=0891B2&color=fff"
+    },
+    
+    // Auditors
+    { 
+      id: "AUD_INT", 
+      name: { ar: "المدقق الداخلي", en: "Internal Auditor" }, 
+      title: { ar: "المدقق الداخلي", en: "Internal Auditor" }, 
+      dept: "DEP_AUDIT", 
+      role: "auditor", 
+      email: "InternalAudit@androomeda.com", 
+      isExternal: false,
+      avatar: "https://ui-avatars.com/api/?name=Internal+Auditor&background=7C3AED&color=fff"
+    },
+    { 
+      id: "AUD_EXT", 
+      name: { ar: "المدقق الخارجي", en: "External Auditor" }, 
+      title: { ar: "المدقق الخارجي (KPMG/EY)", en: "External Auditor (KPMG/EY)" }, 
+      dept: "DEP_AUDIT", 
+      role: "auditor", 
+      email: "ExternalAudit@androomeda.com", 
+      isExternal: true,
+      avatar: "https://ui-avatars.com/api/?name=External+Auditor&background=DC2626&color=fff"
+    },
+    
+    // Shareholders (Users with shareholder role only)
+    { id: "SH_USER_001", name: { ar: "ورثة محمد بن صالح السحيباني", en: "Heirs of Mohammed Al-Suhaibani" }, title: { ar: "مساهم رئيسي", en: "Major Shareholder" }, dept: "DEP_EXEC", role: "shareholder", email: "alcaseer@gmail.com", isShareholder: true, avatar: "https://ui-avatars.com/api/?name=Heirs&background=F97316&color=fff" },
+    { id: "SH_USER_003", name: { ar: "وائل بن محمد السحيباني", en: "Wael Al-Suhaibani" }, title: { ar: "مساهم", en: "Shareholder" }, dept: "DEP_EXEC", role: "shareholder", email: "w961@live.com", isShareholder: true, avatar: "https://ui-avatars.com/api/?name=Wael&background=EAB308&color=fff" },
+    { id: "SH_USER_004", name: { ar: "هيثم بن محمد السحيباني", en: "Haitham Al-Suhaibani" }, title: { ar: "مساهم", en: "Shareholder" }, dept: "DEP_EXEC", role: "shareholder", email: "hmsasis@gmail.com", isShareholder: true, avatar: "https://ui-avatars.com/api/?name=Haitham&background=84CC16&color=fff" },
+    { id: "SH_USER_006", name: { ar: "إبراهيم بن حمد السكيتي", en: "Ibrahim Al-Skeiti" }, title: { ar: "مساهم", en: "Shareholder" }, dept: "DEP_EXEC", role: "shareholder", email: "ihskaity@gmail.com", isShareholder: true, avatar: "https://ui-avatars.com/api/?name=Ibrahim&background=22C55E&color=fff" },
+    { id: "SH_USER_007", name: { ar: "صالح بن عبدالله الوهيبي", en: "Saleh Al-Wahibi" }, title: { ar: "مساهم", en: "Shareholder" }, dept: "DEP_EXEC", role: "shareholder", email: "saaw4466@yahoo.com", isShareholder: true, avatar: "https://ui-avatars.com/api/?name=Saleh&background=14B8A6&color=fff" },
+    { id: "SH_USER_008", name: { ar: "عبدالله بن علي الفريجي", en: "Abdullah Al-Fariji" }, title: { ar: "مساهم", en: "Shareholder" }, dept: "DEP_EXEC", role: "shareholder", email: "a_furaiji@hotmail.com", isShareholder: true, avatar: "https://ui-avatars.com/api/?name=Abdullah&background=06B6D4&color=fff" },
+    { id: "SH_USER_010", name: { ar: "شركة بيجي المحدودة", en: "BG LTD Company" }, title: { ar: "مساهم (شركة)", en: "Shareholder (Entity)" }, dept: "DEP_EXEC", role: "shareholder", email: "saleh@bgtech.com", isShareholder: true, avatar: "https://ui-avatars.com/api/?name=BG+LTD&background=3B82F6&color=fff" },
+    { id: "SH_USER_011", name: { ar: "أحمد بن سليمان الجاسر", en: "Ahmed Al-Jasser" }, title: { ar: "مساهم", en: "Shareholder" }, dept: "DEP_EXEC", role: "shareholder", email: "ahmed.jasser@gmail.com", isShareholder: true, avatar: "https://ui-avatars.com/api/?name=Ahmed&background=8B5CF6&color=fff" }
+  ],
+
+  // ==========================================
+  // 5. USER ROLES MAPPING (REAL DATA)
+  // ==========================================
+  
+  userRolesMap: [
+    // أيمن المغربي - 5 أدوار
+    { 
+      userId: "USR_004", 
+      contexts: [
+        { context: "system", role: "sys_admin", label: { ar: "إدارة النظام", en: "System Administration" }, isPrimary: true },
+        { context: "board", role: "board_secretary", label: { ar: "مجلس الإدارة", en: "Board of Directors" } },
+        { context: "audit_committee", role: "audit_committee_secretary", label: { ar: "لجنة المراجعة", en: "Audit Committee" } },
+        { context: "shareholders", role: "investor_relations", label: { ar: "علاقات المساهمين", en: "Investor Relations" } },
+        { context: "governance", role: "grc_officer", label: { ar: "الحوكمة والالتزام", en: "GRC" } }
+      ]
+    },
+    // هشام السحيباني
+    { 
+      userId: "USR_001", 
+      contexts: [
+        { context: "executive", role: "ceo", label: { ar: "الإدارة التنفيذية", en: "Executive Management" }, isPrimary: true },
+        { context: "board", role: "vice_chairman", label: { ar: "مجلس الإدارة", en: "Board of Directors" } },
+        { context: "shareholders", role: "shareholder", label: { ar: "المساهمين", en: "Shareholders" }, shareholderId: "SH_002" }
+      ]
+    },
+    // عبدالله الحواس
+    { 
+      userId: "USR_000", 
+      contexts: [
+        { context: "board", role: "chairman", label: { ar: "مجلس الإدارة", en: "Board of Directors" }, isPrimary: true },
+        { context: "shareholders", role: "shareholder", label: { ar: "المساهمين", en: "Shareholders" }, shareholderId: "SH_009" }
+      ]
+    },
+    // منصور اليامي
+    { 
+      userId: "USR_005", 
+      contexts: [
+        { context: "executive", role: "cao", label: { ar: "الإدارة التنفيذية", en: "Executive Management" }, isPrimary: true },
+        { context: "board", role: "board_member", label: { ar: "مجلس الإدارة", en: "Board of Directors" } },
+        { context: "shareholders", role: "shareholder", label: { ar: "المساهمين", en: "Shareholders" }, shareholderId: "SH_005" }
+      ]
+    },
+    // أحمد السحيباني
+    { 
+      userId: "BRD_003", 
+      contexts: [
+        { context: "board", role: "board_member", label: { ar: "مجلس الإدارة", en: "Board of Directors" }, isPrimary: true },
+        { context: "audit_committee", role: "audit_committee_member", label: { ar: "لجنة المراجعة", en: "Audit Committee" } },
+        { context: "shareholders", role: "shareholder", label: { ar: "المساهمين", en: "Shareholders" }, shareholderId: "SH_011" }
+      ]
+    },
+    // محمد العنزي
+    { 
+      userId: "COMM_01", 
+      contexts: [
+        { context: "audit_committee", role: "audit_committee_chair", label: { ar: "لجنة المراجعة", en: "Audit Committee" }, isPrimary: true }
+      ]
+    },
+    // عادل سعسع
+    { 
+      userId: "COMM_02", 
+      contexts: [
+        { context: "audit_committee", role: "audit_committee_member", label: { ar: "لجنة المراجعة", en: "Audit Committee" }, isPrimary: true }
+      ]
+    },
+    // Shareholders Mapping
+    { userId: "SH_USER_001", contexts: [{ context: "shareholders", role: "shareholder", label: { ar: "المساهمين", en: "Shareholders" }, shareholderId: "SH_001", isPrimary: true }] },
+    { userId: "SH_USER_003", contexts: [{ context: "shareholders", role: "shareholder", label: { ar: "المساهمين", en: "Shareholders" }, shareholderId: "SH_003", isPrimary: true }] },
+    { userId: "SH_USER_004", contexts: [{ context: "shareholders", role: "shareholder", label: { ar: "المساهمين", en: "Shareholders" }, shareholderId: "SH_004", isPrimary: true }] },
+    { userId: "SH_USER_006", contexts: [{ context: "shareholders", role: "shareholder", label: { ar: "المساهمين", en: "Shareholders" }, shareholderId: "SH_006", isPrimary: true }] },
+    { userId: "SH_USER_007", contexts: [{ context: "shareholders", role: "shareholder", label: { ar: "المساهمين", en: "Shareholders" }, shareholderId: "SH_007", isPrimary: true }] },
+    { userId: "SH_USER_008", contexts: [{ context: "shareholders", role: "shareholder", label: { ar: "المساهمين", en: "Shareholders" }, shareholderId: "SH_008", isPrimary: true }] },
+    { userId: "SH_USER_010", contexts: [{ context: "shareholders", role: "shareholder", label: { ar: "المساهمين", en: "Shareholders" }, shareholderId: "SH_010", isPrimary: true }] },
+    { userId: "SH_USER_011", contexts: [{ context: "shareholders", role: "shareholder", label: { ar: "المساهمين", en: "Shareholders" }, shareholderId: "SH_011", isPrimary: true }] }
+  ],
+
+  // ==========================================
+  // 6. GOVERNANCE (REAL DATA)
   // ==========================================
   
   governance: {
-    
-    boardComposition: {
-      totalSeats: 7,
-      independent: 4,
-      executive: 2,
-      nonExecutive: 1,
-      term: 3, // years
-      meetingsPerYear: 6
+    board: {
+      totalSeats: 4,
+      termYears: 4,
+      currentTermStart: "2025-01-01",
+      currentTermEnd: "2029-01-01",
+      minMeetingsPerYear: 4
     },
-
+    quorum: {
+      OGA: { firstMeeting: 25, secondMeeting: 0, decisionThreshold: 50 },
+      EGA: { firstMeeting: 50, secondMeeting: 25, thirdMeeting: 0, decisionThreshold: 66.6 },
+      Board: { minMembers: 3, decisionThreshold: 51 }
+    },
+    remuneration: {
+      currency: "SAR",
+      boardMeetingFee: 2000,
+      auditCommitteeFee: 1500,
+      secretaryFee: 1000,
+      annualCapPerMember: 500000,
+      travelPolicy: "Business Class for non-residents"
+    },
     committees: [
-      {
-        id: 'AUDIT_COM',
-        name: { ar: 'لجنة المراجعة', en: 'Audit Committee' },
-        members: 3,
-        chair: 'سارة المطيري',
-        responsibilities: [
-          { ar: 'الإشراف على نظام الرقابة الداخلية', en: 'Oversee internal control system' },
-          { ar: 'مراجعة القوائم المالية', en: 'Review financial statements' },
-          { ar: 'التوصية بتعيين المراجع الخارجي', en: 'Recommend external auditor' }
-        ]
-      },
-      {
-        id: 'NOM_COM',
-        name: { ar: 'لجنة الترشيحات والمكافآت', en: 'Nomination & Remuneration Committee' },
-        members: 3,
-        chair: 'فهد الغامدي',
-        responsibilities: [
-          { ar: 'اقتراح سياسات المكافآت', en: 'Propose remuneration policies' },
-          { ar: 'ترشيح أعضاء مجلس الإدارة', en: 'Nominate board members' },
-          { ar: 'تقييم أداء المجلس', en: 'Evaluate board performance' }
-        ]
-      },
-      {
-        id: 'EXEC_COM',
-        name: { ar: 'اللجنة التنفيذية', en: 'Executive Committee' },
-        members: 4,
-        chair: 'هشام السحيباني',
-        responsibilities: [
-          { ar: 'متابعة تنفيذ الاستراتيجية', en: 'Monitor strategy execution' },
-          { ar: 'اتخاذ القرارات العاجلة', en: 'Make urgent decisions' },
-          { ar: 'الموافقة على الاستثمارات الكبرى', en: 'Approve major investments' }
-        ]
+      { 
+        id: "COMM_AUDIT", 
+        name: { ar: "لجنة المراجعة", en: "Audit Committee" }, 
+        required: true, 
+        minMembers: 3,
+        chair: "COMM_01",
+        members: ["COMM_01", "COMM_02", "BRD_003"],
+        secretary: "USR_004"
       }
     ],
-
-    codeOfConduct: {
-      version: '2.1',
-      lastUpdated: '2025-01-01',
-      keyPrinciples: [
-        { ar: 'النزاهة والشفافية', en: 'Integrity and Transparency' },
-        { ar: 'المساءلة والمسؤولية', en: 'Accountability and Responsibility' },
-        { ar: 'العدالة والمساواة', en: 'Fairness and Equality' },
-        { ar: 'احترام القوانين', en: 'Respect for Laws' }
-      ]
-    },
-
-    conflictOfInterest: {
-      policy: {
-        ar: 'يجب على جميع الأعضاء الإفصاح عن أي تضارب محتمل في المصالح',
-        en: 'All members must disclose any potential conflicts of interest'
-      },
-      disclosureRequired: true,
-      approvalAuthority: 'Board of Directors'
+    policies: {
+      codeOfConduct: { version: '2.1', lastUpdated: '2025-01-01' },
+      conflictOfInterest: { version: '2.0', lastUpdated: '2025-12-10' },
+      disclosure: { version: '2.0', lastUpdated: '2025-11-20' },
+      remuneration: { version: '1.8', lastUpdated: '2025-10-05' }
     }
   },
 
   // ==========================================
-  // DELEGATION OF AUTHORITY (DOA)
+  // 7. COMPANY ACTIVITIES (REAL DATA)
   // ==========================================
   
-  doa: {
-    ceo: {
-      position: 'Chief Executive Officer',
-      limits: {
-        financialApproval: 500000,
-        contractSigning: 1000000,
-        hiring: 'All levels below C-Suite',
-        strategicDecisions: 'With Board approval for major initiatives'
-      },
-      authorities: [
-        { ar: 'الموافقة على النفقات حتى 500 ألف ريال', en: 'Approve expenses up to 500K SAR' },
-        { ar: 'توقيع العقود حتى مليون ريال', en: 'Sign contracts up to 1M SAR' },
-        { ar: 'التوظيف لجميع المستويات تحت C-Suite', en: 'Hire all levels below C-Suite' },
-        { ar: 'اتخاذ القرارات التشغيلية اليومية', en: 'Make daily operational decisions' }
-      ]
+  activities: [
+    { code: "432134", name: { ar: "تركيب وصيانة الأجهزة الأمنية", en: "Security Systems Installation & Maintenance" }, category: "Security" },
+    { code: "451030", name: { ar: "مزادات السيارات والمعدات", en: "Vehicle & Equipment Auctions" }, category: "Auctions" },
+    { code: "464956", name: { ar: "البيع بالجملة للأجهزة والمعدات والمستلزمات الطبية", en: "Wholesale of Medical Equipment & Supplies" }, category: "Medical" },
+    { code: "465101", name: { ar: "البيع بالجملة للحواسيب ومستلزماتها يشمل بيع الطابعات وأحبارها", en: "Wholesale of Computers & Accessories" }, category: "Sales" },
+    { code: "465102", name: { ar: "البيع بالجملة للبرمجيات ويشمل الاستيراد", en: "Wholesale of Software (Including Import)" }, category: "Sales" },
+    { code: "465933", name: { ar: "البيع بالجملة للأجهزة الأمنية", en: "Wholesale of Security Devices" }, category: "Security" },
+    { code: "465934", name: { ar: "البيع بالجملة للمعدات والتجهيزات الأمنية (للمنافسات الحكومية فقط)", en: "Wholesale of Security Equipment (Government Tenders Only)" }, category: "Security" },
+    { code: "469061", name: { ar: "البيع بالجملة لأجهزة ولوازم الكيماويات والمختبرات", en: "Wholesale of Lab Chemicals & Equipment" }, category: "Medical" },
+    { code: "474110", name: { ar: "البيع بالتجزئة للحواسيب وملحقاتها يشمل الطابعات وأحبارها", en: "Retail of Computers & Accessories" }, category: "Retail" },
+    { code: "474152", name: { ar: "بيع البرمجيات غير المعدة بناء على الطلب", en: "Retail of Off-the-Shelf Software" }, category: "IT" },
+    { code: "477336", name: { ar: "البيع بالتجزئة للأجهزة الأمنية", en: "Retail of Security Devices" }, category: "Security" },
+    { code: "479940", name: { ar: "المزادات في غير المحلات", en: "Non-Store Auctions" }, category: "Auctions" },
+    { code: "620102", name: { ar: "تصميم وبرمجة البرمجيات الخاصة", en: "Custom Software Development" }, category: "IT" },
+    { code: "682010", name: { ar: "الوساطة العقارية", en: "Real Estate Brokerage" }, category: "RealEstate" },
+    { code: "682044", name: { ar: "المزادات العقارية", en: "Real Estate Auctions" }, category: "RealEstate" },
+    { code: "731013", name: { ar: "تقديم خدمات تسويقية نيابةً عن الغير", en: "Marketing Services on Behalf of Others" }, category: "Marketing" },
+    { code: "749036", name: { ar: "أنشطة خدمات استشارات في مجال تنظيم الأجهزة الطبية", en: "Consulting for Medical Device Regulation" }, category: "Medical" },
+    { code: "869027", name: { ar: "مراكز الخدمات الطبية المنزلية", en: "Home Healthcare Centers" }, category: "Medical" },
+    { code: "869037", name: { ar: "مراكز الرعاية عن بعد والطب الإتصالي", en: "Telehealth Centers" }, category: "Medical" }
+  ],
+
+  // ==========================================
+  // 8. MEETINGS & MINUTES
+  // ==========================================
+  
+  meetings: [
+    {
+      id: 'BOD-2026-03',
+      title: { ar: 'اجتماع مجلس الإدارة الثالث', en: 'Third Board Meeting' },
+      date: '2026-03-15',
+      time: '10:00',
+      type: 'in-person',
+      status: 'scheduled',
+      location: { ar: 'مقر الشركة الرئيسي', en: 'Company Headquarters' }
+    },
+    {
+      id: 'BOD-2026-02',
+      title: { ar: 'اجتماع مجلس الإدارة الثاني', en: 'Second Board Meeting' },
+      date: '2026-02-22',
+      time: '19:30',
+      type: 'in-person',
+      status: 'scheduled'
+    },
+    {
+      id: 'BOD-2026-01',
+      title: { ar: 'اجتماع مجلس الإدارة الأول', en: 'First Board Meeting' },
+      date: '2026-01-20',
+      time: '13:00',
+      type: 'remote',
+      status: 'completed',
+      attendanceRate: 0.89,
+      decisions: 5
+    }
+  ],
+
+  // ==========================================
+  // 9. FINANCIAL PERFORMANCE
+  // ==========================================
+  
+  financialPerformance: {
+    currentQuarter: {
+      period: 'Q4 2025',
+      revenue: 5200000,
+      expenses: 3350000,
+      netProfit: 1850000,
+      profitMargin: 35.6,
+      ebitda: 2100000,
+      ebitdaMargin: 40.4
     },
     
-    cfo: {
-      position: 'Chief Financial Officer',
-      limits: {
-        financialApproval: 200000,
-        contractSigning: 300000,
-        budgetAdjustment: 100000
-      },
-      authorities: [
-        { ar: 'الموافقة على النفقات المالية حتى 200 ألف', en: 'Approve financial expenses up to 200K' },
-        { ar: 'إعداد الميزانية السنوية', en: 'Prepare annual budget' },
-        { ar: 'الإشراف على التدقيق الداخلي', en: 'Oversee internal audit' }
-      ]
-    },
-
-    cto: {
-      position: 'Chief Technology Officer',
-      limits: {
-        financialApproval: 150000,
-        technologyDecisions: 'Full authority within budget',
-        vendorSelection: 'With CFO approval for >100K'
-      },
-      authorities: [
-        { ar: 'اختيار التقنيات والأنظمة', en: 'Select technologies and systems' },
-        { ar: 'الموافقة على المشاريع التقنية', en: 'Approve technical projects' },
-        { ar: 'إدارة فرق التطوير', en: 'Manage development teams' }
-      ]
+    kpis: {
+      revenueGrowth: 12.5,
+      profitGrowth: 18.2,
+      debtToEquity: 0.32,
+      currentRatio: 2.1
     }
   },
 
   // ==========================================
-  // STRATEGIC OBJECTIVES (2026-2028)
+  // 10. HELPER FUNCTIONS
   // ==========================================
   
-  strategy: {
-    vision: {
-      ar: 'أن نكون الشركة الرائدة في الحلول التقنية المتكاملة بالمملكة',
-      en: 'To be the leading provider of integrated technology solutions in the Kingdom'
-    },
-    
-    mission: {
-      ar: 'تقديم حلول تقنية مبتكرة تساعد عملاءنا على تحقيق التحول الرقمي',
-      en: 'Deliver innovative technology solutions that enable our clients\' digital transformation'
-    },
-
-    strategicGoals: [
-      {
-        id: 'SG01',
-        title: { ar: 'النمو المالي', en: 'Financial Growth' },
-        target: { ar: 'زيادة الإيرادات بنسبة 25% سنوياً', en: 'Increase revenue by 25% annually' },
-        kpis: [
-          { metric: 'Revenue Growth', target: '25%', current: '12.5%' },
-          { metric: 'Net Profit Margin', target: '60%', current: '57%' }
-        ]
-      },
-      {
-        id: 'SG02',
-        title: { ar: 'التميز التشغيلي', en: 'Operational Excellence' },
-        target: { ar: 'تحسين الكفاءة التشغيلية بنسبة 30%', en: 'Improve operational efficiency by 30%' },
-        kpis: [
-          { metric: 'Project On-Time Delivery', target: '95%', current: '87.5%' },
-          { metric: 'Customer Satisfaction', target: '90%', current: '85%' }
-        ]
-      },
-      {
-        id: 'SG03',
-        title: { ar: 'الابتكار والتطوير', en: 'Innovation & Development' },
-        target: { ar: 'إطلاق 5 منتجات جديدة سنوياً', en: 'Launch 5 new products annually' },
-        kpis: [
-          { metric: 'New Products Launched', target: '5', current: '2' },
-          { metric: 'R&D Investment', target: '15%', current: '10%' }
-        ]
-      }
-    ]
+  getUserById(id) {
+    return this.users.find(u => u.id === id);
   },
 
-  // ==========================================
-  // RISK MANAGEMENT FRAMEWORK
-  // ==========================================
-  
-  riskManagement: {
-    framework: {
-      ar: 'إطار إدارة المخاطر المؤسسية (ERM)',
-      en: 'Enterprise Risk Management Framework (ERM)'
-    },
-    
-    riskAppetite: {
-      financial: 'Medium',
-      operational: 'Low',
-      strategic: 'Medium-High',
-      reputational: 'Very Low'
-    },
-
-    riskCategories: [
-      { id: 'FIN', name: { ar: 'مخاطر مالية', en: 'Financial Risks' } },
-      { id: 'OPR', name: { ar: 'مخاطر تشغيلية', en: 'Operational Risks' } },
-      { id: 'STR', name: { ar: 'مخاطر استراتيجية', en: 'Strategic Risks' } },
-      { id: 'CYB', name: { ar: 'مخاطر سيبرانية', en: 'Cyber Risks' } },
-      { id: 'REG', name: { ar: 'مخاطر امتثال تنظيمي', en: 'Regulatory Risks' } }
-    ],
-
-    keyRisks: [
-      {
-        id: 'R001',
-        category: 'STR',
-        title: { ar: 'المنافسة الشديدة', en: 'Intense Competition' },
-        impact: 'High',
-        probability: 'High',
-        mitigation: { ar: 'الاستثمار في الابتكار والتميز', en: 'Invest in innovation and differentiation' }
-      },
-      {
-        id: 'R002',
-        category: 'CYB',
-        title: { ar: 'الهجمات السيبرانية', en: 'Cyber Attacks' },
-        impact: 'Very High',
-        probability: 'Medium',
-        mitigation: { ar: 'تطبيق بروتوكولات أمنية متقدمة', en: 'Implement advanced security protocols' }
-      },
-      {
-        id: 'R003',
-        category: 'OPR',
-        title: { ar: 'نقص المواهب التقنية', en: 'Talent Shortage' },
-        impact: 'High',
-        probability: 'High',
-        mitigation: { ar: 'برامج تطوير وتدريب الكوادر', en: 'Talent development and training programs' }
-      }
-    ]
+  getUserByEmail(email) {
+    return this.users.find(u => u.email === email);
   },
 
-  // ==========================================
-  // COMPLIANCE REQUIREMENTS
-  // ==========================================
-  
-  compliance: {
-    regulations: [
-      {
-        id: 'REG001',
-        name: { ar: 'نظام الشركات السعودي', en: 'Saudi Companies Law' },
-        authority: 'Ministry of Commerce',
-        lastReview: '2025-01-15',
-        status: 'Compliant'
-      },
-      {
-        id: 'REG002',
-        name: { ar: 'نظام حماية البيانات الشخصية', en: 'Personal Data Protection Law' },
-        authority: 'SDAIA',
-        lastReview: '2025-01-10',
-        status: 'Compliant'
-      },
-      {
-        id: 'REG003',
-        name: { ar: 'ضوابط الأمن السيبراني', en: 'Cybersecurity Controls' },
-        authority: 'NCA',
-        lastReview: '2024-12-20',
-        status: 'In Progress'
-      }
-    ],
-
-    certifications: [
-      { name: 'ISO 27001', status: 'Active', expiry: '2026-06-30' },
-      { name: 'ISO 9001', status: 'Active', expiry: '2026-03-15' },
-      { name: 'SOC 2 Type II', status: 'In Progress', expected: '2026-04-30' }
-    ]
+  getShareholderById(id) {
+    return this.shareholders.find(s => s.id === id);
   },
 
-  // ==========================================
-  // HELPER FUNCTIONS
-  // ==========================================
-  
-  getCompanyInfo() {
-    return this.company;
+  getBoardMembers() {
+    return this.users.filter(u => 
+      ['chairman', 'vice_chairman', 'board_member'].includes(u.role) ||
+      u.additionalRoles?.includes('board_member') ||
+      u.additionalRoles?.includes('vice_chairman')
+    );
   },
 
-  getGovernancePolicies() {
-    return this.governance;
+  getExecutives() {
+    return this.users.filter(u => u.isExecutive === true);
   },
 
-  getDOA(position) {
-    return this.doa[position.toLowerCase()] || null;
+  getShareholderUsers() {
+    return this.users.filter(u => u.isShareholder === true);
   },
 
-  getStrategicPlan() {
-    return this.strategy;
+  getUserContexts(userId) {
+    const mapping = this.userRolesMap.find(m => m.userId === userId);
+    return mapping ? mapping.contexts : [];
   },
 
-  getRiskFramework() {
-    return this.riskManagement;
+  getMeetingById(id) {
+    return this.meetings.find(m => m.id === id);
   },
 
-  getComplianceStatus() {
-    return this.compliance;
+  getUpcomingMeetings() {
+    const today = new Date();
+    return this.meetings.filter(m => 
+      m.status === 'scheduled' && new Date(m.date) >= today
+    );
+  },
+
+  getCompletedMeetings() {
+    return this.meetings.filter(m => m.status === 'completed');
+  },
+
+  getShareholderStatistics() {
+    return {
+      totalShareholders: this.shareholders.length,
+      individualShareholders: this.shareholders.filter(s => s.type === 'Individual').length,
+      entityShareholders: this.shareholders.filter(s => s.type === 'Entity').length,
+      totalShares: this.capital.sharesCount,
+      largestShareholder: this.shareholders.reduce((max, s) => s.percent > max.percent ? s : max)
+    };
   }
 };
 
 // Make available globally
-window.CompanyPolicy = CompanyPolicy;
+if (typeof window !== 'undefined') {
+  window.CompanyPolicy = CompanyPolicy;
+}
+
+// For Node.js environments
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = CompanyPolicy;
+}
+
+console.log('✅ Andromeda Board Company Policy Data Loaded Successfully (v4.0.0)');
