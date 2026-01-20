@@ -164,36 +164,60 @@
     <script src="js/components/bot.js"></script>
 
     <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const checkLibs = setInterval(() => {
-            // ننتظر تحميل المحرك والكونفيج
-            if (typeof Layout !== 'undefined' && typeof AppConfig !== 'undefined') {
-                clearInterval(checkLibs);
+    /**
+     * تشغيل بوابة المدير المالي - الإصدار المستقر v10.5
+     */
+    (function() {
+        const initializeCFO = () => {
+            // 1. إعداد بيانات الهوية المالية (مطابقة لـ layout.js)
+            const cfoIdentity = {
+                id: 'USR_002',
+                role: 'CFO',
+                displayName: 'المدير المالي',
+                displayTitle: 'Chief Financial Officer',
+                avatar: 'https://ui-avatars.com/api/?name=CFO&background=FB4747&color=fff'
+            };
 
-                const boardUser = {
-                    id: 'USR_002',
-                    role: 'CFO', // ✅ متطابق مع _menuDefinitions في layout.js
-                    displayName: 'المدير المالي',
-                    displayTitle: 'المدير المالي',
-                    avatar: 'https://ui-avatars.com/api/?name=CFO&background=FB4747&color=fff'
-                };
+            // 2. المزامنة مع كافة الأنظمة (AppConfig + LocalStorage)
+            if (window.AppConfig) AppConfig.setCurrentUser(cfoIdentity);
+            localStorage.setItem('currentUser', JSON.stringify(cfoIdentity));
+            localStorage.setItem('activeRole', 'CFO');
 
-                // 1. المزامنة مع AppConfig (الخاص بك)
-                AppConfig.setCurrentUser(boardUser);
-
-                // 2. المزامنة اليدوية مع localStorage لضمان استجابة المحرك v10.5
-                localStorage.setItem('currentUser', JSON.stringify(boardUser));
-                localStorage.setItem('activeRole', 'CFO');
-
-                // 3. تشغيل المحرك
+            // 3. التأكد من تحميل مكتبة المحرك قبل التشغيل
+            if (typeof Layout !== 'undefined') {
                 Layout.init();
                 
-                // 4. إظهار الصفحة
+                // 4. إظهار الصفحة وإزالة الشفافية
                 document.body.classList.remove('opacity-0');
-                console.log("✅ Finance Sidebar Activated with Role: CFO");
+                document.body.style.opacity = '1';
+                
+                console.log("🚀 ERP Finance Layout v10.5: Activated Successfully");
+            } else {
+                console.warn("⚠️ Layout library not loaded yet, retrying...");
+                setTimeout(initializeCFO, 100);
             }
-        }, 50);
+        };
+
+        // التشغيل عند جاهزية المتصفح
+        if (document.readyState === 'complete') {
+            initializeCFO();
+        } else {
+            window.addEventListener('load', initializeCFO);
+        }
+    })();
+</script>
+
+<script>
+    // --- الوظائف التكميلية (الترجمة والرسوم البيانية) ---
+    document.addEventListener('DOMContentLoaded', () => {
+        // ننتظر قليلاً للتأكد من أن المحرك بدأ رسم العناصر
+        setTimeout(() => {
+            if (typeof applyLanguage === 'function') applyLanguage();
+            if (typeof initCharts === 'function') initCharts();
+        }, 150);
     });
+    
+    // باقي الكود الخاص بالرسوم البيانية (Chart.js) والترجمة يبقى كما هو في ملفك الأصلي
 </script>
     
     <script>
