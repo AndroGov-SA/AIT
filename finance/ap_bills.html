@@ -212,28 +212,37 @@
     <script src="js/components/bot.js"></script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // ننتظر تحميل السكربتات
-            const checkLibs = setInterval(() => {
-                if (typeof Layout !== 'undefined' && typeof AppConfig !== 'undefined') {
-                    clearInterval(checkLibs);
+    document.addEventListener('DOMContentLoaded', () => {
+        const checkLibs = setInterval(() => {
+            // ننتظر تحميل المحرك والكونفيج
+            if (typeof Layout !== 'undefined' && typeof AppConfig !== 'undefined') {
+                clearInterval(checkLibs);
 
-                    // ✅ الخطوة المهمة: تحديد هوية المستخدم كمدير مالي
-                    const boardUser = {
-                        id: 'USR_002',
-                        role: 'CFO', // <--- هذا هو المفتاح الذي سيغير القائمة إلى قائمة الرئيس التنفيذي المختصرة
-                        displayName: 'المدير المالي ',
-                        displayTitle: 'المدير المالي ',
-                        avatar: 'https://ui-avatars.com/api/?name=Board&background=random'
-                    };
+                const boardUser = {
+                    id: 'USR_002',
+                    role: 'CFO', // ✅ متطابق مع _menuDefinitions في layout.js
+                    displayName: 'المدير المالي',
+                    displayTitle: 'المدير المالي',
+                    avatar: 'https://ui-avatars.com/api/?name=CFO&background=FB4747&color=fff'
+                };
 
-                    // حفظ المستخدم وتشغيل النظام
-                    AppConfig.setCurrentUser(boardUser);
-                    Layout.init();
-                }
-            }, 50);
-        });
-    </script>
+                // 1. المزامنة مع AppConfig (الخاص بك)
+                AppConfig.setCurrentUser(boardUser);
+
+                // 2. المزامنة اليدوية مع localStorage لضمان استجابة المحرك v10.5
+                localStorage.setItem('currentUser', JSON.stringify(boardUser));
+                localStorage.setItem('activeRole', 'CFO');
+
+                // 3. تشغيل المحرك
+                Layout.init();
+                
+                // 4. إظهار الصفحة
+                document.body.classList.remove('opacity-0');
+                console.log("✅ Finance Sidebar Activated with Role: CFO");
+            }
+        }, 50);
+    });
+</script>
 
     <script>
         // --- Mock Bills Data ---
