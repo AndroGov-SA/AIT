@@ -98,7 +98,7 @@
         </main>
     </div>
 
-    <!-- ✅ 1. Linking External Bot Component (جسر ربط المساعد الذكي) -->
+    <!-- ✅ 1. Linking External Bot Component -->
     <script src="audit/js/components/bot.js"></script>
 
     <!-- ✅ 2. AndroGov Engine Script -->
@@ -107,11 +107,12 @@
             // 1. STATE MANAGEMENT
             let _state = {
                 activeRole: 'audit_secretary',
+                theme: localStorage.getItem('theme') || 'light',
                 isInitialized: false,
                 unreadCount: 2,
                 notifications: [
-                    { id: 'n1', type: 'approval', icon: 'fa-file-signature', color: 'orange', title: { ar: 'اعتماد مطلوب: تقرير التدقيق', en: 'Approval Required: Audit Report' }, body: { ar: 'مسودة بانتظار الموافقة النهائية', en: 'Draft awaiting final approval' }, time: new Date(Date.now() - 1000 * 60 * 15), read: false, link: 'audit_plan.html' },
-                    { id: 'n2', type: 'meeting', icon: 'fa-calendar-check', color: 'blue', title: { ar: 'اجتماع لجنة المراجعة', en: 'Audit Committee Meeting' }, body: { ar: 'غداً الساعة 10:00 صباحاً', en: 'Tomorrow at 10:00 AM' }, time: new Date(Date.now() - 1000 * 60 * 60 * 2), read: false, link: 'observations.html' }
+                    { id: 'n1', type: 'approval', icon: 'fa-file-signature', color: 'orange', title: { ar: 'اعتماد مطلوب: تقرير التدقيق', en: 'Approval Required: Audit Report' }, body: { ar: 'مسودة بانتظار الموافقة النهائية', en: 'Draft awaiting final approval' }, time: new Date(Date.now() - 1000 * 60 * 15), read: false, link: '#' },
+                    { id: 'n2', type: 'meeting', icon: 'fa-calendar-check', color: 'blue', title: { ar: 'اجتماع لجنة المراجعة', en: 'Audit Committee Meeting' }, body: { ar: 'غداً الساعة 10:00 صباحاً', en: 'Tomorrow at 10:00 AM' }, time: new Date(Date.now() - 1000 * 60 * 60 * 2), read: false, link: '#' }
                 ]
             };
 
@@ -137,8 +138,8 @@
 
             // 3. I18N DICTIONARY
             const _translations = {
-                ar: { audit_oversight: 'الرقابة والتدقيق', compliance_tasks: 'مهام الامتثال', dashboard: 'لوحة القيادة', audit_plan: 'خطة التدقيق', observations: 'الملاحظات', risk_reports: 'تقارير المخاطر', logout: 'خروج آمن', notifications: 'الإشعارات', markAllRead: 'تعليم الكل كمقروء', noNotifications: 'لا توجد إشعارات جديدة', switchWorkspace: 'بيئة العمل', loading: 'جاري تهيئة محرك الحوكمة والاشعارات...' },
-                en: { audit_oversight: 'Audit & Oversight', compliance_tasks: 'Compliance Tasks', dashboard: 'Dashboard', audit_plan: 'Audit Plan', observations: 'Observations', risk_reports: 'Risk Reports', logout: 'Secure Logout', notifications: 'Notifications', markAllRead: 'Mark all read', noNotifications: 'No new notifications', switchWorkspace: 'Workspace', loading: 'Initializing Engine & Notifications...' }
+                ar: { audit_oversight: 'الرقابة والتدقيق', compliance_tasks: 'مهام الامتثال', dashboard: 'لوحة القيادة', audit_plan: 'خطة التدقيق', observations: 'الملاحظات', risk_reports: 'تقارير المخاطر', logout: 'خروج آمن', notifications: 'الإشعارات', markAllRead: 'تعليم الكل كمقروء', noNotifications: 'لا توجد إشعارات جديدة', switchWorkspace: 'بيئة العمل' },
+                en: { audit_oversight: 'Audit & Oversight', compliance_tasks: 'Compliance Tasks', dashboard: 'Dashboard', audit_plan: 'Audit Plan', observations: 'Observations', risk_reports: 'Risk Reports', logout: 'Secure Logout', notifications: 'Notifications', markAllRead: 'Mark all read', noNotifications: 'No new notifications', switchWorkspace: 'Workspace' }
             };
 
             // Helpers
@@ -154,7 +155,23 @@
                 return lang === 'ar' ? `منذ ${Math.floor(diff/86400)} يوم` : `${Math.floor(diff/86400)}d ago`;
             }
 
-            // 4. RENDERING LOGIC (SIDEBAR)
+            // 4. THEME LOGIC (إدارة الثيم)
+            function applyTheme() {
+                if (_state.theme === 'dark') {
+                    document.documentElement.classList.add('dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                }
+            }
+
+            function toggleTheme() {
+                _state.theme = _state.theme === 'dark' ? 'light' : 'dark';
+                localStorage.setItem('theme', _state.theme);
+                applyTheme();
+                renderHeader(); // إعادة الرندر لتحديث الأيقونة
+            }
+
+            // 5. RENDERING LOGIC (SIDEBAR)
             function renderSidebar() {
                 const container = document.getElementById('sidebar-container');
                 if (!container) return;
@@ -196,7 +213,7 @@
                 container.innerHTML = html;
             }
 
-            // 5. RENDERING LOGIC (HEADER)
+            // 6. RENDERING LOGIC (HEADER)
             function renderHeader() {
                 const container = document.getElementById('header-container');
                 if (!container) return;
@@ -206,11 +223,11 @@
                 container.innerHTML = `
                 <header class="h-20 glass-effect sticky top-0 z-40 bg-white/80 dark:bg-[#0F172A]/80 border-b border-slate-200 dark:border-slate-800 px-8 flex items-center justify-between">
                     <div class="flex items-center gap-5">
-                        <button onclick="if(window.AndroBot) AndroBot.toggle()" class="w-11 h-11 rounded-2xl border-2 border-slate-200 dark:border-slate-700 text-brandBlue flex items-center justify-center shadow-sm hover:bg-blue-50 transition-all group shadow-sm">
+                        <button onclick="if(window.AndroBot) AndroBot.toggle()" class="w-11 h-11 rounded-2xl border-2 border-slate-200 dark:border-slate-700 text-brandBlue flex items-center justify-center shadow-sm hover:bg-blue-50 transition-all group">
                             <i class="fa-solid fa-robot text-xl group-hover:animate-bounce"></i>
                         </button>
                         <div class="h-8 w-px bg-slate-200 dark:bg-slate-700 hidden sm:block"></div>
-                        <div class="hidden sm:flex flex-col">
+                        <div class="hidden sm:flex flex-col text-right">
                             <span class="text-[9px] text-slate-400 font-black uppercase tracking-widest">${t('audit_oversight')}</span>
                             <h2 class="text-xs font-black dark:text-white">Audit Secretary Portal</h2>
                         </div>
@@ -223,7 +240,6 @@
                                 <i class="fa-solid fa-bell"></i>
                                 ${_state.unreadCount > 0 ? `<span class="absolute -top-1 -right-1 w-5 h-5 bg-brandRed text-white text-[10px] font-bold rounded-full flex items-center justify-center animate-pulse border-2 border-white dark:border-slate-800">${_state.unreadCount}</span>` : ''}
                             </button>
-                            <!-- Dropdown -->
                             <div class="absolute top-full ${isRTL ? 'left-0' : 'right-0'} mt-3 w-80 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-[2rem] shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 overflow-hidden glass-effect">
                                 <div class="p-5 border-b border-slate-100 dark:border-slate-700 bg-gradient-to-r from-orange-500 to-amber-500 flex justify-between items-center text-white text-right">
                                     <div>
@@ -234,7 +250,7 @@
                                 </div>
                                 <div class="max-h-80 overflow-y-auto custom-scroll">
                                     ${_state.notifications.map(n => `
-                                        <a href="${n.link}" class="flex gap-4 p-5 border-b border-slate-50 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50 cursor-pointer transition-colors ${!n.read ? 'bg-orange-50/20' : ''}">
+                                        <div class="flex gap-4 p-5 border-b border-slate-50 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50 cursor-pointer transition-colors ${!n.read ? 'bg-orange-50/20' : ''}">
                                             <div class="w-10 h-10 rounded-xl bg-${n.color}-100 dark:bg-${n.color}-900/30 text-${n.color}-600 dark:text-${n.color}-400 flex items-center justify-center shrink-0 border border-${n.color}-100 dark:border-${n.color}-900/50">
                                                 <i class="fa-solid ${n.icon} text-sm"></i>
                                             </div>
@@ -246,14 +262,20 @@
                                                     ${!n.read ? '<div class="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse"></div>' : ''}
                                                 </div>
                                             </div>
-                                        </a>
+                                        </div>
                                     `).join('')}
                                 </div>
                             </div>
                         </div>
 
+                        <!-- Language Toggle -->
                         <button onclick="Layout.toggleLanguage()" class="w-11 h-11 rounded-2xl border-2 border-slate-200 dark:border-slate-700 flex items-center justify-center text-xs font-black hover:border-brandRed transition-all bg-white dark:bg-slate-800">
                             ${lang === 'ar' ? 'EN' : 'ع'}
+                        </button>
+
+                        <!-- ✅ Theme Toggle Button (إصلاح النقص) -->
+                        <button onclick="Layout.toggleTheme()" class="w-11 h-11 rounded-2xl border-2 border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-600 dark:text-yellow-400 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-all bg-white dark:bg-slate-800">
+                            <i class="fa-solid ${_state.theme === 'dark' ? 'fa-sun' : 'fa-moon'} text-lg"></i>
                         </button>
                         
                         <button onclick="Layout.logout()" class="flex items-center gap-3 px-5 py-2.5 rounded-2xl bg-red-50 dark:bg-red-900/20 text-red-500 font-black text-xs hover:bg-red-500 hover:text-white transition-all shadow-sm">
@@ -264,7 +286,7 @@
                 </header>`;
             }
 
-            // 6. LANGUAGE & LAYOUT SYNC
+            // 7. LANGUAGE & LAYOUT SYNC
             function setLanguage(lang) {
                 localStorage.setItem('lang', lang);
                 document.documentElement.lang = lang;
@@ -288,10 +310,10 @@
 
             return {
                 init: function() {
+                    applyTheme();
                     const lang = getCurrentLang();
                     setLanguage(lang);
                     
-                    // Initialization Protocol
                     const overlay = document.getElementById('loadingOverlay');
                     if (overlay) {
                         overlay.classList.add('opacity-0');
@@ -300,10 +322,11 @@
                             _state.isInitialized = true;
                         }, 500);
                     }
-                    console.log("💎 AndroGov Layout Engine v10.5 Active");
+                    console.log("💎 AndroGov Layout Engine v10.5 Active [Theme Support Fixed]");
                 },
                 getCurrentLang,
                 toggleLanguage: () => setLanguage(getCurrentLang() === 'ar' ? 'en' : 'ar'),
+                toggleTheme,
                 markAllRead: () => { 
                     _state.notifications.forEach(n => n.read = true); 
                     _state.unreadCount = 0; 
@@ -312,8 +335,7 @@
                 logout: () => { 
                     const lang = getCurrentLang();
                     if(confirm(lang === 'ar' ? 'هل أنت متأكد من الخروج الآمن؟' : 'Proceed with secure logout?')) {
-                        localStorage.removeItem('currentUser');
-                        localStorage.removeItem('activeRole');
+                        localStorage.clear();
                         window.location.href = 'login.html';
                     }
                 }
