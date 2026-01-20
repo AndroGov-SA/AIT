@@ -228,367 +228,151 @@
         </main>
     </div>
 
-    </main>
-  </div>
+    <script src="js/core/config.js"></script>
+    <script src="js/core/i18n.js"></script>
+    <script src="js/services/data-service.js"></script>
+    <script src="js/components/role-switcher.js"></script>
+    <script src="js/components/layout.js"></script>
+    <script src="js/components/bot.js"></script>
 
-  <!-- ==========================================
-       نظام Layout الكامل + Translations
-       ========================================== -->
-  <script>
-  // AppConfig
-  const AppConfig = {
-    setCurrentUser: function(user) {
-      this.currentUser = user;
-      localStorage.setItem('currentUser', JSON.stringify(user));
-    },
-    getCurrentUser: function() {
-      const stored = localStorage.getItem('currentUser');
-      return stored ? JSON.parse(stored) : null;
-    }
-  };
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // ننتظر تحميل السكربتات
+            const checkLibs = setInterval(() => {
+                if (typeof Layout !== 'undefined' && typeof AppConfig !== 'undefined') {
+                    clearInterval(checkLibs);
 
-  // Layout System
-  const Layout = (function() {
-    let _state = {
-      currentUser: null,
-      activeRole: 'cto',
-      isInitialized: false,
-      notifications: [],
-      unreadCount: 0
-    };
+                    // ✅ تعريف هوية المستخدم كمسؤول تقني
+                    const ctoUser = {
+                        id: 'USR_009',
+                        type: 'cto', // ⚠️ هام جداً
+                        role: 'CTO',
+                        displayName: 'مشاعل الهذيان', // ✅ تم تصحيح الاسم
+                        displayTitle: 'المدير التقني (CTO)',
+                        avatar: 'https://ui-avatars.com/api/?name=Meshail+H&background=random'
+                    };
 
-    const _menuDefinitions = {
-      'cto': [
-        { section: 'tech_dashboard', items: [
-          { key: 'tech_overview', icon: 'fa-gauge-high', link: 'index.html', badge: 'live' },
-          { key: 'system_monitoring', icon: 'fa-desktop', link: 'cto_monitoring.html', badge: 'monitoring' }
-        ]},
-        { section: 'infrastructure', items: [
-          { key: 'servers_management', icon: 'fa-server', link: 'cto_servers.html', badge: null },
-          { key: 'it_assets', icon: 'fa-laptop-code', link: 'cto_assets.html', badge: 'assets' }
-        ]},
-        { section: 'security', items: [
-          { key: 'soc_center', icon: 'fa-shield-halved', link: 'cto_soc.html', badge: 'security' },
-          { key: 'iam_management', icon: 'fa-id-badge', link: 'cto_iam.html', badge: null }
-        ]},
-        { section: 'telecom', items: [
-          { key: 'pbx_dashboard', icon: 'fa-phone-volume', link: 'cto_pbx.html', badge: 'pbx' },
-          { key: 'extensions', icon: 'fa-users-viewfinder', link: 'cto_extensions.html', badge: null },
-          { key: 'call_logs', icon: 'fa-list-ol', link: 'cto_call_logs.html', badge: null }
-        ]},
-        { section: 'development', items: [
-          { key: 'dev_projects', icon: 'fa-code-branch', link: 'cto_projects.html', badge: 'devops' },
-          { key: 'tech_support', icon: 'fa-headset', link: 'cto_support.html', badge: null }
-        ]},
-        { section: 'personal', items: [
-          { key: 'my_profile', icon: 'fa-user-circle', link: 'profile.html', badge: null }
-        ]}
-      ]
-    };
-
-    const _translations = {
-      ar: {
-        tech_dashboard: 'لوحة القيادة التقنية',
-        infrastructure: 'البنية التحتية',
-        security: 'الأمن السيبراني',
-        telecom: 'الاتصالات',
-        development: 'التطوير والدعم',
-        personal: 'الحساب الشخصي',
-        tech_overview: 'نظرة تقنية شاملة',
-        system_monitoring: 'مراقبة الأنظمة',
-        servers_management: 'إدارة السيرفرات',
-        it_assets: 'الأصول التقنية',
-        soc_center: 'مركز الأمن (SOC)',
-        iam_management: 'إدارة الهوية (IAM)',
-        pbx_dashboard: 'لوحة السنترال',
-        extensions: 'التحويلات',
-        call_logs: 'سجل المكالمات',
-        dev_projects: 'المشاريع البرمجية',
-        tech_support: 'الدعم الفني',
-        my_profile: 'الملف الشخصي',
-        notifications: 'الإشعارات',
-        logout: 'تسجيل الخروج',
-        logoutConfirm: 'هل أنت متأكد من تسجيل الخروج؟',
-        poweredBy: 'تطوير',
-        aymanDev: 'أيمن المغربي',
-        cto_role: 'المدير التقني'
-      },
-      en: {
-        tech_dashboard: 'Tech Dashboard',
-        infrastructure: 'Infrastructure',
-        security: 'Cybersecurity',
-        telecom: 'Telecommunications',
-        development: 'Development & Support',
-        personal: 'Personal',
-        tech_overview: 'Technical Overview',
-        system_monitoring: 'System Monitoring',
-        servers_management: 'Servers Management',
-        it_assets: 'IT Assets',
-        soc_center: 'SOC Center',
-        iam_management: 'IAM Management',
-        pbx_dashboard: 'PBX Dashboard',
-        extensions: 'Extensions',
-        call_logs: 'Call Logs',
-        dev_projects: 'Dev Projects',
-        tech_support: 'Tech Support',
-        my_profile: 'My Profile',
-        notifications: 'Notifications',
-        logout: 'Logout',
-        logoutConfirm: 'Are you sure you want to logout?',
-        poweredBy: 'Developed by',
-        aymanDev: 'Ayman Almaghrabi',
-        cto_role: 'Chief Technology Officer'
-      }
-    };
-
-    function getCurrentLang() { return localStorage.getItem('lang') || 'ar'; }
-    function t(key) { return _translations[getCurrentLang()]?.[key] || key; }
-
-    function renderSidebar() {
-      const container = document.getElementById('sidebar-container');
-      if (!container) return;
-
-      const lang = getCurrentLang();
-      const isRTL = lang === 'ar';
-      const currentPath = window.location.pathname.split('/').pop() || 'index.html';
-
-      let menuHTML = '';
-      _menuDefinitions['cto'].forEach(group => {
-        menuHTML += `<div class="px-3 mt-6 mb-2 text-[10px] font-bold text-slate-400 uppercase">${t(group.section)}</div>`;
-        group.items.forEach(item => {
-          const isActive = currentPath === item.link;
-          const activeClass = isActive ? "bg-gradient-to-r from-brandRed to-red-600 text-white shadow-lg" : "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800";
-          menuHTML += `
-            <a href="${item.link}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition mb-1 ${activeClass}">
-              <i class="fa-solid ${item.icon}"></i>
-              <span class="flex-1">${t(item.key)}</span>
-            </a>`;
+                    // حفظ المستخدم وتشغيل النظام
+                    AppConfig.setCurrentUser(ctoUser);
+                    Layout.init();
+                }
+            }, 50);
         });
-      });
+    </script>
 
-      const user = _state.currentUser;
-      container.innerHTML = `
-        <aside id="main-sidebar" class="fixed top-0 ${isRTL ? 'right-0' : 'left-0'} z-50 h-screen w-72 flex flex-col bg-white dark:bg-[#0F172A] border-${isRTL ? 'l' : 'r'} border-slate-200 dark:border-slate-800 shadow-2xl">
-          <div class="h-20 flex items-center px-6 border-b border-slate-100 dark:border-slate-800">
-            <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-brandRed to-red-600 text-white flex items-center justify-center text-xl shadow-lg">
-              <i class="fa-solid fa-microchip"></i>
-            </div>
-            <div class="ml-3">
-              <h1 class="font-bold text-slate-800 dark:text-white">AndroGov</h1>
-              <p class="text-[10px] text-brandRed font-bold">TECHNICAL</p>
-            </div>
-          </div>
-          <div class="p-4">
-            <div class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-              <img src="${user?.avatar}" class="w-11 h-11 rounded-full border-2 border-white dark:border-slate-600">
-              <div class="flex-1">
-                <p class="text-sm font-bold dark:text-white">${user?.displayName}</p>
-                <p class="text-[10px] text-brandRed font-bold">${t('cto_role')}</p>
-              </div>
-            </div>
-          </div>
-          <nav class="flex-1 overflow-y-auto px-3 py-2">${menuHTML}</nav>
-          <div class="p-4 text-center border-t border-slate-100 dark:border-slate-800">
-            <p class="text-[10px] text-slate-400">© 2026 Andromeda IT</p>
-            <p class="text-[9px] text-slate-300 mt-1">${t('poweredBy')} ${t('aymanDev')}</p>
-          </div>
-        </aside>`;
-    }
+    <script>
+        const pageContent = {
+            ar: {
+                pageTitle: "ملفي الشخصي | AndroGov",
+                lblLocation: "المبنى الرقمي - الدور 4",
+                name: "مشاعل الهذيان",
+                role: "الرئيس التنفيذي للتقنية (CTO)",
+                statusAvailable: "متاح للعمل",
+                statusBusy: "مشغول (Busy)",
+                btnPass: "الأمان",
+                btnEdit: "تعديل",
+                statProjects: "مشروع نشط",
+                statTeam: "عضو بالفريق",
+                secContract: "بيانات العقد",
+                lblType: "المسمى الوظيفي",
+                valTitle: "CTO",
+                lblStart: "تاريخ الانضمام",
+                lblDept: "الإدارة",
+                valDept: "تقنية المعلومات",
+                lblDirect: "المرجع المباشر",
+                valManager: "الرئيس التنفيذي (CEO)",
+                titleDelegation: "سجل التفويض (Acting For)",
+                descDelegation: "إدارة الصلاحيات الممنوحة لمدراء الإدارات التقنية",
+                btnAddDelegate: "تفويض جديد",
+                colPerson: "المفوض له",
+                colScope: "الصلاحية",
+                colPeriod: "الفترة",
+                colStatus: "الحالة",
+                nameDel1: "فيصل العتيبي",
+                scopeDel1: "صلاحية إعادة تشغيل السيرفرات",
+                periodStanding: "دائم",
+                statusActive: "نشط",
+                nameDel2: "سارة العمري",
+                scopeDel2: "اعتماد نشر التحديثات (Deploy)",
+                titleActivity: "النشاط الأخير",
+                act1Title: "الموافقة على خطة التحول السحابي",
+                act1Desc: "تم اعتماد الميزانية الخاصة بمشروع AWS Migration.",
+                time1: "09:30 ص",
+                act2Title: "تسجيل الدخول للنظام",
+                time2: "08:15 ص"
+            },
+            en: {
+                pageTitle: "My Profile | AndroGov",
+                lblLocation: "Digital Building - Floor 4",
+                name: "Mashael Alhadyan",
+                role: "Chief Technology Officer (CTO)",
+                statusAvailable: "Available",
+                statusBusy: "Busy",
+                btnPass: "Security",
+                btnEdit: "Edit",
+                statProjects: "Active Projects",
+                statTeam: "Team Members",
+                secContract: "Contract Details",
+                lblType: "Job Title",
+                valTitle: "CTO",
+                lblStart: "Joining Date",
+                lblDept: "Department",
+                valDept: "Information Technology",
+                lblDirect: "Direct Manager",
+                valManager: "Chief Executive Officer (CEO)",
+                titleDelegation: "Delegation Log",
+                descDelegation: "Manage powers delegated to IT managers",
+                btnAddDelegate: "New Delegate",
+                colPerson: "Delegate To",
+                colScope: "Scope",
+                colPeriod: "Period",
+                colStatus: "Status",
+                nameDel1: "Faisal Al-Otaibi",
+                scopeDel1: "Server Reboot Authority",
+                periodStanding: "Standing",
+                statusActive: "Active",
+                nameDel2: "Sara Al-Amri",
+                scopeDel2: "Approve Deployment",
+                titleActivity: "Recent Activity",
+                act1Title: "Approved Cloud Migration Plan",
+                act1Desc: "Budget approved for AWS Migration project.",
+                time1: "09:30 AM",
+                act2Title: "System Login",
+                time2: "08:15 AM"
+            }
+        };
 
-    function renderHeader() {
-      const container = document.getElementById('header-container');
-      if (!container) return;
+        document.addEventListener('DOMContentLoaded', () => {
+            const lang = localStorage.getItem('lang') || 'ar';
+            const dict = pageContent[lang];
+            
+            document.documentElement.lang = lang;
+            document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
 
-      const lang = getCurrentLang();
-      const isDark = document.documentElement.classList.contains('dark');
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if(dict[key]) el.innerText = dict[key];
+            });
+        });
 
-      container.innerHTML = `
-        <header class="h-20 sticky top-0 z-40 flex items-center justify-between px-6 bg-white/90 dark:bg-[#0F172A]/95 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800">
-          <div class="flex items-center gap-2.5 px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-xl">
-            <i class="fa-solid fa-microchip text-brandRed"></i>
-            <span class="text-xs font-bold dark:text-slate-200">${t('cto_role')}</span>
-          </div>
-          <div class="flex items-center gap-3">
-            <button onclick="Layout.toggleLanguage()" class="w-10 h-10 rounded-xl border-2 border-slate-200 dark:border-slate-700 hover:bg-blue-50 transition flex items-center justify-center font-bold text-xs">
-              ${lang === 'ar' ? 'EN' : 'ع'}
-            </button>
-            <button onclick="Layout.toggleTheme()" class="w-10 h-10 rounded-xl border-2 border-slate-200 dark:border-slate-700 transition flex items-center justify-center">
-              <i class="fa-solid ${isDark ? 'fa-sun' : 'fa-moon'}"></i>
-            </button>
-            <button onclick="Layout.logout()" class="text-red-500 hover:bg-red-50 px-4 py-2 rounded-xl text-xs font-bold transition">
-              <i class="fa-solid fa-power-off"></i>
-              <span class="hidden sm:inline">${t('logout')}</span>
-            </button>
-          </div>
-        </header>`;
-    }
-
-    function init() {
-      if (_state.isInitialized) return;
-      _state.currentUser = AppConfig.getCurrentUser();
-      renderSidebar();
-      renderHeader();
-      document.body.style.opacity = '1';
-      _state.isInitialized = true;
-      console.log('✅ Profile Layout Ready');
-    }
-
-    function toggleLanguage() {
-      const newLang = getCurrentLang() === 'ar' ? 'en' : 'ar';
-      localStorage.setItem('lang', newLang);
-      document.documentElement.lang = newLang;
-      document.documentElement.dir = newLang === 'ar' ? 'rtl' : 'ltr';
-      location.reload(); // Reload to apply translations
-    }
-
-    function toggleTheme() {
-      document.documentElement.classList.toggle('dark');
-      localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
-      renderHeader();
-    }
-
-    function logout() {
-      if (confirm(t('logoutConfirm'))) {
-        localStorage.clear();
-        window.location.href = '../login.html';
-      }
-    }
-
-    return { init, toggleLanguage, toggleTheme, logout };
-  })();
-
-  // Initialize
-  document.addEventListener('DOMContentLoaded', () => {
-    AppConfig.setCurrentUser({
-      id: 'USR_009',
-      type: 'cto',
-      role: 'CTO',
-      displayName: 'مشاعل الهديان',
-      displayTitle: 'المدير التقني (CTO)',
-      avatar: 'https://ui-avatars.com/api/?name=Meshail+H&background=FB4747&color=fff'
-    });
-    Layout.init();
-  });
-
-  window.Layout = Layout;
-  window.AppConfig = AppConfig;
-  </script>
-
-  <!-- Page-specific Translations & Functions -->
-  <script>
-    const pageContent = {
-      ar: {
-        pageTitle: "ملفي الشخصي | AndroGov",
-        lblLocation: "المبنى الرقمي - الدور 4",
-        name: "مشاعل الهديان",
-        role: "الرئيس التنفيذي للتقنية (CTO)",
-        statusAvailable: "متاح للعمل",
-        statusBusy: "مشغول (Busy)",
-        btnPass: "الأمان",
-        btnEdit: "تعديل",
-        statProjects: "مشروع نشط",
-        statTeam: "عضو بالفريق",
-        secContract: "بيانات العقد",
-        lblType: "المسمى الوظيفي",
-        valTitle: "CTO",
-        lblStart: "تاريخ الانضمام",
-        lblDept: "الإدارة",
-        valDept: "تقنية المعلومات",
-        lblDirect: "المرجع المباشر",
-        valManager: "الرئيس التنفيذي (CEO)",
-        titleDelegation: "سجل التفويض (Acting For)",
-        descDelegation: "إدارة الصلاحيات الممنوحة لمدراء الإدارات التقنية",
-        btnAddDelegate: "تفويض جديد",
-        colPerson: "المفوض له",
-        colScope: "الصلاحية",
-        colPeriod: "الفترة",
-        colStatus: "الحالة",
-        nameDel1: "فيصل العتيبي",
-        scopeDel1: "صلاحية إعادة تشغيل السيرفرات",
-        periodStanding: "دائم",
-        statusActive: "نشط",
-        nameDel2: "سارة العمري",
-        scopeDel2: "اعتماد نشر التحديثات (Deploy)",
-        titleActivity: "النشاط الأخير",
-        act1Title: "الموافقة على خطة التحول السحابي",
-        act1Desc: "تم اعتماد الميزانية الخاصة بمشروع AWS Migration.",
-        time1: "09:30 ص",
-        act2Title: "تسجيل الدخول للنظام",
-        time2: "08:15 ص"
-      },
-      en: {
-        pageTitle: "My Profile | AndroGov",
-        lblLocation: "Digital Building - Floor 4",
-        name: "Mashael Alhadyan",
-        role: "Chief Technology Officer (CTO)",
-        statusAvailable: "Available",
-        statusBusy: "Busy",
-        btnPass: "Security",
-        btnEdit: "Edit",
-        statProjects: "Active Projects",
-        statTeam: "Team Members",
-        secContract: "Contract Details",
-        lblType: "Job Title",
-        valTitle: "CTO",
-        lblStart: "Joining Date",
-        lblDept: "Department",
-        valDept: "Information Technology",
-        lblDirect: "Direct Manager",
-        valManager: "Chief Executive Officer (CEO)",
-        titleDelegation: "Delegation Log",
-        descDelegation: "Manage powers delegated to IT managers",
-        btnAddDelegate: "New Delegate",
-        colPerson: "Delegate To",
-        colScope: "Scope",
-        colPeriod: "Period",
-        colStatus: "Status",
-        nameDel1: "Faisal Al-Otaibi",
-        scopeDel1: "Server Reboot Authority",
-        periodStanding: "Standing",
-        statusActive: "Active",
-        nameDel2: "Sara Al-Amri",
-        scopeDel2: "Approve Deployment",
-        titleActivity: "Recent Activity",
-        act1Title: "Approved Cloud Migration Plan",
-        act1Desc: "Budget approved for AWS Migration project.",
-        time1: "09:30 AM",
-        act2Title: "System Login",
-        time2: "08:15 AM"
-      }
-    };
-
-    document.addEventListener('DOMContentLoaded', () => {
-      const lang = localStorage.getItem('lang') || 'ar';
-      const dict = pageContent[lang];
-      
-      document.documentElement.lang = lang;
-      document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
-
-      document.querySelectorAll('[data-i18n]').forEach(el => {
-        const key = el.getAttribute('data-i18n');
-        if(dict[key]) el.innerText = dict[key];
-      });
-    });
-
-    function toggleStatus() {
-      const statusEl = document.getElementById('userStatus');
-      const lang = localStorage.getItem('lang') || 'ar';
-      const dict = pageContent[lang];
-      const current = statusEl.innerText;
-      
-      if (current === dict.statusAvailable) {
-        statusEl.innerText = dict.statusBusy;
-        statusEl.className = "text-xs font-bold text-red-700 dark:text-red-400";
-        statusEl.parentElement.className = "flex items-center gap-2 bg-red-50 dark:bg-red-900/20 px-3 py-1.5 rounded-lg border border-red-200 dark:border-red-900 cursor-pointer hover:bg-red-100 transition";
-        statusEl.previousElementSibling.className = "w-2.5 h-2.5 bg-red-500 rounded-full";
-      } else {
-        statusEl.innerText = dict.statusAvailable;
-        statusEl.className = "text-xs font-bold text-green-700 dark:text-green-400";
-        statusEl.parentElement.className = "flex items-center gap-2 bg-green-50 dark:bg-green-900/20 px-3 py-1.5 rounded-lg border border-green-200 dark:border-green-900 cursor-pointer hover:bg-green-100 transition";
-        statusEl.previousElementSibling.className = "w-2.5 h-2.5 bg-green-500 rounded-full animate-pulse";
-      }
-    }
-  </script>
-
+        function toggleStatus() {
+            const statusEl = document.getElementById('userStatus');
+            const lang = localStorage.getItem('lang') || 'ar';
+            const dict = pageContent[lang];
+            const current = statusEl.innerText;
+            
+            if (current === dict.statusAvailable) {
+                statusEl.innerText = dict.statusBusy;
+                statusEl.className = "text-xs font-bold text-red-700 dark:text-red-400";
+                statusEl.parentElement.className = "flex items-center gap-2 bg-red-50 dark:bg-red-900/20 px-3 py-1.5 rounded-lg border border-red-200 dark:border-red-900 cursor-pointer hover:bg-red-100 transition";
+                statusEl.previousElementSibling.className = "w-2.5 h-2.5 bg-red-500 rounded-full";
+            } else {
+                statusEl.innerText = dict.statusAvailable;
+                statusEl.className = "text-xs font-bold text-green-700 dark:text-green-400";
+                statusEl.parentElement.className = "flex items-center gap-2 bg-green-50 dark:bg-green-900/20 px-3 py-1.5 rounded-lg border border-green-200 dark:border-green-900 cursor-pointer hover:bg-green-100 transition";
+                statusEl.previousElementSibling.className = "w-2.5 h-2.5 bg-green-500 rounded-full animate-pulse";
+            }
+        }
+    </script>
 </body>
 </html>
