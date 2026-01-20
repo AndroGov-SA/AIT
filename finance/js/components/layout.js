@@ -1,7 +1,7 @@
 /**
  * AndroGov Layout Engine v10.5 (Finance Full Edition)
  * @file finance/js/components/layout.js
- * FIXED: Navigation Loop + RTL/LTR Layout Shift + All Features
+ * FIXED: Persistent Session (No Redirect Loop) + Notifications + Bot + RTL/LTR
  */
 
 const Layout = (function() {
@@ -64,7 +64,7 @@ const Layout = (function() {
       markAllRead: 'تعليم الكل كمقروء', logout: 'خروج', logoutConfirm: 'هل تريد الخروج؟'
     },
     en: {
-      financial_control: 'Control', general_ledger: 'Ledger', dashboard: 'Dashboard', approvals: 'Approvals',
+      financial_control: 'Financial Control', general_ledger: 'Ledger', dashboard: 'Overview', approvals: 'Approvals',
       notifications: 'Notifications', markAllRead: 'Mark read', logout: 'Logout', logoutConfirm: 'Exit?'
     }
   };
@@ -72,7 +72,7 @@ const Layout = (function() {
   function getCurrentLang() { return localStorage.getItem('lang') || 'ar'; }
   function t(key) { return _translations[getCurrentLang()]?.[key] || key; }
 
-  // ✅ إصلاح الهوامش عند تبديل اللغة (MR vs ML)
+  // ✅ تصحيح الهوامش (Margin) عند تغيير اللغة
   function adjustLayoutDirection() {
     const lang = getCurrentLang();
     const wrapper = document.querySelector('.main-content-wrapper');
@@ -85,6 +85,14 @@ const Layout = (function() {
             wrapper.classList.add('md:ml-72');
         }
     }
+  }
+
+  // ✅ استعادة نظام الإشعارات
+  function loadNotifications() {
+    _state.notifications = [
+      { id: 'F1', icon: 'fa-file-invoice-dollar', color: 'orange', title: { ar: 'فاتورة معلقة', en: 'Pending Bill' }, body: { ar: 'مورد "أرامكو" بانتظار الاعتماد', en: 'Bill needs approval' }, time: new Date(), read: false, link: 'approvals.html' }
+    ];
+    _state.unreadCount = _state.notifications.filter(n => !n.read).length;
   }
 
   function renderSidebar() {
@@ -100,7 +108,7 @@ const Layout = (function() {
       group.items.forEach(item => {
         const isActive = currentPath === item.link;
         menuHTML += `
-          <a href="${item.link}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all group mb-1 ${isActive ? 'bg-gradient-to-r from-brandRed to-red-600 text-white shadow-lg shadow-red-500/30' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-brandRed'}">
+          <a href="${item.link}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all group mb-1 ${isActive ? 'bg-gradient-to-r from-brandRed to-red-600 text-white shadow-lg' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-brandRed'}">
             <div class="w-5 text-center transition-transform group-hover:scale-110"><i class="fa-solid ${item.icon}"></i></div>
             <span class="flex-1 truncate">${t(item.key)}</span>
           </a>`;
@@ -111,8 +119,8 @@ const Layout = (function() {
       <aside id="main-sidebar" class="fixed top-0 ${isRTL ? 'right-0 border-l' : 'left-0 border-r'} z-50 h-screen w-72 flex flex-col bg-white dark:bg-[#0F172A] border-slate-200 dark:border-slate-800 shadow-2xl transition-all duration-300">
         <div class="h-20 flex items-center px-6 border-b border-slate-100 dark:border-slate-800 shrink-0">
           <div class="flex items-center gap-3">
-            <div class="w-11 h-11 rounded-xl bg-brandRed text-white flex items-center justify-center font-bold text-xl"><i class="fa-solid fa-calculator"></i></div>
-            <h1 class="font-bold text-base text-slate-800 dark:text-white">AndroGov <span class="block text-[10px] text-brandRed font-bold uppercase tracking-widest">Finance</span></h1>
+            <div class="w-11 h-11 rounded-xl bg-brandRed text-white flex items-center justify-center font-bold text-xl shadow-lg"><i class="fa-solid fa-calculator"></i></div>
+            <h1 class="font-bold text-base text-slate-800 dark:text-white truncate">AndroGov <span class="block text-[10px] text-brandRed font-bold uppercase tracking-widest">Finance</span></h1>
           </div>
         </div>
         <div class="p-4 shrink-0">
@@ -130,14 +138,21 @@ const Layout = (function() {
     if (!container) return;
     const lang = getCurrentLang();
     const isDark = document.documentElement.classList.contains('dark');
+    const isRTL = lang === 'ar';
 
     container.innerHTML = `
-      <header class="h-20 sticky top-0 z-40 flex items-center justify-between px-6 bg-white/90 dark:bg-[#0F172A]/95 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800">
+      <header class="h-20 sticky top-0 z-40 flex items-center justify-between px-6 bg-white/90 dark:bg-[#0F172A]/95 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800 shadow-sm">
         <div class="flex items-center gap-4">
           <button onclick="Layout.toggleMobileSidebar()" class="md:hidden text-slate-500"><i class="fa-solid fa-bars text-xl"></i></button>
-          <div class="px-4 py-2 bg-slate-50 dark:bg-slate-800 border dark:border-slate-700 rounded-xl text-[11px] font-bold text-slate-600 dark:text-slate-300 font-mono tracking-tighter uppercase">Secure_Finance_v10.5</div>
+          <div class="px-4 py-2 bg-slate-50 dark:bg-slate-800 border dark:border-slate-700 rounded-xl text-[11px] font-bold text-slate-600 dark:text-slate-300 uppercase">Secure_Finance_v10.5</div>
         </div>
         <div class="flex items-center gap-3">
+          <div class="relative group">
+            <button class="relative w-10 h-10 rounded-xl border-2 border-slate-200 dark:border-slate-700 hover:border-brandRed flex items-center justify-center">
+              <i class="fa-solid fa-bell text-slate-600 dark:text-slate-300"></i>
+              ${_state.unreadCount > 0 ? `<span class="absolute -top-1 -right-1 w-5 h-5 bg-brandRed text-white text-[10px] font-bold rounded-full flex items-center justify-center animate-pulse">${_state.unreadCount}</span>` : ''}
+            </button>
+          </div>
           <button onclick="if(window.AndroBot) AndroBot.toggle()" class="w-10 h-10 rounded-xl border-2 border-slate-200 dark:border-slate-700 text-blue-500 hover:border-brandRed transition flex items-center justify-center group"><i class="fa-solid fa-robot group-hover:animate-bounce"></i></button>
           <button onclick="Layout.toggleLanguage()" class="w-10 h-10 rounded-xl border-2 border-slate-200 dark:border-slate-700 font-bold text-xs hover:border-brandRed transition">${lang === 'ar' ? 'EN' : 'ع'}</button>
           <button onclick="Layout.toggleTheme()" class="w-10 h-10 rounded-xl border-2 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-yellow-400 flex items-center justify-center"><i class="fa-solid ${isDark ? 'fa-sun' : 'fa-moon'}"></i></button>
@@ -148,19 +163,21 @@ const Layout = (function() {
   }
 
   async function init() {
-    // 1. تثبيت الهوية لمنع الـ Redirect
-    const defaultCFO = { id: 'USR_002', role: 'CFO', displayName: 'المدير المالي', avatar: 'https://ui-avatars.com/api/?name=CFO&background=FB4747&color=fff' };
-    if (!localStorage.getItem('currentUser')) {
-        localStorage.setItem('currentUser', JSON.stringify(defaultCFO));
+    // 1. منع حلقة إعادة التحميل: جلب المستخدم الحالي بدلاً من إعادة إنشائه
+    let user = localStorage.getItem('currentUser');
+    if (!user) {
+        user = JSON.stringify({ id: 'USR_002', role: 'CFO', displayName: 'المدير المالي', avatar: 'https://ui-avatars.com/api/?name=CFO&background=FB4747&color=fff' });
+        localStorage.setItem('currentUser', user);
         localStorage.setItem('activeRole', 'CFO');
     }
-    _state.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    _state.currentUser = JSON.parse(user);
 
-    // 2. ضبط اتجاه الصفحة فوراً قبل الرسم
+    // 2. تطبيق اللغة والاتجاه
     document.documentElement.lang = getCurrentLang();
     document.documentElement.dir = getCurrentLang() === 'ar' ? 'rtl' : 'ltr';
     
-    adjustLayoutDirection(); // تصحيح MR/ML
+    loadNotifications();
+    adjustLayoutDirection(); // تصحيح الفراغ MR/ML
     renderSidebar();
     renderHeader();
     
@@ -170,9 +187,7 @@ const Layout = (function() {
   }
 
   function toggleLanguage() { 
-    const newLang = getCurrentLang() === 'ar' ? 'en' : 'ar';
-    localStorage.setItem('lang', newLang);
-    // نستخدم reload لضمان تطبيق كلاسات Tailwind MR/ML من الصفر
+    localStorage.setItem('lang', getCurrentLang() === 'ar' ? 'en' : 'ar');
     window.location.reload(); 
   }
 
