@@ -112,45 +112,44 @@
         </main>
     </div>
 
-    <script src="js/core/config.js"></script>
+    <script src="data/company_policy.js"></script>
     <script src="js/core/i18n.js"></script>
-    <script src="js/services/data-service.js"></script>
-    <script src="js/components/role-switcher.js"></script>
     <script src="js/components/layout.js"></script>
     <script src="js/components/bot.js"></script>
 
-    <script>
+<script>
     document.addEventListener('DOMContentLoaded', () => {
-        const checkLibs = setInterval(() => {
-            // ننتظر تحميل المحرك والكونفيج
-            if (typeof Layout !== 'undefined' && typeof AppConfig !== 'undefined') {
-                clearInterval(checkLibs);
+        // 1. إعداد بيانات المستخدم لتتوافق مع محرك v10.5
+        const ctoUser = {
+            id: 'USR_002',
+            name: 'محمد البخيتي ',
+            displayName: 'المدير المالي',
+            role: 'CFO', // هذا هو المفتاح الذي يبحث عنه المحرك لفتح القائمة
+            avatar: 'https://ui-avatars.com/api/?name=Meshail+AlHadyan&background=FB4747&color=fff'
+        };
+        
+        // 2. تخزين البيانات في الـ LocalStorage لضمان استمرارية المحرك
+        localStorage.setItem('currentUser', JSON.stringify(ctoUser));
+        localStorage.setItem('activeRole', 'cto');
 
-                const boardUser = {
-                    id: 'USR_002',
-                    role: 'CFO', // ✅ متطابق مع _menuDefinitions في layout.js
-                    displayName: 'المدير المالي',
-                    displayTitle: 'المدير المالي',
-                    avatar: 'https://ui-avatars.com/api/?name=CFO&background=FB4747&color=fff'
-                };
+        // 3. التأكد من وجود الوضع الليلي المفضل
+        if (!localStorage.getItem('theme')) {
+            localStorage.setItem('theme', 'light');
+        }
 
-                // 1. المزامنة مع AppConfig (الخاص بك)
-                AppConfig.setCurrentUser(boardUser);
-
-                // 2. المزامنة اليدوية مع localStorage لضمان استجابة المحرك v10.5
-                localStorage.setItem('currentUser', JSON.stringify(boardUser));
-                localStorage.setItem('activeRole', 'CFO');
-
-                // 3. تشغيل المحرك
-                Layout.init();
-                
-                // 4. إظهار الصفحة
-                document.body.classList.remove('opacity-0');
-                console.log("✅ Finance Sidebar Activated with Role: CFO");
-            }
-        }, 50);
+        // 4. تشغيل المحرك
+        if (typeof Layout !== 'undefined') {
+            Layout.init();
+            
+            // إظهار الصفحة بعد التحميل (لأن الـ body له opacity-0)
+            document.body.style.opacity = '1';
+            console.log("🚀 CFO Layout Engine v10.5 Started Successfully");
+        } else {
+            console.error("❌ Layout.js file not found! Check your script paths.");
+        }
     });
 </script>
+
     
     <script>
         window.requestChange = function() {
