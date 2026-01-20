@@ -665,3 +665,11 @@ const _menuDefinitions = {
   };
 
 })();
+
+// Auto-Initialize
+document.addEventListener('DOMContentLoaded', () => {
+  Layout.init();
+});
+
+// Global Exposure
+window.Layout = Layout;
