@@ -101,32 +101,43 @@
 
     <script src="js/core/config.js"></script>
     <script src="js/core/i18n.js"></script>
+    <script src="data/company_policy.js"></script>
     <script src="js/services/data-service.js"></script>
     <script src="js/components/role-switcher.js"></script>
     <script src="js/components/layout.js"></script>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const checkLibs = setInterval(() => {
-                if (typeof Layout !== 'undefined' && typeof AppConfig !== 'undefined') {
-                    clearInterval(checkLibs);
-
-                    // ✅ تحديد هوية المستخدم كمساهم (Shareholder)
-                    const currentUser = AppConfig.getCurrentUser() || {
-                        id: 'IR_001',
-                        role: 'shareholder',
-                        displayName: 'المساهم'
-                    };
-                    
-                    // ضمان أن الدور مساهم لفتح القائمة الصحيحة
-                    currentUser.role = 'shareholder';
-                    AppConfig.setCurrentUser(currentUser);
-                    
-                    Layout.init();
-                    fillUserData(currentUser);
-                }
-            }, 50);
-        });
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    let attempts = 0;
+    const check = setInterval(() => {
+        attempts++;
+        if (attempts > 10) {
+            clearInterval(check);
+            console.error('❌ فشل التحميل');
+            return;
+        }
+        
+        if (typeof Layout !== 'undefined' && typeof AppConfig !== 'undefined') {
+            clearInterval(check);
+            
+            let user = AppConfig.getCurrentUser() || {
+                id: 'IR_001',
+                role: 'shareholder',
+                displayName: 'مساهم',
+                email: 'IR@androomeda.com'
+            };
+            
+            user.role = 'shareholder';
+            AppConfig.setCurrentUser(user);
+            Layout.init();
+            
+            // استدعي دالة تحميل البيانات حسب الصفحة
+            if (typeof loadShareholderData === 'function') loadShareholderData(user);
+            if (typeof loadCertificateData === 'function') loadCertificateData(user);
+            if (typeof loadDividendData === 'function') loadDividendData(user);
+        }
+    }, 100);
+});
 
         function fillUserData(user) {
             if(user) {
