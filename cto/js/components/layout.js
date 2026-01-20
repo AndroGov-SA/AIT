@@ -1,15 +1,9 @@
-<invoke name="artifacts">
-<parameter name="command">create</parameter>
-<parameter name="type">application/vnd.ant.code</parameter>
-<parameter name="language">javascript</parameter>
-<parameter name="title">CTO Layout Engine - Clean</parameter>
-<parameter name="id">cto_layout_clean</parameter>
-<parameter name="content">/**
+/**
  * AndroGov CTO Layout Engine v1.0
- * @file cto/js/components/layout.js
- * @author Ayman Al-Maghrabi
  */
+
 const Layout = (function() {
+  ...
 let _state = {
 currentUser: null,
 activeRole: 'cto',
