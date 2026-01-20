@@ -1,8 +1,7 @@
 /**
- * AndroGov CEO Layout Engine v1.0
- * @file ceo/js/components/layout.js
- * @author Ayman Al-Maghrabi
- * @description Executive layout with multi-role support (CEO + Board VP + Shareholder)
+ * AndroGov Board Layout Engine v2.0
+ * @file board/js/components/layout.js
+ * @description Board Member Portal Layout - Updated to match CEO standards
  */
 
 const Layout = (function() {
@@ -12,7 +11,6 @@ const Layout = (function() {
   // ==========================================
   let _state = {
     currentUser: null,
-    activeRole: 'ceo', 
     isInitialized: false,
     sidebarOpen: false,
     notifications: [],
@@ -20,261 +18,95 @@ const Layout = (function() {
   };
 
   // ==========================================
-  // 2. COMPLETE MENU DEFINITIONS (3 Roles)
+  // 2. MENU DEFINITION (Board Portal)
   // ==========================================
   const _menuDefinitions = {
-    
-    // ═══════════════════════════════════════
-    // 1️⃣ الرئيس التنفيذي (Chief Executive Officer)
-    // ═══════════════════════════════════════
-    'ceo': [
-      { section: 'executive_dashboard', items: [
-        { key: 'executive_overview', icon: 'fa-gauge-high', link: 'index.html', badge: 'live' },
-        { key: 'strategic_planning', icon: 'fa-chess-board', link: 'ceo_strategy.html', badge: 'strategic' }
-      ]},
-      { section: 'financial_oversight', items: [
-        { key: 'financial_performance', icon: 'fa-chart-line', link: 'ceo_finance.html', badge: 'financial' },
-        { key: 'executive_reports', icon: 'fa-file-chart-column', link: 'ceo_reports.html', badge: null }
-      ]},
-      { section: 'governance_compliance', items: [
-        { key: 'governance_framework', icon: 'fa-scale-balanced', link: 'ceo_governance.html', badge: 'compliance' },
-        { key: 'risk_management', icon: 'fa-shield-halved', link: 'ceo_risks.html', badge: 'risks' }
-      ]},
-      { section: 'communication', items: [
-        { key: 'company_broadcast', icon: 'fa-tower-broadcast', link: 'ceo_broadcast.html', badge: 'broadcast' },
-        { key: 'internal_communication', icon: 'fa-comments', link: 'ceo_communication.html', badge: null },
-        { key: 'feedback_center', icon: 'fa-message-dots', link: 'ceo_feedback.html', badge: 'active' }
-      ]},
-      { section: 'personal', items: [
-        { key: 'my_profile', icon: 'fa-user-circle', link: 'profile.html', badge: null }
-      ]}
-    ],
-
-    // ═══════════════════════════════════════
-    // 2️⃣ نائب رئيس مجلس الإدارة (Board Vice President)
-    // ═══════════════════════════════════════
-    'board_vp': [
-      { section: 'board_activities', items: [
-        { key: 'board_portal', icon: 'fa-building-columns', link: 'ceo_board.html', badge: 'board' },
-        { key: 'governance_oversight', icon: 'fa-gavel', link: 'ceo_governance.html', badge: null }
-      ]},
-      { section: 'strategic_oversight', items: [
-        { key: 'strategic_initiatives', icon: 'fa-lightbulb', link: 'ceo_strategy.html', badge: 'initiatives' },
-        { key: 'risk_oversight', icon: 'fa-triangle-exclamation', link: 'ceo_risks.html', badge: null }
-      ]},
-      { section: 'reporting', items: [
-        { key: 'board_reports', icon: 'fa-file-lines', link: 'ceo_reports.html', badge: null },
-        { key: 'financial_review', icon: 'fa-money-bill-trend-up', link: 'ceo_finance.html', badge: null }
-      ]},
-      { section: 'communication', items: [
-        { key: 'board_communication', icon: 'fa-envelope', link: 'ceo_communication.html', badge: null }
-      ]}
-    ],
-
-    // ═══════════════════════════════════════
-    // 3️⃣ مساهم (Shareholder)
-    // ═══════════════════════════════════════
-    'shareholder': [
-      { section: 'shareholder_services', items: [
-        { key: 'my_portfolio', icon: 'fa-briefcase', link: 'index.html', badge: 'portfolio' },
-        { key: 'financial_statements', icon: 'fa-file-invoice-dollar', link: 'ceo_finance.html', badge: null }
-      ]},
-      { section: 'governance_access', items: [
-        { key: 'governance_documents', icon: 'fa-folder-open', link: 'ceo_governance.html', badge: null },
-        { key: 'board_meetings', icon: 'fa-calendar-days', link: 'ceo_board.html', badge: null }
-      ]},
-      { section: 'reports_disclosures', items: [
-        { key: 'annual_reports', icon: 'fa-book', link: 'ceo_reports.html', badge: null },
-        { key: 'announcements', icon: 'fa-bullhorn', link: 'ceo_broadcast.html', badge: null }
-      ]},
-      { section: 'personal', items: [
-        { key: 'my_profile', icon: 'fa-id-card', link: 'profile.html', badge: null }
-      ]}
+    board: [
+      { 
+        section: 'board_overview', 
+        items: [
+          { key: 'board_dashboard', icon: 'fa-building-columns', link: 'index.html', badge: 'live' },
+          { key: 'meetings', icon: 'fa-calendar-days', link: 'meetings.html', badge: null },
+          { key: 'communication', icon: 'fa-comments', link: 'communication.html', badge: 'new' }
+        ]
+      },
+      { 
+        section: 'reports', 
+        items: [
+          { key: 'financial_reports', icon: 'fa-chart-pie', link: 'finance.html', badge: null },
+          { key: 'governance_docs', icon: 'fa-folder-open', link: 'governance.html', badge: null }
+        ]
+      },
+      { 
+        section: 'secretary_tools', 
+        items: [
+          { key: 'secretary_portal', icon: 'fa-user-tie', link: 'secretary.html', badge: 'admin', restricted: ['Secretary'] }
+        ]
+      },
+      { 
+        section: 'personal', 
+        items: [
+          { key: 'my_profile', icon: 'fa-user-circle', link: 'profile.html', badge: null }
+        ]
+      }
     ]
   };
 
-  // Role Labels (Bilingual)
-  const _roleLabels = {
-    'ceo': { 
-      ar: 'الرئيس التنفيذي', 
-      en: 'Chief Executive Officer',
-      desc: { ar: 'القيادة التنفيذية والإدارة الاستراتيجية', en: 'Executive Leadership & Strategic Management' }
-    },
-    'board_vp': { 
-      ar: 'نائب رئيس المجلس', 
-      en: 'Board Vice President',
-      desc: { ar: 'الإشراف على أعمال المجلس والحوكمة', en: 'Board Oversight & Governance' }
-    },
-    'shareholder': { 
-      ar: 'مساهم', 
-      en: 'Shareholder',
-      desc: { ar: 'الوصول للتقارير والبيانات المالية', en: 'Access to Reports & Financial Data' }
-    }
-  };
-
-  // Translation Keys
+  // ==========================================
+  // 3. TRANSLATIONS
+  // ==========================================
   const _translations = {
     ar: {
-      // Sections - CEO
-      executive_dashboard: 'لوحة القيادة التنفيذية',
-      financial_oversight: 'الرقابة المالية',
-      governance_compliance: 'الحوكمة والامتثال',
-      communication: 'الاتصالات',
+      // Sections
+      board_overview: 'لوحة المجلس',
+      reports: 'التقارير',
+      secretary_tools: 'أدوات السكرتارية',
       personal: 'الحساب الشخصي',
       
-      // Sections - Board VP
-      board_activities: 'أنشطة المجلس',
-      strategic_oversight: 'الإشراف الاستراتيجي',
-      reporting: 'التقارير',
-      
-      // Sections - Shareholder
-      shareholder_services: 'خدمات المساهمين',
-      governance_access: 'الوصول للحوكمة',
-      reports_disclosures: 'التقارير والإفصاحات',
-      
       // Menu Items
-      executive_overview: 'نظرة تنفيذية شاملة',
-      strategic_planning: 'التخطيط الاستراتيجي',
-      financial_performance: 'الأداء المالي',
-      executive_reports: 'التقارير التنفيذية',
-      governance_framework: 'إطار الحوكمة',
-      risk_management: 'إدارة المخاطر',
-      company_broadcast: 'البث المؤسسي',
-      internal_communication: 'التواصل الداخلي',
-      feedback_center: 'مركز التغذية الراجعة',
+      board_dashboard: 'الصفحة الرئيسية',
+      meetings: 'الاجتماعات',
+      communication: 'التواصل والقرارات',
+      financial_reports: 'التقارير المالية',
+      governance_docs: 'وثائق الحوكمة',
+      secretary_portal: 'أمانة السر',
       my_profile: 'الملف الشخصي',
-      board_portal: 'بوابة المجلس',
-      governance_oversight: 'الإشراف على الحوكمة',
-      strategic_initiatives: 'المبادرات الاستراتيجية',
-      risk_oversight: 'الإشراف على المخاطر',
-      board_reports: 'تقارير المجلس',
-      financial_review: 'المراجعة المالية',
-      board_communication: 'تواصل المجلس',
-      my_portfolio: 'محفظتي الاستثمارية',
-      financial_statements: 'القوائم المالية',
-      governance_documents: 'وثائق الحوكمة',
-      board_meetings: 'اجتماعات المجلس',
-      annual_reports: 'التقارير السنوية',
-      announcements: 'الإعلانات',
       
       // UI Elements
-      switchWorkspace: 'تبديل بيئة العمل',
-      selectRole: 'اختر الدور المناسب لمهامك الحالية',
       notifications: 'الإشعارات',
       noNotifications: 'لا توجد إشعارات جديدة',
       markAllRead: 'تعليم الكل كمقروء',
-      viewAll: 'عرض الكل',
       logout: 'تسجيل الخروج',
       logoutConfirm: 'هل أنت متأكد من تسجيل الخروج؟',
       poweredBy: 'تطوير',
       aymanDev: 'أيمن المغربي'
     },
     en: {
-      // Sections - CEO
-      executive_dashboard: 'Executive Dashboard',
-      financial_oversight: 'Financial Oversight',
-      governance_compliance: 'Governance & Compliance',
-      communication: 'Communications',
+      // Sections
+      board_overview: 'Board Overview',
+      reports: 'Reports',
+      secretary_tools: 'Secretary Tools',
       personal: 'Personal',
       
-      // Sections - Board VP
-      board_activities: 'Board Activities',
-      strategic_oversight: 'Strategic Oversight',
-      reporting: 'Reporting',
-      
-      // Sections - Shareholder
-      shareholder_services: 'Shareholder Services',
-      governance_access: 'Governance Access',
-      reports_disclosures: 'Reports & Disclosures',
-      
       // Menu Items
-      executive_overview: 'Executive Overview',
-      strategic_planning: 'Strategic Planning',
-      financial_performance: 'Financial Performance',
-      executive_reports: 'Executive Reports',
-      governance_framework: 'Governance Framework',
-      risk_management: 'Risk Management',
-      company_broadcast: 'Company Broadcast',
-      internal_communication: 'Internal Communication',
-      feedback_center: 'Feedback Center',
+      board_dashboard: 'Dashboard',
+      meetings: 'Meetings',
+      communication: 'Communication & Decisions',
+      financial_reports: 'Financial Reports',
+      governance_docs: 'Governance Documents',
+      secretary_portal: 'Secretary Portal',
       my_profile: 'My Profile',
-      board_portal: 'Board Portal',
-      governance_oversight: 'Governance Oversight',
-      strategic_initiatives: 'Strategic Initiatives',
-      risk_oversight: 'Risk Oversight',
-      board_reports: 'Board Reports',
-      financial_review: 'Financial Review',
-      board_communication: 'Board Communication',
-      my_portfolio: 'My Portfolio',
-      financial_statements: 'Financial Statements',
-      governance_documents: 'Governance Documents',
-      board_meetings: 'Board Meetings',
-      annual_reports: 'Annual Reports',
-      announcements: 'Announcements',
       
       // UI Elements
-      switchWorkspace: 'Switch Workspace',
-      selectRole: 'Select the appropriate role for your current tasks',
       notifications: 'Notifications',
       noNotifications: 'No new notifications',
       markAllRead: 'Mark all as read',
-      viewAll: 'View All',
       logout: 'Logout',
       logoutConfirm: 'Are you sure you want to logout?',
       poweredBy: 'Developed by',
       aymanDev: 'Ayman Almaghrabi'
     }
   };
-
-  // ==========================================
-  // 3. INITIALIZATION
-  // ==========================================
-  async function init() {
-    if (_state.isInitialized) return;
-
-    // Load User Data
-    const storedUser = localStorage.getItem('currentUser');
-    if (storedUser) {
-      _state.currentUser = JSON.parse(storedUser);
-      
-      // ✅ Always default to 'ceo' role for CEO users
-      let savedRole = localStorage.getItem('ceo_activeRole'); // Different key for CEO
-      if (savedRole && _menuDefinitions[savedRole]) {
-        _state.activeRole = savedRole;
-      } else {
-        _state.activeRole = 'ceo';
-        localStorage.setItem('ceo_activeRole', 'ceo');
-      }
-    } else {
-      // ✅ Set default CEO user if not logged in
-      _state.currentUser = {
-        id: 'CEO_001',
-        type: 'ceo',
-        displayName: 'هشام السحيباني',
-        displayTitle: 'الرئيس التنفيذي',
-        avatar: 'https://ui-avatars.com/api/?name=CEO&background=DC2626&color=fff&bold=true'
-      };
-      localStorage.setItem('currentUser', JSON.stringify(_state.currentUser));
-    }
-
-    // Load Notifications
-    loadNotifications();
-
-    // Render UI
-    renderSidebar();
-    renderHeader();
-    hideLoadingOverlay();
-
-    _state.isInitialized = true;
-    console.log(`✅ AndroGov CEO Layout Ready | Role: ${_state.activeRole} | Lang: ${getCurrentLang()}`);
-  }
-
-  function hideLoadingOverlay() {
-    const overlay = document.getElementById('loadingOverlay');
-    if (overlay) {
-      setTimeout(() => overlay.classList.add('hidden'), 300);
-    }
-  }
 
   // ==========================================
   // 4. LANGUAGE SYSTEM
@@ -292,15 +124,15 @@ const Layout = (function() {
     document.documentElement.lang = lang;
     document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
     
-    // Fix main content wrapper margins for RTL/LTR
+    // Fix main content wrapper margins
     const mainContent = document.querySelector('.main-content-wrapper');
     if (mainContent) {
       if (lang === 'ar') {
-        mainContent.classList.remove('md:ml-72');
-        mainContent.classList.add('md:mr-72');
+        mainContent.classList.remove('md:ml-72', 'ltr:md:ml-72');
+        mainContent.classList.add('md:mr-72', 'rtl:md:mr-72');
       } else {
-        mainContent.classList.remove('md:mr-72');
-        mainContent.classList.add('md:ml-72');
+        mainContent.classList.remove('md:mr-72', 'rtl:md:mr-72');
+        mainContent.classList.add('md:ml-72', 'ltr:md:ml-72');
       }
     }
     
@@ -308,17 +140,12 @@ const Layout = (function() {
     renderSidebar();
     renderHeader();
     
-    // Trigger event BEFORE updating page content
+    // Trigger event
     window.dispatchEvent(new CustomEvent('languageChanged', { detail: { lang } }));
     
-    // Update current page content if updateContent function exists
+    // Update page content if function exists
     if (typeof window.updateContent === 'function') {
       setTimeout(() => window.updateContent(), 100);
-    }
-    
-    // Update I18n if available
-    if (window.I18n && typeof I18n.setLanguage === 'function') {
-      I18n.setLanguage(lang);
     }
     
     // Show feedback
@@ -339,44 +166,44 @@ const Layout = (function() {
   // 5. NOTIFICATIONS SYSTEM
   // ==========================================
   function loadNotifications() {
-    const stored = localStorage.getItem('ceo_notifications');
+    const stored = localStorage.getItem('board_notifications');
     if (stored) {
       _state.notifications = JSON.parse(stored);
     } else {
-      // Demo CEO Notifications
+      // Demo Board Notifications
       _state.notifications = [
         {
-          id: 'CEO001',
-          type: 'strategic',
-          icon: 'fa-chess-knight',
-          color: 'purple',
-          title: { ar: 'مراجعة الخطة الاستراتيجية Q2', en: 'Q2 Strategic Plan Review' },
-          body: { ar: 'اجتماع مجلس الإدارة يوم الأربعاء', en: 'Board meeting on Wednesday' },
+          id: 'BRD001',
+          type: 'meeting',
+          icon: 'fa-calendar-check',
+          color: 'blue',
+          title: { ar: 'اجتماع مجلس الإدارة القادم', en: 'Upcoming Board Meeting' },
+          body: { ar: '22 فبراير 2026 - 7:30 مساءً', en: 'Feb 22, 2026 - 7:30 PM' },
           time: new Date(Date.now() - 1000 * 60 * 30),
           read: false,
-          link: 'ceo_strategy.html'
+          link: 'meetings.html'
         },
         {
-          id: 'CEO002',
+          id: 'BRD002',
+          type: 'decision',
+          icon: 'fa-file-signature',
+          color: 'red',
+          title: { ar: 'قرار بالتمرير يحتاج موافقتك', en: 'Circular Resolution Pending' },
+          body: { ar: 'تعيين مستشار قانوني للمجموعة', en: 'Legal Advisor Appointment' },
+          time: new Date(Date.now() - 1000 * 60 * 60 * 2),
+          read: false,
+          link: 'communication.html'
+        },
+        {
+          id: 'BRD003',
           type: 'financial',
           icon: 'fa-chart-line',
           color: 'green',
-          title: { ar: 'تقرير الأداء المالي الشهري', en: 'Monthly Financial Performance Report' },
-          body: { ar: 'نمو بنسبة 15% عن الشهر السابق', en: '15% growth from last month' },
-          time: new Date(Date.now() - 1000 * 60 * 60 * 3),
-          read: false,
-          link: 'ceo_finance.html'
-        },
-        {
-          id: 'CEO003',
-          type: 'risk',
-          icon: 'fa-triangle-exclamation',
-          color: 'orange',
-          title: { ar: 'تنبيه مخاطر: مراجعة الامتثال', en: 'Risk Alert: Compliance Review' },
-          body: { ar: 'يتطلب اهتمام فوري من الإدارة التنفيذية', en: 'Requires immediate executive attention' },
+          title: { ar: 'التقرير المالي الربع سنوي', en: 'Quarterly Financial Report' },
+          body: { ar: 'متاح للمراجعة الآن', en: 'Available for review' },
           time: new Date(Date.now() - 1000 * 60 * 60 * 6),
           read: true,
-          link: 'ceo_risks.html'
+          link: 'finance.html'
         }
       ];
     }
@@ -406,7 +233,7 @@ const Layout = (function() {
   }
 
   function saveNotifications() {
-    localStorage.setItem('ceo_notifications', JSON.stringify(_state.notifications));
+    localStorage.setItem('board_notifications', JSON.stringify(_state.notifications));
   }
 
   function getTimeAgo(date) {
@@ -436,8 +263,12 @@ const Layout = (function() {
     const lang = getCurrentLang();
     const isRTL = lang === 'ar';
     const currentPath = window.location.pathname.split('/').pop() || 'index.html';
+    
+    const user = _state.currentUser;
+    const displayName = user?.displayName || user?.name || (lang === 'ar' ? 'عضو المجلس' : 'Board Member');
+    const displayTitle = user?.displayTitle || user?.role || (lang === 'ar' ? 'عضو مجلس الإدارة' : 'Board Member');
 
-    const activeMenu = _menuDefinitions[_state.activeRole] || _menuDefinitions['ceo'];
+    const activeMenu = _menuDefinitions.board;
 
     let menuHTML = '';
     activeMenu.forEach(group => {
@@ -450,6 +281,11 @@ const Layout = (function() {
       `;
       
       group.items.forEach(item => {
+        // Check if item is restricted
+        if (item.restricted && !item.restricted.includes(user?.role)) {
+          return; // Skip this item
+        }
+
         const isActive = currentPath === item.link;
         const label = t(item.key);
         
@@ -461,15 +297,8 @@ const Layout = (function() {
         if (item.badge) {
           const badgeStyles = {
             'live': 'bg-red-500 animate-pulse',
-            'strategic': 'bg-purple-500',
-            'financial': 'bg-green-500',
-            'compliance': 'bg-blue-500',
-            'risks': 'bg-orange-500',
-            'broadcast': 'bg-indigo-500',
-            'active': 'bg-teal-500',
-            'board': 'bg-amber-500',
-            'initiatives': 'bg-violet-500',
-            'portfolio': 'bg-emerald-500'
+            'new': 'bg-blue-500',
+            'admin': 'bg-purple-500'
           };
           const badgeClass = badgeStyles[item.badge] || 'bg-slate-400';
           badgeHTML = `<span class="px-1.5 py-0.5 text-[9px] font-bold rounded ${badgeClass} text-white uppercase tracking-wider">${item.badge}</span>`;
@@ -488,10 +317,6 @@ const Layout = (function() {
       });
     });
 
-    const user = _state.currentUser;
-    const displayName = user?.displayName || user?.name || (lang === 'ar' ? 'أيمن المغربي' : 'Ayman Almaghrabi');
-    const roleLabel = _roleLabels[_state.activeRole][lang];
-
     container.innerHTML = `
       <aside id="main-sidebar" class="fixed top-0 ${isRTL ? 'right-0 border-l' : 'left-0 border-r'} z-50 h-screen w-72 flex flex-col bg-white dark:bg-[#0F172A] border-slate-200 dark:border-slate-800 transition-all duration-300 shadow-2xl">
         
@@ -499,11 +324,11 @@ const Layout = (function() {
         <div class="h-20 flex items-center px-6 border-b border-slate-100 dark:border-slate-800 shrink-0 bg-gradient-to-${isRTL ? 'l' : 'r'} from-slate-50 to-transparent dark:from-slate-900/50">
           <div class="flex items-center gap-3 w-full">
             <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-brandRed to-red-600 text-white flex items-center justify-center font-bold text-xl shadow-lg shadow-brandRed/30">
-              <i class="fa-solid fa-crown"></i>
+              <i class="fa-solid fa-building-columns"></i>
             </div>
             <div class="overflow-hidden">
               <h1 class="font-bold text-base text-slate-800 dark:text-white truncate">AndroGov</h1>
-              <p class="text-[10px] text-brandRed font-bold uppercase tracking-widest truncate">Executive</p>
+              <p class="text-[10px] text-brandRed font-bold uppercase tracking-widest truncate">Board Portal</p>
             </div>
           </div>
         </div>
@@ -512,12 +337,11 @@ const Layout = (function() {
         <div class="p-4 shrink-0">
           <div class="relative group cursor-pointer">
             <div class="flex items-center gap-3 p-3 rounded-xl bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-900 border border-slate-200 dark:border-slate-700 transition-all hover:shadow-md">
-              <img src="${user?.avatar || '../photo/admin.jpg'}" 
-                   class="w-11 h-11 rounded-full border-2 border-white dark:border-slate-600 object-cover shadow-md" 
-                   onerror="this.src='https://ui-avatars.com/api/?name=CEO&background=DC2626&color=fff&bold=true'">
+              <img src="${user?.avatar || 'https://ui-avatars.com/api/?name=Board&background=FB4747&color=fff&bold=true'}" 
+                   class="w-11 h-11 rounded-full border-2 border-white dark:border-slate-600 object-cover shadow-md">
               <div class="overflow-hidden flex-1 min-w-0">
                 <p class="text-sm font-bold text-slate-800 dark:text-white truncate">${displayName}</p>
-                <p class="text-[10px] text-brandRed font-bold truncate uppercase tracking-tight">${roleLabel}</p>
+                <p class="text-[10px] text-brandRed font-bold truncate uppercase tracking-tight">${displayTitle}</p>
               </div>
               <i class="fa-solid fa-chevron-down text-slate-400 text-xs"></i>
             </div>
@@ -564,35 +388,10 @@ const Layout = (function() {
             <i class="fa-solid fa-bars text-xl"></i>
           </button>
           
-          <!-- Role Switcher -->
-          <div class="relative group">
-            <button class="flex items-center gap-2.5 px-4 py-2.5 bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-900 border-2 border-slate-200 dark:border-slate-700 rounded-xl text-xs font-bold hover:border-brandRed dark:hover:border-red-500 transition-all shadow-sm hover:shadow-md">
-              <i class="fa-solid fa-repeat text-brandRed animate-pulse"></i>
-              <span class="hidden sm:inline text-slate-700 dark:text-slate-200">${_roleLabels[_state.activeRole][lang]}</span>
-              <i class="fa-solid fa-chevron-down text-[10px] text-slate-400 transition-transform group-hover:rotate-180"></i>
-            </button>
-            
-            <div class="absolute top-full ${isRTL ? 'right-0' : 'left-0'} mt-3 w-80 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 overflow-hidden">
-              <div class="p-4 border-b border-slate-100 dark:border-slate-700 bg-gradient-to-r from-brandRed to-red-600">
-                <p class="text-xs font-bold text-white/90 uppercase tracking-widest">${t('switchWorkspace')}</p>
-                <p class="text-[10px] text-white/70 mt-1">${t('selectRole')}</p>
-              </div>
-              <div class="p-2 max-h-96 overflow-y-auto custom-scroll">
-                ${Object.entries(_roleLabels).map(([roleKey, labels]) => `
-                  <button onclick="Layout.switchRole('${roleKey}')" 
-                          class="w-full flex items-start gap-3 p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition-all ${roleKey === _state.activeRole ? 'bg-red-50 dark:bg-red-900/20 border-2 border-brandRed/30' : 'border-2 border-transparent'} mb-2">
-                    <div class="w-10 h-10 rounded-lg ${roleKey === _state.activeRole ? 'bg-brandRed text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-500'} flex items-center justify-center shrink-0">
-                      <i class="fa-solid ${_getRoleIcon(roleKey)} text-sm"></i>
-                    </div>
-                    <div class="flex-1 text-${isRTL ? 'right' : 'left'}">
-                      <p class="text-xs font-bold ${roleKey === _state.activeRole ? 'text-brandRed' : 'text-slate-700 dark:text-slate-200'}">${labels[lang]}</p>
-                      <p class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">${labels.desc[lang]}</p>
-                    </div>
-                    ${roleKey === _state.activeRole ? '<i class="fa-solid fa-check text-brandRed text-sm"></i>' : ''}
-                  </button>
-                `).join('')}
-              </div>
-            </div>
+          <!-- Page Title -->
+          <div>
+            <h2 class="font-bold text-lg text-slate-800 dark:text-white" id="pageTitle">${lang === 'ar' ? 'بوابة المجلس' : 'Board Portal'}</h2>
+            <p class="text-xs text-slate-400">${lang === 'ar' ? 'مجلس الإدارة' : 'Board of Directors'}</p>
           </div>
         </div>
 
@@ -632,10 +431,10 @@ const Layout = (function() {
                   </div>
                 ` : _state.notifications.map(notif => {
                   const colorStyles = {
-                    purple: 'bg-purple-100 text-purple-600 dark:bg-purple-900/30',
+                    blue: 'bg-blue-100 text-blue-600 dark:bg-blue-900/30',
+                    red: 'bg-red-100 text-red-600 dark:bg-red-900/30',
                     green: 'bg-green-100 text-green-600 dark:bg-green-900/30',
-                    orange: 'bg-orange-100 text-orange-600 dark:bg-orange-900/30',
-                    blue: 'bg-blue-100 text-blue-600 dark:bg-blue-900/30'
+                    orange: 'bg-orange-100 text-orange-600 dark:bg-orange-900/30'
                   };
                   const colorClass = colorStyles[notif.color] || colorStyles.blue;
                   
@@ -693,38 +492,6 @@ const Layout = (function() {
   // 8. UTILITY FUNCTIONS
   // ==========================================
   
-  function _getRoleIcon(roleKey) {
-    const icons = {
-      'ceo': 'fa-crown',
-      'board_vp': 'fa-user-tie',
-      'shareholder': 'fa-chart-pie'
-    };
-    return icons[roleKey] || 'fa-user';
-  }
-
-  function switchRole(roleKey) {
-    if (!_menuDefinitions[roleKey]) {
-      console.warn(`⚠️ Invalid role: ${roleKey}`);
-      return;
-    }
-    
-    _state.activeRole = roleKey;
-    localStorage.setItem('ceo_activeRole', roleKey); // ✅ Use CEO-specific key
-    
-    renderSidebar();
-    renderHeader();
-    
-    if (window.Toast) {
-      const lang = getCurrentLang();
-      Toast.success(lang === 'ar' ? 
-        `تم التبديل إلى: ${_roleLabels[roleKey].ar}` :
-        `Switched to: ${_roleLabels[roleKey].en}`
-      );
-    }
-    
-    console.log(`🔄 CEO Role switched to: ${roleKey}`);
-  }
-
   function toggleLanguage() {
     const currentLang = getCurrentLang();
     const newLang = currentLang === 'ar' ? 'en' : 'ar';
@@ -749,13 +516,10 @@ const Layout = (function() {
 
   function logout() {
     const lang = getCurrentLang();
-    const confirmMsg = lang === 'ar' ? 
-      'هل أنت متأكد من تسجيل الخروج؟' :
-      'Are you sure you want to logout?';
+    const confirmMsg = t('logoutConfirm');
       
     if (confirm(confirmMsg)) {
       localStorage.removeItem('currentUser');
-      localStorage.removeItem('activeRole');
       window.location.href = '../login.html';
     }
   }
@@ -769,7 +533,49 @@ const Layout = (function() {
   }
 
   // ==========================================
-  // 9. PUBLIC API
+  // 9. INITIALIZATION
+  // ==========================================
+  async function init() {
+    if (_state.isInitialized) return;
+
+    // Load User Data
+    const storedUser = localStorage.getItem('currentUser');
+    if (storedUser) {
+      _state.currentUser = JSON.parse(storedUser);
+    } else {
+      // Set default board user if not logged in
+      _state.currentUser = {
+        id: 'BRD_001',
+        type: 'board',
+        displayName: 'د. عبدالله الحواس',
+        displayTitle: 'رئيس مجلس الإدارة',
+        role: 'Chairman',
+        avatar: 'https://ui-avatars.com/api/?name=A+H&background=FB4747&color=fff&bold=true'
+      };
+      localStorage.setItem('currentUser', JSON.stringify(_state.currentUser));
+    }
+
+    // Load Notifications
+    loadNotifications();
+
+    // Render UI
+    renderSidebar();
+    renderHeader();
+    hideLoadingOverlay();
+
+    _state.isInitialized = true;
+    console.log(`✅ AndroGov Board Layout Ready | User: ${_state.currentUser.displayName} | Lang: ${getCurrentLang()}`);
+  }
+
+  function hideLoadingOverlay() {
+    const overlay = document.getElementById('loadingOverlay');
+    if (overlay) {
+      setTimeout(() => overlay.classList.add('hidden'), 300);
+    }
+  }
+
+  // ==========================================
+  // 10. PUBLIC API
   // ==========================================
   return {
     init,
@@ -780,10 +586,8 @@ const Layout = (function() {
     setLanguage,
     logout,
     toggleMobileSidebar,
-    switchRole,
     markNotificationRead,
     markAllRead,
-    getActiveRole: () => _state.activeRole,
     getCurrentLang,
     t
   };
