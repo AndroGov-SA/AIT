@@ -2,29 +2,53 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>تقارير الامتثال | AndroGov</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="pageTitle">تقارير الامتثال | AndroGov</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { brandRed: '#FB4747', brandBlue: '#4267B2' },
+                    fontFamily: { sans: ['Tajawal', 'Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
 </head>
 <body class="bg-slate-50 dark:bg-slate-900 font-sans h-screen flex overflow-hidden">
+    
     <div id="sidebar-container"></div>
+    
     <div class="flex-1 flex flex-col h-full rtl:md:mr-64 ltr:md:ml-64">
         <div id="header-container"></div>
+        
         <main class="p-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
             
+            <!-- Risk Distribution -->
             <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-200">
-                <h3 class="font-bold mb-4 text-sm">توزيع المخاطر حسب الإدارة</h3>
+                <h3 class="font-bold mb-4 text-sm">
+                    <i class="fa-solid fa-chart-pie ml-2 text-brandBlue"></i>
+                    <span data-i18n="chartTitle1">توزيع المخاطر حسب الإدارة</span>
+                </h3>
                 <div class="h-48 bg-slate-50 dark:bg-slate-900/50 rounded-2xl flex items-center justify-center border-dashed border-2 border-slate-200">
-                    <p class="text-xs text-slate-400 font-bold italic">[ رسم بياني لتوزيع المخاطر ]</p>
+                    <p class="text-xs text-slate-400 font-bold italic" data-i18n="chartPlaceholder">[ رسم بياني لتوزيع المخاطر ]</p>
                 </div>
             </div>
 
+            <!-- Implementation Rate -->
             <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-200">
-                <h3 class="font-bold mb-4 text-sm">معدل تنفيذ التوصيات</h3>
+                <h3 class="font-bold mb-4 text-sm">
+                    <i class="fa-solid fa-chart-line ml-2 text-green-600"></i>
+                    <span data-i18n="chartTitle2">معدل تنفيذ التوصيات</span>
+                </h3>
                 <div class="space-y-6">
                     <div>
                         <div class="flex justify-between text-[10px] mb-2 font-bold">
-                            <span>توصيات الربع الثالث 2025</span>
-                            <span class="text-green-600">90% إنجاز</span>
+                            <span data-i18n="recLabel">توصيات الربع الثالث 2025</span>
+                            <span class="text-green-600"><span data-i18n="recProgress">90% إنجاز</span></span>
                         </div>
                         <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
                             <div class="bg-green-500 h-full" style="width: 90%"></div>
@@ -34,12 +58,74 @@
             </div>
         </main>
     </div>
+    
     <script src="../admin/js/core/config.js"></script>
     <script src="../admin/js/components/layout.js"></script>
+    
     <script>
+        // ==========================================
+        // PAGE TRANSLATIONS
+        // ==========================================
+        const pageContent = {
+            ar: {
+                pageTitle: "تقارير الامتثال | AndroGov",
+                chartTitle1: "توزيع المخاطر حسب الإدارة",
+                chartPlaceholder: "[ رسم بياني لتوزيع المخاطر ]",
+                chartTitle2: "معدل تنفيذ التوصيات",
+                recLabel: "توصيات الربع الثالث 2025",
+                recProgress: "90% إنجاز"
+            },
+            en: {
+                pageTitle: "Compliance Reports | AndroGov",
+                chartTitle1: "Risk Distribution by Department",
+                chartPlaceholder: "[ Risk Distribution Chart ]",
+                chartTitle2: "Recommendations Implementation Rate",
+                recLabel: "Q3 2025 Recommendations",
+                recProgress: "90% Complete"
+            }
+        };
+
+        // ==========================================
+        // UPDATE CONTENT FUNCTION
+        // ==========================================
+        window.updateContent = function() {
+            const lang = Layout.getCurrentLang();
+            const dict = pageContent[lang];
+            
+            document.title = dict.pageTitle;
+            
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (dict[key]) {
+                    el.textContent = dict[key];
+                }
+            });
+        };
+
+        // ==========================================
+        // INITIALIZATION
+        // ==========================================
         document.addEventListener('DOMContentLoaded', () => {
-            const user = JSON.parse(localStorage.getItem('currentUser'));
-            if (user) { user.type = 'audit'; AppConfig.setCurrentUser(user); Layout.init(); }
+            const checkLibs = setInterval(() => {
+                if (typeof Layout !== 'undefined' && typeof AppConfig !== 'undefined') {
+                    clearInterval(checkLibs);
+                    
+                    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+                    if (currentUser) {
+                        currentUser.type = 'audit'; 
+                        AppConfig.setCurrentUser(currentUser);
+                        Layout.init();
+                        updateContent();
+                    } else {
+                        window.location.href = '../index.html';
+                    }
+                }
+            }, 50);
+        });
+
+        // Listen for language changes
+        window.addEventListener('languageChanged', () => {
+            updateContent();
         });
     </script>
 </body>
