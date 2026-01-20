@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>مركز الدعم الفني | AndroGov</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+    <script>tailwind.config = { darkMode: 'class', theme: { extend: { colors: { brandRed: '#FB4747' }, fontFamily: { sans: ['Tajawal'] } } } }</script>
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 opacity-0 transition-opacity duration-500">
+    <div id="sidebar-container"></div>
+    <div class="main-content-wrapper lg:mr-72 min-h-screen transition-all">
+        <div id="header-container"></div>
+        <main class="p-8">
+            <div class="flex justify-between items-center mb-8">
+                <div>
+                    <h1 class="text-2xl font-bold dark:text-white">تذاكر الدعم الفني</h1>
+                    <p class="text-sm text-slate-500">إدارة المهام التقنية المسندة إليك</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 gap-4">
+                <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border-r-4 border-orange-500 shadow-sm flex flex-col md:flex-row justify-between items-center gap-4">
+                    <div class="flex gap-4 items-center">
+                        <div class="w-12 h-12 bg-orange-50 dark:bg-orange-900/20 rounded-full flex items-center justify-center text-orange-600"><i class="fa-solid fa-laptop-code text-xl"></i></div>
+                        <div>
+                            <h4 class="font-bold dark:text-white">مشكلة في الدخول للنظام الأساسي</h4>
+                            <p class="text-xs text-slate-500">الموظف: أحمد علي | الأولوية: <span class="text-orange-500 font-bold">عالية</span></p>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button class="bg-green-500 text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-green-600 transition">بدء العمل</button>
+                        <button class="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 px-4 py-2 rounded-xl text-xs font-bold">تفاصيل</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="data/company_policy.js"></script>
+    <script src="js/core/config.js"></script>
+    <script src="js/core/i18n.js"></script>
+    <script src="js/helpers/policy-helpers.js"></script>
+    <script src="js/services/data-service.js"></script>
+    <script src="js/components/role-switcher.js"></script>
+    <script src="js/components/layout.js"></script>
+    <script src="js/components/bot.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof Layout !== 'undefined') Layout.init();
+            document.body.classList.remove('opacity-0');
+        });
+    </script>
+</body>
+</html>
