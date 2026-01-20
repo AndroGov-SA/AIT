@@ -1,7 +1,7 @@
 /**
  * AndroGov Layout Engine v10.5 (Finance/ERP Edition)
  * @file finance/js/components/layout.js
- * @description FINAL STABLE VERSION: Forced rendering for CFO Role.
+ * @description FIXED FINAL VERSION: Immediate rendering with data validation.
  */
 
 const Layout = (function() {
@@ -56,18 +56,16 @@ const Layout = (function() {
       financial_control: 'الرقابة المالية', general_ledger: 'الأستاذ العام', accounts_payable: 'الحسابات الدائنة', accounts_receivable: 'الحسابات المدينة', inventory_assets: 'المخزون والأصول', reports_tax: 'التقارير والضرائب', settings_personal: 'الإعدادات', dashboard: 'نظرة عامة', approvals: 'الاعتمادات', internal_chat: 'المحادثات', gl_journal: 'قيود اليومية', gl_coa: 'دليل الحسابات', gl_cost_centers: 'مراكز التكلفة', ap_bills: 'الفواتير الواردة', ap_payments: 'أوامر الصرف', ap_vendors: 'الموردين', ar_invoices: 'فواتير المبيعات', ar_receipts: 'سندات القبض', inv_dashboard: 'لوحة المخزون', inv_assets: 'سجل الأصول', rep_statements: 'القوائم المالية', rep_budget: 'الموازنة', rep_tax: 'الضرائب', fin_settings: 'إعدادات المالية', my_profile: 'الملف الشخصي', notifications: 'التنبيهات', logout: 'خروج', logoutConfirm: 'هل تريد الخروج؟', poweredBy: 'تطوير', aymanDev: 'أيمن المغربي'
     },
     en: {
-      financial_control: 'Finance Control', general_ledger: 'Ledger', accounts_payable: 'Payables', accounts_receivable: 'Receivables', inventory_assets: 'Inventory', reports_tax: 'Reports', settings_personal: 'Account', dashboard: 'Dashboard', approvals: 'Approvals', internal_chat: 'Chat', gl_journal: 'Journal', gl_coa: 'COA', gl_cost_centers: 'Cost Centers', ap_bills: 'Bills', ap_payments: 'Payments', ap_vendors: 'Vendors', ar_invoices: 'Invoices', ar_receipts: 'Receipts', inv_dashboard: 'Stock Dash', inv_assets: 'Assets', rep_statements: 'Statements', rep_budget: 'Budget', rep_tax: 'Tax', fin_settings: 'Settings', my_profile: 'Profile', notifications: 'Alerts', logout: 'Logout', logoutConfirm: 'Exit?', poweredBy: 'Dev', aymanDev: 'Ayman'
+      financial_control: 'Control', general_ledger: 'Ledger', accounts_payable: 'Payables', accounts_receivable: 'Receivables', inventory_assets: 'Inventory', reports_tax: 'Reports', settings_personal: 'Account', dashboard: 'Dashboard', approvals: 'Approvals', internal_chat: 'Chat', gl_journal: 'Journal', gl_coa: 'COA', gl_cost_centers: 'Cost Centers', ap_bills: 'Bills', ap_payments: 'Payments', ap_vendors: 'Vendors', ar_invoices: 'Invoices', ar_receipts: 'Receipts', inv_dashboard: 'Stock Dash', inv_assets: 'Assets', rep_statements: 'Statements', rep_budget: 'Budget', rep_tax: 'Tax', fin_settings: 'Settings', my_profile: 'Profile', notifications: 'Alerts', logout: 'Logout', logoutConfirm: 'Exit?', poweredBy: 'Dev', aymanDev: 'Ayman'
     }
   };
 
   function getCurrentLang() { return localStorage.getItem('lang') || 'ar'; }
   function t(key) { return _translations[getCurrentLang()]?.[key] || key; }
 
-  // دالة بناء الـ Sidebar
   function renderSidebar() {
     const container = document.getElementById('sidebar-container');
     if (!container) return;
-
     const lang = getCurrentLang();
     const isRTL = lang === 'ar';
     const currentPath = window.location.pathname.split('/').pop() || 'index.html';
@@ -79,7 +77,7 @@ const Layout = (function() {
       group.items.forEach(item => {
         const isActive = currentPath === item.link;
         menuHTML += `
-          <a href="${item.link}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all mb-1 ${isActive ? 'bg-gradient-to-r from-brandRed to-red-600 text-white shadow-lg shadow-red-500/30' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-brandRed'}">
+          <a href="${item.link}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all mb-1 ${isActive ? 'bg-gradient-to-r from-brandRed to-red-600 text-white shadow-lg' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-brandRed'}">
             <div class="w-5 text-center"><i class="fa-solid ${item.icon}"></i></div>
             <span class="flex-1 truncate">${t(item.key)}</span>
             ${item.badge ? `<span class="px-1.5 py-0.5 text-[9px] font-bold rounded bg-amber-500 text-white uppercase">${item.badge}</span>` : ''}
@@ -89,16 +87,16 @@ const Layout = (function() {
 
     container.innerHTML = `
       <aside id="main-sidebar" class="fixed top-0 ${isRTL ? 'right-0 border-l' : 'left-0 border-r'} z-50 h-screen w-72 flex flex-col bg-white dark:bg-[#0F172A] border-slate-200 dark:border-slate-800 shadow-2xl transition-all duration-300">
-        <div class="h-20 flex items-center px-6 border-b border-slate-100 dark:border-slate-800">
+        <div class="h-20 flex items-center px-6 border-b border-slate-100 dark:border-slate-800 shrink-0">
           <div class="flex items-center gap-3">
-            <div class="w-11 h-11 rounded-xl bg-brandRed text-white flex items-center justify-center font-bold text-xl"><i class="fa-solid fa-calculator"></i></div>
+            <div class="w-11 h-11 rounded-xl bg-brandRed text-white flex items-center justify-center font-bold text-xl shadow-lg"><i class="fa-solid fa-calculator"></i></div>
             <h1 class="font-bold text-base text-slate-800 dark:text-white">AndroGov <span class="block text-[10px] text-brandRed font-bold uppercase tracking-widest">Finance Portal</span></h1>
           </div>
         </div>
-        <div class="p-4">
+        <div class="p-4 shrink-0">
           <div class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border dark:border-slate-700">
-            <img src="${_state.currentUser?.avatar || 'https://ui-avatars.com/api/?name=CFO'}" class="w-11 h-11 rounded-full border-2 border-white shadow-sm">
-            <div class="min-w-0"><p class="text-xs font-bold dark:text-white truncate">${_state.currentUser?.displayName || 'المدير المالي'}</p><p class="text-[9px] text-brandRed font-bold uppercase">CFO / IT Manager</p></div>
+            <img src="${_state.currentUser?.avatar || 'https://ui-avatars.com/api/?name=CFO'}" class="w-11 h-11 rounded-full border-2 border-white shadow-sm object-cover">
+            <div class="min-w-0 flex-1"><p class="text-xs font-bold dark:text-white truncate">${_state.currentUser?.displayName || 'المدير المالي'}</p><p class="text-[9px] text-brandRed font-bold uppercase truncate">CFO / Manager</p></div>
           </div>
         </div>
         <nav class="flex-1 overflow-y-auto px-3 py-2 custom-scroll">${menuHTML}</nav>
@@ -106,7 +104,6 @@ const Layout = (function() {
       </aside>`;
   }
 
-  // دالة بناء الـ Header
   function renderHeader() {
     const container = document.getElementById('header-container');
     if (!container) return;
@@ -117,7 +114,7 @@ const Layout = (function() {
       <header class="h-20 sticky top-0 z-40 flex items-center justify-between px-6 bg-white/90 dark:bg-[#0F172A]/95 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800 shadow-sm">
         <div class="flex items-center gap-4">
           <button onclick="Layout.toggleMobileSidebar()" class="md:hidden text-slate-500"><i class="fa-solid fa-bars text-xl"></i></button>
-          <div class="px-4 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-[11px] font-bold text-slate-600 dark:text-slate-300"><i class="fa-solid fa-lock text-brandRed mr-2"></i> FINANCE_SECURE_v10.5</div>
+          <div class="px-4 py-2 bg-slate-50 dark:bg-slate-800 border dark:border-slate-700 rounded-xl text-[11px] font-bold text-slate-600 dark:text-slate-300"><i class="fa-solid fa-lock text-brandRed mr-2"></i> FINANCE_SECURE_v10.5</div>
         </div>
         <div class="flex items-center gap-3">
           <button onclick="Layout.toggleLanguage()" class="w-10 h-10 rounded-xl border-2 border-slate-200 dark:border-slate-700 font-bold text-xs">${lang === 'ar' ? 'EN' : 'ع'}</button>
@@ -128,51 +125,38 @@ const Layout = (function() {
       </header>`;
   }
 
-  // دالة التشغيل الرئيسية
   async function init() {
-    if (_state.isInitialized) return;
-    
-    // سحب البيانات من localStorage فوراً
+    // محاولة جلب المستخدم من التخزين
     const storedUser = localStorage.getItem('currentUser');
     if (storedUser) {
-      _state.currentUser = JSON.parse(storedUser);
+        _state.currentUser = JSON.parse(storedUser);
     }
-    
-    _state.activeRole = 'CFO'; // إجبار الدور على CFO
 
+    // رسم الواجهة فوراً
     renderSidebar();
     renderHeader();
     
-    // إخفاء الـ Loading وإظهار الصفحة
-    const overlay = document.getElementById('loadingOverlay');
-    if (overlay) overlay.classList.add('hidden');
+    // إظهار الصفحة
     document.body.classList.remove('opacity-0');
     document.body.style.opacity = '1';
     
     _state.isInitialized = true;
-    console.log("✅ Finance Layout Engine Initialized Successfully");
+    console.log("✅ Finance Layout Engine v10.5: Forced Rendering Done.");
   }
 
-  // الوظائف العامة
-  function toggleLanguage() {
-    const newLang = getCurrentLang() === 'ar' ? 'en' : 'ar';
-    localStorage.setItem('lang', newLang);
-    location.reload(); // إعادة التحميل لضمان تغيير الاتجاهات
-  }
-
-  function toggleTheme() {
-    document.documentElement.classList.toggle('dark');
-    localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
-    renderHeader();
-  }
-
+  function toggleLanguage() { localStorage.setItem('lang', getCurrentLang() === 'ar' ? 'en' : 'ar'); location.reload(); }
+  function toggleTheme() { document.documentElement.classList.toggle('dark'); localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light'); renderHeader(); }
   function logout() { if (confirm(t('logoutConfirm'))) { localStorage.clear(); window.location.href = '../login.html'; } }
-  function toggleMobileSidebar() { const sb = document.getElementById('main-sidebar'); if(sb) sb.classList.toggle('-translate-x-full'); }
+  function toggleMobileSidebar() { document.getElementById('main-sidebar')?.classList.toggle('-translate-x-full'); }
 
   return { init, toggleTheme, toggleLanguage, logout, toggleMobileSidebar };
-
 })();
 
-// التشغيل الآلي
-document.addEventListener('DOMContentLoaded', () => Layout.init());
+// تشغيل فوري وبأولوية عالية
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', Layout.init);
+} else {
+    Layout.init();
+}
+
 window.Layout = Layout;
