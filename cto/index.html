@@ -255,24 +255,33 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        // التأكد من تهيئة المستخدم بالصيغة التي يفهمها الـ Layout الخاص بك
+        // 1. إعداد بيانات المستخدم لتتوافق مع محرك v10.5
         const ctoUser = {
-            id: 'USR_009',
-            type: 'cto', // هذا المفتاح هو الأهم لفتح القوائم
+            id: 'USR_CTO_01',
             name: 'مشاعل الهديان',
             displayName: 'مشاعل الهديان',
-            role: 'CTO',
-            avatar: 'https://ui-avatars.com/api/?name=Meshail+AlHadyan&background=EC4899&color=fff'
+            role: 'cto', // هذا هو المفتاح الذي يبحث عنه المحرك لفتح القائمة
+            avatar: 'https://ui-avatars.com/api/?name=Meshail+AlHadyan&background=FB4747&color=fff'
         };
         
-        // حفظ المستخدم قبل تشغيل الـ Layout
+        // 2. تخزين البيانات في الـ LocalStorage لضمان استمرارية المحرك
         localStorage.setItem('currentUser', JSON.stringify(ctoUser));
         localStorage.setItem('activeRole', 'cto');
 
-        // تشغيل المحرك
+        // 3. التأكد من وجود الوضع الليلي المفضل
+        if (!localStorage.getItem('theme')) {
+            localStorage.setItem('theme', 'light');
+        }
+
+        // 4. تشغيل المحرك
         if (typeof Layout !== 'undefined') {
             Layout.init();
-            console.log("✅ CTO Dashboard System Initialized");
+            
+            // إظهار الصفحة بعد التحميل (لأن الـ body له opacity-0)
+            document.body.style.opacity = '1';
+            console.log("🚀 CTO Layout Engine v10.5 Started Successfully");
+        } else {
+            console.error("❌ Layout.js file not found! Check your script paths.");
         }
     });
 </script>
