@@ -159,22 +159,79 @@ const Layout = (function() {
   function renderSidebar() {
     const container = document.getElementById('sidebar-container');
     if (!container) return;
+
     const lang = getCurrentLang();
+    const isRTL = lang === 'ar';
     const currentPath = window.location.pathname.split('/').pop() || 'index.html';
 
+    // الخطأ كان هنا: الكود القديم يبحث عن finance_admin
+    // الصحيح هو البحث عن activeRole المخزن (CFO) أو المصفوفة التي عرفناها
+    const activeMenu = _menuDefinitions['CFO']; 
+
+    if (!activeMenu) {
+        console.error("❌ المصفوفة CFO غير معرفة في _menuDefinitions");
+        return;
+    }
+
     let menuHTML = '';
-    _menuDefinitions.finance_admin.forEach(group => {
-      menuHTML += `<div class="px-3 mt-6 mb-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider">${t(group.section)}</div>`;
-      group.items.forEach(item => {
-        const isActive = currentPath === item.link;
-        menuHTML += `
-          <a href="${item.link}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all mb-1 ${isActive ? 'bg-gradient-to-r from-brandRed to-red-600 text-white shadow-lg' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-brandRed'}">
-            <div class="w-5 text-center transition-transform group-hover:scale-110"><i class="fa-solid ${item.icon}"></i></div>
-            <span class="flex-1 truncate">${t(item.key)}</span>
-            ${item.badge ? `<span class="px-1.5 py-0.5 text-[9px] font-bold rounded bg-amber-500 text-white uppercase">${item.badge}</span>` : ''}
-          </a>`;
-      });
+    activeMenu.forEach(group => {
+        menuHTML += `<div class="px-3 mt-6 mb-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider">${t(group.section)}</div>`;
+        group.items.forEach(item => {
+            const isActive = currentPath === item.link;
+            
+            // الألوان والستايلات الخاصة بك
+            const baseClass = "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 group mb-1";
+            const activeClass = "bg-gradient-to-r from-brandRed to-red-600 text-white shadow-lg shadow-red-500/30";
+            const inactiveClass = "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-brandRed dark:hover:text-red-400";
+
+            menuHTML += `
+                <a href="${item.link}" class="${baseClass} ${isActive ? activeClass : inactiveClass}">
+                    <div class="w-5 text-center transition-transform group-hover:scale-110">
+                        <i class="fa-solid ${item.icon}"></i>
+                    </div>
+                    <span class="flex-1 truncate">${t(item.key)}</span>
+                    ${item.badge ? `<span class="px-1.5 py-0.5 text-[9px] font-bold rounded bg-amber-500 text-white uppercase">${item.badge}</span>` : ''}
+                    ${isActive ? '<div class="w-1.5 h-1.5 rounded-full bg-white"></div>' : ''}
+                </a>`;
+        });
     });
+
+    // رسم الهيكل الكامل للشريط الجانبي
+    container.innerHTML = `
+        <aside id="main-sidebar" class="fixed top-0 ${isRTL ? 'right-0 border-l' : 'left-0 border-r'} z-50 h-screen w-72 flex flex-col bg-white dark:bg-[#0F172A] border-slate-200 dark:border-slate-800 shadow-2xl transition-all duration-300">
+            <div class="h-20 flex items-center px-6 border-b border-slate-100 dark:border-slate-800 shrink-0">
+                <div class="flex items-center gap-3 w-full">
+                    <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-brandRed to-red-600 text-white flex items-center justify-center font-bold text-xl shadow-lg">
+                        <i class="fa-solid fa-calculator"></i>
+                    </div>
+                    <div class="overflow-hidden">
+                        <h1 class="font-bold text-base text-slate-800 dark:text-white truncate">AndroGov</h1>
+                        <p class="text-[10px] text-brandRed font-bold uppercase tracking-widest truncate">Finance Portal</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="p-4 shrink-0">
+                <div class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border dark:border-slate-700">
+                    <img src="${_state.currentUser?.avatar || 'https://ui-avatars.com/api/?name=CFO'}" class="w-11 h-11 rounded-full border-2 border-white dark:border-slate-600 object-cover shadow-md">
+                    <div class="overflow-hidden flex-1">
+                        <p class="text-sm font-bold text-slate-800 dark:text-white truncate">${_state.currentUser?.displayName || 'المدير المالي'}</p>
+                        <p class="text-[10px] text-brandRed font-bold truncate uppercase">CFO / IT Finance</p>
+                    </div>
+                </div>
+            </div>
+
+            <nav id="sidebar-nav" class="flex-1 overflow-y-auto px-3 py-2 custom-scroll">
+                ${menuHTML}
+            </nav>
+
+            <div class="p-4 text-center border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50">
+                <p class="text-[10px] text-slate-400 font-medium">© 2026 ERP Finance System</p>
+                <p class="text-[9px] text-slate-300 dark:text-slate-600 mt-1">${t('poweredBy')} ${t('aymanDev')}</p>
+            </div>
+        </aside>
+    `;
+}
 
     container.innerHTML = `
       <aside id="main-sidebar" class="fixed top-0 ${lang === 'ar' ? 'right-0 border-l' : 'left-0 border-r'} z-50 h-screen w-72 flex flex-col bg-white dark:bg-[#0F172A] border-slate-200 dark:border-slate-800 shadow-2xl transition-all duration-300">
