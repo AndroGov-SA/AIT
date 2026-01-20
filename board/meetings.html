@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#FB4747">
-    <title>الاجتماعات | AndroGov</title>
+    <title data-i18n="pageTitle">الاجتماعات | AndroGov</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -40,81 +40,298 @@
 
         <main class="p-8 space-y-8 overflow-y-auto custom-scroll fade-in">
             
-            <div class="flex justify-between items-center">
-                <h2 class="text-xl font-bold dark:text-white">جدول الاجتماعات والمحاضر</h2>
-                <button class="px-4 py-2 bg-brandBlue text-white rounded-lg text-xs font-bold shadow-lg hover:bg-blue-700 transition">تصدير الجدول</button>
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <h2 class="text-xl font-bold dark:text-white" data-i18n="title">جدول الاجتماعات والمحاضر</h2>
+                    <p class="text-sm text-slate-500 mt-1" data-i18n="subtitle">سجل شامل لجميع اجتماعات المجلس</p>
+                </div>
+                <div class="flex gap-2">
+                    <button class="px-4 py-2 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-lg text-xs font-bold hover:bg-slate-200 dark:hover:bg-slate-600 transition flex items-center gap-2">
+                        <i class="fa-solid fa-filter"></i> <span data-i18n="btnFilter">تصفية</span>
+                    </button>
+                    <button class="px-4 py-2 bg-brandBlue text-white rounded-lg text-xs font-bold shadow-lg hover:bg-blue-700 transition flex items-center gap-2">
+                        <i class="fa-solid fa-download"></i> <span data-i18n="btnExport">تصدير الجدول</span>
+                    </button>
+                </div>
             </div>
 
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-lg bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-brandBlue">
+                            <i class="fa-solid fa-calendar-check"></i>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-slate-400 font-bold uppercase" data-i18n="statScheduled">اجتماعات مجدولة</p>
+                            <h3 class="text-2xl font-bold num-font text-brandBlue">3</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-lg bg-green-50 dark:bg-green-900/20 flex items-center justify-center text-green-600">
+                            <i class="fa-solid fa-circle-check"></i>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-slate-400 font-bold uppercase" data-i18n="statCompleted">اجتماعات منعقدة</p>
+                            <h3 class="text-2xl font-bold num-font text-green-600">28</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-lg bg-purple-50 dark:bg-purple-900/20 flex items-center justify-center text-purple-600">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-slate-400 font-bold uppercase" data-i18n="statAttendance">نسبة الحضور</p>
+                            <h3 class="text-2xl font-bold num-font text-purple-600">92%</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-lg bg-orange-50 dark:bg-orange-900/20 flex items-center justify-center text-orange-600">
+                            <i class="fa-solid fa-file-lines"></i>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-slate-400 font-bold uppercase" data-i18n="statMinutes">محاضر موقعة</p>
+                            <h3 class="text-2xl font-bold num-font text-orange-600">26</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Meetings Table -->
             <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden">
-                <table class="w-full text-sm text-right">
-                    <thead class="bg-slate-50 dark:bg-slate-700 text-slate-500 font-bold text-xs uppercase">
-                        <tr>
-                            <th class="p-4">المرجع</th>
-                            <th class="p-4">عنوان الاجتماع</th>
-                            <th class="p-4">التاريخ والوقت</th>
-                            <th class="p-4 text-center">النوع</th>
-                            <th class="p-4 text-center">الحالة</th>
-                            <th class="p-4 text-center">إجراء</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
-                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
-                            <td class="p-4 font-mono text-xs font-bold text-blue-600">BOD-2026-01</td>
-                            <td class="p-4 font-bold dark:text-white">اجتماع مجلس الإدارة الأول</td>
-                            <td class="p-4 text-xs font-mono text-slate-500">15 Feb 2026 • 10:00 AM</td>
-                            <td class="p-4 text-center"><span class="bg-purple-50 text-purple-700 px-2 py-1 rounded text-[10px] font-bold">حضوري</span></td>
-                            <td class="p-4 text-center"><span class="bg-blue-50 text-brandBlue px-2 py-1 rounded text-[10px] font-bold">مجدول</span></td>
-                            <td class="p-4 text-center">
-                                <button class="text-slate-500 hover:text-brandBlue transition"><i class="fa-solid fa-eye"></i></button>
-                            </td>
-                        </tr>
-                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
-                            <td class="p-4 font-mono text-xs font-bold text-slate-500">BOD-2025-04</td>
-                            <td class="p-4 font-bold dark:text-white">اجتماع مجلس الإدارة الرابع</td>
-                            <td class="p-4 text-xs font-mono text-slate-500">20 Dec 2025 • 01:00 PM</td>
-                            <td class="p-4 text-center"><span class="bg-orange-50 text-orange-700 px-2 py-1 rounded text-[10px] font-bold">عن بعد</span></td>
-                            <td class="p-4 text-center"><span class="bg-green-50 text-green-700 px-2 py-1 rounded text-[10px] font-bold">منعقد</span></td>
-                            <td class="p-4 text-center">
-                                <button class="text-brandBlue hover:underline text-xs font-bold"><i class="fa-solid fa-file-pdf"></i> المحضر</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-right">
+                        <thead class="bg-slate-50 dark:bg-slate-700 text-slate-500 font-bold text-xs uppercase">
+                            <tr>
+                                <th class="p-4" data-i18n="colRef">المرجع</th>
+                                <th class="p-4" data-i18n="colTitle">عنوان الاجتماع</th>
+                                <th class="p-4" data-i18n="colDate">التاريخ والوقت</th>
+                                <th class="p-4 text-center" data-i18n="colType">النوع</th>
+                                <th class="p-4 text-center" data-i18n="colStatus">الحالة</th>
+                                <th class="p-4 text-center" data-i18n="colAction">إجراء</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 dark:divide-slate-700" id="meetingsTableBody">
+                            <!-- Data will be populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
         </main>
     </div>
 
+    <!-- Scripts -->
     <script src="../admin/js/core/config.js"></script>
-    <script src="../admin/js/core/i18n.js"></script>
     <script src="../admin/js/services/data-service.js"></script>
-    <script src="../admin/js/components/role-switcher.js"></script>
-    
-    <script src="../admin/js/components/layout.js"></script>
-    <script src="../admin/js/components/bot.js"></script>
+    <script src="js/components/toast.js"></script>
+    <script src="js/components/layout.js"></script>
+    <script src="js/components/bot.js"></script>
 
     <script>
+        // ==========================================
+        // PAGE TRANSLATIONS
+        // ==========================================
+        const pageContent = {
+            ar: {
+                pageTitle: "الاجتماعات | AndroGov",
+                title: "جدول الاجتماعات والمحاضر",
+                subtitle: "سجل شامل لجميع اجتماعات المجلس",
+                btnFilter: "تصفية",
+                btnExport: "تصدير الجدول",
+                statScheduled: "اجتماعات مجدولة",
+                statCompleted: "اجتماعات منعقدة",
+                statAttendance: "نسبة الحضور",
+                statMinutes: "محاضر موقعة",
+                colRef: "المرجع",
+                colTitle: "عنوان الاجتماع",
+                colDate: "التاريخ والوقت",
+                colType: "النوع",
+                colStatus: "الحالة",
+                colAction: "إجراء",
+                typeInPerson: "حضوري",
+                typeRemote: "عن بعد",
+                statusScheduled: "مجدول",
+                statusCompleted: "منعقد",
+                statusCancelled: "ملغي"
+            },
+            en: {
+                pageTitle: "Meetings | AndroGov",
+                title: "Meetings & Minutes Schedule",
+                subtitle: "Comprehensive record of all board meetings",
+                btnFilter: "Filter",
+                btnExport: "Export Table",
+                statScheduled: "Scheduled",
+                statCompleted: "Completed",
+                statAttendance: "Attendance Rate",
+                statMinutes: "Signed Minutes",
+                colRef: "Reference",
+                colTitle: "Meeting Title",
+                colDate: "Date & Time",
+                colType: "Type",
+                colStatus: "Status",
+                colAction: "Action",
+                typeInPerson: "In-Person",
+                typeRemote: "Remote",
+                statusScheduled: "Scheduled",
+                statusCompleted: "Completed",
+                statusCancelled: "Cancelled"
+            }
+        };
+
+        // ==========================================
+        // SAMPLE DATA
+        // ==========================================
+        const meetingsData = [
+            {
+                ref: 'BOD-2026-03',
+                title: { ar: 'اجتماع مجلس الإدارة الثالث', en: 'Third Board Meeting' },
+                date: '2026-03-15',
+                time: '10:00 AM',
+                type: 'in-person',
+                status: 'scheduled'
+            },
+            {
+                ref: 'BOD-2026-02',
+                title: { ar: 'اجتماع مجلس الإدارة الثاني', en: 'Second Board Meeting' },
+                date: '2026-02-22',
+                time: '07:30 PM',
+                type: 'in-person',
+                status: 'scheduled'
+            },
+            {
+                ref: 'BOD-2026-01',
+                title: { ar: 'اجتماع مجلس الإدارة الأول', en: 'First Board Meeting' },
+                date: '2026-01-20',
+                time: '01:00 PM',
+                type: 'remote',
+                status: 'completed'
+            },
+            {
+                ref: 'BOD-2025-04',
+                title: { ar: 'اجتماع مجلس الإدارة الرابع', en: 'Fourth Board Meeting 2025' },
+                date: '2025-12-20',
+                time: '01:00 PM',
+                type: 'remote',
+                status: 'completed'
+            },
+            {
+                ref: 'BOD-2025-03',
+                title: { ar: 'اجتماع استثنائي - الموازنة', en: 'Extraordinary Meeting - Budget' },
+                date: '2025-11-10',
+                time: '03:00 PM',
+                type: 'in-person',
+                status: 'completed'
+            }
+        ];
+
+        // ==========================================
+        // RENDER TABLE
+        // ==========================================
+        function renderMeetingsTable() {
+            const tbody = document.getElementById('meetingsTableBody');
+            if (!tbody) return;
+
+            const lang = Layout.getCurrentLang();
+            const dict = pageContent[lang];
+
+            tbody.innerHTML = meetingsData.map(meeting => {
+                const statusColors = {
+                    scheduled: 'bg-blue-50 text-brandBlue border-blue-200 dark:bg-blue-900/20 dark:border-blue-800',
+                    completed: 'bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:border-green-800',
+                    cancelled: 'bg-red-50 text-red-700 border-red-200 dark:bg-red-900/20 dark:border-red-800'
+                };
+
+                const typeColors = {
+                    'in-person': 'bg-purple-50 text-purple-700 dark:bg-purple-900/20',
+                    'remote': 'bg-orange-50 text-orange-700 dark:bg-orange-900/20'
+                };
+
+                return `
+                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
+                        <td class="p-4 font-mono text-xs font-bold text-blue-600">${meeting.ref}</td>
+                        <td class="p-4 font-bold dark:text-white">${meeting.title[lang]}</td>
+                        <td class="p-4 text-xs font-mono text-slate-500">
+                            ${meeting.date} • ${meeting.time}
+                        </td>
+                        <td class="p-4 text-center">
+                            <span class="px-2 py-1 rounded text-[10px] font-bold ${typeColors[meeting.type]}">
+                                ${dict['type' + meeting.type.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join('')]}
+                            </span>
+                        </td>
+                        <td class="p-4 text-center">
+                            <span class="px-2 py-1 rounded-full text-[10px] font-bold border ${statusColors[meeting.status]}">
+                                ${dict['status' + meeting.status.charAt(0).toUpperCase() + meeting.status.slice(1)]}
+                            </span>
+                        </td>
+                        <td class="p-4 text-center">
+                            ${meeting.status === 'completed' 
+                                ? `<button class="text-brandBlue hover:underline text-xs font-bold">
+                                     <i class="fa-solid fa-file-pdf"></i> ${lang === 'ar' ? 'المحضر' : 'Minutes'}
+                                   </button>`
+                                : `<button class="text-slate-500 hover:text-brandBlue transition">
+                                     <i class="fa-solid fa-eye"></i>
+                                   </button>`
+                            }
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // ==========================================
+        // UPDATE CONTENT FUNCTION
+        // ==========================================
+        window.updateContent = function() {
+            const lang = Layout.getCurrentLang();
+            const dict = pageContent[lang];
+            
+            document.title = dict.pageTitle;
+            
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (dict[key]) {
+                    el.textContent = dict[key];
+                }
+            });
+
+            // Re-render table with new language
+            renderMeetingsTable();
+        };
+
+        // ==========================================
+        // INITIALIZATION
+        // ==========================================
         document.addEventListener('DOMContentLoaded', () => {
-            // انتظار تحميل المكتبات
             const checkLibs = setInterval(() => {
                 if (typeof Layout !== 'undefined' && typeof AppConfig !== 'undefined') {
                     clearInterval(checkLibs);
 
-                    // ✅ تعريف المستخدم بشكل صحيح
-                    const boardUser = {
-                        id: 'BRD_001',
-                        type: 'board', // ⚠️ هام جداً: يربط مع RoleMap في layout.js
-                        role: 'Board Member', 
-                        displayName: 'د. عبدالله الحواس',
-                        displayTitle: 'رئيس مجلس الإدارة',
-                        avatar: 'https://ui-avatars.com/api/?name=A+H&background=random'
-                    };
+                    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
 
-                    // حفظ وتشغيل
-                    AppConfig.setCurrentUser(boardUser);
-                    Layout.init();
+                    if (currentUser) {
+                        AppConfig.setCurrentUser(currentUser);
+                        Layout.init();
+                        updateContent();
+                    } else {
+                        window.location.href = '../index.html';
+                    }
                 }
             }, 50);
+        });
+
+        // Listen for language changes
+        window.addEventListener('languageChanged', () => {
+            updateContent();
         });
     </script>
 </body>
