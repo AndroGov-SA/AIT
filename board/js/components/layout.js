@@ -38,12 +38,6 @@ const Layout = (function() {
         ]
       },
       { 
-        section: 'secretary_tools', 
-        items: [
-          { key: 'secretary_portal', icon: 'fa-user-tie', link: 'secretary.html', badge: 'admin', restricted: ['Secretary'] }
-        ]
-      },
-      { 
         section: 'personal', 
         items: [
           { key: 'my_profile', icon: 'fa-user-circle', link: 'profile.html', badge: null }
