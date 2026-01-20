@@ -248,33 +248,35 @@
     <script src="data/company_policy.js"></script>
     <script src="js/core/config.js"></script>
     <script src="js/core/i18n.js"></script>
-    <script src="js/helpers/policy-helpers.js"></script>
     <script src="js/services/data-service.js"></script>
+    <script src="js/components/toast.js"></script>
+    <script src="js/components/role-switcher.js"></script>
     <script src="js/components/layout.js"></script>
     <script src="js/components/bot.js"></script>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const checkLibs = setInterval(() => {
-                if (typeof Layout !== 'undefined' && typeof AppConfig !== 'undefined') {
-                    clearInterval(checkLibs);
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // التأكد من تهيئة المستخدم بالصيغة التي يفهمها الـ Layout الخاص بك
+        const ctoUser = {
+            id: 'USR_009',
+            type: 'cto', // هذا المفتاح هو الأهم لفتح القوائم
+            name: 'مشاعل الهديان',
+            displayName: 'مشاعل الهديان',
+            role: 'CTO',
+            avatar: 'https://ui-avatars.com/api/?name=Meshail+AlHadyan&background=EC4899&color=fff'
+        };
+        
+        // حفظ المستخدم قبل تشغيل الـ Layout
+        localStorage.setItem('currentUser', JSON.stringify(ctoUser));
+        localStorage.setItem('activeRole', 'cto');
 
-                    // ✅ تعريف المستخدم كمدير تقني - اسم محدث
-                    const ctoUser = {
-                        id: 'USR_009',
-                        type: 'cto',
-                        role: 'CTO',
-                        displayName: 'مشاعل الهديان', // ✅ تم التصحيح
-                        displayTitle: 'المدير التقني (CTO)',
-                        avatar: 'https://ui-avatars.com/api/?name=Meshail+AlHadyan&background=EC4899&color=fff'
-                    };
-
-                    AppConfig.setCurrentUser(ctoUser);
-                    Layout.init();
-                }
-            }, 50);
-        });
-    </script>
+        // تشغيل المحرك
+        if (typeof Layout !== 'undefined') {
+            Layout.init();
+            console.log("✅ CTO Dashboard System Initialized");
+        }
+    });
+</script>
 
     <script>
         const pageContent = {
