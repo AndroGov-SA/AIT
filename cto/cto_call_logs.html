@@ -277,29 +277,34 @@
     <script src="js/components/bot.js"></script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // ننتظر تحميل السكربتات
-            const checkLibs = setInterval(() => {
-                if (typeof Layout !== 'undefined' && typeof AppConfig !== 'undefined') {
-                    clearInterval(checkLibs);
+    document.addEventListener('DOMContentLoaded', () => {
+        const checkLibs = setInterval(() => {
+            if (typeof Layout !== 'undefined') {
+                clearInterval(checkLibs);
 
-                    // ✅ تعريف المستخدم كمدير تقني
-                    const ctoUser = {
-                        id: 'USR_009',
-                        type: 'cto', // ⚠️ هذا هو المفتاح لفتح قائمة CTO
-                        role: 'CTO',
-                        displayName: 'مشاعل الهذيان', // ✅ تم تصحيح الاسم هنا
-                        displayTitle: 'المدير التقني (CTO)',
-                        avatar: 'https://ui-avatars.com/api/?name=Meshail+H&background=random'
-                    };
+                // 1. إعداد بيانات المستخدم للهوية التقنية
+                const ctoUser = {
+                    id: 'USR_009',
+                    type: 'cto', // المحرك v10.5 يعتمد على هذا المفتاح لفتح قائمة الـ 12 صفحة
+                    displayName: 'مشاعل الهذيان',
+                    displayTitle: 'الرئيس التنفيذي للتقنية (CTO)',
+                    avatar: 'https://ui-avatars.com/api/?name=Meshail+H&background=FB4747&color=fff'
+                };
 
-                    // حفظ المستخدم وتشغيل النظام
-                    AppConfig.setCurrentUser(ctoUser);
-                    Layout.init();
-                }
-            }, 50);
-        });
-    </script>
+                // 2. تخزين البيانات وتفعيل الدور
+                localStorage.setItem('currentUser', JSON.stringify(ctoUser));
+                localStorage.setItem('activeRole', 'cto');
+
+                // 3. تشغيل المحرك الرئيسي
+                Layout.init();
+                
+                // إظهار الصفحة (لإزالة opacity-0)
+                document.body.classList.remove('opacity-0');
+                console.log("✅ CTO Profile Integrated with Layout v10.5");
+            }
+        }, 50);
+    });
+</script>
 
     <script>
         // --- Translations ---
