@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="pageTitle">ملفي الشخصي | AndroGov</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { brandRed: '#FB4747', brandDark: '#0F172A', moneyGreen: '#10B981', alertOrange: '#F59E0B' },
+                    fontFamily: { sans: ['Tajawal', 'Inter', 'sans-serif'], mono: ['IBM Plex Mono', 'monospace'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        .num-font { font-family: 'IBM Plex Mono', sans-serif; }
+        .glass-header { background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%); }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300 opacity-0">
+
+    <div id="sidebar-container"></div>
+    
+    <div class="main-content-wrapper transition-all duration-300 flex flex-col min-h-screen rtl:lg:mr-64 ltr:lg:ml-64">
+        
+        <div id="header-container"></div>
+
+        <main class="p-8 space-y-8">
+            
+            <div class="bg-white dark:bg-slate-800 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden relative group">
+                <div class="h-48 glass-header relative">
+                    <div class="absolute inset-0 opacity-30 bg-[url('https://www.transparenttextures.com/patterns/circuit.png')]"></div>
+                    <div class="absolute bottom-4 left-8 flex gap-4">
+                        <div class="px-3 py-1 bg-white/10 backdrop-blur-sm rounded-lg text-white text-xs border border-white/20">
+                            <i class="fa-solid fa-location-dot"></i> <span data-i18n="lblLocation">المبنى الرقمي - الدور 4</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="px-8 pb-8 flex flex-col lg:flex-row items-end -mt-20 gap-8 relative z-10">
+                    <div class="relative">
+                        <div class="w-40 h-40 rounded-3xl border-4 border-white dark:border-slate-800 overflow-hidden bg-slate-900 shadow-2xl relative group-hover:scale-105 transition-transform duration-300">
+                            <img src="https://ui-avatars.com/api/?name=Mashael+Alhadyan&background=FB4747&color=fff&size=256" class="w-full h-full object-cover">
+                        </div>
+                        <button class="absolute bottom-2 right-2 w-8 h-8 bg-brandRed text-white rounded-full flex items-center justify-center shadow-lg hover:bg-red-700 transition" title="Update Photo">
+                            <i class="fa-solid fa-camera text-xs"></i>
+                        </button>
+                    </div>
+
+                    <div class="flex-1 mb-2">
+                        <div class="flex items-center gap-3 mb-1">
+                            <h1 class="text-3xl font-bold text-brandRed dark:text-white" data-i18n="name">الحسين الحميدي</h1>
+                            <i class="fa-solid fa-circle-check text-blue-500 text-lg" title="Verified"></i>
+                            <span class="px-2 py-0.5 bg-brandRed/10 text-brandRed text-[10px] font-bold rounded border border-brandRed/20">C-Level</span>
+                        </div>
+                        <p class="text-slate-500 text-lg font-medium" data-i18n="role">أخصائي دعم تقني</p>
+                        
+                        <div class="flex flex-wrap gap-4 mt-4 text-sm text-slate-500">
+                            <span class="flex items-center gap-2 bg-slate-50 dark:bg-slate-700/50 px-3 py-1.5 rounded-lg border border-slate-100 dark:border-slate-600">
+                                <i class="fa-regular fa-envelope text-brandRed"></i> alhussien@androomeda.com
+                            </span>
+                            <span class="flex items-center gap-2 bg-slate-50 dark:bg-slate-700/50 px-3 py-1.5 rounded-lg border border-slate-100 dark:border-slate-600">
+                                <i class="fa-solid fa-phone text-brandRed"></i> +966 50 000 0000
+                            </span>
+                            <span class="flex items-center gap-2 bg-slate-50 dark:bg-slate-700/50 px-3 py-1.5 rounded-lg border border-slate-100 dark:border-slate-600">
+                                <i class="fa-solid fa-fingerprint text-brandRed"></i> ID: 2030
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col gap-3 items-end w-full lg:w-auto">
+                        <div class="flex items-center gap-2 bg-green-50 dark:bg-green-900/20 px-3 py-1.5 rounded-lg border border-green-200 dark:border-green-900 cursor-pointer hover:bg-green-100 transition" onclick="toggleStatus()">
+                            <span class="w-2.5 h-2.5 bg-green-500 rounded-full animate-pulse"></span>
+                            <span class="text-xs font-bold text-green-700 dark:text-green-400" id="userStatus" data-i18n="statusAvailable">متاح للعمل</span>
+                            <i class="fa-solid fa-chevron-down text-[10px] text-green-600"></i>
+                        </div>
+                        <div class="flex gap-3 w-full">
+                            <button class="flex-1 px-5 py-2.5 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-200 rounded-xl text-sm font-bold hover:bg-slate-50 transition shadow-sm">
+                                <i class="fa-solid fa-key"></i> <span data-i18n="btnPass">الأمان</span>
+                            </button>
+                            <button class="flex-1 px-5 py-2.5 bg-brandRed text-white rounded-xl text-sm font-bold shadow-lg shadow-red-500/30 hover:bg-red-700 transition">
+                                <i class="fa-solid fa-pen-to-square"></i> <span data-i18n="btnEdit">تعديل</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                
+                <div class="space-y-6">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 text-center">
+                            <div class="w-10 h-10 mx-auto bg-blue-50 dark:bg-blue-900/20 rounded-full flex items-center justify-center text-blue-600 mb-2"><i class="fa-solid fa-list-check"></i></div>
+                            <h3 class="text-2xl font-bold num-font text-slate-800 dark:text-white">42</h3>
+                            <p class="text-xs text-slate-400" data-i18n="statProjects">مشروع نشط</p>
+                        </div>
+                        <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 text-center">
+                            <div class="w-10 h-10 mx-auto bg-purple-50 dark:bg-purple-900/20 rounded-full flex items-center justify-center text-purple-600 mb-2"><i class="fa-solid fa-users"></i></div>
+                            <h3 class="text-2xl font-bold num-font text-slate-800 dark:text-white">18</h3>
+                            <p class="text-xs text-slate-400" data-i18n="statTeam">عضو بالفريق</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                        <h3 class="font-bold text-sm mb-4 flex items-center gap-2 border-b border-slate-100 dark:border-slate-700 pb-3">
+                            <i class="fa-solid fa-file-contract text-brandRed"></i> <span data-i18n="secContract">بيانات العقد</span>
+                        </h3>
+                        <ul class="space-y-4 text-sm">
+                            <li class="flex justify-between items-center">
+                                <span class="text-slate-500" data-i18n="lblType">المسمى الوظيفي</span>
+                                <span class="font-bold dark:text-white bg-slate-100 dark:bg-slate-700 px-2 py-0.5 rounded text-xs" data-i18n="valTitle">CTO</span>
+                            </li>
+                            <li class="flex justify-between items-center">
+                                <span class="text-slate-500" data-i18n="lblStart">تاريخ الانضمام</span>
+                                <span class="font-bold num-font dark:text-white">15 Mar 2022</span>
+                            </li>
+                            <li class="flex justify-between items-center">
+                                <span class="text-slate-500" data-i18n="lblDept">الإدارة</span>
+                                <span class="font-bold dark:text-white" data-i18n="valDept">تقنية المعلومات</span>
+                            </li>
+                            <li class="flex justify-between items-center">
+                                <span class="text-slate-500" data-i18n="lblDirect">المرجع المباشر</span>
+                                <span class="font-bold dark:text-white" data-i18n="valManager">مدير المشروع</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-2 space-y-6">
+                    
+                    <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <div>
+                                <h3 class="font-bold text-lg dark:text-white flex items-center gap-2">
+                                    <i class="fa-solid fa-user-shield text-brandRed"></i> <span data-i18n="titleDelegation">سجل التفويض (Acting For)</span>
+                                </h3>
+                                <p class="text-xs text-slate-400 mt-1" data-i18n="descDelegation">إدارة الصلاحيات الممنوحة لمدراء الإدارات التقنية</p>
+                            </div>
+                            <button class="text-xs bg-brandRed text-white px-4 py-2 rounded-lg hover:bg-red-700 transition font-bold shadow-md shadow-red-500/20" onclick="alert('فتح نموذج تفويض جديد')">
+                                <i class="fa-solid fa-plus"></i> <span data-i18n="btnAddDelegate">تفويض جديد</span>
+                            </button>
+                        </div>
+
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm text-right rtl:text-right ltr:text-left">
+                                <thead class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 text-xs font-bold uppercase">
+                                    <tr>
+                                        <th class="p-4 rounded-r-lg" data-i18n="colPerson">المفوض له</th>
+                                        <th class="p-4" data-i18n="colScope">الصلاحية</th>
+                                        <th class="p-4" data-i18n="colPeriod">الفترة</th>
+                                        <th class="p-4 rounded-l-lg text-center" data-i18n="colStatus">الحالة</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-100 dark:divide-slate-700 dark:text-slate-300">
+                                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
+                                        <td class="p-4">
+                                            <div class="flex items-center gap-3">
+                                                <img src="https://ui-avatars.com/api/?name=Faisal+O&background=random" class="w-8 h-8 rounded-full">
+                                                <div>
+                                                    <p class="font-bold text-xs" data-i18n="nameDel1">فيصل العتيبي</p>
+                                                    <p class="text-[9px] text-slate-400">Infra Manager</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="p-4 text-xs" data-i18n="scopeDel1">صلاحية إعادة تشغيل السيرفرات</td>
+                                        <td class="p-4 text-xs font-mono bg-slate-50 dark:bg-slate-800 rounded px-2" data-i18n="periodStanding">دائم</td>
+                                        <td class="p-4 text-center"><span class="bg-green-100 text-green-700 px-2 py-1 rounded text-[10px] font-bold border border-green-200" data-i18n="statusActive">نشط</span></td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
+                                        <td class="p-4">
+                                            <div class="flex items-center gap-3">
+                                                <img src="https://ui-avatars.com/api/?name=Sara+A&background=random" class="w-8 h-8 rounded-full">
+                                                <div>
+                                                    <p class="font-bold text-xs" data-i18n="nameDel2">سارة العمري</p>
+                                                    <p class="text-[9px] text-slate-400">Dev Manager</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="p-4 text-xs" data-i18n="scopeDel2">اعتماد نشر التحديثات (Deploy)</td>
+                                        <td class="p-4 text-xs font-mono bg-slate-50 dark:bg-slate-800 rounded px-2" data-i18n="periodStanding">دائم</td>
+                                        <td class="p-4 text-center"><span class="bg-green-100 text-green-700 px-2 py-1 rounded text-[10px] font-bold border border-green-200" data-i18n="statusActive">نشط</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-6">
+                        <h3 class="font-bold text-lg mb-4 dark:text-white flex items-center gap-2">
+                            <i class="fa-solid fa-clock-rotate-left text-slate-400"></i> <span data-i18n="titleActivity">النشاط الأخير</span>
+                        </h3>
+                        <div class="space-y-4">
+                            <div class="flex gap-3">
+                                <div class="w-8 flex flex-col items-center">
+                                    <div class="w-2 h-2 bg-brandRed rounded-full"></div>
+                                    <div class="h-full w-px bg-slate-100 dark:bg-slate-700 my-1"></div>
+                                </div>
+                                <div class="pb-4">
+                                    <p class="text-sm font-bold dark:text-white" data-i18n="act1Title">الموافقة على خطة التحول السحابي</p>
+                                    <p class="text-xs text-slate-500 mt-1" data-i18n="act1Desc">تم اعتماد الميزانية الخاصة بمشروع AWS Migration.</p>
+                                    <span class="text-[10px] text-slate-400 mt-1 block num-font" data-i18n="time1">09:30 AM</span>
+                                </div>
+                            </div>
+                            <div class="flex gap-3">
+                                <div class="w-8 flex flex-col items-center">
+                                    <div class="w-2 h-2 bg-slate-300 rounded-full"></div>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-bold dark:text-white" data-i18n="act2Title">تسجيل الدخول للنظام</p>
+                                    <span class="text-[10px] text-slate-400 mt-1 block num-font" data-i18n="time2">08:15 AM</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script src="js/core/config.js"></script>
+    <script src="js/core/i18n.js"></script>
+    <script src="js/services/data-service.js"></script>
+    <script src="js/components/role-switcher.js"></script>
+    <script src="js/components/layout.js"></script>
+    <script src="js/components/bot.js"></script>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const checkLibs = setInterval(() => {
+            if (typeof Layout !== 'undefined') {
+                clearInterval(checkLibs);
+
+                // 1. إعداد بيانات المستخدم للهوية التقنية
+                const ctoUser = {
+                    id: 'USR_008',
+                    type: 'employee', // المحرك v10.5 يعتمد على هذا المفتاح لفتح قائمة الـ 12 صفحة
+                    displayName: 'الحسين الحميدي',
+                    displayTitle: 'أخصائي دعم تقني',
+                    avatar: 'https://ui-avatars.com/api/?name=Meshail+H&background=FB4747&color=fff'
+                };
+
+                // 2. تخزين البيانات وتفعيل الدور
+                localStorage.setItem('currentUser', JSON.stringify(ctoUser));
+                localStorage.setItem('activeRole', 'employee');
+
+                // 3. تشغيل المحرك الرئيسي
+                Layout.init();
+                
+                // إظهار الصفحة (لإزالة opacity-0)
+                document.body.classList.remove('opacity-0');
+                console.log("✅ CTO Profile Integrated with Layout v10.5");
+            }
+        }, 50);
+    });
+</script>
+
+    <script>
+        const pageContent = {
+            ar: {
+                pageTitle: "ملفي الشخصي | AndroGov",
+                lblLocation: "المبنى الرئيسي - الدور 2",
+                name: "الحسين الحميدي",
+                role: "أخصائي دعم تقني",
+                statusAvailable: "متاح للعمل",
+                statusBusy: "مشغول (Busy)",
+                btnPass: "الأمان",
+                btnEdit: "تعديل",
+                statProjects: "مشروع نشط",
+                statTeam: "عضو بالفريق",
+                secContract: "بيانات العقد",
+                lblType: "المسمى الوظيفي",
+                valTitle: "Technical Support Specialist",
+                lblStart: "تاريخ الانضمام",
+                lblDept: "الإدارة",
+                valDept: "تقنية المعلومات",
+                lblDirect: "المرجع المباشر",
+                valManager: "مدير المشروع",
+                titleDelegation: "سجل التفويض (Acting For)",
+                descDelegation: "إدارة الصلاحيات الممنوحة لمدراء الإدارات التقنية",
+                btnAddDelegate: "تفويض جديد",
+                colPerson: "المفوض له",
+                colScope: "الصلاحية",
+                colPeriod: "الفترة",
+                colStatus: "الحالة",
+                nameDel1: "فيصل العتيبي",
+                scopeDel1: "صلاحية إعادة تشغيل السيرفرات",
+                periodStanding: "دائم",
+                statusActive: "نشط",
+                nameDel2: "سارة العمري",
+                scopeDel2: "اعتماد نشر التحديثات (Deploy)",
+                titleActivity: "النشاط الأخير",
+                act1Title: "الموافقة على خطة التحول السحابي",
+                act1Desc: "تم اعتماد الميزانية الخاصة بمشروع AWS Migration.",
+                time1: "09:30 ص",
+                act2Title: "تسجيل الدخول للنظام",
+                time2: "08:15 ص"
+            },
+            en: {
+                pageTitle: "My Profile | AndroGov",
+                lblLocation: "Cinter Building - Floor 2",
+                name: "Al-Hussain Al-Humaidi",
+                role: "Technical Support Specialist",
+                statusAvailable: "Available",
+                statusBusy: "Busy",
+                btnPass: "Security",
+                btnEdit: "Edit",
+                statProjects: "Active Projects",
+                statTeam: "Team Members",
+                secContract: "Contract Details",
+                lblType: "Job Title",
+                valTitle: "Technical Support Specialist",
+                lblStart: "Joining Date",
+                lblDept: "Department",
+                valDept: "CS",
+                lblDirect: "Employee",
+                valManager: "Project Manager",
+                titleDelegation: "Delegation Log",
+                descDelegation: "Manage powers delegated to IT managers",
+                btnAddDelegate: "New Delegate",
+                colPerson: "Delegate To",
+                colScope: "Scope",
+                colPeriod: "Period",
+                colStatus: "Status",
+                nameDel1: "Faisal Al-Otaibi",
+                scopeDel1: "Server Reboot Authority",
+                periodStanding: "Standing",
+                statusActive: "Active",
+                nameDel2: "Sara Al-Amri",
+                scopeDel2: "Approve Deployment",
+                titleActivity: "Recent Activity",
+                act1Title: "Approved Cloud Migration Plan",
+                act1Desc: "Budget approved for AWS Migration project.",
+                time1: "09:30 AM",
+                act2Title: "System Login",
+                time2: "08:15 AM"
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const lang = localStorage.getItem('lang') || 'ar';
+            const dict = pageContent[lang];
+            
+            document.documentElement.lang = lang;
+            document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if(dict[key]) el.innerText = dict[key];
+            });
+        });
+
+        function toggleStatus() {
+            const statusEl = document.getElementById('userStatus');
+            const lang = localStorage.getItem('lang') || 'ar';
+            const dict = pageContent[lang];
+            const current = statusEl.innerText;
+            
+            if (current === dict.statusAvailable) {
+                statusEl.innerText = dict.statusBusy;
+                statusEl.className = "text-xs font-bold text-red-700 dark:text-red-400";
+                statusEl.parentElement.className = "flex items-center gap-2 bg-red-50 dark:bg-red-900/20 px-3 py-1.5 rounded-lg border border-red-200 dark:border-red-900 cursor-pointer hover:bg-red-100 transition";
+                statusEl.previousElementSibling.className = "w-2.5 h-2.5 bg-red-500 rounded-full";
+            } else {
+                statusEl.innerText = dict.statusAvailable;
+                statusEl.className = "text-xs font-bold text-green-700 dark:text-green-400";
+                statusEl.parentElement.className = "flex items-center gap-2 bg-green-50 dark:bg-green-900/20 px-3 py-1.5 rounded-lg border border-green-200 dark:border-green-900 cursor-pointer hover:bg-green-100 transition";
+                statusEl.previousElementSibling.className = "w-2.5 h-2.5 bg-green-500 rounded-full animate-pulse";
+            }
+        }
+    </script>
+</body>
+</html>
