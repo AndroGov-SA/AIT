@@ -12,7 +12,7 @@ const Layout = (function() {
   // ==========================================
   let _state = {
     currentUser: null,
-    activeRole: 'CFO', 
+    activeRole: 'finance', 
     isInitialized: false,
     sidebarOpen: false,
     notifications: [],
