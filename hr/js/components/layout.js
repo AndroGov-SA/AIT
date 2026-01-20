@@ -1,8 +1,8 @@
 /**
- * AndroGov CEO Layout Engine v1.0
- * @file ceo/js/components/layout.js
+ * AndroGov CAO Layout Engine v1.0
+ * @file hr/js/components/layout.js
  * @author Ayman Al-Maghrabi
- * @description Executive layout with multi-role support (CEO + Board VP + Shareholder)
+ * @description Executive layout with multi-role support (CAO + Board VP + Shareholder)
  */
 
 const Layout = (function() {
@@ -12,7 +12,7 @@ const Layout = (function() {
   // ==========================================
   let _state = {
     currentUser: null,
-    activeRole: 'ceo', 
+    activeRole: 'hr', 
     isInitialized: false,
     sidebarOpen: false,
     notifications: [],
@@ -23,99 +23,63 @@ const Layout = (function() {
   // 2. COMPLETE MENU DEFINITIONS (3 Roles)
   // ==========================================
   const _menuDefinitions = {
+    // 👥 HR PORTAL
+  hr: {
+    defaultRole: 'hr_manager',
+    storageKey: 'hr_activeRole',
+    notificationKey: 'hr_notifications',
+    brandIcon: 'fa-users',
+    brandName: 'HR',
+    brandColor: 'brandRed',
     
-    // ═══════════════════════════════════════
-    // 1️⃣ الرئيس التنفيذي (Chief Executive Officer)
-    // ═══════════════════════════════════════
-    'ceo': [
-      { section: 'executive_dashboard', items: [
-        { key: 'executive_overview', icon: 'fa-gauge-high', link: 'index.html', badge: 'live' },
-        { key: 'strategic_planning', icon: 'fa-chess-board', link: 'ceo_strategy.html', badge: 'strategic' }
-      ]},
-      { section: 'financial_oversight', items: [
-        { key: 'financial_performance', icon: 'fa-chart-line', link: 'ceo_finance.html', badge: 'financial' },
-        { key: 'executive_reports', icon: 'fa-file-chart-column', link: 'ceo_reports.html', badge: null }
-      ]},
-      { section: 'governance_compliance', items: [
-        { key: 'governance_framework', icon: 'fa-scale-balanced', link: 'ceo_governance.html', badge: 'compliance' },
-        { key: 'risk_management', icon: 'fa-shield-halved', link: 'ceo_risks.html', badge: 'risks' }
-      ]},
-      { section: 'communication', items: [
-        { key: 'company_broadcast', icon: 'fa-tower-broadcast', link: 'ceo_broadcast.html', badge: 'broadcast' },
-        { key: 'internal_communication', icon: 'fa-comments', link: 'ceo_communication.html', badge: null },
-        { key: 'feedback_center', icon: 'fa-message-dots', link: 'ceo_feedback.html', badge: 'active' }
-      ]},
-      { section: 'personal', items: [
-        { key: 'my_profile', icon: 'fa-user-circle', link: 'profile.html', badge: null }
-      ]}
-    ],
-
-    // ═══════════════════════════════════════
-    // 2️⃣ نائب رئيس مجلس الإدارة (Board Vice President)
-    // ═══════════════════════════════════════
-    'board_vp': [
-      { section: 'board_activities', items: [
-        { key: 'board_portal', icon: 'fa-building-columns', link: 'ceo_board.html', badge: 'board' },
-        { key: 'governance_oversight', icon: 'fa-gavel', link: 'ceo_governance.html', badge: null }
-      ]},
-      { section: 'strategic_oversight', items: [
-        { key: 'strategic_initiatives', icon: 'fa-lightbulb', link: 'ceo_strategy.html', badge: 'initiatives' },
-        { key: 'risk_oversight', icon: 'fa-triangle-exclamation', link: 'ceo_risks.html', badge: null }
-      ]},
-      { section: 'reporting', items: [
-        { key: 'board_reports', icon: 'fa-file-lines', link: 'ceo_reports.html', badge: null },
-        { key: 'financial_review', icon: 'fa-money-bill-trend-up', link: 'ceo_finance.html', badge: null }
-      ]},
-      { section: 'communication', items: [
-        { key: 'board_communication', icon: 'fa-envelope', link: 'ceo_communication.html', badge: null }
-      ]}
-    ],
-
-    // ═══════════════════════════════════════
-    // 3️⃣ مساهم (Shareholder)
-    // ═══════════════════════════════════════
-    'shareholder': [
-      { section: 'shareholder_services', items: [
-        { key: 'my_portfolio', icon: 'fa-briefcase', link: 'index.html', badge: 'portfolio' },
-        { key: 'financial_statements', icon: 'fa-file-invoice-dollar', link: 'ceo_finance.html', badge: null }
-      ]},
-      { section: 'governance_access', items: [
-        { key: 'governance_documents', icon: 'fa-folder-open', link: 'ceo_governance.html', badge: null },
-        { key: 'board_meetings', icon: 'fa-calendar-days', link: 'ceo_board.html', badge: null }
-      ]},
-      { section: 'reports_disclosures', items: [
-        { key: 'annual_reports', icon: 'fa-book', link: 'ceo_reports.html', badge: null },
-        { key: 'announcements', icon: 'fa-bullhorn', link: 'ceo_broadcast.html', badge: null }
-      ]},
-      { section: 'personal', items: [
-        { key: 'my_profile', icon: 'fa-id-card', link: 'profile.html', badge: null }
-      ]}
-    ]
-  };
-
-  // Role Labels (Bilingual)
-  const _roleLabels = {
-    'ceo': { 
-      ar: 'الرئيس التنفيذي', 
-      en: 'Chief Executive Officer',
-      desc: { ar: 'القيادة التنفيذية والإدارة الاستراتيجية', en: 'Executive Leadership & Strategic Management' }
+    roles: {
+      'hr_manager': {
+        ar: 'مسؤول الموارد البشرية', 
+        en: 'HR Manager',
+        desc: { ar: 'الإشراف الإداري وشؤون الموظفين', en: 'Administrative supervision and personnel affairs' },
+        icon: 'fa-user-tie'
+      }
     },
-    'board_vp': { 
-      ar: 'نائب رئيس المجلس', 
-      en: 'Board Vice President',
-      desc: { ar: 'الإشراف على أعمال المجلس والحوكمة', en: 'Board Oversight & Governance' }
-    },
-    'shareholder': { 
-      ar: 'مساهم', 
-      en: 'Shareholder',
-      desc: { ar: 'الوصول للتقارير والبيانات المالية', en: 'Access to Reports & Financial Data' }
+
+    menus: {
+      'hr_manager': [
+        { section: 'hr_control', items: [
+          { key: 'dashboard', icon: 'fa-chart-pie', link: 'index.html', badge: 'live' },
+          { key: 'approvals', icon: 'fa-file-signature', link: 'hr_approvals.html', badge: 'urgent' },
+          { key: 'internal_chat', icon: 'fa-comments', link: 'internal_chat.html', badge: null }
+        ]},
+        { section: 'hr_operations', items: [
+          { key: 'employees', icon: 'fa-users', link: 'hr_employees.html', badge: null },
+          { key: 'attendance', icon: 'fa-calendar-check', link: 'hr_attendance.html', badge: null },
+          { key: 'leaves', icon: 'fa-umbrella-beach', link: 'hr_leaves.html', badge: null },
+          { key: 'payroll', icon: 'fa-money-bill-wave', link: 'hr_payroll.html', badge: null }
+        ]},
+        { section: 'hr_management', items: [
+          { key: 'recruitment', icon: 'fa-user-plus', link: 'hr_recruitment.html', badge: null },
+          { key: 'contracts', icon: 'fa-file-contract', link: 'hr_contracts.html', badge: null },
+          { key: 'org_structure', icon: 'fa-sitemap', link: 'hr_org.html', badge: null }
+        ]},
+        { section: 'hr_services', items: [
+          { key: 'assets', icon: 'fa-box', link: 'hr_assets.html', badge: null },
+          { key: 'logistics', icon: 'fa-truck', link: 'hr_logistics.html', badge: null },
+          { key: 'trips', icon: 'fa-plane', link: 'hr_trips.html', badge: null },
+          { key: 'purchases', icon: 'fa-shopping-cart', link: 'hr_purchases.html', badge: null }
+        ]},
+        { section: 'hr_compliance', items: [
+          { key: 'govt_affairs', icon: 'fa-landmark', link: 'hr_govt.html', badge: null },
+          { key: 'partners', icon: 'fa-handshake', link: 'hr_partners.html', badge: null }
+        ]},
+        { section: 'personal', items: [
+          { key: 'my_profile', icon: 'fa-user-circle', link: 'profile.html', badge: null }
+        ]}
+      ]
     }
-  };
+  },
 
   // Translation Keys
   const _translations = {
     ar: {
-      // Sections - CEO
+      // Sections - CAO
       executive_dashboard: 'لوحة القيادة التنفيذية',
       financial_oversight: 'الرقابة المالية',
       governance_compliance: 'الحوكمة والامتثال',
@@ -170,7 +134,7 @@ const Layout = (function() {
       aymanDev: 'أيمن المغربي'
     },
     en: {
-      // Sections - CEO
+      // Sections - CAO
       executive_dashboard: 'Executive Dashboard',
       financial_oversight: 'Financial Oversight',
       governance_compliance: 'Governance & Compliance',
@@ -237,22 +201,22 @@ const Layout = (function() {
     if (storedUser) {
       _state.currentUser = JSON.parse(storedUser);
       
-      // ✅ Always default to 'ceo' role for CEO users
-      let savedRole = localStorage.getItem('ceo_activeRole'); // Different key for CEO
+      // ✅ Always default to 'hr' role for CAO users
+      let savedRole = localStorage.getItem('hr_activeRole'); // Different key for CAO
       if (savedRole && _menuDefinitions[savedRole]) {
         _state.activeRole = savedRole;
       } else {
-        _state.activeRole = 'ceo';
-        localStorage.setItem('ceo_activeRole', 'ceo');
+        _state.activeRole = 'hr';
+        localStorage.setItem('hr_activeRole', 'hr');
       }
     } else {
-      // ✅ Set default CEO user if not logged in
+      // ✅ Set default CAO user if not logged in
       _state.currentUser = {
-        id: 'CEO_001',
-        type: 'ceo',
-        displayName: 'هشام السحيباني',
-        displayTitle: 'الرئيس التنفيذي',
-        avatar: 'https://ui-avatars.com/api/?name=CEO&background=DC2626&color=fff&bold=true'
+        id: 'USR_005',
+        type: 'hr',
+        displayName: 'منصور اليامي  ',
+        displayTitle: 'مدير الشؤون الادارية',
+        avatar: 'https://ui-avatars.com/api/?name=CAO&background=DC2626&color=fff&bold=true'
       };
       localStorage.setItem('currentUser', JSON.stringify(_state.currentUser));
     }
@@ -266,7 +230,7 @@ const Layout = (function() {
     hideLoadingOverlay();
 
     _state.isInitialized = true;
-    console.log(`✅ AndroGov CEO Layout Ready | Role: ${_state.activeRole} | Lang: ${getCurrentLang()}`);
+    console.log(`✅ AndroGov CAO Layout Ready | Role: ${_state.activeRole} | Lang: ${getCurrentLang()}`);
   }
 
   function hideLoadingOverlay() {
@@ -339,14 +303,14 @@ const Layout = (function() {
   // 5. NOTIFICATIONS SYSTEM
   // ==========================================
   function loadNotifications() {
-    const stored = localStorage.getItem('ceo_notifications');
+    const stored = localStorage.getItem('hr_notifications');
     if (stored) {
       _state.notifications = JSON.parse(stored);
     } else {
-      // Demo CEO Notifications
+      // Demo CAO Notifications
       _state.notifications = [
         {
-          id: 'CEO001',
+          id: 'CAO001',
           type: 'strategic',
           icon: 'fa-chess-knight',
           color: 'purple',
@@ -354,10 +318,10 @@ const Layout = (function() {
           body: { ar: 'اجتماع مجلس الإدارة يوم الأربعاء', en: 'Board meeting on Wednesday' },
           time: new Date(Date.now() - 1000 * 60 * 30),
           read: false,
-          link: 'ceo_strategy.html'
+          link: 'hr_strategy.html'
         },
         {
-          id: 'CEO002',
+          id: 'CAO002',
           type: 'financial',
           icon: 'fa-chart-line',
           color: 'green',
@@ -365,10 +329,10 @@ const Layout = (function() {
           body: { ar: 'نمو بنسبة 15% عن الشهر السابق', en: '15% growth from last month' },
           time: new Date(Date.now() - 1000 * 60 * 60 * 3),
           read: false,
-          link: 'ceo_finance.html'
+          link: 'hr_finance.html'
         },
         {
-          id: 'CEO003',
+          id: 'CAO003',
           type: 'risk',
           icon: 'fa-triangle-exclamation',
           color: 'orange',
@@ -376,7 +340,7 @@ const Layout = (function() {
           body: { ar: 'يتطلب اهتمام فوري من الإدارة التنفيذية', en: 'Requires immediate executive attention' },
           time: new Date(Date.now() - 1000 * 60 * 60 * 6),
           read: true,
-          link: 'ceo_risks.html'
+          link: 'hr_risks.html'
         }
       ];
     }
@@ -406,7 +370,7 @@ const Layout = (function() {
   }
 
   function saveNotifications() {
-    localStorage.setItem('ceo_notifications', JSON.stringify(_state.notifications));
+    localStorage.setItem('hr_notifications', JSON.stringify(_state.notifications));
   }
 
   function getTimeAgo(date) {
@@ -437,7 +401,7 @@ const Layout = (function() {
     const isRTL = lang === 'ar';
     const currentPath = window.location.pathname.split('/').pop() || 'index.html';
 
-    const activeMenu = _menuDefinitions[_state.activeRole] || _menuDefinitions['ceo'];
+    const activeMenu = _menuDefinitions[_state.activeRole] || _menuDefinitions['hr'];
 
     let menuHTML = '';
     activeMenu.forEach(group => {
@@ -514,7 +478,7 @@ const Layout = (function() {
             <div class="flex items-center gap-3 p-3 rounded-xl bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-900 border border-slate-200 dark:border-slate-700 transition-all hover:shadow-md">
               <img src="${user?.avatar || '../photo/admin.jpg'}" 
                    class="w-11 h-11 rounded-full border-2 border-white dark:border-slate-600 object-cover shadow-md" 
-                   onerror="this.src='https://ui-avatars.com/api/?name=CEO&background=DC2626&color=fff&bold=true'">
+                   onerror="this.src='https://ui-avatars.com/api/?name=CAO&background=DC2626&color=fff&bold=true'">
               <div class="overflow-hidden flex-1 min-w-0">
                 <p class="text-sm font-bold text-slate-800 dark:text-white truncate">${displayName}</p>
                 <p class="text-[10px] text-brandRed font-bold truncate uppercase tracking-tight">${roleLabel}</p>
@@ -695,7 +659,7 @@ const Layout = (function() {
   
   function _getRoleIcon(roleKey) {
     const icons = {
-      'ceo': 'fa-crown',
+      'hr': 'fa-crown',
       'board_vp': 'fa-user-tie',
       'shareholder': 'fa-chart-pie'
     };
@@ -709,7 +673,7 @@ const Layout = (function() {
     }
     
     _state.activeRole = roleKey;
-    localStorage.setItem('ceo_activeRole', roleKey); // ✅ Use CEO-specific key
+    localStorage.setItem('hr_activeRole', roleKey); // ✅ Use CAO-specific key
     
     renderSidebar();
     renderHeader();
@@ -722,7 +686,7 @@ const Layout = (function() {
       );
     }
     
-    console.log(`🔄 CEO Role switched to: ${roleKey}`);
+    console.log(`🔄 CAO Role switched to: ${roleKey}`);
   }
 
   function toggleLanguage() {
