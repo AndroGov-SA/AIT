@@ -3,10 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#FB4747">
     <title>بياناتي البنكية | AndroGov</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    
     <script>
         tailwind.config = { 
             darkMode: 'class', 
@@ -19,12 +22,12 @@
         }
     </script>
     <style>
-        .num-font { font-family: 'Inter', sans-serif; font-feature-settings: "tnum"; }
-        .blur-text { filter: blur(6px); transition: filter 0.3s ease; cursor: pointer; }
-        .blur-text:hover { filter: blur(0); }
+        .num-font { font-family: 'Inter', sans-serif; font-feature-settings: "tnum"; direction: ltr; }
+        .fade-in { animation: fadeIn 0.5s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
-<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white font-sans transition-colors duration-300">
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white font-sans transition-colors duration-300 opacity-0">
 
     <div id="sidebar-container"></div>
 
@@ -32,11 +35,13 @@
         
         <div id="header-container"></div>
 
-        <main class="p-8 max-w-4xl mx-auto space-y-6">
+        <main class="p-8 max-w-4xl mx-auto space-y-6 fade-in">
             
             <div class="flex flex-col md:flex-row items-center justify-between gap-4">
                 <div>
-                    <h1 class="text-2xl font-bold text-slate-800 dark:text-white">الملف الشخصي والبنكي</h1>
+                    <h1 class="text-2xl font-bold text-slate-800 dark:text-white flex items-center gap-2">
+                        <i class="fa-solid fa-id-card text-brandRed"></i> الملف الشخصي والبنكي
+                    </h1>
                     <p class="text-slate-500 text-sm mt-1">تحديث بياناتك يضمن وصول الأرباح والدعوات إليك بشكل صحيح.</p>
                 </div>
                 <button onclick="saveProfile()" class="px-6 py-2.5 bg-brandRed text-white rounded-xl font-bold hover:bg-red-700 transition shadow-lg shadow-red-500/30 flex items-center gap-2">
@@ -44,54 +49,71 @@
                 </button>
             </div>
 
-            <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 p-6 shadow-sm">
-                <h3 class="text-lg font-bold mb-4 flex items-center gap-2 text-slate-800 dark:text-white">
-                    <i class="fa-solid fa-money-check-dollar text-green-500"></i> الحساب البنكي (لإيداع الأرباح)
+            <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 p-6 shadow-sm relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-1 h-full bg-green-500"></div>
+                <h3 class="text-lg font-bold mb-6 flex items-center gap-2 text-slate-800 dark:text-white">
+                    <i class="fa-solid fa-money-check-dollar text-green-500 bg-green-50 dark:bg-green-900/20 p-2 rounded-lg"></i> 
+                    الحساب البنكي (لإيداع الأرباح)
                 </h3>
+                
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label class="block text-xs font-bold text-slate-500 mb-2 uppercase">اسم البنك</label>
-                        <select class="w-full p-3 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl focus:border-brandRed outline-none dark:text-white">
-                            <option>مصرف الراجحي</option>
-                            <option>البنك الأهلي السعودي</option>
-                            <option>بنك الرياض</option>
-                            <option>مصرف الإنماء</option>
-                            <option>بنك الجزيرة</option>
-                        </select>
+                        <div class="relative">
+                            <select id="bankName" class="w-full p-3 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-brandRed focus:border-brandRed outline-none dark:text-white appearance-none">
+                                <option>مصرف الراجحي</option>
+                                <option>البنك الأهلي السعودي</option>
+                                <option>بنك الرياض</option>
+                                <option selected>مصرف الإنماء</option>
+                                <option>بنك الجزيرة</option>
+                            </select>
+                            <div class="absolute left-3 top-3.5 text-slate-400 pointer-events-none">
+                                <i class="fa-solid fa-chevron-down text-xs"></i>
+                            </div>
+                        </div>
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-500 mb-2 uppercase">رقم الآيبان (IBAN)</label>
                         <div class="relative">
                             <span class="absolute left-3 top-3.5 text-slate-400 font-bold text-sm">SA</span>
-                            <input type="text" value="2480000000000000000000" class="w-full p-3 pl-10 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl focus:border-brandRed outline-none font-mono text-left dark:text-white" dir="ltr">
+                            <input type="text" value="2480000000000000000000" class="w-full p-3 pl-10 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-brandRed focus:border-brandRed outline-none font-mono text-left dark:text-white num-font text-lg tracking-widest" dir="ltr">
                         </div>
-                        <p class="text-[10px] text-orange-500 mt-2 flex items-center gap-1">
-                            <i class="fa-solid fa-circle-info"></i> يجب أن يكون الحساب باسم المساهم المسجل حصراً.
+                        <p class="text-[10px] text-orange-500 mt-2 flex items-center gap-1 font-medium bg-orange-50 dark:bg-orange-900/10 p-2 rounded-lg w-fit">
+                            <i class="fa-solid fa-triangle-exclamation"></i> يجب أن يكون الحساب باسم المساهم المسجل حصراً.
                         </p>
                     </div>
                 </div>
             </div>
 
-            <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 p-6 shadow-sm">
-                <h3 class="text-lg font-bold mb-4 flex items-center gap-2 text-slate-800 dark:text-white">
-                    <i class="fa-solid fa-user-shield text-blue-500"></i> بيانات التواصل والهوية
+            <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 p-6 shadow-sm relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-1 h-full bg-blue-500"></div>
+                <h3 class="text-lg font-bold mb-6 flex items-center gap-2 text-slate-800 dark:text-white">
+                    <i class="fa-solid fa-user-shield text-blue-500 bg-blue-50 dark:bg-blue-900/20 p-2 rounded-lg"></i> 
+                    بيانات التواصل والهوية
                 </h3>
+                
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label class="block text-xs font-bold text-slate-500 mb-2 uppercase">الاسم الكامل (حسب السجل)</label>
-                        <input type="text" id="fullName" class="w-full p-3 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl focus:border-brandRed outline-none cursor-not-allowed text-slate-400 dark:text-slate-500" readonly>
+                        <div class="relative">
+                            <input type="text" id="fullName" class="w-full p-3 bg-slate-100 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-600 rounded-xl focus:outline-none cursor-not-allowed text-slate-500 dark:text-slate-400 font-bold" readonly>
+                            <i class="fa-solid fa-lock absolute left-3 top-4 text-slate-400 text-xs"></i>
+                        </div>
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-500 mb-2 uppercase">رقم الهوية / السجل التجاري</label>
-                        <input type="text" value="1010xxxxxx" class="w-full p-3 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl focus:border-brandRed outline-none dark:text-white">
+                        <div class="relative">
+                            <input type="text" value="1010xxxxxx" class="w-full p-3 bg-slate-100 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-600 rounded-xl focus:outline-none cursor-not-allowed text-slate-500 dark:text-slate-400 font-bold num-font" readonly>
+                            <i class="fa-solid fa-lock absolute left-3 top-4 text-slate-400 text-xs"></i>
+                        </div>
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-500 mb-2 uppercase">البريد الإلكتروني الرسمي</label>
-                        <input type="email" id="email" class="w-full p-3 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl focus:border-brandRed outline-none dark:text-white">
+                        <input type="email" id="email" class="w-full p-3 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-brandRed focus:border-brandRed outline-none dark:text-white dir-ltr text-right">
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-500 mb-2 uppercase">رقم الجوال (للتنبيهات)</label>
-                        <input type="tel" value="05xxxxxxxx" class="w-full p-3 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl focus:border-brandRed outline-none text-left dark:text-white" dir="ltr">
+                        <input type="tel" value="0555xxxxxx" class="w-full p-3 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-brandRed focus:border-brandRed outline-none text-left dark:text-white num-font" dir="ltr">
                     </div>
                 </div>
             </div>
@@ -100,45 +122,53 @@
     </div>
 
     <script src="data/company_policy.js"></script>
-    <script src="js/core/i18n.js"></script>
     <script src="js/components/layout.js"></script>
     <script src="js/components/bot.js"></script>
 
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        // 1. إعداد بيانات المستخدم لتتوافق مع محرك v10.5
-        const ctoUser = {
-            id: 'sh_003',
-            name: 'وائل السحيباني',
-            displayName: 'مساهم ',
-            role: 'shareholder', // هذا هو المفتاح الذي يبحث عنه المحرك لفتح القائمة
-            avatar: 'https://ui-avatars.com/api/?name=Meshail+AlHadyan&background=FB4747&color=fff'
-        };
-        
-        // 2. تخزين البيانات في الـ LocalStorage لضمان استمرارية المحرك
-        localStorage.setItem('currentUser', JSON.stringify(ctoUser));
-        localStorage.setItem('activeRole', 'shareholder');
-
-        // 3. التأكد من وجود الوضع الليلي المفضل
-        if (!localStorage.getItem('theme')) {
-            localStorage.setItem('theme', 'light');
-        }
-
-        // 4. تشغيل المحرك
-        if (typeof Layout !== 'undefined') {
-            Layout.init();
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
             
-            // إظهار الصفحة بعد التحميل (لأن الـ body له opacity-0)
-            document.body.style.opacity = '1';
-            console.log("🚀 shareholder Layout Engine v10.5 Started Successfully");
-        } else {
-            console.error("❌ Layout.js file not found! Check your script paths.");
-        }
-    });
-        function fillUserData(user) {
-            if(user) {
-                document.getElementById('fullName').value = user.displayName || user.name;
-                document.getElementById('email').value = user.email || "";
+            // 1. إعداد بيانات المساهم (وائل السحيباني)
+            const shareholderUser = {
+                id: 'SH_USER_003',
+                name: 'وائل السحيباني',
+                displayName: 'وائل السحيباني',
+                role: 'shareholder',
+                email: 'w961@live.com',
+                avatar: 'https://ui-avatars.com/api/?name=Wael+AlSuhaibani&background=EAB308&color=fff'
+            };
+            
+            // تخزين البيانات
+            localStorage.setItem('currentUser', JSON.stringify(shareholderUser));
+            localStorage.setItem('activeRole', 'shareholder');
+
+            // 2. تشغيل المحرك
+            const checkLibs = setInterval(() => {
+                if (typeof Layout !== 'undefined' && typeof CompanyPolicy !== 'undefined') {
+                    clearInterval(checkLibs);
+                    Layout.init();
+                    loadProfileData();
+                    document.body.style.opacity = '1';
+                }
+            }, 50);
+        });
+
+        function loadProfileData() {
+            const user = JSON.parse(localStorage.getItem('currentUser'));
+            const lang = localStorage.getItem('lang') || 'ar';
+
+            // البحث عن بيانات المساهم الحقيقية في CompanyPolicy
+            const shareholder = CompanyPolicy.shareholders.find(s => s.email === user.email);
+
+            if (shareholder) {
+                // تعبئة البيانات
+                const name = lang === 'ar' ? shareholder.name.ar : shareholder.name.en;
+                document.getElementById('fullName').value = name;
+                document.getElementById('email').value = shareholder.email;
+            } else {
+                // بيانات احتياطية من التخزين المحلي
+                document.getElementById('fullName').value = user.displayName;
+                document.getElementById('email').value = user.email;
             }
         }
 
@@ -148,12 +178,17 @@
             
             btn.disabled = true;
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري الحفظ...';
+            btn.classList.add('opacity-75');
             
             // محاكاة عملية الحفظ
             setTimeout(() => {
-                btn.innerHTML = '<i class="fa-solid fa-check"></i> تم الحفظ بنجاح';
+                btn.innerHTML = '<i class="fa-solid fa-check-circle"></i> تم التحديث';
                 btn.classList.replace('bg-brandRed', 'bg-green-600');
+                btn.classList.remove('opacity-75');
                 
+                // إظهار رسالة نجاح (Toast إذا كان متاحاً)
+                if (window.Toast) Toast.success('تم تحديث البيانات البنكية بنجاح');
+
                 setTimeout(() => {
                     btn.innerHTML = originalContent;
                     btn.classList.replace('bg-green-600', 'bg-brandRed');
