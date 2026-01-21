@@ -1,597 +1,484 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#FB4747">
-    <title data-i18n="pageTitle">لوحة القيادة - الموارد البشرية | AndroGov</title>
-<!-- Fonts -->
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title data-i18n="pageTitle">لوحة القيادة | AndroGov</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<!-- Tailwind CSS -->
-<script src="https://cdn.tailwindcss.com"></script>
-<script>
-    tailwind.config = {
-        darkMode: 'class',
-        theme: {
-            extend: {
-                colors: { 
-                    brandRed: '#FB4747',
-                    brandBlue: '#4267B2', 
-                    brandDark: '#0F172A', 
-                    moneyGreen: '#10B981', 
-                    alertOrange: '#F59E0B' 
-                },
-                fontFamily: { 
-                    sans: ['Tajawal', 'Inter', 'sans-serif'], 
-                    en: ['Inter', 'sans-serif'] 
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { brandRed: '#FB4747', brandDark: '#0F172A', moneyGreen: '#10B981', alertOrange: '#F59E0B' },
+                    fontFamily: { sans: ['Tajawal', 'Inter', 'sans-serif'], en: ['Inter', 'sans-serif'] }
                 }
             }
         }
-    }
-</script>
-
-<!-- Chart.js -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<!-- Custom Styles -->
-<style>
-    .num-font { 
-        font-family: 'Inter', sans-serif; 
-        font-feature-settings: "tnum"; 
-    }
-    
-    .custom-scroll::-webkit-scrollbar {
-        width: 6px;
-        height: 6px;
-    }
-    
-    .custom-scroll::-webkit-scrollbar-track {
-        background: transparent;
-    }
-    
-    .custom-scroll::-webkit-scrollbar-thumb {
-        background: #CBD5E1;
-        border-radius: 3px;
-    }
-    
-    .custom-scroll::-webkit-scrollbar-thumb:hover {
-        background: #94A3B8;
-    }
-    
-    .stats-card {
-        animation: fadeInUp 0.5s ease-out;
-    }
-    
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-    
-    .animate-fade-in {
-        animation: fadeIn 0.3s ease-out;
-    }
-    
-    @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
-    }
-
-    /* Loading Overlay */
-    #loadingOverlay {
-        transition: opacity 0.3s ease;
-    }
-    
-    #loadingOverlay.hidden {
-        opacity: 0;
-        pointer-events: none;
-    }
-
-    /* ✅ FIX: Smooth transition for row removal */
-    tr {
-        transition: opacity 0.3s ease, background-color 0.3s ease;
-    }
-</style>
+    </script>
+    <style>.num-font { font-family: 'Inter', sans-serif; font-feature-settings: "tnum"; }</style>
 </head>
-<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300">
-<!-- Loading Overlay -->
-<div id="loadingOverlay" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[9999] flex items-center justify-center">
-    <div class="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-2xl text-center">
-        <div class="w-16 h-16 border-4 border-brandRed border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-        <p class="text-sm font-bold text-slate-600 dark:text-slate-300">جاري التحميل...</p>
-    </div>
-</div>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300 opacity-0">
 
-<!-- Sidebar Container -->
-<div id="sidebar-container"></div>
-
-<!-- Main Content -->
-<div class="main-content-wrapper transition-all duration-300 flex flex-col min-h-screen md:mr-72">
+    <div id="sidebar-container"></div>
     
-    <!-- Header Container -->
-    <div id="header-container"></div>
+    <div class="main-content-wrapper transition-all duration-300 flex flex-col min-h-screen">
+        <div id="header-container"></div>
 
-    <!-- Page Content -->
-    <main class="p-6 space-y-6 flex-1">
-        
-        <!-- Page Header -->
-        <div class="flex flex-col md:flex-row justify-between items-end gap-4">
-            <div>
-                <h1 class="text-2xl font-bold text-slate-900 dark:text-white">الموارد البشرية والشؤون الإدارية</h1>
-                <div class="flex items-center gap-2 mt-2">
-                    <span class="px-2 py-0.5 rounded bg-green-100 text-green-700 text-[10px] font-bold border border-green-200 flex items-center gap-1">
-                        <i class="fa-solid fa-check-circle"></i> <span>نطاقات: بلاتيني</span>
-                    </span>
-                    <span class="px-2 py-0.5 rounded bg-blue-100 text-blue-700 text-[10px] font-bold border border-blue-200 flex items-center gap-1">
-                        <i class="fa-solid fa-building"></i> <span>المكاتب: مكتملة</span>
-                    </span>
-                    <span class="px-2 py-0.5 rounded bg-purple-100 text-purple-700 text-[10px] font-bold border border-purple-200 flex items-center gap-1">
-                        <i class="fa-solid fa-calendar-day"></i> <span id="currentDate">...</span>
-                    </span>
-                </div>
-            </div>
-            <div class="flex gap-3">
-                <button onclick="openPurchaseModal()" class="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold shadow-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition flex items-center gap-2">
-                    <i class="fa-solid fa-cart-plus text-slate-400"></i> <span>طلب شراء (إداري)</span>
-                </button>
-                <button onclick="openEmployeeModal()" class="px-4 py-2 bg-brandRed text-white rounded-lg text-xs font-bold shadow-lg shadow-red-500/30 hover:bg-red-700 transition flex items-center gap-2">
-                    <i class="fa-solid fa-user-plus"></i> <span>موظف جديد</span>
-                </button>
-            </div>
-        </div>
-
-        <!-- KPI Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <!-- Total Employees -->
-            <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 hover:shadow-md transition stats-card">
-                <div class="flex justify-between items-start mb-3">
-                    <div>
-                        <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase">إجمالي الموظفين</p>
-                        <h3 class="text-3xl font-bold num-font mt-1 text-slate-800 dark:text-white">45</h3>
-                    </div>
-                    <div class="w-12 h-12 rounded-xl bg-red-50 dark:bg-red-900/20 flex items-center justify-center">
-                        <i class="fa-solid fa-users text-brandRed text-xl"></i>
-                    </div>
-                </div>
-                <div class="flex items-center gap-2 text-[10px]">
-                    <span class="flex items-center gap-1 text-green-600 font-bold">
-                        <i class="fa-solid fa-passport"></i> <span>78% توطين</span>
-                    </span>
-                    <span class="text-slate-300 dark:text-slate-600">|</span>
-                    <span class="text-slate-500">35 سعودي • 10 مقيم</span>
-                </div>
-            </div>
-
-            <!-- Payroll -->
-            <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 hover:shadow-md transition stats-card">
-                <div class="flex justify-between items-start mb-3">
-                    <div>
-                        <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase">الرواتب (المتوقع)</p>
-                        <h3 class="text-3xl font-bold num-font mt-1 text-slate-800 dark:text-white">320K <span class="text-sm font-normal text-slate-400">SAR</span></h3>
-                    </div>
-                    <div class="w-12 h-12 rounded-xl bg-green-50 dark:bg-green-900/20 flex items-center justify-center">
-                        <i class="fa-solid fa-money-bill-wave text-green-600 text-xl"></i>
-                    </div>
-                </div>
-                <p class="text-[10px] text-slate-500 dark:text-slate-400">يستحق في: 27 الشهر الجاري</p>
-            </div>
-
-            <!-- Government Alerts -->
-            <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 hover:shadow-md transition stats-card">
-                <div class="flex justify-between items-start mb-3">
-                    <div>
-                        <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase">تنبيهات حكومية</p>
-                        <h3 class="text-3xl font-bold num-font mt-1 text-alertOrange">3</h3>
-                    </div>
-                    <div class="w-12 h-12 rounded-xl bg-orange-50 dark:bg-orange-900/20 flex items-center justify-center">
-                        <i class="fa-solid fa-triangle-exclamation text-alertOrange text-xl"></i>
-                    </div>
-                </div>
-                <p class="text-[10px] text-slate-500 dark:text-slate-400">انتهاء إقامة / رخص</p>
-            </div>
-
-            <!-- Assets -->
-            <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 hover:shadow-md transition stats-card">
-                <div class="flex justify-between items-start mb-3">
-                    <div>
-                        <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase">العهد المسلمة</p>
-                        <h3 class="text-3xl font-bold num-font mt-1 text-slate-800 dark:text-white">85</h3>
-                    </div>
-                    <div class="w-12 h-12 rounded-xl bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center">
-                        <i class="fa-solid fa-laptop-code text-blue-600 text-xl"></i>
-                    </div>
-                </div>
-                <p class="text-[10px] text-slate-500 dark:text-slate-400">سيارات: 5 | أجهزة: 80</p>
-            </div>
-        </div>
-
-        <!-- Main Content Grid -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <main class="p-6 space-y-6">
             
-            <!-- Critical Alerts -->
-            <div class="lg:col-span-2 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-6">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="font-bold text-slate-800 dark:text-white flex items-center gap-2">
-                        <i class="fa-solid fa-bell text-brandRed"></i> 
-                        <span>التنبيهات الحرجة (30 يوم)</span>
-                    </h3>
-                    <span class="text-[10px] bg-red-50 dark:bg-red-900/20 text-red-600 px-2 py-1 rounded-full font-bold">3 تنبيهات</span>
+            <div class="flex flex-col md:flex-row justify-between items-end gap-4">
+                <div>
+                    <h1 class="text-2xl font-bold text-slate-900 dark:text-white" data-i18n="headerTitle">الموارد البشرية والشؤون الإدارية</h1>
+                    <div class="flex items-center gap-2 mt-1">
+                        <span class="px-2 py-0.5 rounded bg-green-100 text-green-700 text-[10px] font-bold border border-green-200 flex items-center gap-1">
+                            <i class="fa-solid fa-check-circle"></i> <span data-i18n="badgeNitaqat">نطاقات: بلاتيني</span>
+                        </span>
+                        <span class="px-2 py-0.5 rounded bg-blue-100 text-blue-700 text-[10px] font-bold border border-blue-200 flex items-center gap-1">
+                            <i class="fa-solid fa-building"></i> <span data-i18n="badgeOffice">المكاتب: مكتملة</span>
+                        </span>
+                    </div>
                 </div>
-                <div class="space-y-3">
-                    <!-- Alert 1 -->
-                    <div class="flex items-center justify-between p-4 bg-red-50 dark:bg-red-900/10 rounded-xl border border-red-100 dark:border-red-900/30 hover:shadow-md transition">
-                        <div class="flex items-center gap-3">
-                            <div class="w-12 h-12 rounded-full bg-white dark:bg-slate-700 flex items-center justify-center text-red-500 border-2 border-red-200 dark:border-red-800">
-                                <i class="fa-solid fa-id-card text-xl"></i>
-                            </div>
-                            <div>
-                                <p class="text-sm font-bold text-slate-800 dark:text-white">تجديد إقامة (محمد خان)</p>
-                                <p class="text-[11px] text-red-600 font-medium">تنتهي خلال 3 أيام</p>
-                            </div>
-                        </div>
-                        <button onclick="handleAlert('muqeem')" class="px-4 py-2 bg-white dark:bg-slate-700 border border-red-200 dark:border-red-800 rounded-lg text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 font-bold text-xs transition flex items-center gap-2">
-                            <i class="fa-solid fa-external-link-alt"></i> إجراء
-                        </button>
-                    </div>
-
-                    <!-- Alert 2 -->
-                    <div class="flex items-center justify-between p-4 bg-orange-50 dark:bg-orange-900/10 rounded-xl border border-orange-100 dark:border-orange-900/30 hover:shadow-md transition">
-                        <div class="flex items-center gap-3">
-                            <div class="w-12 h-12 rounded-full bg-white dark:bg-slate-700 flex items-center justify-center text-orange-500 border-2 border-orange-200 dark:border-orange-800">
-                                <i class="fa-solid fa-car text-xl"></i>
-                            </div>
-                            <div>
-                                <p class="text-sm font-bold text-slate-800 dark:text-white">تأمين مركبة (CAR-001)</p>
-                                <p class="text-[11px] text-orange-600 font-medium">ينتهي خلال 15 يوم</p>
-                            </div>
-                        </div>
-                        <button onclick="handleAlert('insurance')" class="px-4 py-2 bg-white dark:bg-slate-700 border border-orange-200 dark:border-orange-800 rounded-lg text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-900/20 font-bold text-xs transition flex items-center gap-2">
-                            <i class="fa-solid fa-bell"></i> تذكير
-                        </button>
-                    </div>
-
-                    <!-- Alert 3 -->
-                    <div class="flex items-center justify-between p-4 bg-yellow-50 dark:bg-yellow-900/10 rounded-xl border border-yellow-100 dark:border-yellow-900/30 hover:shadow-md transition">
-                        <div class="flex items-center gap-3">
-                            <div class="w-12 h-12 rounded-full bg-white dark:bg-slate-700 flex items-center justify-center text-yellow-600 border-2 border-yellow-200 dark:border-yellow-800">
-                                <i class="fa-solid fa-file-contract text-xl"></i>
-                            </div>
-                            <div>
-                                <p class="text-sm font-bold text-slate-800 dark:text-white">انتهاء عقد (أحمد السالم)</p>
-                                <p class="text-[11px] text-yellow-600 font-medium">ينتهي خلال 28 يوم</p>
-                            </div>
-                        </div>
-                        <button onclick="handleAlert('contract')" class="px-4 py-2 bg-white dark:bg-slate-700 border border-yellow-200 dark:border-yellow-800 rounded-lg text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/20 font-bold text-xs transition flex items-center gap-2">
-                            <i class="fa-solid fa-pen"></i> مراجعة
-                        </button>
-                    </div>
+                <div class="flex gap-3">
+                    <button onclick="openPurchaseModal()" class="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold shadow-sm hover:bg-slate-50 transition flex items-center gap-2">
+                        <i class="fa-solid fa-cart-plus text-slate-400"></i> <span data-i18n="btnPurchase">طلب شراء (إداري)</span>
+                    </button>
+                    <button onclick="openEmployeeModal()" class="px-4 py-2 bg-brandRed text-white rounded-lg text-xs font-bold shadow-lg shadow-red-500/30 hover:bg-red-700 transition flex items-center gap-2">
+                        <i class="fa-solid fa-user-plus"></i> <span data-i18n="btnNewEmp">موظف جديد</span>
+                    </button>
                 </div>
             </div>
 
-            <!-- Daily Attendance -->
-            <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-6">
-                <h3 class="font-bold text-slate-800 dark:text-white mb-4 flex items-center gap-2">
-                    <i class="fa-solid fa-clock text-brandBlue"></i>
-                    <span>الانضباط اليومي</span>
-                </h3>
-                <div class="relative h-48 flex justify-center items-center mb-6">
-                    <canvas id="attendanceChart"></canvas>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <div class="flex justify-between items-start mb-2">
+                        <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="kpiEmp">إجمالي الموظفين</p>
+                        <i class="fa-solid fa-users text-brandRed bg-red-50 dark:bg-red-900/20 p-2 rounded-lg"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold num-font">45</h3>
+                    <p class="text-[10px] text-green-600 mt-2 font-bold flex items-center gap-1"><i class="fa-solid fa-passport"></i> <span data-i18n="kpiEmpSub">78% توطين</span></p>
                 </div>
-                <div class="grid grid-cols-3 gap-3 text-center">
-                    <div class="p-3 bg-green-50 dark:bg-green-900/20 rounded-xl border border-green-100 dark:border-green-800">
-                        <p class="text-2xl font-bold text-green-600 num-font">40</p>
-                        <p class="text-[10px] text-green-600 font-medium mt-1">حاضر</p>
-                    </div>
-                    <div class="p-3 bg-red-50 dark:bg-red-900/20 rounded-xl border border-red-100 dark:border-red-800">
-                        <p class="text-2xl font-bold text-red-600 num-font">3</p>
-                        <p class="text-[10px] text-red-600 font-medium mt-1">متأخر</p>
-                    </div>
-                    <div class="p-3 bg-slate-50 dark:bg-slate-700 rounded-xl border border-slate-100 dark:border-slate-600">
-                        <p class="text-2xl font-bold text-slate-600 dark:text-slate-300 num-font">2</p>
-                        <p class="text-[10px] text-slate-600 dark:text-slate-400 font-medium mt-1">غائب</p>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <!-- Pending Approvals -->
-        <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden">
-            <div class="p-5 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-gradient-to-r from-slate-50 to-transparent dark:from-slate-900/50">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl bg-brandRed/10 flex items-center justify-center">
-                        <i class="fa-solid fa-file-signature text-brandRed"></i>
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <div class="flex justify-between items-start mb-2">
+                        <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="kpiPay">الرواتب (المتوقع)</p>
+                        <i class="fa-solid fa-money-bill-wave text-green-600 bg-green-50 dark:bg-green-900/20 p-2 rounded-lg"></i>
                     </div>
-                    <div>
-                        <h3 class="font-bold text-slate-800 dark:text-white">طلبات بانتظار اعتمادك</h3>
-                        <p class="text-[10px] text-slate-500 dark:text-slate-400">تتطلب موافقة فورية</p>
+                    <h3 class="text-2xl font-bold num-font">320K <span class="text-xs font-normal text-slate-400">SAR</span></h3>
+                    <p class="text-[10px] text-slate-400 mt-2" data-i18n="kpiPaySub">يستحق في: 27 الشهر</p>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <div class="flex justify-between items-start mb-2">
+                        <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="kpiGov">تنبيهات حكومية</p>
+                        <i class="fa-solid fa-triangle-exclamation text-alertOrange bg-orange-50 dark:bg-orange-900/20 p-2 rounded-lg"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold num-font text-alertOrange">3</h3>
+                    <p class="text-[10px] text-slate-400 mt-2" data-i18n="kpiGovSub">انتهاء إقامة / رخص</p>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <div class="flex justify-between items-start mb-2">
+                        <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="kpiAsset">العهد المسلمة</p>
+                        <i class="fa-solid fa-laptop-code text-blue-600 bg-blue-50 dark:bg-blue-900/20 p-2 rounded-lg"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold num-font">85</h3>
+                    <p class="text-[10px] text-slate-400 mt-2" data-i18n="kpiAssetSub">سيارات: 5 | أجهزة: 80</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                
+                <div class="lg:col-span-2 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-bold text-slate-800 dark:text-white flex items-center gap-2">
+                            <i class="fa-solid fa-bell text-brandRed"></i> <span data-i18n="titleAlerts">التنبيهات الحرجة (30 يوم)</span>
+                        </h3>
+                    </div>
+                    
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between p-3 bg-red-50 dark:bg-red-900/10 rounded-xl border border-red-100 dark:border-red-900/30">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-red-500 font-bold border border-red-200"><i class="fa-solid fa-id-card"></i></div>
+                                <div>
+                                    <p class="text-xs font-bold text-slate-800 dark:text-white" data-i18n="alert1Title">تجديد إقامة (محمد خان)</p>
+                                    <p class="text-[10px] text-red-600" data-i18n="alert1Time">تنتهي خلال 3 أيام</p>
+                                </div>
+                            </div>
+                            <button onclick="alert('Redirecting to Muqeem...')" class="text-[10px] bg-white border border-red-200 px-3 py-1 rounded text-red-600 hover:bg-red-50 font-bold" data-i18n="btnAction">إجراء</button>
+                        </div>
+
+                        <div class="flex items-center justify-between p-3 bg-orange-50 dark:bg-orange-900/10 rounded-xl border border-orange-100 dark:border-orange-900/30">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-orange-500 font-bold border border-orange-200"><i class="fa-solid fa-building"></i></div>
+                                <div>
+                                    <p class="text-xs font-bold text-slate-800 dark:text-white" data-i18n="alert2Title">رخصة البلدية (فرع الشمال)</p>
+                                    <p class="text-[10px] text-orange-600" data-i18n="alert2Time">تنتهي خلال 15 يوم</p>
+                                </div>
+                            </div>
+                            <button onclick="alert('Renewal Process Started')" class="text-[10px] bg-white border border-orange-200 px-3 py-1 rounded text-orange-600 hover:bg-orange-50 font-bold" data-i18n="btnRenew">تجديد</button>
+                        </div>
+
+                        <div class="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-700/50 rounded-xl border border-slate-100 dark:border-slate-600">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-slate-500 font-bold border border-slate-200"><i class="fa-solid fa-file-contract"></i></div>
+                                <div>
+                                    <p class="text-xs font-bold text-slate-800 dark:text-white" data-i18n="alert3Title">عقد إيجار المقر الرئيسي</p>
+                                    <p class="text-[10px] text-slate-500" data-i18n="alert3Time">ينتهي خلال 45 يوم</p>
+                                </div>
+                            </div>
+                            <button class="text-[10px] bg-white border border-slate-200 px-3 py-1 rounded text-slate-600 hover:bg-slate-100 font-bold" data-i18n="btnView">عرض</button>
+                        </div>
                     </div>
                 </div>
-                <span id="requestsCount" class="bg-brandRed text-white text-xs px-3 py-1.5 rounded-full font-bold">4 طلبات</span>
+
+                <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-6">
+                    <h3 class="font-bold text-slate-800 dark:text-white mb-4" data-i18n="titleAtt">الانضباط اليومي</h3>
+                    <div class="h-32 relative flex justify-center mb-4">
+                        <canvas id="attendanceChart"></canvas>
+                    </div>
+                    <div class="space-y-2 text-xs">
+                        <div class="flex justify-between items-center p-2 bg-green-50 rounded text-green-700">
+                            <span data-i18n="attPresent">حضور في الوقت</span>
+                            <span class="font-bold">40</span>
+                        </div>
+                        <div class="flex justify-between items-center p-2 bg-red-50 rounded text-red-700">
+                            <span data-i18n="attLate">تأخير (>15د)</span>
+                            <span class="font-bold">3 <span class="text-[9px]" data-i18n="attDeduct">(خصم)</span></span>
+                        </div>
+                        <div class="flex justify-between items-center p-2 bg-slate-100 rounded text-slate-600">
+                            <span data-i18n="attAbsent">غياب / إجازة</span>
+                            <span class="font-bold">2</span>
+                        </div>
+                    </div>
+                </div>
+
             </div>
-            <div class="overflow-x-auto">
-                <table class="w-full text-sm">
-                    <thead class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 dark:text-slate-400 text-xs font-bold uppercase border-b border-slate-200 dark:border-slate-700">
+
+            <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden">
+                <div class="p-5 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center">
+                    <h3 class="font-bold text-slate-800 dark:text-white" data-i18n="titleReqs">طلبات بانتظار اعتمادك</h3>
+                    <span class="bg-brandRed text-white text-[10px] px-2 py-0.5 rounded-full" data-i18n="reqCount">4 طلبات</span>
+                </div>
+                <table class="w-full text-sm text-right rtl:text-right ltr:text-left">
+                    <thead class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 text-xs font-bold uppercase">
                         <tr>
-                            <th class="p-4 text-right">نوع الطلب</th>
-                            <th class="p-4 text-right">المقدم</th>
-                            <th class="p-4 text-right">التفاصيل</th>
-                            <th class="p-4 text-right">التاريخ</th>
-                            <th class="p-4 text-center">الإجراء</th>
+                            <th class="p-4" data-i18n="colType">نوع الطلب</th>
+                            <th class="p-4" data-i18n="colReq">المقدم</th>
+                            <th class="p-4" data-i18n="colDetails">التفاصيل</th>
+                            <th class="p-4" data-i18n="colDate">التاريخ</th>
+                            <th class="p-4 text-center" data-i18n="colAction">الإجراء</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-slate-100 dark:divide-slate-700" id="reqTable">
-                        <!-- Request 1 -->
-                        <tr id="req-1" class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition group">
-                            <td class="p-4">
-                                <span class="inline-flex items-center gap-1.5 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 px-2.5 py-1 rounded-lg text-xs font-bold">
-                                    <i class="fa-solid fa-umbrella-beach"></i> إجازة سنوية
-                                </span>
-                            </td>
-                            <td class="p-4">
-                                <div class="flex items-center gap-2">
-                                    <img src="https://ui-avatars.com/api/?name=Khalid&background=4267B2&color=fff" class="w-8 h-8 rounded-full">
-                                    <span class="font-bold text-slate-800 dark:text-white">خالد العتيبي</span>
-                                </div>
-                            </td>
-                            <td class="p-4 text-slate-600 dark:text-slate-300">5 أيام (رصيد متبقي: 12)</td>
-                            <td class="p-4 text-slate-500 dark:text-slate-400 font-mono text-xs">2026-01-10</td>
-                            <td class="p-4">
-                                <div class="flex justify-center gap-2">
-                                    <button onclick="approveRequest('req-1')" class="w-9 h-9 rounded-lg bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 hover:bg-green-200 dark:hover:bg-green-900/50 transition flex items-center justify-center" title="موافقة">
-                                        <i class="fa-solid fa-check"></i>
-                                    </button>
-                                    <button onclick="rejectRequest('req-1')" class="w-9 h-9 rounded-lg bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-900/50 transition flex items-center justify-center" title="رفض">
-                                        <i class="fa-solid fa-xmark"></i>
-                                    </button>
-                                </div>
+                    <tbody class="divide-y divide-slate-100 dark:divide-slate-700 dark:text-slate-300" id="reqTable">
+                        
+                        <tr id="req-1" class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
+                            <td class="p-4"><span class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded text-[10px] font-bold" data-i18n="typeVac">إجازة سنوية</span></td>
+                            <td class="p-4 font-bold text-xs">خالد العتيبي</td>
+                            <td class="p-4 text-xs" data-i18n="detVac">5 أيام (رصيد متبقي: 12)</td>
+                            <td class="p-4 text-xs font-mono">2026-01-10</td>
+                            <td class="p-4 text-center flex justify-center gap-2">
+                                <button onclick="approveRequest('req-1')" class="w-6 h-6 rounded bg-green-100 text-green-600 hover:bg-green-200"><i class="fa-solid fa-check"></i></button>
+                                <button onclick="rejectRequest('req-1')" class="w-6 h-6 rounded bg-red-100 text-red-600 hover:bg-red-200"><i class="fa-solid fa-xmark"></i></button>
                             </td>
                         </tr>
 
-                        <!-- Request 2 -->
-                        <tr id="req-2" class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition group">
-                            <td class="p-4">
-                                <span class="inline-flex items-center gap-1.5 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400 px-2.5 py-1 rounded-lg text-xs font-bold">
-                                    <i class="fa-solid fa-plane"></i> سفر عمل
-                                </span>
-                            </td>
-                            <td class="p-4">
-                                <div class="flex items-center gap-2">
-                                    <img src="https://ui-avatars.com/api/?name=Sara&background=9333EA&color=fff" class="w-8 h-8 rounded-full">
-                                    <span class="font-bold text-slate-800 dark:text-white">سارة المطيري</span>
-                                </div>
-                            </td>
-                            <td class="p-4 text-slate-600 dark:text-slate-300">دبي - مؤتمر الموارد البشرية (3 أيام)</td>
-                            <td class="p-4 text-slate-500 dark:text-slate-400 font-mono text-xs">2026-01-15</td>
-                            <td class="p-4">
-                                <div class="flex justify-center gap-2">
-                                    <button onclick="approveRequest('req-2')" class="w-9 h-9 rounded-lg bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 hover:bg-green-200 dark:hover:bg-green-900/50 transition flex items-center justify-center">
-                                        <i class="fa-solid fa-check"></i>
-                                    </button>
-                                    <button onclick="rejectRequest('req-2')" class="w-9 h-9 rounded-lg bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-900/50 transition flex items-center justify-center">
-                                        <i class="fa-solid fa-xmark"></i>
-                                    </button>
-                                </div>
+                        <tr id="req-2" class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
+                            <td class="p-4"><span class="bg-purple-100 text-purple-700 px-2 py-0.5 rounded text-[10px] font-bold" data-i18n="typeAsset">شراء (أصول)</span></td>
+                            <td class="p-4 font-bold text-xs">سارة الأحمد</td>
+                            <td class="p-4 text-xs" data-i18n="detAsset">طابعة ليزر (1200 ريال)</td>
+                            <td class="p-4 text-xs font-mono">2026-01-11</td>
+                            <td class="p-4 text-center flex justify-center gap-2">
+                                <button onclick="approveRequest('req-2')" class="w-6 h-6 rounded bg-green-100 text-green-600 hover:bg-green-200"><i class="fa-solid fa-check"></i></button>
+                                <button onclick="rejectRequest('req-2')" class="w-6 h-6 rounded bg-red-100 text-red-600 hover:bg-red-200"><i class="fa-solid fa-xmark"></i></button>
                             </td>
                         </tr>
 
-                        <!-- Request 3 -->
-                        <tr id="req-3" class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition group">
-                            <td class="p-4">
-                                <span class="inline-flex items-center gap-1.5 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 px-2.5 py-1 rounded-lg text-xs font-bold">
-                                    <i class="fa-solid fa-shopping-cart"></i> مشتريات
-                                </span>
-                            </td>
-                            <td class="p-4">
-                                <div class="flex items-center gap-2">
-                                    <img src="https://ui-avatars.com/api/?name=Ahmed&background=F59E0B&color=fff" class="w-8 h-8 rounded-full">
-                                    <span class="font-bold text-slate-800 dark:text-white">أحمد السالم</span>
-                                </div>
-                            </td>
-                            <td class="p-4 text-slate-600 dark:text-slate-300">أثاث مكتبي - 15,000 ريال</td>
-                            <td class="p-4 text-slate-500 dark:text-slate-400 font-mono text-xs">2026-01-12</td>
-                            <td class="p-4">
-                                <div class="flex justify-center gap-2">
-                                    <button onclick="approveRequest('req-3')" class="w-9 h-9 rounded-lg bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 hover:bg-green-200 dark:hover:bg-green-900/50 transition flex items-center justify-center">
-                                        <i class="fa-solid fa-check"></i>
-                                    </button>
-                                    <button onclick="rejectRequest('req-3')" class="w-9 h-9 rounded-lg bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-900/50 transition flex items-center justify-center">
-                                        <i class="fa-solid fa-xmark"></i>
-                                    </button>
-                                </div>
+                        <tr id="req-3" class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
+                            <td class="p-4"><span class="bg-orange-100 text-orange-700 px-2 py-0.5 rounded text-[10px] font-bold" data-i18n="typeContract">عقد شراكة</span></td>
+                            <td class="p-4 font-bold text-xs" data-i18n="reqSales">إدارة المبيعات</td>
+                            <td class="p-4 text-xs" data-i18n="detContract">مراجعة مسودة عقد (شركة الحلول)</td>
+                            <td class="p-4 text-xs font-mono">2026-01-12</td>
+                            <td class="p-4 text-center flex justify-center gap-2">
+                                <button class="w-6 h-6 rounded bg-slate-100 text-slate-600 hover:bg-slate-200"><i class="fa-solid fa-eye"></i></button>
                             </td>
                         </tr>
 
-                        <!-- Request 4 -->
-                        <tr id="req-4" class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition group">
-                            <td class="p-4">
-                                <span class="inline-flex items-center gap-1.5 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 px-2.5 py-1 rounded-lg text-xs font-bold">
-                                    <i class="fa-solid fa-user-plus"></i> توظيف
-                                </span>
-                            </td>
-                            <td class="p-4">
-                                <div class="flex items-center gap-2">
-                                    <img src="https://ui-avatars.com/api/?name=Fatima&background=10B981&color=fff" class="w-8 h-8 rounded-full">
-                                    <span class="font-bold text-slate-800 dark:text-white">فاطمة القحطاني</span>
-                                </div>
-                            </td>
-                            <td class="p-4 text-slate-600 dark:text-slate-300">مطور برمجيات - راتب: 12,000 ريال</td>
-                            <td class="p-4 text-slate-500 dark:text-slate-400 font-mono text-xs">2026-01-18</td>
-                            <td class="p-4">
-                                <div class="flex justify-center gap-2">
-                                    <button onclick="approveRequest('req-4')" class="w-9 h-9 rounded-lg bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 hover:bg-green-200 dark:hover:bg-green-900/50 transition flex items-center justify-center">
-                                        <i class="fa-solid fa-check"></i>
-                                    </button>
-                                    <button onclick="rejectRequest('req-4')" class="w-9 h-9 rounded-lg bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-900/50 transition flex items-center justify-center">
-                                        <i class="fa-solid fa-xmark"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
                     </tbody>
                 </table>
             </div>
+
+        </main>
+    </div>
+
+    <div id="employeeModal" class="fixed inset-0 bg-black/60 hidden z-50 flex items-center justify-center backdrop-blur-sm p-4">
+        <div class="bg-white dark:bg-slate-800 w-full max-w-lg rounded-2xl shadow-xl p-6">
+            <div class="flex justify-between items-center mb-6 border-b pb-4 dark:border-slate-700">
+                <h3 class="font-bold text-lg dark:text-white" data-i18n="modEmpTitle">إضافة موظف جديد</h3>
+                <button onclick="document.getElementById('employeeModal').classList.add('hidden')"><i class="fa-solid fa-xmark text-slate-400"></i></button>
+            </div>
+            <div class="space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblFirst">الاسم الأول</label>
+                        <input type="text" class="w-full bg-slate-50 dark:bg-slate-700 border dark:border-slate-600 rounded-lg p-2 text-sm dark:text-white">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblLast">العائلة</label>
+                        <input type="text" class="w-full bg-slate-50 dark:bg-slate-700 border dark:border-slate-600 rounded-lg p-2 text-sm dark:text-white">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblJob">المسمى الوظيفي</label>
+                    <input type="text" class="w-full bg-slate-50 dark:bg-slate-700 border dark:border-slate-600 rounded-lg p-2 text-sm dark:text-white">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblNat">الجنسية</label>
+                        <select class="w-full bg-slate-50 dark:bg-slate-700 border dark:border-slate-600 rounded-lg p-2 text-sm dark:text-white">
+                            <option>سعودي</option>
+                            <option>غير سعودي</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblSalary">الراتب الأساسي</label>
+                        <input type="number" class="w-full bg-slate-50 dark:bg-slate-700 border dark:border-slate-600 rounded-lg p-2 text-sm dark:text-white">
+                    </div>
+                </div>
+            </div>
+            <div class="mt-6 flex justify-end gap-3 pt-4 border-t dark:border-slate-700">
+                <button onclick="document.getElementById('employeeModal').classList.add('hidden')" class="px-4 py-2 border rounded-lg text-xs font-bold hover:bg-slate-50 dark:text-white" data-i18n="btnCancel">إلغاء</button>
+                <button onclick="alert('تم حفظ بيانات الموظف'); document.getElementById('employeeModal').classList.add('hidden')" class="px-6 py-2 bg-brandRed text-white rounded-lg text-xs font-bold hover:bg-red-700 shadow-md" data-i18n="btnSave">حفظ وإضافة</button>
+            </div>
         </div>
+    </div>
 
-    </main>
-</div>
+    <div id="purchaseModal" class="fixed inset-0 bg-black/60 hidden z-50 flex items-center justify-center backdrop-blur-sm p-4">
+        <div class="bg-white dark:bg-slate-800 w-full max-w-lg rounded-2xl shadow-xl p-6">
+            <div class="flex justify-between items-center mb-6 border-b pb-4 dark:border-slate-700">
+                <h3 class="font-bold text-lg dark:text-white" data-i18n="modPurTitle">طلب شراء (إداري)</h3>
+                <button onclick="document.getElementById('purchaseModal').classList.add('hidden')"><i class="fa-solid fa-xmark text-slate-400"></i></button>
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblItem">بند الشراء</label>
+                    <input type="text" class="w-full bg-slate-50 dark:bg-slate-700 border dark:border-slate-600 rounded-lg p-2 text-sm dark:text-white">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblQty">الكمية</label>
+                        <input type="number" class="w-full bg-slate-50 dark:bg-slate-700 border dark:border-slate-600 rounded-lg p-2 text-sm dark:text-white">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblCost">التكلفة التقديرية</label>
+                        <input type="number" class="w-full bg-slate-50 dark:bg-slate-700 border dark:border-slate-600 rounded-lg p-2 text-sm dark:text-white">
+                    </div>
+                </div>
+                <div class="p-3 bg-yellow-50 text-yellow-800 text-xs rounded border border-yellow-200">
+                    <i class="fa-solid fa-info-circle"></i> <span data-i18n="noteLimit">ملاحظة: الصلاحية المباشرة للشراء حتى 5000 ريال.</span>
+                </div>
+            </div>
+            <div class="mt-6 flex justify-end gap-3 pt-4 border-t dark:border-slate-700">
+                <button onclick="document.getElementById('purchaseModal').classList.add('hidden')" class="px-4 py-2 border rounded-lg text-xs font-bold hover:bg-slate-50 dark:text-white" data-i18n="btnCancel">إلغاء</button>
+                <button onclick="alert('تم رفع طلب الشراء للمالية'); document.getElementById('purchaseModal').classList.add('hidden')" class="px-6 py-2 bg-brandRed text-white rounded-lg text-xs font-bold hover:bg-red-700 shadow-md" data-i18n="btnConfirm">اعتماد الطلب</button>
+            </div>
+        </div>
+    </div>
 
-<!-- Scripts - ORDER MATTERS! -->
+    <script src="layout-hr.js"></script>
+    <script src="bot.js"></script>
 
-<script src="js/components/layout.js"></script>
-<script src="js/components/bot.js"></script>
-
-<!-- Page Initialization -->
-<script>
-    // ✅ Counter for requests
-    let requestsRemaining = 4;
-
-    // Set current date
-    function updateCurrentDate() {
-        const dateEl = document.getElementById('currentDate');
-        if (dateEl) {
-            const lang = localStorage.getItem('lang') || 'ar';
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            const date = new Date().toLocaleDateString(lang === 'ar' ? 'ar-SA' : 'en-US', options);
-            dateEl.textContent = date;
-        }
-    }
-
-    // ✅ Update requests counter
-    function updateRequestsCounter() {
-        const counterEl = document.getElementById('requestsCount');
-        if (counterEl) {
-            const lang = localStorage.getItem('lang') || 'ar';
-            counterEl.textContent = `${requestsRemaining} ${lang === 'ar' ? 'طلبات' : 'Requests'}`;
-            
-            // Hide if no requests
-            if (requestsRemaining === 0) {
-                setTimeout(() => {
-                    counterEl.closest('.bg-white').style.display = 'none';
-                }, 1000);
-            }
-        }
-    }
-
-    // Initialize Attendance Chart
-    function initAttendanceChart() {
-        const ctx = document.getElementById('attendanceChart');
-        if (!ctx) return;
-
-        new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: ['حاضر', 'متأخر', 'غائب'],
-                datasets: [{
-                    data: [40, 3, 2],
-                    backgroundColor: ['#10B981', '#EF4444', '#CBD5E1'],
-                    borderWidth: 0,
-                    borderRadius: 8
-                }]
+    <script>
+        // --- 1. الترجمة ---
+        const pageContent = {
+            ar: {
+                pageTitle: "لوحة القيادة | AndroGov",
+                headerTitle: "الموارد البشرية والشؤون الإدارية",
+                badgeNitaqat: "نطاقات: بلاتيني",
+                badgeOffice: "المكاتب: مكتملة",
+                btnPurchase: "طلب شراء (إداري)",
+                btnNewEmp: "موظف جديد",
+                kpiEmp: "إجمالي الموظفين",
+                kpiEmpSub: "78% توطين",
+                kpiPay: "الرواتب (المتوقع)",
+                kpiPaySub: "يستحق في: 27 الشهر",
+                kpiGov: "تنبيهات حكومية",
+                kpiGovSub: "انتهاء إقامة / رخص",
+                kpiAsset: "العهد المسلمة",
+                kpiAssetSub: "سيارات: 5 | أجهزة: 80",
+                titleAlerts: "التنبيهات الحرجة (30 يوم)",
+                alert1Title: "تجديد إقامة (محمد خان)",
+                alert1Time: "تنتهي خلال 3 أيام",
+                btnAction: "إجراء",
+                alert2Title: "رخصة البلدية (فرع الشمال)",
+                alert2Time: "تنتهي خلال 15 يوم",
+                btnRenew: "تجديد",
+                alert3Title: "عقد إيجار المقر الرئيسي",
+                alert3Time: "ينتهي خلال 45 يوم",
+                btnView: "عرض",
+                titleAtt: "الانضباط اليومي",
+                attPresent: "حضور في الوقت",
+                attLate: "تأخير (>15د)",
+                attDeduct: "(خصم)",
+                attAbsent: "غياب / إجازة",
+                titleReqs: "طلبات بانتظار اعتمادك",
+                reqCount: "4 طلبات",
+                colType: "نوع الطلب",
+                colReq: "المقدم",
+                colDetails: "التفاصيل",
+                colDate: "التاريخ",
+                colAction: "الإجراء",
+                typeVac: "إجازة سنوية",
+                detVac: "5 أيام (رصيد متبقي: 12)",
+                typeAsset: "شراء (أصول)",
+                detAsset: "طابعة ليزر (1200 ريال)",
+                typeContract: "عقد شراكة",
+                reqSales: "إدارة المبيعات",
+                detContract: "مراجعة مسودة عقد (شركة الحلول)",
+                modEmpTitle: "إضافة موظف جديد",
+                lblFirst: "الاسم الأول",
+                lblLast: "العائلة",
+                lblJob: "المسمى الوظيفي",
+                lblNat: "الجنسية",
+                lblSalary: "الراتب الأساسي",
+                btnCancel: "إلغاء",
+                btnSave: "حفظ وإضافة",
+                modPurTitle: "طلب شراء (إداري)",
+                lblItem: "بند الشراء",
+                lblQty: "الكمية",
+                lblCost: "التكلفة التقديرية",
+                noteLimit: "ملاحظة: الصلاحية المباشرة للشراء حتى 5000 ريال.",
+                btnConfirm: "اعتماد الطلب"
             },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { 
-                    legend: { display: false },
-                    tooltip: {
-                        backgroundColor: 'rgba(15, 23, 42, 0.9)',
-                        padding: 12,
-                        titleFont: { size: 14, weight: 'bold' },
-                        bodyFont: { size: 13 },
-                        borderColor: 'rgba(148, 163, 184, 0.2)',
-                        borderWidth: 1
-                    }
-                },
-                cutout: '70%'
+            en: {
+                pageTitle: "Dashboard | AndroGov",
+                headerTitle: "HR & Admin Affairs",
+                badgeNitaqat: "Nitaqat: Platinum",
+                badgeOffice: "Offices: Complete",
+                btnPurchase: "Purchase Request",
+                btnNewEmp: "New Employee",
+                kpiEmp: "Total Employees",
+                kpiEmpSub: "78% Saudization",
+                kpiPay: "Payroll (Forecast)",
+                kpiPaySub: "Due: 27th",
+                kpiGov: "Govt Alerts",
+                kpiGovSub: "Expiring Docs",
+                kpiAsset: "Assigned Assets",
+                kpiAssetSub: "Cars: 5 | Devices: 80",
+                titleAlerts: "Critical Alerts (30 Days)",
+                alert1Title: "Iqama Renewal (Mohammed Khan)",
+                alert1Time: "Expires in 3 Days",
+                btnAction: "Action",
+                alert2Title: "Municipality Lic. (North)",
+                alert2Time: "Expires in 15 Days",
+                btnRenew: "Renew",
+                alert3Title: "HQ Lease Contract",
+                alert3Time: "Expires in 45 Days",
+                btnView: "View",
+                titleAtt: "Daily Attendance",
+                attPresent: "On Time",
+                attLate: "Late (>15m)",
+                attDeduct: "(Deduct)",
+                attAbsent: "Absent / Leave",
+                titleReqs: "Pending Requests",
+                reqCount: "4 Requests",
+                colType: "Request Type",
+                colReq: "Requester",
+                colDetails: "Details",
+                colDate: "Date",
+                colAction: "Action",
+                typeVac: "Annual Leave",
+                detVac: "5 Days (Bal: 12)",
+                typeAsset: "Purchase (Asset)",
+                detAsset: "Laser Printer (1200 SAR)",
+                typeContract: "Partnership",
+                reqSales: "Sales Dept",
+                detContract: "Contract Draft Review",
+                modEmpTitle: "Add New Employee",
+                lblFirst: "First Name",
+                lblLast: "Last Name",
+                lblJob: "Job Title",
+                lblNat: "Nationality",
+                lblSalary: "Basic Salary",
+                btnCancel: "Cancel",
+                btnSave: "Save & Add",
+                modPurTitle: "Purchase Request",
+                lblItem: "Item Name",
+                lblQty: "Quantity",
+                lblCost: "Est. Cost",
+                noteLimit: "Note: Direct purchase limit is 5000 SAR.",
+                btnConfirm: "Approve Request"
             }
-        });
-    }
-
-    // Handle Alerts
-    function handleAlert(type) {
-        const messages = {
-            'muqeem': 'فتح منصة مقيم...',
-            'insurance': 'إرسال تذكير للقسم المالي...',
-            'contract': 'فتح نموذج تجديد العقد...'
         };
-        
-        if (window.Toast) {
-            Toast.info(messages[type] || 'جاري المعالجة...');
-        }
-    }
 
-    // Approve Request
-    function approveRequest(id) {
-        const row = document.getElementById(id);
-        if (row) {
-            row.style.backgroundColor = 'rgba(16, 185, 129, 0.1)';
-            setTimeout(() => {
-                row.style.opacity = '0';
-                setTimeout(() => {
-                    row.remove();
-                    requestsRemaining--;
-                    updateRequestsCounter();
-                }, 300);
-            }, 500);
+        // --- 2. التشغيل ---
+        document.addEventListener('DOMContentLoaded', () => {
+            updatePageLanguage();
+            initChart();
+        });
+
+        function updatePageLanguage() {
+            const lang = localStorage.getItem('lang') || 'ar';
+            const dict = pageContent[lang];
             
-            if (window.Toast) {
-                Toast.success('تمت الموافقة على الطلب بنجاح');
+            document.documentElement.lang = lang;
+            document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if(dict[key]) el.innerText = dict[key];
+            });
+        }
+
+        // --- 3. الوظائف ---
+        function openEmployeeModal() { document.getElementById('employeeModal').classList.remove('hidden'); }
+        function openPurchaseModal() { document.getElementById('purchaseModal').classList.remove('hidden'); }
+
+        function approveRequest(rowId) {
+            if(confirm('Confirm approval?')) {
+                const row = document.getElementById(rowId);
+                row.style.backgroundColor = '#dcfce7';
+                setTimeout(() => row.remove(), 500);
             }
         }
-    }
 
-    // Reject Request
-    function rejectRequest(id) {
-        const row = document.getElementById(id);
-        if (row) {
-            row.style.backgroundColor = 'rgba(239, 68, 68, 0.1)';
-            setTimeout(() => {
-                row.style.opacity = '0';
-                setTimeout(() => {
-                    row.remove();
-                    requestsRemaining--;
-                    updateRequestsCounter();
-                }, 300);
-            }, 500);
-            
-            if (window.Toast) {
-                Toast.warning('تم رفض الطلب');
+        function rejectRequest(rowId) {
+            if(confirm('Confirm rejection?')) {
+                const row = document.getElementById(rowId);
+                row.style.backgroundColor = '#fee2e2';
+                setTimeout(() => row.remove(), 500);
             }
         }
-    }
 
-    // Open Modals
-    function openEmployeeModal() {
-        if (window.Toast) {
-            Toast.info('فتح نموذج إضافة موظف جديد...');
+        function initChart() {
+            const ctx = document.getElementById('attendanceChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Present', 'Late', 'Absent'],
+                    datasets: [{
+                        data: [40, 3, 2],
+                        backgroundColor: ['#10B981', '#EF4444', '#CBD5E1'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    cutout: '75%'
+                }
+            });
         }
-    }
-
-    function openPurchaseModal() {
-        if (window.Toast) {
-            Toast.info('فتح نموذج طلب شراء...');
-        }
-    }
-
-    // Main Initialization
-    document.addEventListener('DOMContentLoaded', () => {
-        updateCurrentDate();
-        initAttendanceChart();
-        updateRequestsCounter();
-        
-        // Update date every minute
-        setInterval(updateCurrentDate, 60000);
-        
-        console.log('✅ HR Dashboard Initialized Successfully');
-    });
-</script>
+    </script>
 </body>
 </html>
-</artifact>
