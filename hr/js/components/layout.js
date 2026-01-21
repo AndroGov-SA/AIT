@@ -43,7 +43,7 @@
         {
             section: 'main',
             items: [
-                { key: 'dash', icon: 'fa-chart-pie', link: 'hr_dashboard.html' },
+                { key: 'dash', icon: 'fa-chart-pie', link: 'index.html' },
                 { key: 'approvals', icon: 'fa-inbox', link: 'hr_approvals.html' },
                 { key: 'chat', icon: 'fa-comments', link: 'internal_chat.html' }
             ]
@@ -176,7 +176,7 @@
                 </div>
             </div>
             <div class="p-6 pb-2">
-                <a href="my_profile.html" class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 hover:border-brandRed transition group">
+                <a href="profile.html" class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 hover:border-brandRed transition group">
                     <img src="${currentUser.avatar}" class="w-10 h-10 rounded-full border border-white shadow-sm">
                     <div class="overflow-hidden"><p class="text-sm font-bold text-slate-800 dark:text-white truncate group-hover:text-brandRed transition">${config.lang === 'ar' ? currentUser.nameAr : currentUser.nameEn}</p><p class="text-[10px] text-brandRed font-bold truncate">${config.lang === 'ar' ? currentUser.titleAr : currentUser.titleEn}</p></div>
                     <i class="fa-solid fa-chevron-left text-[10px] text-slate-300 group-hover:text-brandRed mr-auto"></i>
