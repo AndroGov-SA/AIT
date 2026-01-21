@@ -1,5 +1,5 @@
 /**
- * AndroGov Sales Layout Engine v1.0 (Fixed)
+ * AndroGov Sales Layout Engine v1.1 (Complete)
  * @file sales/js/components/layout.js
  */
 
@@ -17,7 +17,6 @@ const Layout = (function() {
     unreadCount: 0
   };
 
-  // تعريف المسميات الوظيفية (Sales Only)
   const _roleLabels = {
     sales: {
         ar: 'مدير المبيعات',
@@ -27,7 +26,7 @@ const Layout = (function() {
   };
 
   // ==========================================
-  // 2. تعريف القوائم (Sales Only)
+  // 2. تعريف القوائم
   // ==========================================
   const _menuDefinitions = {
     sales: [
@@ -48,7 +47,6 @@ const Layout = (function() {
     ]
   };
 
-  // نصوص الترجمة الخاصة بالمبيعات
   const _translations = {
     ar: {
       sales_overview: 'نظرة عامة',
@@ -69,7 +67,8 @@ const Layout = (function() {
       logout: 'تسجيل الخروج',
       logoutConfirm: 'هل أنت متأكد؟',
       poweredBy: 'تطوير',
-      aymanDev: 'أيمن المغربي'
+      aymanDev: 'أيمن المغربي',
+      notifTitle: 'التنبيهات'
     },
     en: {
       sales_overview: 'Overview',
@@ -90,7 +89,8 @@ const Layout = (function() {
       logout: 'Logout',
       logoutConfirm: 'Are you sure?',
       poweredBy: 'Developed by',
-      aymanDev: 'Ayman Almaghrabi'
+      aymanDev: 'Ayman Almaghrabi',
+      notifTitle: 'Notifications'
     }
   };
 
@@ -100,19 +100,16 @@ const Layout = (function() {
   function init() {
     if (_state.isInitialized) return;
 
-    // تحميل المستخدم من LocalStorage (يتم تعيينه في ملف index.html)
     const storedUser = localStorage.getItem('currentUser');
     if (storedUser) {
       _state.currentUser = JSON.parse(storedUser);
     } else {
-      // مستخدم افتراضي للطوارئ
       _state.currentUser = {
         displayName: 'مدير المبيعات',
         avatar: 'https://ui-avatars.com/api/?name=Sales+Manager&background=FB4747&color=fff'
       };
     }
     
-    // تأكيد الدور
     _state.activeRole = 'sales';
 
     loadNotifications();
@@ -120,9 +117,17 @@ const Layout = (function() {
     renderSidebar();
     renderHeader();
     
-    // إظهار الصفحة (إزالة opacity-0)
     document.body.style.opacity = '1';
     
+    // إغلاق قائمة التنبيهات عند النقر خارجها
+    document.addEventListener('click', function(e) {
+        const drop = document.getElementById('notifDropdown');
+        const btn = document.getElementById('notifBtn');
+        if(drop && !drop.classList.contains('hidden') && !drop.contains(e.target) && !btn.contains(e.target)) {
+            drop.classList.add('hidden');
+        }
+    });
+
     _state.isInitialized = true;
     console.log("✅ Sales Layout Initialized Successfully");
   }
@@ -139,12 +144,9 @@ const Layout = (function() {
     document.documentElement.lang = lang;
     document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
     
-    // ضبط هوامش المحتوى الرئيسي
     const mainContent = document.querySelector('.main-content-wrapper');
     if (mainContent) {
-        // تنظيف الكلاسات القديمة
         mainContent.classList.remove('ltr:lg:ml-64', 'rtl:lg:mr-64', 'lg:ml-64', 'lg:mr-64'); 
-        
         if (lang === 'ar') {
             mainContent.classList.add('rtl:lg:mr-64');
         } else {
@@ -159,7 +161,7 @@ const Layout = (function() {
   }
 
   // ==========================================
-  // 5. التنبيهات (Demo Data)
+  // 5. التنبيهات
   // ==========================================
   function loadNotifications() {
     _state.notifications = [
@@ -168,11 +170,19 @@ const Layout = (function() {
             icon: 'fa-handshake',
             color: 'bg-green-100 text-green-600',
             title: { ar: 'تم إغلاق صفقة جديدة', en: 'Deal Won' },
-            body: { ar: 'مشروع وزارة X تم اعتماده', en: 'Ministry X project approved' },
+            body: { ar: 'مشروع وزارة الشؤون البلدية', en: 'MOMRA Project approved' },
             time: '2m'
+        },
+        {
+            id: 'n2',
+            icon: 'fa-file-invoice',
+            color: 'bg-blue-100 text-blue-600',
+            title: { ar: 'عرض سعر بانتظار الاعتماد', en: 'Quote Pending' },
+            body: { ar: 'شركة اليمامة - توريد أجهزة', en: 'Yamama Co - Hardware supply' },
+            time: '1h'
         }
     ];
-    _state.unreadCount = 1;
+    _state.unreadCount = _state.notifications.length;
   }
 
   // ==========================================
@@ -239,7 +249,7 @@ const Layout = (function() {
   }
 
   // ==========================================
-  // 7. رسم الهيدر
+  // 7. رسم الهيدر (تمت إضافة التنبيهات والبوت)
   // ==========================================
   function renderHeader() {
     const container = document.getElementById('header-container');
@@ -247,25 +257,71 @@ const Layout = (function() {
     
     const lang = getCurrentLang();
     const isDark = document.documentElement.classList.contains('dark');
+    const isRTL = lang === 'ar';
+
+    // بناء قائمة التنبيهات
+    const notifHTML = _state.notifications.map(n => `
+        <div class="p-3 border-b border-slate-50 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition cursor-pointer flex gap-3 items-start">
+            <div class="w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${n.color}">
+                <i class="fa-solid ${n.icon} text-xs"></i>
+            </div>
+            <div>
+                <p class="text-xs font-bold text-slate-800 dark:text-white">${n.title[lang]}</p>
+                <p class="text-[10px] text-slate-500 mt-1">${n.body[lang]}</p>
+                <p class="text-[9px] text-slate-400 mt-1">${n.time}</p>
+            </div>
+        </div>
+    `).join('');
 
     container.innerHTML = `
       <header class="h-20 sticky top-0 z-40 flex items-center justify-between px-6 bg-white/90 dark:bg-[#0F172A]/95 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800">
         <div class="flex items-center gap-4">
             <button onclick="Layout.toggleMobileSidebar()" class="lg:hidden text-slate-500"><i class="fa-solid fa-bars text-xl"></i></button>
         </div>
+        
         <div class="flex items-center gap-3">
+            
+            <div class="relative">
+                <button id="notifBtn" onclick="Layout.toggleNotif()" class="w-9 h-9 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-white transition relative flex items-center justify-center">
+                    <i class="fa-regular fa-bell"></i>
+                    ${_state.unreadCount > 0 ? `<span class="absolute top-2 right-2.5 w-2 h-2 bg-brandRed rounded-full border border-white dark:border-slate-800 animate-pulse"></span>` : ''}
+                </button>
+                
+                <div id="notifDropdown" class="hidden absolute top-12 ${isRTL ? 'left-0' : 'right-0'} w-80 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 overflow-hidden z-50">
+                    <div class="p-3 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-900/50">
+                        <span class="text-xs font-bold text-slate-800 dark:text-white">${t('notifTitle')}</span>
+                        <button class="text-[10px] text-brandRed hover:underline font-bold">${t('markAllRead')}</button>
+                    </div>
+                    <div class="max-h-64 overflow-y-auto custom-scroll">
+                        ${notifHTML || `<div class="p-4 text-center text-xs text-slate-400">${t('noNotifications')}</div>`}
+                    </div>
+                </div>
+            </div>
+
             <button onclick="Layout.toggleLang()" class="w-9 h-9 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-bold transition">${lang === 'ar' ? 'EN' : 'ع'}</button>
+            
             <button onclick="Layout.toggleTheme()" class="w-9 h-9 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition"><i class="fa-solid ${isDark ? 'fa-sun' : 'fa-moon'}"></i></button>
+            
+            <button onclick="if(window.AndroBot) AndroBot.toggle()" class="w-9 h-9 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 text-brandRed hover:text-blue-600 transition group">
+                <i class="fa-solid fa-robot group-hover:animate-bounce"></i>
+            </button>
+
             <div class="h-6 w-px bg-slate-200 mx-1"></div>
-            <button onclick="Layout.logout()" class="text-red-500 text-xs font-bold hover:bg-red-50 px-3 py-1.5 rounded-lg transition"><i class="fa-solid fa-power-off"></i> ${t('logout')}</button>
+            
+            <button onclick="Layout.logout()" class="text-red-500 text-xs font-bold hover:bg-red-50 px-3 py-1.5 rounded-lg transition"><i class="fa-solid fa-power-off"></i></button>
         </div>
       </header>
     `;
   }
 
   // ==========================================
-  // 8. وظائف عامة (Public API)
+  // 8. وظائف عامة
   // ==========================================
+  function toggleNotif() {
+    const drop = document.getElementById('notifDropdown');
+    if(drop) drop.classList.toggle('hidden');
+  }
+
   function toggleLang() {
     const newLang = getCurrentLang() === 'ar' ? 'en' : 'ar';
     localStorage.setItem('lang', newLang);
@@ -282,7 +338,6 @@ const Layout = (function() {
   function toggleMobileSidebar() {
     const sidebar = document.getElementById('main-sidebar');
     if(sidebar) {
-        // تبديل الفئات لإظهار/إخفاء القائمة في الموبايل
         sidebar.classList.toggle('hidden');
         sidebar.classList.toggle('flex');
         sidebar.classList.toggle('fixed');
@@ -301,6 +356,7 @@ const Layout = (function() {
 
   return {
     init,
+    toggleNotif,
     toggleLang,
     toggleTheme,
     toggleMobileSidebar,
@@ -309,8 +365,6 @@ const Layout = (function() {
   };
 })();
 
-// تشغيل المحرك تلقائياً عند تحميل الصفحة
+// تشغيل المحرك تلقائياً
 document.addEventListener('DOMContentLoaded', Layout.init);
-
-// إتاحة الكائن للنوافذ الخارجية (مهم جداً للمتصفح)
 window.Layout = Layout;
