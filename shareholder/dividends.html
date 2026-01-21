@@ -3,83 +3,116 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#FB4747">
     <title>توزيعات الأرباح | AndroGov</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    
     <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: { extend: { colors: { brandRed: '#FB4747', brandDark: '#1E293B' }, fontFamily: { sans: ['Tajawal', 'sans-serif'] } } }
+        tailwind.config = { 
+            darkMode: 'class', 
+            theme: { 
+                extend: { 
+                    colors: { brandRed: '#FB4747', brandDark: '#1E293B' }, 
+                    fontFamily: { sans: ['Tajawal', 'sans-serif'] } 
+                } 
+            } 
         }
     </script>
+    <style>
+        .num-font { font-family: 'Inter', sans-serif; font-feature-settings: "tnum"; direction: ltr; display: inline-block; }
+        .fade-in { animation: fadeIn 0.5s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
 </head>
-<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white font-sans transition-colors duration-300">
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white font-sans transition-colors duration-300 opacity-0">
 
     <div id="sidebar-container"></div>
 
     <div class="main-content-wrapper transition-all duration-300 flex flex-col min-h-screen rtl:lg:mr-64 ltr:lg:ml-64">
+        
         <div id="header-container"></div>
 
-        <main class="p-8 max-w-6xl mx-auto space-y-8">
+        <main class="p-8 max-w-6xl mx-auto space-y-8 fade-in">
             
-            <h1 class="text-2xl font-bold flex items-center gap-2">
+            <h1 class="text-2xl font-bold flex items-center gap-2 text-slate-800 dark:text-white">
                 <i class="fa-solid fa-hand-holding-dollar text-green-500"></i> توزيعات الأرباح
             </h1>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="bg-gradient-to-br from-green-500 to-green-700 text-white p-6 rounded-3xl shadow-lg relative overflow-hidden">
+                <div class="bg-gradient-to-br from-green-600 to-green-800 text-white p-6 rounded-3xl shadow-lg relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
+                    
                     <div class="relative z-10">
-                        <p class="text-green-100 text-xs font-bold uppercase mb-1">إجمالي التوزيعات المستلمة</p>
-                        <h3 class="text-3xl font-extrabold" id="totalPaid">...</h3>
-                        <p class="text-xs text-green-100 mt-2 opacity-80">منذ بداية الاستثمار</p>
+                        <p class="text-green-100 text-xs font-bold uppercase mb-1 tracking-wider">إجمالي التوزيعات المستلمة</p>
+                        <div class="flex items-baseline gap-1">
+                            <h3 class="text-3xl font-extrabold num-font" id="totalPaid">...</h3>
+                            <span class="text-sm font-medium opacity-80">SAR</span>
+                        </div>
+                        <p class="text-[10px] text-green-200 mt-2 flex items-center gap-1">
+                            <i class="fa-solid fa-calendar-check"></i> منذ بداية الاستثمار
+                        </p>
                     </div>
-                    <i class="fa-solid fa-coins absolute -left-4 -bottom-4 text-8xl text-white opacity-10"></i>
+                    <i class="fa-solid fa-coins absolute -left-4 -bottom-4 text-8xl text-white opacity-10 rotate-12"></i>
                 </div>
 
-                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-sm">
-                    <p class="text-slate-400 text-xs font-bold uppercase mb-1">توزيعات قيد المعالجة (2025)</p>
-                    <h3 class="text-3xl font-extrabold text-slate-800 dark:text-white" id="pendingAmount">...</h3>
-                    <div class="mt-4 flex items-center gap-2 text-xs font-bold text-orange-500 bg-orange-50 dark:bg-orange-900/20 px-3 py-1 rounded-full w-fit">
-                        <i class="fa-solid fa-clock"></i> متوقع الإيداع: 15 مارس
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-sm relative overflow-hidden group">
+                    <div class="absolute top-0 left-0 w-1 h-full bg-orange-500"></div>
+                    <p class="text-slate-400 text-xs font-bold uppercase mb-1 tracking-wider">توزيعات قيد المعالجة (2025)</p>
+                    
+                    <div class="flex items-baseline gap-1 mt-2">
+                        <h3 class="text-3xl font-extrabold text-slate-900 dark:text-white num-font" id="pendingAmount">...</h3>
+                        <span class="text-sm font-bold text-slate-400">SAR</span>
+                    </div>
+                    
+                    <div class="mt-4 flex items-center gap-2 text-[10px] font-bold text-orange-600 bg-orange-50 dark:bg-orange-900/20 px-3 py-1.5 rounded-full w-fit border border-orange-100 dark:border-orange-800/30">
+                        <i class="fa-solid fa-clock animate-pulse"></i> متوقع الإيداع: 15 مارس
                     </div>
                 </div>
 
-                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-sm">
-                    <p class="text-slate-400 text-xs font-bold uppercase mb-1">حساب الإيداع المسجل</p>
-                    <div class="flex items-center gap-3 mt-2">
-                        <div class="w-10 h-10 bg-blue-50 dark:bg-blue-900/20 text-blue-600 rounded-full flex items-center justify-center"><i class="fa-solid fa-building-columns"></i></div>
-                        <div>
-                            <p class="font-bold text-sm">SA24 8000 ...</p>
-                            <p class="text-[10px] text-slate-400">مصرف الراجحي</p>
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <p class="text-slate-400 text-xs font-bold uppercase mb-1 tracking-wider">حساب الإيداع المسجل</p>
+                        <div class="flex items-center gap-3 mt-3">
+                            <div class="w-12 h-12 bg-blue-50 dark:bg-blue-900/20 text-blue-600 rounded-xl flex items-center justify-center text-xl shadow-sm"><i class="fa-solid fa-building-columns"></i></div>
+                            <div>
+                                <p class="font-bold text-sm text-slate-800 dark:text-white num-font tracking-widest">SA24 8000 ... 1234</p>
+                                <p class="text-[10px] text-slate-400 font-bold">مصرف الراجحي</p>
+                            </div>
                         </div>
                     </div>
-                    <button onclick="alert('سيتم توجيهك لصفحة الملف الشخصي')" class="text-xs text-brandRed font-bold mt-4 block hover:underline">تحديث الحساب <i class="fa-solid fa-arrow-left"></i></button>
+                    <button onclick="window.location.href='profile.html'" class="text-xs text-brandRed font-bold mt-4 flex items-center gap-1 hover:gap-2 transition-all w-fit">
+                        تحديث الحساب البنكي <i class="fa-solid fa-arrow-left"></i>
+                    </button>
                 </div>
             </div>
 
             <div class="bg-white dark:bg-slate-800 rounded-3xl border border-slate-100 dark:border-slate-700 overflow-hidden shadow-sm">
-                <div class="p-6 border-b border-slate-50 dark:border-slate-700 flex justify-between items-center">
-                    <h3 class="font-bold text-lg">سجل العمليات التاريخي</h3>
-                    <button class="text-xs bg-slate-100 dark:bg-slate-700 px-3 py-1 rounded-lg hover:bg-slate-200 transition">
-                        <i class="fa-solid fa-download"></i> تصدير Excel
+                <div class="p-6 border-b border-slate-100 dark:border-slate-700 flex flex-col md:flex-row justify-between items-center gap-4">
+                    <h3 class="font-bold text-lg text-slate-800 dark:text-white flex items-center gap-2">
+                        <i class="fa-solid fa-list-ul text-slate-400"></i> سجل العمليات التاريخي
+                    </h3>
+                    <button class="text-xs bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-4 py-2 rounded-xl hover:bg-slate-200 dark:hover:bg-slate-600 transition font-bold flex items-center gap-2">
+                        <i class="fa-solid fa-file-excel text-green-600"></i> تصدير Excel
                     </button>
                 </div>
                 
                 <div class="overflow-x-auto">
-                    <table class="w-full text-sm text-right">
-                        <thead class="bg-slate-50 dark:bg-slate-900/50 text-slate-500 text-xs uppercase">
+                    <table class="w-full text-sm text-right rtl:text-right ltr:text-left">
+                        <thead class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 text-xs uppercase font-bold">
                             <tr>
-                                <th class="px-6 py-4">السنة المالية</th>
+                                <th class="px-6 py-4 rounded-r-2xl">السنة المالية</th>
                                 <th class="px-6 py-4">نوع التوزيع</th>
                                 <th class="px-6 py-4">قيمة السهم</th>
                                 <th class="px-6 py-4">إجمالي المبلغ</th>
                                 <th class="px-6 py-4">تاريخ الاستحقاق</th>
                                 <th class="px-6 py-4">الحالة</th>
-                                <th class="px-6 py-4">الإيصال</th>
+                                <th class="px-6 py-4 rounded-l-2xl text-center">الإيصال</th>
                             </tr>
                         </thead>
-                        <tbody id="dividendsBody" class="divide-y divide-slate-50 dark:divide-slate-700">
+                        <tbody id="dividendsBody" class="divide-y divide-slate-100 dark:divide-slate-700">
                             </tbody>
                     </table>
                 </div>
@@ -89,94 +122,102 @@
     </div>
 
     <script src="data/company_policy.js"></script>
-    <script src="js/core/i18n.js"></script>
     <script src="js/components/layout.js"></script>
     <script src="js/components/bot.js"></script>
 
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        // 1. إعداد بيانات المستخدم لتتوافق مع محرك v10.5
-        const ctoUser = {
-            id: 'sh_003',
-            name: 'وائل السحيباني',
-            displayName: 'مساهم ',
-            role: 'shareholder', // هذا هو المفتاح الذي يبحث عنه المحرك لفتح القائمة
-            avatar: 'https://ui-avatars.com/api/?name=Meshail+AlHadyan&background=FB4747&color=fff'
-        };
-        
-        // 2. تخزين البيانات في الـ LocalStorage لضمان استمرارية المحرك
-        localStorage.setItem('currentUser', JSON.stringify(ctoUser));
-        localStorage.setItem('activeRole', 'shareholder');
-
-        // 3. التأكد من وجود الوضع الليلي المفضل
-        if (!localStorage.getItem('theme')) {
-            localStorage.setItem('theme', 'light');
-        }
-
-        // 4. تشغيل المحرك
-        if (typeof Layout !== 'undefined') {
-            Layout.init();
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
             
-            // إظهار الصفحة بعد التحميل (لأن الـ body له opacity-0)
-            document.body.style.opacity = '1';
-            console.log("🚀 shareholder Layout Engine v10.5 Started Successfully");
-        } else {
-            console.error("❌ Layout.js file not found! Check your script paths.");
-        }
-    });
-        function loadDividendData(user) {
-            if (typeof POLICY_DATA === 'undefined') return;
-
-            const shData = POLICY_DATA.shareholders.find(s => s.id === user.id || s.email === user.email);
-            if (!shData) return;
-
-            const shares = shData.shares;
+            // 1. تثبيت هوية المساهم (وائل السحيباني)
+            const shareholderUser = {
+                id: 'SH_USER_003',
+                name: 'وائل السحيباني',
+                displayName: 'وائل السحيباني',
+                role: 'shareholder',
+                email: 'w961@live.com',
+                avatar: 'https://ui-avatars.com/api/?name=Wael+AlSuhaibani&background=EAB308&color=fff'
+            };
             
-            // محاكاة بيانات الأرباح التاريخية
+            localStorage.setItem('currentUser', JSON.stringify(shareholderUser));
+            localStorage.setItem('activeRole', 'shareholder');
+
+            // 2. تشغيل النظام
+            const checkLibs = setInterval(() => {
+                if (typeof Layout !== 'undefined' && typeof CompanyPolicy !== 'undefined') {
+                    clearInterval(checkLibs);
+                    
+                    Layout.init();
+                    loadDividendData();
+                    document.body.style.opacity = '1';
+                    
+                    console.log("🚀 Dividends Page Loaded Successfully");
+                }
+            }, 50);
+        });
+
+        function loadDividendData() {
+            const user = JSON.parse(localStorage.getItem('currentUser'));
+            
+            // البحث عن بيانات المساهم الحقيقية في CompanyPolicy
+            const shData = CompanyPolicy.shareholders.find(s => s.email === user.email);
+            
+            if (!shData) {
+                console.error("User not found in shareholders list");
+                return;
+            }
+
+            const shares = shData.shares; // 30,000 سهم لوائل
+            
+            // بيانات محاكاة مبنية على عدد الأسهم الحقيقي
             const history = [
                 { year: '2025 (نصف سنوي)', type: 'نقدي', perShare: 1.5, date: '2026-03-15', status: 'pending' },
                 { year: '2024 (السنوي)', type: 'نقدي', perShare: 2.0, date: '2025-04-20', status: 'paid' },
                 { year: '2023 (السنوي)', type: 'نقدي', perShare: 1.8, date: '2024-05-10', status: 'paid' },
-                { year: '2022 (السنوي)', type: 'منحة', perShare: 0, note: 'سهم لكل 10 أسهم', date: '2023-06-01', status: 'bonus' }
+                { year: '2022 (السنوي)', type: 'منحة', perShare: 0, note: '1 سهم لكل 10 أسهم', date: '2023-06-01', status: 'bonus' }
             ];
 
             const tbody = document.getElementById('dividendsBody');
             let totalPaid = 0;
             let pending = 0;
 
+            tbody.innerHTML = '';
+
             history.forEach(item => {
-                const totalAmount = item.perShare * shares;
+                const totalAmount = item.perShare > 0 ? item.perShare * shares : 0;
                 let statusBadge = '';
                 
                 if(item.status === 'paid') {
-                    statusBadge = '<span class="px-2 py-1 bg-green-100 text-green-700 rounded-lg text-xs font-bold">تم الإيداع</span>';
+                    statusBadge = '<span class="px-2 py-1 bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 rounded-lg text-xs font-bold border border-green-200 dark:border-green-800">تم الإيداع</span>';
                     totalPaid += totalAmount;
                 } else if (item.status === 'pending') {
-                    statusBadge = '<span class="px-2 py-1 bg-orange-100 text-orange-700 rounded-lg text-xs font-bold">قيد المعالجة</span>';
+                    statusBadge = '<span class="px-2 py-1 bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400 rounded-lg text-xs font-bold border border-orange-200 dark:border-orange-800">قيد المعالجة</span>';
                     pending += totalAmount;
                 } else {
-                    statusBadge = '<span class="px-2 py-1 bg-blue-100 text-blue-700 rounded-lg text-xs font-bold">أسهم منحة</span>';
+                    statusBadge = '<span class="px-2 py-1 bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 rounded-lg text-xs font-bold border border-blue-200 dark:border-blue-800">منحة أسهم</span>';
                 }
 
                 tbody.innerHTML += `
-                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition">
-                        <td class="px-6 py-4 font-bold text-slate-800 dark:text-slate-200">${item.year}</td>
-                        <td class="px-6 py-4">${item.type}</td>
-                        <td class="px-6 py-4">${item.perShare > 0 ? item.perShare + ' ر.س' : '-'}</td>
-                        <td class="px-6 py-4 font-bold ${item.status === 'pending' ? 'text-orange-500' : 'text-green-600'}">
-                            ${item.perShare > 0 ? totalAmount.toLocaleString() + ' ر.س' : item.note}
+                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
+                        <td class="px-6 py-4 font-bold text-slate-800 dark:text-white">${item.year}</td>
+                        <td class="px-6 py-4 text-slate-600 dark:text-slate-300">${item.type}</td>
+                        <td class="px-6 py-4 num-font text-slate-600 dark:text-slate-300">${item.perShare > 0 ? item.perShare.toFixed(2) + ' SAR' : '-'}</td>
+                        <td class="px-6 py-4 font-bold num-font ${item.status === 'pending' ? 'text-orange-500' : 'text-slate-900 dark:text-white'}">
+                            ${item.perShare > 0 ? totalAmount.toLocaleString() + ' SAR' : item.note}
                         </td>
-                        <td class="px-6 py-4 text-slate-500 text-xs">${item.date}</td>
+                        <td class="px-6 py-4 text-slate-500 text-xs num-font">${item.date}</td>
                         <td class="px-6 py-4">${statusBadge}</td>
-                        <td class="px-6 py-4">
-                            ${item.status === 'paid' ? '<button class="text-slate-400 hover:text-brandRed"><i class="fa-solid fa-file-invoice-dollar"></i></button>' : '-'}
+                        <td class="px-6 py-4 text-center">
+                            ${item.status === 'paid' ? 
+                                '<button class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-500 hover:text-brandRed hover:bg-red-50 dark:hover:bg-red-900/20 transition flex items-center justify-center mx-auto"><i class="fa-solid fa-file-arrow-down"></i></button>' 
+                                : '-'}
                         </td>
                     </tr>
                 `;
             });
 
-            document.getElementById('totalPaid').innerText = totalPaid.toLocaleString() + ' ر.س';
-            document.getElementById('pendingAmount').innerText = pending.toLocaleString() + ' ر.س';
+            // تحديث البطاقات العلوية
+            document.getElementById('totalPaid').innerText = totalPaid.toLocaleString();
+            document.getElementById('pendingAmount').innerText = pending.toLocaleString();
         }
     </script>
 </body>
