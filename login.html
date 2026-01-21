@@ -471,10 +471,8 @@
         setTimeout(() => {
             try {
                 const redirect = auth.login(email, password);
-                // For demo purposes, we show an alert instead of actual redirection 
-                // because those files don't exist in this environment.
-                // window.location.href = redirect; 
-                alert(`Login Successful!\nRedirecting to: ${redirect}`);
+                // Redirect to the dashboard
+                window.location.href = redirect;
                 
                 // Reset button
                 if(btn) {
