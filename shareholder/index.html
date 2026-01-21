@@ -3,22 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#FB4747">
     <title>لوحة المساهم | AndroGov</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    
     <script>
         tailwind.config = {
             darkMode: 'class',
-            theme: { extend: { colors: { brandRed: '#FB4747', brandDark: '#1E293B' }, fontFamily: { sans: ['Tajawal', 'sans-serif'] } } }
+            theme: { 
+                extend: { 
+                    colors: { brandRed: '#FB4747', brandDark: '#1E293B' }, 
+                    fontFamily: { sans: ['Tajawal', 'sans-serif'] } 
+                } 
+            }
         }
     </script>
     <style>
-        .num-font { font-family: 'Inter', sans-serif; font-feature-settings: "tnum"; }
-        .card-grad { background: linear-gradient(135deg, rgba(251, 71, 71, 0.1) 0%, rgba(251, 71, 71, 0) 100%); }
+        .num-font { font-family: 'Inter', sans-serif; font-feature-settings: "tnum"; direction: ltr; display: inline-block; }
+        .card-grad { background: linear-gradient(135deg, rgba(251, 71, 71, 0.05) 0%, rgba(251, 71, 71, 0) 100%); }
+        .fade-in-up { animation: fadeInUp 0.5s ease-out forwards; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
-<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white font-sans transition-colors duration-300">
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white font-sans transition-colors duration-300 opacity-0">
 
     <div id="sidebar-container"></div>
 
@@ -26,160 +36,253 @@
         
         <div id="header-container"></div>
 
-        <main class="p-8 space-y-8">
+        <main class="p-8 space-y-8 fade-in-up">
             
             <div class="flex flex-col md:flex-row justify-between items-center gap-4">
                 <div>
-                    <h1 class="text-2xl font-bold flex items-center gap-3">
-                        <i class="fa-solid fa-chart-line text-brandRed"></i> 
+                    <h1 class="text-2xl font-bold flex items-center gap-3 text-slate-900 dark:text-white">
+                        <i class="fa-solid fa-chart-pie text-brandRed"></i> 
                         <span data-i18n="dashboardTitle">مركز علاقات المستثمرين</span>
                     </h1>
-                    <p class="text-slate-500 text-sm mt-1" id="welcomeMsg">مرحباً بك في لوحة استثماراتك الخاصة.</p>
+                    <p class="text-slate-500 text-sm mt-1" id="welcomeMsg">مرحباً، إليك نظرة عامة على محفظتك الاستثمارية.</p>
                 </div>
                 <div class="flex gap-2">
-                    <button class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-4 py-2 rounded-xl text-xs font-bold shadow-sm hover:bg-slate-50 transition">
-                        <i class="fa-solid fa-file-pdf ml-1"></i> تحميل التقرير السنوي
+                    <button class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-4 py-2 rounded-xl text-xs font-bold shadow-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition flex items-center gap-2 text-slate-600 dark:text-slate-200">
+                        <i class="fa-solid fa-file-pdf text-red-500"></i> <span data-i18n="btnReport">التقرير السنوي</span>
                     </button>
                 </div>
             </div>
 
-            
-
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-sm card-grad">
-                    <div class="flex justify-between items-start mb-4">
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-sm card-grad relative overflow-hidden group hover:border-brandRed/30 transition-colors">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-brandRed/5 rounded-full -mr-8 -mt-8 transition-transform group-hover:scale-110"></div>
+                    
+                    <div class="flex justify-between items-start mb-4 relative z-10">
                         <div>
-                            <p class="text-slate-400 text-xs font-bold uppercase">مجموع الأسهم</p>
-                            <h3 class="text-3xl font-extrabold text-slate-900 dark:text-white mt-1 num-font" id="sharesCount">30000</h3>
+                            <p class="text-slate-400 text-xs font-bold uppercase tracking-wider" data-i18n="totalShares">مجموع الأسهم</p>
+                            <h3 class="text-3xl font-extrabold text-slate-900 dark:text-white mt-2 num-font" id="sharesCount">...</h3>
                         </div>
-                        <div class="w-12 h-12 rounded-xl bg-blue-50 dark:bg-blue-900/20 text-blue-600 flex items-center justify-center text-xl"><i class="fa-solid fa-layer-group"></i></div>
+                        <div class="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-900/20 text-blue-600 flex items-center justify-center text-xl shadow-sm">
+                            <i class="fa-solid fa-layer-group"></i>
+                        </div>
                     </div>
-                    <p class="text-xs text-slate-500">من أصل 600,000 سهم مصدر</p>
+                    <p class="text-[10px] text-slate-400 relative z-10 flex items-center gap-1">
+                        <i class="fa-solid fa-circle-info"></i> <span data-i18n="shareType">أسهم عادية (فئة أ)</span>
+                    </p>
                 </div>
 
-                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-sm card-grad">
-                    <div class="flex justify-between items-start mb-4">
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-sm card-grad relative overflow-hidden group hover:border-purple-500/30 transition-colors">
+                    <div class="flex justify-between items-start mb-4 relative z-10">
                         <div>
-                            <p class="text-slate-400 text-xs font-bold uppercase">نسبة الملكية</p>
-                            <h3 class="text-3xl font-extrabold text-slate-900 dark:text-white mt-1 num-font" id="sharesPercent">5%</h3>
+                            <p class="text-slate-400 text-xs font-bold uppercase tracking-wider" data-i18n="ownership">نسبة الملكية</p>
+                            <h3 class="text-3xl font-extrabold text-slate-900 dark:text-white mt-2 num-font" id="sharesPercent">...</h3>
                         </div>
-                        <div class="w-12 h-12 rounded-xl bg-purple-50 dark:bg-purple-900/20 text-purple-600 flex items-center justify-center text-xl"><i class="fa-solid fa-chart-pie"></i></div>
+                        <div class="w-12 h-12 rounded-2xl bg-purple-50 dark:bg-purple-900/20 text-purple-600 flex items-center justify-center text-xl shadow-sm">
+                            <i class="fa-solid fa-chart-pie"></i>
+                        </div>
                     </div>
-                    <div class="w-full bg-slate-100 dark:bg-slate-700 h-1.5 rounded-full mt-2 overflow-hidden">
-                        <div id="percentBar" class="bg-purple-600 h-full rounded-full transition-all duration-1000" style="width: 0%"></div>
+                    <div class="w-full bg-slate-100 dark:bg-slate-700 h-2 rounded-full mt-2 overflow-hidden relative z-10">
+                        <div id="percentBar" class="bg-gradient-to-r from-purple-500 to-purple-400 h-full rounded-full transition-all duration-1000 ease-out" style="width: 0%"></div>
                     </div>
                 </div>
 
-                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-sm card-grad">
-                    <div class="flex justify-between items-start mb-4">
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-sm card-grad relative overflow-hidden group hover:border-green-500/30 transition-colors">
+                    <div class="flex justify-between items-start mb-4 relative z-10">
                         <div>
-                            <p class="text-slate-400 text-xs font-bold uppercase">القيمة الاسمية الإجمالية</p>
-                            <h3 class="text-3xl font-extrabold text-brandRed mt-1 num-font" id="sharesValue">10</h3>
+                            <p class="text-slate-400 text-xs font-bold uppercase tracking-wider" data-i18n="totalValue">القيمة الاسمية</p>
+                            <div class="flex items-baseline gap-1 mt-2">
+                                <h3 class="text-3xl font-extrabold text-slate-900 dark:text-white num-font" id="sharesValue">...</h3>
+                                <span class="text-xs font-bold text-slate-400">SAR</span>
+                            </div>
                         </div>
-                        <div class="w-12 h-12 rounded-xl bg-red-50 dark:bg-red-900/20 text-brandRed flex items-center justify-center text-xl"><i class="fa-solid fa-sack-dollar"></i></div>
+                        <div class="w-12 h-12 rounded-2xl bg-green-50 dark:bg-green-900/20 text-green-600 flex items-center justify-center text-xl shadow-sm">
+                            <i class="fa-solid fa-sack-dollar"></i>
+                        </div>
                     </div>
-                    <p class="text-xs text-green-600 font-bold"><i class="fa-solid fa-arrow-trend-up"></i> القيمة الاسمية للسهم: 10 ر.س</p>
+                    <p class="text-[10px] text-green-600 font-bold bg-green-50 dark:bg-green-900/20 px-2 py-1 rounded-lg inline-block">
+                        <i class="fa-solid fa-arrow-trend-up"></i> <span data-i18n="sharePrice">سعر السهم: 10 ر.س</span>
+                    </p>
                 </div>
             </div>
 
-            <div class="bg-white dark:bg-slate-800 rounded-3xl border border-slate-100 dark:border-slate-700 p-8 shadow-sm">
-                <h3 class="text-xl font-bold mb-6 flex items-center gap-2">
-                    <i class="fa-solid fa-certificate text-yellow-500"></i> تفاصيل ملكية الأسهم
-                </h3>
+            <div class="bg-white dark:bg-slate-800 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-sm overflow-hidden">
+                <div class="p-6 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center">
+                    <h3 class="text-lg font-bold flex items-center gap-2 text-slate-800 dark:text-white">
+                        <i class="fa-solid fa-certificate text-brandRed"></i> 
+                        <span data-i18n="detailsTitle">تفاصيل سجل الأسهم</span>
+                    </h3>
+                    <span class="bg-slate-100 dark:bg-slate-700 text-slate-500 text-[10px] px-2 py-1 rounded font-bold num-font">2026</span>
+                </div>
                 <div class="overflow-x-auto">
-                    <table class="w-full text-sm text-right">
-                        <thead class="text-xs text-slate-400 uppercase bg-slate-50 dark:bg-slate-900/50">
+                    <table class="w-full text-sm text-right rtl:text-right ltr:text-left">
+                        <thead class="text-xs text-slate-400 uppercase bg-slate-50 dark:bg-slate-700/50">
                             <tr>
-                                <th class="px-6 py-4 rounded-r-xl">المساهم</th>
-                                <th class="px-6 py-4">نوع الأسهم</th>
-                                <th class="px-6 py-4">العدد</th>
-                                <th class="px-6 py-4">النسبة</th>
-                                <th class="px-6 py-4 rounded-l-xl">الحالة</th>
+                                <th class="px-6 py-4 font-bold" data-i18n="colShareholder">المساهم</th>
+                                <th class="px-6 py-4 font-bold" data-i18n="colType">نوع الكيان</th>
+                                <th class="px-6 py-4 font-bold" data-i18n="colCount">العدد</th>
+                                <th class="px-6 py-4 font-bold" data-i18n="colPercent">النسبة</th>
+                                <th class="px-6 py-4 font-bold" data-i18n="colStatus">الحالة</th>
                             </tr>
                         </thead>
-                        <tbody id="shareDetailsBody" class="divide-y divide-slate-50 dark:divide-slate-700">
+                        <tbody id="shareDetailsBody" class="divide-y divide-slate-100 dark:divide-slate-700">
                             </tbody>
                     </table>
                 </div>
             </div>
+
         </main>
     </div>
 
-    
     <script src="data/company_policy.js"></script>
-    <script src="js/core/i18n.js"></script>
     <script src="js/components/layout.js"></script>
     <script src="js/components/bot.js"></script>
 
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        // 1. إعداد بيانات المستخدم لتتوافق مع محرك v10.5
-        const ctoUser = {
-            id: 'sh_003',
-            name: 'وائل السحيباني',
-            displayName: 'مساهم ',
-            role: 'shareholder', // هذا هو المفتاح الذي يبحث عنه المحرك لفتح القائمة
-            avatar: 'https://ui-avatars.com/api/?name=Meshail+AlHadyan&background=FB4747&color=fff'
+    <script>
+        // Translations
+        const pageContent = {
+            ar: {
+                dashboardTitle: "مركز علاقات المستثمرين",
+                btnReport: "التقرير السنوي",
+                totalShares: "مجموع الأسهم",
+                shareType: "أسهم عادية (فئة أ)",
+                ownership: "نسبة الملكية",
+                totalValue: "القيمة الاسمية",
+                sharePrice: "القيمة الاسمية للسهم: 10 ر.س",
+                detailsTitle: "تفاصيل سجل الأسهم",
+                colShareholder: "المساهم",
+                colType: "نوع الكيان",
+                colCount: "العدد",
+                colPercent: "النسبة",
+                colStatus: "الحالة",
+                statusActive: "نشطة وموثقة",
+                entity: "منشأة",
+                individual: "فرد"
+            },
+            en: {
+                dashboardTitle: "Investor Relations Center",
+                btnReport: "Annual Report",
+                totalShares: "Total Shares",
+                shareType: "Ordinary Shares (Class A)",
+                ownership: "Ownership %",
+                totalValue: "Nominal Value",
+                sharePrice: "Share Price: 10 SAR",
+                detailsTitle: "Share Registry Details",
+                colShareholder: "Shareholder",
+                colType: "Entity Type",
+                colCount: "Count",
+                colPercent: "Percent",
+                colStatus: "Status",
+                statusActive: "Active & Verified",
+                entity: "Entity",
+                individual: "Individual"
+            }
         };
-        
-        // 2. تخزين البيانات في الـ LocalStorage لضمان استمرارية المحرك
-        localStorage.setItem('currentUser', JSON.stringify(ctoUser));
-        localStorage.setItem('activeRole', 'shareholder');
 
-        // 3. التأكد من وجود الوضع الليلي المفضل
-        if (!localStorage.getItem('theme')) {
-            localStorage.setItem('theme', 'light');
-        }
-
-        // 4. تشغيل المحرك
-        if (typeof Layout !== 'undefined') {
-            Layout.init();
+        // Initialize Page
+        document.addEventListener('DOMContentLoaded', () => {
             
-            // إظهار الصفحة بعد التحميل (لأن الـ body له opacity-0)
-            document.body.style.opacity = '1';
-            console.log("🚀 shareholder Layout Engine v10.5 Started Successfully");
-        } else {
-            console.error("❌ Layout.js file not found! Check your script paths.");
-        }
-    });
-</script>
-<script>
+            // 1. Setup Specific User (Wael Al-Suhaibani)
+            const shareholderUser = {
+                id: 'SH_USER_003', // Must match ID in CompanyPolicy.users
+                name: 'وائل السحيباني',
+                displayName: 'وائل السحيباني',
+                role: 'shareholder',
+                email: 'w961@live.com', // Critical for matching
+                avatar: 'https://ui-avatars.com/api/?name=Wael+AlSuhaibani&background=EAB308&color=fff'
+            };
+            
+            localStorage.setItem('currentUser', JSON.stringify(shareholderUser));
+            localStorage.setItem('activeRole', 'shareholder');
 
-        function loadShareholderData(user) {
-            if (typeof POLICY_DATA === 'undefined') return;
+            // 2. Wait for Libraries
+            const checkLibs = setInterval(() => {
+                if (typeof Layout !== 'undefined' && typeof CompanyPolicy !== 'undefined') {
+                    clearInterval(checkLibs);
+                    
+                    Layout.init();
+                    loadShareholderData();
+                    document.body.style.opacity = '1';
+                    
+                    console.log("🚀 Shareholder Dashboard Loaded for:", shareholderUser.name);
+                }
+            }, 50);
+        });
 
-            // البحث عن المساهم باستخدام الإيميل أو المعرف
-            const shareholder = POLICY_DATA.shareholders.find(s => s.id === user.id || s.email === user.email);
+        // Load Data Logic
+        function loadShareholderData() {
+            const user = JSON.parse(localStorage.getItem('currentUser'));
+            const lang = localStorage.getItem('lang') || 'ar';
+            const dict = pageContent[lang];
+
+            // Update static text
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if(dict[key]) el.innerText = dict[key];
+            });
+
+            // Find Shareholder in Policy Data by Email
+            const shareholder = CompanyPolicy.shareholders.find(s => s.email === user.email);
 
             if (shareholder) {
-                // تعبئة البيانات العلوية
-                document.getElementById('sharesCount').innerText = shareholder.shares.toLocaleString();
+                // 1. Populate Cards
+                document.getElementById('sharesCount').innerText = shareholder.shares.toLocaleString('en-US');
                 document.getElementById('sharesPercent').innerText = shareholder.percent + '%';
                 
+                // Animate Bar
                 setTimeout(() => {
                     document.getElementById('percentBar').style.width = shareholder.percent + '%';
-                }, 500);
+                }, 300);
 
-                const totalValue = shareholder.shares * 10;
-                document.getElementById('sharesValue').innerText = totalValue.toLocaleString() + ' ر.س';
+                // Calculate Value (Share Value from Policy or default 10)
+                const shareValue = CompanyPolicy.capital.shareValue || 10;
+                const totalValue = shareholder.shares * shareValue;
+                document.getElementById('sharesValue').innerText = totalValue.toLocaleString('en-US');
 
-                // تعبئة الجدول
+                // 2. Populate Table
                 const tbody = document.getElementById('shareDetailsBody');
+                const name = lang === 'ar' ? shareholder.name.ar : shareholder.name.en;
+                const type = shareholder.type === 'Individual' ? dict.individual : dict.entity;
+
                 tbody.innerHTML = `
-                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition">
-                        <td class="px-6 py-5 font-bold text-slate-900 dark:text-white">${shareholder.name}</td>
-                        <td class="px-6 py-5">أسهم عادية (Ordinary Shares)</td>
-                        <td class="px-6 py-5 num-font font-bold">${shareholder.shares.toLocaleString()}</td>
-                        <td class="px-6 py-5 text-brandRed font-bold num-font">${shareholder.percent}%</td>
+                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition group">
                         <td class="px-6 py-5">
-                            <span class="px-2 py-1 bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 rounded-lg text-xs font-bold border border-green-200 dark:border-green-800">
-                                نشطة وموثقة
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full bg-brandRed/10 text-brandRed flex items-center justify-center text-sm font-bold border border-brandRed/20">
+                                    ${name.charAt(0).toUpperCase()}
+                                </div>
+                                <div>
+                                    <p class="font-bold text-slate-900 dark:text-white">${name}</p>
+                                    <p class="text-[10px] text-slate-400">ID: ${shareholder.id}</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-5">
+                            <span class="bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-1 rounded text-xs font-medium">
+                                ${type}
+                            </span>
+                        </td>
+                        <td class="px-6 py-5 num-font font-bold text-slate-700 dark:text-slate-300">
+                            ${shareholder.shares.toLocaleString('en-US')}
+                        </td>
+                        <td class="px-6 py-5 text-brandRed font-bold num-font">
+                            ${shareholder.percent}%
+                        </td>
+                        <td class="px-6 py-5">
+                            <span class="px-3 py-1 bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 rounded-full text-xs font-bold border border-green-200 dark:border-green-800 flex w-fit items-center gap-1">
+                                <i class="fa-solid fa-check-circle"></i> ${dict.statusActive}
                             </span>
                         </td>
                     </tr>
                 `;
+            } else {
+                console.error("Shareholder not found in CompanyPolicy for email:", user.email);
             }
         }
+
+        // Handle Language Switch
+        window.addEventListener('languageChanged', () => {
+            loadShareholderData();
+        });
     </script>
 </body>
 </html>
