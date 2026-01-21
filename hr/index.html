@@ -1,11 +1,10 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#FB4747">
-    <title data-i18n="pageTitle">لوحة القيادة | AndroGov</title>
+    <title data-i18n="pageTitle">لوحة القيادة التنفيذية | AndroGov</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -19,12 +18,18 @@
             theme: {
                 extend: {
                     colors: { brandRed: '#FB4747', brandDark: '#0F172A', moneyGreen: '#10B981', alertOrange: '#F59E0B' },
-                    fontFamily: { sans: ['Tajawal', 'Inter', 'sans-serif'], en: ['Inter', 'sans-serif'] }
+                    fontFamily: { sans: ['Tajawal', 'Inter', 'sans-serif'], en: ['Inter', 'sans-serif'] },
+                    animation: { 'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite' }
                 }
             }
         }
     </script>
-    <style>.num-font { font-family: 'Inter', sans-serif; font-feature-settings: "tnum"; }</style>
+    <style>
+        .num-font { font-family: 'Inter', sans-serif; font-feature-settings: "tnum"; }
+        .glass-effect { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
+        .dark .glass-effect { background: rgba(15, 23, 42, 0.95); }
+        .gradient-text { background-clip: text; -webkit-background-clip: text; color: transparent; background-image: linear-gradient(to right, #FB4747, #DC2626); }
+    </style>
 </head>
 <body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300 opacity-0">
 
@@ -33,449 +38,371 @@
     <div class="main-content-wrapper transition-all duration-300 flex flex-col min-h-screen">
         <div id="header-container"></div>
 
-        <main class="p-6 space-y-6">
+        <main class="p-8 space-y-8">
             
-            <div class="flex flex-col md:flex-row justify-between items-end gap-4">
-                <div>
-                    <h1 class="text-2xl font-bold text-slate-900 dark:text-white" data-i18n="headerTitle">الموارد البشرية والشؤون الإدارية</h1>
-                    <div class="flex items-center gap-2 mt-1">
-                        <span class="px-2 py-0.5 rounded bg-green-100 text-green-700 text-[10px] font-bold border border-green-200 flex items-center gap-1">
-                            <i class="fa-solid fa-check-circle"></i> <span data-i18n="badgeNitaqat">نطاقات: بلاتيني</span>
+            <div class="flex flex-col md:flex-row justify-between items-end gap-6 relative overflow-hidden bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700">
+                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-brandRed via-red-500 to-orange-500"></div>
+                <div class="absolute -right-10 -top-10 w-40 h-40 bg-brandRed/5 rounded-full blur-3xl"></div>
+
+                <div class="relative z-10">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="px-3 py-1 bg-red-50 dark:bg-red-900/20 text-brandRed text-[10px] font-bold rounded-full border border-red-100 dark:border-red-900 flex items-center gap-2">
+                            <span class="w-1.5 h-1.5 rounded-full bg-brandRed animate-pulse"></span> <span data-i18n="badgeLive">مباشر</span>
                         </span>
-                        <span class="px-2 py-0.5 rounded bg-blue-100 text-blue-700 text-[10px] font-bold border border-blue-200 flex items-center gap-1">
-                            <i class="fa-solid fa-building"></i> <span data-i18n="badgeOffice">المكاتب: مكتملة</span>
-                        </span>
+                        <span class="text-xs text-slate-400 font-mono num-font">14 Jan 2026 | 09:41 AM</span>
                     </div>
+                    <h1 class="text-3xl font-bold text-slate-900 dark:text-white">
+                        <span data-i18n="welcome">مرحباً، أستاذ</span> <span class="gradient-text">هشام</span> 👋
+                    </h1>
+                    <p class="text-slate-500 mt-2 text-sm max-w-xl leading-relaxed" data-i18n="welcomeSub">
+                        إليك ملخص الأداء الاستراتيجي لشركة <b class="text-slate-800 dark:text-white">Andromeda</b>. المؤشرات المالية والتشغيلية ضمن النطاق المستهدف لهذا الربع.
+                    </p>
                 </div>
-                <div class="flex gap-3">
-                    <button onclick="openPurchaseModal()" class="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold shadow-sm hover:bg-slate-50 transition flex items-center gap-2">
-                        <i class="fa-solid fa-cart-plus text-slate-400"></i> <span data-i18n="btnPurchase">طلب شراء (إداري)</span>
-                    </button>
-                    <button onclick="openEmployeeModal()" class="px-4 py-2 bg-brandRed text-white rounded-lg text-xs font-bold shadow-lg shadow-red-500/30 hover:bg-red-700 transition flex items-center gap-2">
-                        <i class="fa-solid fa-user-plus"></i> <span data-i18n="btnNewEmp">موظف جديد</span>
+
+                <div class="flex gap-3 relative z-10">
+                    <div class="text-right hidden lg:block mr-4 border-l pl-4 dark:border-slate-700">
+                        <p class="text-[10px] text-slate-400 uppercase tracking-widest mb-1" data-i18n="marketStatus">حالة السوق</p>
+                        <p class="text-sm font-bold text-green-600 flex items-center gap-1 justify-end num-font">
+                            <i class="fa-solid fa-arrow-trend-up"></i> +1.2%
+                        </p>
+                    </div>
+                    <button onclick="downloadReport()" class="h-12 px-6 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-2xl text-sm font-bold shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 flex items-center gap-3">
+                        <i class="fa-solid fa-wand-magic-sparkles text-brandRed"></i> <span data-i18n="btnInsight">تحليل الذكاء الاصطناعي</span>
                     </button>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
                 
-                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-                    <div class="flex justify-between items-start mb-2">
-                        <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="kpiEmp">إجمالي الموظفين</p>
-                        <i class="fa-solid fa-users text-brandRed bg-red-50 dark:bg-red-900/20 p-2 rounded-lg"></i>
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 group hover:shadow-md transition-all duration-300 relative overflow-hidden">
+                    <div class="absolute right-0 top-0 p-5 opacity-5 group-hover:opacity-10 transition-opacity duration-500">
+                        <i class="fa-solid fa-sack-dollar text-6xl text-slate-900 dark:text-white"></i>
                     </div>
-                    <h3 class="text-2xl font-bold num-font">45</h3>
-                    <p class="text-[10px] text-green-600 mt-2 font-bold flex items-center gap-1"><i class="fa-solid fa-passport"></i> <span data-i18n="kpiEmpSub">78% توطين</span></p>
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="w-12 h-12 rounded-2xl bg-green-50 dark:bg-green-900/20 text-green-600 flex items-center justify-center text-xl shadow-sm group-hover:scale-110 transition-transform duration-300">
+                            <i class="fa-solid fa-chart-line"></i>
+                        </div>
+                        <span class="text-[10px] font-bold bg-green-100 text-green-700 px-2 py-1 rounded-lg border border-green-200 num-font">+12.5%</span>
+                    </div>
+                    <p class="text-xs text-slate-500 font-bold uppercase tracking-wider mb-1" data-i18n="kpiRev">الإيرادات (YTD)</p>
+                    <h3 class="text-3xl font-bold text-slate-900 dark:text-white num-font tracking-tight">4.2M <span class="text-sm font-normal text-slate-400">SAR</span></h3>
+                    <div class="w-full bg-slate-100 dark:bg-slate-700 h-1.5 rounded-full mt-4 overflow-hidden">
+                        <div class="bg-green-500 h-full w-[85%] rounded-full animate-pulse-slow"></div>
+                    </div>
+                    <p class="text-[10px] text-slate-400 mt-2 text-right num-font">Target: 5.0M</p>
                 </div>
 
-                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-                    <div class="flex justify-between items-start mb-2">
-                        <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="kpiPay">الرواتب (المتوقع)</p>
-                        <i class="fa-solid fa-money-bill-wave text-green-600 bg-green-50 dark:bg-green-900/20 p-2 rounded-lg"></i>
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 group hover:shadow-md transition-all duration-300 relative overflow-hidden">
+                    <div class="absolute right-0 top-0 p-5 opacity-5 group-hover:opacity-10 transition-opacity duration-500">
+                        <i class="fa-solid fa-wallet text-6xl text-slate-900 dark:text-white"></i>
                     </div>
-                    <h3 class="text-2xl font-bold num-font">320K <span class="text-xs font-normal text-slate-400">SAR</span></h3>
-                    <p class="text-[10px] text-slate-400 mt-2" data-i18n="kpiPaySub">يستحق في: 27 الشهر</p>
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="w-12 h-12 rounded-2xl bg-red-50 dark:bg-red-900/20 text-brandRed flex items-center justify-center text-xl shadow-sm group-hover:scale-110 transition-transform duration-300">
+                            <i class="fa-solid fa-file-invoice-dollar"></i>
+                        </div>
+                        <span class="text-[10px] font-bold bg-green-100 text-green-700 px-2 py-1 rounded-lg border border-green-200 num-font">-5% (Saving)</span>
+                    </div>
+                    <p class="text-xs text-slate-500 font-bold uppercase tracking-wider mb-1" data-i18n="kpiExp">المصروفات التشغيلية</p>
+                    <h3 class="text-3xl font-bold text-slate-900 dark:text-white num-font tracking-tight">1.8M <span class="text-sm font-normal text-slate-400">SAR</span></h3>
+                    <div class="w-full bg-slate-100 dark:bg-slate-700 h-1.5 rounded-full mt-4 overflow-hidden">
+                        <div class="bg-brandRed h-full w-[60%] rounded-full"></div>
+                    </div>
+                    <p class="text-[10px] text-slate-400 mt-2 text-right num-font">Budget: 3.0M</p>
                 </div>
 
-                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-                    <div class="flex justify-between items-start mb-2">
-                        <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="kpiGov">تنبيهات حكومية</p>
-                        <i class="fa-solid fa-triangle-exclamation text-alertOrange bg-orange-50 dark:bg-orange-900/20 p-2 rounded-lg"></i>
+                <div class="bg-slate-900 text-white p-6 rounded-3xl shadow-xl shadow-slate-900/20 group hover:-translate-y-1 transition-all duration-300 relative overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-br from-slate-800 to-slate-900"></div>
+                    <div class="absolute right-0 top-0 p-5 opacity-10 group-hover:opacity-20 transition-opacity duration-500">
+                        <i class="fa-solid fa-trophy text-6xl text-white"></i>
                     </div>
-                    <h3 class="text-2xl font-bold num-font text-alertOrange">3</h3>
-                    <p class="text-[10px] text-slate-400 mt-2" data-i18n="kpiGovSub">انتهاء إقامة / رخص</p>
+                    <div class="relative z-10">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center text-xl border border-white/10 backdrop-blur-sm">
+                                <i class="fa-solid fa-coins text-yellow-400"></i>
+                            </div>
+                            <span class="text-[10px] font-bold bg-white/10 text-white px-2 py-1 rounded-lg border border-white/10">High Margin</span>
+                        </div>
+                        <p class="text-xs text-slate-400 font-bold uppercase tracking-wider mb-1" data-i18n="kpiProfit">صافي الأرباح</p>
+                        <h3 class="text-3xl font-bold num-font tracking-tight text-white">2.4M <span class="text-sm font-normal text-slate-400">SAR</span></h3>
+                        <div class="mt-4 flex items-center gap-2">
+                            <span class="text-2xl font-bold text-green-400 num-font">57%</span>
+                            <span class="text-[10px] text-slate-400 uppercase tracking-widest">Net Margin</span>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-                    <div class="flex justify-between items-start mb-2">
-                        <p class="text-xs text-slate-500 font-bold uppercase" data-i18n="kpiAsset">العهد المسلمة</p>
-                        <i class="fa-solid fa-laptop-code text-blue-600 bg-blue-50 dark:bg-blue-900/20 p-2 rounded-lg"></i>
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 group hover:shadow-md transition-all duration-300 relative overflow-hidden flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-start mb-2">
+                            <p class="text-xs text-slate-500 font-bold uppercase tracking-wider" data-i18n="kpiProj">المشاريع النشطة</p>
+                            <i class="fa-solid fa-list-check text-slate-300 text-xl"></i>
+                        </div>
+                        <h3 class="text-3xl font-bold text-slate-900 dark:text-white num-font tracking-tight mb-4">8 <span class="text-sm font-normal text-slate-400">Projects</span></h3>
                     </div>
-                    <h3 class="text-2xl font-bold num-font">85</h3>
-                    <p class="text-[10px] text-slate-400 mt-2" data-i18n="kpiAssetSub">سيارات: 5 | أجهزة: 80</p>
+                    
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-3 p-2 rounded-xl bg-red-50 dark:bg-red-900/10 border border-red-100 dark:border-red-900/30">
+                            <div class="w-8 h-8 rounded-lg bg-red-100 text-red-600 flex items-center justify-center shrink-0"><i class="fa-solid fa-triangle-exclamation text-xs"></i></div>
+                            <div>
+                                <p class="text-[10px] font-bold text-red-700 dark:text-red-400">مشروع واحد متأخر</p>
+                                <p class="text-[9px] text-red-500">تطوير منصة التجارة الإلكترونية</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3 p-2 rounded-xl bg-orange-50 dark:bg-orange-900/10 border border-orange-100 dark:border-orange-900/30">
+                            <div class="w-8 h-8 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center shrink-0"><i class="fa-solid fa-shield-halved text-xs"></i></div>
+                            <div>
+                                <p class="text-[10px] font-bold text-orange-700 dark:text-orange-400">تنبيه قانوني (رخصة)</p>
+                                <p class="text-[9px] text-orange-500">تجديد رخصة البلدية (15 يوم)</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 
-                <div class="lg:col-span-2 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-6">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="font-bold text-slate-800 dark:text-white flex items-center gap-2">
-                            <i class="fa-solid fa-bell text-brandRed"></i> <span data-i18n="titleAlerts">التنبيهات الحرجة (30 يوم)</span>
-                        </h3>
+                <div class="lg:col-span-2 bg-white dark:bg-slate-800 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 p-6 relative overflow-hidden">
+                    <div class="flex justify-between items-center mb-6">
+                        <div>
+                            <h3 class="font-bold text-lg text-slate-900 dark:text-white flex items-center gap-2">
+                                <i class="fa-solid fa-chart-area text-brandRed"></i> <span data-i18n="chartTitle">تحليل الأداء المالي</span>
+                            </h3>
+                            <p class="text-xs text-slate-400 mt-1">مقارنة الإيرادات بالمصروفات (الربع الأول 2026)</p>
+                        </div>
+                        <div class="flex bg-slate-100 dark:bg-slate-700 rounded-lg p-1">
+                            <button class="px-3 py-1 rounded-md text-xs font-bold bg-white dark:bg-slate-600 shadow-sm text-slate-800 dark:text-white transition">Monthly</button>
+                            <button class="px-3 py-1 rounded-md text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-slate-800 transition">Quarterly</button>
+                        </div>
                     </div>
                     
-                    <div class="space-y-3">
-                        <div class="flex items-center justify-between p-3 bg-red-50 dark:bg-red-900/10 rounded-xl border border-red-100 dark:border-red-900/30">
-                            <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-red-500 font-bold border border-red-200"><i class="fa-solid fa-id-card"></i></div>
-                                <div>
-                                    <p class="text-xs font-bold text-slate-800 dark:text-white" data-i18n="alert1Title">تجديد إقامة (محمد خان)</p>
-                                    <p class="text-[10px] text-red-600" data-i18n="alert1Time">تنتهي خلال 3 أيام</p>
-                                </div>
-                            </div>
-                            <button onclick="alert('Redirecting to Muqeem...')" class="text-[10px] bg-white border border-red-200 px-3 py-1 rounded text-red-600 hover:bg-red-50 font-bold" data-i18n="btnAction">إجراء</button>
-                        </div>
-
-                        <div class="flex items-center justify-between p-3 bg-orange-50 dark:bg-orange-900/10 rounded-xl border border-orange-100 dark:border-orange-900/30">
-                            <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-orange-500 font-bold border border-orange-200"><i class="fa-solid fa-building"></i></div>
-                                <div>
-                                    <p class="text-xs font-bold text-slate-800 dark:text-white" data-i18n="alert2Title">رخصة البلدية (فرع الشمال)</p>
-                                    <p class="text-[10px] text-orange-600" data-i18n="alert2Time">تنتهي خلال 15 يوم</p>
-                                </div>
-                            </div>
-                            <button onclick="alert('Renewal Process Started')" class="text-[10px] bg-white border border-orange-200 px-3 py-1 rounded text-orange-600 hover:bg-orange-50 font-bold" data-i18n="btnRenew">تجديد</button>
-                        </div>
-
-                        <div class="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-700/50 rounded-xl border border-slate-100 dark:border-slate-600">
-                            <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-slate-500 font-bold border border-slate-200"><i class="fa-solid fa-file-contract"></i></div>
-                                <div>
-                                    <p class="text-xs font-bold text-slate-800 dark:text-white" data-i18n="alert3Title">عقد إيجار المقر الرئيسي</p>
-                                    <p class="text-[10px] text-slate-500" data-i18n="alert3Time">ينتهي خلال 45 يوم</p>
-                                </div>
-                            </div>
-                            <button class="text-[10px] bg-white border border-slate-200 px-3 py-1 rounded text-slate-600 hover:bg-slate-100 font-bold" data-i18n="btnView">عرض</button>
-                        </div>
+                    <div class="h-80 w-full relative">
+                        <canvas id="financeChart"></canvas>
                     </div>
                 </div>
 
-                <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-6">
-                    <h3 class="font-bold text-slate-800 dark:text-white mb-4" data-i18n="titleAtt">الانضباط اليومي</h3>
-                    <div class="h-32 relative flex justify-center mb-4">
-                        <canvas id="attendanceChart"></canvas>
+                <div class="bg-white dark:bg-slate-800 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 p-6 flex flex-col">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="font-bold text-lg text-slate-900 dark:text-white flex items-center gap-2">
+                            <span class="w-2 h-6 bg-brandRed rounded-full"></span> <span data-i18n="actionTitle">مركز القرارات</span>
+                        </h3>
+                        <span class="bg-brandRed text-white text-[10px] font-bold px-2 py-1 rounded-lg shadow-lg shadow-red-500/30">2 Pending</span>
                     </div>
-                    <div class="space-y-2 text-xs">
-                        <div class="flex justify-between items-center p-2 bg-green-50 rounded text-green-700">
-                            <span data-i18n="attPresent">حضور في الوقت</span>
-                            <span class="font-bold">40</span>
+
+                    <div class="flex-1 space-y-4 overflow-y-auto custom-scroll pr-1">
+                        
+                        <div class="group relative bg-slate-50 dark:bg-slate-700/30 p-4 rounded-2xl border border-slate-100 dark:border-slate-600 hover:border-brandRed dark:hover:border-brandRed transition-all duration-300">
+                            <div class="absolute top-4 left-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <i class="fa-solid fa-thumbtack text-brandRed rotate-45"></i>
+                            </div>
+                            <div class="flex justify-between items-start mb-3">
+                                <span class="px-2 py-1 bg-blue-100 text-blue-700 text-[9px] font-bold rounded-md uppercase tracking-wider">Approval</span>
+                                <span class="text-[10px] text-slate-400 num-font">09:30 AM</span>
+                            </div>
+                            <h4 class="font-bold text-sm text-slate-800 dark:text-white mb-1">شراء خوادم جديدة (CFO)</h4>
+                            <p class="text-xs text-slate-500 mb-4 line-clamp-2">طلب اعتماد شراء خوادم Dell PowerEdge لمركز البيانات لزيادة السعة...</p>
+                            
+                            <div class="flex items-center justify-between mt-2 pt-2 border-t border-slate-200 dark:border-slate-600">
+                                <span class="font-bold text-slate-900 dark:text-white num-font">150,000 SAR</span>
+                                <div class="flex gap-2">
+                                    <button class="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-600 text-slate-500 hover:bg-slate-300 transition flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+                                    <button onclick="approveAction(this)" class="w-8 h-8 rounded-full bg-brandRed text-white shadow-lg shadow-red-500/30 hover:bg-red-700 transition flex items-center justify-center"><i class="fa-solid fa-check"></i></button>
+                                </div>
+                            </div>
                         </div>
-                        <div class="flex justify-between items-center p-2 bg-red-50 rounded text-red-700">
-                            <span data-i18n="attLate">تأخير (>15د)</span>
-                            <span class="font-bold">3 <span class="text-[9px]" data-i18n="attDeduct">(خصم)</span></span>
+
+                        <div class="group relative bg-slate-50 dark:bg-slate-700/30 p-4 rounded-2xl border border-slate-100 dark:border-slate-600 hover:border-brandRed dark:hover:border-brandRed transition-all duration-300">
+                            <div class="flex justify-between items-start mb-3">
+                                <span class="px-2 py-1 bg-purple-100 text-purple-700 text-[9px] font-bold rounded-md uppercase tracking-wider">Contract</span>
+                                <span class="text-[10px] text-slate-400 num-font">Yesterday</span>
+                            </div>
+                            <h4 class="font-bold text-sm text-slate-800 dark:text-white mb-1">شراكة استراتيجية (Microsoft)</h4>
+                            <p class="text-xs text-slate-500 mb-4">توقيع مذكرة التفاهم النهائية للتحول الرقمي.</p>
+                            
+                            <div class="flex items-center justify-between mt-2 pt-2 border-t border-slate-200 dark:border-slate-600">
+                                <span class="text-[10px] text-slate-400"><i class="fa-solid fa-file-pdf"></i> MoU_Final_v2.pdf</span>
+                                <button onclick="signContract(this)" class="px-3 py-1.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-xs font-bold rounded-lg hover:shadow-lg transition">توقيع رقمي</button>
+                            </div>
                         </div>
-                        <div class="flex justify-between items-center p-2 bg-slate-100 rounded text-slate-600">
-                            <span data-i18n="attAbsent">غياب / إجازة</span>
-                            <span class="font-bold">2</span>
-                        </div>
+
                     </div>
                 </div>
-
             </div>
 
-            <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden">
-                <div class="p-5 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center">
-                    <h3 class="font-bold text-slate-800 dark:text-white" data-i18n="titleReqs">طلبات بانتظار اعتمادك</h3>
-                    <span class="bg-brandRed text-white text-[10px] px-2 py-0.5 rounded-full" data-i18n="reqCount">4 طلبات</span>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 flex items-center gap-4">
+                    <div class="w-14 h-14 rounded-full border-4 border-green-100 dark:border-green-900/30 flex items-center justify-center bg-white dark:bg-slate-800 relative">
+                        <span class="text-xs font-bold text-green-600">75%</span>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-sm text-slate-900 dark:text-white" data-i18n="deptSales">المبيعات والتسويق</h4>
+                        <p class="text-xs text-slate-500 mt-1">Target: 8M SAR</p>
+                    </div>
+                    <i class="fa-solid fa-arrow-trend-up text-green-500 mr-auto"></i>
                 </div>
-                <table class="w-full text-sm text-right rtl:text-right ltr:text-left">
-                    <thead class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 text-xs font-bold uppercase">
-                        <tr>
-                            <th class="p-4" data-i18n="colType">نوع الطلب</th>
-                            <th class="p-4" data-i18n="colReq">المقدم</th>
-                            <th class="p-4" data-i18n="colDetails">التفاصيل</th>
-                            <th class="p-4" data-i18n="colDate">التاريخ</th>
-                            <th class="p-4 text-center" data-i18n="colAction">الإجراء</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-100 dark:divide-slate-700 dark:text-slate-300" id="reqTable">
-                        
-                        <tr id="req-1" class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
-                            <td class="p-4"><span class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded text-[10px] font-bold" data-i18n="typeVac">إجازة سنوية</span></td>
-                            <td class="p-4 font-bold text-xs">خالد العتيبي</td>
-                            <td class="p-4 text-xs" data-i18n="detVac">5 أيام (رصيد متبقي: 12)</td>
-                            <td class="p-4 text-xs font-mono">2026-01-10</td>
-                            <td class="p-4 text-center flex justify-center gap-2">
-                                <button onclick="approveRequest('req-1')" class="w-6 h-6 rounded bg-green-100 text-green-600 hover:bg-green-200"><i class="fa-solid fa-check"></i></button>
-                                <button onclick="rejectRequest('req-1')" class="w-6 h-6 rounded bg-red-100 text-red-600 hover:bg-red-200"><i class="fa-solid fa-xmark"></i></button>
-                            </td>
-                        </tr>
 
-                        <tr id="req-2" class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
-                            <td class="p-4"><span class="bg-purple-100 text-purple-700 px-2 py-0.5 rounded text-[10px] font-bold" data-i18n="typeAsset">شراء (أصول)</span></td>
-                            <td class="p-4 font-bold text-xs">سارة الأحمد</td>
-                            <td class="p-4 text-xs" data-i18n="detAsset">طابعة ليزر (1200 ريال)</td>
-                            <td class="p-4 text-xs font-mono">2026-01-11</td>
-                            <td class="p-4 text-center flex justify-center gap-2">
-                                <button onclick="approveRequest('req-2')" class="w-6 h-6 rounded bg-green-100 text-green-600 hover:bg-green-200"><i class="fa-solid fa-check"></i></button>
-                                <button onclick="rejectRequest('req-2')" class="w-6 h-6 rounded bg-red-100 text-red-600 hover:bg-red-200"><i class="fa-solid fa-xmark"></i></button>
-                            </td>
-                        </tr>
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 flex items-center gap-4">
+                    <div class="w-14 h-14 rounded-full border-4 border-blue-100 dark:border-blue-900/30 flex items-center justify-center bg-white dark:bg-slate-800 relative">
+                        <span class="text-xs font-bold text-blue-600">60%</span>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-sm text-slate-900 dark:text-white" data-i18n="deptTech">المنتجات والتقنية</h4>
+                        <p class="text-xs text-slate-500 mt-1">Roadmap Status</p>
+                    </div>
+                    <i class="fa-solid fa-code text-blue-500 mr-auto"></i>
+                </div>
 
-                        <tr id="req-3" class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
-                            <td class="p-4"><span class="bg-orange-100 text-orange-700 px-2 py-0.5 rounded text-[10px] font-bold" data-i18n="typeContract">عقد شراكة</span></td>
-                            <td class="p-4 font-bold text-xs" data-i18n="reqSales">إدارة المبيعات</td>
-                            <td class="p-4 text-xs" data-i18n="detContract">مراجعة مسودة عقد (شركة الحلول)</td>
-                            <td class="p-4 text-xs font-mono">2026-01-12</td>
-                            <td class="p-4 text-center flex justify-center gap-2">
-                                <button class="w-6 h-6 rounded bg-slate-100 text-slate-600 hover:bg-slate-200"><i class="fa-solid fa-eye"></i></button>
-                            </td>
-                        </tr>
-
-                    </tbody>
-                </table>
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 flex items-center gap-4">
+                    <div class="w-14 h-14 rounded-full border-4 border-orange-100 dark:border-orange-900/30 flex items-center justify-center bg-white dark:bg-slate-800 relative">
+                        <span class="text-xs font-bold text-orange-600">90%</span>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-sm text-slate-900 dark:text-white" data-i18n="deptHR">الموارد البشرية</h4>
+                        <p class="text-xs text-slate-500 mt-1">Hiring Plan</p>
+                    </div>
+                    <i class="fa-solid fa-users text-orange-500 mr-auto"></i>
+                </div>
             </div>
 
         </main>
     </div>
 
-    <div id="employeeModal" class="fixed inset-0 bg-black/60 hidden z-50 flex items-center justify-center backdrop-blur-sm p-4">
-        <div class="bg-white dark:bg-slate-800 w-full max-w-lg rounded-2xl shadow-xl p-6">
-            <div class="flex justify-between items-center mb-6 border-b pb-4 dark:border-slate-700">
-                <h3 class="font-bold text-lg dark:text-white" data-i18n="modEmpTitle">إضافة موظف جديد</h3>
-                <button onclick="document.getElementById('employeeModal').classList.add('hidden')"><i class="fa-solid fa-xmark text-slate-400"></i></button>
-            </div>
-            <div class="space-y-4">
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblFirst">الاسم الأول</label>
-                        <input type="text" class="w-full bg-slate-50 dark:bg-slate-700 border dark:border-slate-600 rounded-lg p-2 text-sm dark:text-white">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblLast">العائلة</label>
-                        <input type="text" class="w-full bg-slate-50 dark:bg-slate-700 border dark:border-slate-600 rounded-lg p-2 text-sm dark:text-white">
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblJob">المسمى الوظيفي</label>
-                    <input type="text" class="w-full bg-slate-50 dark:bg-slate-700 border dark:border-slate-600 rounded-lg p-2 text-sm dark:text-white">
-                </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblNat">الجنسية</label>
-                        <select class="w-full bg-slate-50 dark:bg-slate-700 border dark:border-slate-600 rounded-lg p-2 text-sm dark:text-white">
-                            <option>سعودي</option>
-                            <option>غير سعودي</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblSalary">الراتب الأساسي</label>
-                        <input type="number" class="w-full bg-slate-50 dark:bg-slate-700 border dark:border-slate-600 rounded-lg p-2 text-sm dark:text-white">
-                    </div>
-                </div>
-            </div>
-            <div class="mt-6 flex justify-end gap-3 pt-4 border-t dark:border-slate-700">
-                <button onclick="document.getElementById('employeeModal').classList.add('hidden')" class="px-4 py-2 border rounded-lg text-xs font-bold hover:bg-slate-50 dark:text-white" data-i18n="btnCancel">إلغاء</button>
-                <button onclick="alert('تم حفظ بيانات الموظف'); document.getElementById('employeeModal').classList.add('hidden')" class="px-6 py-2 bg-brandRed text-white rounded-lg text-xs font-bold hover:bg-red-700 shadow-md" data-i18n="btnSave">حفظ وإضافة</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="purchaseModal" class="fixed inset-0 bg-black/60 hidden z-50 flex items-center justify-center backdrop-blur-sm p-4">
-        <div class="bg-white dark:bg-slate-800 w-full max-w-lg rounded-2xl shadow-xl p-6">
-            <div class="flex justify-between items-center mb-6 border-b pb-4 dark:border-slate-700">
-                <h3 class="font-bold text-lg dark:text-white" data-i18n="modPurTitle">طلب شراء (إداري)</h3>
-                <button onclick="document.getElementById('purchaseModal').classList.add('hidden')"><i class="fa-solid fa-xmark text-slate-400"></i></button>
-            </div>
-            <div class="space-y-4">
-                <div>
-                    <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblItem">بند الشراء</label>
-                    <input type="text" class="w-full bg-slate-50 dark:bg-slate-700 border dark:border-slate-600 rounded-lg p-2 text-sm dark:text-white">
-                </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblQty">الكمية</label>
-                        <input type="number" class="w-full bg-slate-50 dark:bg-slate-700 border dark:border-slate-600 rounded-lg p-2 text-sm dark:text-white">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-500 mb-1" data-i18n="lblCost">التكلفة التقديرية</label>
-                        <input type="number" class="w-full bg-slate-50 dark:bg-slate-700 border dark:border-slate-600 rounded-lg p-2 text-sm dark:text-white">
-                    </div>
-                </div>
-                <div class="p-3 bg-yellow-50 text-yellow-800 text-xs rounded border border-yellow-200">
-                    <i class="fa-solid fa-info-circle"></i> <span data-i18n="noteLimit">ملاحظة: الصلاحية المباشرة للشراء حتى 5000 ريال.</span>
-                </div>
-            </div>
-            <div class="mt-6 flex justify-end gap-3 pt-4 border-t dark:border-slate-700">
-                <button onclick="document.getElementById('purchaseModal').classList.add('hidden')" class="px-4 py-2 border rounded-lg text-xs font-bold hover:bg-slate-50 dark:text-white" data-i18n="btnCancel">إلغاء</button>
-                <button onclick="alert('تم رفع طلب الشراء للمالية'); document.getElementById('purchaseModal').classList.add('hidden')" class="px-6 py-2 bg-brandRed text-white rounded-lg text-xs font-bold hover:bg-red-700 shadow-md" data-i18n="btnConfirm">اعتماد الطلب</button>
-            </div>
-        </div>
-    </div>
-
-    <script src="layout-hr.js"></script>
+    <script src="layout-ceo.js"></script>
     <script src="bot.js"></script>
 
     <script>
-        // --- 1. الترجمة ---
+        // --- Translations ---
         const pageContent = {
             ar: {
-                pageTitle: "لوحة القيادة | AndroGov",
-                headerTitle: "الموارد البشرية والشؤون الإدارية",
-                badgeNitaqat: "نطاقات: بلاتيني",
-                badgeOffice: "المكاتب: مكتملة",
-                btnPurchase: "طلب شراء (إداري)",
-                btnNewEmp: "موظف جديد",
-                kpiEmp: "إجمالي الموظفين",
-                kpiEmpSub: "78% توطين",
-                kpiPay: "الرواتب (المتوقع)",
-                kpiPaySub: "يستحق في: 27 الشهر",
-                kpiGov: "تنبيهات حكومية",
-                kpiGovSub: "انتهاء إقامة / رخص",
-                kpiAsset: "العهد المسلمة",
-                kpiAssetSub: "سيارات: 5 | أجهزة: 80",
-                titleAlerts: "التنبيهات الحرجة (30 يوم)",
-                alert1Title: "تجديد إقامة (محمد خان)",
-                alert1Time: "تنتهي خلال 3 أيام",
-                btnAction: "إجراء",
-                alert2Title: "رخصة البلدية (فرع الشمال)",
-                alert2Time: "تنتهي خلال 15 يوم",
-                btnRenew: "تجديد",
-                alert3Title: "عقد إيجار المقر الرئيسي",
-                alert3Time: "ينتهي خلال 45 يوم",
-                btnView: "عرض",
-                titleAtt: "الانضباط اليومي",
-                attPresent: "حضور في الوقت",
-                attLate: "تأخير (>15د)",
-                attDeduct: "(خصم)",
-                attAbsent: "غياب / إجازة",
-                titleReqs: "طلبات بانتظار اعتمادك",
-                reqCount: "4 طلبات",
-                colType: "نوع الطلب",
-                colReq: "المقدم",
-                colDetails: "التفاصيل",
-                colDate: "التاريخ",
-                colAction: "الإجراء",
-                typeVac: "إجازة سنوية",
-                detVac: "5 أيام (رصيد متبقي: 12)",
-                typeAsset: "شراء (أصول)",
-                detAsset: "طابعة ليزر (1200 ريال)",
-                typeContract: "عقد شراكة",
-                reqSales: "إدارة المبيعات",
-                detContract: "مراجعة مسودة عقد (شركة الحلول)",
-                modEmpTitle: "إضافة موظف جديد",
-                lblFirst: "الاسم الأول",
-                lblLast: "العائلة",
-                lblJob: "المسمى الوظيفي",
-                lblNat: "الجنسية",
-                lblSalary: "الراتب الأساسي",
-                btnCancel: "إلغاء",
-                btnSave: "حفظ وإضافة",
-                modPurTitle: "طلب شراء (إداري)",
-                lblItem: "بند الشراء",
-                lblQty: "الكمية",
-                lblCost: "التكلفة التقديرية",
-                noteLimit: "ملاحظة: الصلاحية المباشرة للشراء حتى 5000 ريال.",
-                btnConfirm: "اعتماد الطلب"
+                pageTitle: "لوحة القيادة التنفيذية | AndroGov",
+                badgeLive: "مباشر",
+                welcome: "مرحباً، أستاذ",
+                welcomeSub: "إليك ملخص الأداء الاستراتيجي لشركة Andromeda. المؤشرات المالية والتشغيلية ضمن النطاق المستهدف لهذا الربع.",
+                marketStatus: "حالة السوق",
+                btnInsight: "تحليل الذكاء الاصطناعي",
+                kpiRev: "الإيرادات (YTD)",
+                kpiExp: "المصروفات التشغيلية",
+                kpiProfit: "صافي الأرباح",
+                kpiProj: "المشاريع النشطة",
+                chartTitle: "تحليل الأداء المالي",
+                actionTitle: "مركز القرارات",
+                deptSales: "المبيعات والتسويق",
+                deptTech: "المنتجات والتقنية",
+                deptHR: "الموارد البشرية"
             },
             en: {
-                pageTitle: "Dashboard | AndroGov",
-                headerTitle: "HR & Admin Affairs",
-                badgeNitaqat: "Nitaqat: Platinum",
-                badgeOffice: "Offices: Complete",
-                btnPurchase: "Purchase Request",
-                btnNewEmp: "New Employee",
-                kpiEmp: "Total Employees",
-                kpiEmpSub: "78% Saudization",
-                kpiPay: "Payroll (Forecast)",
-                kpiPaySub: "Due: 27th",
-                kpiGov: "Govt Alerts",
-                kpiGovSub: "Expiring Docs",
-                kpiAsset: "Assigned Assets",
-                kpiAssetSub: "Cars: 5 | Devices: 80",
-                titleAlerts: "Critical Alerts (30 Days)",
-                alert1Title: "Iqama Renewal (Mohammed Khan)",
-                alert1Time: "Expires in 3 Days",
-                btnAction: "Action",
-                alert2Title: "Municipality Lic. (North)",
-                alert2Time: "Expires in 15 Days",
-                btnRenew: "Renew",
-                alert3Title: "HQ Lease Contract",
-                alert3Time: "Expires in 45 Days",
-                btnView: "View",
-                titleAtt: "Daily Attendance",
-                attPresent: "On Time",
-                attLate: "Late (>15m)",
-                attDeduct: "(Deduct)",
-                attAbsent: "Absent / Leave",
-                titleReqs: "Pending Requests",
-                reqCount: "4 Requests",
-                colType: "Request Type",
-                colReq: "Requester",
-                colDetails: "Details",
-                colDate: "Date",
-                colAction: "Action",
-                typeVac: "Annual Leave",
-                detVac: "5 Days (Bal: 12)",
-                typeAsset: "Purchase (Asset)",
-                detAsset: "Laser Printer (1200 SAR)",
-                typeContract: "Partnership",
-                reqSales: "Sales Dept",
-                detContract: "Contract Draft Review",
-                modEmpTitle: "Add New Employee",
-                lblFirst: "First Name",
-                lblLast: "Last Name",
-                lblJob: "Job Title",
-                lblNat: "Nationality",
-                lblSalary: "Basic Salary",
-                btnCancel: "Cancel",
-                btnSave: "Save & Add",
-                modPurTitle: "Purchase Request",
-                lblItem: "Item Name",
-                lblQty: "Quantity",
-                lblCost: "Est. Cost",
-                noteLimit: "Note: Direct purchase limit is 5000 SAR.",
-                btnConfirm: "Approve Request"
+                pageTitle: "CEO Dashboard | AndroGov",
+                badgeLive: "LIVE",
+                welcome: "Welcome, Mr.",
+                welcomeSub: "Here is the strategic performance summary for Andromeda. Financial and operational KPIs are within target range for this quarter.",
+                marketStatus: "Market Status",
+                btnInsight: "AI Insights",
+                kpiRev: "Revenue (YTD)",
+                kpiExp: "Operating Expenses",
+                kpiProfit: "Net Profit",
+                kpiProj: "Active Projects",
+                chartTitle: "Financial Performance Analysis",
+                actionTitle: "Decision Center",
+                deptSales: "Sales & Marketing",
+                deptTech: "Product & Tech",
+                deptHR: "Human Resources"
             }
         };
 
-        // --- 2. التشغيل ---
         document.addEventListener('DOMContentLoaded', () => {
-            updatePageLanguage();
-            initChart();
-        });
-
-        function updatePageLanguage() {
             const lang = localStorage.getItem('lang') || 'ar';
             const dict = pageContent[lang];
             
-            document.documentElement.lang = lang;
-            document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
-
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
                 if(dict[key]) el.innerText = dict[key];
             });
+
+            initChart();
+        });
+
+        // --- Functions ---
+        function approveAction(btn) {
+            const card = btn.closest('.group');
+            card.innerHTML = `
+                <div class="h-full flex flex-col items-center justify-center text-green-600 animate-pulse">
+                    <i class="fa-solid fa-circle-check text-4xl mb-2"></i>
+                    <span class="text-sm font-bold">تم الاعتماد بنجاح</span>
+                </div>
+            `;
+            setTimeout(() => card.remove(), 1500);
         }
 
-        // --- 3. الوظائف ---
-        function openEmployeeModal() { document.getElementById('employeeModal').classList.remove('hidden'); }
-        function openPurchaseModal() { document.getElementById('purchaseModal').classList.remove('hidden'); }
-
-        function approveRequest(rowId) {
-            if(confirm('Confirm approval?')) {
-                const row = document.getElementById(rowId);
-                row.style.backgroundColor = '#dcfce7';
-                setTimeout(() => row.remove(), 500);
-            }
+        function signContract(btn) {
+            const card = btn.closest('.group');
+            card.innerHTML = `
+                <div class="h-full flex flex-col items-center justify-center text-brandRed animate-pulse">
+                    <i class="fa-solid fa-file-signature text-4xl mb-2"></i>
+                    <span class="text-sm font-bold">تم التوقيع رقمياً</span>
+                </div>
+            `;
+            setTimeout(() => card.remove(), 1500);
         }
 
-        function rejectRequest(rowId) {
-            if(confirm('Confirm rejection?')) {
-                const row = document.getElementById(rowId);
-                row.style.backgroundColor = '#fee2e2';
-                setTimeout(() => row.remove(), 500);
-            }
+        function downloadReport() {
+            alert("Generating Executive Report PDF...");
         }
 
+        // --- Charts ---
         function initChart() {
-            const ctx = document.getElementById('attendanceChart').getContext('2d');
+            const ctx = document.getElementById('financeChart').getContext('2d');
+            
+            // Gradient Fill
+            let gradient = ctx.createLinearGradient(0, 0, 0, 400);
+            gradient.addColorStop(0, 'rgba(251, 71, 71, 0.2)');
+            gradient.addColorStop(1, 'rgba(251, 71, 71, 0)');
+
             new Chart(ctx, {
-                type: 'doughnut',
+                type: 'line',
                 data: {
-                    labels: ['Present', 'Late', 'Absent'],
-                    datasets: [{
-                        data: [40, 3, 2],
-                        backgroundColor: ['#10B981', '#EF4444', '#CBD5E1'],
-                        borderWidth: 0
-                    }]
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [
+                        {
+                            label: 'Revenue',
+                            data: [3.2, 3.5, 3.8, 4.0, 4.2, 4.5],
+                            borderColor: '#10B981',
+                            backgroundColor: 'transparent',
+                            borderWidth: 3,
+                            pointBackgroundColor: '#fff',
+                            pointBorderColor: '#10B981',
+                            pointRadius: 6,
+                            pointHoverRadius: 8,
+                            tension: 0.4
+                        },
+                        {
+                            label: 'Expenses',
+                            data: [1.5, 1.6, 1.7, 1.6, 1.8, 1.9],
+                            borderColor: '#FB4747',
+                            backgroundColor: gradient,
+                            fill: true,
+                            borderWidth: 3,
+                            pointBackgroundColor: '#fff',
+                            pointBorderColor: '#FB4747',
+                            pointRadius: 6,
+                            tension: 0.4
+                        }
+                    ]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    cutout: '75%'
+                    plugins: {
+                        legend: { position: 'top', align: 'end', labels: { usePointStyle: true, boxWidth: 8 } }
+                    },
+                    scales: {
+                        y: { 
+                            grid: { display: true, borderDash: [5, 5], color: '#f1f5f9' },
+                            ticks: { font: { family: 'Inter' } }
+                        },
+                        x: { 
+                            grid: { display: false },
+                            ticks: { font: { family: 'Inter' } }
+                        }
+                    }
                 }
             });
         }
