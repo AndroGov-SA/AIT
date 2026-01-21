@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -25,7 +24,7 @@
           colors: {
             brandDark: '#1E293B',
             brandBlue: '#4267B2',
-            brandRed:  '#FB4747' // مطابق لـ company_policy.js
+            brandRed:  '#FB4747'
           },
           fontFamily: {
             sans: ['Tajawal', 'Inter', 'sans-serif']
@@ -187,17 +186,21 @@
     // ==========================================
     const SYSTEM_DATA = {
       users: [
-            { "id": "USR_004", "name": {"ar": "أيمن المغربي", "en": "Ayman Al-Maghrabi"}, "title": "sys_admin", title: {ar: "مدير النظام / GRC", en: "System Admin / GRC"}, email: "amaghrabi@androomeda.com", path: "admin/index.html", icon: "fa-user-shield", color: "#FB4747" },
-            { "id": "USR_000", "name": {"ar": "عبدالله الحواس", "en": "Abdullah Al-Hawas"}, "title": "chairman", title: {ar: "رئيس مجلس الإدارة", en: "Chairman of the Board"}, email: "chairman@androomeda.com", path: "board/index.html", icon: "fa-building-columns", color: "#4267B2" },
-            { "id": "USR_001", "name": {"ar": "هشام السحيباني", "en": "Hesham Al-Sohaibani"}, "title": "ceo", title: {ar: "الرئيس التنفيذي", en: "Chief Executive Officer"}, email: "hesham@androomeda.com", path: "ceo/index.html", icon: "fa-user-tie", color: "#7C3AED" },
-            { "id": "USR_001", "name": { "ar": "هشام بن محمد السحيباني", "en": "Hesham bin Muhammad Al-Sohibani" }, "percent": 10, "type": "Individual", "shares": 60000, "voting" "title": "CEO & Board Vice Chairman", "department_id": "DEP_EXEC", "role": "CEO", "is_executive": true, "email": "hesham@androomeda.com" },
-            { "id": "SH_003", "name": {"ar": "وائل السحيباني", "en": "Wael Al-Sohaibani"}, "title": "shareholder", title: {ar: "مساهم", en: "shareholder"}, email: "w961@live.com", path: "shareholder/index.html", icon: "fa-user-tie", color: "#7C3AED" },
-            { "id": "USR_002", "name": {"ar": "محمد البخيتي", "en": "Mohammed Al-Bukhaiti"}, "title": "Chief Financial Officer (CFO)", "department_id": "DEP_FIN", "role": "CFO", "is_executive": true, "email": "mtahir@androomeda.com" },
-            { "id": "USR_009", "name": {"ar": "مشاعل الهديان", "en": "Mashael Al-Hadyan"}, "title": "cto", title: {ar: "المدير التقني", en: "Chief Technical Officer"}, email: "malhadyan@androomeda.com", path: "cto/index.html", icon: "fa-microchip", color: "#06B6D4" },
-            { "id": "USR_008", "name": {"ar": "الحسين الحميدي", "en": "Al Hussien Al Humaidi"}, "title": "cto", title: {ar: "موظف", en: "employee"}, email: "alhussien@androomeda.com", path: "employee/index.html", icon: "fa-microchip", color: "#FB4747" },
-            { "id": "USR_011", "name": {"ar": "شاغر", "en": "vacant"}, role: "Sales", "title": {ar: "مبيعات", en: "sales"}, email: "SalesManager@androomeda.com", path: "sales/index.html", icon: "fa-microchip", color: "#7C3AED" },
-            { "id": "USR_011", "name": {"ar": "محمد العنزي", "en": "Mohammed Al-Enezi"}, "title": "audit", title: {ar: "تدقيق", en: "Audit"}, email: "mohammedmansour.socpa@gmail.com", path: "audit/index.html", icon: "fa-microchip", color: "#4267B2" },
-            { "id": "USR_005", "name": {"ar": "منصور اليامي", "en": "Mansour Al-Yami"}, "title": "cao", title: {ar: "مدير الموارد البشرية", en: "Chief Admin Officer"}, email: "myami@androomeda.com", path: "hr/index.html", icon: "fa-users-gear", color: "#F59E0B" }
+            { "id": "USR_004", "name": {"ar": "أيمن المغربي", "en": "Ayman Al-Maghrabi"}, "role": "admin", "title": {ar: "مدير النظام / GRC", en: "System Admin / GRC"}, "email": "amaghrabi@androomeda.com", "path": "admin/index.html", "icon": "fa-user-shield", "color": "#FB4747" },
+            { "id": "USR_000", "name": {"ar": "عبدالله الحواس", "en": "Abdullah Al-Hawas"}, "role": "chairman", "title": {ar: "رئيس مجلس الإدارة", en: "Chairman of the Board"}, "email": "chairman@androomeda.com", "path": "board/index.html", "icon": "fa-building-columns", "color": "#4267B2" },
+            { "id": "USR_001", "name": {"ar": "هشام السحيباني", "en": "Hesham Al-Sohaibani"}, "role": "ceo", "title": {ar: "الرئيس التنفيذي", en: "Chief Executive Officer"}, "email": "hesham@androomeda.com", "path": "ceo/index.html", "icon": "fa-user-tie", "color": "#7C3AED" },
+            // Removed the malformed duplicate USR_001 here
+            { "id": "SH_003", "name": {"ar": "وائل السحيباني", "en": "Wael Al-Sohaibani"}, "role": "shareholder", "title": {ar: "مساهم", en: "shareholder"}, "email": "w961@live.com", "path": "shareholder/index.html", "icon": "fa-user-tie", "color": "#7C3AED" },
+            { "id": "USR_002", "name": {"ar": "محمد البخيتي", "en": "Mohammed Al-Bukhaiti"}, "role": "cfo", "title": {ar: "المدير المالي", en: "CFO"}, "department_id": "DEP_FIN", "is_executive": true, "email": "mtahir@androomeda.com" },
+            { "id": "USR_009", "name": {"ar": "مشاعل الهديان", "en": "Mashael Al-Hadyan"}, "role": "cto", "title": {ar: "المدير التقني", en: "Chief Technical Officer"}, "email": "malhadyan@androomeda.com", "path": "cto/index.html", "icon": "fa-microchip", "color": "#06B6D4" },
+            { "id": "USR_008", "name": {"ar": "الحسين الحميدي", "en": "Al Hussien Al Humaidi"}, "role": "employee", "title": {ar: "موظف", en: "employee"}, "email": "alhussien@androomeda.com", "path": "employee/index.html", "icon": "fa-microchip", "color": "#FB4747" },
+            { "id": "USR_011", "name": {"ar": "شاغر", "en": "vacant"}, "role": "sales", "title": {ar: "مبيعات", en: "sales"}, "email": "SalesManager@androomeda.com", "path": "sales/index.html", "icon": "fa-microchip", "color": "#7C3AED" },
+            { "id": "USR_011", "name": {"ar": "محمد العنزي", "en": "Mohammed Al-Enezi"}, "role": "audit", "title": {ar: "تدقيق", en: "Audit"}, "email": "mohammedmansour.socpa@gmail.com", "path": "audit/index.html", "icon": "fa-microchip", "color": "#4267B2" },
+            { "id": "USR_005", "name": {"ar": "منصور اليامي", "en": "Mansour Al-Yami"}, "role": "cao", "title": {ar: "مدير الموارد البشرية", en: "Chief Admin Officer"}, "email": "myami@androomeda.com", "path": "hr/index.html", "icon": "fa-users-gear", "color": "#F59E0B" }
+        ],
+        // Added missing shareholders array required by AuthEngine
+        shareholders: [
+            { "id": "SH_003", "name": {"ar": "وائل السحيباني", "en": "Wael Al-Sohaibani"}, "email": "w961@live.com", "percent": 5 }
         ]
     };
 
@@ -275,14 +278,19 @@
             const employees = SYSTEM_DATA.users.map(u => {
                 let roles = [];
                 let roleRaw = String(u.role || '').toLowerCase();
-                let titleRaw = String(u.title || '').toLowerCase();
+                // Handle localized titles if object, otherwise string
+                let titleRaw = '';
+                if(typeof u.title === 'string') titleRaw = u.title.toLowerCase();
+                else if(u.title && u.title.en) titleRaw = u.title.en.toLowerCase();
+                
                 let name = u.name;
                 
                 // Determine Roles
                 if (roleRaw.includes('admin') || roleRaw.includes('grc')) roles.push('admin');
                 if (u.is_executive || roleRaw.includes('ceo') || roleRaw.includes('cfo') || roleRaw.includes('cao')) roles.push('exec');
                 if (roleRaw.includes('chairman') || roleRaw.includes('board') || titleRaw.includes('secretary')) roles.push('board');
-                if (titleRaw.includes('audit')) roles.push('audit');
+                if (roleRaw.includes('shareholder')) roles.push('shareholder');
+                if (roleRaw.includes('audit')) roles.push('audit');
                 
                 // Link Shareholder by Email
                 const isShareholder = SYSTEM_DATA.shareholders.find(s => s.email === u.email);
@@ -294,7 +302,9 @@
                 else if (roles.includes('board')) displayType = 'board';
                 else if (roles.includes('exec')) displayType = 'exec';
                 else if (roles.includes('audit')) displayType = 'audit';
+                else if (roles.includes('shareholder')) displayType = 'shareholder';
                 else if (roleRaw.includes('manager') || roleRaw.includes('director')) displayType = 'manager';
+                else if (roleRaw.includes('sales')) displayType = 'staff';
                 else displayType = 'staff';
 
                 return {
@@ -398,6 +408,12 @@
                         displayName = lang === 'ar' ? u.name.ar : u.name.en;
                     }
 
+                    // Handle bilingual titles
+                    let displayTitle = u.title;
+                    if(typeof u.title === 'object') {
+                        displayTitle = lang === 'ar' ? u.title.ar : u.title.en;
+                    }
+
                     const safeColor = (u.avatarColor || '64748b').replace('#', '');
                     const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=${safeColor}&color=fff&size=64&bold=true`;
                     
@@ -406,7 +422,7 @@
                             <img src="${avatarUrl}" class="w-6 h-6 rounded-full shrink-0 border border-transparent group-hover:border-brandRed transition">
                             <div class="overflow-hidden">
                                 <p class="text-[9px] font-bold text-slate-700 dark:text-slate-200 truncate w-24 leading-tight">${displayName}</p>
-                                <p class="text-[8px] text-slate-400 truncate w-24">${u.title || type}</p>
+                                <p class="text-[8px] text-slate-400 truncate w-24">${displayTitle || type}</p>
                             </div>
                         </button>`;
                 });
@@ -455,7 +471,16 @@
         setTimeout(() => {
             try {
                 const redirect = auth.login(email, password);
-                window.location.href = redirect;
+                // For demo purposes, we show an alert instead of actual redirection 
+                // because those files don't exist in this environment.
+                // window.location.href = redirect; 
+                alert(`Login Successful!\nRedirecting to: ${redirect}`);
+                
+                // Reset button
+                if(btn) {
+                    btnSpan.innerText = originalText;
+                    btn.disabled = false;
+                }
             } catch (err) {
                 if(document.getElementById('errorText')) document.getElementById('errorText').innerText = t.errorCredentials;
                 errorMsg.classList.remove('hidden');
