@@ -1,273 +1,79 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-i18n="pageTitle">ملفي الشخصي | AndroGov</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>مركز الدعم الفني | AndroGov</title>
     <script src="https://cdn.tailwindcss.com"></script>
-
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: { brandRed: '#FB4747', brandDark: '#0F172A', moneyGreen: '#10B981', alertOrange: '#F59E0B' },
-                    fontFamily: { sans: ['Tajawal', 'Inter', 'sans-serif'], mono: ['IBM Plex Mono', 'monospace'] }
-                }
-            }
-        }
-    </script>
-    <style>
-        .num-font { font-family: 'IBM Plex Mono', sans-serif; }
-        .glass-header { background: linear-gradient(135deg, #1E293B 0%, #334155 100%); }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+    <script>tailwind.config = { darkMode: 'class', theme: { extend: { colors: { brandRed: '#FB4747' }, fontFamily: { sans: ['Tajawal'] } } } }</script>
 </head>
-<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300 opacity-0">
-
+<body class="bg-slate-50 dark:bg-slate-950 opacity-0 transition-opacity duration-500">
     <div id="sidebar-container"></div>
-    
-    <div class="main-content-wrapper transition-all duration-300 flex flex-col min-h-screen lg:mr-72">
-        
+    <div class="main-content-wrapper lg:mr-72 min-h-screen transition-all">
         <div id="header-container"></div>
-
-        <main class="p-8 space-y-8">
-            
-            <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden relative group">
-                <div class="h-48 glass-header relative">
-                    <div class="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/circuit.png')]"></div>
-                    <div class="absolute bottom-4 right-8 flex gap-4">
-                        <div class="px-3 py-1 bg-white/10 backdrop-blur-sm rounded-lg text-white text-xs border border-white/20">
-                            <i class="fa-solid fa-location-dot"></i> <span data-i18n="lblLocation">المبنى الرئيسي - الدور 2</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="px-8 pb-8 flex flex-col lg:flex-row items-end -mt-20 gap-8 relative z-10">
-                    <div class="relative">
-                        <div class="w-40 h-40 rounded-3xl border-4 border-white dark:border-slate-900 overflow-hidden bg-slate-200 shadow-2xl relative group-hover:scale-105 transition-transform duration-300">
-                            <img src="https://ui-avatars.com/api/?name=AlHussain+H&background=FB4747&color=fff&size=256" class="w-full h-full object-cover">
-                        </div>
-                        <button class="absolute bottom-2 left-2 w-8 h-8 bg-brandRed text-white rounded-full flex items-center justify-center shadow-lg hover:bg-red-700 transition">
-                            <i class="fa-solid fa-camera text-xs"></i>
-                        </button>
-                    </div>
-
-                    <div class="flex-1 mb-2">
-                        <div class="flex items-center gap-3 mb-1">
-                            <h1 class="text-3xl font-bold text-slate-900 dark:text-white" data-i18n="name">الحسين الحميدي</h1>
-                            <i class="fa-solid fa-circle-check text-blue-500 text-lg"></i>
-                            <span class="px-2 py-0.5 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-[10px] font-bold rounded border border-blue-200 dark:border-blue-800">موظف معتمد</span>
-                        </div>
-                        <p class="text-slate-500 dark:text-slate-400 text-lg font-medium" data-i18n="role">أخصائي دعم تقني</p>
-                        
-                        <div class="flex flex-wrap gap-4 mt-4 text-sm text-slate-500">
-                            <span class="flex items-center gap-2 bg-slate-50 dark:bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-100 dark:border-slate-700">
-                                <i class="fa-regular fa-envelope text-brandRed"></i> alhussien@androomeda.com
-                            </span>
-                            <span class="flex items-center gap-2 bg-slate-50 dark:bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-100 dark:border-slate-700">
-                                <i class="fa-solid fa-phone text-brandRed"></i> +966 50 888 0000
-                            </span>
-                            <span class="flex items-center gap-2 bg-slate-50 dark:bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-100 dark:border-slate-700">
-                                <i class="fa-solid fa-fingerprint text-brandRed"></i> ID: EMP-88
-                            </span>
-                        </div>
-                    </div>
-
-                    <div class="flex flex-col gap-3 items-end w-full lg:w-auto">
-                        <div class="flex items-center gap-2 bg-green-50 dark:bg-green-900/20 px-3 py-1.5 rounded-lg border border-green-200 dark:border-green-800 cursor-pointer hover:bg-green-100 transition" onclick="toggleStatus()">
-                            <span class="w-2.5 h-2.5 bg-green-500 rounded-full animate-pulse"></span>
-                            <span class="text-xs font-bold text-green-700 dark:text-green-400" id="userStatus" data-i18n="statusAvailable">متاح للعمل</span>
-                            <i class="fa-solid fa-chevron-down text-[10px] text-green-600"></i>
-                        </div>
-                        <div class="flex gap-3 w-full">
-                            <button class="flex-1 px-5 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 rounded-xl text-sm font-bold hover:bg-slate-50 transition shadow-sm">
-                                <i class="fa-solid fa-key"></i> <span data-i18n="btnPass">الأمان</span>
-                            </button>
-                            <button class="flex-1 px-5 py-2.5 bg-brandRed text-white rounded-xl text-sm font-bold shadow-lg shadow-red-500/30 hover:bg-red-700 transition">
-                                <i class="fa-solid fa-pen-to-square"></i> <span data-i18n="btnEdit">تعديل</span>
-                            </button>
-                        </div>
-                    </div>
+        <main class="p-8">
+            <div class="flex justify-between items-center mb-8">
+                <div>
+                    <h1 class="text-2xl font-bold dark:text-white">تذاكر الدعم الفني</h1>
+                    <p class="text-sm text-slate-500">إدارة المهام التقنية المسندة إليك</p>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                
-                <div class="space-y-6">
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 text-center">
-                            <div class="w-10 h-10 mx-auto bg-blue-50 dark:bg-blue-900/30 rounded-full flex items-center justify-center text-blue-600 mb-2"><i class="fa-solid fa-clock-rotate-left"></i></div>
-                            <h3 class="text-2xl font-bold num-font text-slate-800 dark:text-white">160</h3>
-                            <p class="text-xs text-slate-400" data-i18n="statHours">ساعة عمل / شهر</p>
-                        </div>
-                        <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 text-center">
-                            <div class="w-10 h-10 mx-auto bg-green-50 dark:bg-green-900/30 rounded-full flex items-center justify-center text-green-600 mb-2"><i class="fa-solid fa-star"></i></div>
-                            <h3 class="text-2xl font-bold num-font text-slate-800 dark:text-white">4.8</h3>
-                            <p class="text-xs text-slate-400" data-i18n="statRate">تقييم الأداء</p>
+            <div class="grid grid-cols-1 gap-4">
+                <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border-r-4 border-orange-500 shadow-sm flex flex-col md:flex-row justify-between items-center gap-4">
+                    <div class="flex gap-4 items-center">
+                        <div class="w-12 h-12 bg-orange-50 dark:bg-orange-900/20 rounded-full flex items-center justify-center text-orange-600"><i class="fa-solid fa-laptop-code text-xl"></i></div>
+                        <div>
+                            <h4 class="font-bold dark:text-white">مشكلة في الدخول للنظام الأساسي</h4>
+                            <p class="text-xs text-slate-500">الموظف: أحمد علي | الأولوية: <span class="text-orange-500 font-bold">عالية</span></p>
                         </div>
                     </div>
-
-                    <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
-                        <h3 class="font-bold text-sm mb-4 flex items-center gap-2 border-b border-slate-50 dark:border-slate-800 pb-3 dark:text-white">
-                            <i class="fa-solid fa-file-contract text-brandRed"></i> <span data-i18n="secContract">بيانات العقد</span>
-                        </h3>
-                        <ul class="space-y-4 text-sm">
-                            <li class="flex justify-between items-center">
-                                <span class="text-slate-500" data-i18n="lblType">المسمى الوظيفي</span>
-                                <span class="font-bold dark:text-white bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded text-xs">Technical Support</span>
-                            </li>
-                            <li class="flex justify-between items-center">
-                                <span class="text-slate-500" data-i18n="lblStart">تاريخ الانضمام</span>
-                                <span class="font-bold num-font dark:text-white">10 Jan 2024</span>
-                            </li>
-                            <li class="flex justify-between items-center">
-                                <span class="text-slate-500" data-i18n="lblDept">الإدارة</span>
-                                <span class="font-bold dark:text-white" data-i18n="valDept">تقنية المعلومات</span>
-                            </li>
-                            <li class="flex justify-between items-center">
-                                <span class="text-slate-500" data-i18n="lblDirect">المرجع المباشر</span>
-                                <span class="font-bold dark:text-white">مشاعل الهذيان (CTO)</span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="lg:col-span-2 space-y-6">
-                    <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 p-6">
-                        <h3 class="font-bold text-lg mb-6 dark:text-white flex items-center gap-2">
-                            <i class="fa-solid fa-timeline text-slate-400"></i> <span data-i18n="titleActivity">النشاط الوظيفي الأخير</span>
-                        </h3>
-                        <div class="space-y-6">
-                            <div class="flex gap-4">
-                                <div class="w-10 h-10 rounded-full bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-600 shrink-0"><i class="fa-solid fa-umbrella-beach"></i></div>
-                                <div>
-                                    <p class="text-sm font-bold dark:text-white" data-i18n="act1Title">تقديم طلب إجازة سنوية</p>
-                                    <p class="text-xs text-slate-500 mt-1">تم تقديم طلب إجازة لمدة 5 أيام ابتداءً من الأحد القادم.</p>
-                                    <span class="text-[10px] text-slate-400 mt-2 block num-font">2026-01-18 | 11:20 AM</span>
-                                </div>
-                            </div>
-                            <div class="flex gap-4">
-                                <div class="w-10 h-10 rounded-full bg-green-50 dark:bg-green-900/20 flex items-center justify-center text-green-600 shrink-0"><i class="fa-solid fa-check-double"></i></div>
-                                <div>
-                                    <p class="text-sm font-bold dark:text-white" data-i18n="act2Title">إكمال تذكرة دعم فني</p>
-                                    <p class="text-xs text-slate-500 mt-1">تم حل المشكلة التقنية الخاصة بجهاز المدير التنفيذي.</p>
-                                    <span class="text-[10px] text-slate-400 mt-2 block num-font">2026-01-17 | 03:45 PM</span>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="flex gap-2">
+                        <button class="bg-green-500 text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-green-600 transition">بدء العمل</button>
+                        <button class="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 px-4 py-2 rounded-xl text-xs font-bold">تفاصيل</button>
                     </div>
                 </div>
             </div>
-
         </main>
     </div>
-
+    
     <script src="data/company_policy.js"></script>
-    <script src="js/core/config.js"></script>
     <script src="js/core/i18n.js"></script>
-    <script src="js/helpers/policy-helpers.js"></script>
-    <script src="js/services/data-service.js"></script>
-    <script src="js/components/role-switcher.js"></script>
     <script src="js/components/layout.js"></script>
     <script src="js/components/bot.js"></script>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // 1. تعريف هوية الحسين الحميدي وتفعيل دوره
-            const empUser = {
-                id: 'USR_008',
-                type: 'employee', 
-                role: 'Employee',
-                displayName: 'الحسين الحميدي',
-                displayTitle: 'أخصائي دعم تقني',
-                avatar: 'https://ui-avatars.com/api/?name=AlHussain+H&background=FB4747&color=fff'
-            };
-
-            // 2. المزامنة مع LocalStorage
-            localStorage.setItem('currentUser', JSON.stringify(empUser));
-            localStorage.setItem('activeRole', 'employee');
-
-            // 3. تشغيل المحرك الرئيسي
-            if (typeof Layout !== 'undefined') {
-                Layout.init();
-                document.body.classList.remove('opacity-0');
-            }
-
-            // 4. ترجمة النصوص الداخلية
-            const lang = localStorage.getItem('lang') || 'ar';
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                const key = el.getAttribute('data-i18n');
-                if(pageContent[lang][key]) el.innerText = pageContent[lang][key];
-            });
-        });
-
-        // قاموس الترجمة لصفحة الموظف
-        const pageContent = {
-            ar: {
-                pageTitle: "ملفي الشخصي | AndroGov",
-                lblLocation: "المبنى الرئيسي - الدور 2",
-                name: "الحسين الحميدي",
-                role: "أخصائي دعم تقني",
-                statusAvailable: "متاح للعمل",
-                statusBusy: "مشغول الآن",
-                btnPass: "الأمان",
-                btnEdit: "تعديل",
-                statHours: "ساعة عمل / شهر",
-                statRate: "تقييم الأداء",
-                secContract: "بيانات العقد",
-                lblType: "المسمى الوظيفي",
-                lblStart: "تاريخ الانضمام",
-                lblDept: "الإدارة",
-                valDept: "تقنية المعلومات",
-                lblDirect: "المرجع المباشر",
-                titleActivity: "النشاط الوظيفي الأخير",
-                act1Title: "تقديم طلب إجازة سنوية",
-                act2Title: "إكمال تذكرة دعم فني"
-            },
-            en: {
-                pageTitle: "My Profile | AndroGov",
-                lblLocation: "Main Building - Floor 2",
-                name: "Al-Hussain Al-Humaidi",
-                role: "Technical Support Specialist",
-                statusAvailable: "Available",
-                statusBusy: "Busy Now",
-                btnPass: "Security",
-                btnEdit: "Edit",
-                statHours: "Hrs worked / Month",
-                statRate: "Performance Rating",
-                secContract: "Contract Info",
-                lblType: "Job Title",
-                lblStart: "Joining Date",
-                lblDept: "Department",
-                valDept: "Information Technology",
-                lblDirect: "Reporting To",
-                titleActivity: "Recent Activity",
-                act1Title: "Annual Leave Request",
-                act2Title: "Resolved Support Ticket"
-            }
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // 1. إعداد بيانات المستخدم لتتوافق مع محرك v10.5
+        const ctoUser = {
+            id: 'USR_008',
+            name: 'الحسين الحميدي',
+            displayName: 'الحسين الحميدي',
+            role: 'Technical Support', // هذا هو المفتاح الذي يبحث عنه المحرك لفتح القائمة
+            avatar: 'https://ui-avatars.com/api/?name=Meshail+AlHadyan&background=FB4747&color=fff'
         };
+        
+        // 2. تخزين البيانات في الـ LocalStorage لضمان استمرارية المحرك
+        localStorage.setItem('currentUser', JSON.stringify(ctoUser));
+        localStorage.setItem('activeRole', 'employee');
 
-        function toggleStatus() {
-            const statusEl = document.getElementById('userStatus');
-            const lang = localStorage.getItem('lang') || 'ar';
-            const isAvailable = statusEl.innerText === pageContent[lang].statusAvailable;
-            
-            if (isAvailable) {
-                statusEl.innerText = pageContent[lang].statusBusy;
-                statusEl.className = "text-xs font-bold text-red-700 dark:text-red-400";
-                statusEl.parentElement.classList.replace('border-green-200', 'border-red-200');
-                statusEl.previousElementSibling.className = "w-2.5 h-2.5 bg-red-500 rounded-full";
-            } else {
-                statusEl.innerText = pageContent[lang].statusAvailable;
-                statusEl.className = "text-xs font-bold text-green-700 dark:text-green-400";
-                statusEl.parentElement.classList.replace('border-red-200', 'border-green-200');
-                statusEl.previousElementSibling.className = "w-2.5 h-2.5 bg-green-500 rounded-full animate-pulse";
-            }
+        // 3. التأكد من وجود الوضع الليلي المفضل
+        if (!localStorage.getItem('theme')) {
+            localStorage.setItem('theme', 'light');
         }
-    </script>
+
+        // 4. تشغيل المحرك
+        if (typeof Layout !== 'undefined') {
+            Layout.init();
+            
+            // إظهار الصفحة بعد التحميل (لأن الـ body له opacity-0)
+            document.body.style.opacity = '1';
+            console.log("🚀 employee Layout Engine v10.5 Started Successfully");
+        } else {
+            console.error("❌ Layout.js file not found! Check your script paths.");
+        }
+    });
+</script>
 </body>
 </html>
