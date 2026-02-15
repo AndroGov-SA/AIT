@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مولد عقود اندروهيلث</title>
-    <!-- استدعاء خط تجوال -->
+    <title>مولد عقود اندروهيلث - النسخة النهائية</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --brand-red: #FB4747; /* لون اندروميدا الرسمي */
-            --brand-blue: #4267B2; /* اللون الثانوي */
+            --brand-red: #FB4747;
+            --brand-blue: #4267B2;
             --text-dark: #333;
             --text-gray: #666;
             --bg-light: #f4f4f4;
@@ -25,7 +24,7 @@
             overflow: hidden;
         }
 
-        /* --- لوحة التحكم الجانبية --- */
+        /* --- Sidebar Styles --- */
         .sidebar {
             width: 320px;
             background: white;
@@ -77,11 +76,6 @@
             margin-bottom: 10px;
         }
 
-        input:focus {
-            outline: none;
-            border-color: var(--brand-red);
-        }
-
         .action-btn {
             background-color: var(--brand-red);
             color: white;
@@ -93,14 +87,9 @@
             cursor: pointer;
             width: 100%;
             margin-top: auto;
-            transition: 0.3s;
         }
 
-        .action-btn:hover {
-            background-color: #d63030;
-        }
-
-        /* --- منطقة المعاينة --- */
+        /* --- Preview Area --- */
         .preview-area {
             flex: 1;
             padding: 40px;
@@ -112,7 +101,7 @@
 
         .a4-page {
             width: 210mm;
-            min-height: 297mm; /* ارتفاع A4 */
+            min-height: 297mm;
             background: white;
             padding: 20mm;
             margin-bottom: 20px;
@@ -121,190 +110,78 @@
             box-sizing: border-box;
         }
 
-        /* --- الهيدر (الشعار) --- */
-        .header {
+        /* --- Header Styles --- */
+        .header-container {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 3px solid var(--brand-red);
-            padding-bottom: 15px;
-            margin-bottom: 30px;
+            border-bottom: 2px solid var(--brand-red);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            width: 100%;
         }
 
-        .logo-text {
-            font-size: 24px;
-            font-weight: 800;
-            color: var(--brand-red);
-            line-height: 1.2;
-        }
-        
-        .logo-sub {
-            font-size: 14px;
-            color: var(--text-dark);
-            font-weight: 500;
+        /* تنسيق خاص للغلاف: شعارات كبيرة */
+        .header-cover img {
+            height: 80px; 
+            object-fit: contain;
         }
 
-        /* --- صفحة الغلاف --- */
+        /* تنسيق خاص للصفحات الداخلية: شعارات صغيرة ومتناسقة */
+        .header-inner img {
+            height: 40px; 
+            object-fit: contain;
+        }
+
+        /* --- Content Styles --- */
         .cover-page-content {
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            height: 700px; /* لضمان التوسط في الصفحة */
+            height: 600px;
             text-align: center;
         }
 
-        .cover-title-ar {
-            font-size: 36px;
-            font-weight: 800;
-            color: var(--brand-red);
-            margin-bottom: 20px;
-        }
+        .cover-title-ar { font-size: 36px; font-weight: 800; color: var(--brand-red); margin-bottom: 20px; }
+        .cover-title-en { font-size: 24px; font-weight: 600; color: var(--brand-blue); margin-bottom: 60px; }
+        .cover-meta { font-size: 20px; border: 2px solid #ddd; padding: 20px 40px; border-radius: 10px; background-color: #fcfcfc; }
 
-        .cover-title-en {
-            font-size: 24px;
-            font-weight: 600;
-            color: var(--brand-blue);
-            margin-bottom: 60px;
-        }
+        .letter-meta { display: flex; justify-content: space-between; margin-bottom: 40px; font-weight: bold; }
+        .letter-to { font-size: 18px; font-weight: bold; margin-bottom: 30px; }
+        .letter-body { font-size: 16px; line-height: 1.8; text-align: justify; margin-bottom: 40px; }
+        .letter-sign { margin-top: 50px; font-weight: bold; font-size: 18px; color: var(--brand-blue); }
 
-        .cover-meta {
-            font-size: 20px;
-            border: 2px solid #ddd;
-            padding: 20px 40px;
-            border-radius: 10px;
-            background-color: #fcfcfc;
-        }
+        /* --- Table Logic for Repeating Headers --- */
+        table.contract-table { width: 100%; border-collapse: collapse; }
+        table.contract-table thead { display: table-header-group; } /* Critical for printing */
+        table.contract-table tbody tr { page-break-inside: auto; }
 
-        /* --- صفحة الخطاب (المقدمة) --- */
-        .letter-meta {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 40px;
-            font-weight: bold;
-        }
+        .clause-header { font-weight: bold; color: var(--brand-red); margin-bottom: 8px; font-size: 16px; margin-top: 20px; page-break-after: avoid; }
+        .clause-block { margin-bottom: 15px; text-align: justify; line-height: 1.6; font-size: 14px; }
+        .sub-point { margin-right: 20px; display: block; margin-bottom: 8px; }
+        .var-text { color: #000; font-weight: bold; border-bottom: 1px dotted #999; padding: 0 5px; }
 
-        .letter-to {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 30px;
-        }
+        .signature-section { display: flex; justify-content: space-between; margin-top: 60px; page-break-inside: avoid; }
+        .sign-box { width: 45%; text-align: center; }
+        .sign-box h4 { color: var(--brand-red); border-bottom: 1px solid #ccc; padding-bottom: 10px; margin-bottom: 40px; }
 
-        .letter-body {
-            font-size: 16px;
-            line-height: 1.8;
-            text-align: justify;
-            margin-bottom: 40px;
-        }
-
-        .letter-sign {
-            margin-top: 50px;
-            font-weight: bold;
-            font-size: 18px;
-            color: var(--brand-blue);
-        }
-
-        /* --- تنسيقات متن العقد --- */
-        .clause-block {
-            margin-bottom: 15px;
-            text-align: justify;
-            line-height: 1.6;
-            font-size: 14px;
-            page-break-inside: auto; /* السماح بتقسيم الفقرة الطويلة */
-        }
-
-        .clause-header {
-            font-weight: bold;
-            color: var(--brand-red); 
-            margin-bottom: 8px;
-            font-size: 16px;
-            margin-top: 20px;
-            page-break-after: avoid; /* منع بقاء العنوان وحيداً أسفل الصفحة */
-        }
-
-        .sub-point {
-            margin-right: 20px;
-            display: block;
-            margin-bottom: 8px;
-        }
-
-        .var-text {
-            color: #000;
-            font-weight: bold;
-            border-bottom: 1px dotted #999;
-            padding: 0 5px;
-        }
-
-        .signature-section {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 60px;
-            page-break-inside: avoid; /* منع انقسام التوقيعات */
-        }
-
-        .sign-box {
-            width: 45%;
-            text-align: center;
-        }
-
-        .sign-box h4 {
-            color: var(--brand-red);
-            border-bottom: 1px solid #ccc;
-            padding-bottom: 10px;
-            margin-bottom: 40px;
-        }
-
-        /* --- تنسيقات الطباعة (فواصل الصفحات) --- */
-        /* هذا الكلاس يفرض بداية صفحة جديدة */
-        .page-break {
-            page-break-after: always;
-            height: 0;
-            display: block;
-            clear: both;
-        }
+        .page-break { page-break-after: always; height: 0; display: block; clear: both; }
 
         @media print {
-            body { 
-                height: auto; 
-                overflow: visible; 
-                display: block; 
-                background: white; 
-            }
+            body { height: auto; overflow: visible; display: block; background: white; }
             .sidebar { display: none; }
-            .preview-area { 
-                display: block; 
-                padding: 0; 
-                background: white; 
-            }
-            .a4-page { 
-                box-shadow: none; 
-                margin: 0; 
-                width: 100%; 
-                border: none; 
-                padding: 0; 
-                min-height: auto; 
-            }
-            
-            /* إعدادات الصفحة والهوامش */
-            @page {
-                margin: 1.5cm;
-                size: A4;
-            }
-
-            /* تحسين تدفق النصوص في الطباعة */
-            p, .clause-block {
-                orphans: 3; 
-                widows: 3;
-            }
+            .preview-area { display: block; padding: 0; background: white; }
+            .a4-page { box-shadow: none; margin: 0; width: 100%; border: none; padding: 0; min-height: auto; }
+            @page { margin: 1.5cm; size: A4; }
         }
     </style>
 </head>
 <body>
 
-    <!-- لوحة إدخال البيانات -->
+    <!-- Sidebar -->
     <div class="sidebar">
         <h2>إعداد العقد</h2>
-        
         <div class="form-section">
             <h3>بيانات العقد</h3>
             <label>رقم العقد:</label>
@@ -312,9 +189,8 @@
             <label>تاريخ العقد:</label>
             <input type="date" id="contractDate" oninput="updateContent()">
         </div>
-
         <div class="form-section">
-            <h3>بيانات العميل (الطرف الثاني)</h3>
+            <h3>بيانات العميل</h3>
             <label>اسم المنشأة:</label>
             <input type="text" id="clientName" placeholder="اسم العميل" oninput="updateContent()">
             <label>رقم السجل التجاري:</label>
@@ -330,104 +206,75 @@
             <label>منصب الممثل:</label>
             <input type="text" id="clientPost" placeholder="المنصب" oninput="updateContent()">
         </div>
-
         <div class="form-section">
             <h3>تفاصيل العرض المالي</h3>
             <label>رقم عرض السعر:</label>
             <input type="text" id="quoteRef" placeholder="Q-xxxx" oninput="updateContent()">
             <label>تاريخ عرض السعر:</label>
             <input type="date" id="quoteDate" oninput="updateContent()">
-            <label>عدد المستخدمين المصرح لهم:</label>
+            <label>عدد المستخدمين:</label>
             <input type="number" id="userCount" placeholder="مثال: 5" oninput="updateContent()">
         </div>
-
         <button class="action-btn" onclick="window.print()">طباعة / حفظ PDF</button>
     </div>
 
-    <!-- منطقة العقد (الورقة A4) -->
+    <!-- Contract Area -->
     <div class="preview-area">
         <div class="a4-page">
             
-            <!-- ================= الصفحة الأولى: الغلاف ================= -->
-            <div class="header">
-                <div>
-                    <img src="https://androgov-sa.github.io/AIT/andromeda_logo.png" alt="Andromeda Logo" style="height: 80px;">
-                </div>
-                <div style="text-align: left;">
-                    <img src="https://androgov-sa.github.io/AIT/androhealth_logo.png" alt="AndroHealth Logo" style="height: 80px;">
-                </div>
+            <!-- Page 1: Cover -->
+            <div class="header-container header-cover">
+                <img src="https://androgov-sa.github.io/AIT/andromeda_logo.png" alt="Andromeda Logo">
+                <img src="https://androgov-sa.github.io/AIT/androhealth_logo.png" alt="AndroHealth Logo">
             </div>
 
             <div class="cover-page-content">
-                <div class="cover-title-ar">
-                    عقد<br>
-                    توريد رخص نظام اندروهيلث
-                </div>
-                <div class="cover-title-en">
-                    AndroHealth License Agreement
-                </div>
-                <div class="cover-meta">
-                    عقد رقم: <span class="var-text" id="disp_contractNo_cover">...</span>
-                </div>
+                <div class="cover-title-ar">عقد<br>توريد رخص نظام اندروهيلث</div>
+                <div class="cover-title-en">AndroHealth License Agreement</div>
+                <div class="cover-meta">عقد رقم: <span class="var-text" id="disp_contractNo_cover">...</span></div>
             </div>
-
-            <!-- فاصل صفحة إجباري بعد الغلاف -->
             <div class="page-break"></div>
 
-            <!-- ================= الصفحة الثانية: المقدمة والترحيب ================= -->
-            <div class="header">
-                <div>
-                    <img src="https://androgov-sa.github.io/AIT/andromeda_logo.png" alt="Andromeda Logo" style="height: 60px;">
-                </div>
-                <div style="text-align: left;">
-                    <img src="https://androgov-sa.github.io/AIT/androhealth_logo.png" alt="AndroHealth Logo" style="height: 60px;">
-                </div>
+            <!-- Page 2: Letter -->
+            <div class="header-container header-inner">
+                <img src="https://androgov-sa.github.io/AIT/andromeda_logo.png" alt="Andromeda Logo">
+                <img src="https://androgov-sa.github.io/AIT/androhealth_logo.png" alt="AndroHealth Logo">
             </div>
 
-            <div style="text-align: center; font-weight: bold; font-size: 20px; margin-bottom: 30px; color: var(--brand-red);">
-                عقد توريد رخص نظام اندروهيلث
-            </div>
+            <div style="text-align: center; font-weight: bold; font-size: 20px; margin-bottom: 30px; color: var(--brand-red);">عقد توريد رخص نظام اندروهيلث</div>
 
             <div class="letter-meta">
                 <div>تاريخ العقد: <span class="var-text" id="disp_contractDate_letter">...</span></div>
                 <div>عقد رقم: <span class="var-text" id="disp_contractNo_letter">...</span></div>
             </div>
 
-            <div class="letter-to">
-                السادة / <span class="var-text" id="disp_clientName_letter">....................................</span> المحترمين
-            </div>
+            <div class="letter-to">السادة / <span class="var-text" id="disp_clientName_letter">....................................</span> المحترمين</div>
 
             <div class="letter-body">
-                <strong>تحية طيبة وبعد،</strong>
-                <br><br>
-                نشكر لكم التعاون مع شركة اندروميدا لتقنية المعلومات فيما يخص تطوير وأتمتة العمل لديكم واختياركم الثقة بشركتنا في مجال تقنية المعلومات ونعدكم بمزيد من العطاء للوصول الى الأهداف المرجوة وبمزيد من الدعم لكل احتياجاتكم للوصول الى مستوى راقي من الأداء وسرعة تنفيذ المطلوب.
-                <br><br>
+                <strong>تحية طيبة وبعد،</strong><br><br>
+                نشكر لكم التعاون مع شركة اندروميدا لتقنية المعلومات فيما يخص تطوير وأتمتة العمل لديكم واختياركم الثقة بشركتنا في مجال تقنية المعلومات ونعدكم بمزيد من العطاء للوصول الى الأهداف المرجوة وبمزيد من الدعم لكل احتياجاتكم للوصول الى مستوى راقي من الأداء وسرعة تنفيذ المطلوب.<br><br>
                 لاحقا لاجتماعنا مع السادة المختصين لديكم وعرض الأنظمة عليهم واختياركم لنظام اندروهيلث فإننا نقدم لكم هذا العقد المبرم ونرجو الله العظيم ان يوفقنا سوية لما فيه خير الطرفين بإذنه تعالى.
             </div>
 
-            <div class="letter-sign">
-                شركة اندروميدا لتقنية المعلومات
-            </div>
-
-            <!-- فاصل صفحة إجباري بعد صفحة المقدمة -->
+            <div class="letter-sign">شركة اندروميدا لتقنية المعلومات</div>
             <div class="page-break"></div>
 
-            <!-- ================= الصفحة الثالثة وما بعدها: متن العقد ================= -->
-            <div class="header">
-                <div>
-                    <img src="https://androgov-sa.github.io/AIT/andromeda_logo.png" alt="Andromeda Logo" style="height: 60px;">
-                </div>
-                <div style="text-align: left;">
-                    <img src="https://androgov-sa.github.io/AIT/androhealth_logo.png" alt="AndroHealth Logo" style="height: 60px;">
-                </div>
-            </div>
-
-            <div class="contract-title">عقد توريد وترخيص نظام اندروهيلث</div>
-
-            <div class="contract-meta">
-                <div><strong>رقم العقد:</strong> <span class="var-text" id="disp_contractNo"></span></div>
-                <div><strong>التاريخ:</strong> <span class="var-text" id="disp_contractDate"></span></div>
-            </div>
+            <!-- Page 3+: Contract Body with Repeating Header -->
+            <table class="contract-table">
+                <thead>
+                    <tr>
+                        <td>
+                            <!-- هذا الهيدر سيتكرر تلقائياً في بداية كل صفحة جديدة عند الطباعة -->
+                            <div class="header-container header-inner" style="margin-bottom: 30px;">
+                                <img src="https://androgov-sa.github.io/AIT/andromeda_logo.png" alt="Andromeda Logo">
+                                <img src="https://androgov-sa.github.io/AIT/androhealth_logo.png" alt="AndroHealth Logo">
+                            </div>
+                        </td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
 
             <div class="clause-block">
                 <strong>إنه في يوم <span id="disp_day">...</span> الموافق <span id="disp_date_full">...</span> اتفق كل من:</strong>
