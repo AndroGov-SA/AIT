@@ -1,524 +1,1118 @@
 <!DOCTYPE html>
+
 <html lang="ar" dir="rtl">
+
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مولد عقود اندروهيلث</title>
+
+    <title>مولد عقود اندروهيلث - النسخة المعتمدة V6</title>
+
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+
     <style>
+
         :root {
+
             --brand-red: #FB4747;
+
             --brand-blue: #4267B2;
+
             --text-dark: #333;
+
             --text-gray: #666;
+
             --bg-light: #f4f4f4;
+
         }
+
+
 
         body {
+
             font-family: 'Tajawal', sans-serif;
+
             background-color: var(--bg-light);
+
             margin: 0;
+
             padding: 0;
+
             display: flex;
+
             height: 100vh;
+
             overflow: hidden;
+
         }
+
+
 
         /* --- Sidebar Styles --- */
+
         .sidebar {
+
             width: 320px;
+
             background: white;
+
             border-left: 1px solid #ddd;
+
             overflow-y: auto;
+
             padding: 20px;
+
             box-shadow: -2px 0 10px rgba(0,0,0,0.05);
+
             display: flex;
+
             flex-direction: column;
+
             gap: 15px;
+
             z-index: 100;
+
         }
+
+
 
         .sidebar h2 {
+
             color: var(--brand-red);
+
             font-size: 18px;
+
             margin-top: 0;
+
             border-bottom: 2px solid var(--brand-red);
+
             padding-bottom: 10px;
+
         }
+
+
 
         .form-section {
+
             border: 1px solid #eee;
+
             padding: 10px;
+
             border-radius: 8px;
+
             background: #fff;
+
         }
+
+
 
         .form-section h3 {
+
             font-size: 14px;
+
             margin: 0 0 10px 0;
+
             color: var(--brand-blue);
+
         }
+
+
 
         label {
+
             display: block;
+
             font-size: 12px;
+
             margin-bottom: 4px;
+
             font-weight: bold;
+
             color: var(--text-gray);
+
         }
+
+
 
         input, select {
+
             width: 93%;
+
             padding: 8px;
+
             border: 1px solid #ccc;
+
             border-radius: 4px;
+
             font-family: 'Tajawal', sans-serif;
+
             margin-bottom: 10px;
+
         }
+
+
 
         .action-btn {
+
             background-color: var(--brand-red);
+
             color: white;
+
             border: none;
+
             padding: 15px;
+
             border-radius: 6px;
+
             font-size: 16px;
+
             font-weight: bold;
+
             cursor: pointer;
+
             width: 100%;
+
             margin-top: auto;
+
         }
+
+
 
         /* --- Preview Area --- */
+
         .preview-area {
+
             flex: 1;
+
             padding: 40px;
+
             overflow-y: auto;
+
             display: flex;
+
             justify-content: center;
+
             background-color: #525659;
+
         }
+
+
 
         .a4-page {
+
             width: 210mm;
+
             min-height: 297mm;
+
             background: white;
+
             padding: 20mm;
+
             margin-bottom: 20px;
+
             box-shadow: 0 0 15px rgba(0,0,0,0.2);
+
             position: relative;
+
             box-sizing: border-box;
+
         }
+
+
 
         /* --- Header Styles --- */
-        /* تصميم موحد للترويسة في جميع الصفحات */
+
         .header-container {
+
             display: flex;
+
             justify-content: space-between;
+
             align-items: center;
+
             border-bottom: 2px solid var(--brand-red);
+
             padding-bottom: 10px;
+
             margin-bottom: 20px;
+
             width: 100%;
+
         }
 
-        /* الغلاف فقط: شعارات أكبر قليلاً */
-        .header-cover img {
-            height: 40px;
-            object-fit: contain;
-        }
 
-        /* الصفحات الداخلية: شعارات صغيرة لتوفير المساحة */
-        .header-inner img {
-            height: 40px; 
-            object-fit: contain;
-        }
+
+        .header-cover img { height: 40px; object-fit: contain; }
+
+        .header-inner img { height: 40px; object-fit: contain; }
+
+
 
         /* --- Content Styles --- */
+
         .cover-page-content {
+
             display: flex;
+
             flex-direction: column;
+
             justify-content: center;
+
             align-items: center;
+
             height: 600px;
+
             text-align: center;
+
         }
+
+
 
         .cover-title-ar { font-size: 36px; font-weight: 800; color: var(--brand-red); margin-bottom: 20px; }
+
         .cover-title-en { font-size: 24px; font-weight: 600; color: var(--brand-blue); margin-bottom: 60px; }
+
         .cover-meta { font-size: 20px; border: 2px solid #ddd; padding: 20px 40px; border-radius: 10px; background-color: #fcfcfc; }
 
-        .letter-meta { display: flex; justify-content: space-between; margin-bottom: 30px; font-weight: bold; font-size: 14px; }
-        .letter-to { font-size: 16px; font-weight: bold; margin-bottom: 20px; }
-        .letter-body { font-size: 14px; line-height: 1.8; text-align: justify; margin-bottom: 40px; }
-        .letter-sign { margin-top: 40px; font-weight: bold; font-size: 16px; color: var(--brand-red); }
 
-        /* --- Table Logic for Repeating Headers --- */
-        /* هذا الجدول هو السر في تكرار الترويسة */
+
+        .letter-meta { display: flex; justify-content: space-between; margin-bottom: 30px; font-weight: bold; font-size: 14px; }
+
+        .letter-to { font-size: 16px; font-weight: bold; margin-bottom: 20px; }
+
+        .letter-body { font-size: 14px; line-height: 1.8; text-align: justify; margin-bottom: 40px; }
+
+        .letter-sign { margin-top: 40px; font-weight: bold; font-size: 16px; color: var(--brand-blue); }
+
+
+
+        /* --- Table Logic for Repeating Headers & Footers --- */
+
         table.contract-table { width: 100%; border-collapse: collapse; margin-top: 0; }
+
         table.contract-table thead { display: table-header-group; } 
+
+        table.contract-table tfoot { display: table-footer-group; } /* تكرار التذييل */
+
         table.contract-table tbody tr { width: 100%; }
+
         
-        /* السماح بتقسيم الفقرات لملء الصفحات */
+
         .clause-block { 
+
             margin-bottom: 12px; 
+
             text-align: justify; 
+
             line-height: 1.5; 
+
             font-size: 13px; 
-            page-break-inside: auto; /* السماح بالقص لإكمال الصفحة */
+
+            page-break-inside: auto; 
+
         }
+
+
 
         .clause-header { 
+
             font-weight: bold; 
+
             color: var(--brand-red); 
+
             margin-bottom: 6px; 
+
             font-size: 15px; 
+
             margin-top: 15px; 
-            page-break-after: avoid; /* ربط العنوان بما بعده */
+
+            page-break-after: avoid; 
+
         }
+
+
 
         .sub-point { margin-right: 15px; display: block; margin-bottom: 6px; }
+
         .var-text { color: #000; font-weight: bold; border-bottom: 1px dotted #999; padding: 0 5px; }
 
+
+
         .signature-section { 
+
             display: flex; 
+
             justify-content: space-between; 
+
             margin-top: 40px; 
-            page-break-inside: avoid; /* التوقيعات لا تنقسم */
+
+            page-break-inside: avoid; 
+
         }
+
         .sign-box { width: 45%; text-align: center; }
+
         .sign-box h4 { color: var(--brand-red); border-bottom: 1px solid #ccc; padding-bottom: 5px; margin-bottom: 20px; }
+
+
+
+        /* --- Footer Styles --- */
+
+        .footer-content {
+
+            text-align: center;
+
+            font-size: 10px;
+
+            color: #777;
+
+            border-top: 1px solid #eee;
+
+            padding-top: 10px;
+
+            margin-top: 30px;
+
+            margin-bottom: 10px;
+
+        }
+
+        
+
+        .confidential-text {
+
+            color: #333;
+
+            font-weight: bold;
+
+            margin-bottom: 5px;
+
+        }
+
+
 
         .page-break { page-break-after: always; height: 0; display: block; clear: both; }
 
+
+
         @media print {
+
             body { height: auto; overflow: visible; display: block; background: white; }
+
             .sidebar { display: none; }
+
             .preview-area { display: block; padding: 0; background: white; }
+
             .a4-page { box-shadow: none; margin: 0; width: 100%; border: none; padding: 0; min-height: auto; }
-            @page { margin: 1.2cm; size: A4; } /* هوامش مناسبة للطباعة */
+
+            @page { margin: 1.2cm; size: A4; }
+
+            
+
+            /* ملاحظة: ترقيم الصفحات (1 من X) يتم إضافته عادة عبر إعدادات الطباعة في المتصفح (Headers and footers checkbox) */
+
         }
+
     </style>
+
 </head>
+
 <body>
 
+
+
     <!-- Sidebar -->
+
     <div class="sidebar">
+
         <h2>إعداد العقد</h2>
+
         <div class="form-section">
+
             <h3>بيانات العقد</h3>
+
             <label>رقم العقد:</label>
+
             <input type="text" id="contractNo" value="AH-2026-001" oninput="updateContent()">
+
             <label>تاريخ العقد:</label>
+
             <input type="date" id="contractDate" oninput="updateContent()">
+
         </div>
+
         <div class="form-section">
+
             <h3>بيانات العميل</h3>
+
             <label>اسم المنشأة:</label>
+
             <input type="text" id="clientName" placeholder="اسم العميل" oninput="updateContent()">
+
             <label>رقم السجل التجاري:</label>
+
             <input type="text" id="clientCR" placeholder="1010xxxxxx" oninput="updateContent()">
+
             <label>الرقم الضريبي:</label>
+
             <input type="text" id="clientTax" placeholder="3xxxxxxxxxxxxx" oninput="updateContent()">
+
             <label>رقم الترخيص الطبي:</label>
+
             <input type="text" id="clientLic" placeholder="M-xxxxxx" oninput="updateContent()">
+
             <label>العنوان:</label>
+
             <input type="text" id="clientAddress" placeholder="المدينة - الحي" oninput="updateContent()">
+
             <label>يمثلها (المدير/المفوض):</label>
+
             <input type="text" id="clientRep" placeholder="الاسم الثلاثي" oninput="updateContent()">
+
             <label>منصب الممثل:</label>
+
             <input type="text" id="clientPost" placeholder="المنصب" oninput="updateContent()">
+
         </div>
+
         <div class="form-section">
+
             <h3>تفاصيل العرض المالي</h3>
+
             <label>رقم عرض السعر:</label>
+
             <input type="text" id="quoteRef" placeholder="Q-xxxx" oninput="updateContent()">
+
             <label>تاريخ عرض السعر:</label>
+
             <input type="date" id="quoteDate" oninput="updateContent()">
+
             <label>عدد المستخدمين:</label>
+
             <input type="number" id="userCount" placeholder="مثال: 5" oninput="updateContent()">
+
         </div>
+
         <button class="action-btn" onclick="window.print()">طباعة / حفظ PDF</button>
+
     </div>
 
+
+
     <!-- Contract Area -->
+
     <div class="preview-area">
+
         <div class="a4-page">
+
             
+
             <!-- Page 1: Cover -->
+
             <div class="header-container header-cover">
+
                 <img src="https://androgov-sa.github.io/AIT/andromeda_logo.png" alt="Andromeda Logo">
+
                 <img src="https://androgov-sa.github.io/AIT/androhealth_logo.png" alt="AndroHealth Logo">
+
             </div>
+
+
 
             <div class="cover-page-content">
+
                 <div class="cover-title-ar">عقد<br>توريد رخص نظام اندروهيلث</div>
+
                 <div class="cover-title-en">AndroHealth License Agreement</div>
+
                 <div class="cover-meta">عقد رقم: <span class="var-text" id="disp_contractNo_cover">...</span></div>
+
             </div>
+
+            
+
+            <!-- Footer for Cover -->
+
+            <div class="footer-content">
+
+                <div class="confidential-text">This document is confidential and Copyright © 2026</div>
+
+                <div>Andromeda Information Technology | C.R 1010356267 | Riyadh, KSA | www.ait.sa</div>
+
+            </div>
+
+            
+
             <div class="page-break"></div>
 
+
+
             <!-- Page 2: Letter -->
+
             <div class="header-container header-inner">
+
                 <img src="https://androgov-sa.github.io/AIT/andromeda_logo.png" alt="Andromeda Logo">
+
                 <img src="https://androgov-sa.github.io/AIT/androhealth_logo.png" alt="AndroHealth Logo">
+
             </div>
+
+
 
             <div style="text-align: center; font-weight: bold; font-size: 18px; margin-bottom: 20px; color: var(--brand-red);">عقد توريد رخص نظام اندروهيلث</div>
 
+
+
             <div class="letter-meta">
+
                 <div>تاريخ العقد: <span class="var-text" id="disp_contractDate_letter">...</span></div>
+
                 <div>عقد رقم: <span class="var-text" id="disp_contractNo_letter">...</span></div>
+
             </div>
+
+
 
             <div class="letter-to">السادة / <span class="var-text" id="disp_clientName_letter">....................................</span> المحترمين</div>
 
+
+
             <div class="letter-body">
+
                 <strong>تحية طيبة وبعد،</strong><br><br>
+
                 نشكر لكم التعاون مع شركة اندروميدا لتقنية المعلومات فيما يخص تطوير وأتمتة العمل لديكم واختياركم الثقة بشركتنا في مجال تقنية المعلومات ونعدكم بمزيد من العطاء للوصول الى الأهداف المرجوة وبمزيد من الدعم لكل احتياجاتكم للوصول الى مستوى راقي من الأداء وسرعة تنفيذ المطلوب.<br><br>
+
                 لاحقا لاجتماعنا مع السادة المختصين لديكم وعرض الأنظمة عليهم واختياركم لنظام اندروهيلث فإننا نقدم لكم هذا العقد المبرم ونرجو الله العظيم ان يوفقنا سوية لما فيه خير الطرفين بإذنه تعالى.
+
             </div>
+
+
 
             <div class="letter-sign">شركة اندروميدا لتقنية المعلومات</div>
+
+            
+
+            <div style="margin-top: 150px;"></div> <!-- Spacer -->
+
+            
+
+            <!-- Footer for Letter -->
+
+            <div class="footer-content">
+
+                <div class="confidential-text">This document is confidential and Copyright © 2026</div>
+
+                <div>Andromeda Information Technology | C.R 1010356267 | Riyadh, KSA | www.ait.sa</div>
+
+            </div>
+
+
+
             <div class="page-break"></div>
 
-            <!-- Page 3+: Contract Body with Repeating Header -->
+
+
+            <!-- Page 3+: Contract Body with Repeating Header & Footer -->
+
             <table class="contract-table">
+
                 <thead>
+
                     <tr>
-                        <td>
-                            <!-- هذا الهيدر سيتكرر تلقائياً في بداية كل صفحة جديدة -->
-                            <div class="header-container header-inner" style="margin-bottom: 20px;">
-                                <img src="https://androgov-sa.github.io/AIT/andromeda_logo.png" alt="Andromeda Logo">
-                                <img src="https://androgov-sa.github.io/AIT/androhealth_logo.png" alt="AndroHealth Logo">
-                            </div>
-                        </td>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
+
                         <td>
 
+                            <!-- Header repeats -->
+
+                            <div class="header-container header-inner" style="margin-bottom: 20px;">
+
+                                <img src="https://androgov-sa.github.io/AIT/andromeda_logo.png" alt="Andromeda Logo">
+
+                                <img src="https://androgov-sa.github.io/AIT/androhealth_logo.png" alt="AndroHealth Logo">
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                </thead>
+
+                <tfoot>
+
+                    <tr>
+
+                        <td>
+
+                            <!-- Footer repeats -->
+
+                            <div class="footer-content">
+
+                                <div class="confidential-text">This document is confidential and Copyright © 2026</div>
+
+                                <div>Andromeda Information Technology | C.R 1010356267 | Riyadh, KSA | www.ait.sa</div>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                </tfoot>
+
+                <tbody>
+
+                    <tr>
+
+                        <td>
+
+
+
             <div class="clause-block">
+
                 <strong>إنه في يوم <span id="disp_day">...</span> الموافق <span id="disp_date_full">...</span> اتفق كل من:</strong>
+
             </div>
+
+
 
             <!-- الطرف الأول -->
+
             <div class="clause-block">
+
                 <strong>أولاً: الطرف الأول:</strong> شركة اندروميدا لتقنية المعلومات، سجل تجاري رقم (1010356267)، الرقم الضريبي (310809339200003)، وعنوانها: الرياض - حي الازدهار - طريق عثمان بن عفان.
+
             </div>
+
+
 
             <!-- الطرف الثاني -->
+
             <div class="clause-block">
+
                 <strong>ثانياً: الطرف الثاني:</strong> <span class="var-text" id="disp_clientName">.....</span>، 
+
                 سجل تجاري رقم (<span class="var-text" id="disp_clientCR">.....</span>)، 
+
                 الرقم الضريبي (<span class="var-text" id="disp_clientTax">.....</span>)،
+
                 ترخيص طبي رقم (<span class="var-text" id="disp_clientLic">.....</span>).<br>
+
                 العنوان: <span class="var-text" id="disp_clientAddress">.....</span>.<br>
+
                 ويمثلها في التوقيع السيد/ة: <span class="var-text" id="disp_clientRep">.....</span>.
+
             </div>
+
+
 
             <div class="clause-header">التمهيد</div>
+
             <div class="clause-block">
+
                 حيث أن الطرف الأول شركة تعمل في مجال تكنولوجيا المعلومات والبرمجيات ومالكة لتطبيق (اندروهيلث) الخاص بخدمات إدارة العيادات والمراكز الطبية. وحيث أن الطرف الثاني يعمل في المجال الطبي وقد أبدى رغبته في الاستعانة بالنظام.
+
                 <br>
+
                 لذا، تعتبر المقدمة والملاحق وعرض الأسعار رقم (<span class="var-text" id="disp_quoteRef">...</span>) بتاريخ (<span class="var-text" id="disp_quoteDate">...</span>) جزءاً لا يتجزأ من هذا العقد.
+
             </div>
+
+
 
             <div class="clause-header">النظام</div>
+
             <div class="clause-block">
+
                 هو نظام (اندروهيلث) الذي يمتلكه الطرف الأول ويقوم بتوريده وتركيبه وتقديم الدعم الفني له.
+
             </div>
+
+
 
             <div class="clause-header">الخصوصية وسرية المعلومات</div>
+
             <div class="clause-block">
+
                 <span class="sub-point">‌أ-	يتعهد الطرف الأول بالامتناع عن استعمال، او بيع، او إفشاء أي سر، او اية معلومات شفهية، او خطية، او أي إيضاح، او سر مهني علم به اثناء القيام بتنفيذ هذا العقد إذا تعلق الامر بصورة مباشرة او غير مباشرة بالطرف الثاني او بالأنظمة او بالقوائم او بالأسعار او بالعمل الخ .... شفهيا كان او خطيا وذلك طوال مدة هذا العقد او بعد انتهاء هذا العقد مها كان سبب الانتهاء ولأي جهة كانت..</span>
+
                 <span class="sub-point">‌ب-	يتعهد الطرف الاول بالحفاظ على خصوصية وتشفير بيانات الطرف الثاني وعملائه بما في ذلك بذل العناية القصوى في اتخاذ كافة تدابير الحماية لتلك البيانات من الاختراق ولا يتحمل الطرف الأول التقصير والاخطاء من الطرف الثاني.</span>
+
                 <span class="sub-point">ج- <strong>ملكية البيانات:</strong> جميع بيانات المرضى والسجلات هي ملكية خاصة للطرف الثاني. يلتزم الطرف الأول عند انتهاء التعاقد بتسليم نسخة (Excel Backup) وحذفها من خوادمه خلال 30 يوماً.</span>
+
             </div>
+
+
 
             <div class="clause-header">نطاق الاستخدام</div>
+
             <div class="clause-block">
+
                 يقتصر حق الطرف الثاني في استخدام النظام على أهداف ممارسة إدارة الخدمة الطبية وفي حدود المميزات وعدد المستخدمين (<span class="var-text" id="disp_userCount">...</span>) وفقاً للباقة المتفق عليها, ويتحمل الطرف الثاني دون غيره تبعات إساءة الاستخدام خارج النطاق الموضح بالفقرة السابقة في مواجهة أي أطراف خارجية ودون أدنى مسؤولية على الطرف الأول.
+
             </div>
+
+
 
             <div class="clause-header">التجهيزات وبرامج التشغيل</div>
+
             <div class="clause-block">
+
               يلتزم الطرف الثاني بتوفير التجهيزات المطلوبة لعمل النظام من حواسيب وشبكة اتصال بالأنترنت.
+
             </div>
 
+
+
             <div class="clause-header">المسؤوليات</div>
+
             <div class="clause-block">
+
                 <span class="sub-point">أ- يتحمل الطرف الأول مسؤولية ضمان عيوب البرنامج خلال فترة عقد الصيانة ومسئولية تصحيح الأخطاء المنطقية والمشاكل الفنية في بنية النظام او في التقارير في حال وجودها.</span>
+
                 <span class="sub-point">ب- يدرك الطرف الأول أن النظام المطلوب من قبل الطرف الثاني قد يتضمن تعديلات جوهرية وإجرائية ورد جزء منها في العرض الفني والمالي المقدم من الطرف الأول، ويعتبر العرض الفني والمالي المعتمد جزءاً لا يتجزأ من مرفقات العقد. ويلتزم الطرف الأول بتنفيذ جميع التعديلات المحددة والمتفق عليها في العرض الفني والمالي فقط. ويكون اعتماد العمل بالنسخة النهائية للنظام من قبل الطرف الثاني بمثابة الإقرار النهائي بشكل النظام، ويتحمل الطرف الثاني أي طلبات تعديل إضافية يتم تقديمها بعد التعميد، على أن يتم التعامل معها كطلبات مستقلة وفق عروض أسعار جديدة.</span>
+
                 <span class="sub-point">ج- عند طلب تعديلات برمجية تؤثر في بنية النظام أو تغيير من مقاصده العامة يحق للطرف الأول طلب رسوم إضافية أو الامتناع عن تنفيذها.</span>
+
                 <span class="sub-point">د- يتم تدريب الطرف الثاني على نظام اندروهيلث وشرح ما يشمله من شرائط مهام وقوائم منسدلة وما تحتويه من وظائف بواسطة الطرف الأول شرحا نافيا للجهالة على ان يقر الطرف الثاني خطيا بإلمامه كمستخدم للبرنامج وليس كمبرمج بكافة المهام والوظائف التشغيلية فقط التي يوفرها النظام.</span>
+
                 <span class="sub-point">هـ- يقر الطرف الثاني بأنه تم اطلاعه على نظام اندروهيلث من قبل الطرف الأول اطلاعاً كافياً ومناسباً يوضح خصائصه الأساسية وآلية عمله، وبما ينفي أي ادعاء بالجهالة في المستقبل. كما يقر بأن العرض الفني والاختبارات التجريبية المقدمة من الطرف الأول تعتبر جزءاً من هذا الإقرار.</span>
+
                 <span class="sub-point">و- يقوم الطرف الثاني بتدقيق وفحص عمل النظام والتأكد من جاهزيته قبل البدء الفعلي بالاستخدام وذلك بعد الانتهاء من عمل التجهيزات والتحسينات من قبل الطرف الأول في حال وجودها للتأكد من صلاحيته.</span>
+
                 <span class="sub-point">ز- يقدم الطرف الأول خدمة الدعم والمساعدة في إدخال بيانات النظام القديم كخدمة إضافية مدفوعة، يتم الاتفاق على تفاصيلها في العرض المالي أو عبر طلب لاحق من الطرف الثاني. ويلتزم الطرف الثاني بتوفير البيانات كاملة وصحيحة وصالحة للاستيراد. ولا يتحمل الطرف الأول أي مسؤولية عن أي نقص أو أخطاء في البيانات المقدمة من الطرف الثاني.</span>
+
                 <span class="sub-point">ح- ينحصر نطاق عمل ومسؤولية الطرف الأول في تدريب مستخدمي الطرف الثاني وتمكينهم من رفع المطالبات التأمينية عبر النظام ابتداءً من تاريخ إتمام الربط الفعلي مع <strong>منصة التبادل الإلكتروني للمعلومات الصحية (نفيس - NPHIES)</strong>. أما بخصوص المطالبات التأمينية السابقة (التاريخية) التي تسبق تاريخ تفعيل الربط، فهي خارج نطاق هذا العقد تماماً، ولا يتحمل الطرف الأول أي مسؤولية فنية أو إدارية تجاه رفعها أو معالجتها، ما لم يتم الاتفاق على ذلك صراحةً بموجب ملحق تعاقدي مستقل ومقابل مالي منفصل.</span>
+
                 <span class="sub-point">ط- العرض المقدم لا يشمل أدخال اية بيانات للنظام (مالم ينص العرض المقدم على غير ذلك)، والطرف الأول يتكفل بالأشراف على تطبيق النظام خلال مدة العقد.</span>
+
                 <span class="sub-point">ي- يقوم الطرف الثاني بإجراءات الأمان المعتادة للتجهيزات والأنظمة من احتياطات للتيار الكهربائي وما شابه ذلك وكذلك تمديد الشبكة والاتصال بالأنترنت وتوفير أنظمة حماية للأجهزة الطرفية لضمان استمرارية سير العمل.</span>
+
                 <span class="sub-point">ك- يحتفظ الطرف الاول لنفسه بالحق، وفقًا لتقديره وحده، في تعديل أي شرط من شروط المستخدم الماثلة، أو استبدالها، أو تغيير الخدمة، أو المنصة، أو تعليقهما، أو إيقافهما (بما في ذلك على سبيل المثال لا الحصر، توفير أي ميزة إضافية أو تغيير مكان الاستضافة للبيانات) في أي وقت، وذلك بنشر إخطار على الموقع أو بإرسال إخطار لك من خلال الخدمة أو المنصة أو عبر البريد الإلكتروني.</span>
+
                 <span class="sub-point">ل- يحتفظ الطرف الأول بالحق في تحديد الوصول إلى بعض الوظائف أو الخدمات في النظام، أو حتى منع الوصول إلى جزء منه أو كله، دون الحاجة إلى إخطار مسبق أو تحمل المسؤولية. وتتضمن الأمثلة على الحالات التي قد يتم فيها تحديد الخدمات، دون الحصر:<br>
+
                     - تقديم ميزات جديدة لا تغطيها الباقة المختارة.<br>
+
                     - عدم دفع رسوم التجديد.<br>
+
                     - انتهاك شروط الخدمة، مثل سوء استخدام النظام أو التسبب في ضرر له، أو التنكر بشخصية آخر.<br>
+
                     - محاولات الاختراق أو التعطيل للنظام وغيرها من التصرفات.<br>
+
                     - إذا تم اكتشاف أي سلوك مريب في حساب الطرف الثاني، مثل محاولات تسجيل دخول متكررة وغير ناجحة، فقد يتم تقييد الخدمات كإجراء وقائي لحماية المنصة وبقية المستخدمين.
+
                 </span>
+
                 <span class="sub-point">م- وفي حالة صدور أحكام قضائية ضد الطرف الثاني تتعلق بالمنصة أو خدماتها، يمكن أن يتم تحديد الخدمات تماشياً مع القوانين المعمول بها في المملكة.</span>
+
                 <span class="sub-point">ن- يلتزم الطرف الثاني بالكشف الكامل والدقيق عن العدد الحقيقي للمستخدمين النشطين للنظام. وفي حالة استخدام أي من المستخدمين لبيانات تسجيل دخول مستخدم آخر، يعفى الطرف الأول من أي مسؤولية تجاه الأضرار أو الخسائر التي قد تنجم عن هذا الاستخدام غير المصرح به.</span>
+
                 <span class="sub-point">س- يتحمل الطرف الثاني المسؤولية الكاملة عن صحة البيانات المُدخلة في النظام. وفي حالة وجود أي خطأ في إدخال البيانات، يقع على عاتق الطرف الثاني تحمل كافة الأضرار والتبعات الناجمة عن هذه الأخطاء.</span>
+
                 <span class="sub-point">ع- يحق للطرف الثاني طلب البيانات من الطرف الأول على ان يكون تقديم البيانات للطرف الثاني بالطريقة التي يراها الطرف الأول مناسبة.</span>
+
                 <span class="sub-point">ف- يحق للطرف الأول ارسال اشعارات قبل ثلاث اشهر من تاريخ انتهاء اشتراك الطرف الثاني للتذكير.</span>
+
             </div>
+
+
+
 
 
             <div class="clause-header">إدارة المشروع</div>
+
             <div class="clause-block">
+
                 <span class="sub-point">أ- يقوم الطرف الثاني بتعيين منسقا للمشروع يكون بدوره ممثلا عن الطرف الثاني وتتم كافة الإجراءات الفنية والإدارية وإذا تم تغييره يتم الاستمرار على نفس التحليل المعتمد من الطرفين.</span>
+
                 <span class="sub-point">ب- يقوم الطرف الأول بتعيين مدير للمشروع والذي يجب ان يكون له خبرة عالية في هذا المجال وسبق له العمل على إدارة مشاريع مماثلة تتم جميع الاتصالات عن طريقه ويقوم بتنسيق العمل مع الطرف الثاني ويكون ممثلا للطرف الأول في كل مستلزمات العمل على أن تشتمل كافة الإجراءات والقرارات على موافقة خطية لممثلي كلاً من الطرفين وفق محضر مشترك.</span>
+
                 <span class="sub-point">ج- الاتصالات: تتم الاتصالات بين الطرفين عن طريق ممثلي الطرفين اما عن طريق الاتصال بأرقم الهواتف أو البريد الالكتروني كما يجب إضافة الايميل <strong>cs@ahhis.com</strong> في أي رسالة ضمن قائمة المستلمين (CC) لمتابعة اعمال المشروع.</span>
+
             </div>
+
+
+
 
 
             <div class="clause-header">الدعم الفني</div>
+
             <div class="clause-block">
+
                 <span class="sub-point">يقصد بالدعم الفني هو اصلاح المشاكل والاخطاء الفنية التي قد توجد في النظام وتكتشف فيما بعد ضمن فترة الصيانة المتفق عليها، وكذلك الاستشارات الفنية فيما يتعلق بعمل النظام او التوصيات اللازمة في الشئون الفنية المعتادة للعمل.</span>
+
                 <span class="sub-point">1- خلال السنة الأولى: يتم تقديم الدعم الفني مجانا والذي يبدأ من تاريخ تركيب النظام.</span>
+
                 <span class="sub-point">2- عند وجود حاجة لتصحيح أخطاء في بنية النظام يكون تصحيحها مجانا خلال فترة الضمان وتكون تكلفتها بعد فترة الضمان مشمولة في عقد الصيانة.</span>
+
                 <span class="sub-point">3- يلتزم الطرف الأول بضمان البرنامج من الناحية الفنية ضد عيوب البرمجة لمدة سنة ميلادية كاملة تبدأ من تاريخ تركيب النظام، أو طوال فترة الاشتراك للاشتراكات السنوية. وخلال هذه المدة يقوم الطرف الأول بمعالجة أي أخطاء برمجية يتم الإبلاغ عنها من الطرف الثاني دون أي تكلفة إضافية. أما طلبات التعديلات أو التطويرات الإضافية غير المشمولة في العرض الفني والمالي المعتمد، فيتم التعامل معها كخدمة إضافية مدفوعة بموجب عروض أسعار مستقلة. وفي حال الموافقة عليها من الطرف الثاني، يلتزم الطرف الأول بتنفيذها وتسليمها خلال فترة زمنية متفق عليها لا تتجاوز (30) يومًا من تاريخ قبول العرض الخاص بها، ما لم يتطلب حجم التعديل فترة أطول يتم الاتفاق عليها كتابة.</span>
+
                 <span class="sub-point">4- تصدر رخصة البرنامج باسم العميل ولا يحق للعميل بيعها لشخص أخر او البيع من الباطن الا بعد الحصول على أذن من الشركة وعمل الإجراءات اللازمة لذلك.</span>
+
                 <span class="sub-point">5- يلتزم الطرف الأول بتوفير الدعم الفني عن بعد خلال مدة من ساعة الى 48 ساعة من موعد طلب الخدمة من قبل الطرف الثاني خلال أيام العمل الرسمي.</span>
+
                 <span class="sub-point">6- التدريب: يقصد بالتدريب شرح النظام للمستخدم وطريقة عمله (طريقة أدخال البيانات والحصول على النتائج).</span>
+
                 <span class="sub-point">7- يلتزم الطرف الأول بتقديم التدريب الكافي واللازم لتمكين مستخدمي الطرف الثاني من التعامل مع النظام، ويقوم بتوثيق ذلك من خلال محاضر تدريب موقعة من الحضور أو من يمثل الطرف الثاني. ويقر الطرف الثاني بأن استلامه للتدريب أو توقيعه على محاضر التدريب يعد إقرارًا بكفايته. وفي حال كان الخطأ أو التقصير ناتجًا عن عدم تقديم التدريب أو عدم الإيضاح من الطرف الأول، يتحمل الطرف الأول مسؤوليته في هذا الجانب. أما إذا كان الخطأ ناتجًا عن عدم التزام مستخدمي الطرف الثاني بالتعليمات المقررة أو بسبب الإهمال أو سوء التطبيق، فتكون المسؤولية على عاتق الطرف الثاني.</span>
+
                 <span class="sub-point">8- يتم تدريب المتدربين الذين يرشحهم الطرف الثاني لمرة واحدة ويتم الاتفاق على توزيع التدريب على الأيام حسب إمكانيات الطرفين وحسب المدة المعتمدة في عرض السعر.</span>
+
                 <span class="sub-point">9- يتم تسليم الطرف الثاني جميع الأرقام السرية للنظام</span>
+
                 <span class="sub-point">10- يلتزم الطرف الأول بتوفير <strong>(URL)</strong> بديل في حال وجود أي أعطال على النظام الأساسي</span>
+
                 <span class="sub-point">11- يتحمل الطرف الأول جميع المسؤوليات القانونية والمادية الناتجة عن الأعطال أو التأخير أو القصور المثبت في خدمات الصيانة والدعم الفني المقدمة منه. ولا يسأل الطرف الأول عن الأعطال أو الخسائر الناتجة عن قوة قاهرة أو أسباب خارجة عن إرادته أو عن سوء استخدام من الطرف الثاني أو أطراف خارجية.</span>
+
                 <span class="sub-point">12- يقتصر حق استخدام النظام على عدد المستخدمين المصرح لهم والمذكورين في العرض المالي، ولا يجوز للطرف الثاني مشاركة الحسابات مع أطراف أخرى أو تجاوز العدد المتفق عليه إلا بعد الحصول على موافقة خطية من الطرف الأول.</span>
+
             </div>
+
+
+
 
 
             <div class="clause-header">حق إلغاء التعاقد</div>
+
             <div class="clause-block">
+
                 <span class="sub-point">أ- في حالة التقصير في تقديم الخدمة من قبل الطرف الأول لما تم الاتفاق عليه بالعرض المقدم رقم: (<span class="var-text" id="disp_quoteRef_2">...</span>) يحق للطرف الثاني إلغاء التعاقد واسترداد قيمة المدة المتبقية، على أن يقوم بإخطار الطرف الأول بإحدى وسائل الاتصال المتفق عليها. وفي هذه الحالة يتم خصم عدد الأشهر التي تم تقديم الخدمة خلالها وبحد أدنى شهرين، كما يتم خصم رسوم الخدمات الأخرى المقدمة مثل التعديلات وتجهيز النظام والتدريب، ومن ثم رد المبلغ المتبقي للطرف الثاني، ويتم حساب ذلك بناءً على العرض المقدم.</span>
+
                 <span class="sub-point">ب- وفي حال كان التأخير أو التقصير محدودًا ولا يستدعي إلغاء العقد، يلتزم الطرف الأول بمعالجة الخلل خلال مدة أقصاها خمسة عشر (15) يوم عمل من تاريخ إخطار الطرف الثاني، دون أن يترتب على ذلك أي تعويضات مالية إضافية بخلاف ما ورد أعلاه.</span>
+
             </div>
 
+
+
             <div class="clause-header">الدفعات المالية والفواتير:</div>
+
             <div class="clause-block">
+
                 <span class="sub-point">أ- تم الاتفاق بين الطرفين على أن يتم الدفع من قبل الطرف الثاني للطرف الأول وفقًا للشروط المحددة في العرض المقدم رقم: (<span class="var-text" id="disp_quoteRef_2">...</span>)</span>
+
                 <span class="sub-point">ب- في حال تأخر الطرف الثاني عن الوفاء بالتزاماته المالية المتفق عليها لمدة تزيد عن خمسة (5) أيام عمل من تاريخ الاستحقاق، فانه يحق للطرف الأول اتخاذ الإجراءات التالية:<br>
+
                     - سحب موظفيه من المشروع المتفق عليه.<br>
+
                     - تعليق العمل في المشروع حتى يتم الوفاء بالدفعة المستحقة بالكامل.
+
                 </span>
+
                 <span class="sub-point">ج- تكون أسعار الاشتراك ثابتة وغير قابلة للتغيير طوال مدة العقد ما دام الطرف الثاني ملتزمًا بالسداد في مواعيده المحددة.</span>
+
                 <span class="sub-point">د- تعتبر رسوم تأسيس والربط الفني مع منصة <strong>(نفيس - NPHIES)</strong> مستحقة بالكامل وغير قابلة للاسترداد بأي حال من الأحوال بمجرد البدء في إجراءات الربط، وذلك نظير الخدمات الفنية والتراخيص التي يقدمها الطرف الأول، بصرف النظر عن مدة سريان العقد أو أسباب إنهائه من قبل أي من الطرفين.</span>
+
                 <span class="sub-point">هـ- وفي حال رغبة الطرف الثاني في تجديد الاشتراك قبل انتهاء مدته، يتم التجديد بنفس الأسعار المعتمدة في العقد، عدا ما يتعلق بتعديلات ضريبة القيمة المضافة إذا وجدت ووفق الأنظمة واللوائح المعمول بها في المملكة العربية السعودية.</span>
+
                 <span class="sub-point">و- أما في حال انتهاء مدة العقد وعدم تجديده خلال المهلة المحددة، فإن أي طلب تجديد لاحق يعتبر تعاقدًا جديدًا يخضع لعرض سعر جديد يقدمه الطرف الأول، وله الحق في تعديل الأسعار بما يتناسب مع تكاليف التشغيل السائدة في حينه.</span>
+
                 <span class="sub-point">ز- يجدد العقد تلقائياً لفترة مماثلة ما لم يُشعر الطرف الثاني الطرف الأول برغبته في عدم التجديد قبل (30) يوماً من انتهاء العقد.</span>
+
                 <span class="sub-point">ح- ويحتفظ الطرف الأول بالحق في عدم التجديد في الحالات التي يثبت فيها مخالفة الطرف الثاني لشروط الاستخدام أو الأنظمة المعمول بها في المملكة العربية السعودية، أو في حال توقف الخدمة أو إلغائها لأسباب تنظيمية أو فنية جوهرية، على أن يتم إشعار الطرف الثاني بذلك قبل (30) يوماً من تاريخ انتهاء العقد.</span>
+
             </div>
+
+
+
 
 
             <div class="clause-header">الملكية الفكرية</div>
+
             <div class="clause-block">
+
                 <span class="sub-point">أ- جميع حقوق الملكية الفكرية والقانونية محفوظة للطرف الأول فقط دون غيره ويحتفظ بحق الرجوع بالتعويض على الطرف الثاني إذا قام باي فعل من شأنه المساس بحقوق الملكية الفكرية على النظام موضوع العقد او الضرر بمصالح الطرف الأول والحقوق المترتبة على هذه الملكية.</span>
+
                 <span class="sub-point">ب- لا يجوز للطرف الثاني نسخ كود المصدر كليا او جزئيا لاي غرض بما في ذلك أغراض الاختبار او التطوير الخاصة له كذلك ليس له الحق في عمل أي نسخ احتياطية او ارشيفية من كود المصدر وتوثيقه.</span>
+
                 <span class="sub-point">ج- لا يجوز للطرف الثاني نقل النظام او إعادة ترخيصه من الباطن لاي طرف اخر سواء كليا او جزئيا سواء تم تعديله او لم يتم تعديله.</span>
+
                 <span class="sub-point">د- يحتفظ الطرف الأول بالحق في اجراء التعديل والتطوير للبرنامج بغرض تحسين أداء الخدمة او مواكبة التطورات التقنية والتصميمية او وملاءمتها دون الرجوع الى الطرف الثاني طالما كان التطوير لا يمس بحقوق الطرف الثاني والامتيازات الممنوحة له وفقا للعقد</span>
+
                 <span class="sub-point">هـ- بناء على ما سبق فان منح حق استخدام الطرف الثاني لمميزات النظام المذكورة هو حق غير حصري حيث يحتفظ الطرف الأول بحق منح الاستخدام للنظام وكافة مميزاته للراغبين في التعاقد للاستفادة منها.</span>
+
             </div>
+
             
+
             
+
             <div class="clause-header">احكام عامة</div>
+
             <div class="clause-block">
+
                 <span class="sub-point">أ- لا يتحمل الطرف الأول أي مسؤولية عن التأخير أو الإخفاق في تنفيذ التزاماته بموجب هذا العقد إذا كان ذلك بسبب قوة قاهرة أو ظرف طارئ خارج عن إرادته، بما في ذلك على سبيل المثال لا الحصر: الكوارث الطبيعية، الحروب، الحرائق، القرارات الحكومية، أو انقطاع خدمات الاتصالات العامة. وفي هذه الحالة يتم تعليق الالتزامات المتأثرة طوال مدة استمرار السبب.</span>
+
                 <span class="sub-point">ب- لا يعتمد سريان هذا العقد الا بموجب سند قبض او حوالة او إيداع للمبلغ المتفق عليه في أحد حسابات الطرف الأول لدى البنوك السعودية في المملكة العربية السعودية.</span>
+
                 <span class="sub-point">ج- يسعى الطرفان لحل أي نزاع قد ينشأ ودياً خلال (30) يوماً من تاريخ الإشعار الخطي بالنزاع. وفي حال تعذر الحل الودي، تتم إحالة النزاع إلى المحاكم المختصة في الرياض صاحبة الولاية للنظر في النزاع.</span>
+
             </div>
+
             
+
             
+
             <div class="clause-block">
+
                 <span class="sub-point">وبناءً على ما تقدم، تم تحرير هذا العقد من نسختين أصليتين باللغة العربية، بيد كل طرف نسخة للعمل بموجبها والالتزام بما ورد فيها من أحكام، وعلى هذا جرى الاتفاق والتوقيع، وبالله التوفيق.</span>
+
             </div>
+
+
+
 
 
             <div class="signature-section">
+
                 <div class="sign-box">
+
                     <h4>الطرف الأول</h4>
+
                     <div><strong>شركة اندروميدا لتقنية المعلومات</strong></div>
+
                     <br>
+
                     <div>الاسم: هشام بن محمد السحيباني</div>
+
                     <div>الصفة: الرئيس التنفيذي</div>
+
                     <br>
+
                     <div>التوقيع والختم: ..........................</div>
+
                 </div>
+
                 <div class="sign-box">
+
                     <h4>الطرف الثاني</h4>
+
                     <div><strong><span class="var-text" id="disp_clientName_sign">.....</span></strong></div>
+
                     <br>
+
                     <div>الاسم: <span class="var-text" id="disp_clientRep_sign">.....</span></div>
+
                     <div>الصفة: <span class="var-text" id="disp_clientPost_sign">.....</span></div>
+
                     <br> 
+
                     <div>التوقيع والختم: ..........................</div>
+
                 </div>
+
             </div>
+
+
 
             <div style="text-align: center; margin-top: 50px; font-size: 10px; color: #999; border-top: 1px solid #eee; padding-top: 10px;">
+
                 Andromeda Information Technology | C.R 1010356267 | Riyadh, KSA | www.ait.sa
+
             </div>
 
+
+
         </div>
+
     </div>
 
+
+
     <script>
+
         function updateContent() {
+
             // Helper to get value
+
             const val = (id) => document.getElementById(id).value;
+
             // Helper to set text
+
             const set = (id, value) => {
+
                 const el = document.getElementById(id);
+
                 if(el) el.innerText = value || "..................";
+
             };
 
+
+
             set('disp_contractNo', val('contractNo'));
+
             set('disp_contractDate', val('contractDate'));
+
             
+
             set('disp_clientName', val('clientName'));
+
             set('disp_clientName_sign', val('clientName'));
+
             
+
             set('disp_clientCR', val('clientCR'));
+
             set('disp_clientTax', val('clientTax'));
+
             set('disp_clientLic', val('clientLic'));
+
             set('disp_clientAddress', val('clientAddress'));
+
             
+
             set('disp_clientRep', val('clientRep'));
+
             set('disp_clientRep_sign', val('clientRep'));
+
             
+
             set('disp_quoteRef', val('quoteRef'));
+
             set('disp_quoteRef_2', val('quoteRef'));
+
             set('disp_quoteDate', val('quoteDate'));
+
             set('disp_userCount', val('userCount'));
 
+
+
             // Date logic for "Day" and "Date" text
+
             const dateInput = val('contractDate');
+
             if(dateInput) {
+
                 const dateObj = new Date(dateInput);
+
                 const days = ["الأحد", "الاثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"];
+
                 document.getElementById('disp_day').innerText = days[dateObj.getDay()];
+
                 document.getElementById('disp_date_full').innerText = dateInput; // Can format better if needed
+
             }
+
         }
 
+
+
         // Initialize with default date
+
         window.onload = function() {
+
             const today = new Date().toISOString().split('T')[0];
+
             document.getElementById('contractDate').value = today;
+
             updateContent();
+
         }
+
     </script>
+
 </body>
+
 </html>
+
