@@ -254,7 +254,7 @@
             <div class="cover-page-content">
                 <div class="cover-title-ar">عقد<br>توريد رخص نظام اندروهيلث</div>
                 <div class="cover-title-en">AndroHealth License Agreement</div>
-                <div class="cover-meta">عقد رقم: <span class="var-text" id="disp_contractNo">...</span></div>
+                <div class="cover-meta">عقد رقم: <span class="var-text" id="disp_contractNo_cover">...</span></div>
             </div>
             <div class="page-break"></div>
 
@@ -268,7 +268,7 @@
 
             <div class="letter-meta">
                 <div>تاريخ العقد: <span class="var-text" id="disp_contractDate">...</span></div>
-                <div>عقد رقم: <span class="var-text" id="disp_contractNo">...</span></div>
+                <div>عقد رقم: <span class="var-text" id="disp_contractNo_letter">...</span></div>
             </div>
 
             <div class="letter-to">السادة / <span class="var-text" id="disp_clientName">....................................</span> المحترمين</div>
@@ -485,7 +485,8 @@
                 if(el) el.innerText = value || "..................";
             };
 
-            set('disp_contractNo', val('contractNo'));
+            set('disp_contractNo_cover', val('contractNo'));
+            set('disp_contractNo_letter', val('contractNo'));
             set('disp_contractDate', val('contractDate'));
             
             set('disp_clientName', val('clientName'));
